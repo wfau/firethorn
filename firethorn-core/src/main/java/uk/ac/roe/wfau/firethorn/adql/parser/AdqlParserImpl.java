@@ -152,8 +152,8 @@ implements AdqlParser
             new AdqlQueryFactoryImpl()
             );
 
-        //this.parser.disable_tracing();
-
+        this.parser.disable_tracing();
+        
         }
 
     /**
@@ -219,9 +219,17 @@ implements AdqlParser
         final Matcher m1 = p1.matcher(s1);
         final String  s2 = m1.replaceAll("");
 
-        return s2 ;
-        }
+        // Replace multiple ..
+        Pattern p2 = Pattern.compile(
+            "\\.{2,}",
+            Pattern.DOTALL
+            );
+        Matcher m2 = p2.matcher(s2);
+        String  s3 = m2.replaceAll("."); 
 
+        return s3 ;
+        }
+    
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -352,13 +360,12 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
-     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
     throws AdqlParserException
         {
-        log.debug("process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)");
+        log.debug("process(final AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>");
         for (final ADQLObject clause: iter)
             {
             log.debug(" ----");
@@ -427,7 +434,6 @@ implements AdqlParser
 
     /**
      * Process an Operation.
-     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)

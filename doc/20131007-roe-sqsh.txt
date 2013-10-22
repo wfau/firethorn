@@ -1,0 +1,220 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Install SQL client on testvm.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "root@${testhost:?}"
+
+        #
+        # Install the program.
+        echo "Checking SQL client program"
+        if ! (which 'sqsh' > /dev/null 2>&1)
+        then
+            echo "Installing SQL client program"
+            apt-get install 'sqsh'
+        fi
+
+        #
+        # Add the ROE server config.
+        for n in {1..15}
+        do
+            sqlname=ramses${n}
+            sqlhost=ramses${n}
+            sqlport=1433
+
+            echo "Checking SQL server [${sqlname:?}]"
+
+            if [ $(grep -c "\\[${sqlname:?}\\]" /etc/freetds/freetds.conf) -eq 0 ]
+            then
+                echo "Adding SQL server [${sqlname:?}]"
+                cat >> /etc/freetds/freetds.conf << EOF
+
+# ROE server
+[${sqlname:?}]
+    host = ${sqlhost:?}
+    port = ${sqlport:?}
+EOF
+
+            fi
+        done
+
+# ------------------------------------------------
+# Create user accounts
+#[user@desktop]
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "root@${testhost:?}"
+
+        #
+        # Create the user accounts.
+        for username in dmr stv
+        do
+            echo "Checking user [${username:?}]"
+            if ! (id "${username:?}" > /dev/null 2>&1)
+            then
+                echo "Creating user [${username:?}]"
+                useradd --create-home --shell '/bin/bash' "${username:?}"
+            fi
+
+            #
+            # Check user home.
+            userhome=$(cat /etc/passwd | grep "${username:?}" | cut -d ":" -f 6)
+            if [ ! -e "${userhome:?}" ]
+            then
+                echo "ERROR can't find home directory [${userhome:?}]"
+            fi
+
+            #
+            # Add users SSH keys.
+            keyname="${username:?}.roe.ac.uk.pub"
+
+            if [ ! -e "${userhome:?}/.ssh" ]
+            then
+                mkdir "${userhome:?}/.ssh"
+                chown "${username:?}"   "${userhome:?}/.ssh"
+                chgrp "${username:?}"   "${userhome:?}/.ssh"
+                chmod 'u=rwx,g=rx,o=rx' "${userhome:?}/.ssh"
+            fi
+
+            if [ ! -e "${userhome:?}/.ssh/${keyname:?}" ]
+            then
+                pushd "${userhome:?}/.ssh"
+                    keyurl="http://data.metagrid.co.uk/sshkeys/${keyname:?}"
+                    wget "${keyurl:?}"
+                    if [ $? -eq 0 ]
+                    then
+                        cat  "${keyname:?}" >> authorized_keys
+                    else
+                        echo "ERROR : failed to download key [${keyname}]"
+                    fi
+
+                    chown "${username:?}" "${keyname:?}"
+                    chgrp "${username:?}" "${keyname:?}"
+                    chmod 'u=rw,g=r,o=r'  "${keyname:?}"
+
+                    chown "${username:?}" "authorized_keys"
+                    chgrp "${username:?}" "authorized_keys"
+                    chmod 'u=rw,g=r,o=r'  "authorized_keys"
+
+                popd
+            fi
+        done
+
+# ------------------------------------------------
+# Configure client
+#[user@desktop]
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Create the properties template.
+        cat > "${HOME:?}/sqlserver.properties" << 'EOF'
+
+devhost=xxxx
+devuser=xxxx
+devpass=xxxx
+devdata=xxxx
+
+wfauhost=xxxx
+wfauuser=xxxx
+wfaupass=xxxx
+wfaudata=xxxx
+
+atlashost=xxxx
+atlasuser=xxxx
+atlaspass=xxxx
+atlasdata=xxxx
+
+adminuser=xxxx
+adminpass=xxxx
+admindata=xxxx
+
+EOF
+
+        #
+        # Add the usernames and passwords.
+        vi "${HOME:?}/sqlserver.properties"
+            ....
+
+        #
+        # Test the client.
+        source "${HOME:?}/sqlserver.properties"
+        sqsh -S "${devhost:?}" -U "${devuser}" -P "${devpass}" -D "${devdata}" << 'EOF'
+
+SELECT Name FROM SysDatabases
+go
+
+EOF
+
+# ------------------------------------------------
+# Clone the source code
+#[user@desktop]
+
+    sqluser=dmr
+    sqlhost=pyratest3
+
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        if [ ! -e "${HOME:?}/firethorn.settings" ]
+        then
+            cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+export MAVEN_OPTS=-Xmx128m
+EOF
+        fi
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+        coderepo='http://wfau.metagrid.co.uk/code/firethorn/'
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${coderepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+
+
+
+        
+
+
+
+
+

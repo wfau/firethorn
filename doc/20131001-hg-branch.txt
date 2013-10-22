@@ -1,0 +1,182 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+
+        default
+
+    #
+    # List the available branches
+    hg branches
+
+        stelios-adql-parsing         840:af0f70173349
+        delete-node                  799:6f588570c570
+        default                      839:dbe1fdeffd5c
+        hibernate-collections        741:8d8f28c3e9e9
+
+    #
+    # Create a new named branch.
+    hg branch dave-adql-parsing
+
+        marked working directory as branch dave-adql-parsing
+
+    hg commit -m "Created dave-adql-parsing branch"
+
+        created new head
+
+    #
+    # Push the new branch to the shared repository (needs force)
+    hg push
+
+        pushing to ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        abort: push creates new remote branch 'dave-adql-parsing'!
+        (did you forget to merge? use push -f to force)
+
+    hg push -f
+
+        pushing to ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        remote: adding changesets
+        remote: adding manifests
+        remote: adding file changes
+        remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+    
+
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        dave-adql-parsing
+
+    #
+    # Swap to the default branch
+    hg update -C default
+        13 files updated, 0 files merged, 11 files removed, 0 files unresolved
+
+    #
+    # Merge the branch changes into main.
+    hg merge dave-adql-parsing
+
+    #
+    # Review the changes
+    hg diff | less
+    
+    #
+    # Commit the changes
+    hg commit -m "Merged dave-adql-parsing into main"
+
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        default
+
+    #
+    # Swap to my dev branch
+    hg update dave-adql-parsing
+
+    #
+    # Merge changes fro the main branch.
+    # *Mercurial automatically launched Meld diff viewer to resolve the conflict.
+    hg merge default
+
+        merging doc/20131001-hg-branch.txt
+        32 files updated, 1 files merged, 0 files removed, 0 files unresolved
+
+    #
+    # Commit the changes
+    hg commit -m "Merged main into dave-adql-parsing"
+
+
+    #
+    # Push the changes
+    hg push
+
+        pushing to ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        remote: adding changesets
+        remote: adding manifests
+        remote: adding file changes
+        remote: added 2 changesets with 2 changes to 1 files
+
+    #
+    # Build the binaries
+    mvn -P all clean install
+    mvn -P all eclipse:eclipse
+    
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        dave-adql-parsing
+
+    #
+    # Check the history.
+    hg log \
+        firethorn-cds/adql/src/main/java/adql/db/DBChecker.java
+
+        changeset:   862:cd414d006afa
+        branch:      dave-adql-parsing
+        ....
+
+        changeset:   464:7fe42860f504
+        parent:      461:4b63a0b8ed22
+        ....
+
+    #
+    # Revert a file to a previous version.
+    hg revert \
+        firethorn-cds/adql/src/main/java/adql/db/DBChecker.java \
+        -r 464
+
+    hg revert \
+        firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java \
+        -r 464
+
+    #
+    # Commit the changes.
+    hg commit -m "Reverted changes to DBChecker"
+    hg commit -m "Reverted changes to QueryChecker"
+
+    #
+    # Tidy up
+    rm firethorn-cds/adql/src/main/java/adql/db/DBChecker.java.orig
+
+
+
+
+
+
+
+
