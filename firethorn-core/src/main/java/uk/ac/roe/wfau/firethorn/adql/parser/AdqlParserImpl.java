@@ -56,6 +56,7 @@ import adql.query.from.ADQLTable;
 import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
+import adql.query.operand.NegativeOperand;
 import adql.query.operand.NumericConstant;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
@@ -152,8 +153,8 @@ implements AdqlParser
             new AdqlQueryFactoryImpl()
             );
 
-        this.parser.disable_tracing();
-        
+        //this.parser.disable_tracing();
+
         }
 
     /**
@@ -219,17 +220,9 @@ implements AdqlParser
         final Matcher m1 = p1.matcher(s1);
         final String  s2 = m1.replaceAll("");
 
-        // Replace multiple ..
-        Pattern p2 = Pattern.compile(
-            "\\.{2,}",
-            Pattern.DOTALL
-            );
-        Matcher m2 = p2.matcher(s2);
-        String  s3 = m2.replaceAll("."); 
-
-        return s3 ;
+        return s2 ;
         }
-    
+
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -360,12 +353,13 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
     throws AdqlParserException
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>");
+        log.debug("process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)");
         for (final ADQLObject clause: iter)
             {
             log.debug(" ----");
@@ -434,6 +428,7 @@ implements AdqlParser
 
     /**
      * Process an Operation.
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
@@ -1149,7 +1144,12 @@ implements AdqlParser
                 (Operation) oper
                 );
             }
-
+        else if (oper instanceof NegativeOperand)
+        {
+        return wrap(
+            (NegativeOperand) oper
+            );
+        }
         else {
             return UNKNOWN_FIELD;
             }
@@ -1195,6 +1195,48 @@ implements AdqlParser
             column
             );
         }
+    
+    /**
+     * Wrap a Negative Operand.
+     *
+     */
+    public static MySelectField wrap(NegativeOperand oper)
+        {
+        log.debug("wrap(Operation)");
+        log.debug("  name   [{}]", oper.getName());
+        log.debug("  number [{}]", oper.isNumeric());
+        log.debug("  string [{}]", oper.isString());
+
+        final ADQLOperand param1 = oper.getOperand();
+
+        ADQLColumn c1 = null ;
+
+        AdqlDBColumn a1 = null ;
+
+        AdqlColumn.Type t1 = null ;
+        AdqlColumn.Type return_type = null;
+
+        if (param1 instanceof ADQLColumn)
+            {
+            c1 = (ADQLColumn) param1;
+            if (c1.getDBLink() instanceof AdqlDBColumn)
+                {
+                a1 = (AdqlDBColumn)c1.getDBLink();
+                t1 = a1.column().meta().adql().type();
+                }
+            }
+    
+      
+        log.debug("  return_type******************** [{}]",return_type);
+
+     
+        return new MySelectFieldImpl(
+        		oper.getName(),
+                t1
+                );
+        }
+    
+    
     /**
      * Wrap an Operation.
      *

@@ -83,7 +83,7 @@ public final class NegativeOperand implements ADQLOperand {
 	}
 
 	public String getName() {
-		return "-"+operand.getName();
+		return operand.getName();
 	}
 
 	public ADQLIterator adqlIterator(){
