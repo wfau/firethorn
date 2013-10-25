@@ -24,8 +24,8 @@
 # Build and deploy a new version.
 #[user@laptop]
 
-    oldversion=01.07-alpha-07
-    newversion=01.07-alpha-08
+    oldversion=01.07-alpha-08
+    newversion=01.08-beta-01
 
     source ${HOME:?}/firethorn.settings
     pushd "${FIRETHORN_CODE:?}"
@@ -101,7 +101,7 @@
 
         #
         # Set the new database properties.
-        dbversion=Shep0107alpha08
+        dbversion=Shep0108beta01
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 
@@ -132,7 +132,7 @@
                 databasehost="${devhost:?}"
                 databaseport="1433"
                 databasename="${metadataname:?}"
-                databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+                databasepath='J:\\Dave\\SQLServer\\firethorn\\metadata'
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -157,7 +157,7 @@ EOF
                 databasehost="${devhost:?}"
                 databaseport="1433"
                 databasename="${userdataname:?}"
-                databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+                databasepath='J:\\Dave\\SQLServer\\firethorn\\userdata'
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -184,13 +184,12 @@ cat  "${databasefile:?}"
         popd
     exit
 
-
 #-----------------------------------------------------------------------------------
 # Update the test properties
 #[user@laptop]
 
-    oldversion=01.07-alpha-07
-    newversion=01.07-alpha-08
+    oldversion=01.07-alpha-08
+    newversion=01.08-beta-01
 
     #
     # Update the version.
@@ -212,6 +211,12 @@ cat  "${databasefile:?}"
         firethorn.user.url=xxxxx
         firethorn.user.user=xxxx
         firethorn.user.pass=xxxx
+
+# ------------------------------------------------
+# Take the services offline.
+#[user@laptop]
+
+    # Prevent user interaction during upgrade ..
 
 # ------------------------------------------------
 # Deploy the service properties.
@@ -257,7 +262,6 @@ cat  "${databasefile:?}"
         webappproject=firethorn-webapp
         webapppath=${HOME}/webapps
         webappfile=${webappproject:?}-${webappversion:?}.war
-
         echo "Version [${webappversion:?}]"
         
         #
@@ -265,7 +269,6 @@ cat  "${databasefile:?}"
         downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
         downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
         downloadurl="${downloadrepo:?}/${downloadfile:?}"
-
         if [ ! -e "${webapppath:?}" ]
         then
             mkdir "${webapppath:?}"
@@ -287,7 +290,6 @@ cat  "${databasefile:?}"
         contextpath=firethorn
         managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
         managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
-
         wget -q -O - \
             --user=${managername:?} \
             --password=${managerpass:?} \
@@ -327,6 +329,8 @@ cat  "${databasefile:?}"
     source "${deploylist:?}"
     ssh "${ogsauser:?}@${ogsahost}" 
 
+        contextpath=ogsa-dai
+
         webappversion=$(
             sed -n '
                 s/firethorn.webapp.version=\(.*\) *$/\1/p
@@ -335,7 +339,6 @@ cat  "${databasefile:?}"
         webappproject=firethorn-ogsadai-webapp
         webapppath=${HOME}/webapps
         webappfile=${webappproject:?}-${webappversion:?}.war
-
         echo "Version [${webappversion:?}]"
 
         #
@@ -343,7 +346,6 @@ cat  "${databasefile:?}"
         downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
         downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
         downloadurl="${downloadrepo:?}/${downloadfile:?}"
-
         if [ ! -e "${webapppath:?}" ]
         then
             mkdir "${webapppath:?}"
@@ -362,10 +364,8 @@ cat  "${databasefile:?}"
 
         #
         # Deploy the webapp.
-        contextpath=ogsa-dai
         managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
         managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
-
         wget -q -O - \
             --user=${managername:?} \
             --password=${managerpass:?} \
@@ -383,10 +383,10 @@ cat  "${databasefile:?}"
                 wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh'
             popd
         fi
-        source "${HOME:?}/bin/jdbc-functions.sh"
 
         #
         # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
         pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
 
             jdbcconfig atlas    firethorn.atlas
@@ -416,7 +416,6 @@ EOF
         fi
 
         source "${HOME:?}/firethorn.settings"
-
         codepath="$(dirname  ${FIRETHORN_CODE:?})"
         codename="$(basename ${FIRETHORN_CODE:?})"
         coderepo='http://wfau.metagrid.co.uk/code/firethorn/'
@@ -497,10 +496,8 @@ EOF
             #
             # Not available yet.
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
-            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
-
-
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
 
         popd
     exit
@@ -723,5 +720,4 @@ EOF
 
 
 
-sELECT TOP 50 atlas.ra, atlas.dec, uAperMag3, gAperMag3, rAperMag3, iAperMag3, zAperMag3, u, g, r, i, z FROM atlasSource AS atlas, BestDR8..PhotoObj AS dr8, atlasSourceXDR8PhotoObj AS x WHERE masterObjID=atlas.sourceID AND slaveObjID=dr8.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN ( SELECT MIN(distanceMins) FROM atlasSourceXDR8PhotoObj WHERE masterObjID=x.masterObjID AND sdssPrimary=1) /* ramses5..*/  
 

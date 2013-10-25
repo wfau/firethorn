@@ -500,8 +500,6 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
 
-
-
         popd
     exit
 
