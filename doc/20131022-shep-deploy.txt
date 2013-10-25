@@ -500,6 +500,8 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
 
+
+
         popd
     exit
 
@@ -509,7 +511,7 @@ EOF
 
 # ------------------------------------------------
 # Configure Python service.
-# need to be member of group 'users'
+# (need to be member of group 'users')
 #[user@laptop]
 
     deploytype=test
@@ -606,4 +608,120 @@ EOF
         Multiframe
     WHERE
         project LIKE 'ATLAS%'
+
+#----------------------------------------------------
+# SSH login to tail the Tomcat log and tunnel http.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L "${fireproxy:?}:localhost:8080" -D "${firesocks:?}" "${fireuser:?}@${firehost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+#-----------------------------------------------------------------------------------
+# Run our test queries.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+    source "${deploylist:?}"
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        adqlcopydepth=THIN
+
+        endpointurl="http://localhost:${fireproxy:?}/firethorn"
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        #source "${HOME:?}/firethorn.testing"
+
+        #jdbcspace=/jdbc/resource/360448
+        #adqlspace=/adql/resource/360449
+        #atlasschema=/adql/schema/229422
+
+        jdbcspace=/jdbc/resource/32769
+        adqlspace=/adql/resource/32770
+        atlasschema=/adql/schema/163889
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'          'rosat'
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+        #
+        # Confirm an action.
+        confirm()
+            {
+            local message=${1:-Ok}  
+            local response  
+            read -p "${message} (Y/n)" response
+            case ${response:-'y'} in
+                y|Y)
+                    return 0
+                    ;;
+                n|N)
+                    return 1
+                    ;;
+                q|Q)
+                    return 2
+                    ;;
+                *)
+                    return 3
+                    ;;
+            esac
+            }
+
+   
+        logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+        
+        retest()
+            {
+            exec 6<> ${logged} 
+            while read <&6 adql
+            do
+                if [[ "${adql}" == '' ]]
+                then
+                    echo "SKIP [${adql}]"
+                else                    
+                    if [[ "${adql}" =~ ^# ]]
+                    then
+                        echo "SKIP [${adql}]"
+                    else
+                        echo "--------"
+                        echo "ADQL [${adql}]"
+                        confirm "Run query"
+                        go="$?"
+                        if [ "${go}" -eq 0 ]
+                        then
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                        fi
+
+                        if [ "${go}" -eq 2 ]
+                        then
+                            break
+                        fi
+                    fi
+                fi
+            done
+            echo "Done"
+            exec 6>&-
+            }
+
+
+
+
+sELECT TOP 50 atlas.ra, atlas.dec, uAperMag3, gAperMag3, rAperMag3, iAperMag3, zAperMag3, u, g, r, i, z FROM atlasSource AS atlas, BestDR8..PhotoObj AS dr8, atlasSourceXDR8PhotoObj AS x WHERE masterObjID=atlas.sourceID AND slaveObjID=dr8.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN ( SELECT MIN(distanceMins) FROM atlasSourceXDR8PhotoObj WHERE masterObjID=x.masterObjID AND sdssPrimary=1) /* ramses5..*/  
 

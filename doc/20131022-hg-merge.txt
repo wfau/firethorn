@@ -234,4 +234,61 @@
 
 
 #-----------------------------------------------------------------------------------
-# Create a new version and commit .
+# Merge changes back into dev branches.
+#
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull latest version.
+        hg pull
+
+            added 1 changesets with 4 changes to 4 files (+1 heads)
+
+        #
+        # Update to the latest version.
+        hg update
+
+        #
+        # Swap to Dave's branch
+        hg update dave-adql-parsing
+
+        #
+        # Merge changes from default.
+        hg merge default
+
+            53 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg commit -m "Merged changes from default"
+            committed changeset 893:e2b3898bc686
+
+
+        #
+        # Swap to Stelios's branch
+        hg update stelios-adql-parsing
+
+        #
+        # Merge changes from default.
+        hg merge default
+
+        hg commit -m "Merged changes from default"
+            committed changeset 894:906b5a504f2f
+
+        #
+        # Push the changes.
+        hg push
+            4 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+
+    popd
+
+
+#-----------------------------------------------------------------------------------
+# Merge changes back into dev branches.
+#
+
+
+
+
+
