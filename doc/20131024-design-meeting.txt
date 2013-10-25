@@ -1,0 +1,54 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Useable by externals ..
+
+No public release yet,
+so we could go live with new interface
+
+Nigel Metcalf has had old interface for x weeks
+No comments on interface
+
+Assuming new is capable of same as old,
+then ok
+
+New version of TopCat has mixed scatter density plot
+JavaScript plotter able to do small datasets
+Button to launch TopCat for larger data.
+
+Row limit on the query .. extra param.
+Used by user and by plotter. 
+
+Row limit.
+
+---- ----
+metadata loading
+    chase GalexGR6
+---- ----
+
+want users to register (stats)
+
+login to query propritary data
+
+
+
+
