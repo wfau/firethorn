@@ -513,7 +513,6 @@ jdbcspace=${jdbcspace:?}
 adqlspace=${adqlspace:?}
 atlashome=${adqlschema:?}
 EOF
-
             cat "${HOME:?}/firethorn.spaces.${datestamp:?}"
 
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
@@ -542,9 +541,37 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
 
         popd
+
+        #
+        # Dsiplay the space URLs.
+        cat "${HOME:?}/firethorn.spaces.${datestamp:?}"
+
     exit
 
-#jdbcspace=/jdbc/resource/32769
-#adqlspace=/adql/resource/32770
-#atlashome=/adql/schema/163889
+jdbcspace=/jdbc/resource/32769
+adqlspace=/adql/resource/32770
+atlashome=/adql/schema/163892
+
+# ------------------------------------------------
+# Configure Python service.
+# (need to be member of group 'users')
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+            adqlspace=http://pyratest2:8080/firethorn/adql/resource/32770
+        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/163892
+            firethorn_base=http://pyratest2:8080/firethorn
+
+#-----------------------------------------------------------------------------------
+# Manual test queries ...
+#
+
 
