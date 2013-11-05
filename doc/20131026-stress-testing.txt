@@ -20,34 +20,68 @@
 #
 #
 
-#-------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
+# Run our test queries.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+    source "${deploylist:?}"
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        adqlcopydepth=THIN
+
+        endpointurl="http://pyratest2:8080/firethorn"
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        adqlspace=/adql/resource/32770
+        atlasschema=/adql/schema/163889
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'          'rosat'
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 0"
+http://pyratest2:8080/firethorn/adql/query/360450
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 1"
+http://pyratest2:8080/firethorn/adql/query/360451
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 2"
+http://pyratest2:8080/firethorn/adql/query/360452
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 3"
+http://pyratest2:8080/firethorn/adql/query/360453
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 4"
+http://pyratest2:8080/firethorn/adql/query/360454
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 5"
+http://pyratest2:8080/firethorn/adql/query/360455
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 6"
+http://pyratest2:8080/firethorn/adql/query/360456
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 7"
+http://pyratest2:8080/firethorn/adql/query/360458
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 8"
+http://pyratest2:8080/firethorn/adql/query/360459
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 9"
+http://pyratest2:8080/firethorn/adql/query/360450
 
 
-    SELECT count(*) FROM atlasSource
-        54942807
 
-    SELECT count(*) FROM atlasSource WHERE sourceID % 100 = 0 
-        549428
-
-    SELECT count(*) FROM atlasSource WHERE sourceID % 100 = 1 
-        549428
-        
-    SELECT count(*) FROM atlasSource WHERE sourceID % 10 = 0 
-        5494280
-
-
-
-
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 0 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 1 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 2 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 3 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 4 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 5 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 6 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 7 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 8 
-    SELECT * FROM atlasSource WHERE sourceID % 10 = 9
 
 
 
