@@ -569,7 +569,7 @@ public class AdqlQueryBugsTestCase
             
             compare(
                     query,
-                    "select -atlasv20130426.dbo.multiframe.decbase as -decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
+                    "select -atlasv20130426.dbo.multiframe.decbase as decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
                     );
             
             validate(
@@ -580,11 +580,7 @@ public class AdqlQueryBugsTestCase
                     );
         }
 
-    /*
-     * 
-    SELECT * from (select * from Filter) as q
-     * 
-     */
+
     
 
     }
