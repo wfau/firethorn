@@ -1,0 +1,114 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-------------------------------
+# Using SSH to create a SOCKS proxy to access external resources.
+#[user@laptop]
+
+    #
+    # Problem:
+    # The WIFI network at ROE requires the local VPN,
+    # which blocks a number of commonly used ports.
+    #
+
+    #
+    # Connect a SOCKS proxy tunnel to an external host.
+    ssh -D 2001 polyester.andrews.metagrid.co.uk
+    
+    #
+    # Configure Jabber client to use SOCKS proxy on port 2001.
+    # Type : SOCKS 5
+    # Host : localhost
+    # Port : 2001
+    # Jabber traffic is now routed via the tunnel host,
+    # avoiding the local network.  
+
+#-------------------------------
+# Using SSH and VPN to create a SOCKS proxy for HTTP access.
+#[user@laptop]
+
+    #
+    # The following hack only works because our Andrews virtual machines
+    # have both IPV4 and IPV6 addresses. 
+
+    #
+    # Install and configure the University VPN on polystyrene. 
+    #[root@polystyrene]
+
+        yum install vpnc
+
+        vi /etc/vpnc/ed.ac.uk.conf
+
+            IPSec gateway  ....
+            IPSec ID       ....
+            IPSec secret   ....
+            Xauth username ....
+            Xauth password ....
+
+        vpnc ed.ac.uk
+
+            | You are connected to the University of Edinburgh enhanced VPN service.
+            VPNC started in background (pid: 1697)...
+
+        # This will route all IPV4 traffic via the VPN. 
+
+    #
+    # Connecting direct from ROE to polystyrene fails.
+    #
+    # This is probably because irrespective of where the requests come from,
+    # replies to IPV4 connections will be routed via the university VPN.
+    ssh -D 2002 root@polystyrene.andrews.metagrid.co.uk
+        ....
+
+    #
+    # Create a polytunnel that connects to an intermediary,
+    # and then connects to polystyrene using IPv6
+    gedit ~/.ssh/config &
+
+        Host polyhack
+            HostName polystyrene.andrews.metagrid.co.uk 
+            ProxyCommand ssh -q polyester.andrews.metagrid.co.uk nc %h %p
+
+    ssh -D 2002 root@polyhack
+
+    #
+    # This routes the tunneled SOCKS proxy to polyester via polystyrene.
+    # Because the connection between polyester and polystyrene is using IPV6
+    # it is not effected by the changes to the IPV4 routing table setup by the University VPN  
+
+    #
+    # Update FireFox to use the SOCKS proxy on port 2002
+    # Type : SOCKS 5
+    # Host : localhost
+    # Port : 2002
+
+    #
+    # IPV4 HTTP requests from FireFix will now be handled by the University VPN, tunneled via the SOCKS proxy.
+    # https://ieeexplore.ieee.org/servlet/SnoopServlet
+    # Remote Host 	vpn2-245.vpn.net.ed.ac.uk
+
+    # IPV6 HTTP requests from FireFox will now be tunneled via the SOCKS proxy,
+    # but not by the University VPN.
+
+
+
+

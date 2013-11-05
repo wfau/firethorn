@@ -1,0 +1,87 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-----------------------------------------------------------------------------------
+# Run our test queries.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+    source "${deploylist:?}"
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        adqlcopydepth=THIN
+
+        endpointurl="http://pyratest2:8080/firethorn"
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        adqlspace=/adql/resource/32770
+        atlasschema=/adql/schema/163889
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'          'rosat'
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 0"
+http://pyratest2:8080/firethorn/adql/query/360450
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 1"
+http://pyratest2:8080/firethorn/adql/query/360451
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 2"
+http://pyratest2:8080/firethorn/adql/query/360452
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 3"
+http://pyratest2:8080/firethorn/adql/query/360453
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 4"
+http://pyratest2:8080/firethorn/adql/query/360454
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 5"
+http://pyratest2:8080/firethorn/adql/query/360455
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 6"
+http://pyratest2:8080/firethorn/adql/query/360456
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 7"
+http://pyratest2:8080/firethorn/adql/query/360458
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 8"
+http://pyratest2:8080/firethorn/adql/query/360459
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 9"
+http://pyratest2:8080/firethorn/adql/query/360450
+
+
+
+
+
+

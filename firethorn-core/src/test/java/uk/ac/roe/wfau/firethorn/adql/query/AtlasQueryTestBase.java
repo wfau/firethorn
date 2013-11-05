@@ -146,6 +146,15 @@ extends TestPropertiesBase
                         )
                     );
                 this.workspace.schemas().create(
+                        BaseComponent.CopyDepth.THIN,
+                        "BestDR8",
+                        resource.schemas().select(
+                            "BestDR8",
+                            "dbo"
+                            )
+                        );
+                
+                this.workspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
                     "TWOMASS",
                     resource.schemas().select(
@@ -193,6 +202,13 @@ extends TestPropertiesBase
                         "ROSAT"
                         )
                     );
+                this.testspace.schemas().create(
+                        BaseComponent.CopyDepth.THIN,
+                        this.workspace.schemas().select(
+                            "BestDR8"
+                            )
+                        );
+                    
                 this.testspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
                     this.workspace.schemas().select(

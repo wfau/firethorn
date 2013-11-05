@@ -155,10 +155,10 @@ public class ClauseSelect extends ClauseADQL<SelectItem> {
 	 * 
 	 * @see SelectItem
 	 */
-	public boolean add(ADQLOperand operand) throws NullPointerException {
+	public boolean add(ADQLOperand operand, ADQLQuery parent) throws NullPointerException {
 		if (operand == null)
 			throw new NullPointerException("It is impossible to add NULL items to a SELECT clause !");
-		return add(new SelectItem(operand));
+		return add(new SelectItem(operand, parent));
 	}
 
 	/**
@@ -174,10 +174,10 @@ public class ClauseSelect extends ClauseADQL<SelectItem> {
 	 * 
 	 * @see SelectItem
 	 */
-	public void add(int index, ADQLOperand operand) throws NullPointerException, ArrayIndexOutOfBoundsException {
+	public void add(int index, ADQLOperand operand, ADQLQuery parent) throws NullPointerException, ArrayIndexOutOfBoundsException {
 		if (operand == null)
 			throw new NullPointerException("It is impossible to add NULL items to a SELECT clause !");
-		add(index, new SelectItem(operand));
+		add(index, new SelectItem(operand, parent));
 	}
 
 	/**
@@ -192,10 +192,10 @@ public class ClauseSelect extends ClauseADQL<SelectItem> {
 	 * @throws NullPointerException				If the given item is <i>null</i>.
 	 * @throws ArrayIndexOutOfBoundsException	If the index is out of range (index < 0 || index > size()).
 	 */
-	public ADQLOperand set(int index, ADQLOperand operand) throws NullPointerException, ArrayIndexOutOfBoundsException {
+	public ADQLOperand set(int index, ADQLOperand operand, ADQLQuery parent) throws NullPointerException, ArrayIndexOutOfBoundsException {
 		if (operand == null)
 			throw new NullPointerException("It is impossible to replace a SELECT item by a NULL item into a SELECT clause !");
-		SelectItem item = set(index, new SelectItem(operand));
+		SelectItem item = set(index, new SelectItem(operand, parent));
 		return item.getOperand();
 	}
 

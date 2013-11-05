@@ -1,0 +1,220 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-------------------------------
+#
+    Notes from ADASS
+
+    Alex Saley, John Hopkins
+
+    VOSpace for files only
+
+    John Hpopkins
+    Demitri Mishin
+    ADASS talk
+    SciBox (generic VOBox)
+
+    VAO - using openID
+
+#-------------------------------
+#
+
+    Dynamic scrollable display window for images.
+    Select object, zoom and scroll.
+
+    Select object on an image, query database.
+    "what is <this> ?"
+    click an object
+        list of databases that can be queries at that location
+
+    list of catalogs that can be used as overlays
+    as you move around over the image, highlights objects from catalogs
+    click on a object, extracts 'useful' info from the catalog
+    interesting object
+        what is the magnitute ?
+        what are the colours ?    
+
+
+
+    Spin off from AladinLite
+    HIPS - HEALPIX library
+
+#-------------------------------
+#
+
+    Wed
+    
+    Thu
+        
+    Fri 
+        tutorial 11:00 - 15:00
+
+
+#-------------------------------
+#
+
+    LEGACY/ STRICT
+    
+    Re-write query ?
+    Update the displayed query ?
+    LEGACY / STRICT select box ?
+
+    Default starts at LEGACY
+    If we change things, tell user what we did
+    Show what query was actually executed ?
+
+    Update the free form box with the actual query.
+
+
+#-------------------------------
+#
+
+    VOTable needs to have query as CDATA.
+    Put whole ADQL query in header.
+
+#-------------------------------
+#
+
+    List of errors rather than just one.
+    
+#-------------------------------
+#
+    Improve errors/warnings
+    Sugest missing catalogs
+
+    EDIT stage
+    Parse query without executing it ?
+
+    Detect duplicate field names
+    warn, replace ....
+
+    Detect unjoined cross join
+    warn
+
+#-------------------------------
+#
+
+    Meeting tomorrow morning
+    Bob, Mike and others
+
+#------------------------------- -------------------------------
+# Future stuff
+
+        WFAU 2.0
+        GAIA
+        AstroTrop
+
+
+#--------------
+
+    *) JOIN local and external TAP (public) services
+       (TAPFactory)
+       
+         WFAU
+       ++GAIA
+         AstroTrop
+
+        JOIN local.cat and remote.tap
+
+        stress test
+            sensible JOIN - useable results in reasonable time
+            novice cartesian JOIN - survive (truncate?)
+            
+        JOIN local.VVV and remote.GUMS (ESAC TAP)
+        live - 1st GAIA data release
+        PROTOTYPE MID 2014
+        
+#--------------
+
+    -) A&A users, groups, permissions etc
+       x509 certificates
+           WFAU
+           GAIA
+           AstroTrop
+
+#--------------
+
+    *) TAP service (public) 
+    *) TAP service (with x509) 
+       ++WFAU (TopCat et al)
+        +GAIA
+       ++AstroTrop
+
+    *) Locally stored user data
+       (MyDB VOSpace)
+        +WFAU
+         GAIA
+         AstroTrop
+       
+        uploaded results
+        query results
+
+#---------------------------------------
+
+    GAIA testbed ?
+
+        VVV
+        Merged Source table
+        Scaleability is a major consideration
+
+        arbitary JOIN -
+            join two billion row datasets 
+            GAIA + TWOMASS
+            VVV + TWOMASS
+
+#--------------
+
+        IVOA OBS TAP data model
+        utype
+
+#--------------
+
+    Visualization
+    3D views generated from catalog data
+    live, interactive    
+
+
+    GAIA - management UI
+    ESAC will want to control
+
+    contributions
+    advice
+    package components as libraries ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

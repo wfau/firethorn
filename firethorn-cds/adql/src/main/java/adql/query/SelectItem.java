@@ -41,6 +41,9 @@ public class SelectItem implements ADQLObject {
 	/** The corresponding operand. */
 	private ADQLOperand operand;
 
+	/** The parent query */
+	private ADQLQuery query;
+	
 	/** Alias of the operand (ADQL syntax: "AS alias"). */
 	private String alias = null;
 
@@ -53,8 +56,8 @@ public class SelectItem implements ADQLObject {
 	 * 
 	 * @param operand	Corresponding operand.
 	 */
-	public SelectItem(ADQLOperand operand){
-		this(operand, null);
+	public SelectItem(ADQLOperand operand, ADQLQuery query){
+		this(operand, null, query);
 	}
 
 	/**
@@ -63,8 +66,9 @@ public class SelectItem implements ADQLObject {
 	 * @param operand	Corresponding operand.
 	 * @param alias		Operand alias.
 	 */
-	public SelectItem(ADQLOperand operand, String alias){
+	public SelectItem(ADQLOperand operand, String alias, ADQLQuery query){
 		this.operand = operand;
+		this.query = query;
 		setAlias(alias);
 	}
 
@@ -74,12 +78,13 @@ public class SelectItem implements ADQLObject {
 	 * @param toCopy		The SELECT item to copy.
 	 * @throws Exception	If there is an error during the copy.
 	 */
-	public SelectItem(SelectItem toCopy) throws Exception {
+	public SelectItem(SelectItem toCopy, ADQLQuery parentquery) throws Exception {
 		if (toCopy.getOperand() != null)
 			operand = (ADQLOperand)toCopy.getOperand().getCopy();
 		else
 			operand = null;
 		alias = toCopy.getAlias();
+		query = parentquery;
 		caseSensitive = toCopy.caseSensitive;
 	}
 
@@ -101,6 +106,18 @@ public class SelectItem implements ADQLObject {
 		return alias != null;
 	}
 
+	/**
+	 * Is query the main one or a subquery?
+	 * @return true/false 
+	 */
+	public boolean isMain(){
+		if (query!=null){
+			return query.isMain();
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * Gets the alias of the corresponding operand.
 	 * 
@@ -158,7 +175,7 @@ public class SelectItem implements ADQLObject {
 	}
 
 	public ADQLObject getCopy() throws Exception {
-		return new SelectItem(this);
+		return new SelectItem(this, query);
 	}
 
 	public String getName() {

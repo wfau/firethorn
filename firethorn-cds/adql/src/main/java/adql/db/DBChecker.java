@@ -264,10 +264,8 @@ public class DBChecker implements QueryChecker {
 				colRef.setDBLink(dbColumn);
 				if (dbColumn != null)
 					colRef.setAdqlTable(mapTables.get(dbColumn.getTable()));
-			}catch(Exception pe){
-			
-				System.out.println("Exception caught");
-				//	errors.addException(pe);
+			}catch(ParseException pe){
+				errors.addException(pe);
 			}
 		}
 
@@ -406,7 +404,7 @@ public class DBChecker implements QueryChecker {
 		DBColumn[] columns = subQuery.getResultingColumns();
 		for(DBColumn dbCol : columns)
 			dbTable.addColumn(dbCol.copy(dbCol.getADQLName(), dbCol.getADQLName(), dbTable));
-
+		
 		return dbTable;
 	}
 
