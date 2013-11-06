@@ -574,4 +574,78 @@ atlashome=/adql/schema/163892
 # Manual test queries ...
 #
 
+    SELECT TOP 10
+        distanceMins AS distance
+    FROM
+        ATLASv20130426.atlasSourceXtwomass_psc
+
+
+    SELECT TOP 10
+        ra,
+        dec
+    FROM
+        TWOMASS..twomass_psc
+
+
+    SELECT TOP 10
+        atlas.ra,
+        atlas.dec,
+        rosat.ra,
+        rosat.dec
+    FROM
+        atlasSource AS atlas,
+        ROSAT.rosat_fsc AS rosat,
+        atlasSourceXrosat_fsc AS neighbours
+    WHERE
+        neighbours.masterObjID=atlas.sourceID
+    AND
+        neighbours.slaveObjID=rosat.seqNo
+
+
+    SELECT TOP 10
+        atlas.ra,
+        atlas.dec
+    FROM
+        atlasSource AS atlas
+    WHERE
+        atlas.sourceID % 100 = 0
+        
+
+    SELECT TOP 10
+        atlas.ra,
+        atlas.dec
+    FROM
+        atlasSource AS atlas,
+        TWOMASS.twomass_psc AS twomass,
+        atlasSourceXtwomass_psc AS neighbours
+    WHERE
+        masterObjID=atlas.sourceID
+    AND
+        slaveObjID=twomass.pts_key
+    AND
+        distanceMins IN (
+            SELECT
+                MIN(distanceMins)
+            FROM
+                atlasSourceXtwomass_psc
+            WHERE
+                masterObjID = neighbours.masterObjID
+            )
+
+
+    SELECT TOP 10
+        utDate,
+        dateObs
+    FROM
+        multiframe
+
+
+    SELECT
+        COUNT(*)
+    FROM
+        Multiframe
+    WHERE
+        project LIKE 'ATLAS%'
+
+
 
