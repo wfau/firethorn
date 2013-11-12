@@ -116,7 +116,6 @@
     # Commit the changes
     hg commit -m "Merged main into dave-adql-parsing"
 
-
     #
     # Push the changes
     hg push
