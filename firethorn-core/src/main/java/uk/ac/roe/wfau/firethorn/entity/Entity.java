@@ -151,5 +151,11 @@ public interface Entity
      */
     public void refresh();
 
+    /**
+     * The Entity Protector.
+     * 
+     */
+    public EntityProtector protector();
+
     }
 
