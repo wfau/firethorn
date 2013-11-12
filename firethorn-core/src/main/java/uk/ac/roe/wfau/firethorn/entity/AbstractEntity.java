@@ -314,6 +314,7 @@ implements Entity
 
     /**
      * Object hashCode() method (based on ident only).
+     * @TODO This is probably wrong ... should it be based on all the fields rather than just the ident ?
      *
      */
     @Override
@@ -354,5 +355,11 @@ implements Entity
             this
             );
         }
-    }
 
+    @Override
+    public EntityProtector protector()
+        {
+        // TODO Auto-generated method stub
+        return null ;
+        }
+    }

@@ -176,6 +176,11 @@ public interface Entity
      */
     public void delete();
 
-
+    /**
+     * The Entity Protector.
+     * 
+     */
+    public EntityProtector protector();
+    
     }
 
