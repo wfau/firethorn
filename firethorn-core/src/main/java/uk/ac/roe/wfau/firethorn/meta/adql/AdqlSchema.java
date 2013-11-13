@@ -176,25 +176,25 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query, final JdbcSchema space);
+        public AdqlQuery create(final JdbcSchema space, final String query);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query, final JdbcSchema space, final String rowid);
+        public AdqlQuery create(final JdbcSchema space, final String query, final String rowid);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final String query, final JdbcSchema space);
+        public AdqlQuery create(final JdbcSchema space, final QueryParam params, final String query);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query, final JdbcSchema space, final String rowid, final String name);
+        public AdqlQuery create(final JdbcSchema space, final String query, final String rowid, final String name);
 
         /**
          * Select all the queries for this schema.

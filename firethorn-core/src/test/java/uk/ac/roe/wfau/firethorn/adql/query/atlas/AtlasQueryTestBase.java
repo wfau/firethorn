@@ -62,8 +62,6 @@ extends TestPropertiesBase
   //protected static final String ATLAS_VERSION = "ATLASv20130426" ;
   //protected static final String ATLAS_VERSION = "ATLASv20130304" ;
 
-    protected Community community ;
-
     protected JdbcResource jdbcresource ;
     protected AdqlResource adqlresource ;
     protected AdqlResource testresource ;
@@ -71,7 +69,17 @@ extends TestPropertiesBase
     protected AdqlSchema queryspace ;
     protected JdbcSchema userschema ;
 
+    protected Community community  ;
+    public Community community()
+        {
+        return this.community;
+        }
 
+    protected CommunityMember testuser ;
+    public CommunityMember testuser()
+        {
+        return this.testuser;
+        }
 
     public void schema()
         {
@@ -159,6 +167,20 @@ extends TestPropertiesBase
                     );
                 }
             }
+        //
+        // Create our test user.
+        if (testuser == null)
+            {
+            log.debug("Loading test user");
+            String name = testprops().getProperty("test.user");
+            if (name != null)
+                {
+                testuser = community.members().create(
+                    name
+                    );
+                }
+            }
+            
         //
         // Create our JDBC resource.
         if (jdbcresource == null)
@@ -459,6 +481,9 @@ extends TestPropertiesBase
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 level
+                ),
+            testuser().space(
+                true
                 ),
             adql
             );

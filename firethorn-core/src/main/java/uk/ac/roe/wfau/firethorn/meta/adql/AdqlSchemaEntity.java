@@ -758,7 +758,7 @@ implements AdqlSchema
         return new Queries()
             {
             @Override
-            public AdqlQuery create(final String query, final JdbcSchema space)
+            public AdqlQuery create(final JdbcSchema space, final String query)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -768,7 +768,7 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final String query, final JdbcSchema space, final String rowid)
+            public AdqlQuery create(final JdbcSchema space, final String query, final String rowid)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -779,7 +779,7 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final String query, final JdbcSchema space, final String rowid, final String name)
+            public AdqlQuery create(final JdbcSchema space, final String query, final String rowid, final String name)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -792,7 +792,7 @@ implements AdqlSchema
 
 
             @Override
-            public AdqlQuery create(final QueryParam params, final String query, final JdbcSchema space)
+            public AdqlQuery create(final JdbcSchema space, final QueryParam params, final String query)
                 {
                 return factories().adql().queries().create(
                     params,
