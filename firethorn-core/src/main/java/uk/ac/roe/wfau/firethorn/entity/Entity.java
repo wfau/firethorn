@@ -101,13 +101,6 @@ public interface Entity
         throws IdentifierNotFoundException;
 
         /**
-         * Select a specific Entity by UUID.
-         *
-        public EntityType select(final UUID uuid)
-        throws NotFoundException;
-         */
-
-        /**
          * Our local Identifier factory.
          *
          */
@@ -130,6 +123,7 @@ public interface Entity
          * Wrap a runnable operation in a write transaction.
          *
          */
+        @Deprecated
         public void createEntity(final Runnable oper);
 
         }

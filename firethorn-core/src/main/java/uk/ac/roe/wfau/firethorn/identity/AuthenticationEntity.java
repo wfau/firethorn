@@ -171,7 +171,7 @@ implements Authentication
 
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = IdentityEntity.class
+        targetEntity = CommunityMemberEntity.class
         )
     @JoinColumn(
         name = DB_IDENTITY_COL,

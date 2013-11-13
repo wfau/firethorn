@@ -75,6 +75,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -137,6 +139,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema";
+    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema";
 
     /**
      * Hibernate column mapping.
@@ -351,10 +354,11 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input)
             {
             return create(
                 schema,
+                space,
                 input,
                 null,
                 names().name()
@@ -363,11 +367,12 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input)
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input)
             {
             return create(
                 params,
                 schema,
+                space,
                 input,
                 null,
                 names().name()
@@ -376,10 +381,11 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid)
             {
             return create(
                 schema,
+                space,
                 input,
                 rowid,
                 names().name()
@@ -388,11 +394,12 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
             {
             return create(
                 params.param(),
                 schema,
+                space,
                 input,
                 rowid,
                 name
@@ -401,7 +408,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
@@ -412,6 +419,7 @@ implements AdqlQuery, AdqlParserQuery
             final AdqlQueryEntity entity = new AdqlQueryEntity(
                 params,
                 schema,
+                space,
                 input,
                 rowid,
                 names().name(
@@ -521,13 +529,14 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
+    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
     throws NameFormatException
         {
         super(
             name
             );
         this.rowid  = rowid ;
+        this.space  = space ;
         this.schema = schema;
         this.params(
             params
@@ -565,7 +574,27 @@ implements AdqlQuery, AdqlParserQuery
         return this.schema;
         }
 
-    /*
+    @Index(
+        name=DB_TABLE_NAME + "IndexBySpace"
+        )
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_JDBC_SCHEMA_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcSchema space ;
+    @Override
+    public JdbcSchema space()
+        {
+        return this.space;
+        }
+    
+   /*
     *
     * org.hsqldb.HsqlException: data exception: string data, right truncation
     *
@@ -871,6 +900,7 @@ implements AdqlQuery, AdqlParserQuery
             }
         )
      */
+
     @Transient
     private final Set<AdqlColumn> columns = new HashSet<AdqlColumn>();
     @Override
@@ -1289,15 +1319,29 @@ implements AdqlQuery, AdqlParserQuery
 
         if (this.syntax == State.VALID)
             {
-            final Identity identity = this.owner();
-            log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
+/*
+ * 
+
+    'this.owner().space' doesn't quite make sense
+
+    The Identity this.owner() may be local or remote.
+    An Identity may be a Group, GroupMember, Community, CommunityMember, a proxy for a RemoteIdentity ....
+    
+    Results for this query may go in one 'space'.
+    Results for another query may go in a different 'space'.
+    Results for another query may end up being 'pushed' elsewhere.
+
+    Is the target storage 'space' just another param, that depends on the context.
+
+ *             
+ */
             //
             // Create our tables.
-            if (identity.space(true) != null)
+            if (this.space() != null)
                 {
-                log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
-                this.jdbctable = identity.space().tables().create(
+                log.debug(" Query space [{}][{}]", this.space().ident(), this.space().name());
+                this.jdbctable = this.space().tables().create(
                     this
                     );
                 // Should this be FULL or THIN ?
@@ -1307,11 +1351,9 @@ implements AdqlQuery, AdqlParserQuery
                 }
 // no-owner fallback.
             else {
-                log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
+                log.warn("NO SPACE for QUERY [{}]", this.ident());
                 // Config exception.
                 }
-//TODO
-//Why does the query need to know where the JdbcTable is ?
             }
 
         else {

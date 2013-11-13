@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -365,7 +366,7 @@ implements AdqlSchema
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
-        final AdqlTable table = factories().adql().tables().create(
+        factories().adql().tables().create(
             depth,
             AdqlSchemaEntity.this,
             base
@@ -755,29 +756,32 @@ implements AdqlSchema
         return new Queries()
             {
             @Override
-            public AdqlQuery create(final String query)
+            public AdqlQuery create(final String query, final JdbcSchema space)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
+                    space,
                     query
                     );
                 }
 
             @Override
-            public AdqlQuery create(final String query, final String rowid)
+            public AdqlQuery create(final String query, final JdbcSchema space, final String rowid)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
+                    space,
                     query,
                     rowid
                     );
                 }
 
             @Override
-            public AdqlQuery create(final String query, final String rowid, final String name)
+            public AdqlQuery create(final String query, final JdbcSchema space, final String rowid, final String name)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
+                    space,
                     query,
                     rowid,
                     name
@@ -786,11 +790,12 @@ implements AdqlSchema
 
 
             @Override
-            public AdqlQuery create(final QueryParam params, final String query)
+            public AdqlQuery create(final QueryParam params, final String query, final JdbcSchema space)
                 {
                 return factories().adql().queries().create(
                     params,
                     AdqlSchemaEntity.this,
+                    space,
                     query
                     );
                 }

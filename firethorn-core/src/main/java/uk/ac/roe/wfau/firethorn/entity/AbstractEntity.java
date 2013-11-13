@@ -35,7 +35,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.identity.CommunityMemberEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -209,7 +209,7 @@ implements Entity
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = IdentityEntity.class
+        targetEntity = CommunityMemberEntity.class
         )
     @JoinColumn(
         name = DB_OWNER_COL,

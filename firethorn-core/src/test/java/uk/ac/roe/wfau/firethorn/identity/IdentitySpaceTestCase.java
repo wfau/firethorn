@@ -50,13 +50,13 @@ public class IdentitySpaceTestCase
             community.space()
             );
 
-        final Identity identity = community.identities().create(
+        final CommunityMember member = community.members().create(
             unique(
                 "test-identity"
                 )
             );
         assertNotNull(
-            identity
+            member
             );
         }
 
@@ -73,16 +73,16 @@ public class IdentitySpaceTestCase
         log.debug("Test community [{}][{}]", community.ident(), community.name());
         log.debug("Community space [{}][{}]", community.space().ident(), community.space().name());
 
-        final Identity identity = community.identities().create(
+        final CommunityMember member = community.members().create(
             unique(
                 "test-identity"
                 )
             );
         assertNotNull(
-            identity
+            member
             );
         assertNotNull(
-            identity.space(
+            member.space(
                 true
                 )
             );
