@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Community;
+import uk.ac.roe.wfau.firethorn.identity.CommunityMember;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -52,7 +53,17 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 public class AtlasQueryTestBase
 extends TestPropertiesBase
     {
-    protected Community community ;
+    protected Community community  ;
+    public Community community()
+        {
+        return this.community;
+        }
+
+    protected CommunityMember testuser ;
+    public CommunityMember testuser()
+        {
+        return this.testuser;
+        }
 
     protected JdbcResource jdbcresource ;
     protected AdqlResource adqlresource ;
@@ -63,7 +74,6 @@ extends TestPropertiesBase
 
     public void schema()
         {
-
         }
 
     /**
@@ -95,6 +105,20 @@ extends TestPropertiesBase
                     );
                 }
             }
+        //
+        // Create our test user.
+        if (testuser == null)
+            {
+            log.debug("Loading test user");
+            String name = testprops().getProperty("test.user");
+            if (name != null)
+                {
+                testuser = community.members().create(
+                    name
+                    );
+                }
+            }
+            
         //
         // Create our JDBC resource.
         if (jdbcresource == null)
@@ -425,6 +449,7 @@ extends TestPropertiesBase
         {
         compare(
             this.queryspace.queries().create(
+                testuser.space(true),
                 adql
                 ),
             osql

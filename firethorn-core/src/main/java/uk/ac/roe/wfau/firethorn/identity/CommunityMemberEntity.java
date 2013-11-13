@@ -102,13 +102,13 @@ implements CommunityMember
         public CommunityMember create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
-            final CommunityMember identity = this.select(
+            final CommunityMember member = this.select(
                 community,
                 name
                 );
-            if (identity != null)
+            if (member != null)
                 {
-                return identity ;
+                return member ;
                 }
             else {
                 return super.insert(
@@ -181,13 +181,13 @@ implements CommunityMember
     @Override
     public Identity owner()
         {
-        if (super.owner() == null)
+        if (super.owner() != null)
             {
-            return this;
+            return super.owner();
             }
         else
             {
-            return super.owner();
+            return this;
             }
         }
 

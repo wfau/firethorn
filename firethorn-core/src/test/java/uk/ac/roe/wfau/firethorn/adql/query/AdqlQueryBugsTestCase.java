@@ -45,6 +45,9 @@ public class AdqlQueryBugsTestCase
     public void test002S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -69,6 +72,9 @@ public class AdqlQueryBugsTestCase
     public void test002L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -107,6 +113,9 @@ public class AdqlQueryBugsTestCase
     public void test003S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -141,6 +150,9 @@ public class AdqlQueryBugsTestCase
     public void test003L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -181,6 +193,9 @@ public class AdqlQueryBugsTestCase
     public void test004S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -214,6 +229,9 @@ public class AdqlQueryBugsTestCase
     public void test004L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -247,6 +265,9 @@ public class AdqlQueryBugsTestCase
     public void test005S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -275,6 +296,9 @@ public class AdqlQueryBugsTestCase
     public void test005L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -314,6 +338,9 @@ public class AdqlQueryBugsTestCase
     public void test006L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -366,6 +393,9 @@ public class AdqlQueryBugsTestCase
     public void test006a()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -418,6 +448,9 @@ public class AdqlQueryBugsTestCase
     public void test007L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -459,6 +492,9 @@ public class AdqlQueryBugsTestCase
     public void test008L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -500,6 +536,9 @@ public class AdqlQueryBugsTestCase
     public void test009a()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -529,6 +568,9 @@ public class AdqlQueryBugsTestCase
     public void test009b()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -555,32 +597,29 @@ public class AdqlQueryBugsTestCase
     public void test010()
         {
         final AdqlQuery query = this.queryspace.queries().create(
+            testuser().space(
+                true
+                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
-
+        	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
             );
-        	assertEquals(
-                AdqlQuery.Syntax.State.VALID,
-                query.syntax().state()
-                );
+    	assertEquals(
+    	    AdqlQuery.Syntax.State.VALID,
+	        query.syntax().state()
+            );
        
+        compare(
+            query,
+            "select -atlasv20130426.dbo.multiframe.decbase as decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
+            );
             
-            compare(
-                    query,
-                    "select -atlasv20130426.dbo.multiframe.decbase as decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
-                    );
-            
-            validate(
-                    query,
-                    new ExpectedField[] {
-                        new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
-                        }
-                    );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
+                }
+            );
         }
-
-
-    
-
     }
