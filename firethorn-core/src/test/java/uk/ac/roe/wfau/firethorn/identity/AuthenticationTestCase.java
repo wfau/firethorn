@@ -47,7 +47,7 @@ extends TestBase
             );
 
         operation.authentications().create(
-            community.identities().create(
+            community.members().create(
                 "identity-name"
                 ),
             "urn:authentication"

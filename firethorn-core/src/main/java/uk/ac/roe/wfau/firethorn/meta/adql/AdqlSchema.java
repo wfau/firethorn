@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -175,25 +176,25 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query);
+        public AdqlQuery create(final String query, final JdbcSchema space);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query, final String rowid);
+        public AdqlQuery create(final String query, final JdbcSchema space, final String rowid);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final String query);
+        public AdqlQuery create(final QueryParam params, final String query, final JdbcSchema space);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query, final String rowid, final String name);
+        public AdqlQuery create(final String query, final JdbcSchema space, final String rowid, final String name);
 
         /**
          * Select all the queries for this schema.

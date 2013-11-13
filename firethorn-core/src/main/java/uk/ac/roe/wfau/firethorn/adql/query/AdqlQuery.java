@@ -198,31 +198,31 @@ extends NamedEntity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input);
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name);
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name);
 
         /**
          * Select all the queries from a resource.
@@ -416,6 +416,12 @@ extends NamedEntity, Job
      */
     public AdqlSchema schema();
 
+    /**
+     * The JDBC schema to store the results.
+     *
+     */
+    public JdbcSchema space();
+    
     /**
      * The processed ADQL query.
      *

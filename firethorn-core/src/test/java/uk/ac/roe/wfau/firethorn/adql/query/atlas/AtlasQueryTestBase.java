@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
+import uk.ac.roe.wfau.firethorn.identity.Community;
 
 /**
  *
@@ -61,11 +62,16 @@ extends TestPropertiesBase
   //protected static final String ATLAS_VERSION = "ATLASv20130426" ;
   //protected static final String ATLAS_VERSION = "ATLASv20130304" ;
 
-    protected JdbcResource resource ;
-    protected AdqlResource workspace ;
-    protected AdqlResource testspace ;
+    protected Community community ;
 
+    protected JdbcResource jdbcresource ;
+    protected AdqlResource adqlresource ;
+    protected AdqlResource testresource ;
+ 
     protected AdqlSchema queryspace ;
+    protected JdbcSchema userschema ;
+
+
 
     public void schema()
         {
@@ -133,15 +139,36 @@ extends TestPropertiesBase
     throws EntityNotFoundException
         {
         //
-        // Create our JDBC resource.
-        if (resource == null)
+        // Create our test Community.
+        if (community == null)
             {
-            log.debug("Loading test resource");
-            final String prop = testprops().getProperty("jdbc.space");
+            log.debug("Loading test community");
+            String uri = testprops().getProperty("test.community");
+            if (uri != null)
+                {
+                community = factories().communities().select(
+                    uri
+                    );
+                }
+            if (community == null)
+                {
+                log.debug("Null test communtiy, creating new one");
+                community = factories().communities().create(
+                    "test community",
+                    uri
+                    );
+                }
+            }
+        //
+        // Create our JDBC resource.
+        if (jdbcresource == null)
+            {
+            log.debug("Loading JDBC resource");
+            final String prop = testprops().getProperty("jdbc.resource");
             if (prop != null)
                 {
                 try {
-                    resource = factories().jdbc().resources().select(
+                    jdbcresource = factories().jdbc().resources().select(
                         factories().jdbc().resources().idents().ident(
                             prop
                             )
@@ -152,10 +179,11 @@ extends TestPropertiesBase
                     log.debug("Unable to load JDBC resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (resource == null)
+
+            if (jdbcresource == null)
                 {
                 log.debug("Null JDBC resource, creating new one");
-                resource = factories().jdbc().resources().create(
+                jdbcresource = factories().jdbc().resources().create(
                     "atlas",
                     "*",
                     "atlas",
@@ -165,15 +193,15 @@ extends TestPropertiesBase
             }
 
         //
-        // Create our ADQL workspace.
-        if (this.workspace == null)
+        // Create our ADQL resource.
+        if (this.adqlresource == null)
             {
-            log.debug("Loading test workspace");
-            final String prop = testprops().getProperty("adql.space");
+            log.debug("Loading ADQL resource");
+            final String prop = testprops().getProperty("adql.resource");
             if (prop != null)
                 {
                 try {
-                    this.workspace = factories().adql().resources().select(
+                    this.adqlresource = factories().adql().resources().select(
                         factories().adql().resources().idents().ident(
                             prop
                             )
@@ -184,11 +212,11 @@ extends TestPropertiesBase
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (this.workspace == null)
+            if (this.adqlresource == null)
                 {
                 log.debug("Null ADQL resource, creating new one");
-                this.workspace = factories().adql().resources().create(
-                    "workspace"
+                this.adqlresource = factories().adql().resources().create(
+                    "ADQL resource"
                     );
 
                 loadCatalog(
@@ -210,15 +238,15 @@ extends TestPropertiesBase
             }
 
         //
-        // Create our ADQL workspace.
-        if (this.testspace == null)
+        // Create our test workspace.
+        if (this.testresource == null)
             {
-            log.debug("Loading test schema");
+            log.debug("Loading TEST resource");
             final String prop = testprops().getProperty("test.space");
             if (prop != null)
                 {
                 try {
-                    this.testspace = factories().adql().resources().select(
+                    this.testresource = factories().adql().resources().select(
                         factories().adql().schemas().idents().ident(
                             prop
                             )
@@ -226,13 +254,13 @@ extends TestPropertiesBase
                     }
                 catch (final IdentifierNotFoundException ouch)
                     {
-                    log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
+                    log.debug("Unable to load TEST resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (this.testspace == null)
+            if (this.testresource == null)
                 {
-                this.testspace = factories().adql().resources().create(
-                    "testspace"
+                this.testresource = factories().adql().resources().create(
+                    "TEST resource"
                     );
 
                 loadSchema(
@@ -257,15 +285,14 @@ extends TestPropertiesBase
         // Create our ADQL query space.
         if (this.queryspace == null)
             {
-            log.debug("Loading test schema");
-            this.queryspace = this.testspace.schemas().search(
-                "queryspace"
-                );
+            log.debug("Loading QUERY space");
+            this.queryspace = this.testresource.schemas().search(
+                "QUERY space"
+
             if (this.queryspace == null)
                 {
-                this.queryspace = this.testspace.schemas().create(
-                    "queryspace"
-                    );
+                this.queryspace = this.testresource.schemas().create(
+                    "QUERY space"
                 }
             }
         }
@@ -278,17 +305,21 @@ extends TestPropertiesBase
     public void saveResources()
         {
         log.debug("Saving test resources");
-        if (this.resource != null)
+        if (this.community != null)
             {
-            testprops().setProperty("jdbc.space", this.resource.ident().toString());
+            testprops().setProperty("test.community", this.community.uri());
             }
-        if (this.workspace != null)
+        if (this.jdbcresource != null)
             {
-            testprops().setProperty("adql.space", this.workspace.ident().toString());
+            testprops().setProperty("jdbc.resource", this.jdbcresource.ident().toString());
             }
-        if (this.testspace != null)
+        if (this.adqlresource != null)
             {
-            testprops().setProperty("test.space", this.testspace.ident().toString());
+            testprops().setProperty("adql.resource", this.adqlresource.ident().toString());
+            }
+        if (this.testresource != null)
+            {
+            testprops().setProperty("test.resource", this.testresource.ident().toString());
             }
         }
 
