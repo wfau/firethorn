@@ -62,7 +62,7 @@ implements Entity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT0108";
+    protected static final String DB_TABLE_PREFIX = "FT0109";
 
     /**
      * Hibernate column mapping.
@@ -141,8 +141,7 @@ implements Entity
         super();
         if (init)
             {
-            //this.uuid = factories().uuids().uuid();
-            this.owner = factories().identities().current();
+            this.owner = factories().context().identity();
             this.created = new DateTime();
             }
 

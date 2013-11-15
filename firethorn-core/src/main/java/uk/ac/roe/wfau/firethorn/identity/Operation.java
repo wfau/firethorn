@@ -27,15 +27,6 @@ public interface Operation
 extends Entity
     {
     /**
-     * Name factory interface.
-     *
-    public static interface NameFactory
-    extends Entity.NameFactory
-        {
-        }
-     */
-
-    /**
      * Link factory interface.
      *
      */
@@ -61,7 +52,7 @@ extends Entity
     extends Entity.EntityFactory<Operation>
         {
         /**
-         * Access to the current operation.
+         * Get the current active operation.
          *
          */
         public Operation current();
@@ -74,26 +65,53 @@ extends Entity
 
         }
 
+    /**
+     * The target URL for the operation.
+     *
+     */
     public String target();
+
+    /**
+     * The HTTP method.
+     *
+     */
     public String method();
+
+    /**
+     * The remote address.
+     *
+     */
     public String source();
 
-    /*
-    @Deprecated
-    public Authentication auth();
+    /**
+     * The list of Authentication(s) for this operation.
+     *
      */
-
-    interface Authentications
+    public static interface Authentications
         {
-        public void resolve();
-
+        /**
+         * The primary Authentication for this operation.
+         *
+         */
         public Authentication primary();
 
+        /**
+         * Create a new Authentication for this operation.
+         *
+         */
         public Authentication create(final Identity identity, final String method);
 
+        /**
+         * Get the list of Authentication(s) for this operation.
+         *
+         */
         public Iterable<Authentication> select();
         }
 
-    public Authentications authentications();
+    /**
+     * Access to the list of Authentication(s) for this operation.
+     *
+     */
+    public Authentications auth();
 
     }

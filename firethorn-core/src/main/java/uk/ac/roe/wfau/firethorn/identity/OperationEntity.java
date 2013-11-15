@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -281,15 +282,10 @@ implements Operation
         }
 
     @Override
-    public Authentications authentications()
+    public Authentications auth()
         {
         return new Authentications()
             {
-            @Override
-            public void resolve()
-                {
-                }
-
             @Override
             public Authentication primary()
                 {

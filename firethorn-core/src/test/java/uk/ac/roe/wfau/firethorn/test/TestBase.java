@@ -71,10 +71,9 @@ extends TestRoot
 
         log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-        operation.authentications().resolve();
-        if (operation.authentications().primary() == null)
+        if (operation.auth().primary() == null)
             {
-            operation.authentications().create(
+            operation.auth().create(
                 factories().communities().create(
                     TEST_COMMUNITY_NAME,
                     TEST_COMMUNITY_URI
@@ -85,18 +84,16 @@ extends TestRoot
                 );
             }
 
-        operation.authentications().resolve();
-        final Authentication primary = operation.authentications().primary();
+        final Authentication primary = operation.auth().primary();
         log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
 
         }
-
+    
     /**
      * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
-     * @throws Exception
      *
-    @Test
      */
+    //@Test
     public void empty()
     throws Exception
         {

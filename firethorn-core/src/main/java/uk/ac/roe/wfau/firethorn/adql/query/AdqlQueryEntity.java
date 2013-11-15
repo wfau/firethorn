@@ -64,6 +64,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -81,6 +82,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  *
@@ -158,8 +160,9 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
 
     /**
-     * Param factory implementation.
+     * Default param factory implementation.
      * @todo Move to a separate class.
+     * @todo Single instance that has local values and then defaults to factory settings if local are null.
      *
      */
     @Component
@@ -178,6 +181,9 @@ implements AdqlQuery, AdqlParserQuery
         @Value("${firethorn.ogsadai.endpoint}")
         private String endpoint ;
 
+        @Autowired
+        private ComponentFactories factories;
+        
         @Override
         public AdqlQuery.QueryParam param()
             {
@@ -203,11 +209,16 @@ implements AdqlQuery, AdqlParserQuery
                     {
                     return ParamFactory.this.level;
                     }
+                @Override
+                public DataSpace space()
+                    {
+                    return ParamFactory.this.factories.context().space();
+                    }
                 };
             }
 
         @Override
-        public QueryParam param(final Level change)
+        public QueryParam param(final Level newlevel)
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -229,7 +240,12 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public Level level()
                     {
-                    return change;
+                    return newlevel;
+                    }
+                @Override
+                public DataSpace space()
+                    {
+                    return ParamFactory.this.factories.context().space();
                     }
                 };
             }
@@ -354,74 +370,94 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final String input)
             {
             return create(
                 schema,
-                space,
-                input,
                 null,
-                names().name()
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input)
-            {
-            return create(
-                params,
-                schema,
-                space,
-                input,
                 null,
+                input,
                 names().name()
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid)
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
+            {
+            return create(
+                schema,
+                null,
+                null,
+                input,
+                names().name(name)
+                );
+            }
+        
+        @Override
+        @CreateEntityMethod
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input)
             {
             return create(
                 schema,
                 space,
+                null,
                 input,
-                rowid,
                 names().name()
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input, final String name)
             {
             return create(
-                params.param(),
                 schema,
                 space,
+                null,
                 input,
-                rowid,
-                name
+                names().name(name)
+                );
+            }
+        
+        @Override
+        @CreateEntityMethod
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input)
+            {
+            return create(
+                schema,
+                param.space(),
+                param,
+                input,
+                names().name()
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input, final String name)
+            {
+            return create(
+                schema,
+                param.space(),
+                param,
+                input,
+                names().name(name)
+                );
+            }
+
+        protected AdqlQuery create(final AdqlSchema schema, final DataSpace space, final QueryParam param, final String input, final String name)
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-            log.debug("  Rowid  [{}]", rowid);
             log.debug("  Name   [{}]", name);
             //
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
-                params,
                 schema,
                 space,
+                param,
                 input,
-                rowid,
                 names().name(
                     name
                     )
@@ -529,17 +565,17 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name)
+    protected AdqlQueryEntity(final AdqlSchema schema, final DataSpace space, final QueryParam param, final String input, final String name)
     throws NameFormatException
         {
         super(
             name
             );
-        this.rowid  = rowid ;
-        this.space  = space ;
+        this.rowid  = null ;
+        this.space  = space.jdbc() ;
         this.schema = schema;
-        this.params(
-            params
+        this.param(
+            param
             );
         this.input(
             input
@@ -781,16 +817,17 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
-    protected void params(final AdqlQuery.QueryParam params)
+
+    protected void param(final AdqlQuery.QueryParam param)
         {
-        this.dqp      = params.dqp();
-        this.store    = params.store();
-        this.level    = params.level();
-        this.endpoint = params.endpoint();
+        this.dqp      = param.dqp();
+        this.store    = param.store();
+        this.level    = param.level();
+        this.endpoint = param.endpoint();
         }
 
     @Override
-    public AdqlQuery.QueryParam params()
+    public AdqlQuery.QueryParam param()
         {
         return new AdqlQuery.QueryParam()
             {
@@ -816,6 +853,12 @@ implements AdqlQuery, AdqlParserQuery
             public AdqlQuery.Syntax.Level level()
                 {
                 return AdqlQueryEntity.this.level;
+                }
+
+            @Override
+            public DataSpace space()
+                {
+                return null;
                 }
             };
         }
@@ -1160,22 +1203,22 @@ implements AdqlQuery, AdqlParserQuery
                         );
                 //
                 // Create our server client.
-                log.debug("-- Pipeline endpoint [{}]", params().endpoint());
+                log.debug("-- Pipeline endpoint [{}]", param().endpoint());
                 final StoredResultPipeline pipeline = new StoredResultPipeline(
                     new URL(
-                        params().endpoint()
+                        param().endpoint()
                         )
                     );
                 log.debug("-- Pipeline [{}]", pipeline);
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode     [{}]", query.mode());
-                log.debug("-- Store    [{}]", params().store());
-                log.debug("-- Endpoint [{}]", params().endpoint());
+                log.debug("-- Store    [{}]", param().store());
+                log.debug("-- Endpoint [{}]", param().endpoint());
 
 
                 // TODO - Check for valid resource ident in prepare().
-                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
+                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : param().dqp());
                 log.debug("-- Target   [{}]", target);
 
                 final String tablename = query.results().jdbc().namebuilder().toString() ;
@@ -1183,7 +1226,7 @@ implements AdqlQuery, AdqlParserQuery
 
                 final PipelineResult frog = pipeline.execute(
                     target,
-                    params().store(),
+                    param().store(),
                     tablename,
                     query.osql(),
                     query.rowid()

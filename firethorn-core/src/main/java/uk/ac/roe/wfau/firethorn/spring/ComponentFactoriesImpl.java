@@ -26,14 +26,18 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
+import uk.ac.roe.wfau.firethorn.identity.CommunityMember;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  * Our component factories.
@@ -154,7 +158,6 @@ public class ComponentFactoriesImpl
     /**
      * Our Autowired Identity factory.
      *
-     */
     @Autowired
     protected Identity.EntityFactory identities ;
     @Override
@@ -162,6 +165,7 @@ public class ComponentFactoriesImpl
         {
         return this.identities;
         }
+     */
 
     /**
      * Our Autowired Identity context factory.
@@ -245,5 +249,68 @@ public class ComponentFactoriesImpl
 	public Authentication.EntityFactory authentications()
         {
         return this.authentications;
+        }
+
+    @Override
+    public Context context()
+        {
+        return new Context()
+            {
+            @Override
+            public Operation oper()
+                {
+                return operations().current();
+                }
+
+            @Override
+            public Authentication auth()
+                {
+                Operation oper = oper();
+                if (oper != null)
+                    {
+                    return oper.auth().primary();
+                    }
+                return null ;
+                }
+
+            @Override
+            public Identity identity()
+                {
+                Authentication auth = auth();
+                if (auth != null)
+                    {
+                    return auth.identity();
+                    }
+                return null ;
+                }
+
+            @Override
+            public DataSpace space()
+                {
+                return new DataSpace()
+                    {
+                    @Override
+                    public JdbcSchema jdbc()
+                        {
+                        Identity identity = identity();
+                        if (identity != null)
+                            {
+                            if (identity instanceof CommunityMember)
+                                {
+                                return ((CommunityMember)identity).space(
+                                    true
+                                    ); 
+                                }
+                            }
+                        return null;
+                        }
+                    @Override
+                    public AdqlSchema adql()
+                        {
+                        return null;
+                        }
+                    };
+                }
+            };
         }
     }

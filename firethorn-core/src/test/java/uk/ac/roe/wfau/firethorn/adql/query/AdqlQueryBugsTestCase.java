@@ -45,16 +45,13 @@ public class AdqlQueryBugsTestCase
     public void test002S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
             "SELECT TOP 10\n" +
             "    distanceMins AS distance\n" +
             "FROM\n" +
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
+            "    atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -72,16 +69,13 @@ public class AdqlQueryBugsTestCase
     public void test002L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
             "SELECT TOP 10\n" +
             "    distanceMins AS distance\n" +
             "FROM\n" +
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
+            "    atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -100,7 +94,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 10 atlasv20130426.dbo.atlassourcextwomass_psc.distancemins as dist from atlasv20130426.dbo.atlassourcextwomass_psc"
+            "select top 10 atlasv20131029.dbo.atlassourcextwomass_psc.distancemins as dist from atlasv20131029.dbo.atlassourcextwomass_psc"
             );
         }
 
@@ -113,9 +107,6 @@ public class AdqlQueryBugsTestCase
     public void test003S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -150,9 +141,6 @@ public class AdqlQueryBugsTestCase
     public void test003L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -193,9 +181,6 @@ public class AdqlQueryBugsTestCase
     public void test004S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -229,9 +214,6 @@ public class AdqlQueryBugsTestCase
     public void test004L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -265,9 +247,6 @@ public class AdqlQueryBugsTestCase
     public void test005S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.STRICT
                 ),
@@ -296,9 +275,6 @@ public class AdqlQueryBugsTestCase
     public void test005L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -324,7 +300,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20131029.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
             );
         }
 
@@ -338,9 +314,6 @@ public class AdqlQueryBugsTestCase
     public void test006L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -381,7 +354,7 @@ public class AdqlQueryBugsTestCase
         // TODO
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20131029.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20131029.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20131029.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20131029.dbo.atlassourcextwomass_psc where atlasv20131029.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
 
@@ -393,9 +366,6 @@ public class AdqlQueryBugsTestCase
     public void test006a()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -436,7 +406,7 @@ public class AdqlQueryBugsTestCase
         // TODO
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20131029.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20131029.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20131029.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20131029.dbo.atlassourcextwomass_psc where atlasv20131029.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
     
@@ -448,9 +418,6 @@ public class AdqlQueryBugsTestCase
     public void test007L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -479,7 +446,7 @@ public class AdqlQueryBugsTestCase
 
         compare(
             query,
-            "select top 10 atlasv20130426.dbo.multiframe.utdate as utdate, atlasv20130426.dbo.multiframe.dateobs as dateobs from atlasv20130426.dbo.multiframe"
+            "select top 10 atlasv20131029.dbo.multiframe.utdate as utdate, atlasv20131029.dbo.multiframe.dateobs as dateobs from atlasv20131029.dbo.multiframe"
             );
         }
 
@@ -492,9 +459,6 @@ public class AdqlQueryBugsTestCase
     public void test008L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -524,7 +488,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 100 neighbours.distancemins as distancemins from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid-sources.ident < 1000000"
+            "select top 100 neighbours.distancemins as distancemins from atlasv20131029.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20131029.dbo.atlassource.sourceid as ident from atlasv20131029.dbo.atlassource) as sources where neighbours.masterobjid-sources.ident < 1000000"
             );
         }
 
@@ -536,9 +500,6 @@ public class AdqlQueryBugsTestCase
     public void test009a()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -556,7 +517,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            "select count(*) as count_all from atlasv20131029.dbo.multiframe where atlasv20131029.dbo.multiframe.project like 'ATLAS%'"
             );
         }
 
@@ -568,9 +529,6 @@ public class AdqlQueryBugsTestCase
     public void test009b()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -597,9 +555,6 @@ public class AdqlQueryBugsTestCase
     public void test010()
         {
         final AdqlQuery query = this.queryspace.queries().create(
-            testuser().space(
-                true
-                ),
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -612,7 +567,7 @@ public class AdqlQueryBugsTestCase
        
         compare(
             query,
-            "select -atlasv20130426.dbo.multiframe.decbase as decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
+            "select -atlasv20131029.dbo.multiframe.decbase as decbase from atlasv20131029.dbo.multiframe where atlasv20131029.dbo.multiframe.multiframeid > 0"
             );
             
         validate(
