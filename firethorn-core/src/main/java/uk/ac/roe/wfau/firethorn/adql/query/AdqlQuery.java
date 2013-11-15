@@ -208,37 +208,43 @@ extends NamedEntity, Job
          * Create a new query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input)
+        throws QueryProcessingException;
 
         /**
          * Create a named query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input)
+        throws QueryProcessingException;
 
         /**
          * Create a named query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
          * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        throws QueryProcessingException;
 
         /**
          * Create a named query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
          * Select all the queries from a resource.
