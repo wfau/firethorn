@@ -57,7 +57,7 @@ extends TestPropertiesBase
     protected AdqlResource adqlresource ;
     protected AdqlResource testresource ;
 
-    protected AdqlSchema queryspace ;
+    protected AdqlSchema queryschema ;
     //protected JdbcSchema userschema ;
 
     public void schema()
@@ -72,7 +72,7 @@ extends TestPropertiesBase
     public static final String ADQL_RESOURCE_PROP = "atlas.adql.resource";
     public static final String TEST_RESOURCE_PROP = "atlas.test.resource";
 
-    public static final String QUERY_SPACE_NAME  = "testqueryspace";
+    public static final String QUERY_SPACE_NAME  = "queryschema";
     //public static final String USER_SCHEMA_PROP = "atlas.user.schema";
 
     /**
@@ -240,22 +240,18 @@ extends TestPropertiesBase
 
         //
         // Create our ADQL query space.
-        if (this.queryspace == null)
+        if (this.queryschema == null)
             {
             log.debug("Loading QUERY space");
-            this.queryspace = this.testresource.schemas().create(
+            this.queryschema = this.testresource.schemas().search(
                 QUERY_SPACE_NAME
                 );
-/*
- * 
-            if (this.queryspace == null)
+            if (this.queryschema == null)
                 {
-                this.queryspace = this.testresource.schemas().create(
+                this.queryschema = this.testresource.schemas().create(
                     QUERY_SPACE_NAME
                     );
                 }
- * 
- */
             }
         }
 
@@ -431,7 +427,7 @@ extends TestPropertiesBase
     public void compare(final String adql, final String osql)
         {
         compare(
-            this.queryspace.queries().create(
+            this.queryschema.queries().create(
                 adql
                 ),
             osql

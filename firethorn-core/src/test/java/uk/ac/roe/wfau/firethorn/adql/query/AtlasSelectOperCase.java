@@ -40,7 +40,7 @@ public class AtlasSelectOperCase
     @Test
     public void test001()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -77,7 +77,7 @@ public class AtlasSelectOperCase
     @Test
     public void test002()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -106,7 +106,7 @@ public class AtlasSelectOperCase
     @Test
     public void test003()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -149,7 +149,7 @@ public class AtlasSelectOperCase
     @Test
     public void test004()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -178,7 +178,7 @@ public class AtlasSelectOperCase
     @Test
     public void test005()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -215,7 +215,7 @@ public class AtlasSelectOperCase
     @Test
     public void test006()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
@@ -244,7 +244,7 @@ public class AtlasSelectOperCase
     @Test
     public void test007()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
