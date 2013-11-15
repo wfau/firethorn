@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface JdbcSchema
 extends BaseSchema<JdbcSchema, JdbcTable>
     {
+
     /**
      * Name factory interface.
      *

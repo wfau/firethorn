@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -67,6 +68,12 @@ extends NamedEntity, Job
          *
          */
         public AdqlQuery.Syntax.Level level();
+
+        /**
+         * The DataSpace to store the results.
+         * 
+         */
+        public DataSpace space();
 
         }
 
@@ -195,34 +202,40 @@ extends NamedEntity, Job
     extends Job.Factory<AdqlQuery>
         {
         /**
-         * Create a new query.
+         * Create a new query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input);
+
+        /**
+         * Create a named query, using the default DataSpace.
+         *
+         */
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input);
 
         /**
-         * Create a new query.
+         * Create a named query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid);
+        public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input, final String name);
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input);
 
         /**
-         * Create a new query.
+         * Create a named query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final JdbcSchema space, final String input, final String rowid, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name);
 
         /**
          * Select all the queries from a resource.
@@ -382,7 +395,7 @@ extends NamedEntity, Job
      * The OGSA-DAI query params.
      *
      */
-    public QueryParam params();
+    public QueryParam param();
 
     /**
      * OGSA-DAI query mode.

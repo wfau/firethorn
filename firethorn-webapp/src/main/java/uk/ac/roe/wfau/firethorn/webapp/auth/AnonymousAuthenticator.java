@@ -61,16 +61,14 @@ implements HandlerInterceptor
             {
             log.debug(" Oper [{}]", operation.ident());
 
-            operation.authentications().resolve();
-
-            final Authentication primary = operation.authentications().primary();
+            final Authentication primary = operation.auth().primary();
             if (primary != null)
                 {
                 log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
                 }
             else {
                 log.debug(" No primary - anon");
-                operation.authentications().create(
+                operation.auth().create(
                     factories.identities().create(
                         factories.communities().create(
                             ANON_COMMUNITY_NAME,

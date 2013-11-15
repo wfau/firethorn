@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -29,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -76,8 +78,8 @@ public interface ComponentFactories
     /**
      * Our local Identity factory.
      *
-     */
     public Identity.EntityFactory identities();
+     */
 
     /**
      * Our local Community factory.
@@ -120,5 +122,43 @@ public interface ComponentFactories
      *
      */
     public AdqlQuery.Services queries();
+
+    /**
+     * The current context.
+     *
+     */
+    public static interface Context
+        {
+        /**
+         * The current Operation.
+         *
+         */
+        public Operation oper();
+
+        /**
+         * The primary Authentication.
+         *
+         */
+        public Authentication auth();
+
+        /**
+         * The primary Identity.
+         *
+         */
+        public Identity identity();
+
+        /**
+         * The data storage space.
+         * 
+         */
+        public DataSpace space();
+        
+        }
+    
+    /**
+     * Access to the current context.
+     *
+     */
+    public Context context();
 
     }

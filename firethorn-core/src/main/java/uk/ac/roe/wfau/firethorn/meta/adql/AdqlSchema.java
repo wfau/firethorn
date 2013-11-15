@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -173,28 +174,40 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public interface Queries
         {
         /**
-         * Create a new query.
+         * Create a new query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final JdbcSchema space, final String query);
+        public AdqlQuery create(final String query);
+
+        /**
+         * Create a named query, using the default DataSpace.
+         *
+         */
+        public AdqlQuery create(final String query, final String name);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final JdbcSchema space, final String query, final String rowid);
+        public AdqlQuery create(final DataSpace space, final String query);
 
         /**
-         * Create a new query.
+         * Create a named query.
          *
          */
-        public AdqlQuery create(final JdbcSchema space, final QueryParam params, final String query);
+        public AdqlQuery create(final DataSpace space, final String query, final String name);
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final JdbcSchema space, final String query, final String rowid, final String name);
+        public AdqlQuery create(final QueryParam param, final String query);
+
+        /**
+         * Create a named query, using a specific set of QueryParam.
+         *
+         */
+        public AdqlQuery create(final QueryParam param, final String query, final String name);
 
         /**
          * Select all the queries for this schema.

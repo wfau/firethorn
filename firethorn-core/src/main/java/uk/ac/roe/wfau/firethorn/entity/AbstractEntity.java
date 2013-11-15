@@ -142,8 +142,7 @@ implements Entity
         super();
         if (init)
             {
-            //this.uuid = factories().uuids().uuid();
-            this.owner = factories().identities().current();
+            this.owner = factories().context().identity();
             this.created = new DateTime();
             }
 
@@ -344,18 +343,6 @@ implements Entity
             );
         log.debug("---- ----");
         }
-
-    /**
-     * Delete this Entity from the database.
-     *
-    @Override
-    public void delete()
-        {
-        factories().hibernate().delete(
-            this
-            );
-        }
-     */
 
     @Override
     public EntityProtector protector()

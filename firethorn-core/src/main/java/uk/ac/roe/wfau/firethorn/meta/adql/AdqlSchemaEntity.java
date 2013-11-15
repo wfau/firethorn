@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
@@ -758,50 +759,66 @@ implements AdqlSchema
         return new Queries()
             {
             @Override
-            public AdqlQuery create(final JdbcSchema space, final String query)
+            public AdqlQuery create(final String query)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
-                    space,
                     query
                     );
                 }
 
             @Override
-            public AdqlQuery create(final JdbcSchema space, final String query, final String rowid)
+            public AdqlQuery create(final String query, final String name)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
-                    space,
                     query,
-                    rowid
-                    );
-                }
-
-            @Override
-            public AdqlQuery create(final JdbcSchema space, final String query, final String rowid, final String name)
-                {
-                return factories().adql().queries().create(
-                    AdqlSchemaEntity.this,
-                    space,
-                    query,
-                    rowid,
                     name
                     );
                 }
 
-
             @Override
-            public AdqlQuery create(final JdbcSchema space, final QueryParam params, final String query)
+            public AdqlQuery create(final DataSpace space, final String query)
                 {
                 return factories().adql().queries().create(
-                    params,
                     AdqlSchemaEntity.this,
                     space,
                     query
                     );
                 }
 
+            @Override
+            public AdqlQuery create(final DataSpace space, final String query, final String name)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    space,
+                    query,
+                    name
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final QueryParam param, final String query)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    param,
+                    query
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final QueryParam param, final String query, final String name)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    param,
+                    query,
+                    name
+                    );
+                }
+            
             @Override
             public Iterable<AdqlQuery> select()
                 {

@@ -55,7 +55,6 @@ extends Entity, NamedEntity
     public static interface EntityFactory
     extends Entity.EntityFactory<Identity>
         {
-
         /**
          * Get the current active Identity.
          *

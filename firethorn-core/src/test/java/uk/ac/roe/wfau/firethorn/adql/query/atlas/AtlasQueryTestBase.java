@@ -56,30 +56,11 @@ public class AtlasQueryTestBase
 extends TestPropertiesBase
     {
 
-    protected static final String ATLAS_VERSION = "ATLASDR1" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20131127" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20131029" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20130426" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20130304" ;
-
     protected JdbcResource jdbcresource ;
     protected AdqlResource adqlresource ;
     protected AdqlResource testresource ;
  
     protected AdqlSchema queryspace ;
-    protected JdbcSchema userschema ;
-
-    protected Community community  ;
-    public Community community()
-        {
-        return this.community;
-        }
-
-    protected CommunityMember testuser ;
-    public CommunityMember testuser()
-        {
-        return this.testuser;
-        }
 
     public void schema()
         {
@@ -112,7 +93,6 @@ extends TestPropertiesBase
             }
         }
 
-
     public void loadSchema(final String name)
         {
         loadSchema(
@@ -139,6 +119,26 @@ extends TestPropertiesBase
         }
 
     /**
+     * Test property names.
+     * 
+     */
+    public static final String JDBC_RESOURCE_PROP = "atlas.jdbc.resource";
+    public static final String ADQL_RESOURCE_PROP = "atlas.adql.resource";
+    public static final String TEST_RESOURCE_PROP = "atlas.test.resource";
+
+    public static final String QUERY_SPACE_NAME  = "testqueryspace";
+
+    /**
+     * Test catalog names.
+     * 
+     */
+    public static final String ATLAS_CATALOG_NAME   = "ATLASDR1" ;
+    public static final String BEST_CATALOG_NAME    = "BestDR8" ;
+    public static final String ROSAT_CATALOG_NAME   = "ROSAT" ;
+    public static final String TWOMASS_CATALOG_NAME = "TWOMASS" ;
+    
+    
+    /**
      * Load our test resources.
      *
      */
@@ -147,52 +147,17 @@ extends TestPropertiesBase
     throws EntityNotFoundException
         {
         //
-        // Create our test Community.
-        if (community == null)
-            {
-            log.debug("Loading test community");
-            String uri = testprops().getProperty("test.community");
-            if (uri != null)
-                {
-                community = factories().communities().select(
-                    uri
-                    );
-                }
-            if (community == null)
-                {
-                log.debug("Null test communtiy, creating new one");
-                community = factories().communities().create(
-                    "test community",
-                    uri
-                    );
-                }
-            }
-        //
-        // Create our test user.
-        if (testuser == null)
-            {
-            log.debug("Loading test user");
-            String name = testprops().getProperty("test.user");
-            if (name != null)
-                {
-                testuser = community.members().create(
-                    name
-                    );
-                }
-            }
-            
-        //
         // Create our JDBC resource.
         if (jdbcresource == null)
             {
             log.debug("Loading JDBC resource");
-            final String prop = testprops().getProperty("jdbc.resource");
-            if (prop != null)
+            final String ident = testprops().getProperty(JDBC_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
                     jdbcresource = factories().jdbc().resources().select(
                         factories().jdbc().resources().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
@@ -219,13 +184,13 @@ extends TestPropertiesBase
         if (this.adqlresource == null)
             {
             log.debug("Loading ADQL resource");
-            final String prop = testprops().getProperty("adql.resource");
-            if (prop != null)
+            final String ident = testprops().getProperty(ADQL_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
                     this.adqlresource = factories().adql().resources().select(
                         factories().adql().resources().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
@@ -242,19 +207,19 @@ extends TestPropertiesBase
                     );
 
                 loadCatalog(
-                    ATLAS_VERSION
+                    ATLAS_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "ROSAT"
+                    ROSAT_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "BestDR8"
+                    BEST_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "TWOMASS"
+                    TWOMASS_CATALOG_NAME
                     );
                 }
             }
@@ -264,13 +229,13 @@ extends TestPropertiesBase
         if (this.testresource == null)
             {
             log.debug("Loading TEST resource");
-            final String prop = testprops().getProperty("test.space");
-            if (prop != null)
+            final String ident = testprops().getProperty(TEST_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
                     this.testresource = factories().adql().resources().select(
                         factories().adql().schemas().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
@@ -286,19 +251,19 @@ extends TestPropertiesBase
                     );
 
                 loadSchema(
-                    ATLAS_VERSION
+                    ATLAS_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "ROSAT"
+                    ROSAT_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "BestDR8"
+                    BEST_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "TWOMASS"
+                    TWOMASS_CATALOG_NAME
                     );
                 }
             }
@@ -308,14 +273,18 @@ extends TestPropertiesBase
         if (this.queryspace == null)
             {
             log.debug("Loading QUERY space");
-            this.queryspace = this.testresource.schemas().search(
-                "QUERY space"
-
+            this.queryspace = this.testresource.schemas().create(
+                QUERY_SPACE_NAME
+                );
+/*
+ *
             if (this.queryspace == null)
                 {
                 this.queryspace = this.testresource.schemas().create(
                     "QUERY space"
                 }
+ *
+ */
             }
         }
 
@@ -327,21 +296,26 @@ extends TestPropertiesBase
     public void saveResources()
         {
         log.debug("Saving test resources");
-        if (this.community != null)
-            {
-            testprops().setProperty("test.community", this.community.uri());
-            }
         if (this.jdbcresource != null)
             {
-            testprops().setProperty("jdbc.resource", this.jdbcresource.ident().toString());
+            testprops().setProperty(
+                JDBC_RESOURCE_PROP,
+                this.jdbcresource.ident().toString()
+                );
             }
         if (this.adqlresource != null)
             {
-            testprops().setProperty("adql.resource", this.adqlresource.ident().toString());
+            testprops().setProperty(
+                ADQL_RESOURCE_PROP,
+                this.adqlresource.ident().toString()
+                );
             }
         if (this.testresource != null)
             {
-            testprops().setProperty("test.resource", this.testresource.ident().toString());
+            testprops().setProperty(
+                TEST_RESOURCE_PROP,
+                this.testresource.ident().toString()
+                );
             }
         }
 
@@ -481,9 +455,6 @@ extends TestPropertiesBase
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 level
-                ),
-            testuser().space(
-                true
                 ),
             adql
             );
