@@ -60,7 +60,7 @@ extends TestPropertiesBase
     protected AdqlResource adqlresource ;
     protected AdqlResource testresource ;
  
-    protected AdqlSchema queryspace ;
+    protected AdqlSchema queryschema ;
 
     public void schema()
         {
@@ -126,7 +126,7 @@ extends TestPropertiesBase
     public static final String ADQL_RESOURCE_PROP = "atlas.adql.resource";
     public static final String TEST_RESOURCE_PROP = "atlas.test.resource";
 
-    public static final String QUERY_SPACE_NAME  = "testqueryspace";
+    public static final String QUERY_SCHEMA_NAME  = "queryschema";
 
     /**
      * Test catalog names.
@@ -270,21 +270,18 @@ extends TestPropertiesBase
 
         //
         // Create our ADQL query space.
-        if (this.queryspace == null)
+        if (this.queryschema == null)
             {
-            log.debug("Loading QUERY space");
-            this.queryspace = this.testresource.schemas().create(
-                QUERY_SPACE_NAME
+            log.debug("Loading QUERY schema");
+            this.queryschema = this.testresource.schemas().search(
+                QUERY_SCHEMA_NAME
                 );
-/*
- *
-            if (this.queryspace == null)
+
+            if (this.queryschema == null)
                 {
-                this.queryspace = this.testresource.schemas().create(
-                    "QUERY space"
+                this.queryschema = this.testresource.schemas().create(
+                    QUERY_SCHEMA_NAME
                 }
- *
- */
             }
         }
 
@@ -452,7 +449,7 @@ extends TestPropertiesBase
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 level
                 ),

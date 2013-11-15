@@ -409,7 +409,7 @@ extends AtlasQueryTestBase
                 final String  adql    = results.getString("query");
                 log.debug("[{}][{}]", catalog, adql);
 
-                final AdqlQuery query = this.queryspace.queries().create(
+                final AdqlQuery query = this.queryschema.queries().create(
                     adql
                     );
 
