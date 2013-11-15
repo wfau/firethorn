@@ -381,6 +381,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -394,7 +395,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
-
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -408,6 +409,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateEntityMethod
         public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -421,6 +423,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input, final String name)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -434,6 +437,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateEntityMethod
         public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -447,6 +451,7 @@ implements AdqlQuery, AdqlParserQuery
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input, final String name)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -458,6 +463,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         protected AdqlQuery create(final AdqlSchema schema, final DataSpace space, final QueryParam param, final String input, final String name)
+        throws QueryProcessingException
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
@@ -1354,9 +1360,11 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      *  Create our result tables.
+     * @throws QueryProcessingException 
      *
      */
     protected void build()
+    throws QueryProcessingException
         {
         log.debug("build()");
 
@@ -1364,23 +1372,6 @@ implements AdqlQuery, AdqlParserQuery
 
         if (this.syntax == State.VALID)
             {
-
-/*
- * 
-
-    'this.owner().space' doesn't quite make sense
-
-    The Identity this.owner() may be local or remote.
-    An Identity may be a Group, GroupMember, Community, CommunityMember, a proxy for a RemoteIdentity ....
-    
-    Results for this query may go in one 'space'.
-    Results for another query may go in a different 'space'.
-    Results for another query may end up being 'pushed' elsewhere.
-
-    Is the target storage 'space' just another param, that depends on the context.
-
- *             
- */
             //
             // Create our tables.
             if (this.space() != null)
@@ -1394,10 +1385,11 @@ implements AdqlQuery, AdqlParserQuery
                     this
                     );
                 }
-// no-owner fallback.
             else {
-                log.warn("NO SPACE for QUERY [{}]", this.ident());
-                // Config exception.
+                log.error("NO SPACE for QUERY [{}]", this.ident());
+                throw new QueryProcessingException(
+                    "No results space defined"
+                    );
                 }
             }
 
@@ -1406,6 +1398,7 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
+    
     /**
      * Our result tables.
      * TODO - Which external components need access to the JdbcTable ?
