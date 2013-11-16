@@ -173,6 +173,7 @@ implements AdqlQuery, AdqlParserQuery
      * Default param factory implementation.
      * @todo Move to a separate class.
      * @todo Single instance that has local values and then defaults to factory settings if local are null.
+     * @todo Move to editable configuration values.
      *
      */
     @Component
@@ -385,8 +386,8 @@ implements AdqlQuery, AdqlParserQuery
             {
             return create(
                 schema,
-                null,
-                null,
+                factories().context().space(),
+                params.param(),
                 input,
                 names().name()
                 );
@@ -399,8 +400,8 @@ implements AdqlQuery, AdqlParserQuery
             {
             return create(
                 schema,
-                null,
-                null,
+                factories().context().space(),
+                params.param(),
                 input,
                 names().name(name)
                 );
@@ -414,7 +415,7 @@ implements AdqlQuery, AdqlParserQuery
             return create(
                 schema,
                 space,
-                null,
+                params.param(),
                 input,
                 names().name()
                 );
@@ -428,7 +429,7 @@ implements AdqlQuery, AdqlParserQuery
             return create(
                 schema,
                 space,
-                null,
+                params.param(),
                 input,
                 names().name(name)
                 );

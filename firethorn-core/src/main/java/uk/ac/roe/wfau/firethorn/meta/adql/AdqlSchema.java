@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.DataSpace;
@@ -177,37 +178,43 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final String query);
+        public AdqlQuery create(final String query)
+        throws QueryProcessingException;
 
         /**
          * Create a named query, using the default DataSpace.
          *
          */
-        public AdqlQuery create(final String query, final String name);
+        public AdqlQuery create(final String query, final String name)
+        throws QueryProcessingException;
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final DataSpace space, final String query);
+        public AdqlQuery create(final DataSpace space, final String query)
+        throws QueryProcessingException;
 
         /**
          * Create a named query.
          *
          */
-        public AdqlQuery create(final DataSpace space, final String query, final String name);
+        public AdqlQuery create(final DataSpace space, final String query, final String name)
+        throws QueryProcessingException;
 
         /**
          * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query);
+        public AdqlQuery create(final QueryParam param, final String query)
+        throws QueryProcessingException;
 
         /**
          * Create a named query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query, final String name);
+        public AdqlQuery create(final QueryParam param, final String query, final String name)
+        throws QueryProcessingException;
 
         /**
          * Select all the queries for this schema.
