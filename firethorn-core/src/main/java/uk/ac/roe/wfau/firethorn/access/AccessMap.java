@@ -17,35 +17,21 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
+import java.util.List;
+
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
- * A simple boolean based Protector.
+ *
  *
  */
-public class BooleanProtector
-extends AbstractProtector
-implements Protector
+public interface AccessMap
     {
 
-    /**
-     * Public constructor.
-     * 
-     */
-    public BooleanProtector(boolean value)
-        {
-        this.value = value ;
-        }
+    public void insert(Action action, Identity identity);
 
-    /**
-     * Boolean response value.
-     * 
-     */
-    private boolean value ;
+    public void remove(Action action, Identity identity);
 
-    @Override
-    public boolean allow(Identity identity, Action action)
-        {
-        return this.value;
-        }
+    public boolean contains(Action action, Identity identity);
+
     }
