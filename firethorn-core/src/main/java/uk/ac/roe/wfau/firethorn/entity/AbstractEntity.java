@@ -347,7 +347,6 @@ implements Entity
     @Override
     public EntityProtector protector()
         {
-        // TODO Auto-generated method stub
         return null ;
         }
     }
