@@ -43,6 +43,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test002S()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -67,6 +68,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test002L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -105,6 +107,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test003S()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -139,6 +142,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test003L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -179,6 +183,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test004S()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -212,6 +217,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test004L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -245,6 +251,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test005S()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -273,6 +280,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test005L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -312,6 +320,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test006L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -364,6 +373,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test006a()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -416,6 +426,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test007L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -457,6 +468,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test008L()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -498,6 +510,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test009a()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -527,6 +540,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test009b()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -553,6 +567,7 @@ public class AdqlQueryBugsTestCase
      */
     @Test
     public void test010()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(

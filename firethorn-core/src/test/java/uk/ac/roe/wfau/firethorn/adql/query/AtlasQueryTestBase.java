@@ -425,6 +425,7 @@ extends TestPropertiesBase
      *
      */
     public void compare(final String adql, final String osql)
+    throws Exception
         {
         compare(
             this.queryschema.queries().create(

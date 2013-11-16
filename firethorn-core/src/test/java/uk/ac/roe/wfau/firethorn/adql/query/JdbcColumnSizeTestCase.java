@@ -71,7 +71,7 @@ public class JdbcColumnSizeTestCase
      */
     @Test
     public void test001()
-    throws SQLException
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(

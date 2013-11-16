@@ -69,13 +69,12 @@ implements HandlerInterceptor
             else {
                 log.debug(" No primary - anon");
                 operation.auth().create(
-                    factories.identities().create(
-                        factories.communities().create(
-                            ANON_COMMUNITY_NAME,
-                            ANON_COMMUNITY_URI
+                    factories.communities().create(
+                        ANON_COMMUNITY_NAME,
+                        ANON_COMMUNITY_URI
+                        ).members().create(
+                            ANON_IDENTITY_NAME
                             ),
-                        ANON_IDENTITY_NAME
-                        ),
                     ANON_AUTH_METHOD
                     );
                 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,25 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.identity;
+package uk.ac.roe.wfau.firethorn.webapp.community;
 
 import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Community;
+import uk.ac.roe.wfau.firethorn.identity.CommunityMember;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>Identity</code>.
+ *
  *
  */
 @Component
-public class IdentityIdentFactory
+public class CommunityMemberIdentFactory
 extends WebappIdentFactory
-implements Identity.IdentFactory
+implements CommunityMember.IdentFactory
     {
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/identity-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/community-member-1.0.json"
         );
     }

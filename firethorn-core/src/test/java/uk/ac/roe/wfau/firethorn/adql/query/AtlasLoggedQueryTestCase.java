@@ -59,7 +59,9 @@ public class AtlasLoggedQueryTestCase
         readOnly=false,
         propagation=Propagation.REQUIRES_NEW
         )
+
     public void inner(final int linenum, final String linestr)
+    throws Exception
         {
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);

@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -758,6 +759,7 @@ implements AdqlSchema
             {
             @Override
             public AdqlQuery create(final String query)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -767,6 +769,7 @@ implements AdqlSchema
 
             @Override
             public AdqlQuery create(final String query, final String name)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -777,6 +780,7 @@ implements AdqlSchema
 
             @Override
             public AdqlQuery create(final DataSpace space, final String query)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -787,6 +791,7 @@ implements AdqlSchema
 
             @Override
             public AdqlQuery create(final DataSpace space, final String query, final String name)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -798,6 +803,7 @@ implements AdqlSchema
 
             @Override
             public AdqlQuery create(final QueryParam param, final String query)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -808,6 +814,7 @@ implements AdqlSchema
 
             @Override
             public AdqlQuery create(final QueryParam param, final String query, final String name)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -831,6 +838,5 @@ implements AdqlSchema
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
     }

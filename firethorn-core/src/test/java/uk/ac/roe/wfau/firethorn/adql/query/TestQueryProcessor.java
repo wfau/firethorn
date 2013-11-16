@@ -371,6 +371,7 @@ extends AtlasQueryTestBase
         }
 
     public void fredric(final int servernum)
+    throws Exception
         {
         final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
@@ -433,6 +434,7 @@ extends AtlasQueryTestBase
 
     //@Test
     public void test002()
+    throws Exception
         {
         fredric(5);
         }

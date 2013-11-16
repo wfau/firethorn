@@ -39,6 +39,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test001()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -76,6 +77,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test002()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -105,6 +107,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test003()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -148,6 +151,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test004()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -177,6 +181,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test005()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -214,6 +219,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test006()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -243,6 +249,7 @@ public class AtlasSelectOperCase
      */
     @Test
     public void test007()
+    throws Exception
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
