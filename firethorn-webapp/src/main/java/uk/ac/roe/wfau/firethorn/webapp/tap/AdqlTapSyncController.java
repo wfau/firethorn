@@ -42,9 +42,16 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
-public class AdqlTapAsyncController extends AbstractController {
+public class AdqlTapSyncController extends AbstractController {
 	
+	
+	/**
+	 * Default query schema
+	 */
 	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
+	
+	
+	
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub
@@ -74,7 +81,7 @@ public class AdqlTapAsyncController extends AbstractController {
      * Create an Async query job
      * 
      */
-	@RequestMapping(value="async", method = RequestMethod.GET)
+	@RequestMapping(value="sync", method = RequestMethod.GET)
 	public @ResponseBody XMLResponse createAsyncJob(
         @ModelAttribute("urn:adql.resource.entity")
         AdqlResource resource,
@@ -99,9 +106,9 @@ public class AdqlTapAsyncController extends AbstractController {
 				 AdqlQuery q = schema.queries().create(
 				                QUERY
 				                );
-					log.error("Schema :::::::::  [{}]",q.toString());
 
-				xmlResponse = new XMLResponse(q.ident().toString());
+			       
+				xmlResponse = new XMLResponse(q.link());
 
 			} else {
 				xmlResponse = new XMLResponse("Invalid params");

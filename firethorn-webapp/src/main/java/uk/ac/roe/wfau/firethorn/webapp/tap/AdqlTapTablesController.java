@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -42,9 +44,16 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
-public class AdqlTapAsyncController extends AbstractController {
+public class AdqlTapTablesController extends AbstractController {
+   
+	/**
+	 * Path for VOSI metadata
+	 */
+    public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
 	
-	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
+	
+    public static final String TARGET_ENTITY = "urn:adql.resource.entity" ;
+
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub
@@ -54,7 +63,7 @@ public class AdqlTapAsyncController extends AbstractController {
      * Get the target workspace based on the ident in the path. 
      *
      */
-    @ModelAttribute("urn:adql.resource.entity")
+    @ModelAttribute(TARGET_ENTITY)
     public AdqlResource entity(
         @PathVariable("ident")
         final String ident
@@ -74,47 +83,14 @@ public class AdqlTapAsyncController extends AbstractController {
      * Create an Async query job
      * 
      */
-	@RequestMapping(value="async", method = RequestMethod.GET)
-	public @ResponseBody XMLResponse createAsyncJob(
-        @ModelAttribute("urn:adql.resource.entity")
-        AdqlResource resource,
-        @RequestParam("QUERY") String QUERY,
-        @RequestParam("LANG") String LANG,
-        @RequestParam("REQUEST") String REQUEST    
+	@RequestMapping(value="tables", method = RequestMethod.GET)
+	public String tables(
+        @ModelAttribute(TARGET_ENTITY)
+        AdqlResource resource
         ){
-		
-	
-		XMLResponse xmlResponse = new XMLResponse("");
-	
-		
-		try {
-			if (REQUEST.equalsIgnoreCase("doQuery") && LANG.equalsIgnoreCase("ADQL")){
-				AdqlSchema schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
-
-						if (schema == null)
-						{
-						 schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
-						}
-				 
-				 AdqlQuery q = schema.queries().create(
-				                QUERY
-				                );
-					log.error("Schema :::::::::  [{}]",q.toString());
-
-				xmlResponse = new XMLResponse(q.ident().toString());
-
-			} else {
-				xmlResponse = new XMLResponse("Invalid params");
-				log.error("Invalid Params [{}][{}][{}]",REQUEST,LANG, QUERY);
-
-			}
-		} catch (final Exception ouch) {
-			log.error("Exception caught [{}]", ouch.getMessage());
-			xmlResponse = new XMLResponse("Invalid params");
-
-        }
-		
-		return xmlResponse;
+			
+		return VOSI_XML_VIEW ;
+		   
 			
         }
 
