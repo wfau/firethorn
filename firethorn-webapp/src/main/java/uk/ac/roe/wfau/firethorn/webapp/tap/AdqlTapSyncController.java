@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.sql.SQLException;
 
+import javax.persistence.EnumType;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -29,11 +31,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 import adql.query.ADQLQuery;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -50,6 +55,17 @@ public class AdqlTapSyncController extends AbstractController {
 	 */
 	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
 	
+	/**
+	 * Timeout for query job in miliseconds
+	 */
+	static final Integer TIMEOUT = 600000;
+	
+	/**
+	 * Param to start a job
+	 */
+	static final Status STARTJOB = Status.RUNNING;
+	
+	
 	
 	
 	@Override
@@ -57,7 +73,8 @@ public class AdqlTapSyncController extends AbstractController {
 		// TODO Auto-generated method stub
 		return path("/tap/{ident}/") ;
 	}
-	 /**
+	
+	/**
      * Get the target workspace based on the ident in the path. 
      *
      */
@@ -98,17 +115,45 @@ public class AdqlTapSyncController extends AbstractController {
 			if (REQUEST.equalsIgnoreCase("doQuery") && LANG.equalsIgnoreCase("ADQL")){
 				AdqlSchema schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
 
-						if (schema == null)
-						{
-						 schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
-						}
+				if (schema == null) {
+					schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
+				}
 				 
-				 AdqlQuery q = schema.queries().create(
+				AdqlQuery query = schema.queries().create(
 				                QUERY
 				                );
+			
+				log.error("Query link [{}]",query.link());
 
-			       
-				xmlResponse = new XMLResponse(q.link());
+				if (query!=null){
+					
+					 factories().queries().executor().update(
+						       query.ident(),
+						       STARTJOB,
+						       TIMEOUT
+						       );	
+					 
+					 Status jobstatus = factories().queries().executor().status(
+							 query.ident()
+							 ); 
+					 do {
+						 jobstatus = factories().queries().executor().status(
+								 query.ident()
+								 ); 
+						log.error(jobstatus.toString());
+						
+
+					} while (jobstatus != Status.COMPLETED 
+							 && jobstatus != Status.ERROR 
+									 &&  jobstatus != Status.FAILED
+											 &&  jobstatus != Status.CANCELLED
+							 );
+				   
+					log.error(jobstatus.toString());
+
+				}
+				 
+				xmlResponse = new XMLResponse(query.link());
 
 			} else {
 				xmlResponse = new XMLResponse("Invalid params");
