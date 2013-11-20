@@ -43,13 +43,13 @@ import lombok.extern.slf4j.Slf4j;
     )
 public class SimpleQueryTestBase
     {
-    @Value("${firethon.ogsadai.dqp}")
+    @Value("${firethorn.ogsadai.dqp}")
     protected String dqp ;
 
-    @Value("${firethon.ogsadai.store}")
+    @Value("${firethorn.ogsadai.store}")
     protected String store ;
 
-    @Value("${firethon.ogsadai.endpoint}")
+    @Value("${firethorn.ogsadai.endpoint}")
     protected String endpoint ;
 
     /**
