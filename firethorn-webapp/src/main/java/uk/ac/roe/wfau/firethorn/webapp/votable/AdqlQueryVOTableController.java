@@ -277,33 +277,16 @@ public class AdqlQueryVOTableController
             );
         }
 
+    
     /**
-     * VOTable GET request.
+     * Generate a VOTable from query results.
      *
      */
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=TEXT_XML_MIME)
-    public void votable(
-        @PathVariable(WebappLinkFactory.IDENT_FIELD)
-        final String ident,
-        final HttpServletResponse response
-        ) throws NotFoundException, IOException {
-
-        response.setContentType(
-            TEXT_XML_MIME
-            );
-        response.setCharacterEncoding(
-            "UTF-8"
-            );
-
-        final PrintWriter writer = response.getWriter();
-
-        final AdqlQuery query = factories().adql().queries().select(
-            factories().adql().queries().idents().ident(
-                ident
-                )
-            );
-
+    public void generateVotable(
+        final PrintWriter writer,
+        final AdqlQuery   query
+        ){
+    	
         final AdqlTable table= query.results().adql();
         final JdbcTable jdbc = query.results().jdbc();
 
@@ -477,7 +460,7 @@ public class AdqlQueryVOTableController
 
                     writer.append("<DATA>");
                     writer.append("<TABLEDATA>");
-
+                    log.error("In Votable [{}]", query.link());
                     final JdbcProductType type  = jdbc.resource().connection().type();
                     final Connection connection = jdbc.resource().connection().open();
                     try {
@@ -568,5 +551,42 @@ public class AdqlQueryVOTableController
                 writer.append("</TABLE>");
             writer.append("</RESOURCE>");
         writer.append("</vot:VOTABLE>");
+    	
+  
+    }
+    
+    
+    /**
+     * VOTable GET request.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.GET, produces=TEXT_XML_MIME)
+    public void votable(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident,
+        final HttpServletResponse response
+        ) throws NotFoundException, IOException {
+
+        response.setContentType(
+            TEXT_XML_MIME
+            );
+        response.setCharacterEncoding(
+            "UTF-8"
+            );
+        
+		
+
+        final PrintWriter writer = response.getWriter();
+       
+
+        final AdqlQuery query = factories().adql().queries().select(
+            factories().adql().queries().idents().ident(
+                ident
+                )
+            );		
+        
+		generateVotable(writer,query);
+        
         }
     }
