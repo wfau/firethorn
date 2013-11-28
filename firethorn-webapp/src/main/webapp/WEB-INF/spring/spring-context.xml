@@ -56,12 +56,6 @@
     <import resource="hibernate-config.xml"/>
 
     <!--+
-        | Scan for annotated components.
-        +-->
-    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
-
-
-    <!--+
         | Import our task scheduler config.
         +-->
     <import resource="scheduler-config.xml"/>
@@ -90,6 +84,10 @@
     <cxt:spring-configured/>
         +-->
 
+    <!--+
+        | Scan for annotated components.
+        +-->
+    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
 
     <!--+
         | Enable MVC annotations.
