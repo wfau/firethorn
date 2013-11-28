@@ -18,11 +18,10 @@ public class SchedulerTest
 	@Scheduled(fixedDelay=5000)
 	public void something() {
 	    log.debug("Start");
-
 	    try {
-		    log.debug("Sleeping");
+		    //log.debug("Sleeping");
 	    	Thread.sleep(10000);
-		    log.debug("Awake");
+		    //log.debug("Awake");
 	    	}
 	    catch (Exception ouch)
 	    	{
