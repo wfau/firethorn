@@ -49,11 +49,11 @@
 
     <!--+
         | Enable support for the @Scheduled and @Async annotations.
-        +-->
     <task:annotation-driven
     	executor="FireThornTaskExecutor"
     	scheduler="FireThornTaskScheduler"
     	/>
+        +-->
 
 </beans>
 

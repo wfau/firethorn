@@ -90,6 +90,14 @@
     <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
 
     <!--+
+        | Enable scheduler annotations.
+        +-->
+    <task:annotation-driven
+    	executor="FireThornTaskExecutor"
+    	scheduler="FireThornTaskScheduler"
+    	/>
+
+    <!--+
         | Enable MVC annotations.
         +-->
     <mvc:annotation-driven/>
