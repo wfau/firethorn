@@ -17,16 +17,17 @@ public class SchedulerTest
 
 	@Scheduled(fixedDelay=5000)
 	public void something() {
-	    log.debug("Scheduled task");
+	    log.debug("Start");
 
 	    try {
 		    log.debug("Sleeping");
-	    	Thread.sleep(1000);
+	    	Thread.sleep(10000);
 		    log.debug("Awake");
 	    	}
 	    catch (Exception ouch)
 	    	{
 	    	log.debug("Exception [{}]", ouch.getMessage());
 	    	}
+	    log.debug("Done");
 		}	
 	}
