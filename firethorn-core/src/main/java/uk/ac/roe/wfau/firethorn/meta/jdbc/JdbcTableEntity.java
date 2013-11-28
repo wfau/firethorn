@@ -38,6 +38,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -105,6 +106,17 @@ implements JdbcTable
      */
     protected static final String JDBC_TYPE_COL = "jdbctype" ;
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
+
+    @Component
+    public static class Worker
+    	{
+    	@Scheduled(fixedDelay=30000)
+    	public void something() {
+    	    log.debug("Start");
+
+    	    log.debug("Done");
+    		}	
+    	}
 
     /**
      * Alias factory implementation.

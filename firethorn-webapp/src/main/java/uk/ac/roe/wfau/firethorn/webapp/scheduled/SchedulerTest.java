@@ -4,8 +4,12 @@
 package uk.ac.roe.wfau.firethorn.webapp.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  *
@@ -15,8 +19,24 @@ import org.springframework.stereotype.Service;
 public class SchedulerTest
 	{
 
-	@Scheduled(fixedDelay=5000)
-	public void something() {
+    /**
+     * Autowired system services.
+     *
+     */
+    @Autowired
+    private ComponentFactories factories;
+
+    /**
+     * Our system services.
+     *
+     */
+    public ComponentFactories factories()
+        {
+        return this.factories;
+        }
+
+	@Scheduled(fixedDelay=10000)
+	public void sleeper() {
 	    log.debug("Start");
 	    try {
 		    //log.debug("Sleeping");
@@ -29,4 +49,5 @@ public class SchedulerTest
 	    	}
 	    log.debug("Done");
 		}	
+
 	}
