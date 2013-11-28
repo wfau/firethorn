@@ -36,7 +36,18 @@ public class SchedulerTest
         }
 
 	@Scheduled(fixedDelay=10000)
-	public void sleeper() {
+	public void test()
+		{
+	    log.debug("Start");
+
+	    log.debug("Session [{}]", factories().hibernate().session());
+
+	    log.debug("Done");
+		}	
+    
+	//@Scheduled(fixedDelay=10000)
+	public void sleeper()
+		{
 	    log.debug("Start");
 	    try {
 		    //log.debug("Sleeping");
@@ -49,5 +60,4 @@ public class SchedulerTest
 	    	}
 	    log.debug("Done");
 		}	
-
 	}
