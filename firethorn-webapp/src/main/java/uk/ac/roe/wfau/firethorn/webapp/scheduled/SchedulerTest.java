@@ -40,7 +40,9 @@ public class SchedulerTest
 		{
 	    log.debug("Start");
 
+	    factories().hibernate().factory().openSession();
 	    log.debug("Session [{}]", factories().hibernate().session());
+	    factories().hibernate().session().close();
 
 	    log.debug("Done");
 		}	
