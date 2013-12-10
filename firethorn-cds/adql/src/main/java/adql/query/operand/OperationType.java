@@ -28,10 +28,10 @@ package adql.query.operand;
  * @see Operation
  */
 public enum OperationType {
-	SUM, SUB, MULT, DIV, MOD;
+	SUM, SUB, MULT, DIV, MOD, BINARY_OR, BINARY_AND, BINARY_XOR;
 
 	public static String[] getOperators(){
-		return new String[]{SUM.toString(), SUB.toString(), MULT.toString(), DIV.toString(), MOD.toString()};
+		return new String[]{SUM.toString(), SUB.toString(), MULT.toString(), DIV.toString(), MOD.toString(), BINARY_OR.toString(), BINARY_AND.toString(), BINARY_XOR.toString() };
 	}
 
 	public static OperationType getOperator(String str) throws UnsupportedOperationException {
@@ -45,7 +45,15 @@ public enum OperationType {
 			return DIV;
         else if (str.equalsIgnoreCase("%"))
             return MOD;
-		else
+
+        else if (str.equalsIgnoreCase("|"))
+            return BINARY_OR;
+        else if (str.equalsIgnoreCase("&"))
+            return BINARY_AND;
+        else if (str.equalsIgnoreCase("^"))
+            return BINARY_XOR;
+        
+        else
 			throw new UnsupportedOperationException("Numeric operation unknown: \""+str+"\" !");
 	}
 
@@ -66,7 +74,15 @@ public enum OperationType {
 			return "/";
         case MOD:
             return "%";
-		default:
+
+        case BINARY_OR:
+            return "|";
+        case BINARY_AND:
+            return "&";
+        case BINARY_XOR:
+            return "^";
+        
+        default:
 			return "???";
 		}
 	}

@@ -44,6 +44,7 @@ PARSER_BEGIN(ADQLParser)
 
 package adql.parser;
 
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -51,6 +52,10 @@ import java.util.Collection;
 
 import java.io.FileReader;
 import java.io.IOException;
+import adql.db.DBChecker;
+import adql.db.DBTable;
+import adql.db.SearchColumnList;
+import adql.db.DBChecker.SearchTableHandler;
 
 import adql.db.exception.UnresolvedIdentifiersException;
 
@@ -116,7 +121,7 @@ public class ADQLParser {
 	public ADQLParser(){
 		this(new java.io.ByteArrayInputStream("".getBytes()));
 	}
-	
+
 	/**
 	* Builds an ADQL parser without a query to parse but with a QueryChecker and a ADQLQueryFactory.
 	*
@@ -530,6 +535,15 @@ TOKEN : {
 }
 
 /* ******************** */
+/* Binary operators     */
+/* ******************** */
+TOKEN : {
+	< BINARY_AND: "&" >
+|	< BINARY_OR:  "|" >
+|	< BINARY_XOR: "^" >
+}
+
+/* ******************** */
 /* Comparison operators */
 /* ******************** */
 TOKEN : {
@@ -716,14 +730,50 @@ ADQLQuery Query(): {ADQLQuery q = null;}{
 }
 
 ADQLQuery QueryExpression(): {} {
-	{
-		try{
-			// create the query:
-			query = queryFactory.createQuery();
-			stackQuery.push(query);
-		}catch(Exception ex){
-			throw generateParseException(ex);
+    {
+    ADQLQuery parentQuery = null;
+    // Create Column list and alias map from the query stack data
+    Stack<ADQLQuery> stackq = stackQuery;
+    DBChecker qCheck = (DBChecker ) queryChecker;
+    SearchColumnList allfromlist =  new SearchColumnList();
+	HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+
+	for(ADQLQuery o : stackq){
+			//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
+			SearchTableHandler sHandler = new SearchTableHandler();
+
+			sHandler.search(o.getFrom());
+			for(ADQLObject result : sHandler){
+				try{
+					ADQLTable table = (ADQLTable)result;
+					// resolve the table:
+					DBTable dbTable = null;
+					if (table.isSubQuery()){
+						dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
+					}else{
+						dbTable = qCheck.resolveTable(table);
+						if (table.hasAlias())
+							dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
+					}
+					// link with the matched DBTable:
+					table.setDBLink(dbTable);
+					mapTables.put(dbTable, table);
+					allfromlist.addAll(table.getDBColumns());
+
+				}catch(ParseException pe){
+					System.out.println("Parse Exception caught ");
+				}
+			}
+
 		}
+
+                try{
+                	    	query = queryFactory.createQuery(query,true);
+            		   
+                        stackQuery.push(query);
+                }catch(Exception ex){
+                        throw generateParseException(ex);
+                }
 	}
 	Select()
 	From()
@@ -734,7 +784,7 @@ ADQLQuery QueryExpression(): {} {
 	{
 		// check the query:
 		if (queryChecker != null)
-			queryChecker.check(query);
+			queryChecker.check(query,allfromlist, mapTables);
 			
 		// get the previous query (!= null if the current query is a sub-query):
 		ADQLQuery previousQuery = stackQuery.pop();
@@ -784,7 +834,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 			<ASTERISK>
 			{
 				try{;
-					return new SelectAllColumns( queryFactory.createTable(identifiers, null) );
+					return new SelectAllColumns( queryFactory.createTable(identifiers, null),query );
 				}catch(Exception ex) {
 					throw generateParseException(ex);
 				}
@@ -797,7 +847,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 	
 	{
 		try{
-			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier);
+			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier, query);
 			if (label != null)
 				item.setCaseSensitive(label.caseSensitivity);
 			return item;
@@ -1040,7 +1090,22 @@ ADQLOperand NumericExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=n
 }
 
 ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
-	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
+	(leftOp=BinaryExpression() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
+	{
+	if (sign == null)
+		return leftOp;
+	else{
+		try{
+			return queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
+		}catch(Exception ex){
+			throw generateParseException(ex);
+		}
+	}
+	}
+}
+
+ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+	(leftOp=Factor() ((sign=<BINARY_AND> | sign=<BINARY_OR> | sign=<BINARY_XOR>) rightOp=BinaryExpression())?)
 	{
 	if (sign == null)
 		return leftOp;

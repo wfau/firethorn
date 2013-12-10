@@ -131,19 +131,6 @@ implements AdqlParser
                     );
                 }
             }
-/*
-        //
-        // Create our ADQL parser:
-        this.parser = new ADQLParser();
-        this.parser.disable_tracing();
-        //
-        // Add a DBChecker using the DBTables.
-        this.parser.setQueryChecker(
-            new DBChecker(
-                tables
-                )
-            );
- */
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
@@ -426,6 +413,42 @@ implements AdqlParser
             }
         }
 
+    protected void legacy(final Level level, final Operation oper)
+    throws AdqlParserException
+        {
+        if (level == Level.STRICT)
+            {
+            OperationType type = oper.getOperation(); 
+            if (type == OperationType.MOD)
+                {
+                throw new AdqlParserException(
+                    "Modulo '%' operator is not supported in ADQL"
+                    );
+                }
+
+            else if (type == OperationType.BINARY_OR)
+                {
+                throw new AdqlParserException(
+                    "Binary OR operator '|' is not supported in ADQL"
+                    );
+                }
+
+            else if (type == OperationType.BINARY_AND)
+                {
+                throw new AdqlParserException(
+                    "Binary AND operator '&' is not supported in ADQL"
+                    );
+                }
+            
+            else if (type == OperationType.BINARY_XOR)
+                {
+                throw new AdqlParserException(
+                    "Binary XOR operator '^' is not supported in ADQL"
+                    );
+                }
+            }
+        }
+    
     /**
      * Process an Operation.
      * @throws AdqlParserException
@@ -439,16 +462,11 @@ implements AdqlParser
         log.debug("  name [{}]", oper.getName());
         log.debug("  type [{}]", oper.getOperation());
         //
-        // Check for unsupported operations.
-        if (oper.getOperation() == OperationType.MOD)
-            {
-            if (subject.syntax().level() == Level.STRICT)
-                {
-                throw new AdqlParserException(
-                    "Modulo '%' operator is not supported in ADQL"
-                    );
-                }
-            }
+        // Check for LEGACY operations.
+        legacy(
+            subject.syntax().level(),
+            oper
+            );
         //
         // Process the rest of the chain
         process(
@@ -1110,7 +1128,7 @@ implements AdqlParser
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-
+        
         if (oper instanceof StringConstant)
             {
             return new MySelectOperWrapper(
@@ -1248,6 +1266,16 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
+        //
+        // Check for LEGACY operations.
+/*
+ * Meeds level ...
+        legacy(
+            level,
+            oper
+            );
+ */        
+        
         final ADQLOperand param1 = oper.getLeftOperand();
         final ADQLOperand param2 = oper.getRightOperand();
 

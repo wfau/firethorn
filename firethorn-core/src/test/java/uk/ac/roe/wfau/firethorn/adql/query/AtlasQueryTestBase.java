@@ -131,9 +131,9 @@ extends TestPropertiesBase
                     );
                 this.workspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
-                    "ATLASv20130426",
+                    "ATLASDR1",
                     resource.schemas().select(
-                        "ATLASv20130426",
+                        "ATLASDR1",
                         "dbo"
                         )
                     );
@@ -193,7 +193,7 @@ extends TestPropertiesBase
                 this.testspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
                     this.workspace.schemas().select(
-                        "ATLASv20130426"
+                        "ATLASDR1"
                         )
                     );
                 this.testspace.schemas().create(
