@@ -35,7 +35,7 @@ public class SchedulerTest
         return this.factories;
         }
 
-	@Scheduled(fixedDelay=10000)
+	//@Scheduled(fixedDelay=10000)
 	public void test()
 		{
 	    log.debug("Start");
@@ -43,7 +43,6 @@ public class SchedulerTest
 	    log.debug("Open [{}]", factories().hibernate().factory().openSession());
 	    log.debug("Session [{}]", factories().hibernate().session());
 	    factories().hibernate().session().close();
-
 	    log.debug("Done");
 		}	
     
