@@ -462,6 +462,23 @@ EOF
 #adqlspace=/adql/resource/32770
 #atlashome=/adql/schema/163889
 
+# ------------------------------------------------
+# Configure Python service.
+# need to be member of group 'users'
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+        +   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        +   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
+        +   firethorn_base=http://coccinea:8080/firethorn
 
 #-----------------------------------------------------------------------------------
 # Run our test queries.
