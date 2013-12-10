@@ -20,88 +20,16 @@
 #
 #
 
-#-------------------------------------------------------------------------------------------
-# Build a new version.
-#[user@laptop]
-
-    oldversion=01.08-beta-02
-    newversion=01.08-beta-03
-
-    source ${HOME:?}/firethorn.settings
-    pushd "${FIRETHORN_CODE:?}"
-
-        for file in $(find . -name 'pom.xml')
-        do
-            sed -i '
-                s/<version>'${oldversion:?}'<\/version>/<version>'${newversion:?}'<\/version>/
-                ' "${file:?}"
-        done
-
-        hg diff
-        hg commit -m "Version ${newversion:?}"
-
-    popd
-
-    source ${HOME:?}/firethorn.settings
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-        mvn -P all eclipse:eclipse
-        
-    popd
-
-#
-# Deploy results to our Maven repository.
-#[user@laptop]
-
-    rsync \
-        --recursive --copy-links --checksum \
-        --stats --human-readable --progress \
-        --prune-empty-dirs \
-        --omit-dir-times \
-        --include='/uk' \
-        --include='/uk/ac' \
-        --include='/uk/ac/roe' \
-        --include='/uk/ac/roe/wfau' \
-        --include='/uk/ac/roe/wfau/**' \
-        --exclude='*' \
-        /var/local/toolkits/maven/repository/ \
-        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
-
-    rsync \
-        --recursive --copy-links --checksum \
-        --stats --human-readable --progress \
-        --prune-empty-dirs \
-        --omit-dir-times \
-        --include='/uk' \
-        --include='/uk/org' \
-        --include='/uk/org/ogsadai' \
-        --include='/uk/org/ogsadai/**' \
-        --exclude='*' \
-        /var/local/toolkits/maven/repository/ \
-        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/ogsadai
-
-    rsync \
-        --recursive --copy-links --checksum \
-        --stats --human-readable --progress \
-        --prune-empty-dirs \
-        --omit-dir-times \
-        --exclude='/uk/ac/roe/wfau/**' \
-        --exclude='/uk/org/ogsadai/**' \
-        --include='*' \
-        /var/local/toolkits/maven/repository/ \
-        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
-
 # ------------------------------------------------
 # Create a new database.
-#[user@laptop]
+#[user@desktop]
 
-    source "${HOME:?}/firethorn/test.machines"
+    source "${HOME:?}/firethorn/live.machines"
     ssh "${sqluser:?}@${sqlhost:?}"
 
         #
         # Set the new database properties.
-        dbversion=Shep0108beta03
+        dbversion=Djer0108Beta04
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 
@@ -185,11 +113,11 @@ cat  "${databasefile:?}"
     exit
 
 #-----------------------------------------------------------------------------------
-# Update the test properties
+# Update our deployment properties
 #[user@laptop]
 
-    oldversion=01.08-beta-02
-    newversion=01.08-beta-03
+    deploytype=live
+    newversion=01.08-beta-04
 
     #
     # Update the version.
@@ -197,12 +125,12 @@ cat  "${databasefile:?}"
         /^firethorn.webapp.version=/ {
             s/^\([^=]*\)=\(.*\)$/\1='${newversion:?}'/
             }
-        ' "${HOME:?}/firethorn/test.properties"
+        ' "${HOME:?}/firethorn/${deploytype:?}.properties"
 
     #
     # Update the JDBC connection settings.
     # Manual transfer from the sqlsh VM.
-    gedit "${HOME:?}/firethorn/test.properties" &
+    gedit "${HOME:?}/firethorn/${deploytype:?}.properties" &
 
         firethorn.meta.url=xxxxx
         firethorn.meta.user=xxxx
@@ -222,7 +150,7 @@ cat  "${databasefile:?}"
 # Deploy the service properties.
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -244,10 +172,22 @@ cat  "${databasefile:?}"
     done
 
 #----------------------------------------------------
+# Tail the Tomcat log.
+#[user@laptop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+#----------------------------------------------------
 # Deploy FireThorn webapp.
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -298,18 +238,22 @@ cat  "${databasefile:?}"
     exit
 
 #----------------------------------------------------
-# SSH login to tail the Tomcat log and tunnel http.
+# Tail the Tomcat log.
 #[user@laptop]
 
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
     source "${deploylist:?}"
-    ssh -L "${fireproxy:?}:localhost:8080" -D "${firesocks:?}" "${fireuser:?}@${firehost:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
 #----------------------------------------------------
 # Deploy OGSADAI webapp.
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -387,7 +331,7 @@ cat  "${databasefile:?}"
 # Update the source code on testvm.
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -422,18 +366,6 @@ EOF
                 popd
             fi
         popd
-    exit
-
-# ------------------------------------------------
-# Initialise the metadata.
-#[user@laptop]
-
-    deploytype=test
-    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
-    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
-
-    source "${deploylist:?}"
-    ssh "${testuser}@${testhost:?}" 
 
         source "${HOME:?}/firethorn.settings"
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
@@ -450,8 +382,7 @@ EOF
 
             source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131029' 'dbo' "${FIRETHORN_META:?}/ATLASv20131029_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1'       'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
 
 #BUG - REST calls don't return anything
 #FIX - run the import command twice :-(
@@ -461,6 +392,9 @@ jdbcspace=${jdbcspace:?}
 adqlspace=${adqlspace:?}
 atlashome=${adqlschema:?}
 EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131029' 'dbo' "${FIRETHORN_META:?}/ATLASv20131029_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131029_TablesSchema.xml"
 
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
@@ -488,110 +422,35 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
 
         popd
-    exit
 
 #jdbcspace=/jdbc/resource/32769
 #adqlspace=/adql/resource/32770
-#atlashome=/adql/schema/163893
+#atlashome=/adql/schema/163889
 
-#-----------------------------------------------------------------------------------
-# Run our test queries.
+# ------------------------------------------------
+# Configure Python service.
+# need to be member of group 'users'
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
     source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
 
-    source "${HOME:?}/firethorn.settings"
-    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        vi /var/www/osa/firethorn.ini
 
-    pushd $(mktemp --directory)
+        -   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        -   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
+        -   firethorn_base=http://coccinea:8080/firethorn
 
-        identity=$(pwgen 16 1)
-        community=$(date '+%A')
-        adqlcopydepth=THIN
+        -   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        -   atlasschema=http://coccinea:8080/firethorn/adql/schema/163892
+        -   firethorn_base=http://coccinea:8080/firethorn
 
-        endpointurl="http://localhost:${fireproxy:?}/firethorn"
-        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+        +   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        +   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
+        +   firethorn_base=http://coccinea:8080/firethorn
 
-        #source "${HOME:?}/firethorn.testing"
-
-        #jdbcspace=/jdbc/resource/360448
-        #adqlspace=/adql/resource/360449
-        #atlasschema=/adql/schema/229422
-
-        jdbcspace=/jdbc/resource/32769
-        adqlspace=/adql/resource/32770
-        atlasschema=/adql/schema/163889
-
-        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
-        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
-        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
-        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'    'rosat'
-        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
-
-        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-
-        #
-        # Confirm an action.
-        confirm()
-            {
-            local message=${1:-Ok}  
-            local response  
-            read -p "${message} (Y/n)" response
-            case ${response:-'y'} in
-                y|Y)
-                    return 0
-                    ;;
-                n|N)
-                    return 1
-                    ;;
-                q|Q)
-                    return 2
-                    ;;
-                *)
-                    return 3
-                    ;;
-            esac
-            }
-
-   
-        logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
-        
-        retest()
-            {
-            exec 6<> ${logged} 
-            while read <&6 adql
-            do
-                if [[ "${adql}" == '' ]]
-                then
-                    echo "SKIP [${adql}]"
-                else                    
-                    if [[ "${adql}" =~ ^# ]]
-                    then
-                        echo "SKIP [${adql}]"
-                    else
-                        echo "--------"
-                        echo "ADQL [${adql}]"
-                        confirm "Run query"
-                        go="$?"
-                        if [ "${go}" -eq 0 ]
-                        then
-                            echo "Running query"
-                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
-                        fi
-
-                        if [ "${go}" -eq 2 ]
-                        then
-                            break
-                        fi
-                    fi
-                fi
-            done
-            echo "Done"
-            exec 6>&-
-            }
-
-        retest
 
