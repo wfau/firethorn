@@ -2931,7 +2931,7 @@ public class ADQLParser implements ADQLParserConstants {
           case COMMA:
             jj_consume_token(COMMA);
             integerValue = SignedInteger();
-                                                                                                            param2 = queryFactory.createOperation(queryFactory.createNumericConstant(integerValue), null, null);
+                                                                                                            param2 = queryFactory.createNumericConstant(integerValue);
             break;
           default:
             jj_la1[94] = jj_gen;
@@ -2953,7 +2953,7 @@ public class ADQLParser implements ADQLParserConstants {
           case COMMA:
             jj_consume_token(COMMA);
             integerValue = SignedInteger();
-                                                                                                               param2 = queryFactory.createOperation(queryFactory.createNumericConstant(integerValue), null, null);
+                                                                                                               param2 = queryFactory.createNumericConstant(integerValue);
             break;
           default:
             jj_la1[95] = jj_gen;

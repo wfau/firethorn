@@ -34,7 +34,7 @@ public class AdqlFunctionsTestCase
     extends AtlasQueryTestBase
     {
     /**
-     * log10() in strict mode.
+     * log() in strict mode.
      *
      */
     @Test
@@ -45,7 +45,7 @@ public class AdqlFunctionsTestCase
                 Level.STRICT
                 ),
             "SELECT TOP 5\n" + 
-            "    log10(ra)\n" + 
+            "    log(ra)\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             ""
@@ -57,50 +57,17 @@ public class AdqlFunctionsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         compare(
             query,
-            "select top 5 log10({ATLAS_VERSION}.dbo.atlassource.ra) as log10 from {ATLAS_VERSION}.dbo.atlassource"
+            "select top 5 log({ATLAS_VERSION}.dbo.atlassource.ra) as LOG from {ATLAS_VERSION}.dbo.atlassource"
             );
         }
 
     /**
-     * log10() in legacy mode.
-     *
-     */
-    @Test
-    public void test001L()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 5\n" + 
-            "    log10(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        compare(
-            query,
-            "select top 5 log10({ATLAS_VERSION}.dbo.atlassource.ra) as log10 from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    /**
-     * log() in strict mode.
+     * log10() in strict mode.
      *
      */
     @Test
@@ -111,7 +78,7 @@ public class AdqlFunctionsTestCase
                 Level.STRICT
                 ),
             "SELECT TOP 5\n" + 
-            "    log(ra)\n" + 
+            "    log10(ra)\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             ""
@@ -123,28 +90,51 @@ public class AdqlFunctionsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         compare(
             query,
-            "select top 5 log({ATLAS_VERSION}.dbo.atlassource.ra) as log from {ATLAS_VERSION}.dbo.atlassource"
+            "select top 5 log10({ATLAS_VERSION}.dbo.atlassource.ra) as LOG10 from {ATLAS_VERSION}.dbo.atlassource"
             );
         }
 
     /**
-     * log() in legacy mode.
+     * round() without length.
      *
      */
     @Test
-    public void test002L()
+    public void test003S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
-                Level.LEGACY
+                Level.STRICT
                 ),
             "SELECT TOP 5\n" + 
-            "    log(ra)\n" + 
+            "    round(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
+            );
+        }
+
+    /**
+     * round() with length.
+     *
+     */
+    @Test
+    public void test004S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    round(ra, 2)\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             ""
@@ -156,12 +146,68 @@ public class AdqlFunctionsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ROUND", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         compare(
             query,
-            "select top 5 log({ATLAS_VERSION}.dbo.atlassource.ra) as log from {ATLAS_VERSION}.dbo.atlassource"
+            "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) as ROUND from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    /**
+     * truncate() without length.
+     *
+     */
+    @Test
+    public void test005S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    truncate(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
+            );
+        }
+
+    /**
+     * truncate() with length.
+     *
+     */
+    @Test
+    public void test006S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    truncate(ra, 2)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("TRUNCATE", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) as TRUNCATE from {ATLAS_VERSION}.dbo.atlassource"
             );
         }
     }

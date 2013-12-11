@@ -456,8 +456,15 @@ public class SQLServerTranslator
             case RAND:
                 return "rand()";
 
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
+            case ROUND:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
             case TRUNCATE:
-                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ")";
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
             
             default:
                 return getDefaultADQLFunction(
