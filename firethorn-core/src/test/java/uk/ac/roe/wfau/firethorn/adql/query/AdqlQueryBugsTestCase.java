@@ -399,14 +399,13 @@ public class AdqlQueryBugsTestCase
             query,
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
-                //new ExpectedField("MIN", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         // TODO
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) as min from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01)"
             );
         }
     
@@ -574,7 +573,7 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("decBase", AdqlColumn.Type.FLOAT, 0),
                 }
             );
         }
