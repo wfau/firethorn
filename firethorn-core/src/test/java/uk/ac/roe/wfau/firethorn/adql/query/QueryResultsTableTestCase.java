@@ -413,10 +413,10 @@ extends TwomassQueryTestBase
                 ),
             new ExpectedColumn[] {
 
-                new ExpectedColumn("COUNT",    AdqlColumn.Type.LONG, 0, "COUNT",    JdbcColumn.Type.BIGINT, 0),
-                new ExpectedColumn("countra",  AdqlColumn.Type.LONG, 0, "countra",  JdbcColumn.Type.BIGINT, 0),
-                new ExpectedColumn("countdec", AdqlColumn.Type.LONG, 0, "countdec", JdbcColumn.Type.BIGINT, 0),
-                new ExpectedColumn("countall", AdqlColumn.Type.LONG, 0, "countall", JdbcColumn.Type.BIGINT, 0),
+                new ExpectedColumn("COUNT",    AdqlColumn.Type.LONG, 0, "COUNT",    JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countra",  AdqlColumn.Type.LONG, 0, "countra",  JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countdec", AdqlColumn.Type.LONG, 0, "countdec", JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countall", AdqlColumn.Type.LONG, 0, "countall", JdbcColumn.Type.BIGINT, 19),
 
                 new ExpectedColumn("MIN",    AdqlColumn.Type.DOUBLE, 0, "MIN",      JdbcColumn.Type.DOUBLE, 0),
                 new ExpectedColumn("minra",  AdqlColumn.Type.DOUBLE, 0, "minra",    JdbcColumn.Type.DOUBLE, 0),

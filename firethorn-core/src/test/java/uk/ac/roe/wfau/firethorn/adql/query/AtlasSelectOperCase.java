@@ -66,7 +66,7 @@ public class AtlasSelectOperCase
             );
         compare(
             query,
-            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub from {ATLAS_VERSION}.dbo.atlassource as atlas"
+            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt - atlas.umgpnterr as sub from {ATLAS_VERSION}.dbo.atlassource as atlas"
             );
         }
 

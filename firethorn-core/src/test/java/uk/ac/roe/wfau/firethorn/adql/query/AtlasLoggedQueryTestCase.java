@@ -38,7 +38,7 @@ public class AtlasLoggedQueryTestCase
     extends AtlasQueryTestBase
     {
 
-    @Test
+    //@Test
     public void test000()
     throws Exception
         {
