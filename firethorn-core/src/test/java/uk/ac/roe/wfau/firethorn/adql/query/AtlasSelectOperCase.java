@@ -66,7 +66,7 @@ public class AtlasSelectOperCase
             );
         compare(
             query,
-            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt+atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub from atlasv20130426.dbo.atlassource as atlas"
+            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub from {ATLAS_VERSION}.dbo.atlassource as atlas"
             );
         }
 
@@ -138,7 +138,7 @@ public class AtlasSelectOperCase
             );
         compare(
             query,
-            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt+atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub, atlas.gmrpnt as gmrpnt, atlas.gmrpnt+atlas.gmrpnterr as gmrsum, atlas.gmrpnt-atlas.gmrpnterr as gmrsub from atlasv20130426.dbo.atlassource as atlas"
+            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt - atlas.umgpnterr as sub, atlas.gmrpnt as gmrpnt, atlas.gmrpnt + atlas.gmrpnterr as gmrsum, atlas.gmrpnt - atlas.gmrpnterr as gmrsub from {ATLAS_VERSION}.dbo.atlassource as atlas"
             );
         }
 
@@ -204,7 +204,7 @@ public class AtlasSelectOperCase
             );
         compare(
             query,
-            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt+atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub from atlasv20130426.dbo.atlassource as atlas"
+            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt - atlas.umgpnterr as sub from {ATLAS_VERSION}.dbo.atlassource as atlas"
             );
         }
     
@@ -276,7 +276,7 @@ public class AtlasSelectOperCase
             );
         compare(
             query,
-            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt+atlas.umgpnterr as sum, atlas.umgpnt-atlas.umgpnterr as sub, atlas.gmrpnt as gmrpnt, atlas.gmrpnt+atlas.gmrpnterr as gmrsum, atlas.gmrpnt-atlas.gmrpnterr as gmrsub from atlasv20130426.dbo.atlassource as atlas"
+            "select top 10 atlas.umgpnt as umgpnt, atlas.umgpnt + atlas.umgpnterr as sum, atlas.umgpnt - atlas.umgpnterr as sub, atlas.gmrpnt as gmrpnt, atlas.gmrpnt + atlas.gmrpnterr as gmrsum, atlas.gmrpnt - atlas.gmrpnterr as gmrsub from {ATLAS_VERSION}.dbo.atlassource as atlas"
             );
         }
 

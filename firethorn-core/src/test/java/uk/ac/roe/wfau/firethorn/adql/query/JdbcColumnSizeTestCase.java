@@ -91,7 +91,7 @@ public class JdbcColumnSizeTestCase
             );
         compare(
             query,
-            "select atlasv20130426.dbo.multiframe.project as project from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            "select {ATLAS_VERSION}.dbo.multiframe.project as project from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
             );
         //
         // Check the actual JDBC column size.
