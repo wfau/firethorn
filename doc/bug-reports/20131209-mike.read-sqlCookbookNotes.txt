@@ -1,0 +1,320 @@
+Email from Mike Read, 09 Dec 2013
+---------------------------------
+
+
+SQL cookbook.
+
+In general change filter attributes in SQL and text eg ymifd -> gmfid. 
+I would also change -0.5 and +0.5 to -5 and +5 just so some results are returned
+
+SELECT mjdObs, ra, dec
+FROM atlasMergeLog, Multiframe 
+WHERE (dec BETWEEN -0.5 AND +0.5) 
+AND (ymfID = multiframeID) AND (ymfID > 0) 
+
+change to
+
+SELECT mjdObs, ra, dec
+FROM atlasMergeLog, Multiframe 
+WHERE (dec BETWEEN -5 AND 5) 
+AND (gmfID = multiframeID) AND (gmfID > 0) 
+
+
+SELECT mjdObs AS yModifiedJulianDate, ra AS fieldCentreRA, dec AS fieldCentreDec
+FROM atlasMergeLog, Multiframe 
+WHERE (dec BETWEEN -0.5 AND +0.5) 
+AND (ymfID = multiframeID) AND (ymfID > 0) 
+
+change to
+
+SELECT mjdObs AS yModifiedJulianDate, ra AS fieldCentreRA, dec AS fieldCentreDec
+FROM atlasMergeLog, Multiframe 
+WHERE (dec BETWEEN -5 AND 5) 
+AND (gmfID = multiframeID) AND (gmfID > 0) 
+
+
+SELECT mjdObs, ra, dec
+FROM Multiframe 
+JOIN atlasMergeLog ON (ymfID = multiframeID)
+WHERE (dec BETWEEN -0.5 AND +0.5) AND (ymfID > 0) 
+
+change to
+
+SELECT mjdObs, ra, dec
+FROM Multiframe 
+JOIN atlasMergeLog ON (gmfID = multiframeID)
+WHERE (dec BETWEEN -5 AND 5) AND (gmfID > 0) 
+
+SELECT mjdObs 
+FROM Multiframe
+WHERE multiframeID IN
+ (SELECT ymfID FROM atlasMergeLog WHERE (dec BETWEEN -0.5 AND +0.5) AND (ymfID > 0)) 
+
+change to
+
+SELECT mjdObs 
+FROM Multiframe
+WHERE multiframeID IN
+ (SELECT gmfID FROM atlasMergeLog WHERE (dec BETWEEN -5 AND 5) AND (gmfID > 0)) 
+
+
+SELECT mjdObs 
+FROM Multiframe
+WHERE multiframeID = ANY
+ (SELECT ymfID FROM atlasMergeLog WHERE (dec BETWEEN -0.5 AND +0.5) AND (ymfID > 0)) 
+
+change to
+
+SELECT mjdObs 
+FROM Multiframe
+WHERE multiframeID = ANY
+ (SELECT gmfID FROM atlasMergeLog WHERE (dec BETWEEN -5 AND 5) AND (gmfID > 0)) 
+
+however ANY does not work, so either query needs changing or "parser", the
+text following this SQL might also need changing depending on what is done
+
+SELECT AVG(jAperMag3)
+FROM atlasSource 
+WHERE jAperMag3 > 0.0 
+
+change to
+
+SELECT AVG(rAperMag3)
+FROM atlasSource 
+WHERE rAperMag3 > 0.0
+
+
+In trying 
+
+SELECT COUNT(*) FROM ProgrammeFrame 
+
+I got
+
+There was an error on the server while processing your request.
+
+( XMLHttpRequest: Network Error 0x2f78, Could not complete the operation due to error 00002f78.)
+
+Tried it again and it worked.
+
+Problem with log/log10 queries ?
+
+SELECT top 1 log10(ra) from atlasmergelog 
+SELECT top 1 log(ra) from atlasmergelog
+
+Query error: A problem occurred while running your query
+
+Problem with pi ?
+
+SELECT top 1 pi()*ra from atlasmergelog
+
+Query error: PARSE_ERROR - [java.lang.NullPointerException] Impossible to update an Operation with a left operand equals to NULL !
+
+Problem with round (might be me not understanding syntax)
+
+SELECT top 1 round(ra,0) from atlasmergelog
+
+Query error: PARSE_ERROR - [java.lang.NullPointerException] Impossible to build an Operation without an operation type (SUM, SUB, MULT or DIV) !
+
+Problem with rand
+
+SELECT top 1 rand(1) from atlasmergelog
+
+Query error: A problem occurred while running your query
+
+problem with sign ?
+
+SELECT top 1 sign(-3) from atlasmergelog
+
+Query error: A problem occurred while running your query
+
+problem with square ?
+
+SELECT top 1 square(4) from atlasmergelog
+
+Query error: A problem occurred while running your query
+
+SELECT COUNT(*) FROM Multiframe WHERE project LIKE "U/UKIDSS/ATLAS%" 
+
+change to
+
+SELECT COUNT(*) FROM Multiframe WHERE project LIKE '%ATLAS%'
+
+NB single quotes
+
+problem with 
+
+SELECT -MIN(decBase) FROM Multiframe WHERE MultiframeID > 0 
+
+There was an error processing your request
+
+Change table of neigbour tables to reflect current neighbours.
+
+SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec 
+FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x
+WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1 
+
+change to
+
+SELECT atlas.sourceID, atlas.ra as ara, atlas.dec as adec, fsc.seqNo, fsc.ra as rra, fsc.dec as rdec 
+FROM atlasSource AS atlas, ROSAT.rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x
+WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1 
+
+
+
+SELECT TOP 50 atlas.ra, atlas.dec, yAperMag3, jAperMag3, hAperMag3, ksAperMag3, psfMag_u, psfMag_g, psfMag_r, psfMag_i, psfMag_z 
+FROM atlasSource AS atlas, BestDR2..PhotoObj AS dr2, atlasSourceXDR2PhotoObj AS x
+WHERE masterObjID=atlas.sourceID AND slaveObjID=dr2.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN (
+SELECT MIN(distanceMins) 
+FROM atlasSourceXDR2PhotoObj
+WHERE masterObjID=x.masterObjID AND sdssPrimary=1) 
+
+change to
+
+SELECT TOP 50 atlas.ra, atlas.dec, gAperMag3, rAperMag3, iAperMag3, zAperMag3, psfMag_u, psfMag_g, psfMag_r, psfMag_i, psfMag_z 
+FROM atlasSource AS atlas, BestDR9.PhotoObj AS dr9, atlasSourceXDR9PhotoObj AS x
+WHERE masterObjID=atlas.sourceID AND slaveObjID=dr9.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN (
+SELECT MIN(distanceMins) 
+FROM atlasSourceXDR9PhotoObj
+WHERE masterObjID=x.masterObjID AND sdssPrimary=1) 
+
+SELECT (s1.ra-s2.ra)*3600.0*COS(RADIANS(s1.dec)) as deltaRA, 
+                (s1.dec-s2.dec)*3600.0 as deltaDec,
+                (s1.yAperMag3-s2.yAperMag3) as dy, 
+                (s1.jAperMag3-s2.jAperMag3) as dj1, 
+                (s1.hAperMag3-s2.hAperMag3) as dh, 
+                (s1.ksAperMag3-s2.ksAperMag3) as dk 
+FROM atlasSource AS s1, atlasSource AS s2, atlasSourceNeighbours AS x
+WHERE s1.yAperMag3 > 0 AND s2.yAperMag3 > 0 AND s1.jAperMag3 > 0 AND s2.jAperMag3 > 0 
+                AND s1.hAperMag3 > 0 AND s2.hAperMag3 > 0 AND s1.ksAperMag3 > 0 AND s2.ksAperMag3 > 0
+                AND masterObjID=s1.sourceID AND slaveObjID=s2.sourceID AND s1.priOrSec=s1.frameSetID AND distanceMins<0.01 AND distanceMins IN (
+SELECT MIN(distanceMins) 
+FROM atlasSourceNeighbours
+WHERE masterObjID=x.masterObjID) 
+
+change to
+
+SELECT (s1.ra-s2.ra)*3600.0*COS(RADIANS(s1.dec)) as deltaRA, 
+                (s1.dec-s2.dec)*3600.0 as deltaDec,
+                (s1.gAperMag3-s2.gAperMag3) as dy, 
+                (s1.rAperMag3-s2.rAperMag3) as dj1, 
+                (s1.iAperMag3-s2.iAperMag3) as dh, 
+                (s1.zAperMag3-s2.zAperMag3) as dk 
+FROM atlasSource AS s1, atlasSource AS s2, atlasSourceNeighbours AS x
+WHERE s1.gAperMag3 > 0 AND s2.gAperMag3 > 0 AND s1.rAperMag3 > 0 AND s2.rAperMag3 > 0 
+                AND s1.iAperMag3 > 0 AND s2.iAperMag3 > 0 AND s1.zAperMag3 > 0 AND s2.zAperMag3 > 0
+                AND masterObjID=s1.sourceID AND slaveObjID=s2.sourceID AND s1.priOrSec=s1.frameSetID AND distanceMins<0.01 AND distanceMins IN (
+SELECT MIN(distanceMins) 
+FROM atlasSourceNeighbours
+WHERE masterObjID=x.masterObjID) 
+
+
+
+SELECT ksPetroMag, jmksExt 
+FROM videosSource WHERE mergedClass=1 AND ksPetroMag>-9.99995e+8 AND jmksExt>-9.99995e+8 
+AND (jppErrBits | ksppErrBits) < 65536 
+
+change to
+
+SELECT iPetroMag, rmiExt 
+FROM atlasSource WHERE mergedClass=1 AND iPetroMag>-9.99995e+8 AND rmiExt>-9.99995e+8 
+AND (rppErrBits | ippErrBits) < 65536 
+
+BUT still get error
+
+There was an error processing your request
+
+SELECT ksPetroMag,jmksExt 
+FROM videoSource WHERE mergedClass=1 AND ksPetroMag>-9.99995e+8 AND jmksExt>-9.99995e+8 
+AND ((jppErrBits | ksppErrBits) < 65536 OR (jppErrBits | ksppErrBits) & 0x00800000 != 0) 
+
+chnage to
+
+SELECT iPetroMag,rmiExt 
+FROM atlasSource WHERE mergedClass=1 AND iPetroMag>-9.99995e+8 AND rmiExt>-9.99995e+8 
+AND ((rppErrBits | ippErrBits) < 65536 OR (rppErrBits | ippErrBits) & 0x00800000 != 0) 
+
+
+BUT still get error
+
+There was an error processing your request
+
+SELECT ksPetroMag,jmksExt 
+FROM atlasSource WHERE mergedClass=1 AND ksPetroMag>-9.99995e+8 AND jmksExt>-9.99995e+8 
+AND jppErrBits & 0x00400000 = 0 
+
+change to
+
+SELECT iPetroMag,rmiExt 
+FROM atlasSource WHERE mergedClass=1 AND iPetroMag>-9.99995e+8 AND rmiExt>-9.99995e+8 
+AND rppErrBits & 0x00400000 = 0 
+
+BUT still get error
+
+There was an error processing your request
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+

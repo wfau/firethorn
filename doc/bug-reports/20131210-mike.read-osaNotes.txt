@@ -1,0 +1,98 @@
+File listing 
+---------------------
+Does not work unless you are logged in.
+When you are logged in you only get ATLASDR1
+
+The file listing only returns the number of HTML rows requested with no option to 
+retrieve further rows. Either you need to get all matching rows in the original
+query (potentially tens of thousands) and page through them in JS  or send subsequent 
+requests off. The old form allowed used to select the number rows of results
+default 100, the query did a select top 100+500 and then says here's a hundred
+rows but there are at least N more, if the user requested the next 100 then
+a new query top (200+500) is performed and the first 100 rows discarded etc and the
+next 100 displayed. You can probably handle this all better now in JS datatables
+but at the very least users need to know that they are not getting all the data.
+
+Supplying a framesetid gives An error "occurred while executing your SQL query"
+
+Change drop down list of filters to u,g,r,i,z eg see
+http://surveys.roe.ac.uk:8080/osa/OImageList_form.jsp
+
+When I click on view in the results I get a pop up saying 
+"The page at osa.roe.ac.uk says there was an error processign your request."
+
+But then when I click on OK the images are displayed.
+
+If you click on one of the images to get the bigger version you can not get
+back to the form as just used. i.e. the image opens in the browser and if you go back
+you just go to osa top level.
+
+
+GetImage
+-------------
+
+
+ATLASv20131029 is offline at the moment while Rob moves databases around
+however GetImage just says 0 rows returned rather  than say unable to connect.
+
+
+MultiGetImage
+-------------
+
+When you get results, again if you click on an individual image then you can't get back 
+to your results easily (though you'll have the emailed link) as you end
+up at osa home.
+
+Region
+---------
+
+Does not work => "Query returned invalid data.. Please try another query"
+
+Also can't enter galactic coords (greyed out).
+
+
+Freeform query
+--------------
+
+Results files (FITS VOTABLE etc) do not contain query metadata, eg query
+run, database(s) queried, date/time of query.
+
+I see various issues with the plotter in Chrome, IE and Firefox.
+Especiallly in the lower section click drag thing where in IE/chrome I can't
+drag the sides and in Firefox once dragged I can't let go. This is in
+mixed scatter/density mode doing a select top 1000 ra,dec from
+atlasmergelog.
+
+These are from Firefox
+
+
+TypeError: chart.renderer.rect(...).attr(...).live is not a function
+	   
+
+....487543], [221.505703, -2.733153], [221.505997, -2.997265], [221.632102, -2.2232...
+
+viewer (line 830)
+TypeError: this.movie.clearText is not a function
+	   
+
+this.movie.clearText();
+
+ZeroCl...s?v=781 (line 291)
+uncaught exception: Unable to load SWF file - please check the SWF path
+TypeError: this.resetZoom is undefined
+	   
+
+....487543], [221.505703, -2.733153], [221.505997, -2.997265], [221.632102, -2.2232...
+
+viewer (line 1826)
+TypeError: axis.setExtremes is not a function
+	   
+
+axis.setExtremes(axisData.min, axisData.max, true, animate);
+
+6
+highst...s?v=781 (line 8123)
+
+
+Things work better in normal scatter and histogram plots.
+
