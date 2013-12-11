@@ -33,6 +33,7 @@ import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
@@ -433,6 +434,35 @@ public class SQLServerTranslator
             }
         else{
             return all.toADQL();
+            }
+        }
+    
+    /**
+     * Replacement for the PostgreSQLTranslator method.
+     *
+     *
+     */
+    @Override
+    public String translate(MathFunction funct) throws TranslationException
+        {
+        switch(funct.getType())
+            {
+            case LOG:
+                return "log(" + translate(funct.getParameter(0)) + ")";
+
+            case LOG10:
+                return "log10(" + translate(funct.getParameter(0)) + ")";
+
+            case RAND:
+                return "rand()";
+
+            case TRUNCATE:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ")";
+            
+            default:
+                return getDefaultADQLFunction(
+                    funct
+                    );
             }
         }
     }

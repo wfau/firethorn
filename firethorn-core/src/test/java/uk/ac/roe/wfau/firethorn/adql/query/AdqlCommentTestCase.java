@@ -45,7 +45,7 @@ public class AdqlCommentTestCase
             "*/" +
             "",
 
-            "SELECT TOP 100 ATLASv20130426.dbo.atlasSource.ra AS ra , ATLASv20130426.dbo.atlasSource.dec AS dec FROM ATLASv20130426.dbo.atlasSource"
+            "SELECT TOP 100 {ATLAS_VERSION}.dbo.atlasSource.ra AS ra , {ATLAS_VERSION}.dbo.atlasSource.dec AS dec FROM {ATLAS_VERSION}.dbo.atlasSource"
             );
         }
 
@@ -71,7 +71,7 @@ public class AdqlCommentTestCase
             "*/" +
             "",
 
-            "SELECT TOP 100 ATLASv20130426.dbo.atlasSource.ra AS ra , ATLASv20130426.dbo.atlasSource.dec AS dec FROM ATLASv20130426.dbo.atlasSource"
+            "SELECT TOP 100 {ATLAS_VERSION}.dbo.atlasSource.ra AS ra , {ATLAS_VERSION}.dbo.atlasSource.dec AS dec FROM {ATLAS_VERSION}.dbo.atlasSource"
             );
         }
     }

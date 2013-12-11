@@ -52,6 +52,12 @@ public class AtlasQueryTestBase
 extends TestPropertiesBase
     {
 
+    protected static final String ATLAS_VERSION = "ATLASDR1" ; 
+  //protected static final String ATLAS_VERSION = "ATLASv20131127" ; 
+  //protected static final String ATLAS_VERSION = "ATLASv20131029" ; 
+  //protected static final String ATLAS_VERSION = "ATLASv20130426" ; 
+  //protected static final String ATLAS_VERSION = "ATLASv20130304" ; 
+
     protected JdbcResource resource ;
     protected AdqlResource workspace ;
     protected AdqlResource testspace ;
@@ -61,6 +67,58 @@ extends TestPropertiesBase
     public void schema()
         {
 
+        }
+
+    public void loadCatalog(final String name)
+        {
+        loadCatalog(
+            name,
+            name
+            );
+        }
+
+    public void loadCatalog(final String name, final String alias)
+        {
+        try {
+            this.workspace.schemas().create(
+                BaseComponent.CopyDepth.THIN,
+                alias,
+                resource.schemas().select(
+                    name,
+                    "dbo"
+                    )
+                );
+            }
+        catch (NotFoundException ouch)
+            {
+            log.warn("Unable to load catalog [{}]", name);
+            }
+        }
+
+    
+    public void loadSchema(final String name)
+        {
+        loadSchema(
+            name,
+            name
+            );
+        }
+
+    public void loadSchema(final String name, final String alias)
+        {
+        try {
+            this.testspace.schemas().create(
+                BaseComponent.CopyDepth.THIN,
+                alias,
+                this.workspace.schemas().select(
+                    name
+                    )
+                );
+            }
+        catch (NotFoundException ouch)
+            {
+            log.warn("Unable to load schema [{}]", name);
+            }
         }
 
     /**
@@ -129,39 +187,22 @@ extends TestPropertiesBase
                 this.workspace = factories().adql().resources().create(
                     "workspace"
                     );
-                this.workspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    "ATLASDR1",
-                    resource.schemas().select(
-                        "ATLASDR1",
-                        "dbo"
-                        )
-                    );
-                this.workspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    "ROSAT",
-                    resource.schemas().select(
-                        "ROSAT",
-                        "dbo"
-                        )
-                    );
-                this.workspace.schemas().create(
-                        BaseComponent.CopyDepth.THIN,
-                        "BestDR8",
-                        resource.schemas().select(
-                            "BestDR8",
-                            "dbo"
-                            )
-                        );
+
+                loadCatalog(
+                    ATLAS_VERSION
+                    );                
                 
-                this.workspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    "TWOMASS",
-                    resource.schemas().select(
-                        "TWOMASS",
-                        "dbo"
-                        )
-                    );
+                loadCatalog(
+                    "ROSAT"
+                    );                
+                
+                loadCatalog(
+                    "BestDR8"
+                    );                
+
+                loadCatalog(
+                    "TWOMASS"
+                    );                
                 }
             }
 
@@ -190,30 +231,21 @@ extends TestPropertiesBase
                 this.testspace = factories().adql().resources().create(
                     "testspace"
                     );
-                this.testspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    this.workspace.schemas().select(
-                        "ATLASDR1"
-                        )
+
+                loadSchema(
+                    ATLAS_VERSION
                     );
-                this.testspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    this.workspace.schemas().select(
-                        "ROSAT"
-                        )
+
+                loadSchema(
+                    "ROSAT"
                     );
-                this.testspace.schemas().create(
-                        BaseComponent.CopyDepth.THIN,
-                        this.workspace.schemas().select(
-                            "BestDR8"
-                            )
-                        );
-                    
-                this.testspace.schemas().create(
-                    BaseComponent.CopyDepth.THIN,
-                    this.workspace.schemas().select(
-                        "TWOMASS"
-                        )
+
+                loadSchema(
+                    "BestDR8"
+                    );
+
+                loadSchema(
+                    "TWOMASS"
                     );
                 }
             }
@@ -416,7 +448,7 @@ extends TestPropertiesBase
             );
         assertEquals(
             clean(
-                osql
+                osql.replace("{ATLAS_VERSION}", ATLAS_VERSION)
                 ),
             clean(
                 query.osql()
