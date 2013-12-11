@@ -51,7 +51,7 @@ public class AdqlQueryBugsTestCase
             "SELECT TOP 10\n" +
             "    distanceMins AS distance\n" +
             "FROM\n" +
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
+            "    atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -75,7 +75,7 @@ public class AdqlQueryBugsTestCase
             "SELECT TOP 10\n" +
             "    distanceMins AS distance\n" +
             "FROM\n" +
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
+            "    atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -94,7 +94,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 10 atlasv20130426.dbo.atlassourcextwomass_psc.distancemins as dist from atlasv20130426.dbo.atlassourcextwomass_psc"
+            "select top 10 {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as dist from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc"
             );
         }
 
@@ -191,7 +191,7 @@ public class AdqlQueryBugsTestCase
             "    rosat.dec\n" +
             "FROM\n" +
             "    atlasSource AS atlas,\n" +
-            "    ROSAT.rosat_fsc AS rosat,\n" +
+            "    rosat_fsc AS rosat,\n" +
             "    atlasSourceXrosat_fsc AS neighbours\n" +
             "WHERE\n" +
             "    neighbours.masterObjID=atlas.sourceID\n" +
@@ -224,7 +224,7 @@ public class AdqlQueryBugsTestCase
             "    rosat.dec\n" +
             "FROM\n" +
             "    atlasSource AS atlas,\n" +
-            "    ROSAT.rosat_fsc AS rosat,\n" +
+            "    rosat_fsc AS rosat,\n" +
             "    atlasSourceXrosat_fsc AS neighbours\n" +
             "WHERE\n" +
             "    neighbours.masterObjID=atlas.sourceID\n" +
@@ -300,7 +300,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas where atlas.sourceid % 100 = 0"
             );
         }
 
@@ -322,7 +322,7 @@ public class AdqlQueryBugsTestCase
             "    atlas.dec\n" +
             "FROM\n" +
             "    atlasSource AS atlas,\n" +
-            "    TWOMASS.twomass_psc AS twomass,\n" +
+            "    twomass_psc AS twomass,\n" +
             "    atlasSourceXtwomass_psc AS neighbours\n" +
             "WHERE\n" +
             "    masterObjID=atlas.sourceID\n" +
@@ -354,7 +354,7 @@ public class AdqlQueryBugsTestCase
         // TODO
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) as min from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
 
@@ -374,7 +374,7 @@ public class AdqlQueryBugsTestCase
             "    atlas.dec\n" +
             "FROM\n" +
             "    atlasSource AS atlas,\n" +
-            "    TWOMASS.twomass_psc AS twomass,\n" +
+            "    twomass_psc AS twomass,\n" +
             "    atlasSourceXtwomass_psc AS neighbours\n" +
             "WHERE\n" +
             "    masterObjID=atlas.sourceID\n" +
@@ -406,7 +406,7 @@ public class AdqlQueryBugsTestCase
         // TODO
         compare(
             query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) as min from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
     
@@ -446,7 +446,7 @@ public class AdqlQueryBugsTestCase
 
         compare(
             query,
-            "select top 10 atlasv20130426.dbo.multiframe.utdate as utdate, atlasv20130426.dbo.multiframe.dateobs as dateobs from atlasv20130426.dbo.multiframe"
+            "select top 10 {ATLAS_VERSION}.dbo.multiframe.utdate as utdate, {ATLAS_VERSION}.dbo.multiframe.dateobs as dateobs from {ATLAS_VERSION}.dbo.multiframe"
             );
         }
 
@@ -488,7 +488,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 100 neighbours.distancemins as distancemins from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid-sources.ident < 1000000"
+            "select top 100 neighbours.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 {ATLAS_VERSION}.dbo.atlassource.sourceid as ident from {ATLAS_VERSION}.dbo.atlassource) as sources where neighbours.masterobjid - sources.ident < 1000000"
             );
         }
 
@@ -517,7 +517,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            "select count(*) as count_all from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
             );
         }
 
@@ -558,29 +558,24 @@ public class AdqlQueryBugsTestCase
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
-
+        	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
             );
-        	assertEquals(
-                AdqlQuery.Syntax.State.VALID,
-                query.syntax().state()
-                );
+
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
        
+        compare(
+            query,
+            "select -{ATLAS_VERSION}.dbo.multiframe.decbase as decbase from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0"
+            );
             
-            compare(
-                    query,
-                    "select -atlasv20130426.dbo.multiframe.decbase as decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
-                    );
-            
-            validate(
-                    query,
-                    new ExpectedField[] {
-                        new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
-                        }
-                    );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
+                }
+            );
         }
-
-
-    
-
     }
