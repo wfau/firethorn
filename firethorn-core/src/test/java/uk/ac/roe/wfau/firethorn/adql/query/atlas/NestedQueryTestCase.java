@@ -15,11 +15,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query ;
+package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 
+import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
 
 
 /**
@@ -45,7 +51,7 @@ extends AtlasQueryTestBase
     public void test000()
     throws Exception
         {
-        compare(
+        final AdqlQuery query = this.queryspace.queries().create(
             "SELECT\n" +
             "    DistanceMins\n" +
             "FROM\n" +
@@ -72,12 +78,23 @@ extends AtlasQueryTestBase
             "    sdssPrimary = 1\n" +
             "AND " +
             "    T.id = CrossMatch.masterObjID\n" +
-            "",
-
-            "SELECT CrossMatch.distanceMins AS DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj AS CrossMatch , (SELECT s.sourceID AS id FROM ATLASv20130426.dbo.atlasSource AS s WHERE s.ra > 182 AND s.ra < 184 AND s.dec > -3 AND s.dec < -1 AND s.mergedClass = 1 GROUP BY s.sourceID) AS T WHERE CrossMatch.distanceMins < 2/60.0 AND CrossMatch.sdssType = 3 AND CrossMatch.sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                }
+            );
+        compare(
+            query,
+            "SELECT CrossMatch.distanceMins AS DistanceMins FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj AS CrossMatch , (SELECT s.sourceID AS id FROM {ATLAS_VERSION}.dbo.atlasSource AS s WHERE s.ra > 182 AND s.ra < 184 AND s.dec > -3 AND s.dec < -1 AND s.mergedClass = 1 GROUP BY s.sourceID) AS T WHERE CrossMatch.distanceMins < 2 / 60.0 AND CrossMatch.sdssType = 3 AND CrossMatch.sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
             );
         }
-
 
     /**
      * Test query Subquery in From - returns 2876 rows"
@@ -91,7 +108,7 @@ extends AtlasQueryTestBase
     public void test001()
     throws Exception
         {
-        compare(
+        final AdqlQuery query = this.queryspace.queries().create(
             "SELECT\n" +
             "    DistanceMins\n" +
             "FROM\n" +
@@ -107,9 +124,21 @@ extends AtlasQueryTestBase
             "    DistanceMins < 2/60.0\n" +
             "AND\n" +
             "    sdsstype = 3\n" +
-            "",
-
-            "SELECT Crossmatch.distanceMins AS DistanceMins FROM (SELECT TOP 10000 ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj WHERE ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1) AS Crossmatch WHERE Crossmatch.distanceMins < 2/60.0 AND Crossmatch.sdssType = 3"
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                }
+            );
+        compare(
+            query,
+            "SELECT Crossmatch.distanceMins AS DistanceMins FROM (SELECT TOP 10000 {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj WHERE {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1) AS Crossmatch WHERE Crossmatch.distanceMins < 2 / 60.0 AND Crossmatch.sdssType = 3"
             );
         }
 
@@ -126,7 +155,7 @@ extends AtlasQueryTestBase
     public void test002()
     throws Exception
         {
-        compare(
+        final AdqlQuery query = this.queryspace.queries().create(
             "SELECT\n" +
             "    DistanceMins\n" +
             "FROM\n" +
@@ -144,9 +173,21 @@ extends AtlasQueryTestBase
             "    AND\n" +
             "        CrossMatch.masterObjID = sourceID\n" +
             "    ) > 0\n" +
-            "",
-
-            "SELECT DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj as CrossMatch WHERE ( SELECT s.sourceID FROM ATLASv20130426.dbo.atlasSource as s WHERE ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterObjID = sourceID ) > 0"
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                }
+            );
+        compare(
+            query,
+            "SELECT DistanceMins FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj as CrossMatch WHERE ( SELECT s.sourceID FROM {ATLAS_VERSION}.dbo.atlasSource as s WHERE ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterObjID = sourceID ) > 0"
             );
         }
     }

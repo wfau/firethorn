@@ -15,14 +15,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query;
+package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -30,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 @Slf4j
-public class AdqlFunctionsTestCase
+public class MathFunctionsTestCase
     extends AtlasQueryTestBase
     {
     /**

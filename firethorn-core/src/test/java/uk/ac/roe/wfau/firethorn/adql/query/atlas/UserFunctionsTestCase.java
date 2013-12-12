@@ -15,13 +15,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query ;
+package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 
 import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -30,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 @Slf4j
-public class UDFFunctionsTestCase
+public class UserFunctionsTestCase
 extends AtlasQueryTestBase
     {
 
@@ -38,40 +40,31 @@ extends AtlasQueryTestBase
     public void test001()
     throws Exception
         {
-        validate(
-            this.queryspace.queries().create(
-                "SELECT"
-                + "   fDMS(87.5) as fdmscol"
-                + " FROM"
-                + "    adql_atlas.Filter as fit"
-                + ""
-                ),
-            new ExpectedField[] {
-                new ExpectedField("fdmscol", AdqlColumn.Type.CHAR, 32),
-                }
-            );
-        }
-    @Test
-    public void test002()
-    throws Exception
-        {
         final AdqlQuery query = this.queryspace.queries().create(
-				"SELECT"
-                + " fDMS(87.5) as fdmscol"
-                + " FROM"
-                + " adql_atlas.Filter"
-                + ""
+				"SELECT\n" +
+                "    fDMS(87.5) as fdmscol\n" +
+                "FROM\n" +
+                "    Filter\n" +
+                ""
                 );
 
         log.debug(" ADQL [{}]", query.adql());
         log.debug(" OSQL [{}]", query.osql());
 
         assertEquals(
-            "SELECT dbo.fDMS(87.5) AS fdmscol FROM ATLASv20130304.dbo.Filter",
-            query.osql().replace('\n', ' ')
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("fdmscol", AdqlColumn.Type.CHAR, 32)
+                }
+            );
+        compare(
+            query,
+            "SELECT dbo.fDMS(87.5) AS fdmscol FROM {ATLAS_VERSION}.dbo.Filter"
             );
         }
-
-
     }
 

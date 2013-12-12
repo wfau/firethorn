@@ -33,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
+
 /**
  *
  *
