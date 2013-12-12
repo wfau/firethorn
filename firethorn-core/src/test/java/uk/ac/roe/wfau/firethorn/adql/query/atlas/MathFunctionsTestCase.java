@@ -247,4 +247,61 @@ public class MathFunctionsTestCase
             "select pi() as pi from atlasdr1.dbo.atlassource"
             );
         }
+
+    /**
+     * rand() without seed param
+     *
+     */
+    @Test
+    public void test008S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT\n" + 
+            "    rand()\n" + 
+            "FROM\n" + 
+            "    atlassource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
+            );
+        }
+
+    /**
+     * rand() with seed param
+     *
+     */
+    @Test
+    public void test009S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT\n" + 
+            "    rand(2)\n" + 
+            "FROM\n" + 
+            "    atlassource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("RAND", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select rand(2) as rand from atlasdr1.dbo.atlassource"
+            );
+        }
+
     }

@@ -454,7 +454,7 @@ public class SQLServerTranslator
                 return "log10(" + translate(funct.getParameter(0)) + ")";
 
             case RAND:
-                return "rand()";
+                return "rand(" + translate(funct.getParameter(0)) + ")";
 
             // Extra param to choose the rounding method.
             // http://technet.microsoft.com/en-us/library/ms175003.aspx
