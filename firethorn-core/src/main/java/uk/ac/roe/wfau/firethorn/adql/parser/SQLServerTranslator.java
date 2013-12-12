@@ -264,6 +264,7 @@ public class SQLServerTranslator
         final StringBuilder builder = new StringBuilder();
         //
         // If the function is user defined.
+//ZRQ-UDF
         if (function instanceof UserDefinedFunction)
             {
             //

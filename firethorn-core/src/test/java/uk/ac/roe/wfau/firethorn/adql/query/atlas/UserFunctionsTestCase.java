@@ -41,10 +41,11 @@ extends AtlasQueryTestBase
     throws Exception
         {
         final AdqlQuery query = this.queryspace.queries().create(
-				"SELECT\n" +
-                "    fDMS(87.5) as fdmscol\n" +
+				"SELECT TOP 5\n" +
+                "    fHMS(ra),\n" +
+                "    fDMS(dec)\n" +
                 "FROM\n" +
-                "    Filter\n" +
+                "    atlasSource\n" +
                 ""
                 );
 
@@ -58,13 +59,49 @@ extends AtlasQueryTestBase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("fdmscol", AdqlColumn.Type.CHAR, 32)
+                new ExpectedField("fHMS", AdqlColumn.Type.CHAR, 32),
+                new ExpectedField("fDMS", AdqlColumn.Type.CHAR, 32)
                 }
             );
         compare(
             query,
-            "SELECT dbo.fDMS(87.5) AS fdmscol FROM {ATLAS_VERSION}.dbo.Filter"
+            "SELECT TOP 5 {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra) AS fhms, {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdms FROM {ATLAS_VERSION}.dbo.atlasSource"
             );
         }
+
+    
+    @Test
+    public void test002()
+    throws Exception
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+                "SELECT TOP 5\n" +
+                "    fHMS(ra)  AS fra,\n" +
+                "    fDMS(dec) AS fdec\n" +
+                "FROM\n" +
+                "    atlasSource\n" +
+                ""
+                );
+
+        log.debug(" ADQL [{}]", query.adql());
+        log.debug(" OSQL [{}]", query.osql());
+
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("fra",  AdqlColumn.Type.CHAR, 32),
+                new ExpectedField("fdec", AdqlColumn.Type.CHAR, 32)
+                }
+            );
+        compare(
+            query,
+            "SELECT TOP 3 {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra) AS fra, {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdec FROM {ATLAS_VERSION}.dbo.atlasSource"
+            );
+        }
+    
     }
 

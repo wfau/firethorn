@@ -61,6 +61,7 @@ import adql.query.operand.NumericConstant;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
+import adql.query.operand.function.DefaultUDF;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
@@ -148,9 +149,27 @@ implements AdqlParser
      *  Factory for building an ADQL query representation.
      *
      */
-    public class AdqlQueryFactoryImpl
+    public static class AdqlQueryFactoryImpl
     extends ADQLQueryFactory
         {
+        /**
+         * Public constructor.
+         *
+         */
+        public AdqlQueryFactoryImpl()
+            {
+            super();
+            }
+
+        /**
+         * Public constructor.
+         *
+         */
+        public AdqlQueryFactoryImpl(boolean unknowns)
+            {
+            super(unknowns);
+            }
+        
         /**
          * Create a SelectItem.
          *
@@ -177,17 +196,99 @@ implements AdqlParser
         throws Exception
             {
             log.debug("createUserDefinedFunction(String, ADQLOperand[])");
-            log.debug("  Name [{}][{}]", name);
+            log.debug("  Name [{}]", name);
 
-            // Need to check the function resource (catalog).
-            // Some functions are schema specific.
-            return super.createUserDefinedFunction(
-                name,
-                params
-                );
+            //
+            // SIGN()
+            if ("sign".equalsIgnoreCase(name))
+                {
+                //ZRQ-UDF
+                return null ;
+                }
+            //
+            // SQUARE()
+            if ("square".equalsIgnoreCase(name))
+                {
+                //ZRQ-UDF
+                return null ;
+                }
+            //
+            // Default
+            else {
+                // Need to check the function resource (catalog).
+                // Some functions are schema specific.
+                return super.createUserDefinedFunction(
+                    name,
+                    params
+                    );
+                }
+            }
+
+        protected static class SchemaDefinedFunction
+        extends UserDefinedFunction
+            {
+
+            @Override
+            public boolean isNumeric()
+                {
+                // TODO Auto-generated method stub
+                return false;
+                }
+
+            @Override
+            public boolean isString()
+                {
+                // TODO Auto-generated method stub
+                return false;
+                }
+
+            @Override
+            public String getName()
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public ADQLObject getCopy() throws Exception
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public int getNbParameters()
+                {
+                // TODO Auto-generated method stub
+                return 0;
+                }
+
+            @Override
+            public ADQLOperand[] getParameters()
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public ADQLOperand getParameter(int index)
+                throws ArrayIndexOutOfBoundsException
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public ADQLOperand setParameter(int index, ADQLOperand replacer)
+                throws ArrayIndexOutOfBoundsException, NullPointerException,
+                Exception
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+            
             }
         }
-
 
     protected AdqlQuery.Mode mode ;
 

@@ -303,5 +303,60 @@ public class MathFunctionsTestCase
             "select rand(2) as rand from atlasdr1.dbo.atlassource"
             );
         }
-
+    
+    /**
+     * sign() in STRICT mode.
+     *
+     */
+    @Test
+    public void test010S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT\n" + 
+            "    sign(2)\n" + 
+            "FROM\n" + 
+            "    atlassource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
+            );
+        }
+    
+    /**
+     * sign() in LEGACY mode.
+     *
+     */
+    @Test
+    public void test010L()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    sign(2)\n" + 
+            "FROM\n" + 
+            "    atlassource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        compare(
+            query,
+            "select sign(2) as sign from atlasdr1.dbo.atlassource"
+            );
+        }
     }
