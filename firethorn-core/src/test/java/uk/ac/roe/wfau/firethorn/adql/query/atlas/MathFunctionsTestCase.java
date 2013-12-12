@@ -38,7 +38,7 @@ public class MathFunctionsTestCase
     extends AtlasQueryTestBase
     {
     /**
-     * log() in strict mode.
+     * log()
      *
      */
     @Test
@@ -71,7 +71,7 @@ public class MathFunctionsTestCase
         }
 
     /**
-     * log10() in strict mode.
+     * log10()
      *
      */
     @Test
@@ -212,6 +212,39 @@ public class MathFunctionsTestCase
         compare(
             query,
             "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) as TRUNCATE from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    /**
+     * pi()
+     *
+     */
+    @Test
+    public void test007S()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT\n" + 
+            "    pi()\n" + 
+            "FROM\n" + 
+            "    atlassource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select pi() as pi from atlasdr1.dbo.atlassource"
             );
         }
     }
