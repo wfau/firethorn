@@ -39,7 +39,7 @@ public class LoggedQueryTestCase
     extends AtlasQueryTestBase
     {
 
-    //@Test
+    @Test
     public void test000()
     throws Exception
         {
@@ -52,7 +52,7 @@ public class LoggedQueryTestCase
         final String linestr = reader.readLine();
         for (int linenum = 1; (linestr != null) ; linenum++)
             {
-            inner(linenum, linestr);
+            test(linenum, linestr);
             }
         }
 
@@ -60,7 +60,7 @@ public class LoggedQueryTestCase
         readOnly=false,
         propagation=Propagation.REQUIRES_NEW
         )
-    public void inner(final int linenum, final String linestr)
+    public void test(final int linenum, final String linestr)
         {
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
