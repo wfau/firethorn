@@ -1,0 +1,122 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# ------------------------------------------------
+# Edit the metadatadatabase.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn/live.machines"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}"
+
+
+            use [FirethornMetadataDave0108Devel]
+            go
+
+
+            SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'FT0108%'
+            go
+
+	            FT0108AdqlColumnEntity
+	            FT0108AdqlQueryEntity
+	            FT0108AdqlQueryJoinToBaseResource
+	            FT0108AdqlResourceEntity
+	            FT0108AdqlSchemaEntity
+	            FT0108AdqlTableEntity
+	            FT0108AuthenticationEntity
+	            FT0108CommunityEntity
+	            FT0108ConfigProperty
+	            FT0108IdentityEntity
+	            FT0108IvoaColumnEntity
+	            FT0108IvoaResourceEntity
+	            FT0108IvoaSchemaEntity
+	            FT0108IvoaTableEntity
+	            FT0108JdbcColumnEntity
+	            FT0108JdbcResourceEntity
+	            FT0108JdbcSchemaEntity
+	            FT0108JdbcTableEntity
+	            FT0108JobEntity
+	            FT0108OperationEntity
+	            FT0108TestJobEntity
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0108JdbcTableEntity'
+            go
+
+                ident                                                                                                                                                   
+                created                                                                                                                                                 
+                modified                                                                                                                                                
+                name                                                                                                                                                    
+                text                                                                                                                                                    
+                copydepth                                                                                                                                               
+                scantime                                                                                                                                                
+                status                                                                                                                                                  
+                owner                                                                                                                                                   
+                jdbctype                                                                                                                                                
+                adqlquery                                                                                                                                               
+                parent                                                                                                                                                  
+                adqlstatus                                                                                                                                              
+                jdbccount                                                                                                                                               
+                jdbcstatus                                                                                                                                              
+                                    
+
+            ALTER TABLE FT0108JdbcTableEntity DROP COLUMN adqlstatus
+            go
+            ALTER TABLE FT0108JdbcTableEntity DROP COLUMN jdbcstatus
+            go
+            ALTER TABLE FT0108JdbcTableEntity DROP COLUMN jdbccount
+            go
+
+
+
+
+
+            use [FirethornUserdataDave0108Devel]
+            go
+
+            SELECT table_name FROM information_schema.tables WHERE table_schema = 'dbo' ORDER BY table_name
+            go
+
+                ....
+                QUERY_17203200                                                                                                                                                                                                                                                 
+                QUERY_17367040                                                                                                                                                                                                                                                 
+                QUERY_17530880                                                                                                                                                                                                                                                 
+                QUERY_17760256                                                                                                                                                                                                                                                 
+                QUERY_17924096           
+
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'QUERY_17924096'
+            go
+
+                ra                                                                                                                                                                                                                                                             
+                dec                          
+
+            SELECT * FROM QUERY_17924096
+            go
+
+
+
+
+

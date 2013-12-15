@@ -61,7 +61,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.jdbc">
-		<level value="INFO" />
+		<level value="INDO" />
 	</logger>
 	<logger name="org.springframework.context">
 		<level value="INFO" />
@@ -76,7 +76,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.scheduling">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+
@@ -93,11 +93,14 @@
 	    | Hibernate transactions.
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
-	<logger name="org.springframework.transaction">
-		<level value="DEBUG" />
-	</logger>
 	<logger name="org.springframework.orm">
 		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.transaction">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.transaction.interceptor">
+		<level value="TRACE" />
 	</logger>
 
 	<!--+

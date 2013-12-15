@@ -184,6 +184,7 @@ implements Job
 
         /**
          * Our local service implementation.
+         * @todo simplify what is essentially 'this'.
          *
          */
         protected Job.Executor executor()
@@ -216,6 +217,8 @@ implements Job
         @SelectAtomicMethod
         public Status status(final Identifier ident)
             {
+            log.debug("status(Identifier)");
+            log.debug("  ident [{}]", ident);
             try {
                 return resolver().select(
                     ident
@@ -233,6 +236,8 @@ implements Job
         public Status status(final Identifier ident, final Status status)
             {
             log.debug("status(Identifier, Status)");
+            log.debug("  ident  [{}]", ident);
+            log.debug("  status [{}]", status);
             try {
                 final Job job = resolver().select(
                     ident

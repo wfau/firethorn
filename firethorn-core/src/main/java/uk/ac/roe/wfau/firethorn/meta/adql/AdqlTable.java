@@ -188,7 +188,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
              * The table row count.
              * 
              */
-            public long count();
+            public Long count();
 
             /**
              * The table status.

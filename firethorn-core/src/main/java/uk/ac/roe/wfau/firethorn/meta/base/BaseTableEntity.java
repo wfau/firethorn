@@ -245,19 +245,19 @@ extends BaseComponentEntity
                 return new AdqlTable.Metadata.AdqlMetadata()
                     {
                     @Override
-                    public long count()
+                    public Long count()
                         {
                         return base().meta().adql().count();
                         }
 
                     @Override
-                    public AdqlStatus status()
+                    public AdqlTable.AdqlStatus status()
                         {
                         return base().meta().adql().status();
                         }
 
                     @Override
-                    public void status(AdqlStatus status)
+                    public void status(AdqlTable.AdqlStatus status)
                         {
                         // TODO Auto-generated method stub
                         }

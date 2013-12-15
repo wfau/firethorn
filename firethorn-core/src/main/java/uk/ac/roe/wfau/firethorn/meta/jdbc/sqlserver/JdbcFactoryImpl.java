@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
@@ -45,13 +46,13 @@ public class JdbcFactoryImpl
      * SQL statement to DELETE all data from a table.
      * 
      */
-    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {catalog}.{schema}.{table}" ; 
+    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {tablename}" ; 
 
     /**
      * SQL statement to DROP a table.
      * 
      */
-    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {catalog}.{schema}.{table}" ; 
+    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {tablename}" ; 
 
     @Override
     @CreateMethod
@@ -67,15 +68,9 @@ public class JdbcFactoryImpl
         log.debug("Delete JdbcTable [{}]", table.name());
         JdbcConnection connection = table.resource().connection();
         final String statement = DELETE_DATA_STATEMENT.replace(
-            "{catalog}",
-            table.schema().catalog()
-            ).replace(
-                "{schema}",
-                table.schema().name()
-                ).replace(
-                    "{table}",
-                    table.name()
-                    );
+            "{tablename}",
+            table.namebuilder().toString()
+            );
         try {
             log.debug("Executing SQL [{}]", statement);
             int count = connection.open().createStatement().executeUpdate(
@@ -84,6 +79,9 @@ public class JdbcFactoryImpl
             log.debug("Count [{}]", count);
             table.meta().jdbc().status(
                 JdbcStatus.DELETED
+                );
+            table.meta().adql().status(
+                AdqlStatus.DELETED
                 );
             }
         catch (SQLException ouch)
@@ -102,16 +100,10 @@ public class JdbcFactoryImpl
         {
         log.debug("Drop JdbcTable [{}]", table.name());
         JdbcConnection connection = table.resource().connection();
-        final String statement = DELETE_DATA_STATEMENT.replace(
-            "{catalog}",
-            table.schema().catalog()
-            ).replace(
-                "{schema}",
-                table.schema().name()
-                ).replace(
-                    "{table}",
-                    table.name()
-                    );
+        final String statement = DROP_TABLE_STATEMENT.replace(
+            "{tablename}",
+            table.namebuilder().toString()
+            );
         try {
             log.debug("Executing SQL [{}]", statement);
             int count = connection.open().createStatement().executeUpdate(
@@ -120,6 +112,9 @@ public class JdbcFactoryImpl
             log.debug("Count [{}]", count);
             table.meta().jdbc().status(
                 JdbcStatus.DROPPED
+                );
+            table.meta().adql().status(
+                AdqlStatus.DELETED
                 );
             }
         catch (SQLException ouch)

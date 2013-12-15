@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -122,4 +123,38 @@ public class JdbcTableController
             entity
             );
         }
+
+    /**
+     * POST DELETE request.
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.POST, params={"action"}, produces=JSON_CONTENT)
+    public JdbcTableBean action(
+        @ModelAttribute(TARGET_ENTITY)
+        final JdbcTable entity,
+        @RequestParam(value="action", required=true)
+        final String action
+        ){
+        log.debug("action()");
+        log.debug("  action [{}]", action);
+
+        log.debug(" status [{}]", entity.meta().jdbc().status());
+
+        if ("delete".equals(action))
+            {
+            entity.meta().jdbc().delete();
+            }
+        if ("drop".equals(action))
+            {
+            entity.meta().jdbc().drop();
+            }
+
+        log.debug(" status [{}]", entity.meta().jdbc().status());
+        
+        return bean(
+            entity
+            );
+        }
+
     }

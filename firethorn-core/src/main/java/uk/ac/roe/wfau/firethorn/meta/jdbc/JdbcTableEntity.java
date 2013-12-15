@@ -25,6 +25,8 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -50,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -101,6 +103,12 @@ implements JdbcTable
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcTableEntity";
 
+    /**
+     * Default count value.
+     * 
+     */
+    public static final Long DEFAULT_COUNT_VALUE = new Long(0);
+    
     /**
      * Hibernate column mapping.
      *
@@ -405,7 +413,12 @@ implements JdbcTable
         super(schema, name);
         this.query  = query;
         this.schema = schema;
-        this.jdbctype = type;
+
+        this.jdbctype   = type;
+        this.jdbccount  = DEFAULT_COUNT_VALUE;
+        this.jdbcstatus = JdbcStatus.CREATED;
+        this.adqlstatus = AdqlTable.AdqlStatus.CREATED;
+
         }
 
     @Index(
@@ -605,12 +618,12 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private JdbcType jdbctype ;
-    protected JdbcType jdbctype()
+    private JdbcTable.JdbcType jdbctype ;
+    protected JdbcTable.JdbcType jdbctype()
         {
         return this.jdbctype;
         }
-    protected void jdbctype(final JdbcType type)
+    protected void jdbctype(final JdbcTable.JdbcType type)
         {
         this.jdbctype = type;
         }
@@ -622,12 +635,21 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private JdbcStatus jdbcstatus ;
-    protected JdbcStatus jdbcstatus()
+    @Enumerated(
+        EnumType.STRING
+        )
+    private JdbcTable.JdbcStatus jdbcstatus ;
+    protected JdbcTable.JdbcStatus jdbcstatus()
         {
-        return this.jdbcstatus;
+        if (this.jdbcstatus != null)
+            {
+            return this.jdbcstatus;
+            }
+        else {
+            return JdbcTable.JdbcStatus.UNKNOWN;
+            }
         }
-    protected void jdbcstatus(final JdbcStatus  status)
+    protected void jdbcstatus(final JdbcTable.JdbcStatus status)
         {
         this.jdbcstatus = status;
         }
@@ -639,12 +661,21 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private AdqlStatus adqlstatus ;
-    protected AdqlStatus adqlstatus()
+    @Enumerated(
+        EnumType.STRING
+        )
+    private AdqlTable.AdqlStatus adqlstatus ;
+    protected AdqlTable.AdqlStatus adqlstatus()
         {
-        return this.adqlstatus ;
+        if (this.adqlstatus != null)
+            {
+            return this.adqlstatus ;
+            }
+        else {
+            return AdqlTable.AdqlStatus.UNKNOWN;
+            }
         }
-    protected void adqlstatus(final AdqlStatus  status)
+    protected void adqlstatus(final AdqlTable.AdqlStatus  status)
         {
         this.adqlstatus = status;
         }
@@ -656,12 +687,18 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private long jdbccount ;
-    protected long jdbccount()
+    private Long jdbccount ;
+    protected Long jdbccount()
         {
-        return this.jdbccount;
+        if (this.jdbccount != null)
+            {
+            return this.jdbccount;
+            }
+        else {
+            return DEFAULT_COUNT_VALUE;
+            }
         }
-    protected void jdbccount(final long count)
+    protected void jdbccount(final Long count)
         {
         this.jdbccount = count;
         }
@@ -715,15 +752,17 @@ implements JdbcTable
                         }
 
                     @Override
-                    public JdbcStatus status()
+                    public JdbcTable.JdbcStatus status()
                         {
                         return jdbcstatus();
                         }
 
                     @Override
-                    public void status(final JdbcStatus status)
+                    public void status(final JdbcTable.JdbcStatus status)
                         {
-                        jdbcstatus(status);
+                        jdbcstatus(
+                            status
+                            );
                         }
                     };
                 }
@@ -734,20 +773,23 @@ implements JdbcTable
                 return new AdqlMetadata()
                     {
                     @Override
-                    public long count()
+                    public Long count()
                         {
                         return jdbccount();
                         }
 
                     @Override
-                    public AdqlStatus status()
+                    public AdqlTable.AdqlStatus status()
                         {
-                        return null;
+                        return adqlstatus();
                         }
 
                     @Override
-                    public void status(AdqlStatus status)
+                    public void status(AdqlTable.AdqlStatus status)
                         {
+                        adqlstatus(
+                            status
+                            );
                         }
                     };
                 }

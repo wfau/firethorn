@@ -318,13 +318,13 @@ extends BaseTable<JdbcTable, JdbcColumn>
              * The JDBC table status.
              * 
              */
-            public JdbcStatus status() ;
+            public JdbcTable.JdbcStatus status() ;
 
             /**
              * Set the JDBC table status.
              * 
              */
-            public void status(final JdbcStatus status) ;
+            public void status(final JdbcTable.JdbcStatus status) ;
 
             }
 
