@@ -60,8 +60,8 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -350,7 +350,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input)
             {
             return create(
@@ -362,7 +362,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input)
             {
             return create(
@@ -375,7 +375,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
             {
             return create(
@@ -387,7 +387,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name)
             {
             return create(
@@ -400,7 +400,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
@@ -465,7 +465,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlQuery> select()
             {
             return super.list(
@@ -476,7 +476,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlQuery> select(final AdqlSchema schema)
             {
             return super.list(
@@ -490,7 +490,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text)
             {
             return super.iterable(

@@ -33,8 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
@@ -84,7 +84,7 @@ public class IvoaResourceEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<IvoaResource> select()
             {
             return super.iterable(
@@ -95,7 +95,7 @@ public class IvoaResourceEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public IvoaResource create(final String name)
             {
             return super.insert(

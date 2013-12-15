@@ -52,7 +52,7 @@ extends BaseResource<JdbcSchema>
      * Resource factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseResource.Factory<JdbcResource>
         {
 
@@ -187,23 +187,5 @@ extends BaseResource<JdbcSchema>
      *
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
-
-    /**
-     * The SQL metadata needed to create a column.
-     *
-     *
-    public interface CreateColumn
-        {
-        public String name();
-        public String type();
-        }
-
-    **
-     * The SQL metadata needed to create a column.
-     *
-     *
-    public CreateColumn create();
-    *
-    */
-
+    
     }

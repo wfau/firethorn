@@ -158,6 +158,19 @@ extends BaseTable<AdqlTable, AdqlColumn>
     public BaseTable<?,?> base();
 
     /**
+     * Enum for the ADQL table status.
+     * 
+     */
+    public static enum AdqlStatus
+        {
+        CREATED(),
+        COMPLETED(),
+        TRUNCATED(),
+        DELETED(),
+        UNKNOWN();
+        }
+
+    /**
      * ADQL table metadata.
      * @todo make this consistent with BaseColum.Metadata
      *
@@ -171,6 +184,24 @@ extends BaseTable<AdqlTable, AdqlColumn>
          */
         public interface AdqlMetadata
             {
+            /**
+             * The table row count.
+             * 
+             */
+            public long count();
+
+            /**
+             * The table status.
+             * 
+             */
+            public AdqlStatus status();
+
+            /**
+             * Set the table status.
+             * 
+             */
+            public void status(final AdqlStatus status);
+
             }
 
         /**

@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 public class MathFunctionsTestCase
 extends QuerySelectFieldTestBase
     {
-
+/*
     @Test
     public void test001()
     throws Exception
@@ -55,7 +55,7 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-
+/*
     @Test
     public void test002()
     throws Exception
@@ -77,7 +77,7 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-
+ */
     @Test
     public void test003()
     throws Exception
@@ -85,7 +85,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (ra + dec) AS diff"
+                + "   (ra + dec) AS sum"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -106,7 +106,7 @@ extends QuerySelectFieldTestBase
         {
         final AdqlQuery query = this.schema.queries().create(
             "SELECT"
-            + "   ra + dec AS diff"
+            + "   ra + dec AS sum"
             + " FROM"
             + "    adql_twomass.twomass_psc as twomass"
             + " WHERE"
@@ -132,7 +132,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (int1 + int2) AS diff"
+                + "   (int1 + int2) AS sum"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -198,7 +198,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (ra + dec + 2) AS diff"
+                + "   (ra + dec + 2) AS sum"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -220,7 +220,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (htmID * pts_key) AS diff"
+                + "   (htmID * pts_key) AS prod"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -242,7 +242,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (err_ang / err_ang) AS diff"
+                + "   (err_ang / err_ang) AS div"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -256,6 +256,5 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-
     }
 

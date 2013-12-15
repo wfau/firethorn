@@ -30,9 +30,9 @@ public class JdbcFactoriesImpl
     {
 
     @Autowired
-    private JdbcResource.Factory resources;
+    private JdbcResource.EntityFactory resources;
     @Override
-    public JdbcResource.Factory resources()
+    public JdbcResource.EntityFactory resources()
         {
         return this.resources;
         }

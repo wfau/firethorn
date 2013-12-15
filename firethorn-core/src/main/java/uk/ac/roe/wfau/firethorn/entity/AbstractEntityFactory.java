@@ -26,9 +26,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
@@ -84,7 +84,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @Override
-    @SelectEntityMethod
+    @SelectMethod
     public EntityType select(final Identifier ident)
     throws IdentifierNotFoundException
         {
@@ -110,7 +110,7 @@ implements Entity.EntityFactory<EntityType>
      * Delete an Entity.
      *
      */
-    @DeleteEntityMethod
+    @DeleteMethod
     public void delete(final EntityType entity)
         {
         //log.debug("delete [{}]", entity);
@@ -152,7 +152,7 @@ implements Entity.EntityFactory<EntityType>
      * Select a single object from the results of a query, or throws NotFoundException if the results are empty.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     public EntityType single(final Query query)
     throws NotFoundException
         {
@@ -173,7 +173,7 @@ implements Entity.EntityFactory<EntityType>
      * Return the first result of a query, or null if the results are empty.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     @SuppressWarnings("unchecked")
     public EntityType first(final Query query)
         {
@@ -186,13 +186,13 @@ implements Entity.EntityFactory<EntityType>
      * Select an Iterable set of objects.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     public Iterable<EntityType> iterable(final Query query)
         {
         return new Iterable<EntityType>()
             {
             @Override
-            @SelectEntityMethod
+            @SelectMethod
             @SuppressWarnings("unchecked")
             public Iterator<EntityType> iterator()
                 {
@@ -213,7 +213,7 @@ implements Entity.EntityFactory<EntityType>
      * Select a List of objects.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     @SuppressWarnings("unchecked")
     public List<EntityType> list(final Query query)
         {
@@ -248,7 +248,7 @@ implements Entity.EntityFactory<EntityType>
         }
 
     @Override
-    @CreateEntityMethod
+    @CreateMethod
     public void createEntity(final Runnable oper)
         {
         oper.run();

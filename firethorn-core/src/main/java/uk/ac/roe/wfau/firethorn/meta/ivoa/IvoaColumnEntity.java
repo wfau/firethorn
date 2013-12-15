@@ -39,8 +39,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -135,7 +135,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public IvoaColumn create(final IvoaTable parent, final String name)
             {
             return this.insert(
@@ -147,7 +147,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<IvoaColumn> select(final IvoaTable parent)
             {
             return super.list(
@@ -161,7 +161,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)
         throws NameNotFoundException
             {
@@ -190,7 +190,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaColumn search(final IvoaTable parent, final String name)
             {
             return super.first(

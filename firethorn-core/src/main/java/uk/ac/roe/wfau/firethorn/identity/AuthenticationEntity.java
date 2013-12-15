@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 
 /**
  *
@@ -86,7 +86,7 @@ implements Authentication
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Authentication create(final Operation operation, final Identity identity, final String method)
            {
            log.debug("create(Operation, Identity, String)");

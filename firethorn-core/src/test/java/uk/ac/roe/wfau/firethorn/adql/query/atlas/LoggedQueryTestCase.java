@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 
 import lombok.extern.slf4j.Slf4j;
 

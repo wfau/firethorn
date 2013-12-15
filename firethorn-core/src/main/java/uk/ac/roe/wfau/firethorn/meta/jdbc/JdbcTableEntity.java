@@ -45,15 +45,15 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  *
@@ -105,8 +105,11 @@ implements JdbcTable
      * Hibernate column mapping.
      *
      */
-    protected static final String JDBC_TYPE_COL = "jdbctype" ;
-    protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
+    protected static final String JDBC_TYPE_COL     = "jdbctype"   ;
+    protected static final String JDBC_COUNT_COL    = "jdbccount"  ;
+    protected static final String JDBC_STATUS_COL   = "jdbcstatus" ;
+    protected static final String ADQL_STATUS_COL   = "adqlstatus" ;
+    protected static final String DB_ADQL_QUERY_COL = "adqlquery"  ;
 
     @Component
     public static class Worker
@@ -175,7 +178,7 @@ implements JdbcTable
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name)
             {
             return this.insert(
@@ -187,8 +190,8 @@ implements JdbcTable
             }
 
         @Override
-        @CreateEntityMethod
-        public JdbcTable create(final JdbcSchema schema, final String name, final TableType type)
+        @CreateMethod
+        public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -200,7 +203,7 @@ implements JdbcTable
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
             {
             final JdbcTable table = this.insert(
@@ -242,7 +245,7 @@ implements JdbcTable
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
             {
             return super.list(
@@ -256,7 +259,7 @@ implements JdbcTable
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcTable select(final JdbcSchema parent, final String name)
         throws NameNotFoundException
             {
@@ -284,7 +287,7 @@ implements JdbcTable
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcTable search(final JdbcSchema parent, final String name)
             {
             return super.first(
@@ -347,6 +350,19 @@ implements JdbcTable
             {
             return this.builder;
             }
+
+        /**
+         * The physical JDBC factory implementation.
+         * @todo This should depend on the local database dialect.
+         * 
+         */
+        @Autowired
+        private JdbcTable.JdbcFactory jdbc;
+        @Override
+        public JdbcTable.JdbcFactory jdbc()
+            {
+            return this.jdbc;
+            }
         }
 
     protected JdbcTableEntity()
@@ -360,11 +376,11 @@ implements JdbcTable
             schema,
             null,
             name,
-            TableType.TABLE
+            JdbcType.TABLE
             );
         }
 
-    public JdbcTableEntity(final JdbcSchema schema, final String name, final TableType type)
+    public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcType type)
         {
         this(
             schema,
@@ -380,11 +396,11 @@ implements JdbcTable
             schema,
             query,
             name,
-            TableType.TABLE
+            JdbcType.TABLE
             );
         }
 
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final TableType type)
+    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
         {
         super(schema, name);
         this.query  = query;
@@ -589,16 +605,67 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private TableType jdbctype ;
-    protected TableType jdbctype()
+    private JdbcType jdbctype ;
+    protected JdbcType jdbctype()
         {
         return this.jdbctype;
         }
-    protected void jdbctype(final TableType type)
+    protected void jdbctype(final JdbcType type)
         {
         this.jdbctype = type;
         }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = JDBC_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcStatus jdbcstatus ;
+    protected JdbcStatus jdbcstatus()
+        {
+        return this.jdbcstatus;
+        }
+    protected void jdbcstatus(final JdbcStatus  status)
+        {
+        this.jdbcstatus = status;
+        }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = ADQL_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlStatus adqlstatus ;
+    protected AdqlStatus adqlstatus()
+        {
+        return this.adqlstatus ;
+        }
+    protected void adqlstatus(final AdqlStatus  status)
+        {
+        this.adqlstatus = status;
+        }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = JDBC_COUNT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private long jdbccount ;
+    protected long jdbccount()
+        {
+        return this.jdbccount;
+        }
+    protected void jdbccount(final long count)
+        {
+        this.jdbccount = count;
+        }
+    
     @Override
     public JdbcTable.Metadata meta()
         {
@@ -610,17 +677,53 @@ implements JdbcTable
                 return new JdbcMetadata()
                     {
                     @Override
-                    public TableType type()
+                    public JdbcType type()
                         {
                         return jdbctype() ;
                         }
 
                     @Override
-                    public void type(final TableType type)
+                    public void type(final JdbcType type)
                         {
                         jdbctype(
                             type
                             );
+                        }
+
+                    @Override
+                    public void create()
+                        {
+                        factories().jdbc().tables().jdbc().create(
+                            JdbcTableEntity.this
+                            );
+                        }
+
+                    @Override
+                    public void delete()
+                        {
+                        factories().jdbc().tables().jdbc().delete(
+                            JdbcTableEntity.this
+                            );
+                        }
+
+                    @Override
+                    public void drop()
+                        {
+                        factories().jdbc().tables().jdbc().drop(
+                            JdbcTableEntity.this
+                            );
+                        }
+
+                    @Override
+                    public JdbcStatus status()
+                        {
+                        return jdbcstatus();
+                        }
+
+                    @Override
+                    public void status(final JdbcStatus status)
+                        {
+                        jdbcstatus(status);
                         }
                     };
                 }
@@ -630,12 +733,26 @@ implements JdbcTable
                 {
                 return new AdqlMetadata()
                     {
+                    @Override
+                    public long count()
+                        {
+                        return jdbccount();
+                        }
 
+                    @Override
+                    public AdqlStatus status()
+                        {
+                        return null;
+                        }
+
+                    @Override
+                    public void status(AdqlStatus status)
+                        {
+                        }
                     };
                 }
             };
         }
-
 
     @Override
     public String link()

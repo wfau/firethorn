@@ -49,7 +49,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -387,7 +387,7 @@ else {
 
         @Async
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Future<Status> execute(final Identifier ident)
             {
             log.debug("execute(Identifier)");

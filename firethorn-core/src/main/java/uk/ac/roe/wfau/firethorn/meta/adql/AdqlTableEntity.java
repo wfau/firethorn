@@ -40,8 +40,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -152,7 +152,7 @@ public class AdqlTableEntity
         private AdqlSchema.Factory schemas;
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlTable select(final Identifier ident)
         throws IdentifierNotFoundException
             {
@@ -181,7 +181,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -197,7 +197,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -214,7 +214,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -230,7 +230,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -247,7 +247,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -264,7 +264,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
@@ -282,7 +282,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlTable> select(final AdqlSchema parent)
             {
             return super.list(
@@ -296,7 +296,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlTable select(final AdqlSchema parent, final String name)
         throws NameNotFoundException
             {
@@ -324,7 +324,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlTable search(final AdqlSchema parent, final String name)
             {
             return super.first(

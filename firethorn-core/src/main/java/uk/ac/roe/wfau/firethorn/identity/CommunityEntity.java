@@ -36,8 +36,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 
@@ -98,7 +98,7 @@ implements Community
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Community create(final String uri)
             {
             return create(
@@ -108,7 +108,7 @@ implements Community
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Community create(final String name, final String uri)
             {
             log.debug("create(String, String) [{}][{}]", name, uri);
@@ -120,7 +120,7 @@ implements Community
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Community create(final JdbcResource space, final String name, final String uri)
             {
             log.debug("create(JdbcResource, String, String) [{}][{}][{}]", space, name, uri);
@@ -143,7 +143,7 @@ implements Community
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Community select(final String uri)
             {
             log.debug("select(String) [{}]", uri);

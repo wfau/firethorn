@@ -41,8 +41,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -142,7 +142,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type)
             {
             return this.insert(
@@ -156,7 +156,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
             {
             return this.insert(
@@ -169,7 +169,7 @@ public class JdbcColumnEntity
                 );
             }
 
-        @CreateEntityMethod
+        @CreateMethod
         private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type, final Integer size)
             {
             return this.insert(
@@ -183,7 +183,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field)
             {
             log.debug("JdbcColumn create(JdbcTable, AdqlQuery.SelectField)");
@@ -248,7 +248,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
             {
             return super.list(
@@ -262,7 +262,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcColumn select(final JdbcTable parent, final String name)
         throws NameNotFoundException
             {
@@ -290,7 +290,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcColumn search(final JdbcTable parent, final String name)
             {
             return super.first(

@@ -39,8 +39,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -112,7 +112,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final String name)
             {
             return this.insert(
@@ -124,7 +124,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -140,7 +140,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> base)
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -157,7 +157,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
 		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
 			{
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -173,7 +173,7 @@ implements AdqlSchema
 			}
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -190,7 +190,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -208,7 +208,7 @@ implements AdqlSchema
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -225,7 +225,7 @@ implements AdqlSchema
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlSchema> select(final AdqlResource parent)
             {
             return super.list(
@@ -239,7 +239,7 @@ implements AdqlSchema
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlSchema select(final AdqlResource parent, final String name)
         throws NameNotFoundException
             {
@@ -267,7 +267,7 @@ implements AdqlSchema
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlSchema search(final AdqlResource parent, final String name)
             {
             return super.first(

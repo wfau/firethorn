@@ -75,6 +75,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Builder interface that manipulates the 'real' JDBC tables.
+     * @deprecated
      *
      */
     public static interface Builder
@@ -94,6 +95,36 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * Physical JDBC factory interface.
+     * 
+     */
+    public static interface JdbcFactory
+        {
+
+        /**
+         * Create a 'physical' JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource. 
+         * 
+         */
+        public void create(final JdbcTable table);
+
+        /**
+         * Delete (DELETE) a JDBC data.
+         * *This should only be reachable via a transactional method on our parent resource. 
+         * 
+         */
+        public void delete(final JdbcTable table);
+
+        /**
+         * Delete (DROP) a JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource. 
+         * 
+         */
+        public void drop(final JdbcTable table);
+
+        }
+    
+    /**
      * Table factory interface.
      *
      */
@@ -110,7 +141,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new table.
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final String name, final TableType type);
+        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
 
         /**
          * Create a new query table.
@@ -129,6 +160,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable.Builder builder();
+
+        /**
+         * Our physical JDBC factory.
+         * 
+         */
+        public JdbcTable.JdbcFactory jdbc();
 
         }
 
@@ -178,10 +215,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public boolean exists();
 
     /**
-     * JDBC table types.
+     * Enum for the JDBC table types.
      *
      */
-    public static enum TableType
+    public static enum JdbcType
         {
         TABLE("TABLE"),
         VIEW("VIEW"),
@@ -197,14 +234,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
             return this.jdbc;
             }
 
-        private TableType(final String jdbc)
+        private JdbcType(final String jdbc)
             {
             this.jdbc = jdbc;
             }
 
-        static protected Map<String, TableType> mapping = new HashMap<String, TableType>();
+        static protected Map<String, JdbcType> mapping = new HashMap<String, JdbcType>();
         static {
-            for (final TableType type : TableType.values())
+            for (final JdbcType type : JdbcType.values())
                 {
                 mapping.put(
                     type.jdbc,
@@ -213,7 +250,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
                 }
             }
 
-        static public TableType match(final String string)
+        static public JdbcType match(final String string)
             {
             return mapping.get(
                 string
@@ -221,6 +258,19 @@ extends BaseTable<JdbcTable, JdbcColumn>
             }
         }
 
+    /**
+     * Enum for the physical table status.
+     * 
+     */
+    public static enum JdbcStatus
+        {
+        CREATED(),
+        UPDATED(),
+        DELETED(),
+        DROPPED(),
+        UNKNOWN();
+        }
+    
     /**
      * JDBC table metadata.
      *
@@ -238,13 +288,43 @@ extends BaseTable<JdbcTable, JdbcColumn>
              * Get the database table type.
              *
              */
-            public TableType type();
+            public JdbcType type();
 
             /**
              * Set the database table type.
-             *
+             * 
              */
-            public void type(final TableType type);
+            public void type(final JdbcType type);
+
+            /**
+             * Create the JDBC table.
+             * 
+             */
+            public void create();
+
+            /**
+             * Delete (DELETE) the JDBC data.
+             * 
+             */
+            public void delete();
+
+            /**
+             * Delete (DROP) the JDBC table.
+             * 
+             */
+            public void drop();
+
+            /**
+             * The JDBC table status.
+             * 
+             */
+            public JdbcStatus status() ;
+
+            /**
+             * Set the JDBC table status.
+             * 
+             */
+            public void status(final JdbcStatus status) ;
 
             }
 

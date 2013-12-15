@@ -35,8 +35,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -103,7 +103,7 @@ public class IvoaSchemaEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public IvoaSchema create(final IvoaResource parent, final String name)
             {
             return this.insert(
@@ -115,7 +115,7 @@ public class IvoaSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<IvoaSchema> select(final IvoaResource parent)
             {
             return super.list(
@@ -129,7 +129,7 @@ public class IvoaSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaSchema select(final IvoaResource parent, final String name)
         throws NameNotFoundException
             {
@@ -158,7 +158,7 @@ public class IvoaSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaSchema search(final IvoaResource parent, final String name)
             {
             return super.first(

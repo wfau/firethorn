@@ -180,7 +180,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new table.
          *
          */
-        public JdbcTable create(final String name, final JdbcTable.TableType type);
+        public JdbcTable create(final String name, final JdbcTable.JdbcType type);
 
         /**
          *  Create a new table.

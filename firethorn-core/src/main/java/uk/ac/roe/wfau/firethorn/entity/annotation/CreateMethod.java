@@ -28,13 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
     )
 @Transactional(
     readOnly=false,
-    propagation=Propagation.REQUIRES_NEW
+    propagation=Propagation.REQUIRED
     )
 /**
- * Transactional annotation for an atomic update operation.
+ * Transactional annotation for a create operation.
  * 
  */
-public @interface UpdateAtomicMethod
+public @interface CreateMethod
     {
     }
 

@@ -27,14 +27,14 @@ import org.springframework.transaction.annotation.Transactional;
     RetentionPolicy.RUNTIME
     )
 @Transactional(
-    readOnly=false,
-    propagation=Propagation.REQUIRES_NEW
+    readOnly=true,
+    propagation=Propagation.REQUIRED
     )
 /**
- * Transactional annotation for an atomic update operation.
+ * Transactional annotation for a select operation.
  * 
  */
-public @interface UpdateAtomicMethod
+public @interface SelectMethod
     {
     }
 

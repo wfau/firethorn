@@ -34,8 +34,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
@@ -112,7 +112,7 @@ implements Identity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Identity create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
@@ -135,7 +135,7 @@ implements Identity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Identity select(final Community community, final String name)
             {
             return super.first(

@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 
 /**
  *
@@ -93,7 +93,7 @@ implements Operation
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public Operation create(final String target, final String method, final String source)
             {
             return current(

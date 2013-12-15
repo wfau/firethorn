@@ -34,8 +34,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
 /**
  * ConfigProperty implementation.
@@ -97,7 +97,7 @@ implements ConfigProperty
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public ConfigProperty select(final URI key)
             {
             return super.first(
@@ -111,7 +111,7 @@ implements ConfigProperty
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public ConfigProperty create(final URI key, final String name, final String value)
             {
             final ConfigProperty property = this.select(

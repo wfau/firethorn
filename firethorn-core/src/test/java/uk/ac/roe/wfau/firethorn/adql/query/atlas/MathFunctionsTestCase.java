@@ -38,11 +38,131 @@ public class MathFunctionsTestCase
     extends AtlasQueryTestBase
     {
     /**
+     * max()
+     *
+     */
+    @Test
+    public void test001()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    max(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select top 5 max({ATLAS_VERSION}.dbo.atlassource.ra) as MAX from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    @Test
+    public void test002()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    min(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select top 5 min({ATLAS_VERSION}.dbo.atlassource.ra) as min from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    @Test
+    public void test003()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    sum(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select top 5 sum({ATLAS_VERSION}.dbo.atlassource.ra) as sum from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    @Test
+    public void test004()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 5\n" + 
+            "    power(ra, 2)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("POWER", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        compare(
+            query,
+            "select top 5 power({ATLAS_VERSION}.dbo.atlassource.ra, 2) as power from {ATLAS_VERSION}.dbo.atlassource"
+            );
+        }
+
+    /**
      * log()
      *
      */
     @Test
-    public void test001S()
+    public void test005()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -75,7 +195,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test002S()
+    public void test006()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -108,7 +228,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test003S()
+    public void test007A()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -131,7 +251,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test004S()
+    public void test007B()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -164,7 +284,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test005S()
+    public void test008A()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -187,7 +307,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test006S()
+    public void test008B()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -220,7 +340,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test007S()
+    public void test009()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -253,7 +373,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test008S()
+    public void test010A()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -276,7 +396,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test009S()
+    public void test010B()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -309,7 +429,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test010S()
+    public void test011S()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -332,7 +452,7 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test010L()
+    public void test011L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -359,4 +479,49 @@ public class MathFunctionsTestCase
             "select sign(2) as sign from atlasdr1.dbo.atlassource"
             );
         }
+
+    /**
+     * sign() in LEGACY mode.
+     *
+     */
+    @Test
+    public void frog()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "    SELECT\n" + 
+            "        iPetroMag,\n" + 
+            "        rmiExt \n" + 
+            "    FROM\n" + 
+            "        atlasSource\n" + 
+            "    WHERE\n" + 
+            "        mergedClass=1\n" + 
+            "    AND\n" + 
+            "        iPetroMag>-9.99995e+8\n" + 
+            "    AND\n" + 
+            "        rmiExt>-9.99995e+8\n" + 
+            "    AND\n" + 
+            "        rppErrBits & 0x00400000 = 0 \n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+/*
+        compare(
+            query,
+            "select sign(2) as sign from atlasdr1.dbo.atlassource"
+            );
+*/        
+        }
+   
     }

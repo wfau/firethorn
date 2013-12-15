@@ -27,7 +27,7 @@ public interface JdbcFactories
      * Our resource factory.
      *
      */
-    public JdbcResource.Factory resources();
+    public JdbcResource.EntityFactory resources();
 
     /**
      * Our schema factory.

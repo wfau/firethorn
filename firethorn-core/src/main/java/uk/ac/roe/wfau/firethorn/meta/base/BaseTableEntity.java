@@ -31,11 +31,12 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 
 /**
  *
@@ -69,7 +70,7 @@ extends BaseComponentEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public BaseTable select(final Identifier ident)
         throws IdentifierNotFoundException
             {
@@ -231,6 +232,8 @@ extends BaseComponentEntity
         return root().query();
         }
 
+
+    // TODO make this abstract and implement in the entity classes.
     @Override
     public AdqlTable.Metadata meta()
         {
@@ -241,7 +244,23 @@ extends BaseComponentEntity
                 {
                 return new AdqlTable.Metadata.AdqlMetadata()
                     {
+                    @Override
+                    public long count()
+                        {
+                        return base().meta().adql().count();
+                        }
 
+                    @Override
+                    public AdqlStatus status()
+                        {
+                        return base().meta().adql().status();
+                        }
+
+                    @Override
+                    public void status(AdqlStatus status)
+                        {
+                        // TODO Auto-generated method stub
+                        }
                     };
                 }
             };

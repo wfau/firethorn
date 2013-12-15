@@ -43,8 +43,8 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -214,7 +214,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
             {
 // TODO Need the resource catalog name ?
@@ -235,7 +235,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
             {
             return this.create(
@@ -249,7 +249,7 @@ public class JdbcSchemaEntity
                 );
             }
 
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
             return this.insert(
@@ -263,7 +263,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent)
             {
             return super.list(
@@ -277,7 +277,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
         throws NotFoundException
             {
@@ -302,7 +302,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
@@ -375,15 +375,14 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
         throws NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
             log.debug("  Schema   [{}]", name);
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "JdbcSchema-select-parent.name"
@@ -407,7 +406,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String name)
             {
             return super.first(
@@ -424,7 +423,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity owner)
             {
             return super.iterable(
@@ -656,7 +655,7 @@ public class JdbcSchemaEntity
                 }
 
             @Override
-            public JdbcTable create(final String name, final JdbcTable.TableType type)
+            public JdbcTable create(final String name, final JdbcTable.JdbcType type)
                 {
                 final JdbcTable result = factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
@@ -756,7 +755,7 @@ public class JdbcSchemaEntity
                                 ttname
                                 );
                             table.meta().jdbc().type(
-                                JdbcTable.TableType.match(
+                                JdbcTable.JdbcType.match(
                                     tttype
                                     )
                                 );
@@ -765,7 +764,7 @@ public class JdbcSchemaEntity
                             {
                             tablesimpl().create(
                                 ttname,
-                                JdbcTable.TableType.match(
+                                JdbcTable.JdbcType.match(
                                     tttype
                                     )
                                 );

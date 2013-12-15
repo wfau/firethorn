@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,11 +36,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -92,9 +97,9 @@ public class JdbcResourceEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<JdbcResource>
-    implements JdbcResource.Factory
+    implements JdbcResource.EntityFactory
         {
 
         @Override
@@ -104,7 +109,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcResource> select()
             {
             return super.iterable(
@@ -115,7 +120,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource create(final String ogsaid, final String name, final String url)
             {
             return this.create(
@@ -127,7 +132,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url)
             {
             return super.insert(
@@ -141,7 +146,7 @@ public class JdbcResourceEntity
             }
 
 		@Override
-        @CreateEntityMethod
+        @CreateMethod
 		public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
@@ -199,7 +204,7 @@ public class JdbcResourceEntity
          *
          */
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource userdata()
             {
             log.debug("userdata()");
@@ -219,7 +224,7 @@ public class JdbcResourceEntity
             return userdata ;
             }
 
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcResource ogsaid(final String ogsaid)
             {
             return super.first(
@@ -231,6 +236,7 @@ public class JdbcResourceEntity
                         )
                 );
             }
+
         }
 
     protected JdbcResourceEntity()
