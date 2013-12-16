@@ -1,0 +1,191 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Deploy a new version of the FireThorn webapp to our live service.
+#
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+# -------------------------------------------------------------------------------------------
+# Build the version of the webapps.
+#[user@desktop]
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Deploy the results to our Maven repository.
+#[user@desktop]
+
+    rsync \
+        --recursive --copy-links --checksum \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/roe' \
+        --include='/uk/ac/roe/wfau' \
+        --include='/uk/ac/roe/wfau/**' \
+        --exclude='*' \
+        /var/local/toolkits/maven/repository/ \
+        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
+
+# ------------------------------------------------
+# Update our service properties.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# ----------------------------------------------------
+# Deploy the FireThorn webapp.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.webapp.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+        
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+    exit
+
+#----------------------------------------------------
+# Deploy the OGSADAI webapp.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        contextpath=ogsa-dai
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.webapp.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-ogsadai-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+    exit
+

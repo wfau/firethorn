@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Reconfigure the live services from using ramses5 to ramses6.
+#
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+# -------------------------------------------------------------------------------------------
+# Update our live properties.
+#[user@desktop]
+
+    gedit "${deployprop:?}" &
+
+    -   firethorn.atlas.url=jdbc:jtds:sqlserver://ramses5:1433/ATLASDR1
+    +   firethorn.atlas.url=jdbc:jtds:sqlserver://ramses6:1433/ATLASDR1
+        firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.atlas.type=mssql
+        firethorn.atlas.user=xxxxx
+        firethorn.atlas.pass=xxxxx
+
+# -------------------------------------------------------------------------------------------
+# Deploy our live properties.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+#----------------------------------------------------
+# Restart the FireThorn webapp.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        #
+        # Stop Tomcat.
+        "${HOME}/tomcat/bin/shutdown.sh"
+
+        #
+        # Wait a bit ....
+        sleep 30
+        
+        #
+        # Start Tomcat.
+        "${HOME}/tomcat/bin/startup.sh"
+
+    exit
+
+#----------------------------------------------------
+# Restart the OGSA-DAI webapp.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        #
+        # Stop Tomcat.
+        "${HOME}/tomcat/bin/shutdown.sh"
+
+        #
+        # Wait a bit ....
+        sleep 20
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/ogsa-dai/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+
+        #
+        # Start Tomcat.
+        "${HOME}/tomcat/bin/startup.sh"
+
+    exit
+
+
