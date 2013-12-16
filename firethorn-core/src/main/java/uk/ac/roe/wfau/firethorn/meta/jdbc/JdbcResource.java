@@ -53,7 +53,7 @@ extends BaseResource<JdbcSchema>
      *
      */
     public static interface EntityFactory
-    extends BaseResource.Factory<JdbcResource>
+    extends BaseResource.EntityFactory<JdbcResource>
         {
 
         /**
@@ -78,7 +78,7 @@ extends BaseResource<JdbcSchema>
          * Our schema factory.
          *
          */
-        public JdbcSchema.Factory schemas();
+        public JdbcSchema.EntityFactory schemas();
 
         /**
          * Select the default 'userdata' Resource.

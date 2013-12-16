@@ -38,9 +38,9 @@ public class JdbcFactoriesImpl
         }
 
     @Autowired
-    private JdbcSchema.Factory schemas;
+    private JdbcSchema.EntityFactory schemas;
     @Override
-    public JdbcSchema.Factory schemas()
+    public JdbcSchema.EntityFactory schemas()
         {
         return this.schemas;
         }

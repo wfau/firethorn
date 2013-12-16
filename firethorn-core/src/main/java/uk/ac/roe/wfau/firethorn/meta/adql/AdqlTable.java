@@ -71,7 +71,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
      *
      */
     public static interface Factory
-    extends BaseTable.Factory<AdqlSchema, AdqlTable>
+    extends BaseTable.EntityFactory<AdqlSchema, AdqlTable>
         {
 
         /**

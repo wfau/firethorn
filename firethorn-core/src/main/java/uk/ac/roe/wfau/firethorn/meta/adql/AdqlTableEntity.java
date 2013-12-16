@@ -138,7 +138,7 @@ public class AdqlTableEntity
      */
     @Repository
     public static class Factory
-    extends BaseTableEntity.Factory<AdqlSchema, AdqlTable>
+    extends BaseTableEntity.EntityFactory<AdqlSchema, AdqlTable>
     implements AdqlTable.Factory
         {
 

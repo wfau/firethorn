@@ -62,7 +62,7 @@ extends BaseResource<AdqlSchema>
      *
      */
     public static interface Factory
-    extends BaseResource.Factory<AdqlResource>
+    extends BaseResource.EntityFactory<AdqlResource>
         {
         /**
          * Create a new Resource.

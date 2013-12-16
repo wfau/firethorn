@@ -72,9 +72,9 @@ public class IvoaResourceEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<IvoaResource>
-    implements IvoaResource.Factory
+    implements IvoaResource.EntityFactory
         {
 
         @Override
@@ -106,9 +106,9 @@ public class IvoaResourceEntity
             }
 
         @Autowired
-        protected IvoaSchema.Factory schemas;
+        protected IvoaSchema.EntityFactory schemas;
         @Override
-        public IvoaSchema.Factory schemas()
+        public IvoaSchema.EntityFactory schemas()
             {
             return this.schemas;
             }

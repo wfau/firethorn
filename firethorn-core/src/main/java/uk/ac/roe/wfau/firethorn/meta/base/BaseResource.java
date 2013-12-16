@@ -41,7 +41,7 @@ extends BaseComponent
      * Resource factory interface.
      *
      */
-    public static interface Factory<ResourceType extends BaseResource<?>>
+    public static interface EntityFactory<ResourceType extends BaseResource<?>>
     extends Entity.EntityFactory<ResourceType>
         {
         /**

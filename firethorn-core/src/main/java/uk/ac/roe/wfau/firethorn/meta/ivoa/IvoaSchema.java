@@ -49,8 +49,8 @@ extends BaseSchema<IvoaSchema, IvoaTable>
      * Schema factory interface.
      *
      */
-    public static interface Factory
-    extends BaseSchema.Factory<IvoaResource, IvoaSchema>
+    public static interface EntityFactory
+    extends BaseSchema.EntityFactory<IvoaResource, IvoaSchema>
         {
         /**
          * Create a new schema ...
@@ -62,7 +62,7 @@ extends BaseSchema<IvoaSchema, IvoaTable>
          * The schema table factory.
          *
          */
-        public IvoaTable.Factory tables();
+        public IvoaTable.EntityFactory tables();
         }
 
     @Override

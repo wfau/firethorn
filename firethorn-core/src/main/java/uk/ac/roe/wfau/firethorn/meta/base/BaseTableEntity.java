@@ -137,9 +137,9 @@ extends BaseComponentEntity
      *
      */
     @Repository
-    public static abstract class Factory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
+    public static abstract class EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
     extends AbstractEntityFactory<TableType>
-    implements BaseTable.Factory<SchemaType, TableType>
+    implements BaseTable.EntityFactory<SchemaType, TableType>
         {
         }
 

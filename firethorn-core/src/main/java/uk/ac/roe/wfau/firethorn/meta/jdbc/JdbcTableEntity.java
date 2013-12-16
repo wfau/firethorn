@@ -175,7 +175,7 @@ implements JdbcTable
      */
     @Repository
     public static class EntityFactory
-    extends BaseTableEntity.Factory<JdbcSchema, JdbcTable>
+    extends BaseTableEntity.EntityFactory<JdbcSchema, JdbcTable>
     implements JdbcTable.EntityFactory
         {
 

@@ -161,9 +161,9 @@ public class JdbcResourceEntity
 			}
 
         @Autowired
-        protected JdbcSchema.Factory schemas;
+        protected JdbcSchema.EntityFactory schemas;
         @Override
-        public JdbcSchema.Factory schemas()
+        public JdbcSchema.EntityFactory schemas()
             {
             return this.schemas;
             }

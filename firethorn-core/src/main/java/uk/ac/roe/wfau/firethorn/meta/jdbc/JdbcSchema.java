@@ -85,8 +85,8 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      * Schema factory interface.
      *
      */
-    public static interface Factory
-    extends BaseSchema.Factory<JdbcResource, JdbcSchema>
+    public static interface EntityFactory
+    extends BaseSchema.EntityFactory<JdbcResource, JdbcSchema>
         {
         /**
          * Create a new schema for an identity.

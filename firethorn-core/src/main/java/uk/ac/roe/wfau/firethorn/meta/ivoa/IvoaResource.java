@@ -50,8 +50,8 @@ extends BaseResource<IvoaSchema>
      * Resource factory interface.
      *
      */
-    public static interface Factory
-    extends BaseResource.Factory<IvoaResource>
+    public static interface EntityFactory
+    extends BaseResource.EntityFactory<IvoaResource>
         {
         /**
          * Create a new Resource.
@@ -63,7 +63,7 @@ extends BaseResource<IvoaSchema>
          * The resource schema factory.
          *
          */
-        public IvoaSchema.Factory schemas();
+        public IvoaSchema.EntityFactory schemas();
 
         }
 

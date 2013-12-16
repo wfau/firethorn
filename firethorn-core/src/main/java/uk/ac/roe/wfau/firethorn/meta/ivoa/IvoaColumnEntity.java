@@ -123,9 +123,9 @@ public class IvoaColumnEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<IvoaColumn>
-    implements IvoaColumn.Factory
+    implements IvoaColumn.EntityFactory
         {
 
         @Override

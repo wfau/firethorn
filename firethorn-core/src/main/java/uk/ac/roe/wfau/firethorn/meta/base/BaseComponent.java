@@ -86,7 +86,7 @@ extends NamedEntity
      * Exception to describe an invalid status.
      *
      */
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public static class InvalidStatusException
     extends RuntimeException
         {

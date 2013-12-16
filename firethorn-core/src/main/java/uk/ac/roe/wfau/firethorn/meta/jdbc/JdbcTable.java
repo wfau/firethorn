@@ -129,7 +129,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      *
      */
     public static interface EntityFactory
-    extends BaseTable.Factory<JdbcSchema, JdbcTable>
+    extends BaseTable.EntityFactory<JdbcSchema, JdbcTable>
         {
         /**
          * Create a new table.

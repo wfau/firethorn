@@ -202,9 +202,9 @@ public class JdbcSchemaEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<JdbcSchema>
-    implements JdbcSchema.Factory
+    implements JdbcSchema.EntityFactory
         {
 
         @Override

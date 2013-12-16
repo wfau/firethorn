@@ -98,6 +98,47 @@ public class JdbcConnectionEntity
         return converter ;
         }
 
+    /**
+     * An Exception to indicate a problem accessing the JDBC metadata.
+     *
+     */
+    public static class MetadataException
+    extends RuntimeException
+        {
+
+        /**
+         *
+         *
+         */
+        private static final long serialVersionUID = -4567384444408505866L;
+
+        /**
+         * Public constructor.
+         * @param cause
+         *
+         */
+        public MetadataException(final SQLException cause)
+            {
+            super(
+                cause
+                );
+            }
+
+        /**
+         * Public constructor.
+         * @param message
+         * @param cause
+         *
+         */
+        public MetadataException(final String message, final SQLException cause)
+            {
+            super(
+                message,
+                cause
+                );
+            }
+        }
+    
     public JdbcConnectionEntity()
         {
         }
@@ -572,7 +613,7 @@ public class JdbcConnectionEntity
             catch (final SQLException ouch)
                 {
                 log.warn("Exception fetching JDBC metadata [{}]", ouch.getMessage());
-                throw new JdbcMetadataAccessException(
+                throw new MetadataException(
                     ouch
                     );
                 }
@@ -592,7 +633,7 @@ public class JdbcConnectionEntity
             catch (final SQLException ouch)
                 {
                 log.warn("Exception fetching JDBC catalog name [{}]", ouch.getMessage());
-                throw new JdbcMetadataAccessException(
+                throw new MetadataException(
                     ouch
                     );
                 }
@@ -619,7 +660,7 @@ public class JdbcConnectionEntity
         catch(final SQLException ouch)
             {
             log.warn("Exception fetching JDBC catalog list [{}]", ouch.getMessage());
-            throw new JdbcMetadataAccessException(
+            throw new MetadataException(
                 ouch
                 );
             }

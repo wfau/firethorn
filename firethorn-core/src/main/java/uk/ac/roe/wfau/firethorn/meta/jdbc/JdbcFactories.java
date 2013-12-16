@@ -33,7 +33,7 @@ public interface JdbcFactories
      * Our schema factory.
      *
      */
-    public JdbcSchema.Factory schemas();
+    public JdbcSchema.EntityFactory schemas();
 
     /**
      * Our table factory.

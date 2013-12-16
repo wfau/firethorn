@@ -30,33 +30,33 @@ public class IvoaFactoriesImpl
     {
 
     @Autowired
-    private IvoaResource.Factory resources;
+    private IvoaResource.EntityFactory resources;
     @Override
-    public IvoaResource.Factory resources()
+    public IvoaResource.EntityFactory resources()
         {
         return this.resources;
         }
 
     @Autowired
-    private IvoaSchema.Factory schemas;
+    private IvoaSchema.EntityFactory schemas;
     @Override
-    public IvoaSchema.Factory schemas()
+    public IvoaSchema.EntityFactory schemas()
         {
         return this.schemas;
         }
 
     @Autowired
-    private IvoaTable.Factory tables;
+    private IvoaTable.EntityFactory tables;
     @Override
-    public IvoaTable.Factory tables()
+    public IvoaTable.EntityFactory tables()
         {
         return this.tables;
         }
 
     @Autowired
-    private IvoaColumn.Factory columns;
+    private IvoaColumn.EntityFactory columns;
     @Override
-    public IvoaColumn.Factory columns()
+    public IvoaColumn.EntityFactory columns()
         {
         return this.columns;
         }

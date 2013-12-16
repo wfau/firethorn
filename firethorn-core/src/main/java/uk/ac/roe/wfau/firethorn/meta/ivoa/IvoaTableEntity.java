@@ -114,9 +114,9 @@ public class IvoaTableEntity
      *
      */
     @Repository
-    public static class Factory
-    extends BaseTableEntity.Factory<IvoaSchema, IvoaTable>
-    implements IvoaTable.Factory
+    public static class EntityFactory
+    extends BaseTableEntity.EntityFactory<IvoaSchema, IvoaTable>
+    implements IvoaTable.EntityFactory
         {
 
         @Override
@@ -198,9 +198,9 @@ public class IvoaTableEntity
             }
 
         @Autowired
-        protected IvoaColumn.Factory columns;
+        protected IvoaColumn.EntityFactory columns;
         @Override
-        public IvoaColumn.Factory columns()
+        public IvoaColumn.EntityFactory columns()
             {
             return this.columns;
             }

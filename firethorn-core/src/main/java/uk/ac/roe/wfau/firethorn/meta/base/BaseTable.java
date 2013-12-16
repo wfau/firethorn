@@ -94,7 +94,7 @@ extends BaseComponent
      * Table factory interface.
      *
      */
-    public static interface Factory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
+    public static interface EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
     extends Entity.EntityFactory<TableType>
         {
         /**
