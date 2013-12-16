@@ -147,6 +147,10 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
+# -----------------------------------------------------
+# Tests for delete - test action only.
+
+
         cat query-job.json
         curl "$(cat query-job.json | votable)"
 
@@ -160,33 +164,14 @@ EOF
             --data "action=delete" \
             | ./pp | tee test-table.json
 
-        cat test-table.json
         curl "$(cat query-job.json | votable)"
 
 
-
-
-
-
-
-
-
-
-
-
-        cat test-table.json
+        POST "${jdbctable:?}" \
+            --data "action=drop" \
+            | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"
-
-
-
-
-
-
-
-
-
-
 
 
 

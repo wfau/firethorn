@@ -295,4 +295,70 @@ public class BinaryOperatorsTestCase
             "select atlasdr1.dbo.atlassource.rpperrbits ^ atlasdr1.dbo.atlassource.ipperrbits as binary_xor from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.mergedclass = 1"
             );
         }
+
+    /**
+     * Binary AND with decimal integer.
+     *
+     */
+    @Test
+    public void test005D()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    rppErrBits & 4\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        compare(
+            query,
+            "select atlasdr1.dbo.atlassource.rpperrbits & 4 as binary_and from atlasdr1.dbo.atlassource"
+            );
+        }
+
+    /**
+     * Binary OR with hexadecimal integer.
+     *
+     */
+    @Test
+    public void test005H()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    rppErrBits & 0x04\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        compare(
+            query,
+            "select atlasdr1.dbo.atlassource.rpperrbits & 0x04 as binary_and from atlasdr1.dbo.atlassource"
+            );
+        }
     }

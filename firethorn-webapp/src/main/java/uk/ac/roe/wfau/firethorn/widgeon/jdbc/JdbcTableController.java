@@ -68,12 +68,29 @@ public class JdbcTableController
     public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * POST param for the table name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.table.update.name" ;
+    public static final String TABLE_NAME_PARAM = "urn:jdbc.table.name" ;
 
+    /**
+     * POST param for the action to perform.
+     *
+     */
+    public static final String ACTION_PARAM = "urn:jdbc.table.action" ;
 
+    /**
+     * Action value for DELETE.
+     *
+     */
+    public static final String DELETE_ACTION = "urn:jdbc.table.delete" ;
+
+    /**
+     * Action value for DROP.
+     *
+     */
+    public static final String DROP_ACTION = "urn:jdbc.table.drop" ;
+    
     @Override
     public Iterable<JdbcTableBean> bean(final Iterable<JdbcTable> iter)
         {
@@ -125,15 +142,16 @@ public class JdbcTableController
         }
 
     /**
-     * POST DELETE request.
+     * POST DELETE/DROP request.
+     * @deprecated - replace with a status change.
      * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, params={"action"}, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, params={ACTION_PARAM}, produces=JSON_CONTENT)
     public JdbcTableBean action(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
-        @RequestParam(value="action", required=true)
+        @RequestParam(value=ACTION_PARAM, required=true)
         final String action
         ){
         log.debug("action()");
@@ -141,11 +159,11 @@ public class JdbcTableController
 
         log.debug(" status [{}]", entity.meta().jdbc().status());
 
-        if ("delete".equals(action))
+        if (DELETE_ACTION.equals(action))
             {
             entity.meta().jdbc().delete();
             }
-        if ("drop".equals(action))
+        if (DROP_ACTION.equals(action))
             {
             entity.meta().jdbc().drop();
             }
