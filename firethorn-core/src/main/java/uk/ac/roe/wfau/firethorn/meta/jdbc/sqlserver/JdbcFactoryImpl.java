@@ -43,6 +43,12 @@ public class JdbcFactoryImpl
     {
 
     /**
+     * SQL statement to TRUNCATE all data in a table.
+     * 
+     */
+    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {tablename}" ; 
+
+    /**
      * SQL statement to DELETE all data from a table.
      * 
      */
