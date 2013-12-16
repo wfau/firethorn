@@ -149,6 +149,7 @@ EOF
 
 # -----------------------------------------------------
 # Tests for delete - test action only.
+# To be replaced with status change.
 
 
         cat query-job.json
@@ -161,14 +162,14 @@ EOF
             ' | node)
 
         POST "${jdbctable:?}" \
-            --data "action=delete" \
+            --data "urn:jdbc.table.action=urn:jdbc.table.delete" \
             | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"
 
 
         POST "${jdbctable:?}" \
-            --data "action=drop" \
+            --data "urn:jdbc.table.action=urn:jdbc.table.drop" \
             | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"
