@@ -124,7 +124,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * The schema table factory.
          *
          */
-        public JdbcTable.Factory tables();
+        public JdbcTable.EntityFactory tables();
 
         /**
          * NameFactory implementation.

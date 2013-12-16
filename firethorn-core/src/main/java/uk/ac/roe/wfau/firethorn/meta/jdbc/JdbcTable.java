@@ -128,7 +128,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * Table factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseTable.Factory<JdbcSchema, JdbcTable>
         {
         /**

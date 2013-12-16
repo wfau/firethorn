@@ -440,9 +440,9 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcTable.Factory tables;
+        protected JdbcTable.EntityFactory tables;
         @Override
-        public JdbcTable.Factory tables()
+        public JdbcTable.EntityFactory tables()
             {
             return this.tables;
             }

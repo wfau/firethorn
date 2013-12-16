@@ -46,9 +46,9 @@ public class JdbcFactoriesImpl
         }
 
     @Autowired
-    private JdbcTable.Factory tables;
+    private JdbcTable.EntityFactory tables;
     @Override
-    public JdbcTable.Factory tables()
+    public JdbcTable.EntityFactory tables()
         {
         return this.tables;
         }

@@ -39,7 +39,7 @@ public interface JdbcFactories
      * Our table factory.
      *
      */
-    public JdbcTable.Factory tables();
+    public JdbcTable.EntityFactory tables();
 
     /**
      * Our column factory.
