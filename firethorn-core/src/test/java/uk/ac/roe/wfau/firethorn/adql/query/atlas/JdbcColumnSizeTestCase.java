@@ -92,7 +92,7 @@ public class JdbcColumnSizeTestCase
             AdqlQuery.Syntax.State.VALID,
             query.syntax().state()
             );
-        compare(
+        validate(
             query,
             "select {ATLAS_VERSION}.dbo.multiframe.project as project from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
             );

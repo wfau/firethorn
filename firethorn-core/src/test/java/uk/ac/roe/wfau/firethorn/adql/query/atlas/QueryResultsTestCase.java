@@ -39,8 +39,11 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class QueryResultsTestCase
     extends AtlasQueryTestBase
     {
-    @Test
-    public void test000()
+    /**
+     * TODO
+     *
+     */
+    public void test001()
     throws Exception
         {
         final AdqlQuery query = this.queryspace.queries().create(
@@ -69,7 +72,7 @@ public class QueryResultsTestCase
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
             );
-        compare(
+        validate(
             query,
             "select twomass.dbo.twomass_psc.ra as ra, twomass.dbo.twomass_psc.dec as dec from twomass.dbo.twomass_psc where twomass.dbo.twomass_psc.ra between '56.0' and '57.9' and twomass.dbo.twomass_psc.dec between '24.0' and '24.2'"
             );
@@ -90,6 +93,7 @@ public class QueryResultsTestCase
 
         //
         // This hangs in what looks like a database lock conflict. 
+
         factories().queries().executor().update(
             query.ident(),
             Job.Status.RUNNING,

@@ -95,7 +95,7 @@ public class QueryBugsTestCase
                 new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
                 }
             );
-        compare(
+        validate(
             query,
             "select top 10 {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as dist from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc"
             );
@@ -169,7 +169,7 @@ public class QueryBugsTestCase
             new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
             );
-        compare(
+        validate(
             query,
             "select top 10 twomass.dbo.twomass_psc.ra as ra, twomass.dbo.twomass_psc.dec as dec from twomass.dbo.twomass_psc"
             );
@@ -301,7 +301,7 @@ public class QueryBugsTestCase
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
             );
-        compare(
+        validate(
             query,
             "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas where atlas.sourceid % 100 = 0"
             );
@@ -355,7 +355,7 @@ public class QueryBugsTestCase
                 }
             );
         // TODO
-        compare(
+        validate(
             query,
             "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) as min from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
@@ -406,7 +406,7 @@ public class QueryBugsTestCase
                 }
             );
         // TODO
-        compare(
+        validate(
             query,
             "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01)"
             );
@@ -446,7 +446,7 @@ public class QueryBugsTestCase
         // Firethorn create table fails if we have two DATETIME columns.
         // OGSA-DAI insert into TIMESTAMP column fails.
 
-        compare(
+        validate(
             query,
             "select top 10 {ATLAS_VERSION}.dbo.multiframe.utdate as utdate, {ATLAS_VERSION}.dbo.multiframe.dateobs as dateobs from {ATLAS_VERSION}.dbo.multiframe"
             );
@@ -488,7 +488,7 @@ public class QueryBugsTestCase
                 new ExpectedField("distanceMins", AdqlColumn.Type.FLOAT, 0),
                 }
             );
-        compare(
+        validate(
             query,
             "select top 100 neighbours.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 {ATLAS_VERSION}.dbo.atlassource.sourceid as ident from {ATLAS_VERSION}.dbo.atlassource) as sources where neighbours.masterobjid - sources.ident < 1000000"
             );
@@ -517,7 +517,7 @@ public class QueryBugsTestCase
             AdqlQuery.Syntax.State.VALID,
             query.syntax().state()
             );
-        compare(
+        validate(
             query,
             "select count(*) as count_all from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
             );
@@ -568,7 +568,7 @@ public class QueryBugsTestCase
             query.syntax().state()
             );
        
-        compare(
+        validate(
             query,
             "select -{ATLAS_VERSION}.dbo.multiframe.decbase as decbase from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0"
             );

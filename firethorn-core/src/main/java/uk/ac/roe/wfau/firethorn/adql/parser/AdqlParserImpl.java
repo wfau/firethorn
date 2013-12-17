@@ -224,6 +224,10 @@ implements AdqlParser
                 }
             }
 
+        /**
+         * Class to represent a function defined within a schema.
+         *
+         */
         protected static class SchemaDefinedFunction
         extends UserDefinedFunction
             {
@@ -280,13 +284,184 @@ implements AdqlParser
 
             @Override
             public ADQLOperand setParameter(int index, ADQLOperand replacer)
-                throws ArrayIndexOutOfBoundsException, NullPointerException,
-                Exception
+                throws ArrayIndexOutOfBoundsException, NullPointerException, Exception
                 {
                 // TODO Auto-generated method stub
                 return null;
                 }
             
+            }
+
+        /**
+         * Create a NumericConstant.
+         *
+         */
+        @Override
+        public NumericConstant createNumericConstant(final String value)
+        throws NumberFormatException
+            {
+            log.debug("createNumericConstant(String)");
+            log.debug("  value [{}]", value);
+            // Only if in LEGACY or FUTURE mode.
+            if (value.startsWith(HexConstant.PREFIX))
+                {
+                return new HexConstant(
+                    value,
+                    true
+                    );
+                }
+            else {
+                return new NumericConstant(
+                    value,
+                    true
+                    );
+                }
+            }
+
+        /**
+         * A hexadecimal numeric.
+         * 
+         */
+        public static class HexConstant
+        extends NumericConstant
+        implements ADQLOperand
+            {
+            /**
+             * Hexadecimal prefix.
+             * 
+             */
+            protected static final String PREFIX = "0x";
+
+            /**
+             * Create a hex value from a long.
+             * 
+             */
+            public HexConstant(final long value)
+                {
+                super(
+                    value
+                    );
+                }
+
+            /**
+             * Create a hex value from a String.
+             * 
+             */
+            public HexConstant(final String value, final boolean check)
+            throws NumberFormatException
+                {
+                super(
+                    value,
+                    check
+                    );
+                }
+
+            /**
+             * Copy a hex value.
+             * 
+             */
+            public HexConstant(final HexConstant origin)
+                {
+                super(
+                    origin.getValue(),
+                    false
+                    );
+                }
+
+            /**
+             * Warning - there may be rounding errors.
+             * 
+             */
+            @Override
+            public final void setValue(final double value)
+                {
+                log.debug("setValue(double)");
+                log.debug("  value [{}]", value);
+                this.setValue(
+                    (long) value
+                    );
+                }
+
+            @Override
+            public final void setValue(final long value)
+                {
+                log.debug("setValue(long)");
+                log.debug("  value [{}]", value);
+                this.value = PREFIX + Long.toHexString(value);
+                }
+
+            @Override
+            public void setValue(final String value, final boolean check)
+            throws NumberFormatException
+                {
+                log.debug("setValue(String, boolean)");
+                log.debug("  value [{}]", value);
+                log.debug("  check [{}]", check);
+                if (check)
+                    {
+                    this.getDoubleValue(
+                        value
+                        );
+                    }
+                this.value = value;
+                }
+
+            /**
+             * Warning - there may be rounding errors.
+             * 
+             */
+            public double getDoubleValue()
+            throws NumberFormatException
+                {
+                return this.getDoubleValue(
+                    this.value
+                    );
+                }
+
+            /**
+             * Warning - there may be rounding errors.
+             * 
+             */
+            public double getDoubleValue(final String value)
+            throws NumberFormatException
+                {
+                log.debug("getDoubleValue()");
+                log.debug("  value [{}]", value);
+                String temp = value ; 
+                if (temp.startsWith(PREFIX))
+                    {
+                    temp = temp.substring(2);
+                    }
+                return new Double(
+                    Long.parseLong(
+                        temp,
+                        16
+                        )
+                    );
+                }
+
+            public double getNumericValue()
+                {
+                log.debug("getNumericValue()");
+                log.debug("  value [{}]", value);
+                try {
+                    return this.getDoubleValue();
+                    }
+                catch(NumberFormatException ouch)
+                    {
+                    return Double.NaN;
+                    }
+                }
+
+            @Override
+            public ADQLObject getCopy()
+                {
+                log.debug("getCopy()");
+                log.debug("  value [{}]", value);
+                return new HexConstant(
+                    this
+                    );
+                }
             }
         }
 
@@ -584,7 +759,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect clause)
-    throws DuplicateFieldException
+    throws AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ClauseSelect)");
         for (final SelectItem item : clause)
@@ -1050,6 +1225,7 @@ implements AdqlParser
     implements MySelectItem
         {
         protected MySelectItemWrapper(final SelectItem item)
+        throws AdqlParserException
             {
             this.item  = item;
             this.field = wrap(
@@ -1208,6 +1384,7 @@ implements AdqlParser
      *
      */
     public static MySelectItem wrap(final SelectItem item)
+    throws AdqlParserException
         {
         log.debug("wrap(SelectItem)");
         log.debug("  alias [{}]", item.getAlias());
@@ -1223,6 +1400,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final ADQLOperand oper)
+    throws AdqlParserException
         {
         log.debug("wrap(ADQLOperand)");
         log.debug("  name   [{}]", oper.getName());
@@ -1264,11 +1442,11 @@ implements AdqlParser
                 );
             }
         else if (oper instanceof NegativeOperand)
-        {
-        return wrap(
-            (NegativeOperand) oper
-            );
-        }
+            {
+            return wrap(
+                (NegativeOperand) oper
+                );
+            }
         else {
             return UNKNOWN_FIELD;
             }
@@ -1321,46 +1499,131 @@ implements AdqlParser
      */
     public static MySelectField wrap(NegativeOperand oper)
         {
-        log.debug("wrap(Operation)");
+        log.debug("wrap(NegativeOperand)");
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
         final ADQLOperand param1 = oper.getOperand();
 
-        ADQLColumn c1 = null ;
-
-        AdqlDBColumn a1 = null ;
-
         AdqlColumn.Type t1 = null ;
-        AdqlColumn.Type return_type = null;
 
         if (param1 instanceof ADQLColumn)
             {
-            c1 = (ADQLColumn) param1;
-            if (c1.getDBLink() instanceof AdqlDBColumn)
+            ADQLColumn col1 = (ADQLColumn) param1;
+            if (col1.getDBLink() instanceof AdqlDBColumn)
                 {
-                a1 = (AdqlDBColumn)c1.getDBLink();
-                t1 = a1.column().meta().adql().type();
+                t1 = ((AdqlDBColumn)col1.getDBLink()).column().meta().adql().type();
                 }
             }
-    
-      
-        log.debug("  return_type******************** [{}]",return_type);
 
-     
+        // What if it isn't ??
+        
         return new MySelectFieldImpl(
-        		oper.getName(),
-                t1
-                );
+    		oper.getName(),
+            t1
+            );
         }
-    
-    
+
+    /**
+     * Calculate the smallest type for a numeric value.
+     * 
+     */
+    protected static AdqlColumn.Type type(NumericConstant number)
+        {
+        log.debug("type(NumericConstant)");
+        log.debug("  number [{}]", number);
+        //
+        // Check for a floating point number.
+        if (number.getValue().contains("."))
+            {
+            double value = number.getNumericValue();
+            if (value < 0)
+                {
+                value *= -1.0 ;
+                }
+            if ((value >= Float.MIN_VALUE) && (value <= Float.MAX_VALUE))
+                {
+                return AdqlColumn.Type.FLOAT;
+                }
+            else {
+                return AdqlColumn.Type.DOUBLE;
+                }
+            }
+        //
+        // Not a floating point number.
+        else {
+            long value = number.getIntegerValue();
+            if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
+                {
+                return AdqlColumn.Type.INTEGER;
+                }
+            else {
+                return AdqlColumn.Type.LONG;
+                }
+            }
+        }
+
+    /**
+     * Get the type from an ADQLColumn.
+     * 
+     */
+    protected static AdqlColumn.Type type(ADQLColumn column)
+    throws AdqlParserException
+        {
+        log.debug("type(ADQLColumn)");
+        log.debug("  column [{}]", column);
+
+        if (column == null)
+            {
+            return null;
+            }
+        else if (column.getDBLink() instanceof AdqlDBColumn)
+            {
+            return ((AdqlDBColumn)column.getDBLink()).column().meta().adql().type();
+            }
+        else {
+            throw new AdqlParserException(
+                "Unknown column type [" + column.getName() + "][" + column.getClass().getName() + "]"
+                );
+            }
+        }
+
+    /**
+     * Get the type for an ADQLOperand.
+     * 
+     */
+    protected static AdqlColumn.Type type(ADQLOperand operand)
+    throws AdqlParserException
+        {
+        log.debug("type(ADQLOperand)");
+        log.debug("  operand [{}]", operand);
+
+        if (operand == null)
+            {
+            return null;
+            }
+        else if (operand instanceof ADQLColumn)
+            {
+            return type((ADQLColumn) operand);
+            }
+        else if (operand instanceof NumericConstant)
+            {
+            return type((NumericConstant) operand);
+            }
+        else {
+            throw new AdqlParserException(
+                "Unknown operand type [" + operand.getName() + "][" + operand.getClass().getName() + "]"
+                );
+            }
+        }
+
     /**
      * Wrap an Operation.
      *
      */
     public static MySelectField wrap(final Operation oper)
+    throws AdqlParserException
         {
         log.debug("wrap(Operation)");
         log.debug("  name   [{}]", oper.getName());
@@ -1368,46 +1631,82 @@ implements AdqlParser
         log.debug("  string [{}]", oper.isString());
 
         //
-        // Check for LEGACY operations.
-/*
- * Meeds level ...
-        legacy(
-            level,
-            oper
-            );
- */        
+        // Check the LEGACY|STRICT mode.
+        //
+
+        AdqlColumn.Type t1 = type(oper.getLeftOperand());
+        AdqlColumn.Type t2 = type(oper.getRightOperand());
+        AdqlColumn.Type t3 = null;
+
+        if ((t1 == AdqlColumn.Type.DOUBLECOMPLEX) || (t2 == AdqlColumn.Type.DOUBLECOMPLEX))
+            {
+            t3 = AdqlColumn.Type.DOUBLECOMPLEX;
+            }
+
+        else if ((t1 == AdqlColumn.Type.FLOATCOMPLEX) || (t2 == AdqlColumn.Type.FLOATCOMPLEX))
+            {
+            t3 = AdqlColumn.Type.FLOATCOMPLEX;
+            }
         
-        final ADQLOperand param1 = oper.getLeftOperand();
-        final ADQLOperand param2 = oper.getRightOperand();
-
-        ADQLColumn c1 = null ;
-        ADQLColumn c2 = null ;
-
-        AdqlDBColumn a1 = null ;
-        AdqlDBColumn a2 = null ;
-
-        AdqlColumn.Type t1 = null ;
-        AdqlColumn.Type t2 = null ;
-        AdqlColumn.Type return_type = null;
-
-        if (param1 instanceof ADQLColumn)
+        else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE))
             {
-            c1 = (ADQLColumn) param1;
-            if (c1.getDBLink() instanceof AdqlDBColumn)
-                {
-                a1 = (AdqlDBColumn)c1.getDBLink();
-                t1 = a1.column().meta().adql().type();
-                }
+            t3 = AdqlColumn.Type.DOUBLE;
             }
-        if (param2 instanceof ADQLColumn)
+
+        else if ((t1 == AdqlColumn.Type.FLOAT) || (t2 == AdqlColumn.Type.FLOAT))
             {
-            c2 = (ADQLColumn) param2;
-            if (c2.getDBLink() instanceof AdqlDBColumn)
-                {
-                a2 = (AdqlDBColumn)c2.getDBLink();
-                t2 = a2.column().meta().adql().type();
-                }
+            t3 = AdqlColumn.Type.FLOAT;
             }
+        
+        else if ((t1 == AdqlColumn.Type.LONG) || (t2 == AdqlColumn.Type.LONG))
+            {
+            t3 = AdqlColumn.Type.LONG;
+            }
+
+        else if ((t1 == AdqlColumn.Type.INTEGER) || (t2 == AdqlColumn.Type.INTEGER))
+            {
+            t3 = AdqlColumn.Type.INTEGER;
+            }
+
+        else if ((t1 == AdqlColumn.Type.SHORT) || (t2 == AdqlColumn.Type.SHORT))
+            {
+            t3 = AdqlColumn.Type.SHORT;
+            }
+        
+        else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE))
+            {
+            t3 = AdqlColumn.Type.BYTE;
+            }
+
+        else if ((t1 == AdqlColumn.Type.BIT) || (t2 == AdqlColumn.Type.BIT))
+            {
+            t3 = AdqlColumn.Type.BIT;
+            }
+
+        // Probably wrong BOOLEAN + BIT = .... ?
+        else if ((t1 == AdqlColumn.Type.BOOLEAN) || (t2 == AdqlColumn.Type.BOOLEAN))
+            {
+            t3 = AdqlColumn.Type.BOOLEAN;
+            }
+
+        // Check UNICODE + BYTE = ... ?
+        else if ((t1 == AdqlColumn.Type.UNICODE) || (t2 == AdqlColumn.Type.UNICODE))
+            {
+            t3 = AdqlColumn.Type.UNICODE;
+            }
+
+        // Check CHAR + BYTE = ... ?
+        else if ((t1 == AdqlColumn.Type.CHAR) || (t2 == AdqlColumn.Type.CHAR))
+            {
+            t3 = AdqlColumn.Type.CHAR;
+            }
+
+        else {
+            throw new AdqlParserException(
+                "Unknown type for operation params [" + t1 + "][" + t2 + "]"
+                );
+            }
+/*
         if (t1==null){
         	t1 = AdqlColumn.Type.DOUBLE;
         }
@@ -1416,35 +1715,35 @@ implements AdqlParser
         }
 
         if (oper.getName()=="%") {
-        	return_type = AdqlColumn.Type.INTEGER;
+        	t3 = AdqlColumn.Type.INTEGER;
         } else if (t1==t2){
 				if (oper.getName()=="/"){
-					return_type = AdqlColumn.Type.DOUBLE;
+					t3 = AdqlColumn.Type.DOUBLE;
 				} else {
-					return_type=t1;
+					t3=t1;
 				}
         } else if ((param1 instanceof NumericConstant)  || (param2 instanceof NumericConstant)){
-        			return_type = AdqlColumn.Type.DOUBLE;
+        			t3 = AdqlColumn.Type.DOUBLE;
         } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
-        			return_type = AdqlColumn.Type.DOUBLE;
+        			t3 = AdqlColumn.Type.DOUBLE;
 
         } else if ((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.BYTE)){
-					return_type = AdqlColumn.Type.BYTE;
+					t3 = AdqlColumn.Type.BYTE;
 
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
-        			return_type = AdqlColumn.Type.CHAR;
+        			t3 = AdqlColumn.Type.CHAR;
 
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
-					return_type = AdqlColumn.Type.UNICODE;
+					t3 = AdqlColumn.Type.UNICODE;
 
         } else if (((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)) ||
         			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE)) ||
         			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT))){
 
         	        if (oper.getName()=="/"){
-        	        	return_type = AdqlColumn.Type.DOUBLE;
+        	        	t3 = AdqlColumn.Type.DOUBLE;
         	        } else {
-        	        	return_type = AdqlColumn.Type.SHORT;
+        	        	t3 = AdqlColumn.Type.SHORT;
         	        }
         } else if (((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG)) ||
         		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER)) ||
@@ -1454,9 +1753,9 @@ implements AdqlParser
         		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE)) ||
         			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG))){
 	        		if (oper.getName()=="/"){
-		  	        	return_type = AdqlColumn.Type.DOUBLE;
+		  	        	t3 = AdqlColumn.Type.DOUBLE;
 		  	        } else {
-		  	        	return_type = AdqlColumn.Type.LONG;
+		  	        	t3 = AdqlColumn.Type.LONG;
 		  	        }
 
         } else if (((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER)) ||
@@ -1465,9 +1764,9 @@ implements AdqlParser
         			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE)) ||
         			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER))){
 		        	if (oper.getName()=="/"){
-		  	        	return_type = AdqlColumn.Type.DOUBLE;
+		  	        	t3 = AdqlColumn.Type.DOUBLE;
 		  	        } else {
-		  	        	return_type = AdqlColumn.Type.INTEGER;
+		  	        	t3 = AdqlColumn.Type.INTEGER;
 		  	        }
 
         } else if (((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT)) ||
@@ -1479,23 +1778,25 @@ implements AdqlParser
         			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)) ||
         			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE))||
         			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT))){
-        			return_type = AdqlColumn.Type.FLOAT;
+        			t3 = AdqlColumn.Type.FLOAT;
 
         }
-        log.debug("  return_type******************** [{}]",return_type);
+        log.debug("  return_type******************** [{}]",t3);
+ */
 
+        log.debug("  result [{}]", t3);
         return new MySelectFieldImpl(
             "operation",
-            return_type
+            t3
             );
         }
-
 
     /**
      * Wrap an ADQLFunction.
      *
      */
     public static MySelectField wrap(final ADQLFunction funct)
+    throws ArrayIndexOutOfBoundsException, AdqlParserException
         {
         log.debug("wrap(ADQLFunction)");
         log.debug("  name   [{}]", funct.getName());
@@ -1525,6 +1826,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final SQLFunction funct)
+    throws ArrayIndexOutOfBoundsException, AdqlParserException
         {
         log.debug("wrap(SQLFunction)");
         log.debug("  name   [{}]", funct.getName());
@@ -1561,6 +1863,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final MathFunction funct)
+    throws AdqlParserException
         {
         log.debug("wrap(MathFunction)");
         log.debug("  name   [{}]", funct.getName());

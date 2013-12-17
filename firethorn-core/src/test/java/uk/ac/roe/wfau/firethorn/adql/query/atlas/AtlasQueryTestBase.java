@@ -27,10 +27,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -292,6 +294,14 @@ extends TestPropertiesBase
             }
         }
 
+    public void validate(final AdqlQuery query, final AdqlQuery.Syntax.State status)
+        {
+        assertEquals(
+            status,
+            query.syntax().state()
+            );
+        }
+
     /**
      * An expected result.
      *
@@ -354,7 +364,7 @@ extends TestPropertiesBase
             }
         }
 
-    public void validate(final AdqlQuery query, final ExpectedField[] expected)
+    public void validate(final AdqlQuery query, final ExpectedField[] fields)
         {
         final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
@@ -362,14 +372,113 @@ extends TestPropertiesBase
             {
             final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
-            expected[i++].validate(
+            fields[i++].validate(
                 field
                 );
             }
         assertEquals(
             i,
-            expected.length
+            fields.length
             );
+        }
+
+    /**
+     * Clean a query string.
+     *
+     */
+    protected String clean(final String s1)
+        {
+        if (s1 == null)
+            {
+            return  null ;
+            }
+
+        final String s2 = StringUtils.trim(s1);
+        final String s3 = s2.toLowerCase();
+        final String s4 = s3.replaceAll("[\n\r]+", " ");
+        final String s5 = s4.replaceAll("\\p{Space}+", " ");
+        final String s6 = s5.replaceAll(" +,", ",");
+
+        return s6;
+        }
+
+    public void validate(final AdqlQuery query, final String sql)
+        {
+        assertEquals(
+            clean(
+                sql.replace("{ATLAS_VERSION}", ATLAS_VERSION)
+                ),
+            clean(
+                query.osql()
+                )
+            );
+        }
+
+/*
+    public void validate(final AdqlQuery query, final AdqlQuery.Syntax.State status, final ExpectedField[] fields, final String sql)
+        {
+        validate(query, status);
+        validate(query, fields);
+        validate(query, sql);
+        }
+ */
+
+    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                level
+                ),
+            adql
+            );
+        if (status != null)
+            {
+            validate(query, status);
+            }
+        if (fields != null)
+            {
+            validate(query, fields);
+            }
+        if (sql != null)
+            {
+            validate(query, sql);
+            }
+        }
+
+    public void validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+        {
+        validate(Level.STRICT, status, adql, sql, fields);
+        }
+    
+    public void validate(final String adql, final String sql, final ExpectedField[] fields)
+        {
+        validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
+        }
+
+    public void validate(final String adql, final String sql)
+        {
+        validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
+        }
+
+    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
+        {
+        validate(level, status, adql, sql, null);
+        }
+
+    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+        {
+        validate(level, status, adql, null, null);
+        }
+
+    /**
+     * Dummy test for Eclipse.
+     *
+     */
+    @Test
+    public void notest()
+    throws Exception
+        {
+        log.debug("---- No test ----");
         }
 
     /**
@@ -406,57 +515,5 @@ extends TestPropertiesBase
             }
         }
 
-    /**
-     * Clean a query string.
-     *
-     */
-    protected String clean(final String s1)
-        {
-        if (s1 == null)
-            {
-            return  null ;
-            }
-
-        final String s2 = StringUtils.trim(s1);
-        final String s3 = s2.toLowerCase();
-        final String s4 = s3.replaceAll("[\n\r]+", " ");
-        final String s5 = s4.replaceAll("\\p{Space}+", " ");
-        final String s6 = s5.replaceAll(" +,", ",");
-
-        return s6;
-        }
-
-    /**
-     * Compare an ADQL query and the resulting SQL output.
-     *
-     */
-    public void compare(final String adql, final String osql)
-        {
-        compare(
-            this.queryspace.queries().create(
-                adql
-                ),
-            osql
-            );
-        }
-
-    /**
-     * Compare an ADQL query and the resulting SQL output.
-     *
-     */
-    public void compare(final AdqlQuery query, final String osql)
-        {
-        debug(
-            query
-            );
-        assertEquals(
-            clean(
-                osql.replace("{ATLAS_VERSION}", ATLAS_VERSION)
-                ),
-            clean(
-                query.osql()
-                )
-            );
-        }
     }
 

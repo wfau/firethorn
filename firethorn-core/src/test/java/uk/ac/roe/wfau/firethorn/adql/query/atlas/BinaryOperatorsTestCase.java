@@ -17,16 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
-import static org.junit.Assert.assertEquals;
+import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -43,10 +40,10 @@ public class BinaryOperatorsTestCase
     @Test
     public void test001S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    iPetroMag,\n" + 
             "    rmiExt\n" + 
@@ -59,12 +56,7 @@ public class BinaryOperatorsTestCase
             "AND\n" + 
             "    rmiExt>-9.99995e+8\n" + 
             "AND\n" + 
-            "    (rppErrBits | ippErrBits) < 65536\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+            "    (rppErrBits | ippErrBits) < 65536" 
             );
         }
 
@@ -76,10 +68,10 @@ public class BinaryOperatorsTestCase
     @Test
     public void test001L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    iPetroMag,\n" + 
             "    rmiExt\n" + 
@@ -92,48 +84,46 @@ public class BinaryOperatorsTestCase
             "AND\n" + 
             "    rmiExt>-9.99995e+8\n" + 
             "AND\n" + 
-            "    (rppErrBits | ippErrBits) < 65536\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    (rppErrBits | ippErrBits) < 65536", 
+
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag as ipetromag,\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rmiext as rmiext\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
+            "WHERE\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1\n" + 
+            "AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag > -9.99995e+8\n" + 
+            "AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rmiext > -9.99995e+8\n" + 
+            "AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits < 65536", 
+
             new ExpectedField[] {
                 new ExpectedField("iPetroMag", AdqlColumn.Type.FLOAT, 0),
                 new ExpectedField("rmiExt",    AdqlColumn.Type.FLOAT, 0),
                 }
             );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.ipetromag as ipetromag, atlasdr1.dbo.atlassource.rmiext as rmiext from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.mergedclass = 1 and atlasdr1.dbo.atlassource.ipetromag > -9.99995e+8 and atlasdr1.dbo.atlassource.rmiext > -9.99995e+8 and atlasdr1.dbo.atlassource.rpperrbits | atlasdr1.dbo.atlassource.ipperrbits < 65536"
-            );
         }
 
     /**
      * Binary OR is not supported in ADQL.
-     *
+     * TODO
+     * 
      */
-    //@Test
     public void test002S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    rppErrBits | ippErrBits\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             "WHERE\n" + 
-            "    mergedClass = 1\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+            "    mergedClass = 1" 
             );
         }
     
@@ -145,57 +135,48 @@ public class BinaryOperatorsTestCase
     @Test
     public void test002L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    rppErrBits | ippErrBits\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             "WHERE\n" + 
-            "    mergedClass = 1\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    mergedClass = 1", 
+
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_OR\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
+            "WHERE\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
+            
             new ExpectedField[] {
                 new ExpectedField("BINARY_OR", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.rpperrbits | atlasdr1.dbo.atlassource.ipperrbits as binary_or from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.mergedclass = 1"
             );
         }
 
 
     /**
      * Binary AND is not supported in ADQL.
+     * TODO
      *
      */
-    //@Test
     public void test003S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    rppErrBits | ippErrBits\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             "WHERE\n" + 
-            "    mergedClass = 1\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+            "    mergedClass = 1"
             );
         }
     
@@ -207,45 +188,41 @@ public class BinaryOperatorsTestCase
     @Test
     public void test003L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    rppErrBits & ippErrBits\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             "WHERE\n" + 
-            "    mergedClass = 1\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    mergedClass = 1",
+
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_AND\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
+            "WHERE\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
+
             new ExpectedField[] {
                 new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.rpperrbits & atlasdr1.dbo.atlassource.ipperrbits as binary_and from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.mergedclass = 1"
             );
         }
 
     /**
      * Binary XOR is not supported in ADQL.
+     * TODO
      *
      */
-    //@Test
     public void test004S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    rppErrBits ^ ippErrBits\n" + 
             "FROM\n" + 
@@ -253,10 +230,6 @@ public class BinaryOperatorsTestCase
             "WHERE\n" + 
             "    mergedClass = 1\n" + 
             ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
             );
         }
     
@@ -268,31 +241,27 @@ public class BinaryOperatorsTestCase
     @Test
     public void test004L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    rppErrBits ^ ippErrBits\n" + 
             "FROM\n" + 
             "    atlasSource\n" + 
             "WHERE\n" + 
-            "    mergedClass = 1\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    mergedClass = 1",
+            
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits ^ {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_XOR\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
+            "WHERE\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
+
             new ExpectedField[] {
                 new ExpectedField("BINARY_XOR", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.rpperrbits ^ atlasdr1.dbo.atlassource.ipperrbits as binary_xor from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.mergedclass = 1"
             );
         }
 
@@ -303,29 +272,23 @@ public class BinaryOperatorsTestCase
     @Test
     public void test005D()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    rppErrBits & 4\n" + 
             "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    atlasSource", 
+
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 4 AS BINARY_AND\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
             new ExpectedField[] {
                 new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.rpperrbits & 4 as binary_and from atlasdr1.dbo.atlassource"
             );
         }
 
@@ -336,29 +299,23 @@ public class BinaryOperatorsTestCase
     @Test
     public void test005H()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    rppErrBits & 0x04\n" + 
             "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    atlasSource", 
+
+            "SELECT\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 0x04 AS BINARY_AND\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
             new ExpectedField[] {
                 new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        compare(
-            query,
-            "select atlasdr1.dbo.atlassource.rpperrbits & 0x04 as binary_and from atlasdr1.dbo.atlassource"
             );
         }
     }

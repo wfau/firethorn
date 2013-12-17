@@ -64,7 +64,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 max({ATLAS_VERSION}.dbo.atlassource.ra) as MAX from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -93,7 +93,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 min({ATLAS_VERSION}.dbo.atlassource.ra) as min from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -122,7 +122,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 sum({ATLAS_VERSION}.dbo.atlassource.ra) as sum from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -151,7 +151,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("POWER", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 power({ATLAS_VERSION}.dbo.atlassource.ra, 2) as power from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -184,7 +184,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 log({ATLAS_VERSION}.dbo.atlassource.ra) as LOG from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -217,7 +217,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 log10({ATLAS_VERSION}.dbo.atlassource.ra) as LOG10 from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -273,7 +273,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("ROUND", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) as ROUND from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -329,7 +329,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("TRUNCATE", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) as TRUNCATE from {ATLAS_VERSION}.dbo.atlassource"
             );
@@ -362,7 +362,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select pi() as pi from atlasdr1.dbo.atlassource"
             );
@@ -418,7 +418,7 @@ public class MathFunctionsTestCase
                 new ExpectedField("RAND", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "select rand(2) as rand from atlasdr1.dbo.atlassource"
             );
@@ -449,9 +449,9 @@ public class MathFunctionsTestCase
     
     /**
      * sign() in LEGACY mode.
+     * TODO
      *
      */
-    @Test
     public void test011L()
         {
         final AdqlQuery query = this.queryspace.queries().create(
@@ -474,54 +474,9 @@ public class MathFunctionsTestCase
                 new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
                 }
             );
-        compare(
-            query,
-            "select sign(2) as sign from atlasdr1.dbo.atlassource"
-            );
-        }
-
-    /**
-     * sign() in LEGACY mode.
-     *
-     */
-    @Test
-    public void frog()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "    SELECT\n" + 
-            "        iPetroMag,\n" + 
-            "        rmiExt \n" + 
-            "    FROM\n" + 
-            "        atlasSource\n" + 
-            "    WHERE\n" + 
-            "        mergedClass=1\n" + 
-            "    AND\n" + 
-            "        iPetroMag>-9.99995e+8\n" + 
-            "    AND\n" + 
-            "        rmiExt>-9.99995e+8\n" + 
-            "    AND\n" + 
-            "        rppErrBits & 0x00400000 = 0 \n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
             query,
-            new ExpectedField[] {
-                new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
-                }
-            );
-/*
-        compare(
-            query,
             "select sign(2) as sign from atlasdr1.dbo.atlassource"
             );
-*/        
         }
-   
     }

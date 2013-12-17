@@ -84,16 +84,4 @@ public class TestPropertiesBase
             log.error("IOException saving test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
             }
         }
-
-    /**
-     * Test our tests
-     *
-    @Test
-    public void test000()
-    throws Exception
-        {
-        log.debug("Properties [{}]", testprops);
-        testprops().setProperty("date", new DateTime().toString());
-        }
-     */
     }

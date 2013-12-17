@@ -63,7 +63,7 @@ extends AtlasQueryTestBase
                 new ExpectedField("fDMS", AdqlColumn.Type.CHAR, 32)
                 }
             );
-        compare(
+        validate(
             query,
             "SELECT TOP 5 {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra) AS fhms, {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdms FROM {ATLAS_VERSION}.dbo.atlasSource"
             );
@@ -97,7 +97,7 @@ extends AtlasQueryTestBase
                 new ExpectedField("fdec", AdqlColumn.Type.CHAR, 32)
                 }
             );
-        compare(
+        validate(
             query,
             "SELECT TOP 3 {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra) AS fra, {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdec FROM {ATLAS_VERSION}.dbo.atlasSource"
             );

@@ -38,9 +38,11 @@ import lombok.extern.slf4j.Slf4j;
 public class LoggedQueryTestCase
     extends AtlasQueryTestBase
     {
-
-    @Test
-    public void test000()
+    /**
+     * TODO
+     *
+     */
+    public void test001()
     throws Exception
         {
         final BufferedReader reader = new BufferedReader(

@@ -90,7 +90,7 @@ extends AtlasQueryTestBase
                 new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "SELECT CrossMatch.distanceMins AS DistanceMins FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj AS CrossMatch , (SELECT s.sourceID AS id FROM {ATLAS_VERSION}.dbo.atlasSource AS s WHERE s.ra > 182 AND s.ra < 184 AND s.dec > -3 AND s.dec < -1 AND s.mergedClass = 1 GROUP BY s.sourceID) AS T WHERE CrossMatch.distanceMins < 2 / 60.0 AND CrossMatch.sdssType = 3 AND CrossMatch.sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
             );
@@ -136,13 +136,14 @@ extends AtlasQueryTestBase
                 new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "SELECT Crossmatch.distanceMins AS DistanceMins FROM (SELECT TOP 10000 {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,{ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj WHERE {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1) AS Crossmatch WHERE Crossmatch.distanceMins < 2 / 60.0 AND Crossmatch.sdssType = 3"
             );
         }
 
     /**
+     * TODO
      * Test query Subquery in Where - returns 32378 rows
      *
      *  Query:
@@ -185,7 +186,7 @@ extends AtlasQueryTestBase
                 new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
                 }
             );
-        compare(
+        validate(
             query,
             "SELECT DistanceMins FROM {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj as CrossMatch WHERE ( SELECT s.sourceID FROM {ATLAS_VERSION}.dbo.atlasSource as s WHERE ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterObjID = sourceID ) > 0"
             );

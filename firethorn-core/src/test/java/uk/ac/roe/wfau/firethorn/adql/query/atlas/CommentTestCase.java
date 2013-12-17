@@ -19,21 +19,27 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
 
 /**
  *
  *
  */
-public class AdqlCommentTestCase
+public class CommentTestCase
     extends AtlasQueryTestBase
     {
     @Test
-    public void test000()
+    public void test000S()
     throws Exception
         {
-        compare(
-            "SELECT\n" +
-            "    TOP 100\n" +
+        validate(
+            Level.STRICT,
+            State.VALID,
+            
+            "SELECT TOP 100\n" +
             "    ra,\n" +
             "    dec\n" +
             "FROM\n" +
@@ -43,20 +49,30 @@ public class AdqlCommentTestCase
             "    uAperMag3 >0\n" +
             "AND\n" +
             "    gAperMag3 >0\n" +
-            "*/" +
-            "",
+            "*/",
 
-            "SELECT TOP 100 {ATLAS_VERSION}.dbo.atlasSource.ra AS ra , {ATLAS_VERSION}.dbo.atlasSource.dec AS dec FROM {ATLAS_VERSION}.dbo.atlasSource"
+            "SELECT TOP 100\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra,\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource",
+            
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("dec", AdqlColumn.Type.FLOAT, 0)
+                }
             );
         }
 
     @Test
-    public void test001()
+    public void test001S()
     throws Exception
         {
-        compare(
-            "SELECT\n" +
-            "    TOP 100\n" +
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            "SELECT TOP 100\n" +
             "    ra,\n" +
             "    dec\n" +
             "    /*cx,*/\n" +
@@ -72,7 +88,16 @@ public class AdqlCommentTestCase
             "*/" +
             "",
 
-            "SELECT TOP 100 {ATLAS_VERSION}.dbo.atlasSource.ra AS ra , {ATLAS_VERSION}.dbo.atlasSource.dec AS dec FROM {ATLAS_VERSION}.dbo.atlasSource"
+            "SELECT TOP 100\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra,\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("dec", AdqlColumn.Type.FLOAT, 0)
+                }
             );
         }
     }
