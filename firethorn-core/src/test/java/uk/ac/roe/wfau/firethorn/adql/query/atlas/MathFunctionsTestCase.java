@@ -49,9 +49,9 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT pi()", 
+            " SELECT pi()", 
 
-            "SELECT PI() AS PI", 
+            " SELECT PI() AS PI", 
 
             new ExpectedField[] {
                 new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
@@ -70,14 +70,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT\n" + 
-            "    pi()\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    pi()" + 
+            " FROM" + 
             "    atlassource", 
 
-            "SELECT\n" + 
-            "    PI() AS PI\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    PI() AS PI" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -98,14 +98,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    power(ra, 2)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    power(ra, 2)" + 
+            " FROM" + 
             "    atlasSource",
             
-            "SELECT TOP 5\n" + 
-            "    POWER({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS POWER\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    POWER({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS POWER" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -125,14 +125,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    log(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    log(ra)" + 
+            " FROM" + 
             "    atlasSource",
 
-            "SELECT TOP 5\n" + 
-            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -152,14 +152,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    log10(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    log10(ra)" + 
+            " FROM" + 
             "    atlasSource",
 
-            "SELECT TOP 5\n" + 
-            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG10\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG10" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -179,10 +179,10 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
         
-            "SELECT TOP 5\n" + 
-            "    round(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
+            " SELECT TOP 5" + 
+            "    round(ra)" + 
+            " FROM" + 
+            "    atlasSource" + 
             ""
             );
         }
@@ -198,14 +198,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    round(ra, 2)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    round(ra, 2)" + 
+            " FROM" + 
             "    atlasSource",
 
-            "SELECT TOP 5\n" + 
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) AS ROUND\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) AS ROUND" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -225,9 +225,9 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
         
-            "SELECT TOP 5\n" + 
-            "    truncate(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    truncate(ra)" + 
+            " FROM" + 
             "    atlasSource"
             );
         }
@@ -243,14 +243,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    truncate(ra, 2)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    truncate(ra, 2)" + 
+            " FROM" + 
             "    atlasSource",
 
-            "SELECT TOP 5\n" + 
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) AS TRUNCATE\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) AS TRUNCATE" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -270,9 +270,9 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    rand()\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    rand()" + 
+            " FROM" + 
             "    atlassource"
             );
         }
@@ -288,14 +288,14 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rand(2)\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    rand(2)" + 
+            " FROM" + 
             "    atlassource", 
 
-            "SELECT\n" + 
-            "    RAND(2) AS RAND\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    RAND(2) AS RAND" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -315,9 +315,9 @@ public class MathFunctionsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    sign(ra)\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    sign(ra)" + 
+            " FROM" + 
             "    atlassource" 
             );
         }
@@ -333,14 +333,14 @@ public class MathFunctionsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    sign(ra)\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    sign(ra)" + 
+            " FROM" + 
             "    atlassource",
             
-            "SELECT\n" + 
-            "    SIGN(2) AS SIGN\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    SIGN(2) AS SIGN" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource", 
 
             new ExpectedField[] {
