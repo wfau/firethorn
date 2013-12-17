@@ -46,16 +46,16 @@ extends AtlasQueryTestBase
             Level.LEGACY,
             State.VALID,
         
-			"SELECT TOP 5" +
+			" SELECT TOP 5" +
             "    fHMS(ra)," +
             "    fDMS(dec)" +
-            "FROM" +
+            " FROM" +
             "    atlasSource",
             
-            "SELECT TOP 5" + 
+            " SELECT TOP 5" + 
             "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fhms," + 
             "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdms" + 
-            "FROM" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
@@ -74,16 +74,16 @@ extends AtlasQueryTestBase
             Level.LEGACY,
             State.VALID,
         
-            "SELECT TOP 5" +
+            " SELECT TOP 5" +
             "    fHMS(ra)  AS fra," +
             "    fDMS(dec) AS fdec" +
-            "FROM" +
+            " FROM" +
             "    atlasSource",
             
-            "SELECT TOP 5" + 
+            " SELECT TOP 5" + 
             "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fra," + 
             "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdec" + 
-            "FROM" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {

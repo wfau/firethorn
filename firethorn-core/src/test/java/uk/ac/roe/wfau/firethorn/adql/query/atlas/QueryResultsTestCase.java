@@ -51,24 +51,24 @@ public class QueryResultsTestCase
             Level.LEGACY,
             State.VALID,
         
-            "SELECT" + 
+            " SELECT" + 
             "    ra," + 
             "    dec" + 
-            "FROM" + 
+            " FROM" + 
             "    twomass_psc" + 
-            "WHERE" + 
+            " WHERE" + 
             "    ra  BETWEEN '56.0' AND '57.9'" + 
-            "AND" + 
+            " AND" + 
             "    dec BETWEEN '24.0' AND '24.2'",
             
-            "SELECT" + 
+            " SELECT" + 
             "    twomass.dbo.twomass_psc.ra  AS ra," + 
             "    twomass.dbo.twomass_psc.dec AS dec" + 
-            "FROM" + 
+            " FROM" + 
             "    twomass.dbo.twomass_psc" + 
-            "WHERE" + 
+            " WHERE" + 
             "    twomass.dbo.twomass_psc.ra BETWEEN '56.0' AND '57.9'" + 
-            "AND" + 
+            " AND" + 
             "    twomass.dbo.twomass_psc.dec BETWEEN '24.0' and '24.2'", 
 
             new ExpectedField[] {
