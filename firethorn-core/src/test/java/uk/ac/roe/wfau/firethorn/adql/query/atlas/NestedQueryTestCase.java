@@ -17,15 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 
-import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -57,58 +54,58 @@ extends AtlasQueryTestBase
             Level.STRICT,
             State.VALID,
         
-            "SELECT\n" +
-            "    DistanceMins\n" +
-            "FROM\n" +
-            "    atlassourcexDR7photoobj AS CrossMatch, \n" +
-            "    (\n" +
-            "    SELECT\n" +
-            "        source.sourceid as id\n" +
-            "    FROM\n" +
-            "        atlassource as source\n" +
-            "    WHERE\n" +
-            "        source.ra BETWEEN 182 AND 184\n" +
-            "    AND\n" +
-            "        source.dec BETWEEN -1 AND -3\n" +
-            "    AND\n" +
-            "        mergedclass =1\n" +
-            "    GROUP BY\n" +
-            "        source.sourceid\n" +
-            "    ) AS nested\n" +
-            "WHERE\n" +
-            "    DistanceMins < 2/60.0\n" +
-            "AND\n" +
-            "    sdsstype = 3\n" +
-            "AND\n" +
-            "    sdssPrimary = 1\n" +
-            "AND " +
+            " SELECT" +
+            "    DistanceMins" +
+            " FROM" +
+            "    atlassourcexDR7photoobj AS CrossMatch, " +
+            "    (" +
+            "    SELECT" +
+            "        source.sourceid as id" +
+            "    FROM" +
+            "        atlassource as source" +
+            "    WHERE" +
+            "        source.ra BETWEEN 182 AND 184" +
+            "    AND" +
+            "        source.dec BETWEEN -1 AND -3" +
+            "    AND" +
+            "        mergedclass =1" +
+            "    GROUP BY" +
+            "        source.sourceid" +
+            "    ) AS nested" +
+            " WHERE" +
+            "    DistanceMins < 2/60.0" +
+            " AND" +
+            "    sdsstype = 3" +
+            " AND" +
+            "    sdssPrimary = 1" +
+            " AND " +
             "    nested.id = CrossMatch.masterObjID",
 
-            "SELECT\n" + 
-            "    CrossMatch.distanceMins AS DistanceMins\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj AS CrossMatch,\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        source.sourceID AS id\n" + 
-            "    FROM\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSource AS source\n" + 
-            "    WHERE\n" + 
-            "        source.ra BETWEEN 182 AND 184\n" + 
-            "    AND\n" + 
-            "        source.dec BETWEEN -1 AND -3\n" + 
-            "    AND\n" + 
-            "        source.mergedClass = 1\n" + 
-            "    GROUP BY\n" + 
-            "        source.sourceID\n" + 
-            "    ) AS nested\n" + 
-            "WHERE\n" + 
-            "    CrossMatch.distanceMins < 2 / 60.0\n" + 
-            "AND\n" + 
-            "    CrossMatch.sdssType = 3\n" + 
-            "AND\n" + 
-            "    CrossMatch.sdssPrimary = 1\n" + 
-            "AND\n" + 
+            " SELECT" + 
+            "    CrossMatch.distanceMins AS DistanceMins" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj AS CrossMatch," + 
+            "    (" + 
+            "    SELECT" + 
+            "        source.sourceID AS id" + 
+            "    FROM" + 
+            "        {ATLAS_VERSION}.dbo.atlasSource AS source" + 
+            "    WHERE" + 
+            "        source.ra BETWEEN 182 AND 184" + 
+            "    AND" + 
+            "        source.dec BETWEEN -1 AND -3" + 
+            "    AND" + 
+            "        source.mergedClass = 1" + 
+            "    GROUP BY" + 
+            "        source.sourceID" + 
+            "    ) AS nested" + 
+            " WHERE" + 
+            "    CrossMatch.distanceMins < 2 / 60.0" + 
+            " AND" + 
+            "    CrossMatch.sdssType = 3" + 
+            " AND" + 
+            "    CrossMatch.sdssPrimary = 1" + 
+            " AND" + 
             "    nested.id = CrossMatch.masterObjID",
 
             new ExpectedField[] {
@@ -133,38 +130,38 @@ extends AtlasQueryTestBase
             Level.STRICT,
             State.VALID,
         
-            "SELECT\n" +
-            "    DistanceMins\n" +
-            "FROM\n" +
-            "    (\n" +
-            "    SELECT\n" +
-            "        TOP 10000 *\n" +
-            "    FROM\n" +
-            "        atlassourcexDR7photoobj\n" +
-            "    WHERE\n" +
-            "        sdssPrimary = 1\n" +
-            "    ) AS Crossmatch\n" +
-            "WHERE\n" +
-            "    DistanceMins < 2/60.0\n" +
-            "AND\n" +
+            " SELECT" +
+            "    DistanceMins" +
+            " FROM" +
+            "    (" +
+            "    SELECT" +
+            "        TOP 10000 *" +
+            "    FROM" +
+            "        atlassourcexDR7photoobj" +
+            "    WHERE" +
+            "        sdssPrimary = 1" +
+            "    ) AS Crossmatch" +
+            " WHERE" +
+            "    DistanceMins < 2/60.0" +
+            " AND" +
             "    sdsstype = 3",
             
-            "SELECT\n" + 
-            "    Crossmatch.distanceMins AS DistanceMins\n" + 
-            "FROM\n" + 
-            "    (\n" + 
-            "    SELECT TOP 10000\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary\n" + 
-            "    FROM\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj\n" + 
-            "    WHERE\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1\n" + 
-            "    ) AS Crossmatch\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    Crossmatch.distanceMins AS DistanceMins" + 
+            " FROM" + 
+            "    (" + 
+            "    SELECT TOP 10000" + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID," + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID," + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins," + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType," + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary" + 
+            "    FROM" + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj" + 
+            "    WHERE" + 
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1" + 
+            "    ) AS Crossmatch" + 
+            " WHERE" + 
             "    Crossmatch.distanceMins < 2 / 60.0 AND Crossmatch.sdssType = 3",
 
             new ExpectedField[] {
@@ -191,40 +188,40 @@ extends AtlasQueryTestBase
             Level.STRICT,
             State.VALID,
         
-            "SELECT\n" +
-            "    DistanceMins\n" +
-            "FROM\n" +
-            "    atlasSourceXDR7PhotoObj as CrossMatch\n" +
-            "WHERE\n" +
-            "    (\n" +
-            "    SELECT\n" +
-            "        s.sourceID\n" +
-            "    FROM\n" +
-            "        atlasSource as s\n" +
-            "    WHERE\n" +
-            "        ra > 182 AND ra < 184\n" +
-            "    AND\n" +
-            "        dec > -3 AND dec < -1\n" +
-            "    AND\n" +
-            "        CrossMatch.masterObjID = sourceID\n" +
+            " SELECT" +
+            "    DistanceMins" +
+            " FROM" +
+            "    atlasSourceXDR7PhotoObj as CrossMatch" +
+            " WHERE" +
+            "    (" +
+            "    SELECT" +
+            "        s.sourceID" +
+            "    FROM" +
+            "        atlasSource as s" +
+            "    WHERE" +
+            "        ra > 182 AND ra < 184" +
+            "    AND" +
+            "        dec > -3 AND dec < -1" +
+            "    AND" +
+            "        CrossMatch.masterObjID = sourceID" +
             "    ) > 0",
             
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj as CrossMatch\n" + 
-            "WHERE\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        sourceID\n" + 
-            "    FROM\n" + 
-            "        {ATLAS_VERSION}.dbo.atlasSource\n" + 
-            "    WHERE\n" + 
-            "        ra BETWEEN 182 AND 184\n" + 
-            "    AND\n" + 
-            "        dec BETWEEN -1 AND -3\n" + 
-            "    AND\n" + 
-            "        CrossMatch.masterObjID = sourceID\n" + 
+            " SELECT" + 
+            "    DistanceMins" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj as CrossMatch" + 
+            " WHERE" + 
+            "    (" + 
+            "    SELECT" + 
+            "        sourceID" + 
+            "    FROM" + 
+            "        {ATLAS_VERSION}.dbo.atlasSource" + 
+            "    WHERE" + 
+            "        ra BETWEEN 182 AND 184" + 
+            "    AND" + 
+            "        dec BETWEEN -1 AND -3" + 
+            "    AND" + 
+            "        CrossMatch.masterObjID = sourceID" + 
             "    ) > 0",
 
             new ExpectedField[] {
