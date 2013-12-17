@@ -131,7 +131,7 @@ public class MathFunctionsTestCase
             "    atlasSource",
 
             "SELECT TOP 5\n" + 
-            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS LOG\n" + 
+            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
@@ -158,7 +158,7 @@ public class MathFunctionsTestCase
             "    atlasSource",
 
             "SELECT TOP 5\n" + 
-            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS LOG10\n" + 
+            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG10\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
@@ -309,14 +309,14 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test07S()
+    public void test007S()
         {
         validate(
             Level.STRICT,
             State.PARSE_ERROR,
 
             "SELECT\n" + 
-            "    sign(2)\n" + 
+            "    sign(ra)\n" + 
             "FROM\n" + 
             "    atlassource" 
             );
@@ -327,14 +327,14 @@ public class MathFunctionsTestCase
      * TODO
      *
      */
-    public void test011L()
+    public void test007L()
         {
         validate(
             Level.LEGACY,
             State.VALID,
 
             "SELECT\n" + 
-            "    sign(2)\n" + 
+            "    sign(ra)\n" + 
             "FROM\n" + 
             "    atlassource",
             
