@@ -34,6 +34,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -75,26 +77,29 @@ public class ColumnSizeTestCase
     public void test001()
     throws SQLException
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT\n" +
-            "    project\n" +
-            "FROM\n" +
-            "    Multiframe\n" +
-            "WHERE\n" +
-            "    project LIKE 'ATLAS%'" +
-            ""
+        final AdqlQuery query = validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT" +
+            "    project" +
+            " FROM" +
+            "    Multiframe" +
+            " WHERE" +
+            "    project LIKE 'ATLAS%'",
+
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.multiframe.project AS project" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.multiframe" + 
+            " WHERE" + 
+            "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
+
+            new ExpectedField[] {
+                new ExpectedField("project", AdqlColumn.Type.CHAR, 64)
+                }
             );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            "select {ATLAS_VERSION}.dbo.multiframe.project as project from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
-            );
+
         //
         // Check the actual JDBC column size.
         checksize(

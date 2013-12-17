@@ -1448,7 +1448,9 @@ implements AdqlParser
                 );
             }
         else {
-            return UNKNOWN_FIELD;
+            throw new AdqlParserException(
+                "Unknown ADQLOperand class [" + oper.getClass().getName() + "]"
+                );
             }
         }
 
@@ -1457,14 +1459,16 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final ADQLColumn column)
+    throws AdqlParserException
         {
         log.debug("wrap(ADQLColumn)");
         log.debug("  name   [{}]", column.getName());
         log.debug("  class  [{}]", column.getClass().getName());
         if (column.getDBLink() == null)
             {
-            log.warn("column.getDBLink() == null");
-            return UNKNOWN_FIELD;
+            throw new AdqlParserException(
+                "ADQLColumn with null DBLink [" + column.getName() + "]"
+                );
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
             {
@@ -1473,8 +1477,9 @@ implements AdqlParser
                 );
             }
         else {
-            log.warn("Unknown column.getDBLink() class [{}]", column.getDBLink().getClass().getName());
-            return UNKNOWN_FIELD;
+            throw new AdqlParserException(
+                "ADQLColumn with unknown DBLink class [" + column.getDBLink().getClass().getName() + "]"
+                );
             }
         }
 
@@ -1488,6 +1493,7 @@ implements AdqlParser
         log.debug("  adql [{}]", column.namebuilder());
         log.debug("  base [{}]", column.base().namebuilder());
         log.debug("  root [{}]", column.root().namebuilder());
+        log.debug("  type [{}]", column.meta().adql().type());
         return new MyAdqlColumnWrapper(
             column
             );

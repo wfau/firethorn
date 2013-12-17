@@ -39,27 +39,27 @@ public class CommentTestCase
             Level.STRICT,
             State.VALID,
             
-            "SELECT TOP 100\n" +
-            "    ra,\n" +
-            "    dec\n" +
-            "FROM\n" +
-            "    atlasSource\n" +
-            "/*\n" +
-            "WHERE\n" +
-            "    uAperMag3 >0\n" +
-            "AND\n" +
-            "    gAperMag3 >0\n" +
-            "*/",
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " /*" +
+            " WHERE" +
+            "    uAperMag3 >0" +
+            " AND" +
+            "    gAperMag3 >0" +
+            " */",
 
-            "SELECT TOP 100\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra,\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec\n" + 
-            "FROM\n" + 
+            " SELECT TOP 100" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlasSource",
             
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dec", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         }
@@ -72,31 +72,30 @@ public class CommentTestCase
             Level.STRICT,
             State.VALID,
 
-            "SELECT TOP 100\n" +
-            "    ra,\n" +
-            "    dec\n" +
-            "    /*cx,*/\n" +
-            "    /*cy,*/\n" +
-            "    /*cz*/\n" +
-            "FROM\n" +
-            "    atlasSource\n" +
-            "/*\n" +
-            "WHERE\n" +
-            "    uAperMag3 >0\n" +
-            "AND\n" +
-            "    gAperMag3 >0\n" +
-            "*/" +
-            "",
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            "    /*cx,*/" +
+            "    /*cy,*/" +
+            "    /*cz*/" +
+            " FROM" +
+            "    atlasSource" +
+            " /*" +
+            " WHERE" +
+            "    uAperMag3 >0" +
+            " AND" +
+            "    gAperMag3 >0" +
+            " */",
 
-            "SELECT TOP 100\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra,\n" + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec\n" + 
-            "FROM\n" + 
+            " SELECT TOP 100" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dec", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         }
