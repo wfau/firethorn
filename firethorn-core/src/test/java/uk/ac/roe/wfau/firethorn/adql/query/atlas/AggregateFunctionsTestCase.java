@@ -49,16 +49,16 @@ public class AggregateFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    MAX(ra),\n" + 
-            "    MIN(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    MAX(ra)," + 
+            "    MIN(ra)" + 
+            " FROM" + 
             "    atlasSource",
             
-            "SELECT TOP 5\n" + 
-            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX,\n" + 
-            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," + 
+            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -79,16 +79,16 @@ public class AggregateFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    SUM(ra),\n" + 
-            "    AVG(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    SUM(ra)," + 
+            "    AVG(ra)" + 
+            " FROM" + 
             "    atlasSource",
             
-            "SELECT TOP 5\n" + 
-            "    SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM,\n" + 
-            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," + 
+            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -109,14 +109,14 @@ public class AggregateFunctionsTestCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 5\n" + 
-            "    COUNT(ra)\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    COUNT(ra)" + 
+            " FROM" + 
             "    atlasSource",
             
-            "SELECT TOP 5\n" + 
-            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS COUNT\n" + 
-            "FROM\n" + 
+            " SELECT TOP 5" + 
+            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS COUNT" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
