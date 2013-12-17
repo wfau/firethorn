@@ -32,7 +32,7 @@ public class ArithmeticOperatorCase
     {
 
     /**
-     * Simple operations.
+     * Simple arithmetic operations.
      *
      */
     @Test
@@ -45,21 +45,27 @@ public class ArithmeticOperatorCase
             "SELECT TOP 10\n" +
             "    umgPnt,\n" +
             "    umgPnt + umgPntErr,\n" +
-            "    umgPnt - umgPntErr\n" +
+            "    umgPnt - umgPntErr,\n" +
+            "    umgPnt * umgPntErr,\n" +
+            "    umgPnt / umgPntErr\n" +
             "FROM\n" +
             "    atlasSource AS atlas",
 
             "SELECT TOP 10\n" + 
-            "    atlas.umgpnt as umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr as sum,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr as sub\n" + 
+            "    atlas.umgpnt AS umgpnt,\n" + 
+            "    atlas.umgpnt + atlas.umgpnterr AS SUM,\n" + 
+            "    atlas.umgpnt - atlas.umgpnterr AS SUB,\n" + 
+            "    atlas.umgpnt * atlas.umgpnterr AS MUL,\n" + 
+            "    atlas.umgpnt / atlas.umgpnterr AS DIV\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
             new ExpectedField[] {
                 new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
                 new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("MUL",    AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("DIV",    AdqlColumn.Type.FLOAT, 0)
                 }
             );
         }
@@ -154,7 +160,7 @@ public class ArithmeticOperatorCase
         }
     
     /**
-     * Simple expression.
+     * Simple bracketed expressions.
      *
      */
     @Test
@@ -167,14 +173,18 @@ public class ArithmeticOperatorCase
             "SELECT TOP 10\n" +
             "    (umgPnt),\n" +
             "    (umgPnt + umgPntErr),\n" +
-            "    (umgPnt - umgPntErr)\n" +
+            "    (umgPnt - umgPntErr),\n" +
+            "    (umgPnt * umgPntErr),\n" +
+            "    (umgPnt / umgPntErr)\n" +
             "FROM\n" +
             "    atlasSource AS atlas",
             
             "SELECT TOP 10\n" + 
             "    atlas.umgpnt AS umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr AS sum,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr AS sub\n" + 
+            "    atlas.umgpnt + atlas.umgpnterr AS SUM,\n" + 
+            "    atlas.umgpnt - atlas.umgpnterr AS SUB,\n" + 
+            "    atlas.umgpnt * atlas.umgpnterr AS MUL,\n" + 
+            "    atlas.umgpnt / atlas.umgpnterr AS DIV,\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
@@ -182,12 +192,14 @@ public class ArithmeticOperatorCase
                 new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
                 new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
                 new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("MUL",    AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("DIV",    AdqlColumn.Type.FLOAT, 0)
                 }
             );
         }
     
     /**
-     * Duplicate expresions.
+     * Duplicate bracketed expressions.
      *
      */
     @Test
@@ -211,7 +223,7 @@ public class ArithmeticOperatorCase
         }
 
     /**
-     * Duplicate expressions with aliases.
+     * Duplicate bracketed expressions with aliases.
      *
      */
     @Test

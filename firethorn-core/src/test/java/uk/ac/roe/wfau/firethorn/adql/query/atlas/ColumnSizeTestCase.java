@@ -42,10 +42,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  *
  */
 @Slf4j
-public class JdbcColumnSizeTestCase
+public class ColumnSizeTestCase
     extends AtlasQueryTestBase
     {
-
 
     public void checksize(final JdbcTable table, final String colname, final int colsize)
     throws SQLException

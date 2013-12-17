@@ -87,8 +87,8 @@ public class BinaryOperatorsTestCase
             "    (rppErrBits | ippErrBits) < 65536", 
 
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag as ipetromag,\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rmiext as rmiext\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag AS ipetromag,\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rmiext AS rmiext\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource\n" + 
             "WHERE\n" + 

@@ -37,301 +37,25 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 public class MathFunctionsTestCase
     extends AtlasQueryTestBase
     {
-    /**
-     * max()
-     *
-     */
-    @Test
-    public void test001()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    max(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 max({ATLAS_VERSION}.dbo.atlassource.ra) as MAX from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    @Test
-    public void test002()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    min(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 min({ATLAS_VERSION}.dbo.atlassource.ra) as min from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    @Test
-    public void test003()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    sum(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 sum({ATLAS_VERSION}.dbo.atlassource.ra) as sum from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    @Test
-    public void test004()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    power(ra, 2)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("POWER", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 power({ATLAS_VERSION}.dbo.atlassource.ra, 2) as power from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
 
     /**
-     * log()
+     * pi() with no FROM
+     * TODO
      *
      */
-    @Test
-    public void test005()
+    public void test000SA()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    log(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT pi()", 
+
+            "SELECT PI() AS PI", 
+
             new ExpectedField[] {
-                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
                 }
-            );
-        validate(
-            query,
-            "select top 5 log({ATLAS_VERSION}.dbo.atlassource.ra) as LOG from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    /**
-     * log10()
-     *
-     */
-    @Test
-    public void test006()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    log10(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 log10({ATLAS_VERSION}.dbo.atlassource.ra) as LOG10 from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    /**
-     * round() without length.
-     *
-     */
-    @Test
-    public void test007A()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    round(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
-            );
-        }
-
-    /**
-     * round() with length.
-     *
-     */
-    @Test
-    public void test007B()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    round(ra, 2)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("ROUND", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) as ROUND from {ATLAS_VERSION}.dbo.atlassource"
-            );
-        }
-
-    /**
-     * truncate() without length.
-     *
-     */
-    @Test
-    public void test008A()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    truncate(ra)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
-            );
-        }
-
-    /**
-     * truncate() with length.
-     *
-     */
-    @Test
-    public void test008B()
-        {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 5\n" + 
-            "    truncate(ra, 2)\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-                new ExpectedField("TRUNCATE", AdqlColumn.Type.DOUBLE, 0)
-                }
-            );
-        validate(
-            query,
-            "select top 5 round({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) as TRUNCATE from {ATLAS_VERSION}.dbo.atlassource"
             );
         }
 
@@ -340,31 +64,198 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test009()
+    public void test000SB()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
             "SELECT\n" + 
             "    pi()\n" + 
             "FROM\n" + 
-            "    atlassource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    atlassource", 
+
+            "SELECT\n" + 
+            "    PI() AS PI\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
             new ExpectedField[] {
                 new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
+        }
+
+    /**
+     * power()
+     * 
+     *
+     */
+    @Test
+    public void test001S()
+        {
         validate(
-            query,
-            "select pi() as pi from atlasdr1.dbo.atlassource"
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    power(ra, 2)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+            
+            "SELECT TOP 5\n" + 
+            "    POWER({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS POWER\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("POWER", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * log()
+     *
+     */
+    @Test
+    public void test002S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    log(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+
+            "SELECT TOP 5\n" + 
+            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS LOG\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * log10()
+     *
+     */
+    @Test
+    public void test003S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    log10(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+
+            "SELECT TOP 5\n" + 
+            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS LOG10\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * round() without length.
+     *
+     */
+    @Test
+    public void test004SA()
+        {
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 5\n" + 
+            "    round(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource\n" + 
+            ""
+            );
+        }
+
+    /**
+     * round() with length.
+     *
+     */
+    @Test
+    public void test004SB()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    round(ra, 2)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+
+            "SELECT TOP 5\n" + 
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) AS ROUND\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("ROUND", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * truncate() without length.
+     *
+     */
+    @Test
+    public void test005SA()
+        {
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 5\n" + 
+            "    truncate(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource"
+            );
+        }
+
+    /**
+     * truncate() with length.
+     *
+     */
+    @Test
+    public void test005SB()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    truncate(ra, 2)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+
+            "SELECT TOP 5\n" + 
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) AS TRUNCATE\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("TRUNCATE", AdqlColumn.Type.DOUBLE, 0)
+                }
             );
         }
 
@@ -373,21 +264,16 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test010A()
+    public void test06SA()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    rand()\n" + 
             "FROM\n" + 
-            "    atlassource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+            "    atlassource"
             );
         }
 
@@ -396,31 +282,25 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test010B()
+    public void test06SB()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.VALID,
+
             "SELECT\n" + 
             "    rand(2)\n" + 
             "FROM\n" + 
-            "    atlassource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    atlassource", 
+
+            "SELECT\n" + 
+            "    RAND(2) AS RAND\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
             new ExpectedField[] {
                 new ExpectedField("RAND", AdqlColumn.Type.DOUBLE, 0)
                 }
-            );
-        validate(
-            query,
-            "select rand(2) as rand from atlasdr1.dbo.atlassource"
             );
         }
     
@@ -429,21 +309,16 @@ public class MathFunctionsTestCase
      *
      */
     @Test
-    public void test011S()
+    public void test07S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
             "SELECT\n" + 
             "    sign(2)\n" + 
             "FROM\n" + 
-            "    atlassource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+            "    atlassource" 
             );
         }
     
@@ -454,29 +329,23 @@ public class MathFunctionsTestCase
      */
     public void test011L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
             "SELECT\n" + 
             "    sign(2)\n" + 
             "FROM\n" + 
-            "    atlassource\n" + 
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        validate(
-            query,
+            "    atlassource",
+            
+            "SELECT\n" + 
+            "    SIGN(2) AS SIGN\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource", 
+
             new ExpectedField[] {
                 new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
                 }
-            );
-        validate(
-            query,
-            "select sign(2) as sign from atlasdr1.dbo.atlassource"
             );
         }
     }

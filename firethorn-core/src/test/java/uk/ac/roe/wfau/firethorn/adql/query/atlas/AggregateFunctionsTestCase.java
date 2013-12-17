@@ -1,0 +1,127 @@
+/*
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.adql.query.atlas;
+
+import static org.junit.Assert.assertEquals;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
+/**
+ *
+ *
+ */
+@Slf4j
+public class AggregateFunctionsTestCase
+    extends AtlasQueryTestBase
+    {
+
+    /**
+     * MAX(), MIN()
+     *
+     */
+    @Test
+    public void test001S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    MAX(ra),\n" + 
+            "    MIN(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+            
+            "SELECT TOP 5\n" + 
+            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX,\n" + 
+            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * SUM(), AVG()
+     *
+     */
+    @Test
+    public void test002S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    SUM(ra),\n" + 
+            "    AVG(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+            
+            "SELECT TOP 5\n" + 
+            "    SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM,\n" + 
+            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("AVG", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * COUNT()
+     *
+     */
+    @Test
+    public void test003S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            "SELECT TOP 5\n" + 
+            "    COUNT(ra)\n" + 
+            "FROM\n" + 
+            "    atlasSource",
+            
+            "SELECT TOP 5\n" + 
+            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS COUNT\n" + 
+            "FROM\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("COUNT", AdqlColumn.Type.LONG, 0)
+                }
+            );
+        }
+    }
