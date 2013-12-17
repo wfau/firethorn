@@ -44,18 +44,18 @@ public class BinaryOperatorsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    iPetroMag,\n" + 
-            "    rmiExt\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
-            "    mergedClass=1\n" + 
-            "AND\n" + 
-            "    iPetroMag>-9.99995e+8\n" + 
-            "AND\n" + 
-            "    rmiExt>-9.99995e+8\n" + 
-            "AND\n" + 
+            " SELECT" + 
+            "    iPetroMag," + 
+            "    rmiExt" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
+            "    mergedClass=1" + 
+            " AND" + 
+            "    iPetroMag>-9.99995e+8" + 
+            " AND" + 
+            "    rmiExt>-9.99995e+8" + 
+            " AND" + 
             "    (rppErrBits | ippErrBits) < 65536" 
             );
         }
@@ -72,32 +72,32 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    iPetroMag,\n" + 
-            "    rmiExt\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
-            "    mergedClass=1\n" + 
-            "AND\n" + 
-            "    iPetroMag>-9.99995e+8\n" + 
-            "AND\n" + 
-            "    rmiExt>-9.99995e+8\n" + 
-            "AND\n" + 
+            " SELECT" + 
+            "    iPetroMag," + 
+            "    rmiExt" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
+            "    mergedClass=1" + 
+            " AND" + 
+            "    iPetroMag>-9.99995e+8" + 
+            " AND" + 
+            "    rmiExt>-9.99995e+8" + 
+            " AND" + 
             "    (rppErrBits | ippErrBits) < 65536", 
 
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag AS ipetromag,\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rmiext AS rmiext\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
-            "WHERE\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1\n" + 
-            "AND\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag > -9.99995e+8\n" + 
-            "AND\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rmiext > -9.99995e+8\n" + 
-            "AND\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag AS ipetromag," + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rmiext AS rmiext" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource" + 
+            " WHERE" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1" + 
+            " AND" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.ipetromag > -9.99995e+8" + 
+            " AND" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rmiext > -9.99995e+8" + 
+            " AND" + 
             "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits < 65536", 
 
             new ExpectedField[] {
@@ -118,11 +118,11 @@ public class BinaryOperatorsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    rppErrBits | ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    rppErrBits | ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
             "    mergedClass = 1" 
             );
         }
@@ -139,18 +139,18 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rppErrBits | ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    rppErrBits | ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
             "    mergedClass = 1", 
 
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_OR\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_OR" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource" + 
+            " WHERE" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
             
             new ExpectedField[] {
@@ -171,11 +171,11 @@ public class BinaryOperatorsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    rppErrBits | ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    rppErrBits | ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
             "    mergedClass = 1"
             );
         }
@@ -192,18 +192,18 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rppErrBits & ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    rppErrBits & ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
             "    mergedClass = 1",
 
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_AND\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_AND" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource" + 
+            " WHERE" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
@@ -223,12 +223,12 @@ public class BinaryOperatorsTestCase
             Level.STRICT,
             State.PARSE_ERROR,
 
-            "SELECT\n" + 
-            "    rppErrBits ^ ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
-            "    mergedClass = 1\n" + 
+            " SELECT" + 
+            "    rppErrBits ^ ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
+            "    mergedClass = 1" + 
             ""
             );
         }
@@ -245,18 +245,18 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rppErrBits ^ ippErrBits\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    rppErrBits ^ ippErrBits" + 
+            " FROM" + 
+            "    atlasSource" + 
+            " WHERE" + 
             "    mergedClass = 1",
             
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits ^ {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_XOR\n" + 
-            "FROM\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource\n" + 
-            "WHERE\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits ^ {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_XOR" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource" + 
+            " WHERE" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
@@ -276,14 +276,14 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rppErrBits & 4\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    rppErrBits & 4" + 
+            " FROM" + 
             "    atlasSource", 
 
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 4 AS BIT_AND\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 4 AS BIT_AND" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -303,14 +303,14 @@ public class BinaryOperatorsTestCase
             Level.LEGACY,
             State.VALID,
 
-            "SELECT\n" + 
-            "    rppErrBits & 0x04\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    rppErrBits & 0x04" + 
+            " FROM" + 
             "    atlasSource", 
 
-            "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 0x04 AS BIT_AND\n" + 
-            "FROM\n" + 
+            " SELECT" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 0x04 AS BIT_AND" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
