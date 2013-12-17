@@ -42,22 +42,22 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 10\n" +
-            "    umgPnt,\n" +
-            "    umgPnt + umgPntErr,\n" +
-            "    umgPnt - umgPntErr,\n" +
-            "    umgPnt * umgPntErr,\n" +
-            "    umgPnt / umgPntErr\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    umgPnt," +
+            "    umgPnt + umgPntErr," +
+            "    umgPnt - umgPntErr," +
+            "    umgPnt * umgPntErr," +
+            "    umgPnt / umgPntErr" +
+            " FROM" +
             "    atlasSource AS atlas",
 
-            "SELECT TOP 10\n" + 
-            "    atlas.umgpnt AS umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr AS SUM,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr AS SUB,\n" + 
-            "    atlas.umgpnt * atlas.umgpnterr AS MUL,\n" + 
-            "    atlas.umgpnt / atlas.umgpnterr AS DIV\n" + 
-            "FROM\n" + 
+            " SELECT TOP 10" + 
+            "    atlas.umgpnt AS umgpnt," + 
+            "    atlas.umgpnt + atlas.umgpnterr AS SUM," + 
+            "    atlas.umgpnt - atlas.umgpnterr AS SUB," + 
+            "    atlas.umgpnt * atlas.umgpnterr AS MUL," + 
+            "    atlas.umgpnt / atlas.umgpnterr AS DIV" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
             new ExpectedField[] {
@@ -81,14 +81,14 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.PARSE_ERROR,
         
-            "SELECT TOP 10\n" +
-            "    umgPnt,\n" +
-            "    umgPnt + umgPntErr,\n" +
-            "    umgPnt - umgPntErr,\n" +
-            "    gmrPnt,\n" +
-            "    gmrPnt + gmrPntErr,\n" +
-            "    gmrPnt - gmrPntErr\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    umgPnt," +
+            "    umgPnt + umgPntErr," +
+            "    umgPnt - umgPntErr," +
+            "    gmrPnt," +
+            "    gmrPnt + gmrPntErr," +
+            "    gmrPnt - gmrPntErr" +
+            " FROM" +
             "    atlasSource AS atlas"
             );
         // TODO Check the error message.
@@ -105,24 +105,24 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 10\n" +
-            "    umgPnt,\n" +
-            "    umgPnt + umgPntErr,\n" +
-            "    umgPnt - umgPntErr,\n" +
-            "    gmrPnt,\n" +
-            "    gmrPnt + gmrPntErr AS gmrSUM,\n" +
-            "    gmrPnt - gmrPntErr AS gmrSUB\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    umgPnt," +
+            "    umgPnt + umgPntErr," +
+            "    umgPnt - umgPntErr," +
+            "    gmrPnt," +
+            "    gmrPnt + gmrPntErr AS gmrSUM," +
+            "    gmrPnt - gmrPntErr AS gmrSUB" +
+            " FROM" +
             "    atlasSource AS atlas",
             
-            "SELECT TOP 10\n" + 
-            "    atlas.umgpnt AS umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr AS sum,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr AS sub,\n" + 
-            "    atlas.gmrpnt AS gmrpnt,\n" + 
-            "    atlas.gmrpnt + atlas.gmrpnterr AS gmrsum,\n" + 
-            "    atlas.gmrpnt - atlas.gmrpnterr AS gmrsub\n" + 
-            "FROM\n" + 
+            " SELECT TOP 10" + 
+            "    atlas.umgpnt AS umgpnt," + 
+            "    atlas.umgpnt + atlas.umgpnterr AS sum," + 
+            "    atlas.umgpnt - atlas.umgpnterr AS sub," + 
+            "    atlas.gmrpnt AS gmrpnt," + 
+            "    atlas.gmrpnt + atlas.gmrpnterr AS gmrsum," + 
+            "    atlas.gmrpnt - atlas.gmrpnterr AS gmrsub" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 
             new ExpectedField[] {
@@ -147,14 +147,14 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.PARSE_ERROR,
         
-            "SELECT TOP 10\n" +
-            "    umgPnt,\n" +
-            "    umgPnt + umgPntErr AS s1,\n" +
-            "    umgPnt - umgPntErr AS s2,\n" +
-            "    gmrPnt,\n" +
-            "    gmrPnt + gmrPntErr AS S1,\n" +
-            "    gmrPnt - gmrPntErr AS S2\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    umgPnt," +
+            "    umgPnt + umgPntErr AS s1," +
+            "    umgPnt - umgPntErr AS s2," +
+            "    gmrPnt," +
+            "    gmrPnt + gmrPntErr AS S1," +
+            "    gmrPnt - gmrPntErr AS S2" +
+            " FROM" +
             "    atlasSource AS atlas"
             );
         }
@@ -170,22 +170,22 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 10\n" +
-            "    (umgPnt),\n" +
-            "    (umgPnt + umgPntErr),\n" +
-            "    (umgPnt - umgPntErr),\n" +
-            "    (umgPnt * umgPntErr),\n" +
-            "    (umgPnt / umgPntErr)\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    (umgPnt)," +
+            "    (umgPnt + umgPntErr)," +
+            "    (umgPnt - umgPntErr)," +
+            "    (umgPnt * umgPntErr)," +
+            "    (umgPnt / umgPntErr)" +
+            " FROM" +
             "    atlasSource AS atlas",
             
-            "SELECT TOP 10\n" + 
-            "    atlas.umgpnt AS umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr AS SUM,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr AS SUB,\n" + 
-            "    atlas.umgpnt * atlas.umgpnterr AS MUL,\n" + 
-            "    atlas.umgpnt / atlas.umgpnterr AS DIV,\n" + 
-            "FROM\n" + 
+            " SELECT TOP 10" + 
+            "    atlas.umgpnt AS umgpnt," + 
+            "    atlas.umgpnt + atlas.umgpnterr AS SUM," + 
+            "    atlas.umgpnt - atlas.umgpnterr AS SUB," + 
+            "    atlas.umgpnt * atlas.umgpnterr AS MUL," + 
+            "    atlas.umgpnt / atlas.umgpnterr AS DIV" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
             new ExpectedField[] {
@@ -209,14 +209,14 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.PARSE_ERROR,
         
-            "SELECT TOP 10\n" +
-            "    (umgPnt),\n" +
-            "    (umgPnt + umgPntErr),\n" +
-            "    (umgPnt - umgPntErr),\n" +
-            "    (gmrPnt),\n" +
-            "    (gmrPnt + gmrPntErr),\n" +
-            "    (gmrPnt - gmrPntErr)\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    (umgPnt)," +
+            "    (umgPnt + umgPntErr)," +
+            "    (umgPnt - umgPntErr)," +
+            "    (gmrPnt)," +
+            "    (gmrPnt + gmrPntErr)," +
+            "    (gmrPnt - gmrPntErr)" +
+            " FROM" +
             "    atlasSource AS atlas"
             );
         // TODO Check the error message.
@@ -233,24 +233,24 @@ public class ArithmeticOperatorCase
             Level.STRICT,
             State.VALID,
         
-            "SELECT TOP 10\n" +
-            "    (umgPnt),\n" +
-            "    (umgPnt + umgPntErr),\n" +
-            "    (umgPnt - umgPntErr),\n" +
-            "    (gmrPnt),\n" +
-            "    (gmrPnt + gmrPntErr) AS gmrSUM,\n" +
-            "    (gmrPnt - gmrPntErr) AS gmrSUB\n" +
-            "FROM\n" +
+            " SELECT TOP 10" +
+            "    (umgPnt)," +
+            "    (umgPnt + umgPntErr)," +
+            "    (umgPnt - umgPntErr)," +
+            "    (gmrPnt)," +
+            "    (gmrPnt + gmrPntErr) AS gmrSUM," +
+            "    (gmrPnt - gmrPntErr) AS gmrSUB" +
+            " FROM" +
             "    atlasSource AS atlas",
             
-            "SELECT TOP 10\n" + 
-            "    atlas.umgpnt AS umgpnt,\n" + 
-            "    atlas.umgpnt + atlas.umgpnterr AS sum,\n" + 
-            "    atlas.umgpnt - atlas.umgpnterr AS sub,\n" + 
-            "    atlas.gmrpnt AS gmrpnt,\n" + 
-            "    atlas.gmrpnt + atlas.gmrpnterr AS gmrsum,\n" + 
-            "    atlas.gmrpnt - atlas.gmrpnterr AS gmrsub\n" + 
-            "FROM\n" + 
+            " SELECT TOP 10" + 
+            "    atlas.umgpnt AS umgpnt," + 
+            "    atlas.umgpnt + atlas.umgpnterr AS sum," + 
+            "    atlas.umgpnt - atlas.umgpnterr AS sub," + 
+            "    atlas.gmrpnt AS gmrpnt," + 
+            "    atlas.gmrpnt + atlas.gmrpnterr AS gmrsum," + 
+            "    atlas.gmrpnt - atlas.gmrpnterr AS gmrsub" + 
+            " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 
             new ExpectedField[] {
