@@ -47,19 +47,14 @@ public class QueryBugsTestCase
     @Test
     public void test002S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 10\n" +
-            "    distanceMins AS distance\n" +
-            "FROM\n" +
-            "    atlasSourceXtwomass_psc\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 10" +
+            "    distanceMins AS distance" +
+            "FROM" +
+            "    atlasSourceXtwomass_psc"
             );
         }
 
@@ -71,33 +66,28 @@ public class QueryBugsTestCase
     @Test
     public void test002L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    distanceMins AS distance\n" +
-            "FROM\n" +
-            "    atlasSourceXtwomass_psc\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-        assertEquals(
-            "DISTANCE is an ADQL reserved word",
-            query.syntax().warnings().iterator().next()
-            );
-        validate(
-            query,
+        final AdqlQuery query = validate(
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    distanceMins AS distance" +
+            "FROM" +
+            "    atlasSourceXtwomass_psc",
+
+            "SELECT TOP 10" + 
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS dist" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc",
+            
             new ExpectedField[] {
                 new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
                 }
             );
-        validate(
-            query,
-            "select top 10 {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as dist from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc"
+
+        assertEquals(
+            "DISTANCE is an ADQL reserved word",
+            query.syntax().warnings().iterator().next()
             );
         }
 
@@ -109,25 +99,15 @@ public class QueryBugsTestCase
     @Test
     public void test003S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 10\n" +
-            "    ra,\n" +
-            "    dec\n" +
-            "FROM\n" +
-            "    TWOMASS..twomass_psc\n" +
-            ""
-            );
-
-        assertEquals(
-            AdqlQuery.Syntax.Level.STRICT,
-            query.syntax().level()
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 10" +
+            "    ra," +
+            "    dec" +
+            "FROM" +
+            "    TWOMASS..twomass_psc"
             );
 
         // TODO Explicitly state LEGACY not available in warning.
@@ -143,35 +123,31 @@ public class QueryBugsTestCase
     @Test
     public void test003L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    ra,\n" +
-            "    dec\n" +
-            "FROM\n" +
-            "    TWOMASS..twomass_psc\n" +
-            ""
+        final AdqlQuery query = validate(
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    ra," +
+            "    dec" +
+            "FROM" +
+            "    TWOMASS..twomass_psc",
+            
+            "SELECT TOP 10" + 
+            "    twomass.dbo.twomass_psc.ra  AS ra," + 
+            "    twomass.dbo.twomass_psc.dec AS dec" + 
+            "FROM" + 
+            "    twomass.dbo.twomass_psc",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                }
             );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
+
         assertEquals(
             "SQLServer '..' syntax is not required",
             query.syntax().warnings().iterator().next()
-            );
-        validate(
-            query,
-            new ExpectedField[] {
-            new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-            new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
-                }
-            );
-        validate(
-            query,
-            "select top 10 twomass.dbo.twomass_psc.ra as ra, twomass.dbo.twomass_psc.dec as dec from twomass.dbo.twomass_psc"
             );
         }
 
@@ -183,28 +159,23 @@ public class QueryBugsTestCase
     @Test
     public void test004S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec,\n" +
-            "    rosat.ra,\n" +
-            "    rosat.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas,\n" +
-            "    rosat_fsc AS rosat,\n" +
-            "    atlasSourceXrosat_fsc AS neighbours\n" +
-            "WHERE\n" +
-            "    neighbours.masterObjID=atlas.sourceID\n" +
-            "AND\n" +
-            "    neighbours.slaveObjID=rosat.seqNo\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec," +
+            "    rosat.ra," +
+            "    rosat.dec" +
+            "FROM" +
+            "    atlasSource AS atlas," +
+            "    rosat_fsc AS rosat," +
+            "    atlasSourceXrosat_fsc AS neighbours" +
+            "WHERE" +
+            "    neighbours.masterObjID=atlas.sourceID" +
+            "AND" +
+            "    neighbours.slaveObjID=rosat.seqNo"
             );
         }
 
@@ -216,28 +187,23 @@ public class QueryBugsTestCase
     @Test
     public void test004L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec,\n" +
-            "    rosat.ra,\n" +
-            "    rosat.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas,\n" +
-            "    rosat_fsc AS rosat,\n" +
-            "    atlasSourceXrosat_fsc AS neighbours\n" +
-            "WHERE\n" +
-            "    neighbours.masterObjID=atlas.sourceID\n" +
-            "AND\n" +
-            "    neighbours.slaveObjID=rosat.seqNo\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.LEGACY,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec," +
+            "    rosat.ra," +
+            "    rosat.dec" +
+            "FROM" +
+            "    atlasSource AS atlas," +
+            "    rosat_fsc AS rosat," +
+            "    atlasSourceXrosat_fsc AS neighbours" +
+            "WHERE" +
+            "    neighbours.masterObjID=atlas.sourceID" +
+            "AND" +
+            "    neighbours.slaveObjID=rosat.seqNo"
             );
         }
 
@@ -249,22 +215,17 @@ public class QueryBugsTestCase
     @Test
     public void test005S()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.STRICT
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas\n" +
-            "WHERE\n" +
-            "    atlas.sourceID % 100 = 0\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec" +
+            "FROM" +
+            "    atlasSource AS atlas" +
+            "WHERE" +
+            "    atlas.sourceID % 100 = 0"
             );
         // TODO Check the error message.
         }
@@ -277,33 +238,30 @@ public class QueryBugsTestCase
     @Test
     public void test005L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas\n" +
-            "WHERE\n" +
-            "    atlas.sourceID % 100 = 0\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec" +
+            "FROM" +
+            "    atlasSource AS atlas" +
+            "WHERE" +
+            "    atlas.sourceID % 100 = 0",
+
+            "SELECT TOP 10" + 
+            "    atlas.ra  AS ra," + 
+            "    atlas.dec AS dec" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas" + 
+            "WHERE" + 
+            "    atlas.sourceid % 100 = 0",
+
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
-            );
-        validate(
-            query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas where atlas.sourceid % 100 = 0"
             );
         }
 
@@ -316,48 +274,57 @@ public class QueryBugsTestCase
     @Test
     public void test006L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas,\n" +
-            "    twomass_psc AS twomass,\n" +
-            "    atlasSourceXtwomass_psc AS neighbours\n" +
-            "WHERE\n" +
-            "    masterObjID=atlas.sourceID\n" +
-            "AND\n" +
-            "    slaveObjID=twomass.pts_key\n" +
-            "AND\n" +
-            "    distanceMins IN (\n" +
-            "        SELECT\n" +
-            "            MIN(distanceMins)\n" +
-            "        FROM\n" +
-            "            atlasSourceXtwomass_psc\n" +
-            "        WHERE\n" +
-            "            masterObjID = neighbours.masterObjID\n" +
-            "        )\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec" +
+            "FROM" +
+            "    atlasSource AS atlas," +
+            "    twomass_psc AS twomass," +
+            "    atlasSourceXtwomass_psc AS neighbours" +
+            "WHERE" +
+            "    masterObjID=atlas.sourceID" +
+            "AND" +
+            "    slaveObjID=twomass.pts_key" +
+            "AND" +
+            "    distanceMins IN (" +
+            "        SELECT" +
+            "            MIN(distanceMins)" +
+            "        FROM" +
+            "            atlasSourceXtwomass_psc" +
+            "        WHERE" +
+            "            masterObjID = neighbours.masterObjID" +
+            "        )",
+
+            "SELECT TOP 10" + 
+            "    atlas.ra AS ra," + 
+            "    atlas.dec AS dec" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," + 
+            "    twomass.dbo.twomass_psc AS twomass," + 
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" + 
+            "WHERE" + 
+            "    neighbours.masterobjid = atlas.sourceid" + 
+            "AND" + 
+            "    neighbours.slaveobjid = twomass.pts_key" + 
+            "AND" + 
+            "    neighbours.distancemins IN" + 
+            "        (" + 
+            "        SELECT" + 
+            "            MIN({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) AS min" + 
+            "        FROM" + 
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" + 
+            "        WHERE" + 
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid" + 
+            "        )",
+
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
-                //new ExpectedField("MIN", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
-            );
-        // TODO
-        validate(
-            query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) as min from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
 
@@ -368,47 +335,57 @@ public class QueryBugsTestCase
     @Test
     public void test006a()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas,\n" +
-            "    twomass_psc AS twomass,\n" +
-            "    atlasSourceXtwomass_psc AS neighbours\n" +
-            "WHERE\n" +
-            "    masterObjID=atlas.sourceID\n" +
-            "AND\n" +
-            "    slaveObjID=twomass.pts_key\n" +
-            "AND\n" +
-            "    distanceMins IN (\n" +
-            "        SELECT\n" +
-            "            distanceMins\n" +
-            "        FROM\n" +
-            "            atlasSourceXtwomass_psc\n" +
-            "        WHERE\n" +
-            "            distanceMins < 0.01\n" +
-            "        )\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    atlas.ra," +
+            "    atlas.dec" +
+            "FROM" +
+            "    atlasSource AS atlas," +
+            "    twomass_psc AS twomass," +
+            "    atlasSourceXtwomass_psc AS neighbours" +
+            "WHERE" +
+            "    masterObjID=atlas.sourceID" +
+            "AND" +
+            "    slaveObjID=twomass.pts_key" +
+            "AND" +
+            "    distanceMins IN (" +
+            "        SELECT" +
+            "            distanceMins" +
+            "        FROM" +
+            "            atlasSourceXtwomass_psc" +
+            "        WHERE" +
+            "            distanceMins < 0.01" +
+            "        )",
+
+            "SELECT TOP 10" + 
+            "    atlas.ra  AS ra," + 
+            "    atlas.dec AS dec" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," + 
+            "    twomass.dbo.twomass_psc AS twomass," + 
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" + 
+            "WHERE" + 
+            "    neighbours.masterobjid = atlas.sourceid" + 
+            "AND" + 
+            "    neighbours.slaveobjid = twomass.pts_key" + 
+            "AND" + 
+            "    neighbours.distancemins IN" + 
+            "        (" + 
+            "        SELECT" + 
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS distancemins" + 
+            "        FROM" + 
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" + 
+            "        WHERE" + 
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01" + 
+            "        )",
+
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
-            );
-        // TODO
-        validate(
-            query,
-            "select top 10 atlas.ra as ra, atlas.dec as dec from {ATLAS_VERSION}.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, {ATLAS_VERSION}.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcextwomass_psc where {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01)"
             );
         }
     
@@ -419,23 +396,22 @@ public class QueryBugsTestCase
     @Test
     public void test007L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 10\n" +
-            "    utDate,\n" +
-            "    dateObs\n" +
-            "FROM\n" +
-            "    multiframe\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.LEGACY,
+            State.VALID,
+        
+            "SELECT TOP 10" +
+            "    utDate," +
+            "    dateObs" +
+            "FROM" +
+            "    multiframe",
+            
+            "SELECT TOP 10" + 
+            "    {ATLAS_VERSION}.dbo.multiframe.utdate  AS utdate," + 
+            "    {ATLAS_VERSION}.dbo.multiframe.dateobs AS dateobs" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.multiframe",
+
             new ExpectedField[] {
                 new ExpectedField("utDate",  AdqlColumn.Type.DATETIME, 23),
                 new ExpectedField("dateObs", AdqlColumn.Type.DATETIME, 23)
@@ -446,10 +422,6 @@ public class QueryBugsTestCase
         // Firethorn create table fails if we have two DATETIME columns.
         // OGSA-DAI insert into TIMESTAMP column fails.
 
-        validate(
-            query,
-            "select top 10 {ATLAS_VERSION}.dbo.multiframe.utdate as utdate, {ATLAS_VERSION}.dbo.multiframe.dateobs as dateobs from {ATLAS_VERSION}.dbo.multiframe"
-            );
         }
 
     /**
@@ -460,37 +432,39 @@ public class QueryBugsTestCase
     @Test
     public void test008L()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT TOP 100\n" +
-            "    neighbours.distanceMins\n" +
-            "FROM\n" +
-            "    atlassourcexDR8photoobj AS neighbours,\n" +
-            "    (\n" +
-            "    SELECT TOP 10\n" +
-            "        sourceId AS ident\n" +
-            "    FROM\n" +
-            "        atlasSource\n" +
-            "    ) AS sources\n" +
-            "WHERE\n" +
-            "    neighbours.masterObjID - sources.ident < 1000000\n" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
+            Level.LEGACY,
+            State.VALID,
+
+            "SELECT TOP 100" +
+            "    neighbours.distanceMins" +
+            "FROM" +
+            "    atlassourcexDR8photoobj AS neighbours," +
+            "    (" +
+            "    SELECT TOP 10" +
+            "        sourceId AS ident" +
+            "    FROM" +
+            "        atlasSource" +
+            "    ) AS sources" +
+            "WHERE" +
+            "    neighbours.masterObjID - sources.ident < 1000000",
+            
+            "SELECT TOP 100" + 
+            "    neighbours.distancemins AS distancemins" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj AS neighbours," + 
+            "    (" + 
+            "    SELECT TOP 10" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.sourceid AS ident" + 
+            "    FROM" + 
+            "        {ATLAS_VERSION}.dbo.atlassource" + 
+            "    ) AS sources" + 
+            "WHERE" + 
+            "    neighbours.masterobjid - sources.ident < 1000000",
+
             new ExpectedField[] {
                 new ExpectedField("distanceMins", AdqlColumn.Type.FLOAT, 0),
                 }
-            );
-        validate(
-            query,
-            "select top 100 neighbours.distancemins as distancemins from {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 {ATLAS_VERSION}.dbo.atlassource.sourceid as ident from {ATLAS_VERSION}.dbo.atlassource) as sources where neighbours.masterobjid - sources.ident < 1000000"
             );
         }
 
@@ -501,25 +475,27 @@ public class QueryBugsTestCase
     @Test
     public void test009a()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT\n" +
-            "    COUNT(*)\n" +
-            "FROM\n" +
-            "    Multiframe\n" +
-            "WHERE\n" +
-            "    project LIKE 'ATLAS%'" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
         validate(
-            query,
-            "select count(*) as count_all from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.project like 'ATLAS%'"
+            Level.LEGACY,
+            State.VALID,
+
+            "SELECT" +
+            "    COUNT(*)" +
+            "FROM" +
+            "    Multiframe" +
+            "WHERE" +
+            "    project LIKE 'ATLAS%'",
+            
+            "SELECT" + 
+            "    COUNT(*) AS COUNT_ALL" + 
+            "FROM" + 
+            "    {ATLAS_VERSION}.dbo.multiframe" + 
+            "WHERE" + 
+            "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
+
+            new ExpectedField[] {
+                new ExpectedField("COUNT_ALL", AdqlColumn.Type.LONG, 0),
+                }
             );
         }
 
@@ -530,24 +506,18 @@ public class QueryBugsTestCase
     @Test
     public void test009b()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-            "SELECT\n" +
-            "    COUNT(*)\n" +
-            "FROM\n" +
-            "    Multiframe\n" +
-            "WHERE\n" +
-            "    project LIKE \"ATLAS%\"" +
-            ""
-            );
-        assertEquals(
-            AdqlQuery.Syntax.State.PARSE_ERROR,
-            query.syntax().state()
+        validate(
+            Level.LEGACY,
+            State.PARSE_ERROR,
+
+            "SELECT" +
+            "    COUNT(*)" +
+            "FROM" +
+            "    Multiframe" +
+            "WHERE" +
+            "    project LIKE \"ATLAS%\""
             );
         }
-    
     
     /**
      * Negative value for select expression.
@@ -556,25 +526,24 @@ public class QueryBugsTestCase
     @Test
     public void test010()
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            factories().queries().params().param(
-                Level.LEGACY
-                ),
-        	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
-            );
+        validate(
+            Level.LEGACY,
+            State.VALID,
 
-        assertEquals(
-            AdqlQuery.Syntax.State.VALID,
-            query.syntax().state()
-            );
-       
-        validate(
-            query,
-            "select -{ATLAS_VERSION}.dbo.multiframe.decbase as decbase from {ATLAS_VERSION}.dbo.multiframe where {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0"
-            );
-            
-        validate(
-            query,
+        	"SELECT" + 
+        	"    -decBase" + 
+        	"FROM" + 
+        	"    Multiframe" + 
+        	"WHERE" + 
+        	"    MultiframeID > 0",
+
+        	"SELECT" + 
+        	"    -{ATLAS_VERSION}.dbo.multiframe.decbase AS decbase" + 
+        	"FROM" + 
+        	"    {ATLAS_VERSION}.dbo.multiframe" + 
+        	"WHERE" + 
+        	"    {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0",
+        	
             new ExpectedField[] {
                 new ExpectedField("decBase", AdqlColumn.Type.FLOAT, 0),
                 }

@@ -1723,18 +1723,18 @@ public class ADQLParser implements ADQLParserConstants {
                                  Token sign=null; ADQLOperand leftOp, rightOp=null;
       leftOp = Factor();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BINARY_AND:
-      case BINARY_OR:
-      case BINARY_XOR:
+      case BIT_AND:
+      case BIT_OR:
+      case BIT_XOR:
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case BINARY_AND:
-          sign = jj_consume_token(BINARY_AND);
+        case BIT_AND:
+          sign = jj_consume_token(BIT_AND);
           break;
-        case BINARY_OR:
-          sign = jj_consume_token(BINARY_OR);
+        case BIT_OR:
+          sign = jj_consume_token(BIT_OR);
           break;
-        case BINARY_XOR:
-          sign = jj_consume_token(BINARY_XOR);
+        case BIT_XOR:
+          sign = jj_consume_token(BIT_XOR);
           break;
         default:
           jj_la1[54] = jj_gen;

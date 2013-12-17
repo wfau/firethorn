@@ -538,9 +538,9 @@ TOKEN : {
 /* Binary operators     */
 /* ******************** */
 TOKEN : {
-	< BINARY_AND: "&" >
-|	< BINARY_OR:  "|" >
-|	< BINARY_XOR: "^" >
+	< BIT_AND: "&" >
+|	< BIT_OR:  "|" >
+|	< BIT_XOR: "^" >
 }
 
 /* ******************** */
@@ -1115,7 +1115,7 @@ ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} 
 }
 
 ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
-	(leftOp=Factor() ((sign=<BINARY_AND> | sign=<BINARY_OR> | sign=<BINARY_XOR>) rightOp=BinaryExpression())?)
+	(leftOp=Factor() ((sign=<BIT_AND> | sign=<BIT_OR> | sign=<BIT_XOR>) rightOp=BinaryExpression())?)
 	{
 	if (sign == null)
 		return leftOp;

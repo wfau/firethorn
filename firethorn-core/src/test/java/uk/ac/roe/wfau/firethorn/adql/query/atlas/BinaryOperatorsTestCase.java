@@ -147,14 +147,14 @@ public class BinaryOperatorsTestCase
             "    mergedClass = 1", 
 
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_OR\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_OR\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource\n" + 
             "WHERE\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
             
             new ExpectedField[] {
-                new ExpectedField("BINARY_OR", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_OR", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }
@@ -200,14 +200,14 @@ public class BinaryOperatorsTestCase
             "    mergedClass = 1",
 
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_AND\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource\n" + 
             "WHERE\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
-                new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }
@@ -253,14 +253,14 @@ public class BinaryOperatorsTestCase
             "    mergedClass = 1",
             
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits ^ {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BINARY_XOR\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits ^ {ATLAS_VERSION}.dbo.atlassource.ipperrbits AS BIT_XOR\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource\n" + 
             "WHERE\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
-                new ExpectedField("BINARY_XOR", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_XOR", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }
@@ -282,12 +282,12 @@ public class BinaryOperatorsTestCase
             "    atlasSource", 
 
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 4 AS BINARY_AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 4 AS BIT_AND\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }
@@ -309,12 +309,12 @@ public class BinaryOperatorsTestCase
             "    atlasSource", 
 
             "SELECT\n" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 0x04 AS BINARY_AND\n" + 
+            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits & 0x04 AS BIT_AND\n" + 
             "FROM\n" + 
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("BINARY_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }

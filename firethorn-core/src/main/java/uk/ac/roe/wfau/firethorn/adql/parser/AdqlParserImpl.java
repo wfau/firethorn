@@ -702,21 +702,21 @@ implements AdqlParser
                     );
                 }
 
-            else if (type == OperationType.BINARY_OR)
+            else if (type == OperationType.BIT_OR)
                 {
                 throw new AdqlParserException(
                     "Binary OR operator '|' is not supported in ADQL"
                     );
                 }
 
-            else if (type == OperationType.BINARY_AND)
+            else if (type == OperationType.BIT_AND)
                 {
                 throw new AdqlParserException(
                     "Binary AND operator '&' is not supported in ADQL"
                     );
                 }
             
-            else if (type == OperationType.BINARY_XOR)
+            else if (type == OperationType.BIT_XOR)
                 {
                 throw new AdqlParserException(
                     "Binary XOR operator '^' is not supported in ADQL"

@@ -397,9 +397,11 @@ extends TestPropertiesBase
         final String s3 = s2.toLowerCase();
         final String s4 = s3.replaceAll("[\n\r]+", " ");
         final String s5 = s4.replaceAll("\\p{Space}+", " ");
-        final String s6 = s5.replaceAll(" +,", ",");
+        final String s6 = s5.replaceAll(" *, *", ",");
+        final String s7 = s6.replaceAll(" *\\( *", "(");
+        final String s8 = s7.replaceAll(" *\\) *", ")");
 
-        return s6;
+        return s8;
         }
 
     public void validate(final AdqlQuery query, final String sql)
@@ -423,7 +425,7 @@ extends TestPropertiesBase
         }
  */
 
-    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
         {
         final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -443,31 +445,32 @@ extends TestPropertiesBase
             {
             validate(query, sql);
             }
+        return query;
         }
 
-    public void validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
         {
-        validate(Level.STRICT, status, adql, sql, fields);
+        return validate(Level.STRICT, status, adql, sql, fields);
         }
     
-    public void validate(final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
         {
-        validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
+        return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
         }
 
-    public void validate(final String adql, final String sql)
+    public AdqlQuery validate(final String adql, final String sql)
         {
-        validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
+        return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
         }
 
-    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
+    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
         {
-        validate(level, status, adql, sql, null);
+        return validate(level, status, adql, sql, null);
         }
 
-    public void validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
         {
-        validate(level, status, adql, null, null);
+        return validate(level, status, adql, null, null);
         }
 
     /**

@@ -33,11 +33,11 @@ public interface ADQLParserConstants {
   /** RegularExpression Id. */
   int MODULO = 12;
   /** RegularExpression Id. */
-  int BINARY_AND = 13;
+  int BIT_AND = 13;
   /** RegularExpression Id. */
-  int BINARY_OR = 14;
+  int BIT_OR = 14;
   /** RegularExpression Id. */
-  int BINARY_XOR = 15;
+  int BIT_XOR = 15;
   /** RegularExpression Id. */
   int EQUAL = 16;
   /** RegularExpression Id. */
