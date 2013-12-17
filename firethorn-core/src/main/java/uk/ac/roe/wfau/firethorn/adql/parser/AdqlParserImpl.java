@@ -1396,6 +1396,51 @@ implements AdqlParser
         }
 
     /**
+     * Get the type for an ADQLOperand.
+     * 
+     */
+    protected static AdqlColumn.Type type(ADQLOperand operand)
+    throws AdqlParserException
+        {
+        log.debug("type(ADQLOperand)");
+        log.debug("  operand [{}]", operand);
+
+        if (operand == null)
+            {
+            return null;
+            }
+        else if (operand instanceof StringConstant)
+            {
+            return AdqlColumn.Type.CHAR;
+            }
+        else if (operand instanceof NumericConstant)
+            {
+            return type((NumericConstant) operand);
+            }
+        else if (operand instanceof NegativeOperand)
+            {
+            return type((NegativeOperand) operand);
+            }
+        else if (operand instanceof ADQLColumn)
+            {
+            return type((ADQLColumn) operand);
+            }
+        else if (operand instanceof ADQLFunction)
+            {
+            return type((ADQLFunction) operand);
+            }
+        else if (operand instanceof Operation)
+            {
+            return type((Operation) operand);
+            }
+        else {
+            throw new AdqlParserException(
+                "Unknown operand type [" + operand.getName() + "][" + operand.getClass().getName() + "]"
+                );
+            }
+        }
+    
+    /**
      * Wrap an ADQLOperand.
      *
      */
@@ -1420,7 +1465,15 @@ implements AdqlParser
             {
             return new MySelectOperWrapper(
                 oper,
-                AdqlColumn.Type.DOUBLE // TODO more options
+                type(
+                    (NumericConstant)oper
+                    )
+                );
+            }
+        else if (oper instanceof NegativeOperand)
+            {
+            return wrap(
+                (NegativeOperand) oper
                 );
             }
         else if (oper instanceof ADQLColumn)
@@ -1441,15 +1494,34 @@ implements AdqlParser
                 (Operation) oper
                 );
             }
-        else if (oper instanceof NegativeOperand)
-            {
-            return wrap(
-                (NegativeOperand) oper
-                );
-            }
         else {
             throw new AdqlParserException(
                 "Unknown ADQLOperand class [" + oper.getClass().getName() + "]"
+                );
+            }
+        }
+
+    /**
+     * Get the type of an ADQLColumn.
+     * 
+     */
+    protected static AdqlColumn.Type type(ADQLColumn column)
+    throws AdqlParserException
+        {
+        log.debug("type(ADQLColumn)");
+        log.debug("  column [{}]", column);
+
+        if (column == null)
+            {
+            return null;
+            }
+        else if (column.getDBLink() instanceof AdqlDBColumn)
+            {
+            return ((AdqlDBColumn)column.getDBLink()).column().meta().adql().type();
+            }
+        else {
+            throw new AdqlParserException(
+                "Unknown column type [" + column.getName() + "][" + column.getClass().getName() + "]"
                 );
             }
         }
@@ -1504,35 +1576,22 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(NegativeOperand oper)
+    throws AdqlParserException
         {
         log.debug("wrap(NegativeOperand)");
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-
-        final ADQLOperand param1 = oper.getOperand();
-
-        AdqlColumn.Type t1 = null ;
-
-        if (param1 instanceof ADQLColumn)
-            {
-            ADQLColumn col1 = (ADQLColumn) param1;
-            if (col1.getDBLink() instanceof AdqlDBColumn)
-                {
-                t1 = ((AdqlDBColumn)col1.getDBLink()).column().meta().adql().type();
-                }
-            }
-
-        // What if it isn't ??
-        
         return new MySelectFieldImpl(
     		oper.getName(),
-            t1
+    		type(
+    		    oper.getOperand()
+    		    )
             );
         }
-
+    
     /**
-     * Calculate the smallest type for a numeric value.
+     * Get the smallest type for a numeric value.
      * 
      */
     protected static AdqlColumn.Type type(NumericConstant number)
@@ -1571,59 +1630,90 @@ implements AdqlParser
         }
 
     /**
-     * Get the type from an ADQLColumn.
-     * 
+     * Get the type of an Operation.
+     *
      */
-    protected static AdqlColumn.Type type(ADQLColumn column)
+    public static AdqlColumn.Type type(final Operation oper)
     throws AdqlParserException
         {
-        log.debug("type(ADQLColumn)");
-        log.debug("  column [{}]", column);
+        log.debug("type(Operation)");
+        log.debug("  name   [{}]", oper.getName());
+        log.debug("  number [{}]", oper.isNumeric());
+        log.debug("  string [{}]", oper.isString());
 
-        if (column == null)
+        AdqlColumn.Type t1 = type(oper.getLeftOperand());
+        AdqlColumn.Type t2 = type(oper.getRightOperand());
+
+        if ((t1 == AdqlColumn.Type.DOUBLECOMPLEX) || (t2 == AdqlColumn.Type.DOUBLECOMPLEX))
             {
-            return null;
+            return AdqlColumn.Type.DOUBLECOMPLEX;
             }
-        else if (column.getDBLink() instanceof AdqlDBColumn)
+
+        else if ((t1 == AdqlColumn.Type.FLOATCOMPLEX) || (t2 == AdqlColumn.Type.FLOATCOMPLEX))
             {
-            return ((AdqlDBColumn)column.getDBLink()).column().meta().adql().type();
+            return AdqlColumn.Type.FLOATCOMPLEX;
             }
+        
+        else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE))
+            {
+            return AdqlColumn.Type.DOUBLE;
+            }
+
+        else if ((t1 == AdqlColumn.Type.FLOAT) || (t2 == AdqlColumn.Type.FLOAT))
+            {
+            return AdqlColumn.Type.FLOAT;
+            }
+        
+        else if ((t1 == AdqlColumn.Type.LONG) || (t2 == AdqlColumn.Type.LONG))
+            {
+            return AdqlColumn.Type.LONG;
+            }
+
+        else if ((t1 == AdqlColumn.Type.INTEGER) || (t2 == AdqlColumn.Type.INTEGER))
+            {
+            return AdqlColumn.Type.INTEGER;
+            }
+
+        else if ((t1 == AdqlColumn.Type.SHORT) || (t2 == AdqlColumn.Type.SHORT))
+            {
+            return AdqlColumn.Type.SHORT;
+            }
+        
+        else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE))
+            {
+            return AdqlColumn.Type.BYTE;
+            }
+
+        else if ((t1 == AdqlColumn.Type.BIT) || (t2 == AdqlColumn.Type.BIT))
+            {
+            return AdqlColumn.Type.BIT;
+            }
+
+        // Probably wrong BOOLEAN + BIT = .... ?
+        else if ((t1 == AdqlColumn.Type.BOOLEAN) || (t2 == AdqlColumn.Type.BOOLEAN))
+            {
+            return AdqlColumn.Type.BOOLEAN;
+            }
+
+        // Check UNICODE + BYTE = ... ?
+        else if ((t1 == AdqlColumn.Type.UNICODE) || (t2 == AdqlColumn.Type.UNICODE))
+            {
+            return AdqlColumn.Type.UNICODE;
+            }
+
+        // Check CHAR + BYTE = ... ?
+        else if ((t1 == AdqlColumn.Type.CHAR) || (t2 == AdqlColumn.Type.CHAR))
+            {
+            return AdqlColumn.Type.CHAR;
+            }
+
         else {
             throw new AdqlParserException(
-                "Unknown column type [" + column.getName() + "][" + column.getClass().getName() + "]"
+                "Unknown type for operation params [" + t1 + "][" + t2 + "]"
                 );
             }
         }
-
-    /**
-     * Get the type for an ADQLOperand.
-     * 
-     */
-    protected static AdqlColumn.Type type(ADQLOperand operand)
-    throws AdqlParserException
-        {
-        log.debug("type(ADQLOperand)");
-        log.debug("  operand [{}]", operand);
-
-        if (operand == null)
-            {
-            return null;
-            }
-        else if (operand instanceof ADQLColumn)
-            {
-            return type((ADQLColumn) operand);
-            }
-        else if (operand instanceof NumericConstant)
-            {
-            return type((NumericConstant) operand);
-            }
-        else {
-            throw new AdqlParserException(
-                "Unknown operand type [" + operand.getName() + "][" + operand.getClass().getName() + "]"
-                );
-            }
-        }
-
+    
     /**
      * Wrap an Operation.
      *
@@ -1635,166 +1725,39 @@ implements AdqlParser
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-
-        //
-        // Check the LEGACY|STRICT mode.
-        //
-
-        AdqlColumn.Type t1 = type(oper.getLeftOperand());
-        AdqlColumn.Type t2 = type(oper.getRightOperand());
-        AdqlColumn.Type t3 = null;
-
-        if ((t1 == AdqlColumn.Type.DOUBLECOMPLEX) || (t2 == AdqlColumn.Type.DOUBLECOMPLEX))
-            {
-            t3 = AdqlColumn.Type.DOUBLECOMPLEX;
-            }
-
-        else if ((t1 == AdqlColumn.Type.FLOATCOMPLEX) || (t2 == AdqlColumn.Type.FLOATCOMPLEX))
-            {
-            t3 = AdqlColumn.Type.FLOATCOMPLEX;
-            }
-        
-        else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE))
-            {
-            t3 = AdqlColumn.Type.DOUBLE;
-            }
-
-        else if ((t1 == AdqlColumn.Type.FLOAT) || (t2 == AdqlColumn.Type.FLOAT))
-            {
-            t3 = AdqlColumn.Type.FLOAT;
-            }
-        
-        else if ((t1 == AdqlColumn.Type.LONG) || (t2 == AdqlColumn.Type.LONG))
-            {
-            t3 = AdqlColumn.Type.LONG;
-            }
-
-        else if ((t1 == AdqlColumn.Type.INTEGER) || (t2 == AdqlColumn.Type.INTEGER))
-            {
-            t3 = AdqlColumn.Type.INTEGER;
-            }
-
-        else if ((t1 == AdqlColumn.Type.SHORT) || (t2 == AdqlColumn.Type.SHORT))
-            {
-            t3 = AdqlColumn.Type.SHORT;
-            }
-        
-        else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE))
-            {
-            t3 = AdqlColumn.Type.BYTE;
-            }
-
-        else if ((t1 == AdqlColumn.Type.BIT) || (t2 == AdqlColumn.Type.BIT))
-            {
-            t3 = AdqlColumn.Type.BIT;
-            }
-
-        // Probably wrong BOOLEAN + BIT = .... ?
-        else if ((t1 == AdqlColumn.Type.BOOLEAN) || (t2 == AdqlColumn.Type.BOOLEAN))
-            {
-            t3 = AdqlColumn.Type.BOOLEAN;
-            }
-
-        // Check UNICODE + BYTE = ... ?
-        else if ((t1 == AdqlColumn.Type.UNICODE) || (t2 == AdqlColumn.Type.UNICODE))
-            {
-            t3 = AdqlColumn.Type.UNICODE;
-            }
-
-        // Check CHAR + BYTE = ... ?
-        else if ((t1 == AdqlColumn.Type.CHAR) || (t2 == AdqlColumn.Type.CHAR))
-            {
-            t3 = AdqlColumn.Type.CHAR;
-            }
-
-        else {
-            throw new AdqlParserException(
-                "Unknown type for operation params [" + t1 + "][" + t2 + "]"
-                );
-            }
-/*
-        if (t1==null){
-        	t1 = AdqlColumn.Type.DOUBLE;
-        }
-        if (t2==null){
-        	t2 = AdqlColumn.Type.DOUBLE;
-        }
-
-        if (oper.getName()=="%") {
-        	t3 = AdqlColumn.Type.INTEGER;
-        } else if (t1==t2){
-				if (oper.getName()=="/"){
-					t3 = AdqlColumn.Type.DOUBLE;
-				} else {
-					t3=t1;
-				}
-        } else if ((param1 instanceof NumericConstant)  || (param2 instanceof NumericConstant)){
-        			t3 = AdqlColumn.Type.DOUBLE;
-        } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
-        			t3 = AdqlColumn.Type.DOUBLE;
-
-        } else if ((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.BYTE)){
-					t3 = AdqlColumn.Type.BYTE;
-
-        } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
-        			t3 = AdqlColumn.Type.CHAR;
-
-        } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
-					t3 = AdqlColumn.Type.UNICODE;
-
-        } else if (((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)) ||
-        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE)) ||
-        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT))){
-
-        	        if (oper.getName()=="/"){
-        	        	t3 = AdqlColumn.Type.DOUBLE;
-        	        } else {
-        	        	t3 = AdqlColumn.Type.SHORT;
-        	        }
-        } else if (((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG)) ||
-        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER)) ||
-        		   	((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG)) ||
-        		   	((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG)) ||
-        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)) ||
-        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE)) ||
-        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG))){
-	        		if (oper.getName()=="/"){
-		  	        	t3 = AdqlColumn.Type.DOUBLE;
-		  	        } else {
-		  	        	t3 = AdqlColumn.Type.LONG;
-		  	        }
-
-        } else if (((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER)) ||
-        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER)) ||
-        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)) ||
-        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE)) ||
-        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER))){
-		        	if (oper.getName()=="/"){
-		  	        	t3 = AdqlColumn.Type.DOUBLE;
-		  	        } else {
-		  	        	t3 = AdqlColumn.Type.INTEGER;
-		  	        }
-
-        } else if (((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT)) ||
-        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT)) ||
-        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER)) ||
-        			((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT)) ||
-        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG)) ||
-        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT)) ||
-        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)) ||
-        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE))||
-        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT))){
-        			t3 = AdqlColumn.Type.FLOAT;
-
-        }
-        log.debug("  return_type******************** [{}]",t3);
- */
-
-        log.debug("  result [{}]", t3);
         return new MySelectFieldImpl(
             "operation",
-            t3
+            type(
+                oper
+                )
             );
+        }
+
+    /**
+     * Get the type of an ADQLFunction.
+     *
+     */
+    public static AdqlColumn.Type type(final ADQLFunction funct)
+    throws AdqlParserException
+        {
+        log.debug("type(ADQLFunction)");
+        if (funct instanceof SQLFunction)
+            {
+            return type((SQLFunction) funct);
+            }
+        else if (funct instanceof MathFunction)
+            {
+            return type((MathFunction) funct);
+            }
+        else if (funct instanceof UserDefinedFunction)
+            {
+            return type((UserDefinedFunction) funct);
+            }
+        else {
+            throw new AdqlParserException(
+                "Unknown ADQLFunction class [" + funct.getName() + "][" + funct.getClass().getName() + "]"
+                );
+            }
         }
 
     /**
@@ -1808,7 +1771,6 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-
         if (funct instanceof SQLFunction)
             {
             return wrap((SQLFunction) funct);
@@ -1822,13 +1784,43 @@ implements AdqlParser
             return wrap((UserDefinedFunction) funct);
             }
         else {
-            log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getClass().getName());
-            return UNKNOWN_FIELD;
+            throw new AdqlParserException(
+                "Unknown ADQLFunction class [" + funct.getName() + "][" + funct.getClass().getName() + "]"
+                );
             }
         }
 
     /**
-     * Wrap an ADQLFunction.
+     * Get the type of a SQLFunction.
+     *
+     */
+    public static AdqlColumn.Type type(final SQLFunction funct)
+    throws AdqlParserException
+        {
+        log.debug("type(SQLFunction)");
+        switch (funct.getType())
+            {
+            case COUNT :
+            case COUNT_ALL :
+                return AdqlColumn.Type.LONG;
+    
+            case AVG:
+            case MAX:
+            case MIN:
+            case SUM:
+                return type(
+                    funct.getParameter(0)
+                    );
+    
+            default :
+                throw new AdqlParserException(
+                    "Unknown ADQLFunction type [" + funct.getName() + "][" + funct.getType() + "]"
+                    );
+            }
+        }
+
+    /**
+     * Wrap a SQLFunction.
      *
      */
     public static MySelectField wrap(final SQLFunction funct)
@@ -1859,8 +1851,87 @@ implements AdqlParser
                     );
 
             default :
-                log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getType());
-                return UNKNOWN_FIELD;
+                throw new AdqlParserException(
+                    "Unknown ADQLFunction type [" + funct.getName() + "][" + funct.getType() + "]"
+                    );
+            }
+        }
+
+    /**
+     * Get the floating point type of an ADQLOperand.
+     * 
+     */
+    public static AdqlColumn.Type ftype(final ADQLOperand oper)
+    throws AdqlParserException
+        {
+        log.debug("ftype(ADQLOperand)");
+        switch (type(oper))
+            {
+            case BIT:
+            case BYTE:
+            case SHORT:
+            case INTEGER:
+            case FLOAT:
+                return Type.FLOAT; 
+
+            case LONG:
+            case DOUBLE:
+                return Type.DOUBLE; 
+
+            default :
+                throw new AdqlParserException(
+                    "Invalid floating point type [" + oper.getName() + "]"
+                    );
+            }
+        }
+
+    /**
+     * Get the type of a MathFunction.
+     *
+     */
+    public static AdqlColumn.Type type(final MathFunction funct)
+    throws AdqlParserException
+        {
+        log.debug("type(MathFunction)");
+        switch (funct.getType())
+            {
+            case ABS:
+            case MOD:
+            case ROUND:
+            case TRUNCATE:
+                return ftype(
+                    funct.getParameter(0)
+                    );
+
+            case FLOOR:
+            case CEILING:
+                return ftype(
+                    funct.getParameter(0)
+                    );
+                
+            case LOG:
+            case LOG10:
+            case POWER:
+            case DEGREES:
+            case RADIANS:
+            case RAND:
+            case ACOS:
+            case ASIN:
+            case ATAN:
+            case ATAN2:
+            case COS:
+            case COT:
+            case SIN:
+            case TAN:
+            case PI:
+            case SQRT:
+            case EXP:
+                return AdqlColumn.Type.DOUBLE;
+    
+            default :
+                throw new AdqlParserException(
+                    "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
+                    );
             }
         }
 
@@ -1875,22 +1946,12 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-/*
- * Causes error if the function only has one param.
-        ADQLOperand param1 = funct.getParameter(0);
-        ADQLOperand param2 = funct.getParameter(1);
 
-        log.debug("  param1  [{}]", param1);
-        log.debug("  param2  [{}]", param2);
- *
- */
         switch (funct.getType())
             {
-
-            case ROUND:
             case ABS:
-            case CEILING:
             case MOD:
+            case ROUND:
             case TRUNCATE:
                 return new MySelectFieldWrapper(
                     funct.getName(),
@@ -1899,13 +1960,21 @@ implements AdqlParser
                         )
                     );
 
-            case LOG:   // returns the natural logarithm (base e) of a double value.
-            case LOG10:	// returns the base 10 logarithm of a double value.
+            case FLOOR:
+            case CEILING:
+                return new MySelectFieldWrapper(
+                    funct.getName(),
+                    wrap(
+                        funct.getParameter(0)
+                        )
+                    );
+
+            case LOG:
+            case LOG10:
             case POWER:
             case DEGREES:
             case RADIANS:
             case RAND:
-            case FLOOR:
             case ACOS:
             case ASIN:
             case ATAN:
@@ -1923,8 +1992,9 @@ implements AdqlParser
                     );
 
             default :
-                log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
-                return UNKNOWN_FIELD;
+                throw new AdqlParserException(
+                    "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
+                    );
             }
         }
 

@@ -124,4 +124,35 @@ public class AggregateFunctionsTestCase
                 }
             );
         }
+
+
+    /**
+     * MAX(), MIN()
+     *
+     */
+    @Test
+    public void testxxxx()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            " SELECT TOP 5" + 
+            "    -MAX(ra)," + 
+            "    +MIN(ra)" + 
+            " FROM" + 
+            "    atlasSource",
+            
+            " SELECT TOP 5" + 
+            "   -MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," + 
+            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
     }
