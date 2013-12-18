@@ -578,7 +578,8 @@ EOF
         hosts:          files dns
 
 # -------------------------------------------------------------------------------------------
-# Creating a tunnelled connection for the database(s).
+# Which means that it should be fine to use hostnames for the ramses{n} database servers
+# when we create the tunnelled connections.
 #[user@desktop]
 
     sshusername=firethorn
