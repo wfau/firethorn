@@ -578,7 +578,7 @@ EOF
         hosts:          files dns
 
 # -------------------------------------------------------------------------------------------
-# Creating a tunneled connection for the database(s).
+# Creating a tunnelled connection for the database(s).
 #[user@desktop]
 
     sshusername=firethorn
