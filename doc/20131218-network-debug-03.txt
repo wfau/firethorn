@@ -201,4 +201,14 @@
         debug1: channel 16: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 38860, nchannels 8
 
 
+    #
+    # The Java code for loading the properties file :
+    # firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/TestPropertiesBase.java
+
+    #
+    # The Java code for loading the jdbc and adql metadata trees :
+    # firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/atlas/AtlasQueryTestBase.java
+
+
+
 
