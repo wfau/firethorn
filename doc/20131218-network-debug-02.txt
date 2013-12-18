@@ -1,0 +1,589 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Diagnosing problems with connections to the ROE database servers.
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Different machines have different DNS configurations.
+#[user@desktop]
+
+    hostuser=firethorn
+    for hostname in pyratest1 pyratest2 pyratest3
+    do
+        echo "--- ${hostname}"
+        ssh -T "${hostuser:?}@${hostname:?}" cat /etc/resolv.conf
+        echo "---"
+
+        for n in {1..12}
+        do
+            ssh -T "${hostuser:?}@${hostname:?}" "host ramses${n}"
+        done
+    done
+
+    hostuser=firethorn
+    for hostname in coccinea pyracantha pyrus
+    do
+        echo "--- ${hostname}"
+        ssh -T "${hostuser:?}@${hostname:?}" cat /etc/resolv.conf
+        echo "---"
+
+        for n in {1..12}
+        do
+            ssh -T "${hostuser:?}@${hostname:?}" "host ramses${n}"
+        done
+    done
+
+    hostuser=firethorn
+    for hostname in djer shepseskaf
+    do
+        echo "--- ${hostname}"
+        ssh -T "${hostuser:?}@${hostname:?}" cat /etc/resolv.conf
+        echo "---"
+
+        for n in {1..12}
+        do
+            ssh -T "${hostuser:?}@${hostname:?}" "host ramses${n}"
+        done
+    done
+
+#
+# The three test vms return the following
+# pyratest1, pyratest2, pyratest3
+
+    --- pyratest1
+    search roe.ac.uk
+    nameserver 192.168.122.1
+    ---
+    ramses1 has address 192.168.0.1
+    ramses2 has address 192.168.0.2
+    ramses3 has address 192.168.0.3
+    ramses4 has address 192.168.0.4
+    ramses5 has address 192.168.0.5
+    ramses6 has address 192.168.0.6
+    ramses7 has address 192.168.0.7
+    ramses8 has address 192.168.0.8
+    ramses9 has address 192.168.0.12
+    ramses10 has address 192.168.0.16
+    ramses11 has address 192.168.0.17
+    ramses11 has address 192.168.137.42
+    ramses12 has address 192.168.0.18
+
+#
+# The three live vms return the following
+# coccinea, pyracantha, pyrus
+
+    --- coccinea
+    search roe.ac.uk
+    nameserver 192.168.122.1
+    ---
+    ramses1 has address 192.168.137.20
+    ramses2 has address 192.168.137.21
+    ramses3 has address 192.168.137.22
+    ramses4 has address 192.168.137.23
+    ramses5 has address 192.168.137.24
+    ramses6 has address 192.168.137.25
+    ramses7 has address 192.168.137.26
+    ramses8 has address 192.168.137.27
+    ramses9 has address 192.168.137.35
+    ramses10 has address 192.168.137.38
+    ramses11 has address 192.168.137.42
+    ramses12 has address 192.168.137.44
+
+#
+# The test server returns the following
+
+    --- shepseskaf
+    search roe.ac.uk
+    nameserver 195.194.120.2
+    nameserver 195.194.120.1
+    nameserver 192.168.137.1
+    ---
+    Host ramses1 not found: 3(NXDOMAIN)
+    Host ramses2 not found: 3(NXDOMAIN)
+    Host ramses3 not found: 3(NXDOMAIN)
+    Host ramses4 not found: 3(NXDOMAIN)
+    Host ramses5 not found: 3(NXDOMAIN)
+    Host ramses6 not found: 3(NXDOMAIN)
+    Host ramses7 not found: 3(NXDOMAIN)
+    Host ramses8 not found: 3(NXDOMAIN)
+    Host ramses9 not found: 3(NXDOMAIN)
+    Host ramses10 not found: 3(NXDOMAIN)
+    Host ramses11 not found: 3(NXDOMAIN)
+    Host ramses12 not found: 3(NXDOMAIN)
+
+#
+# The live server returns the following
+
+    --- djer
+    search roe.ac.uk
+    nameserver 195.194.120.2
+    nameserver 195.194.120.1
+    ---
+    Host ramses1 not found: 3(NXDOMAIN)
+    Host ramses2 not found: 3(NXDOMAIN)
+    Host ramses3 not found: 3(NXDOMAIN)
+    Host ramses4 not found: 3(NXDOMAIN)
+    Host ramses5 not found: 3(NXDOMAIN)
+    Host ramses6 not found: 3(NXDOMAIN)
+    Host ramses7 not found: 3(NXDOMAIN)
+    Host ramses8 not found: 3(NXDOMAIN)
+    Host ramses9 not found: 3(NXDOMAIN)
+    Host ramses10 not found: 3(NXDOMAIN)
+    Host ramses11 not found: 3(NXDOMAIN)
+    Host ramses12 not found: 3(NXDOMAIN)
+
+#
+# Although the two physical machines don't recognise the names for ramses{n},
+# they do have entries for ramses{n} in their /etc/hosts file.
+#[user@desktop]
+
+    ssh shep cat /etc/hosts | grep 'ramses'
+
+        # 192.168.137.35 ramses9
+        192.168.137.42  ramses11
+        #192.168.137.47	ramses13
+        #192.168.137.52 ramses14
+        192.168.0.1     ramses1
+        192.168.0.2     ramses2
+        192.168.0.3     ramses3
+        192.168.0.4     ramses4
+        192.168.0.5     ramses5
+        192.168.0.6     ramses6
+        192.168.0.7     ramses7
+        192.168.0.8     ramses8
+        192.168.0.12    ramses9
+        192.168.0.16	ramses10
+        192.168.0.17	ramses11
+        192.168.0.18	ramses12
+        192.168.0.21	ramses13
+        192.168.0.22	ramses14
+
+    ssh djer cat /etc/hosts | grep 'ramses'
+
+        192.168.137.20  ramses1
+        192.168.137.21  ramses2
+        192.168.137.22  ramses3
+        192.168.137.23  ramses4
+        192.168.137.24  ramses5
+        192.168.137.25  ramses6
+        192.168.137.26  ramses7
+        192.168.137.27  ramses8
+        192.168.137.35  ramses9
+        192.168.137.38  ramses10
+        192.168.137.42  ramses11
+        192.168.137.44	ramses12
+        192.168.137.47	ramses13
+        192.168.137.52 	ramses14
+     
+#
+# The physical machines are using dnsmasq to provide NAT and DNS to their KVM guests.
+# http://www.thekelleys.org.uk/dnsmasq/doc.html
+
+    Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server.
+    It is designed to provide DNS and, optionally, DHCP, to a small network.
+
+        * The DNS configuration of machines behind the firewall is simple and doesn't depend on the details of the ISP's dns servers
+        * Clients which try to do DNS lookups while a modem link to the internet is down will time out immediately.
+        * Dnsmasq will serve names from the /etc/hosts file on the firewall machine: If the names of local machines are there, then they can all be addressed without having to maintain /etc/hosts on each machine. 
+
+#
+# Checking the command line options ...
+#[user@desktop]
+
+    ssh shep ps -e -o command | sed '/^grep/d'  | sed '/^bash/d' | grep dnsmasq
+
+        /usr/sbin/dnsmasq --strict-order --bind-interfaces --pid-file=/var/run/libvirt/network/default.pid --conf-file= --except-interface lo --listen-address 192.168.122.1 --dhcp-range 192.168.122.2,192.168.122.254 --dhcp-leasefile=/var/lib/libvirt/dnsmasq/default.leases --dhcp-lease-max=253 --dhcp-no-override
+
+    ssh djer ps -e -o command | sed '/^grep/d'  | sed '/^bash/d' | grep dnsmasq
+
+        /usr/sbin/dnsmasq --strict-order --bind-interfaces --pid-file=/var/run/libvirt/network/default.pid --conf-file= --except-interface lo --listen-address 192.168.122.1 --dhcp-range 192.168.122.2,192.168.122.254 --dhcp-leasefile=/var/lib/libvirt/dnsmasq/default.leases --dhcp-lease-max=253 --dhcp-no-override
+
+#
+# It looks like dnsmasq is picking up the entries in /etc/hosts on the KVM hosts
+# and using them to enhance the DNS service provided to the KVM guests.
+
+#
+# The comments in /etc/hosts on shepseskaf suggest that 192.168.0.* addresses are using Infiniband.
+# This might explain why the test and live hosts have different addresses for ramses{n}
+#[firethorn@shepseskaf:~$]
+
+    less /etc/hosts
+
+        ....
+
+        # 192.168.137.35 ramses9
+        192.168.137.42  ramses11
+        #192.168.137.47	ramses13
+        #192.168.137.52 ramses14
+
+        ....
+
+        # Infiniband connections
+        192.168.0.1     ramses1
+        192.168.0.2     ramses2
+        192.168.0.3     ramses3
+        192.168.0.4     ramses4
+        192.168.0.5     ramses5
+        192.168.0.6     ramses6
+        192.168.0.7     ramses7
+        192.168.0.8     ramses8
+        ....
+        192.168.0.12    ramses9
+        ....
+        192.168.0.16    ramses10
+        192.168.0.17    ramses11
+        192.168.0.18    ramses12
+        ....
+        192.168.0.21    ramses13
+        192.168.0.22    ramses14
+
+# -------------------------------------------------------------------------------------------
+# So what happens when we setup a SSH tunnel to one of the databases.
+#[user@desktop]
+
+    sshusername=firethorn
+    sshhostname=djer.roe.ac.uk
+
+    ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshusername:?}@${sshhostname:?}"
+
+        ....
+        debug1: Authentication succeeded (publickey).
+        debug1: Local connections to *:1435 forwarded to remote address ramses5:1433
+        debug1: Local forwarding listening on 0.0.0.0 port 1435.
+        debug1: channel 0: new [port listener]
+        debug1: Local forwarding listening on :: port 1435.
+        debug1: channel 1: new [port listener]
+        debug1: Local connections to *:1436 forwarded to remote address ramses6:1433
+        debug1: Local forwarding listening on 0.0.0.0 port 1436.
+        debug1: channel 2: new [port listener]
+        debug1: Local forwarding listening on :: port 1436.
+        debug1: channel 3: new [port listener]
+        debug1: Local connections to *:1439 forwarded to remote address ramses9:1433
+        debug1: Local forwarding listening on 0.0.0.0 port 1439.
+        debug1: channel 4: new [port listener]
+        debug1: Local forwarding listening on :: port 1439.
+        debug1: channel 5: new [port listener]
+        debug1: channel 6: new [client-session]
+        ....
+
+#
+# If we run a JUnit test that uses the JDBC connection.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+        
+            mvn -D skipTests=false -D test=uk.ac.roe.wfau.firethorn.adql.query.atlas.SimpleQueryTestCase test
+
+                ....
+                -------------------------------------------------------
+                 T E S T S
+                -------------------------------------------------------
+                Running uk.ac.roe.wfau.firethorn.adql.query.atlas.SimpleQueryTestCase
+                ....
+                ....
+                ....
+                Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+#
+# The debug logging on the ssh conenction shows th following ..
+[firethorn@djer:~$]
+
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 7: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 8: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 9: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 10: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 11: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 12: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 13: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 14: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 15: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 16: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 17: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 18: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 19: new [direct-tcpip]
+    debug1: channel 13: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57816, nchannels 20
+    debug1: channel 15: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57818, nchannels 19
+    debug1: channel 14: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57817, nchannels 18
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 13: new [direct-tcpip]
+    debug1: channel 12: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57815, nchannels 18
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 12: new [direct-tcpip]
+    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
+    debug1: channel 14: new [direct-tcpip]
+    debug1: channel 18: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57887, nchannels 19
+    debug1: channel 17: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57886, nchannels 18
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 15: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 17: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 18: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 20: new [direct-tcpip]
+    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
+    debug1: channel 21: new [direct-tcpip]
+    debug1: channel 14: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57929, nchannels 22
+    debug1: channel 13: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57925, nchannels 21
+    debug1: channel 19: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57888, nchannels 20
+    debug1: channel 16: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57819, nchannels 19
+    debug1: channel 12: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57928, nchannels 18
+    debug1: channel 21: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37022, nchannels 17
+    debug1: channel 20: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37021, nchannels 16
+    debug1: channel 9: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36889, nchannels 15
+    debug1: channel 11: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36891, nchannels 14
+    debug1: channel 15: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37018, nchannels 13
+    debug1: channel 17: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37019, nchannels 12
+    debug1: channel 18: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37020, nchannels 11
+    debug1: channel 7: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36887, nchannels 10
+    debug1: channel 8: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36888, nchannels 9
+    debug1: channel 10: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36890, nchannels 8
+
+#
+# Increasing the debug level by adding additiona -v to the SSH command gives us more info about the data transfers,
+# but it doesn't show us how the server figured out what IP address to connect the tunnels to.
+
+# -------------------------------------------------------------------------------------------
+# Guess is that sshd on djer is resolving the ramses{n} database server names using the local /etc/hosts file.
+# How to verify ...
+
+
+#
+# Create a test VM
+#[user@desktop]
+
+    ischnura-createvm
+
+        [1] nu
+        [1] centos-63-base-20130106.qcow
+        ....
+
+#
+# Create a test user and add our ssh keys.
+#[user@desktop]
+
+    testhost=nu.virtual.metagrid.co.uk
+    testuser=roderick
+
+    ssh -T root@${testhost:?} << EOF
+useradd -m ${testuser:?}
+mkdir /home/${testuser:?}/.ssh
+cp /root/.ssh/authorized_keys /home/${testuser:?}/.ssh/
+chown -R ${testuser:?}.${testuser:?} /home/${testuser:?}/.ssh
+EOF
+
+#
+# Create a tunnel connection to an unknown host.
+#[user@desktop]
+
+    ssh -v -v -L '*:8081:unknowable:80' ${testuser:?}@${testhost:?}
+
+        ....
+        debug1: Authentication succeeded (publickey).
+        debug1: Local connections to *:8081 forwarded to remote address unknowable:80
+        debug1: Local forwarding listening on 0.0.0.0 port 8081.
+        ....
+
+#
+# SSH client reports that the tunnel is created, but trying to use it ..
+#[user@desktop]
+
+    curl -head 'http://localhost:8081/'
+    
+#
+# Produces the following debug from the ssh connection
+#[testuser@testhost]        
+
+        ....
+        debug1: Connection to port 8081 forwarding to unknowable port 80 requested.
+        debug2: fd 9 setting TCP_NODELAY
+        debug2: fd 9 setting O_NONBLOCK
+        debug1: channel 3: new [direct-tcpip]
+        channel 3: open failed: administratively prohibited: open failed
+        debug2: channel 3: zombie
+        debug2: channel 3: garbage collecting
+        debug1: channel 3: free: direct-tcpip: listening port 8081 for unknowable port 80, connect from ::1 port 38388, nchannels 4
+        ....
+
+#
+# If we add 'unknowable' to the hosts file on the test vm.
+# Adding the address of one of our own webservers, data.metagrid.co.uk
+#[root@testhost]        
+
+    vi /etc/hosts
+
+        ....
+        178.79.157.93  unknowable
+
+#
+# Now when we try to use the tunneled connection .. we get through :-)
+#[user@desktop]
+
+    curl -head 'http://localhost:8081/'
+
+        HTTP/1.1 200 OK
+        Date: Wed, 18 Dec 2013 18:15:29 GMT
+        Server: Apache/2.2.15 (CentOS)
+        Connection: close
+        Content-Type: text/html;charset=UTF-8
+
+#
+# Which means that .. even though the machine itself does not know the 'unknowable' name.
+# The SSH service is geting the the 'unknowable' name from the local /etc/hosts file.
+#[root@testhost]        
+
+    host unknowable
+    
+        Host unknowable not found: 3(NXDOMAIN)
+
+#
+# Which is probably comming from the 'file' option in /etc/nsswitch file.
+#[root@testhost]        
+
+    cat /etc/nsswitch.conf
+
+        ....
+        hosts:      files dns
+
+#
+# Edit the settings in /etc/nsswitch to remve the 'file' option.
+#[root@testhost]        
+
+    vi /etc/nsswitch.conf
+
+        ....
+    -   hosts:      files dns
+    +   hosts:      dns
+
+#
+# Now when we try to use the tunneled connection .. 
+# (actually, this doesn't show up immediately - see below)
+#[user@desktop]
+
+    curl -head 'http://localhost:8081/'
+
+        curl: (52) Empty reply from server
+
+#
+# A bit of experimenting with changing settings, restarting things,
+# and we can figure out which settings are used when.
+# 
+
+    For a port forwarded SSL tunnel
+
+        ssh -L '*:8081:unknowable:80' user@server
+
+    The SSH service, sshd, on the server will use a combination of
+    sources to resolve the 'unknowable' hostname.
+
+    The default configuration is to use 
+    
+        1) The local DNS service.
+        2) The contents of the /etc/hosts file. 
+
+    The combination of resolvers is configured in the Name Service Switch configutation.
+    http://searchitchannel.techtarget.com/feature/Using-nsswitchconf-to-find-Linux-system-information
+    http://en.wikipedia.org/wiki/Name_Service_Switch
+
+        cat /etc/nsswitch.conf
+
+            hosts:      files dns
+
+    The NSSwitch configuation is checked when the SSH tunnel is created,
+    i.e. when the client connects.
+    
+        ssh -L '*:8081:unknowable:80' user@server
+
+    The the 'unknowable' hostname itself is resolved at the point when the ssh tunnelled connection is used,
+    i.e. when something tries to connect to the client end of the tunnel.
+
+        curl -head 'http://localhost:8081/'
+
+# -------------------------------------------------------------------------------------------
+# Checking the settings on each of the servers we use to create SSH tunnels.
+#
+
+#
+# djer.roe.ac.uk
+#[user@desktop]
+
+    ssh djer 'cat /etc/hosts | grep \\'ramses6\\''
+
+        192.168.137.25  ramses6
+
+    ssh djer 'cat /etc/nsswitch.conf | grep \\'hosts:\\''
+
+        hosts:          files dns
+
+#
+# shepseskaf.roe.ac.uk
+#[user@desktop]
+
+    ssh shep 'cat /etc/hosts | grep \\'ramses6\\''
+
+        192.168.0.6     ramses6
+
+    ssh shep 'cat /etc/nsswitch.conf | grep \\'hosts:\\''
+
+        hosts:          files dns
+
+#
+# fenrir.roe.ac.uk
+#[user@desktop]
+
+    ssh fenrir 'cat /etc/hosts | grep \\'ramses6\\''
+
+        192.168.137.25  ramses6
+
+    ssh fenrir 'cat /etc/nsswitch.conf | grep \\'hosts:\\''
+
+        hosts:          files dns
+
+# -------------------------------------------------------------------------------------------
+# Creating a tunneled connection for the database(s).
+#[user@desktop]
+
+    sshusername=firethorn
+    sshhostname=djer.roe.ac.uk
+
+    ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshusername:?}@${sshhostname:?}"
+
+
