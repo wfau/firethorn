@@ -23,7 +23,6 @@
 # -------------------------------------------------------------------------------------------
 # Diagnosing problems with connections to the ROE database servers.
 #
-#
 
 # -------------------------------------------------------------------------------------------
 # Different machines have different DNS configurations.
@@ -196,9 +195,37 @@
         192.168.137.44	ramses12
         192.168.137.47	ramses13
         192.168.137.52 	ramses14
-     
+
 #
-# The physical machines are using dnsmasq to provide NAT and DNS to their KVM guests.
+# The two sets of results suggest that the IP addresses may be comming from
+# the /etc/hosts files on the KVM servers.
+
+    * The /etc/hosts on djer lists ramses9 as 192.168.137.35
+    * All three guest VMs hosted by djer think ramses9 is 192.168.137.35
+
+    * The /etc/hosts on shep lists ramses9 as 192.168.0.12
+    * All three guest VMs hosted by djer think ramses9 is 192.168.0.12
+
+#
+# Something must be acting as a local DNS server for the guest VMs.
+# Time for a random fishing expedition ... check the process list for something to do with dns.
+#[user@desktop]
+
+    ssh shep ps -ef
+
+        ....
+        ....
+        nobody   24652     1  0 Aug26 ?        00:03:16 /usr/sbin/dnsmasq ....
+        ....
+        ....
+
+#
+# 'dnsmasq' sounds interesting, quick Google to see what it is ... 
+#
+# It looks like the KVM servers might be using dnsmasq to provide NAT and DNS to their KVM guests.
+#
+# According to the manual, dnsmasq will pick up entries in the local /etc/hosts file
+# and use them to enhance the DNS service provided to the KVM guests.
 # http://www.thekelleys.org.uk/dnsmasq/doc.html
 
     Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server.
@@ -207,22 +234,6 @@
         * The DNS configuration of machines behind the firewall is simple and doesn't depend on the details of the ISP's dns servers
         * Clients which try to do DNS lookups while a modem link to the internet is down will time out immediately.
         * Dnsmasq will serve names from the /etc/hosts file on the firewall machine: If the names of local machines are there, then they can all be addressed without having to maintain /etc/hosts on each machine. 
-
-#
-# Checking the command line options ...
-#[user@desktop]
-
-    ssh shep ps -e -o command | sed '/^grep/d'  | sed '/^bash/d' | grep dnsmasq
-
-        /usr/sbin/dnsmasq --strict-order --bind-interfaces --pid-file=/var/run/libvirt/network/default.pid --conf-file= --except-interface lo --listen-address 192.168.122.1 --dhcp-range 192.168.122.2,192.168.122.254 --dhcp-leasefile=/var/lib/libvirt/dnsmasq/default.leases --dhcp-lease-max=253 --dhcp-no-override
-
-    ssh djer ps -e -o command | sed '/^grep/d'  | sed '/^bash/d' | grep dnsmasq
-
-        /usr/sbin/dnsmasq --strict-order --bind-interfaces --pid-file=/var/run/libvirt/network/default.pid --conf-file= --except-interface lo --listen-address 192.168.122.1 --dhcp-range 192.168.122.2,192.168.122.254 --dhcp-leasefile=/var/lib/libvirt/dnsmasq/default.leases --dhcp-lease-max=253 --dhcp-no-override
-
-#
-# It looks like dnsmasq is picking up the entries in /etc/hosts on the KVM hosts
-# and using them to enhance the DNS service provided to the KVM guests.
 
 #
 # The comments in /etc/hosts on shepseskaf suggest that 192.168.0.* addresses are using Infiniband.
@@ -310,81 +321,38 @@
                 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 
 #
-# The debug logging on the ssh conenction shows th following ..
+# The debug logging on the ssh conenction shows the following ..
 [firethorn@djer:~$]
 
     debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
     debug1: channel 7: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 8: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 9: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 10: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 11: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 12: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 13: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 14: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 15: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 16: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 17: new [direct-tcpip]
+    ....
+    ....
     debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
     debug1: channel 18: new [direct-tcpip]
     debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
     debug1: channel 19: new [direct-tcpip]
+    ....
+    ....
     debug1: channel 13: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57816, nchannels 20
     debug1: channel 15: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57818, nchannels 19
     debug1: channel 14: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57817, nchannels 18
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 13: new [direct-tcpip]
-    debug1: channel 12: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57815, nchannels 18
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 12: new [direct-tcpip]
-    debug1: Connection to port 1436 forwarding to ramses6 port 1433 requested.
-    debug1: channel 14: new [direct-tcpip]
-    debug1: channel 18: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57887, nchannels 19
-    debug1: channel 17: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57886, nchannels 18
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 15: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 17: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 18: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 20: new [direct-tcpip]
-    debug1: Connection to port 1439 forwarding to ramses9 port 1433 requested.
-    debug1: channel 21: new [direct-tcpip]
-    debug1: channel 14: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57929, nchannels 22
-    debug1: channel 13: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57925, nchannels 21
+    ....
+    ....
     debug1: channel 19: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57888, nchannels 20
-    debug1: channel 16: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57819, nchannels 19
-    debug1: channel 12: free: direct-tcpip: listening port 1436 for ramses6 port 1433, connect from 127.0.0.1 port 57928, nchannels 18
-    debug1: channel 21: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37022, nchannels 17
     debug1: channel 20: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37021, nchannels 16
-    debug1: channel 9: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36889, nchannels 15
-    debug1: channel 11: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36891, nchannels 14
-    debug1: channel 15: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37018, nchannels 13
-    debug1: channel 17: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37019, nchannels 12
     debug1: channel 18: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 37020, nchannels 11
-    debug1: channel 7: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36887, nchannels 10
-    debug1: channel 8: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36888, nchannels 9
-    debug1: channel 10: free: direct-tcpip: listening port 1439 for ramses9 port 1433, connect from 127.0.0.1 port 36890, nchannels 8
+    ....
+    ....
 
 #
 # Increasing the debug level by adding additiona -v to the SSH command gives us more info about the data transfers,
 # but it doesn't show us how the server figured out what IP address to connect the tunnels to.
 
 # -------------------------------------------------------------------------------------------
-# Guess is that sshd on djer is resolving the ramses{n} database server names using the local /etc/hosts file.
-# How to verify ...
-
+# Our guess is that sshd on djer is resolving the ramses{n} database server names using the local /etc/hosts file.
+# Question is, how to verify it ...
+#
 
 #
 # Create a test VM
@@ -404,14 +372,14 @@
     testuser=roderick
 
     ssh -T root@${testhost:?} << EOF
-useradd -m ${testuser:?}
-mkdir /home/${testuser:?}/.ssh
-cp /root/.ssh/authorized_keys /home/${testuser:?}/.ssh/
-chown -R ${testuser:?}.${testuser:?} /home/${testuser:?}/.ssh
-EOF
+        useradd -m ${testuser:?}
+        mkdir /home/${testuser:?}/.ssh
+        cp /root/.ssh/authorized_keys /home/${testuser:?}/.ssh/
+        chown -R ${testuser:?}.${testuser:?} /home/${testuser:?}/.ssh
+    EOF
 
 #
-# Create a tunnel connection to an unknown host.
+# Create a tunnel connection to an unknown host,
 #[user@desktop]
 
     ssh -v -v -L '*:8081:unknowable:80' ${testuser:?}@${testhost:?}
@@ -423,13 +391,17 @@ EOF
         ....
 
 #
-# SSH client reports that the tunnel is created, but trying to use it ..
+# SSH client log suggests that the tunnel has been created,
+# but what happens when we try to use it ....
 #[user@desktop]
 
     curl -head 'http://localhost:8081/'
+
+        ....
+        curl: (52) Empty reply from server
     
 #
-# Produces the following debug from the ssh connection
+# Trying to use the tunnel produced the following debug from the ssh connection.
 #[testuser@testhost]        
 
         ....
@@ -444,8 +416,8 @@ EOF
         ....
 
 #
-# If we add 'unknowable' to the hosts file on the test vm.
-# Adding the address of one of our own webservers, data.metagrid.co.uk
+# If we add 'unknowable' to the hosts file on the test vm,
+# setting it to the address of one of our webservers.
 #[root@testhost]        
 
     vi /etc/hosts
@@ -454,7 +426,7 @@ EOF
         178.79.157.93  unknowable
 
 #
-# Now when we try to use the tunneled connection .. we get through :-)
+# Now when we try to use the tunnelled connection .. we get through :-)
 #[user@desktop]
 
     curl -head 'http://localhost:8081/'
@@ -466,8 +438,8 @@ EOF
         Content-Type: text/html;charset=UTF-8
 
 #
-# Which means that .. even though the machine itself does not know the 'unknowable' name.
-# The SSH service is geting the the 'unknowable' name from the local /etc/hosts file.
+# Which means that .. even though the machine itself does not appear to know the IP address for 'unknowable',
+# the SSH service is resolving the 'unknowable' name using the local /etc/hosts file.
 #[root@testhost]        
 
     host unknowable
@@ -484,7 +456,7 @@ EOF
         hosts:      files dns
 
 #
-# Edit the settings in /etc/nsswitch to remve the 'file' option.
+# Edit the settings in /etc/nsswitch to remove the 'file' option.
 #[root@testhost]        
 
     vi /etc/nsswitch.conf
@@ -494,8 +466,8 @@ EOF
     +   hosts:      dns
 
 #
-# Now when we try to use the tunneled connection .. 
-# (actually, this doesn't show up immediately - see below)
+# Now when we try to use the tunneled connection .. the connection fails.
+# (actually, it doesn't show up immediately - see below)
 #[user@desktop]
 
     curl -head 'http://localhost:8081/'
@@ -578,8 +550,8 @@ EOF
         hosts:          files dns
 
 # -------------------------------------------------------------------------------------------
-# Which means that it should be fine to use hostnames for the ramses{n} database servers
-# when we create the tunnelled connections.
+# Which means that it should be fine to use hostnames for the ramses{n}
+# database servers when we create the tunnelled connections.
 #[user@desktop]
 
     sshusername=firethorn

@@ -20,14 +20,228 @@
 #
 #
 
-# -----------------------------------------------------
-# Open the SSH tunnel to the database servers at ROE.
-#[user@desktop]
+# -------------------------------------------------------------------------------------------
+# Diagnosing problems with connections to the ROE database servers.
+#
 
-    username=xxxx
-    ssh -v -L '*:1435:ramses5:1433' '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${username:?}@$fenrir.roe.ac.uk"
+#
+# ifconfig without the VPN enabled.
+#[user@laptop ~]$
 
+    ifconfig
 
-    
+        eth0      Link encap:Ethernet  HWaddr 00:16:6F:A0:EC:FB  
+                  inet addr:10.3.0.6  Bcast:10.255.255.255  Mask:255.0.0.0
+                  inet6 addr: 2001:8b0:be72:d4ea:216:6fff:fea0:ecfb/64 Scope:Global
+                  inet6 addr: fe80::216:6fff:fea0:ecfb/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:7623 errors:2 dropped:2 overruns:0 frame:0
+                  TX packets:6292 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:2479257 (2.3 MiB)  TX bytes:844647 (824.8 KiB)
+
+#
+# ifconfig with the VPN enabled
+#[user@laptop ~]$
+
+    ifconfig 
+
+        eth0      Link encap:Ethernet  HWaddr 00:16:6F:A0:EC:FB  
+                  inet addr:10.3.0.6  Bcast:10.255.255.255  Mask:255.0.0.0
+                  inet6 addr: 2001:8b0:be72:d4ea:216:6fff:fea0:ecfb/64 Scope:Global
+                  inet6 addr: fe80::216:6fff:fea0:ecfb/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:9541 errors:2 dropped:2 overruns:0 frame:0
+                  TX packets:7823 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:2860331 (2.7 MiB)  TX bytes:1066818 (1.0 MiB)
+
+        tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+                  inet addr:192.168.124.214  P-t-P:192.168.124.213  Mask:255.255.255.255
+                  UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
+                  RX packets:44 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:111 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:100 
+                  RX bytes:16706 (16.3 KiB)  TX bytes:9037 (8.8 KiB)
+
+#
+# Routing table without the VPN enabled.
+#[user@laptop ~]$
+
+    route
+
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        10.0.0.0        *               255.0.0.0       U     2      0        0 eth0
+        default         gateway.metagri 0.0.0.0         UG    0      0        0 eth0
+
+#
+# System log events while enabling the 'all-udp' VPN.
+#[root@laptop ~]$
+
+    tail -f /var/log/messages   
+
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> Starting VPN service 'org.freedesktop.NetworkManager.openvpn'...
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> VPN service 'org.freedesktop.NetworkManager.openvpn' started (org.freedesktop.NetworkManager.openvpn), PID 3554
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> VPN service 'org.freedesktop.NetworkManager.openvpn' appeared, activating connections
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 1
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 3
+        Dec 18 13:58:50 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (all-udp)' (Connect) reply received.
+        Dec 18 13:58:50 zarquan nm-openvpn[3558]: OpenVPN 2.3.2 i686-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [EPOLL] [PKCS11] [eurephia] [MH] [IPv6] built on Jul 31 2013
+        Dec 18 13:58:51 zarquan nm-openvpn[3558]: WARNING: No server certificate verification method has been enabled.  See http://openvpn.net/howto.html#mitm for more info.
+        Dec 18 13:58:51 zarquan nm-openvpn[3558]: NOTE: the current --script-security setting may allow this configuration to call user-defined scripts
+        Dec 18 13:58:51 zarquan nm-openvpn[3558]: UDPv4 link local: [undef]
+        Dec 18 13:58:51 zarquan nm-openvpn[3558]: UDPv4 link remote: [AF_INET]195.194.121.66:4500
+        Dec 18 13:58:51 zarquan nm-openvpn[3558]: [vpngate.roe.ac.uk] Peer Connection Initiated with [AF_INET]195.194.121.66:4500
+        Dec 18 13:58:54 zarquan kernel: tun0: Disabled Privacy Extensions
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: TUN/TAP device tun0 opened
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: do_ifconfig, tt->ipv6=0, tt->did_ifconfig_ipv6_setup=0
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: /sbin/ip link set dev tun0 up mtu 1500
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: /sbin/ip addr add dev tun0 local 192.168.124.214 peer 192.168.124.213
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: /usr/libexec/nm-openvpn-service-openvpn-helper tun0 1500 1546 192.168.124.214 192.168.124.213 init
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (all-udp)' (IP Config Get) reply received.
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> VPN Gateway: 195.194.121.66
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Internal Gateway: 192.168.124.213
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Tunnel Device: tun0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Internal IP4 Address: 192.168.124.214
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Internal IP4 Prefix: 32
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Internal IP4 Point-to-Point Address: 192.168.124.213
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Maximum Segment Size (MSS): 0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 195.194.120.0/22   Next Hop: 195.194.120.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 192.108.120.0/24   Next Hop: 192.108.120.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 194.66.176.0/23   Next Hop: 194.66.176.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 194.81.224.0/29   Next Hop: 194.81.224.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 130.246.0.0/16   Next Hop: 130.246.0.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 172.16.133.0/26   Next Hop: 172.16.133.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 172.22.0.0/16   Next Hop: 172.22.0.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 172.23.0.0/16   Next Hop: 172.23.0.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 129.215.0.0/16   Next Hop: 129.215.0.0
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 194.66.179.20/32   Next Hop: 194.66.179.20
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 194.66.178.57/32   Next Hop: 194.66.178.57
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 194.66.178.58/32   Next Hop: 194.66.178.58
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> Static Route: 192.168.124.1/32   Next Hop: 192.168.124.1
+        Dec 18 13:58:54 zarquan NetworkManager[1462]: <info> DNS Domain: '(none)'
+        Dec 18 13:58:54 zarquan nm-openvpn[3558]: Initialization Sequence Completed
+        Dec 18 13:58:55 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (all-udp)' (IP Config Get) complete.
+        Dec 18 13:58:55 zarquan NetworkManager[1462]: <info> Policy set 'roe.ac.uk (all-udp)' (tun0) as default for IPv4 routing and DNS.
+        Dec 18 13:58:55 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 4
+        Dec 18 13:58:55 zarquan ntpd[2385]: Listening on interface #12 tun0, 192.168.124.214#123 Enabled
+
+#
+# Routing table with the 'all-udp' VPN enabled.
+#[user@laptop ~]$
+
+    route
+
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        194.66.179.20   192.168.124.213 255.255.255.255 UGH   0      0        0 tun0
+        194.66.178.58   192.168.124.213 255.255.255.255 UGH   0      0        0 tun0
+        192.168.124.213 *               255.255.255.255 UH    0      0        0 tun0
+        192.168.124.1   192.168.124.213 255.255.255.255 UGH   0      0        0 tun0
+        194.66.178.57   192.168.124.213 255.255.255.255 UGH   0      0        0 tun0
+        vpngate.roe.ac. gateway.metagri 255.255.255.255 UGH   0      0        0 eth0
+        194.81.224.0    192.168.124.213 255.255.255.248 UG    0      0        0 tun0
+        172.16.133.0    192.168.124.213 255.255.255.192 UG    0      0        0 tun0
+        192.108.120.0   192.168.124.213 255.255.255.0   UG    0      0        0 tun0
+        194.66.176.0    192.168.124.213 255.255.254.0   UG    0      0        0 tun0
+        195.194.120.0   192.168.124.213 255.255.252.0   UG    0      0        0 tun0
+        130.246.0.0     192.168.124.213 255.255.0.0     UG    0      0        0 tun0
+        129.215.0.0     192.168.124.213 255.255.0.0     UG    0      0        0 tun0
+        172.22.0.0      192.168.124.213 255.255.0.0     UG    0      0        0 tun0
+        172.23.0.0      192.168.124.213 255.255.0.0     UG    0      0        0 tun0
+        10.0.0.0        *               255.0.0.0       U     2      0        0 eth0
+        default         192.168.124.213 0.0.0.0         UG    0      0        0 tun0
+
+#
+# System log events while enabling the 'roe-udp' VPN.
+#[root@laptop ~]$
+
+    tail -f /var/log/messages   
+
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> Starting VPN service 'org.freedesktop.NetworkManager.openvpn'...
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> VPN service 'org.freedesktop.NetworkManager.openvpn' started (org.freedesktop.NetworkManager.openvpn), PID 3662
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> VPN service 'org.freedesktop.NetworkManager.openvpn' appeared, activating connections
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 1
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 3
+        Dec 18 14:01:21 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (roe-udp)' (Connect) reply received.
+        Dec 18 14:01:21 zarquan nm-openvpn[3666]: OpenVPN 2.3.2 i686-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [EPOLL] [PKCS11] [eurephia] [MH] [IPv6] built on Jul 31 2013
+        Dec 18 14:01:21 zarquan nm-openvpn[3666]: WARNING: No server certificate verification method has been enabled.  See http://openvpn.net/howto.html#mitm for more info.
+        Dec 18 14:01:21 zarquan nm-openvpn[3666]: NOTE: the current --script-security setting may allow this configuration to call user-defined scripts
+        Dec 18 14:01:21 zarquan nm-openvpn[3666]: UDPv4 link local: [undef]
+        Dec 18 14:01:21 zarquan nm-openvpn[3666]: UDPv4 link remote: [AF_INET]195.194.121.66:4500
+        Dec 18 14:01:22 zarquan nm-openvpn[3666]: [vpngate.roe.ac.uk] Peer Connection Initiated with [AF_INET]195.194.121.66:4500
+        Dec 18 14:01:24 zarquan kernel: tun0: Disabled Privacy Extensions
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: TUN/TAP device tun0 opened
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: do_ifconfig, tt->ipv6=0, tt->did_ifconfig_ipv6_setup=0
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: /sbin/ip link set dev tun0 up mtu 1500
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: /sbin/ip addr add dev tun0 local 192.168.124.214 peer 192.168.124.213
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: /usr/libexec/nm-openvpn-service-openvpn-helper tun0 1500 1546 192.168.124.214 192.168.124.213 init
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (roe-udp)' (IP Config Get) reply received.
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> VPN Gateway: 195.194.121.66
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Internal Gateway: 192.168.124.213
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Tunnel Device: tun0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Internal IP4 Address: 192.168.124.214
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Internal IP4 Prefix: 32
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Internal IP4 Point-to-Point Address: 192.168.124.213
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Maximum Segment Size (MSS): 0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 195.194.120.0/22   Next Hop: 195.194.120.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 192.108.120.0/24   Next Hop: 192.108.120.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 194.66.176.0/23   Next Hop: 194.66.176.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 194.81.224.0/29   Next Hop: 194.81.224.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 130.246.0.0/16   Next Hop: 130.246.0.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 172.16.133.0/26   Next Hop: 172.16.133.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 172.22.0.0/16   Next Hop: 172.22.0.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 172.23.0.0/16   Next Hop: 172.23.0.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 129.215.0.0/16   Next Hop: 129.215.0.0
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 194.66.179.20/32   Next Hop: 194.66.179.20
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 194.66.178.57/32   Next Hop: 194.66.178.57
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 194.66.178.58/32   Next Hop: 194.66.178.58
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> Static Route: 192.168.124.1/32   Next Hop: 192.168.124.1
+        Dec 18 14:01:24 zarquan NetworkManager[1462]: <info> DNS Domain: '(none)'
+        Dec 18 14:01:24 zarquan nm-openvpn[3666]: Initialization Sequence Completed
+        Dec 18 14:01:25 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (roe-udp)' (IP Config Get) complete.
+        Dec 18 14:01:25 zarquan NetworkManager[1462]: <info> Policy set 'Auto metagrid.co.uk' (eth0) as default for IPv4 routing and DNS.
+        Dec 18 14:01:25 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 4
+        Dec 18 14:01:26 zarquan ntpd[2385]: Listening on interface #14 tun0, 192.168.124.214#123 Enabled
+
+#
+# Routing table with the 'roe-udp' VPN enabled.
+# Note that although the log shows the VPN creating a set of static routes,
+# none of them end up in the IP routing table.
+#[user@laptop ~]$
+
+    route
+
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        192.168.124.213 *               255.255.255.255 UH    0      0        0 tun0
+        vpngate.roe.ac. gateway.metagri 255.255.255.255 UGH   0      0        0 eth0
+        10.0.0.0        *               255.0.0.0       U     2      0        0 eth0
+        default         gateway.metagri 0.0.0.0         UG    0      0        0 eth0
+
+#
+# System log events while enabling the 'roe-tcp' VPN.
+#[root@laptop ~]$
+
+    tail -f /var/log/messages   
+
+        Dec 18 14:02:54 zarquan NetworkManager[1462]: <info> VPN plugin state changed: 3
+        Dec 18 14:02:54 zarquan NetworkManager[1462]: <info> VPN connection 'roe.ac.uk (roe-tcp)' (Connect) reply received.
+        Dec 18 14:02:54 zarquan nm-openvpn[3707]: OpenVPN 2.3.2 i686-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [EPOLL] [PKCS11] [eurephia] [MH] [IPv6] built on Jul 31 2013
+        Dec 18 14:02:54 zarquan nm-openvpn[3707]: WARNING: No server certificate verification method has been enabled.  See http://openvpn.net/howto.html#mitm for more info.
+        Dec 18 14:02:54 zarquan nm-openvpn[3707]: NOTE: the current --script-security setting may allow this configuration to call user-defined scripts
+        Dec 18 14:02:54 zarquan nm-openvpn[3707]: Attempting to establish TCP connection with [AF_INET]195.194.121.66:1723 [nonblock]
+        Dec 18 14:02:54 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:02:59 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:04 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:09 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:14 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:19 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:24 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:29 zarquan nm-openvpn[3707]: TCP: connect to [AF_INET]195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        Dec 18 14:03:34 zarquan NetworkManager[1462]: <warn> VPN connection 'roe.ac.uk (roe-tcp)' (IP Config Get) timeout exceeded.
+        Dec 18 14:03:34 zarquan nm-openvpn[3707]: SIGTERM[hard,init_instance] received, process exiting
+        Dec 18 14:03:34 zarquan NetworkManager[1462]: <info> Policy set 'Auto metagrid.co.uk' (eth0) as default for IPv4 routing and DNS.
 
 
