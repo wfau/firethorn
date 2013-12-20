@@ -95,7 +95,7 @@ extends QuerySelectFieldTestBase
                 + ""
                 ),
             new ExpectedField[] {
-                new ExpectedField("diff", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("sum", AdqlColumn.Type.DOUBLE, 0),
                 }
             );
         }

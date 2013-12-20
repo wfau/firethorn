@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
@@ -42,30 +43,36 @@ public class JdbcFactoryImpl
     implements JdbcTable.JdbcFactory
     {
 
+    
     /**
      * SQL statement to TRUNCATE all data in a table.
      * 
      */
-    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {tablename}" ; 
+    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {name}" ; 
 
     /**
      * SQL statement to DELETE all data from a table.
      * 
      */
-    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {tablename}" ; 
+    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {name}" ; 
 
     /**
      * SQL statement to DROP a table.
      * 
      */
-    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {tablename}" ; 
+    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {name}" ; 
 
-    @Override
-    @CreateMethod
-    public void create(JdbcTable table)
-        {
+    /**
+     * SQL statement to CREATE a schema.
+     * 
+     */
+    protected static final String CREATE_SCHEMA_STATEMENT = "CREATE SCHEMA {name}" ; 
 
-        }
+    /**
+     * SQL statement to DROP a schema.
+     * 
+     */
+    protected static final String DROP_SCHEMA_STATEMENT = "DROP SCHEMA {name}" ; 
 
     @Override
     @UpdateMethod
@@ -74,7 +81,7 @@ public class JdbcFactoryImpl
         log.debug("Delete JdbcTable [{}]", table.name());
         JdbcConnection connection = table.resource().connection();
         final String statement = DELETE_DATA_STATEMENT.replace(
-            "{tablename}",
+            "{name}",
             table.namebuilder().toString()
             );
         try {
@@ -107,7 +114,7 @@ public class JdbcFactoryImpl
         log.debug("Drop JdbcTable [{}]", table.name());
         JdbcConnection connection = table.resource().connection();
         final String statement = DROP_TABLE_STATEMENT.replace(
-            "{tablename}",
+            "{name}",
             table.namebuilder().toString()
             );
         try {
@@ -125,11 +132,62 @@ public class JdbcFactoryImpl
             }
         catch (SQLException ouch)
             {
-            log.warn("SQLException while attempting to delete table data [{}]", ouch.getMessage());
+            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
             log.warn("SQL statement [{}]", statement);
             }
         finally {
             connection.close();
             }
+        }
+
+    @Override
+    @DeleteMethod
+    public void drop(JdbcSchema schema)
+        {
+        log.debug("Drop JdbcSchema [{}]", schema.name());
+        JdbcConnection connection = schema.resource().connection();
+        final String statement = DROP_SCHEMA_STATEMENT.replace(
+            "{name}",
+            schema.namebuilder().toString()
+            );
+        try {
+            log.debug("Executing SQL [{}]", statement);
+            int count = connection.open().createStatement().executeUpdate(
+                statement
+                );
+            log.debug("Count [{}]", count);
+            /*
+             * Schema needs metadata ?
+             * 
+            schema.meta().jdbc().status(
+                JdbcStatus.DROPPED
+                );
+            schema.meta().adql().status(
+                AdqlStatus.DELETED
+                );
+             * 
+             */
+            }
+        catch (SQLException ouch)
+            {
+            log.warn("SQLException while attempting to delete schema [{}]", ouch.getMessage());
+            log.warn("SQL statement [{}]", statement);
+            }
+        finally {
+            connection.close();
+            }
+        }
+
+    @Override
+    public void create(JdbcSchema schema)
+        {
+        log.debug("Create JdbcSchema [{}]", schema.name());
+        }
+
+    @Override
+    @CreateMethod
+    public void create(JdbcTable table)
+        {
+        log.debug("Create JdbcTable [{}]", table.name());
         }
     }

@@ -96,11 +96,25 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Physical JDBC factory interface.
+     * @todo Move this up to resource ?
      * 
      */
     public static interface JdbcFactory
         {
-
+        /**
+         * Create a 'physical' JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource. 
+         * 
+         */
+        public void create(final JdbcSchema schema);
+        
+        /**
+         * Drop a 'physical' JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource. 
+         * 
+         */
+        public void drop(final JdbcSchema schema);
+        
         /**
          * Create a 'physical' JDBC table.
          * *This should only be reachable via a transactional method on our parent resource. 
@@ -260,6 +274,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Enum for the physical table status.
+     * @todo Move up to resource ?
      * 
      */
     public static enum JdbcStatus
@@ -296,8 +311,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
              */
             public void type(final JdbcType type);
 
+            // -- JdbcFactory stuff --
+            
             /**
-             * Create the JDBC table.
+             * Create (CREATE) the JDBC table.
              * 
              */
             public void create();
