@@ -85,7 +85,7 @@ extends QuerySelectFieldTestBase
         validate(
             this.schema.queries().create(
                 "SELECT"
-                + "   (ra + dec) AS sum"
+                + "   (ra + dec) AS mysum"
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -106,7 +106,7 @@ extends QuerySelectFieldTestBase
         {
         final AdqlQuery query = this.schema.queries().create(
             "SELECT"
-            + "   ra + dec AS sum"
+            + "   ra + dec AS mysum"
             + " FROM"
             + "    adql_twomass.twomass_psc as twomass"
             + " WHERE"
