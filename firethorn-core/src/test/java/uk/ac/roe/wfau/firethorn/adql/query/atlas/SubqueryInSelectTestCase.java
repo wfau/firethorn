@@ -70,7 +70,7 @@ extends AtlasQueryTestBase
             "        mergedclass = 1" + 
             "    GROUP BY" + 
             "        sourceId" + 
-            "    ) AS inner" + 
+            "    ) AS subquery" + 
             " WHERE" + 
             "    DistanceMins < 2/60.0" + 
             " AND" + 
@@ -78,9 +78,34 @@ extends AtlasQueryTestBase
             " AND" + 
             "    sdssPrimary = 1" + 
             " AND" + 
-            "    inner.id = CrossMatch.masterObjID", 
+            "    subquery.id = CrossMatch.masterObjID", 
 
-            "",
+            " SELECT" + 
+            "    crossmatch.distancemins as distancemins" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassourcexdr7photoobj as crossmatch," + 
+            "    (" + 
+            "    SELECT" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.sourceid as id" + 
+            "    FROM" + 
+            "        {ATLAS_VERSION}.dbo.atlassource" + 
+            "    WHERE" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.ra BETWEEN 182 AND 184" + 
+            "    AND" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.dec BETWEEN -1 AND -3" + 
+            "    AND" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1" + 
+            "    GROUP BY" + 
+            "        {ATLAS_VERSION}.dbo.atlassource.sourceid" + 
+            "    ) AS subquery" + 
+            " WHERE" + 
+            "    crossmatch.distancemins < 2 / 60.0" + 
+            " AND" + 
+            "    crossmatch.sdsstype = 3" + 
+            " AND" + 
+            "    crossmatch.sdssprimary = 1" + 
+            " AND" + 
+            "    subquery.id = crossmatch.masterobjid",
 
             new ExpectedField[] {
                 new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
