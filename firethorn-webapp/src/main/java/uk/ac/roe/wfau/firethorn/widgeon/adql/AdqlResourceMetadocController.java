@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.xml.MetaDocReader;
@@ -105,7 +105,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(AdqlResourceController.TARGET_ENTITY)

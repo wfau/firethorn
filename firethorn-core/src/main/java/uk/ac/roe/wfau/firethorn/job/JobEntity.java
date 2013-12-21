@@ -52,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
  *
@@ -224,7 +224,7 @@ implements Job
                     ident
                     ).status();
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to get job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -247,7 +247,7 @@ implements Job
                         status
                         );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -378,7 +378,7 @@ else {
     return Status.ERROR;
     }
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -404,7 +404,7 @@ else {
                         ).execute()
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
                 return new AsyncResult<Status>(

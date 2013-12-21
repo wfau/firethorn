@@ -72,15 +72,6 @@ public class AdqlTableProxy
         }
 
     /**
-     * TODO Move to proxy base class
-     */
-    @Override
-    public void delete()
-        {
-        throw new UnsupportedOperationException();
-        }
-
-    /**
      * Iterable wrapper.
      * @todo Move to a factory
      *

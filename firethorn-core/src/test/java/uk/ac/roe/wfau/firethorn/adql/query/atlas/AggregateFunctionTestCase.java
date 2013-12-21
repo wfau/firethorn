@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 @Slf4j
-public class AggregateFunctionsTestCase
+public class AggregateFunctionTestCase
     extends AtlasQueryTestBase
     {
 
@@ -99,11 +99,41 @@ public class AggregateFunctionsTestCase
         }
 
     /**
-     * COUNT()
+     * +SUM(), -AVG()
      *
      */
     @Test
     public void test003S()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+        
+            " SELECT TOP 5" + 
+            "    -SUM(ra)," + 
+            "    +AVG(ra)" + 
+            " FROM" + 
+            "    atlasSource",
+            
+            " SELECT TOP 5" + 
+            "   -SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," + 
+            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("AVG", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+    
+    /**
+     * COUNT()
+     *
+     */
+    @Test
+    public void test004S()
         {
         validate(
             Level.STRICT,
@@ -121,37 +151,6 @@ public class AggregateFunctionsTestCase
 
             new ExpectedField[] {
                 new ExpectedField("COUNT", AdqlColumn.Type.LONG, 0)
-                }
-            );
-        }
-
-
-    /**
-     * MAX(), MIN()
-     *
-     */
-    @Test
-    public void testxxxx()
-        {
-        validate(
-            Level.STRICT,
-            State.VALID,
-        
-            " SELECT TOP 5" + 
-            "    -MAX(ra)," + 
-            "    +MIN(ra)" + 
-            " FROM" + 
-            "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "   -MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," + 
-            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.atlassource",
-
-            new ExpectedField[] {
-                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         }

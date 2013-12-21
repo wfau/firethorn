@@ -46,7 +46,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -391,7 +391,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
-            throws NotFoundException
+            throws EntityNotFoundException
                 {
                 return select(
                     factories().jdbc().schemas().names().fullname(
@@ -419,7 +419,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema simple()
-            throws NotFoundException
+            throws EntityNotFoundException
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,

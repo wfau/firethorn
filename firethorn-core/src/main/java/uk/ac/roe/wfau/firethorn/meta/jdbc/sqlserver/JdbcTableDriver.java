@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,11 +26,8 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  * SQLServer JdbcTable factory implementation.
@@ -39,10 +35,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
  */
 @Slf4j
 @Component
-public class JdbcFactoryImpl
-    implements JdbcTable.JdbcFactory
+public class JdbcTableDriver
+    implements JdbcTable.JdbcDriver
     {
-
     
     /**
      * SQL statement to TRUNCATE all data in a table.
@@ -86,16 +81,10 @@ public class JdbcFactoryImpl
             );
         try {
             log.debug("Executing SQL [{}]", statement);
-            int count = connection.open().createStatement().executeUpdate(
+            int result = connection.open().createStatement().executeUpdate(
                 statement
                 );
-            log.debug("Count [{}]", count);
-            table.meta().jdbc().status(
-                JdbcStatus.DELETED
-                );
-            table.meta().adql().status(
-                AdqlStatus.DELETED
-                );
+            log.debug("result [{}]", result);
             }
         catch (SQLException ouch)
             {
@@ -119,16 +108,10 @@ public class JdbcFactoryImpl
             );
         try {
             log.debug("Executing SQL [{}]", statement);
-            int count = connection.open().createStatement().executeUpdate(
+            int result = connection.open().createStatement().executeUpdate(
                 statement
                 );
-            log.debug("Count [{}]", count);
-            table.meta().jdbc().status(
-                JdbcStatus.DROPPED
-                );
-            table.meta().adql().status(
-                AdqlStatus.DELETED
-                );
+            log.debug("result [{}]", result);
             }
         catch (SQLException ouch)
             {
@@ -138,50 +121,6 @@ public class JdbcFactoryImpl
         finally {
             connection.close();
             }
-        }
-
-    @Override
-    @DeleteMethod
-    public void drop(JdbcSchema schema)
-        {
-        log.debug("Drop JdbcSchema [{}]", schema.name());
-        JdbcConnection connection = schema.resource().connection();
-        final String statement = DROP_SCHEMA_STATEMENT.replace(
-            "{name}",
-            schema.namebuilder().toString()
-            );
-        try {
-            log.debug("Executing SQL [{}]", statement);
-            int count = connection.open().createStatement().executeUpdate(
-                statement
-                );
-            log.debug("Count [{}]", count);
-            /*
-             * Schema needs metadata ?
-             * 
-            schema.meta().jdbc().status(
-                JdbcStatus.DROPPED
-                );
-            schema.meta().adql().status(
-                AdqlStatus.DELETED
-                );
-             * 
-             */
-            }
-        catch (SQLException ouch)
-            {
-            log.warn("SQLException while attempting to delete schema [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
-        }
-
-    @Override
-    public void create(JdbcSchema schema)
-        {
-        log.debug("Create JdbcSchema [{}]", schema.name());
         }
 
     @Override

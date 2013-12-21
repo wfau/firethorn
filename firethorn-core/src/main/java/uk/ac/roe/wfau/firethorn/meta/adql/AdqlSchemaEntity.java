@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
@@ -256,7 +256,7 @@ implements AdqlSchema
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(

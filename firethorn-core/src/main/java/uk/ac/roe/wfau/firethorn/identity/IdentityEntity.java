@@ -36,7 +36,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -266,7 +266,7 @@ implements Identity
                     try {
                         this.jdbcschema = community().space().schemas().simple();
                         }
-                    catch (final NotFoundException ouch)
+                    catch (final EntityNotFoundException ouch)
                         {
                         log.error("Failed to find user space []", ouch.getMessage());
                         }

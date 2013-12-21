@@ -347,7 +347,6 @@ implements Entity
     /**
      * Delete this Entity from the database.
      *
-     */
     @Override
     public void delete()
         {
@@ -355,5 +354,6 @@ implements Entity
             this
             );
         }
+     */
     }
 

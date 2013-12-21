@@ -26,11 +26,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity.Updator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -109,7 +111,6 @@ implements Entity.EntityFactory<EntityType>
     /**
      * Delete an Entity.
      *
-     */
     @DeleteMethod
     public void delete(final EntityType entity)
         {
@@ -129,6 +130,7 @@ implements Entity.EntityFactory<EntityType>
                 );
             }
         }
+     */
 
     /**
      * Flush changes to the database.
@@ -154,7 +156,7 @@ implements Entity.EntityFactory<EntityType>
      */
     @SelectMethod
     public EntityType single(final Query query)
-    throws NotFoundException
+    throws EntityNotFoundException
         {
         @SuppressWarnings("unchecked")
         final EntityType result = (EntityType) factories().hibernate().single(
@@ -165,7 +167,7 @@ implements Entity.EntityFactory<EntityType>
             return result ;
             }
         else {
-            throw new NotFoundException();
+            throw new EntityNotFoundException();
             }
         }
 
@@ -210,6 +212,63 @@ implements Entity.EntityFactory<EntityType>
         }
 
     /**
+     * Select an Iterable set of objects.
+     *
+     */
+    @SelectMethod
+    public Iterable<EntityType> iterable(final int limit, final Query query)
+        {
+        return new Iterable<EntityType>()
+            {
+            @Override
+            @SelectMethod
+            @SuppressWarnings("unchecked")
+            public Iterator<EntityType> iterator()
+                {
+                try {
+                    query.setMaxResults(limit);
+                    return query.iterate();
+                    }
+                catch (final HibernateException ouch)
+                    {
+                    throw factories().hibernate().convert(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
+
+    /**
+     * Select an Iterable set of objects.
+     *
+     */
+    @SelectMethod
+    public Iterable<EntityType> iterable(final int first, final int limit, final Query query)
+        {
+        return new Iterable<EntityType>()
+            {
+            @Override
+            @SelectMethod
+            @SuppressWarnings("unchecked")
+            public Iterator<EntityType> iterator()
+                {
+                try {
+                    query.setFirstResult(first);
+                    query.setMaxResults(limit);
+                    return query.iterate();
+                    }
+                catch (final HibernateException ouch)
+                    {
+                    throw factories().hibernate().convert(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
+    
+    /**
      * Select a List of objects.
      *
      */
@@ -229,6 +288,47 @@ implements Entity.EntityFactory<EntityType>
         }
 
     /**
+     * Select a List of objects.
+     *
+     */
+    @SelectMethod
+    @SuppressWarnings("unchecked")
+    public List<EntityType> list(final int limit, final Query query)
+        {
+        try {
+            query.setMaxResults(limit);
+            return query.list();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw factories().hibernate().convert(
+                ouch
+                );
+            }
+        }
+
+    /**
+     * Select a List of objects.
+     *
+     */
+    @SelectMethod
+    @SuppressWarnings("unchecked")
+    public List<EntityType> list(final int first, final int limit, final Query query)
+        {
+        try {
+            query.setFirstResult(first);
+            query.setMaxResults(limit);
+            return query.list();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw factories().hibernate().convert(
+                ouch
+                );
+            }
+        }
+    
+    /**
      * Create a text search string.
      * TODO .. lots !!
      *
@@ -247,13 +347,21 @@ implements Entity.EntityFactory<EntityType>
         return null ;
         }
 
+    /*
     @Override
     @CreateMethod
     public void createEntity(final Runnable oper)
         {
         oper.run();
         }
+     */
 
+    @Override
+    @UpdateMethod
+    public void update(Updator updator)
+        {
+        updator.update();
+        }
     }
 
 

@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -566,7 +566,7 @@ public class AdqlQueryVOTableController
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
         final HttpServletResponse response
-        ) throws NotFoundException, IOException {
+        ) throws EntityNotFoundException, IOException {
 
         response.setContentType(
             TEXT_XML_MIME

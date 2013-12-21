@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
@@ -120,7 +120,7 @@ extends BaseComponentEntity
 
         @Override
         public BaseTable<?,?> resolve(final String alias)
-        throws NotFoundException
+        throws EntityNotFoundException
             {
             return this.select(
                 this.idents.ident(

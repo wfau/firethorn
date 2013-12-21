@@ -20,13 +20,15 @@ package uk.ac.roe.wfau.firethorn.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+
 /**
  *
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class NameFormatException
-extends RuntimeException
+extends FirethornUncheckedException
     {
 
     /**

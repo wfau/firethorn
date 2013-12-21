@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -95,26 +97,27 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * JDBC table cleaner interface.
+     * 
+     */
+    public static interface Cleaner
+        {
+
+        /**
+         * Get the next set of tables to delete. 
+         *
+         */
+        public Iterable<JdbcTable> pending(final JdbcSchema parent);
+
+        }    
+
+    /**
      * Physical JDBC factory interface.
      * @todo Move this up to resource ?
      * 
      */
-    public static interface JdbcFactory
+    public static interface JdbcDriver
         {
-        /**
-         * Create a 'physical' JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource. 
-         * 
-         */
-        public void create(final JdbcSchema schema);
-        
-        /**
-         * Drop a 'physical' JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource. 
-         * 
-         */
-        public void drop(final JdbcSchema schema);
-        
         /**
          * Create a 'physical' JDBC table.
          * *This should only be reachable via a transactional method on our parent resource. 
@@ -179,7 +182,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Our physical JDBC factory.
          * 
          */
-        public JdbcTable.JdbcFactory jdbc();
+        public JdbcTable.JdbcDriver driver();
 
         }
 
@@ -277,6 +280,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * @todo Move up to resource ?
      * 
      */
+    @Slf4j
     public static enum JdbcStatus
         {
         CREATED(),
@@ -284,6 +288,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         DELETED(),
         DROPPED(),
         UNKNOWN();
+
         }
     
     /**
@@ -315,21 +320,24 @@ extends BaseTable<JdbcTable, JdbcColumn>
             
             /**
              * Create (CREATE) the JDBC table.
+             * @todo Implement as a status change.
              * 
-             */
             public void create();
+             */
 
             /**
              * Delete (DELETE) the JDBC data.
+             * @todo Implement as a status change.
              * 
-             */
             public void delete();
+             */
 
             /**
              * Delete (DROP) the JDBC table.
+             * @todo Implement as a status change.
              * 
-             */
             public void drop();
+             */
 
             /**
              * The JDBC table status.

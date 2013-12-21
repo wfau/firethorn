@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
@@ -106,7 +106,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NotFoundException;
+        throws EntityNotFoundException;
 
         /**
          * Search for a schema.

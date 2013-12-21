@@ -63,7 +63,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -1185,7 +1185,7 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     }
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to find query [{}][{}]", ident(), ouch.getMessage());
                 result = Status.ERROR;

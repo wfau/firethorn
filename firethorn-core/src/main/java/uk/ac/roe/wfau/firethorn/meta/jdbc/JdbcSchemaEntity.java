@@ -47,7 +47,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
@@ -279,7 +279,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NotFoundException
+        throws EntityNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
@@ -295,7 +295,7 @@ public class JdbcSchemaEntity
                 return found ;
                 }
             else {
-                throw new NotFoundException(
+                throw new EntityNotFoundException(
                     "Unable to find matching schema [" + catalog + "][" + found  + "]"
                     );
                 }
@@ -395,7 +395,7 @@ public class JdbcSchemaEntity
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -760,7 +760,7 @@ public class JdbcSchemaEntity
                                     )
                                 );
                             }
-                        catch (final NotFoundException ouch)
+                        catch (final EntityNotFoundException ouch)
                             {
                             tablesimpl().create(
                                 ttname,

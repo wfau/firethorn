@@ -28,6 +28,16 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
+
+    /**
+     * Public interface for an update action.
+     *
+     */
+    public static interface Updator
+        {
+        public void update();
+        }
+    
     /**
      * Common interface for a name factory.
      *
@@ -101,13 +111,6 @@ public interface Entity
         throws IdentifierNotFoundException;
 
         /**
-         * Select a specific Entity by UUID.
-         *
-        public EntityType select(final UUID uuid)
-        throws NotFoundException;
-         */
-
-        /**
          * Our local Identifier factory.
          *
          */
@@ -129,9 +132,15 @@ public interface Entity
         /**
          * Wrap a runnable operation in a write transaction.
          *
-         */
         public void createEntity(final Runnable oper);
+         */
 
+        /**
+         * Perform an update in a transaction.
+         *
+         */
+        public void update(Updator updator);
+        
         }
 
     /**
@@ -173,9 +182,8 @@ public interface Entity
     /**
      * Delete this Entity from the database.
      *
-     */
     public void delete();
-
+     */
 
     }
 

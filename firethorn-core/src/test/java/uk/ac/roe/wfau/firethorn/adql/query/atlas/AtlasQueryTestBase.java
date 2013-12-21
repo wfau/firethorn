@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -94,7 +94,7 @@ extends TestPropertiesBase
                     )
                 );
             }
-        catch (NotFoundException ouch)
+        catch (EntityNotFoundException ouch)
             {
             log.warn("Unable to load catalog [{}]", name);
             }
@@ -120,7 +120,7 @@ extends TestPropertiesBase
                     )
                 );
             }
-        catch (NotFoundException ouch)
+        catch (EntityNotFoundException ouch)
             {
             log.warn("Unable to load schema [{}]", name);
             }
@@ -132,7 +132,7 @@ extends TestPropertiesBase
      */
     @Before
     public void loadResources()
-    throws NotFoundException
+    throws EntityNotFoundException
         {
         //
         // Create our JDBC resource.

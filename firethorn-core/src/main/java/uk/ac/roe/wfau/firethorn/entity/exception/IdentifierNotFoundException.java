@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class IdentifierNotFoundException
-extends NotFoundException
+extends EntityNotFoundException
     {
 
     /**

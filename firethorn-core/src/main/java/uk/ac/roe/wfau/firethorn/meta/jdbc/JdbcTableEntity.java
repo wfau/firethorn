@@ -46,13 +46,17 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity.Updator;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -90,6 +94,19 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
         @NamedQuery(
             name  = "JdbcTable-search-parent.text",
             query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            ),
+        @NamedQuery(
+            name  = "JdbcTable-cleaner-pending-parent",
+            query = " FROM" + 
+                    "    JdbcTableEntity" + 
+                    " WHERE" + 
+                    "    ((jdbcstatus = 'CREATED') OR (jdbcstatus = 'UPDATED'))" + 
+                    " AND" + 
+                    "    (parent = :parent)" + 
+                    " AND" + 
+                    "    (created <= :date)" + 
+                    " ORDER BY" + 
+                    "    ident asc" 
             )
         }
     )
@@ -151,6 +168,7 @@ implements JdbcTable
     /**
      * Name factory implementation.
      * @todo Move to a separate package.
+     * @todo Count of tables per query, or per owner
      *
      */
     @Component
@@ -169,6 +187,56 @@ implements JdbcTable
             }
         }
 
+    /**
+     * JDBC table cleaner implementation.
+     * 
+     */
+    @Component
+    public static class Cleaner
+    extends AbstractEntityFactory<JdbcTable>
+    implements JdbcTable.Cleaner
+        {
+        /**
+         * Get the next set of tables to delete. 
+         *
+         */
+        @SelectMethod
+        public Iterable<JdbcTable> pending(final JdbcSchema parent)
+            {
+            return super.iterable(
+                10,
+                super.query(
+                    "JdbcTableCleaner-pending-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        public Class<?> etype()
+            {
+            return JdbcTableEntity.class ;
+            }
+
+        @Autowired
+        protected JdbcTable.IdentFactory idents ;
+        @Override
+        public JdbcTable.IdentFactory idents()
+            {
+            return this.idents ;
+            }
+
+        @Autowired
+        protected JdbcTable.LinkFactory links;
+        @Override
+        public JdbcTable.LinkFactory links()
+            {
+            return this.links;
+            }
+        }    
+    
     /**
      * Table factory implementation.
      *
@@ -256,7 +324,7 @@ implements JdbcTable
         @SelectMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
             {
-            return super.list(
+            return super.iterable(
                 super.query(
                     "JdbcTable-select-parent"
                     ).setEntity(
@@ -284,7 +352,7 @@ implements JdbcTable
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -365,9 +433,9 @@ implements JdbcTable
          * 
          */
         @Autowired
-        private JdbcTable.JdbcFactory jdbc;
+        private JdbcTable.JdbcDriver jdbc;
         @Override
-        public JdbcTable.JdbcFactory jdbc()
+        public JdbcTable.JdbcDriver driver()
             {
             return this.jdbc;
             }
@@ -649,11 +717,17 @@ implements JdbcTable
             return JdbcTable.JdbcStatus.UNKNOWN;
             }
         }
-    protected void jdbcstatus(final JdbcTable.JdbcStatus status)
+
+    protected void jdbcstatus(final JdbcTable.JdbcStatus next)
         {
-        this.jdbcstatus = status;
+        if (next == JdbcTable.JdbcStatus.UNKNOWN)
+            {
+            log.warn("Setting JdbcTable.JdbcStatus to UNKNOWN [{}]", this.ident());
+            }
+        this.jdbcstatus = next ;
         }
 
+    
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = ADQL_STATUS_COL,
@@ -675,11 +749,16 @@ implements JdbcTable
             return AdqlTable.AdqlStatus.UNKNOWN;
             }
         }
-    protected void adqlstatus(final AdqlTable.AdqlStatus  status)
+    protected void adqlstatus(final AdqlTable.AdqlStatus next)
         {
-        this.adqlstatus = status;
+        if (next == AdqlTable.AdqlStatus.UNKNOWN)
+            {
+            log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
+            }
+        this.adqlstatus = next;
         }
 
+    
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = JDBC_COUNT_COL,
@@ -726,31 +805,7 @@ implements JdbcTable
                             type
                             );
                         }
-
-                    @Override
-                    public void create()
-                        {
-                        factories().jdbc().tables().jdbc().create(
-                            JdbcTableEntity.this
-                            );
-                        }
-
-                    @Override
-                    public void delete()
-                        {
-                        factories().jdbc().tables().jdbc().delete(
-                            JdbcTableEntity.this
-                            );
-                        }
-
-                    @Override
-                    public void drop()
-                        {
-                        factories().jdbc().tables().jdbc().drop(
-                            JdbcTableEntity.this
-                            );
-                        }
-
+                    
                     @Override
                     public JdbcTable.JdbcStatus status()
                         {
@@ -758,10 +813,190 @@ implements JdbcTable
                         }
 
                     @Override
-                    public void status(final JdbcTable.JdbcStatus status)
+                    public void status(final JdbcTable.JdbcStatus next)
                         {
-                        jdbcstatus(
-                            status
+                        log.debug("status(JdbcTable.JdbcStatus)");
+                        log.debug("  prev [{}]", jdbcstatus());
+                        log.debug("  next [{}]", next);
+
+                        factories().jdbc().tables().update(
+                            new Updator()
+                                {
+                                public void update()
+                                    {
+                                    switch(jdbcstatus())
+                                        {
+                                        case CREATED:
+                                            switch(next)
+                                                {
+                                                case DELETED:
+                                                    factories().jdbc().tables().driver().delete(
+                                                        JdbcTableEntity.this
+                                                        );
+                                                    jdbcstatus(
+                                                        JdbcStatus.DELETED
+                                                        );
+                                                    adqlstatus(
+                                                        AdqlStatus.DELETED
+                                                        );
+                                                    break ;
+            
+                                                case DROPPED:
+                                                    factories().jdbc().tables().driver().drop(
+                                                        JdbcTableEntity.this
+                                                        );
+                                                    jdbcstatus(
+                                                        JdbcStatus.DROPPED
+                                                        );
+                                                    adqlstatus(
+                                                        AdqlStatus.DELETED
+                                                        );
+                                                    break ;
+            
+                                                case CREATED:
+                                                case UPDATED:
+                                                case UNKNOWN:
+                                                    jdbcstatus(
+                                                        next
+                                                        );
+                                                    break ; 
+            
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        jdbcstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case UPDATED:
+                                            switch(next)
+                                                {
+                                                case DELETED:
+                                                    factories().jdbc().tables().driver().delete(
+                                                        JdbcTableEntity.this
+                                                        );
+                                                    jdbcstatus(
+                                                        JdbcStatus.DELETED
+                                                        );
+                                                    adqlstatus(
+                                                        AdqlStatus.DELETED
+                                                        );
+                                                    break ;
+            
+                                                case DROPPED:
+                                                    factories().jdbc().tables().driver().drop(
+                                                        JdbcTableEntity.this
+                                                        );
+                                                    jdbcstatus(
+                                                        JdbcStatus.DROPPED
+                                                        );
+                                                    adqlstatus(
+                                                        AdqlStatus.DELETED
+                                                        );
+                                                    break ;
+            
+                                                case UPDATED:
+                                                case UNKNOWN:
+                                                    jdbcstatus(
+                                                        next
+                                                        );
+                                                    break ; 
+            
+                                                case CREATED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        jdbcstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case DELETED:
+                                            switch(next)
+                                                {
+                                                case DROPPED:
+                                                    factories().jdbc().tables().driver().drop(
+                                                        JdbcTableEntity.this
+                                                        );
+                                                    jdbcstatus(
+                                                        JdbcStatus.DROPPED
+                                                        );
+                                                    adqlstatus(
+                                                        AdqlStatus.DELETED
+                                                        );
+                                                    break ;
+            
+                                                case DELETED:
+                                                case UNKNOWN:
+                                                    jdbcstatus(
+                                                        next
+                                                        );
+                                                    break ; 
+            
+                                                case CREATED:
+                                                case UPDATED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        jdbcstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case DROPPED:
+                                            switch(next)
+                                                {
+                                                case DROPPED:
+                                                case UNKNOWN:
+                                                    jdbcstatus(
+                                                        next
+                                                        );
+                                                    break ; 
+            
+                                                case CREATED:
+                                                case UPDATED:
+                                                case DELETED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        jdbcstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case UNKNOWN:
+                                            switch(next)
+                                                {
+                                                case UNKNOWN:
+                                                    jdbcstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                case CREATED:
+                                                case UPDATED:
+                                                case DELETED:
+                                                case DROPPED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        jdbcstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        default:
+                                            break ;
+            
+                                        }
+                                    }
+                                }
                             );
                         }
                     };
@@ -785,10 +1020,143 @@ implements JdbcTable
                         }
 
                     @Override
-                    public void status(AdqlTable.AdqlStatus status)
+                    public void status(final AdqlTable.AdqlStatus next)
                         {
-                        adqlstatus(
-                            status
+                        log.debug("status(AdqlTable.AdqlStatus)");
+                        log.debug("  prev [{}]", adqlstatus());
+                        log.debug("  next [{}]", next);
+
+                        factories().jdbc().tables().update(
+                            new Updator()
+                                {
+                                public void update()
+                                    {
+                                    switch(adqlstatus())
+                                        {
+                                        case CREATED:
+                                            switch(next)
+                                                {
+                                                case CREATED:
+                                                case COMPLETED:
+                                                case TRUNCATED:
+                                                case UNKNOWN:
+                                                    adqlstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                case DELETED:
+                                                    // delete();
+                                                    break ;
+            
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        adqlstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case COMPLETED:
+                                            switch(next)
+                                                {
+                                                case COMPLETED:
+                                                case UNKNOWN:
+                                                    adqlstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                case DELETED:
+                                                    // delete();
+                                                    break ;
+            
+                                                case CREATED:
+                                                case TRUNCATED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        adqlstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case TRUNCATED:
+                                            switch(next)
+                                                {
+                                                case TRUNCATED:
+                                                case UNKNOWN:
+                                                    adqlstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                case DELETED:
+                                                    // delete();
+                                                    break ;
+            
+                                                case CREATED:
+                                                case COMPLETED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        adqlstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case DELETED:
+                                            switch(next)
+                                                {
+                                                case DELETED:
+                                                case UNKNOWN:
+                                                    adqlstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                case CREATED:
+                                                case COMPLETED:
+                                                case TRUNCATED:
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        adqlstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        case UNKNOWN:
+                                            switch(next)
+                                                {
+                                                case CREATED:
+                                                case COMPLETED:
+                                                case TRUNCATED:
+                                                case DELETED:
+                                                case UNKNOWN:
+                                                    adqlstatus(
+                                                        next
+                                                        );
+                                                    break ;
+            
+                                                default:
+                                                    throw new IllegalStateTransition(
+                                                        JdbcTableEntity.this,
+                                                        adqlstatus(),
+                                                        next
+                                                        );
+                                                }
+                                            break ;
+            
+                                        default:
+                                            break ;
+                                        }
+                                    }
+                                }
                             );
                         }
                     };
@@ -889,7 +1257,7 @@ implements JdbcTable
                                 coltype
                                 );
                             }
-                        catch (final NotFoundException ouch)
+                        catch (final EntityNotFoundException ouch)
                             {
                             columnsimpl().create(
                                 colname,

@@ -20,13 +20,16 @@ package uk.ac.roe.wfau.firethorn.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+
 /**
  * Base class for not found exceptions.
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class NotFoundException
-extends Exception
+public class EntityNotFoundException
+extends FirethornCheckedException
     {
 
     /**
@@ -44,7 +47,7 @@ extends Exception
      * Public constructor, using default message.
      *
      */
-    public NotFoundException()
+    public EntityNotFoundException()
         {
         this(
             DEFAULT_MESSAGE,
@@ -56,7 +59,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public NotFoundException(final String message)
+    public EntityNotFoundException(final String message)
         {
         this(
             message,
@@ -68,7 +71,7 @@ extends Exception
      * Public constructor, using default message.
      *
      */
-    public NotFoundException(final Throwable cause)
+    public EntityNotFoundException(final Throwable cause)
         {
         this(
             DEFAULT_MESSAGE,
@@ -80,7 +83,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public NotFoundException(final String message, final Throwable cause)
+    public EntityNotFoundException(final String message, final Throwable cause)
         {
         super(
             message,

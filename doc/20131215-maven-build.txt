@@ -125,7 +125,6 @@ EOF
 
         identity=$(pwgen 16 1)
         community=$(date '+%A')
-        adqlcopydepth=THIN
 
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
@@ -162,14 +161,14 @@ EOF
             ' | node)
 
         POST "${jdbctable:?}" \
-            --data "urn:jdbc.table.action=urn:jdbc.table.delete" \
+            --data "urn:jdbc.table.jdbc.status=DELETED" \
             | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"
 
 
         POST "${jdbctable:?}" \
-            --data "urn:jdbc.table.action=urn:jdbc.table.drop" \
+            --data "urn:jdbc.table.jdbc.status=DROPPED" \
             | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"

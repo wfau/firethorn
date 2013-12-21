@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 @Slf4j
-public class MathFunctionsTestCase
+public class MathFunctionTestCase
     extends AtlasQueryTestBase
     {
 

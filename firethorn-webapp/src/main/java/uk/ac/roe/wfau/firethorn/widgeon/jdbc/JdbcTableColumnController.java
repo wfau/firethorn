@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -103,14 +103,14 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
 
     /**
      * Get the parent table based on the identifier in the request.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().jdbc().tables().select(
             factories().jdbc().tables().idents().ident(
@@ -146,7 +146,7 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
         final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);
         return bean(
             table.columns().select(

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -102,7 +102,7 @@ public class AttribServiceController
         final String table,
         @PathVariable(AttribServiceController.COLUMN_NAME_FIELD)
         final String column
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("json get [{}][{}]", table, column);
         return new ColumnBean(
             factories().base().tables().resolve(
@@ -122,7 +122,7 @@ public class AttribServiceController
     public ColumnBean.Iter jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         // I HATE GENERICS
         return new ColumnBean.Iter(
             (Iterable<BaseColumn<?>>) factories().base().tables().resolve(

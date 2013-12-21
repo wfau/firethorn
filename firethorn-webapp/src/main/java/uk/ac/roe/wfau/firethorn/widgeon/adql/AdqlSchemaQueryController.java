@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -105,7 +105,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
     /**
      * Get the parent schema based on the request ident.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)

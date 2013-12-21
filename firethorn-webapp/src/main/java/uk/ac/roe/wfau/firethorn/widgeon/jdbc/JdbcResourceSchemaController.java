@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -103,14 +103,14 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * Get the parent resource based on the identifier in the request.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
     public JdbcResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException{
+        ) throws EntityNotFoundException{
         log.debug("parent() [{}]", ident);
         return factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(
@@ -146,7 +146,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);
         return bean(
             resource.schemas().select(
@@ -168,7 +168,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         final String catalog,
         @RequestParam(SELECT_SCHEMA)
         final String schema
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("select(String, String) [{}][{}]", catalog, schema);
         return bean(
             resource.schemas().select(
