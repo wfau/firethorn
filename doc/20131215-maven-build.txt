@@ -56,7 +56,7 @@
 
             source src/test/bin/jdbc-functions.sh
 
-            pushd target/firethorn-ogsadai-webapp-01.08-beta-04/WEB-INF/etc/dai
+            pushd target/firethorn-ogsadai-webapp-01.08-beta-05/WEB-INF/etc/dai
 
                 jdbcconfig twomass  firethorn.twomass
                 jdbcconfig ukidss   firethorn.ukidss

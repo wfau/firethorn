@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity.Updator;
+import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler.Update;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -175,14 +175,16 @@ public class JdbcTableController
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=JDBC_STATUS_PARAM, required=false)
-        final JdbcTable.JdbcStatus jdbcstatus
+        final JdbcTable.JdbcStatus jdbcstatus,
+        @RequestParam(value=ADQL_STATUS_PARAM, required=false)
+        final AdqlTable.AdqlStatus adqlstatus
         ){
         log.debug("update(JdbcTable.JdbcStatus)");
         log.debug(" jdbcstatus [{}]", jdbcstatus);
+        log.debug(" adqlstatus [{}]", adqlstatus);
 
-        /*
-        factories().jdbc().tables().update(
-            new Updator()
+        factories().spring().updator().update(
+            new Update()
                 {
                 public void update()
                     {
@@ -192,16 +194,16 @@ public class JdbcTableController
                             jdbcstatus
                             );
                         }
+                    if (null != adqlstatus)
+                        {
+                        entity.meta().adql().status(
+                            adqlstatus
+                            );
+                        }
                     }
                 }
             );
-         */
 
-        entity.meta().jdbc().status(
-            jdbcstatus
-            );
-
-        
         return bean(
             entity
             );

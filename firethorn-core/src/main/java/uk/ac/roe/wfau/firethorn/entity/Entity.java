@@ -30,15 +30,6 @@ public interface Entity
     {
 
     /**
-     * Public interface for an update action.
-     *
-     */
-    public static interface Updator
-        {
-        public void update();
-        }
-    
-    /**
      * Common interface for a name factory.
      *
      */
@@ -97,6 +88,29 @@ public interface Entity
         }
 
     /**
+     * Common interface for an update handler.
+     *
+     */
+    public interface UpdateHandler
+        {
+        /**
+         * Public interface for an update action.
+         *
+         */
+        public static interface Update
+            {
+            public void update();
+            }
+
+        /**
+         * Perform an update in a transaction.
+         *
+         */
+        public void update(Update updator);
+
+        }
+    
+    /**
      * Common interface for an Entity factory.
      * @todo Separate Entity Resolver and Factory interfaces.
      *
@@ -121,25 +135,6 @@ public interface Entity
          *
          */
         public LinkFactory<EntityType> links();
-
-        /**
-         * Our 'empty' entity instance.
-         * This can be used to represent things like 'nobody', 'no results', or an empty resource, schema, table or column.
-         *
-         */
-        public EntityType empty();
-
-        /**
-         * Wrap a runnable operation in a write transaction.
-         *
-        public void createEntity(final Runnable oper);
-         */
-
-        /**
-         * Perform an update in a transaction.
-         *
-         */
-        public void update(Updator updator);
         
         }
 
@@ -178,12 +173,6 @@ public interface Entity
      *
      */
     public void refresh();
-
-    /**
-     * Delete this Entity from the database.
-     *
-    public void delete();
-     */
 
     }
 

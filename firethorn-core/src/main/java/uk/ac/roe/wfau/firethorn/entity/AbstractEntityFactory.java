@@ -26,13 +26,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity.Updator;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -341,27 +337,6 @@ implements Entity.EntityFactory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
-    @Override
-    public EntityType empty()
-        {
-        return null ;
-        }
-
-    /*
-    @Override
-    @CreateMethod
-    public void createEntity(final Runnable oper)
-        {
-        oper.run();
-        }
-     */
-
-    @Override
-    @UpdateMethod
-    public void update(Updator updator)
-        {
-        updator.update();
-        }
     }
 
 

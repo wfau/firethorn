@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,28 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.spring;
+package uk.ac.roe.wfau.firethorn.entity;
 
-import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * A global instance to handle Spring related things.
+ *
  *
  */
-public interface SpringThings
+@Slf4j
+@Component
+public class UpdateHandler
+    implements Entity.UpdateHandler
     {
-    /**
-     * The current ApplicationContext.
-     *
-     */
-    public ApplicationContext context();
-
-    /**
-     * Transactional update handler.
-     * 
-     */
-    public Entity.UpdateHandler updator();
-    
+    @Override
+    @UpdateMethod
+    public void update(Update updator)
+        {
+        log.debug("update(Updator)");
+        updator.update();
+        }
     }

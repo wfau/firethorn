@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+
 /**
  * SpringThings implementation.
  *
@@ -41,5 +43,18 @@ public class SpringThingsImpl
     public ApplicationContext context()
         {
         return this.context ;
+        }
+
+    /**
+     * Our transactional update handler.
+     * 
+     */
+    @Autowired
+    private Entity.UpdateHandler updator;
+
+    @Override
+    public Entity.UpdateHandler updator()
+        {
+        return this.updator;
         }
     }

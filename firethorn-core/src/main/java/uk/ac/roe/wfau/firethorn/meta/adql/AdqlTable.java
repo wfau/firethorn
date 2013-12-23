@@ -191,13 +191,13 @@ extends BaseTable<AdqlTable, AdqlColumn>
             public Long count();
 
             /**
-             * The table status.
+             * The ADQL table status.
              * 
              */
             public AdqlStatus status();
 
             /**
-             * Set the table status.
+             * Set the ADQL table status.
              * 
              */
             public void status(final AdqlStatus status);

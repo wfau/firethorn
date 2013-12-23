@@ -305,39 +305,16 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public interface JdbcMetadata {
 
             /**
-             * Get the database table type.
+             * Get the JDBC table type.
              *
              */
             public JdbcType type();
 
             /**
-             * Set the database table type.
+             * Set the JDBC table type.
              * 
              */
             public void type(final JdbcType type);
-
-            // -- JdbcFactory stuff --
-            
-            /**
-             * Create (CREATE) the JDBC table.
-             * @todo Implement as a status change.
-             * 
-            public void create();
-             */
-
-            /**
-             * Delete (DELETE) the JDBC data.
-             * @todo Implement as a status change.
-             * 
-            public void delete();
-             */
-
-            /**
-             * Delete (DROP) the JDBC table.
-             * @todo Implement as a status change.
-             * 
-            public void drop();
-             */
 
             /**
              * The JDBC table status.

@@ -47,7 +47,8 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.Entity.Updator;
+import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler;
+import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler.Update;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -139,7 +140,9 @@ implements JdbcTable
     @Component
     public static class Worker
     	{
-    	@Scheduled(fixedDelay=30000)
+        protected static final int INTERVAL = 30 * 60 * 1000 ;
+        
+    	@Scheduled(fixedDelay=INTERVAL)
     	public void something() {
     	    log.debug("Start");
 
@@ -781,6 +784,32 @@ implements JdbcTable
         {
         this.jdbccount = count;
         }
+
+    protected void jdbcdelete()
+        {
+        factories().jdbc().tables().driver().delete(
+            JdbcTableEntity.this
+            );
+        jdbcstatus(
+            JdbcStatus.DELETED
+            );
+        adqlstatus(
+            AdqlStatus.DELETED
+            );
+        }
+
+    protected void jdbcdrop()
+        {
+        factories().jdbc().tables().driver().drop(
+            JdbcTableEntity.this
+            );
+        jdbcstatus(
+            JdbcStatus.DROPPED
+            );
+        adqlstatus(
+            AdqlStatus.DELETED
+            );
+        }
     
     @Override
     public JdbcTable.Metadata meta()
@@ -819,38 +848,24 @@ implements JdbcTable
                         log.debug("  prev [{}]", jdbcstatus());
                         log.debug("  next [{}]", next);
 
-                        factories().jdbc().tables().update(
-                            new Updator()
+/*
+                        factories().spring().updator().update(
+                            new Update()
                                 {
                                 public void update()
                                     {
+ */
                                     switch(jdbcstatus())
                                         {
                                         case CREATED:
                                             switch(next)
                                                 {
                                                 case DELETED:
-                                                    factories().jdbc().tables().driver().delete(
-                                                        JdbcTableEntity.this
-                                                        );
-                                                    jdbcstatus(
-                                                        JdbcStatus.DELETED
-                                                        );
-                                                    adqlstatus(
-                                                        AdqlStatus.DELETED
-                                                        );
+                                                    jdbcdelete();
                                                     break ;
             
                                                 case DROPPED:
-                                                    factories().jdbc().tables().driver().drop(
-                                                        JdbcTableEntity.this
-                                                        );
-                                                    jdbcstatus(
-                                                        JdbcStatus.DROPPED
-                                                        );
-                                                    adqlstatus(
-                                                        AdqlStatus.DELETED
-                                                        );
+                                                    jdbcdrop();
                                                     break ;
             
                                                 case CREATED:
@@ -874,27 +889,11 @@ implements JdbcTable
                                             switch(next)
                                                 {
                                                 case DELETED:
-                                                    factories().jdbc().tables().driver().delete(
-                                                        JdbcTableEntity.this
-                                                        );
-                                                    jdbcstatus(
-                                                        JdbcStatus.DELETED
-                                                        );
-                                                    adqlstatus(
-                                                        AdqlStatus.DELETED
-                                                        );
+                                                    jdbcdelete();
                                                     break ;
             
                                                 case DROPPED:
-                                                    factories().jdbc().tables().driver().drop(
-                                                        JdbcTableEntity.this
-                                                        );
-                                                    jdbcstatus(
-                                                        JdbcStatus.DROPPED
-                                                        );
-                                                    adqlstatus(
-                                                        AdqlStatus.DELETED
-                                                        );
+                                                    jdbcdrop();
                                                     break ;
             
                                                 case UPDATED:
@@ -918,15 +917,7 @@ implements JdbcTable
                                             switch(next)
                                                 {
                                                 case DROPPED:
-                                                    factories().jdbc().tables().driver().drop(
-                                                        JdbcTableEntity.this
-                                                        );
-                                                    jdbcstatus(
-                                                        JdbcStatus.DROPPED
-                                                        );
-                                                    adqlstatus(
-                                                        AdqlStatus.DELETED
-                                                        );
+                                                    jdbcdrop();
                                                     break ;
             
                                                 case DELETED:
@@ -995,9 +986,11 @@ implements JdbcTable
                                             break ;
             
                                         }
+/*
                                     }
                                 }
                             );
+ */
                         }
                     };
                 }
@@ -1026,11 +1019,13 @@ implements JdbcTable
                         log.debug("  prev [{}]", adqlstatus());
                         log.debug("  next [{}]", next);
 
-                        factories().jdbc().tables().update(
-                            new Updator()
+/*                        
+                        factories().spring().updator().update(
+                            new Update()
                                 {
                                 public void update()
                                     {
+ */                                    
                                     switch(adqlstatus())
                                         {
                                         case CREATED:
@@ -1046,7 +1041,7 @@ implements JdbcTable
                                                     break ;
             
                                                 case DELETED:
-                                                    // delete();
+                                                    jdbcdelete();
                                                     break ;
             
                                                 default:
@@ -1069,7 +1064,7 @@ implements JdbcTable
                                                     break ;
             
                                                 case DELETED:
-                                                    // delete();
+                                                    jdbcdelete();
                                                     break ;
             
                                                 case CREATED:
@@ -1094,7 +1089,7 @@ implements JdbcTable
                                                     break ;
             
                                                 case DELETED:
-                                                    // delete();
+                                                    jdbcdelete();
                                                     break ;
             
                                                 case CREATED:
@@ -1155,9 +1150,11 @@ implements JdbcTable
                                         default:
                                             break ;
                                         }
+ /*
                                     }
                                 }
                             );
+ */
                         }
                     };
                 }
