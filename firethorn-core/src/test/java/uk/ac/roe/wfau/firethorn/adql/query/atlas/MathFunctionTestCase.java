@@ -302,6 +302,7 @@ public class MathFunctionTestCase
     
     /**
      * sign() in STRICT mode.
+     * TODO
      *
      */
     public void test007S()
@@ -346,6 +347,7 @@ public class MathFunctionTestCase
    
     /**
      * square() in STRICT mode.
+     * TODO
      *
      */
     @Test
