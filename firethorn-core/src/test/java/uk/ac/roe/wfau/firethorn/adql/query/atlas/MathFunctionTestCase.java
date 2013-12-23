@@ -304,7 +304,6 @@ public class MathFunctionTestCase
      * sign() in STRICT mode.
      *
      */
-    @Test
     public void test007S()
         {
         validate(
@@ -317,7 +316,7 @@ public class MathFunctionTestCase
             "    atlassource" 
             );
         }
-    
+
     /**
      * sign() in LEGACY mode.
      * TODO
@@ -335,12 +334,57 @@ public class MathFunctionTestCase
             "    atlassource",
             
             " SELECT" + 
-            "    SIGN(2) AS SIGN" + 
+            "    SIGN({ATLAS_VERSION}.dbo.atlassource.ra) AS SIGN" + 
             " FROM" + 
             "    {ATLAS_VERSION}.dbo.atlassource", 
 
             new ExpectedField[] {
                 new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        }
+   
+    /**
+     * square() in STRICT mode.
+     *
+     */
+    @Test
+    public void test008S()
+        {
+        validate(
+            Level.STRICT,
+            State.PARSE_ERROR,
+
+            " SELECT" + 
+            "    square(ra)" + 
+            " FROM" + 
+            "    atlassource" 
+            );
+        }
+    
+    /**
+     * square() in LEGACY mode.
+     * TODO
+     *
+     */
+    public void test008L()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT" + 
+            "    square(ra)" + 
+            " FROM" + 
+            "    atlassource",
+            
+            " SELECT" + 
+            "    SQUARE({ATLAS_VERSION}.dbo.atlassource.ra) AS SIGN" + 
+            " FROM" + 
+            "    {ATLAS_VERSION}.dbo.atlassource", 
+
+            new ExpectedField[] {
+                new ExpectedField("SQUARE", AdqlColumn.Type.INTEGER, 0)
                 }
             );
         }
