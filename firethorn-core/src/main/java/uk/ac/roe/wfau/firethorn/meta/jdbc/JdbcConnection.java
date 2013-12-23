@@ -23,6 +23,8 @@ import java.sql.DatabaseMetaData;
 import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+
 /**
  * JDBC resource connection details.
  *
@@ -85,9 +87,11 @@ public interface JdbcConnection
 
     /**
      * Get the database metadata.
+     * @throws MetadataException 
      *
      */
-    public DatabaseMetaData metadata();
+    public DatabaseMetaData metadata()
+    throws MetadataException;
 
     /**
      * Close the current database Connection.
@@ -97,15 +101,19 @@ public interface JdbcConnection
 
     /**
      * Get a list of catalog names.
+     * @throws MetadataException 
      *
      */
-    public Iterable<String> catalogs();
+    public Iterable<String> catalogs()
+    throws MetadataException;
 
     /**
      * Get the catalog name of the current database Connection.
+     * @throws MetadataException 
      *
      */
-    public String catalog();
+    public String catalog()
+    throws MetadataException;
 
     /**
      * Connection status values.

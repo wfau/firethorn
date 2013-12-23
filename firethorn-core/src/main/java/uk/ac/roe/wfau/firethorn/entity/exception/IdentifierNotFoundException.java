@@ -30,9 +30,8 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 public class IdentifierNotFoundException
 extends EntityNotFoundException
     {
-
     /**
-     *
+     * Serialzable version UID.
      *
      */
     private static final long serialVersionUID = 2020955869837050984L;

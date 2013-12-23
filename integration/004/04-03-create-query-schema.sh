@@ -19,7 +19,7 @@
 #
 #
 
-queryschemaname=${1:-'query'}
+queryschemaname=${1:-"query-$(date '+%Y%m%d%H%M%S.%N')"}
 
 POST "${queryspace?}/schemas/create" \
     --header "firethorn.auth.identity:${identity:?}" \

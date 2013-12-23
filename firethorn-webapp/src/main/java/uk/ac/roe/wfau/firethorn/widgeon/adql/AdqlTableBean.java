@@ -68,4 +68,15 @@ extends BaseTableBean<AdqlTable>
             return null ;
             }
         }
+
+    public interface MetadataBean
+    extends BaseTableBean.MetadataBean
+        {
+        public interface AdqlMetadataBean
+            {
+            public Long getCount();
+            public AdqlTable.AdqlStatus getStatus();
+            }
+        public AdqlMetadataBean getAdql();
+        }
     }

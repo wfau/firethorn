@@ -150,15 +150,26 @@ EOF
 # Tests for delete - test action only.
 # To be replaced with status change.
 
-
-        cat query-job.json
-        curl "$(cat query-job.json | votable)"
-
         jdbctable=$(cat query-job.json | sed -n '
             /^ *"results" : {/,/^ *}/ {
                 s/^ *"jdbc" : "\([^"]*\)".*/\1/p
                 }
             ' | node)
+
+        cat query-job.json
+        curl "$(cat query-job.json | votable)"
+
+        GET "${jdbctable:?}" \
+            | ./pp | tee test-table.json
+
+
+        POST "${jdbctable:?}" \
+            --data "urn:jdbc.table.adql.status=DELETED" \
+            | ./pp | tee test-table.json
+
+        curl "$(cat query-job.json | votable)"
+
+
 
         POST "${jdbctable:?}" \
             --data "urn:jdbc.table.jdbc.status=DELETED" \
@@ -166,12 +177,12 @@ EOF
 
         curl "$(cat query-job.json | votable)"
 
-
         POST "${jdbctable:?}" \
             --data "urn:jdbc.table.jdbc.status=DROPPED" \
             | ./pp | tee test-table.json
 
         curl "$(cat query-job.json | votable)"
+
 
 
 

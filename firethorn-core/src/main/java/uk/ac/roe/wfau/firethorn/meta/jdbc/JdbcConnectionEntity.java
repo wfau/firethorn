@@ -48,6 +48,9 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
 
 /**
@@ -103,11 +106,10 @@ public class JdbcConnectionEntity
      *
      */
     public static class MetadataException
-    extends RuntimeException
+    extends FirethornCheckedException
         {
-
         /**
-         *
+         * Serialzable version UID.
          *
          */
         private static final long serialVersionUID = -4567384444408505866L;
@@ -549,7 +551,7 @@ public class JdbcConnectionEntity
                 if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Duplicate call to open");
-                    throw new RuntimeException(
+                    throw new JdbcConnectionException(
                         "Database connection already open"
                         );
                     }
@@ -570,7 +572,7 @@ public class JdbcConnectionEntity
                 if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Out of sequence call to close");
-                    throw new RuntimeException(
+                    throw new JdbcConnectionException(
                         "Database connection already closed"
                         );
                     }
@@ -602,6 +604,7 @@ public class JdbcConnectionEntity
 
     @Override
     public DatabaseMetaData metadata()
+    throws MetadataException
         {
         log.debug("metadata()");
         final Connection connection = open();
@@ -623,6 +626,7 @@ public class JdbcConnectionEntity
 
     @Override
     public String catalog()
+    throws MetadataException
         {
         final Connection connection = open();
         if (connection != null)
@@ -643,6 +647,7 @@ public class JdbcConnectionEntity
 
     @Override
     public Iterable<String> catalogs()
+    throws MetadataException
         {
         final List<String> catalogs = new ArrayList<String>();
         try {
@@ -775,9 +780,16 @@ public class JdbcConnectionEntity
         {
         if (this.type == null)
             {
-            this.type = JdbcProductType.match(
-                this.metadata()
-                );
+            try {
+                this.type = JdbcProductType.match(
+                    this.metadata()
+                    );
+                }
+            catch (MetadataException ouch)
+                {
+                log.error("Error loading JDBC metadata");
+                this.type = JdbcProductType.UNKNOWN;
+                }
             }
         return this.type;
         }

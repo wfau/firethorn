@@ -18,15 +18,14 @@
 package uk.ac.roe.wfau.firethorn.exception;
 
 /**
- *
+ * Firethorn base class for a <code>RuntimeException<code>.
  *
  */
 public abstract class FirethornUncheckedException
     extends RuntimeException
     {
-
     /**
-     * Default serial version UID.
+     * Default serialzable version UID.
      *
      */
     private static final long serialVersionUID = 1L;

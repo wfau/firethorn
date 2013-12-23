@@ -15,27 +15,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.exception;
+package uk.ac.roe.wfau.firethorn.entity.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
- * Firethorn base class for an <code>Exception<code>.
+ * Base class for service errors.
+ * This should gradually be replaced with more specific and descriptive errors.
  *
  */
-public abstract class FirethornCheckedException
-    extends Exception
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+public class EntityServiceException
+    extends FirethornUncheckedException
     {
-
     /**
-     * Default serial version UID.
+     * Serialzable version UID.
      *
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3260535328135842568L;
 
     /**
      * Public constructor.
      *
      */
-    public FirethornCheckedException()
+    public EntityServiceException()
         {
         super();
         }
@@ -44,7 +50,7 @@ public abstract class FirethornCheckedException
      * Public constructor.
      *
      */
-    public FirethornCheckedException(final String message)
+    public EntityServiceException(String message)
         {
         super(
             message
@@ -55,7 +61,7 @@ public abstract class FirethornCheckedException
      * Public constructor.
      *
      */
-    public FirethornCheckedException(final Throwable cause)
+    public EntityServiceException(Throwable cause)
         {
         super(
             cause
@@ -66,7 +72,7 @@ public abstract class FirethornCheckedException
      * Public constructor.
      *
      */
-    public FirethornCheckedException(final String message, final Throwable cause)
+    public EntityServiceException(String message, Throwable cause)
         {
         super(
             message,

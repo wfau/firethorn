@@ -31,12 +31,12 @@ import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 public class EntityNotFoundException
 extends FirethornCheckedException
     {
-
     /**
-     *
+     * Serialzable version UID.
      *
      */
     private static final long serialVersionUID = 2424668742190703687L;
+
     /**
      * Default message for simple constructor.
      *

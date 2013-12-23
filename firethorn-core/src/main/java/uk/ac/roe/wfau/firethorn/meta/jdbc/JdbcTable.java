@@ -228,8 +228,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * Flag to indicate that the physical table exists.
      *
-     */
     public boolean exists();
+     */
 
     /**
      * Enum for the JDBC table types.
@@ -303,6 +303,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public interface JdbcMetadata {
+
+            /**
+             * The table row count.
+             * 
+             */
+            public Long count();
 
             /**
              * Get the JDBC table type.

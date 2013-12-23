@@ -52,6 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler.Update;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -61,6 +62,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
  *
@@ -122,10 +124,10 @@ implements JdbcTable
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcTableEntity";
 
     /**
-     * Default count value.
+     * Empty count value.
      * 
      */
-    public static final Long DEFAULT_COUNT_VALUE = new Long(0);
+    public static final Long EMPTY_COUNT_VALUE = new Long(0L);
     
     /**
      * Hibernate column mapping.
@@ -486,7 +488,7 @@ implements JdbcTable
         this.schema = schema;
 
         this.jdbctype   = type;
-        this.jdbccount  = DEFAULT_COUNT_VALUE;
+        this.jdbccount  = EMPTY_COUNT_VALUE;
         this.jdbcstatus = JdbcStatus.CREATED;
         this.adqlstatus = AdqlTable.AdqlStatus.CREATED;
 
@@ -777,7 +779,7 @@ implements JdbcTable
             return this.jdbccount;
             }
         else {
-            return DEFAULT_COUNT_VALUE;
+            return EMPTY_COUNT_VALUE;
             }
         }
     protected void jdbccount(final Long count)
@@ -790,11 +792,14 @@ implements JdbcTable
         factories().jdbc().tables().driver().delete(
             JdbcTableEntity.this
             );
+        adqlstatus(
+            AdqlStatus.DELETED
+            );
         jdbcstatus(
             JdbcStatus.DELETED
             );
-        adqlstatus(
-            AdqlStatus.DELETED
+        jdbccount(
+            EMPTY_COUNT_VALUE
             );
         }
 
@@ -803,11 +808,14 @@ implements JdbcTable
         factories().jdbc().tables().driver().drop(
             JdbcTableEntity.this
             );
+        adqlstatus(
+            AdqlStatus.DELETED
+            );
         jdbcstatus(
             JdbcStatus.DROPPED
             );
-        adqlstatus(
-            AdqlStatus.DELETED
+        jdbccount(
+            EMPTY_COUNT_VALUE
             );
         }
     
@@ -821,6 +829,12 @@ implements JdbcTable
                 {
                 return new JdbcMetadata()
                     {
+                    @Override
+                    public Long count()
+                        {
+                        return jdbccount();
+                        }
+
                     @Override
                     public JdbcType type()
                         {
@@ -1270,14 +1284,22 @@ implements JdbcTable
                     }
                 catch (final SQLException ouch)
                     {
-                    log.error("Exception reading JDBC table metadata [{}]", ouch.getMessage());
+                    log.warn("Exception reading JDBC table metadata [{}]", ouch.getMessage());
                     throw resource().connection().translator().translate(
-                        "Reading JDBC table metadata",
+                        "Exception reading JDBC table metadata",
                         null,
                         ouch
                         );
                     }
                 }
+            }
+        catch (final MetadataException ouch)
+            {
+            log.warn("Exception while reading JdbcSchema metadata [{}]", ouch.getMessage());
+            throw new EntityServiceException(
+                "Exception while reading JdbcSchema metadata",
+                ouch
+                );
             }
         finally {
             resource().connection().close();
@@ -1310,9 +1332,11 @@ implements JdbcTable
         return this.query;
         }
 
+    /*
     @Override
     public boolean exists()
         {
         return true ;
         }
+     */
     }

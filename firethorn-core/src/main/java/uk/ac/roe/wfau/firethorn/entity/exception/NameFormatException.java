@@ -20,27 +20,25 @@ package uk.ac.roe.wfau.firethorn.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
-
 /**
- *
+ * Exception to indicate a syntax error in an Entity name.
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class NameFormatException
-extends FirethornUncheckedException
+extends InputFormatException
     {
-
     /**
-     *
+     * Serialzable version UID.
      *
      */
     private static final long serialVersionUID = -5574299798502620244L;
+
     /**
      * Default message for simple constructor.
      *
      */
-    public static final String DEFAULT_MESSAGE = "Invalid name [:name:]" ;
+    public static final String DEFAULT_MESSAGE = "Name syntax error [:name:]" ;
 
     /**
      * Create a default message.
@@ -61,8 +59,7 @@ extends FirethornUncheckedException
             name,
             message(
                 name
-                ),
-            null
+                )
             );
         }
 
@@ -72,10 +69,9 @@ extends FirethornUncheckedException
      */
     public NameFormatException(final String name, final String message)
         {
-        this(
+        super(
             name,
-            message,
-            null
+            message
             );
         }
 
@@ -101,17 +97,10 @@ extends FirethornUncheckedException
     public NameFormatException(final String name, final String message, final Throwable cause)
         {
         super(
+            name,
             message,
             cause
             );
-        this.name = name ;
-        }
-
-    private final String name;
-
-    public String name()
-        {
-        return this.name;
         }
     }
 

@@ -18,59 +18,27 @@
 package uk.ac.roe.wfau.firethorn.exception;
 
 /**
- * Firethorn base class for an <code>Exception<code>.
+ *
  *
  */
-public abstract class FirethornCheckedException
-    extends Exception
+public class JdbcConnectionException
+    extends FirethornUncheckedException
     {
-
     /**
-     * Default serial version UID.
+     * Serialzable version UID.
      *
      */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Public constructor.
-     *
-     */
-    public FirethornCheckedException()
-        {
-        super();
-        }
+    private static final long serialVersionUID = -2552675907821442737L;
 
     /**
      * Public constructor.
      *
      */
-    public FirethornCheckedException(final String message)
+
+    public JdbcConnectionException(String message)
         {
         super(
             message
-            );
-        }
-
-    /**
-     * Public constructor.
-     *
-     */
-    public FirethornCheckedException(final Throwable cause)
-        {
-        super(
-            cause
-            );
-        }
-
-    /**
-     * Public constructor.
-     *
-     */
-    public FirethornCheckedException(final String message, final Throwable cause)
-        {
-        super(
-            message,
-            cause
             );
         }
     }
