@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler.Update;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -183,10 +182,10 @@ public class JdbcTableController
         log.debug(" jdbcstatus [{}]", jdbcstatus);
         log.debug(" adqlstatus [{}]", adqlstatus);
 
-        factories().spring().updator().update(
-            new Update()
+        factories().spring().transactor().update(
+            new Runnable()
                 {
-                public void update()
+                public void run()
                     {
                     if (null != jdbcstatus)
                         {

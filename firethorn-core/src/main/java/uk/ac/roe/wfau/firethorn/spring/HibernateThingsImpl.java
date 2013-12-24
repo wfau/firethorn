@@ -51,7 +51,9 @@ public class HibernateThingsImpl
     @Override
     public DataAccessException convert(final HibernateException ouch)
         {
-        log.error("Hibernate excepion [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+        log.debug("convert(HibernateException)");
+        log.debug("Hibernate excepion [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+        log.debug("  excepion ", ouch);
         throw ouch ;
         }
 
@@ -64,9 +66,16 @@ public class HibernateThingsImpl
     @Override
     public Session session()
         {
-        return this.factory.getCurrentSession();
+        try {
+            return this.factory.getCurrentSession();
+            }
+        catch (HibernateException ouch)
+            {
+            log.debug("Exception reading current session [{}]", ouch.getMessage());
+            return null ;
+            }
         }
-
+    
     @Override
     public Query query(final String name)
         {
@@ -323,4 +332,44 @@ public class HibernateThingsImpl
                 );
             }
         }
+
+    /*
+     * 
+    @Override
+    public void execute(final Runnable runnable)
+        {
+        log.debug("execute(Runnable)");
+
+        Session session = session();
+        log.debug("  session [{}]", session);
+        
+        boolean created = false ;
+        try {
+            if (session == null)
+                {
+                log.debug("Null session, creating new");
+                session = factory.openSession();
+                created = true ;
+                log.debug("  session [{}]", session);
+                }
+            else {
+                log.debug("Using existing session");
+                }
+
+            log.debug("  current [{}]", session());
+            runnable.run();
+
+            }
+        finally {
+            log.debug("finally ...");
+            if ((created) && (session != null))
+                {
+                log.debug("Closing created session");
+                log.debug("  session [{}]", session);
+                session.close();
+                }
+            }
+        }
+     * 
+     */
     }

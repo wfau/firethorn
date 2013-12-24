@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -39,23 +40,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler;
-import uk.ac.roe.wfau.firethorn.entity.Entity.UpdateHandler.Update;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
@@ -99,7 +97,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcTable-cleaner-pending-parent",
+            name  = "JdbcTable-pending-parent.created",
             query = " FROM" + 
                     "    JdbcTableEntity" + 
                     " WHERE" + 
@@ -139,19 +137,29 @@ implements JdbcTable
     protected static final String ADQL_STATUS_COL   = "adqlstatus" ;
     protected static final String DB_ADQL_QUERY_COL = "adqlquery"  ;
 
+    /*
     @Component
-    public static class Worker
+    public static class BackgroundWorker
+    extends AbstractComponent
     	{
-        protected static final int INTERVAL = 30 * 60 * 1000 ;
+        protected static final int SECOND    = 1000 ;
+        protected static final int MINUITE   = 60 * SECOND ;
+        protected static final int FIVE_MINUITE =  5 * MINUITE ;
+        protected static final int HALF_HOUR    = 30 * MINUITE ;
         
-    	@Scheduled(fixedDelay=INTERVAL)
-    	public void something() {
-    	    log.debug("Start");
 
-    	    log.debug("Done");
+        @Scheduled(fixedDelay=FIVE_MINUITE)
+    	public void something() {
+    	    log.debug("Start something()");
+
+    	    JdbcResource resource = factories().jdbc().resources().userdata();
+    	    log.debug("  space [{}]", resource.ident());
+
+    	    log.debug("Done something()");
     		}	
     	}
-
+     */
+    
     /**
      * Alias factory implementation.
      * @todo Move to a separate package.
@@ -195,29 +203,11 @@ implements JdbcTable
     /**
      * JDBC table cleaner implementation.
      * 
-     */
     @Component
     public static class Cleaner
     extends AbstractEntityFactory<JdbcTable>
     implements JdbcTable.Cleaner
         {
-        /**
-         * Get the next set of tables to delete. 
-         *
-         */
-        @SelectMethod
-        public Iterable<JdbcTable> pending(final JdbcSchema parent)
-            {
-            return super.iterable(
-                10,
-                super.query(
-                    "JdbcTableCleaner-pending-parent"
-                    ).setEntity(
-                        "parent",
-                        parent
-                        )
-                );
-            }
 
         @Override
         public Class<?> etype()
@@ -241,6 +231,7 @@ implements JdbcTable
             return this.links;
             }
         }    
+     */
     
     /**
      * Table factory implementation.
@@ -443,6 +434,25 @@ implements JdbcTable
         public JdbcTable.JdbcDriver driver()
             {
             return this.jdbc;
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date)
+            {
+            log.debug("pending(JdbcSchema, DateTime)");
+            return super.iterable(
+                10,
+                super.query(
+                    "JdbcTable-pending-parent.created"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        ).setDate(
+                            "date",
+                            date.toDate()
+                            )
+                );
             }
         }
 

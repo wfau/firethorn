@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -99,17 +101,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * JDBC table cleaner interface.
      * 
-     */
     public static interface Cleaner
         {
 
-        /**
-         * Get the next set of tables to delete. 
-         *
-         */
-        public Iterable<JdbcTable> pending(final JdbcSchema parent);
-
         }    
+     */
 
     /**
      * Physical JDBC factory interface.
@@ -184,6 +180,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
          */
         public JdbcTable.JdbcDriver driver();
 
+        /**
+         * Get the next set of tables to process. 
+         *
+         */
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date);
+        
         }
 
     @Override
@@ -224,12 +226,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
     @Override
     public Columns columns();
-
-    /**
-     * Flag to indicate that the physical table exists.
-     *
-    public boolean exists();
-     */
 
     /**
      * Enum for the JDBC table types.

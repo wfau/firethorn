@@ -19,7 +19,9 @@ package uk.ac.roe.wfau.firethorn.entity;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+import uk.ac.roe.wfau.firethorn.spring.SpringThings;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,14 +31,22 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-public class UpdateHandler
-    implements Entity.UpdateHandler
+public class TransactionWrapper
+    implements SpringThings.TransactionWrapper
     {
     @Override
-    @UpdateMethod
-    public void update(Update updator)
+    @SelectMethod
+    public void select(Runnable runnable)
         {
-        log.debug("update(Updator)");
-        updator.update();
+        log.debug("select(Runnable)");
+        runnable.run();
+        }
+
+    @Override
+    @UpdateMethod
+    public void update(Runnable runnable)
+        {
+        log.debug("update(Runnable)");
+        runnable.run();
         }
     }

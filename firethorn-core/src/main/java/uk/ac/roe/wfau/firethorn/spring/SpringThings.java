@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.spring;
 
 import org.springframework.context.ApplicationContext;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * A global instance to handle Spring related things.
@@ -28,15 +27,34 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 public interface SpringThings
     {
     /**
+     * Public interface for a transaction wrapper.
+     *
+     */
+    public interface TransactionWrapper
+        {
+        /**
+         * Perform an action in a read-only transaction.
+         *
+         */
+        public void select(Runnable runnable);
+    
+        /**
+         * Perform an action in a read-write transaction.
+         *
+         */
+        public void update(Runnable runnable);
+        
+        }
+    /**
+     * Our transaction wrapper.
+     * 
+     */
+    public SpringThings.TransactionWrapper transactor();
+
+    /**
      * The current ApplicationContext.
      *
      */
     public ApplicationContext context();
 
-    /**
-     * Transactional update handler.
-     * 
-     */
-    public Entity.UpdateHandler updator();
-    
     }

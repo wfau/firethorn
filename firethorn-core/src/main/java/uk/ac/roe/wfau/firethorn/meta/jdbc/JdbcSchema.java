@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import org.joda.time.DateTime;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -193,6 +195,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public void scan();
+
+        /**
+         * Get the next set of tables to process. 
+         *
+         */
+        public Iterable<JdbcTable> pending(final DateTime date);
 
         }
     @Override

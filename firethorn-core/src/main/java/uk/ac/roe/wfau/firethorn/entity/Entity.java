@@ -88,29 +88,6 @@ public interface Entity
         }
 
     /**
-     * Common interface for an update handler.
-     *
-     */
-    public interface UpdateHandler
-        {
-        /**
-         * Public interface for an update action.
-         *
-         */
-        public static interface Update
-            {
-            public void update();
-            }
-
-        /**
-         * Perform an update in a transaction.
-         *
-         */
-        public void update(Update updator);
-
-        }
-    
-    /**
      * Common interface for an Entity factory.
      * @todo Separate Entity Resolver and Factory interfaces.
      *

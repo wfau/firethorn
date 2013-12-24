@@ -36,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -705,6 +707,15 @@ public class JdbcSchemaEntity
                 // TODO Add parent constraint.
                 return factories().jdbc().tables().select(
                     ident
+                    );
+                }
+
+            @Override
+            public Iterable<JdbcTable> pending(final DateTime date)
+                {
+                return factories().jdbc().tables().pending(
+                    JdbcSchemaEntity.this,
+                    date
                     );
                 }
             };
