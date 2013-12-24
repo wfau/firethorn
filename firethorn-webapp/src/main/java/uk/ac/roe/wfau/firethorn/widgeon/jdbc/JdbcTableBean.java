@@ -83,7 +83,7 @@ extends BaseTableBean<JdbcTable>
         public interface JdbcMetadataBean
             {
             public Long getCount();
-            public JdbcTable.JdbcType getType();            
+            public JdbcTable.JdbcType getType();
             public JdbcTable.JdbcStatus getStatus();
             }
         public JdbcMetadataBean getJdbc();

@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -136,7 +135,7 @@ public class AdqlQueryVOTableController
         public String fetch()
         throws SQLException
             {
-            return StringEscapeUtils.escapeXml(            
+            return StringEscapeUtils.escapeXml(
                 resultset.getString(
                     colnum
                     )
@@ -162,7 +161,7 @@ public class AdqlQueryVOTableController
         public String fetch()
         throws SQLException
             {
-            DateTime value = new DateTime(
+            final DateTime value = new DateTime(
                 resultset.getDate(
                     colnum
                     )
@@ -170,7 +169,7 @@ public class AdqlQueryVOTableController
             return value.toString();
             }
         }
-    
+
     @Override
     public Path path()
         {
@@ -277,7 +276,7 @@ public class AdqlQueryVOTableController
             );
         }
 
-    
+
     /**
      * Generate a VOTable from query results.
      *
@@ -286,7 +285,7 @@ public class AdqlQueryVOTableController
         final PrintWriter writer,
         final AdqlQuery   query
         ){
-    	
+
         final AdqlTable table= query.results().adql();
         final JdbcTable jdbc = query.results().jdbc();
 
@@ -358,12 +357,12 @@ public class AdqlQueryVOTableController
                     writer.append("</DESCRIPTION>");
                     }
 
-                List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
-                
+                final List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
+
                 for (final AdqlColumn column : table.columns().select())
                     {
                     cols.add(column);
-                    
+
                     writer.append("<FIELD ID='column.");
                     writer.append(column.ident().toString());
                     writer.append("'");
@@ -486,7 +485,7 @@ public class AdqlQueryVOTableController
                         final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
                         for (int colnum = 0 ; colnum < colcount ; colnum++)
                             {
-                            AdqlColumn adql = cols.get(colnum);
+                            final AdqlColumn adql = cols.get(colnum);
                             switch(adql.meta().adql().type())
                                 {
                                 case CHAR :
@@ -496,7 +495,7 @@ public class AdqlQueryVOTableController
                                             results,
                                             colmeta,
                                             colnum
-                                            ) 
+                                            )
                                         );
                                     break ;
 
@@ -506,16 +505,16 @@ public class AdqlQueryVOTableController
                                             results,
                                             colmeta,
                                             colnum
-                                            ) 
+                                            )
                                         );
                                     break ;
                                 }
                             }
-                        
+
                         while (results.next())
                             {
                             writer.append("<TR>");
-                            for (FieldHandler handler : handlers)
+                            for (final FieldHandler handler : handlers)
                                 {
                                 handler.write(
                                     writer
@@ -551,11 +550,11 @@ public class AdqlQueryVOTableController
                 writer.append("</TABLE>");
             writer.append("</RESOURCE>");
         writer.append("</vot:VOTABLE>");
-    	
-  
+
+
     }
-    
-    
+
+
     /**
      * VOTable GET request.
      *
@@ -574,19 +573,19 @@ public class AdqlQueryVOTableController
         response.setCharacterEncoding(
             "UTF-8"
             );
-        
-		
+
+
 
         final PrintWriter writer = response.getWriter();
-       
+
 
         final AdqlQuery query = factories().adql().queries().select(
             factories().adql().queries().idents().ident(
                 ident
                 )
-            );		
-        
+            );
+
 		generateVotable(writer,query);
-        
+
         }
     }

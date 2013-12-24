@@ -39,9 +39,9 @@ public class UserDataCleaner
 extends AbstractComponent
     {
     private static final Minutes lifetime = Minutes.minutes(5) ;
-    
+
     private long count = 0L ;
-    
+
     @Scheduled(fixedDelay=(60 * 1000))
     public void something()
         {
@@ -56,7 +56,7 @@ extends AbstractComponent
             log.debug("skipping");
             return ;
             }
-        
+
         factories().spring().transactor().update(
             new Runnable()
                 {
@@ -70,11 +70,11 @@ extends AbstractComponent
                         log.debug("  date [{}]", date);
                         final JdbcResource resource = factories().jdbc().resources().userdata();
                         log.debug("  resource [{}][{}]", resource.ident(), resource.name());
-            
-                        for (JdbcSchema schema : resource.schemas().select())
+
+                        for (final JdbcSchema schema : resource.schemas().select())
                             {
                             log.debug("  schema [{}][{}]", schema.ident(), schema.name());
-                            for (JdbcTable table : schema.tables().pending(date))
+                            for (final JdbcTable table : schema.tables().pending(date))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
                                 //table.drop();
@@ -90,5 +90,5 @@ extends AbstractComponent
                 }
             );
         log.debug("");
-        }   
+        }
     }

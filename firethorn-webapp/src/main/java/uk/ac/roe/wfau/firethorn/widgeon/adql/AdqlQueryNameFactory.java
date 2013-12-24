@@ -32,7 +32,7 @@ extends BaseNameFactory<AdqlQuery>
 implements AdqlQuery.NameFactory
     {
     @Override
-    public String name(String name)
+    public String name(final String name)
         {
     	if (name != null)
     		{

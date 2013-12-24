@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
@@ -82,5 +81,5 @@ extends NamedEntityBeanImpl<TableType>
     public interface MetadataBean
         {
         }
-    
+
     }
