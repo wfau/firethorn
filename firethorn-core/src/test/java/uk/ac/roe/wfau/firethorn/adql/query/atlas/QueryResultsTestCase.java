@@ -19,15 +19,9 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.springframework.transaction.annotation.Transactional;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -50,26 +44,26 @@ public class QueryResultsTestCase
         final AdqlQuery query = validate(
             Level.LEGACY,
             State.VALID,
-        
-            " SELECT" + 
-            "    ra," + 
-            "    dec" + 
-            " FROM" + 
-            "    twomass_psc" + 
-            " WHERE" + 
-            "    ra  BETWEEN '56.0' AND '57.9'" + 
-            " AND" + 
+
+            " SELECT" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    twomass_psc" +
+            " WHERE" +
+            "    ra  BETWEEN '56.0' AND '57.9'" +
+            " AND" +
             "    dec BETWEEN '24.0' AND '24.2'",
-            
-            " SELECT" + 
-            "    twomass.dbo.twomass_psc.ra  AS ra," + 
-            "    twomass.dbo.twomass_psc.dec AS dec" + 
-            " FROM" + 
-            "    twomass.dbo.twomass_psc" + 
-            " WHERE" + 
-            "    twomass.dbo.twomass_psc.ra BETWEEN '56.0' AND '57.9'" + 
-            " AND" + 
-            "    twomass.dbo.twomass_psc.dec BETWEEN '24.0' and '24.2'", 
+
+            " SELECT" +
+            "    twomass.dbo.twomass_psc.ra  AS ra," +
+            "    twomass.dbo.twomass_psc.dec AS dec" +
+            " FROM" +
+            "    twomass.dbo.twomass_psc" +
+            " WHERE" +
+            "    twomass.dbo.twomass_psc.ra BETWEEN '56.0' AND '57.9'" +
+            " AND" +
+            "    twomass.dbo.twomass_psc.dec BETWEEN '24.0' and '24.2'",
 
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
@@ -79,29 +73,29 @@ public class QueryResultsTestCase
 
         assertEquals(
             AdqlTable.AdqlStatus.CREATED,
-            query.results().adql().meta().adql().status() 
+            query.results().adql().meta().adql().status()
             );
 
         assertEquals(
             AdqlTable.AdqlStatus.CREATED,
-            query.results().jdbc().meta().adql().status() 
+            query.results().jdbc().meta().adql().status()
             );
         assertEquals(
             JdbcTable.JdbcStatus.CREATED,
-            query.results().jdbc().meta().jdbc().status() 
+            query.results().jdbc().meta().jdbc().status()
             );
 
         //
-        //  
+        //
 /*
  * This hangs in what looks like a database lock conflict.
- * 
+ *
         factories().queries().executor().update(
             query.ident(),
             Job.Status.RUNNING,
             10
             );
- * 
+ *
  */
         }
     }

@@ -50,7 +50,7 @@ public class EntityServiceException
      * Public constructor.
      *
      */
-    public EntityServiceException(String message)
+    public EntityServiceException(final String message)
         {
         super(
             message
@@ -61,7 +61,7 @@ public class EntityServiceException
      * Public constructor.
      *
      */
-    public EntityServiceException(Throwable cause)
+    public EntityServiceException(final Throwable cause)
         {
         super(
             cause
@@ -72,7 +72,7 @@ public class EntityServiceException
      * Public constructor.
      *
      */
-    public EntityServiceException(String message, Throwable cause)
+    public EntityServiceException(final String message, final Throwable cause)
         {
         super(
             message,

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
     )
 /**
  * Transactional annotation for delete operation.
- * 
+ *
  */
 public @interface DeleteMethod
     {

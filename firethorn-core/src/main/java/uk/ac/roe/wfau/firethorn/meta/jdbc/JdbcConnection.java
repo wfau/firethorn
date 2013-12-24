@@ -87,7 +87,7 @@ public interface JdbcConnection
 
     /**
      * Get the database metadata.
-     * @throws MetadataException 
+     * @throws MetadataException
      *
      */
     public DatabaseMetaData metadata()
@@ -101,7 +101,7 @@ public interface JdbcConnection
 
     /**
      * Get a list of catalog names.
-     * @throws MetadataException 
+     * @throws MetadataException
      *
      */
     public Iterable<String> catalogs()
@@ -109,7 +109,7 @@ public interface JdbcConnection
 
     /**
      * Get the catalog name of the current database Connection.
-     * @throws MetadataException 
+     * @throws MetadataException
      *
      */
     public String catalog()

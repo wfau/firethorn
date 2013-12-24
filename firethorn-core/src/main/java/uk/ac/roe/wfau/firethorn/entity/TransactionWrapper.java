@@ -36,7 +36,7 @@ public class TransactionWrapper
     {
     @Override
     @SelectMethod
-    public void select(Runnable runnable)
+    public void select(final Runnable runnable)
         {
         log.debug("select(Runnable)");
         runnable.run();
@@ -44,7 +44,7 @@ public class TransactionWrapper
 
     @Override
     @UpdateMethod
-    public void update(Runnable runnable)
+    public void update(final Runnable runnable)
         {
         log.debug("update(Runnable)");
         runnable.run();

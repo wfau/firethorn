@@ -17,27 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSetMetaData;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -62,7 +49,7 @@ public class ColumnTypeTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    uClass," +
             "    uClass + cuEventID,"  +
@@ -72,13 +59,13 @@ public class ColumnTypeTestCase
             " FROM" +
             "    atlasSource",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass AS uclass," + 
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass + {ATLAS_VERSION}.dbo.atlassource.cueventid  AS SUM," + 
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass - {ATLAS_VERSION}.dbo.atlassource.framesetid AS SUB," + 
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass * {ATLAS_VERSION}.dbo.atlassource.umgpnt     AS MUL," + 
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass / {ATLAS_VERSION}.dbo.atlassource.lambda     AS DIV" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass AS uclass," +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass + {ATLAS_VERSION}.dbo.atlassource.cueventid  AS SUM," +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass - {ATLAS_VERSION}.dbo.atlassource.framesetid AS SUB," +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass * {ATLAS_VERSION}.dbo.atlassource.umgpnt     AS MUL," +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass / {ATLAS_VERSION}.dbo.atlassource.lambda     AS DIV" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -93,7 +80,7 @@ public class ColumnTypeTestCase
 
     /*
      * Testable fields in ArchiveCurationHistory
-     * 
+     *
      */
-    
+
     }

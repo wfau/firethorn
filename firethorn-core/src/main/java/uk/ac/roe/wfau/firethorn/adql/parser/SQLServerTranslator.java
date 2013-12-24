@@ -437,14 +437,14 @@ public class SQLServerTranslator
             return all.toADQL();
             }
         }
-    
+
     /**
      * Replacement for the PostgreSQLTranslator method.
      *
      *
      */
     @Override
-    public String translate(MathFunction funct) throws TranslationException
+    public String translate(final MathFunction funct) throws TranslationException
         {
         switch(funct.getType())
             {
@@ -466,7 +466,7 @@ public class SQLServerTranslator
             // http://technet.microsoft.com/en-us/library/ms175003.aspx
             case TRUNCATE:
                 return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
-            
+
             default:
                 return getDefaultADQLFunction(
                     funct

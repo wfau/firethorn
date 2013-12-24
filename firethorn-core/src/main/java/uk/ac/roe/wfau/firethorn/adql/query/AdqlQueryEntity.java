@@ -1220,7 +1220,7 @@ implements AdqlQuery, AdqlParserQuery
         log.debug("  Type [{}]", field.type());
         //
         // Clean the name.
-        String name = field.name().trim().toLowerCase();
+        final String name = field.name().trim().toLowerCase();
         //
         // Check for a duplicate.
         if (fields.containsKey(name))

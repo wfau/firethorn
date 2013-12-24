@@ -33,24 +33,24 @@ public class IllegalStateTransition
      */
     private static final long serialVersionUID = 5967471376784982558L;
 
-    private Enum<?> prev ;
+    private final Enum<?> prev ;
     public Enum<?> prev()
         {
         return this.prev;
         }
 
-    private Enum<?> next ;
+    private final Enum<?> next ;
     public Enum<?> next()
         {
         return this.next;
         }
 
-    private Entity entity;
+    private final Entity entity;
     public Entity entity()
         {
         return this.entity;
         }
-    
+
     public IllegalStateTransition(final Entity entity, final Enum<?> prev, final Enum<?> next)
         {
         this.entity = entity;

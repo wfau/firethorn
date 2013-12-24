@@ -69,13 +69,13 @@ public class HibernateThingsImpl
         try {
             return this.factory.getCurrentSession();
             }
-        catch (HibernateException ouch)
+        catch (final HibernateException ouch)
             {
             log.debug("Exception reading current session [{}]", ouch.getMessage());
             return null ;
             }
         }
-    
+
     @Override
     public Query query(final String name)
         {

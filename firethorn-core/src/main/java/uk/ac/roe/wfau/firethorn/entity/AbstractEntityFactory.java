@@ -263,7 +263,7 @@ implements Entity.EntityFactory<EntityType>
                 }
             };
         }
-    
+
     /**
      * Select a List of objects.
      *
@@ -323,7 +323,7 @@ implements Entity.EntityFactory<EntityType>
                 );
             }
         }
-    
+
     /**
      * Create a text search string.
      * TODO .. lots !!

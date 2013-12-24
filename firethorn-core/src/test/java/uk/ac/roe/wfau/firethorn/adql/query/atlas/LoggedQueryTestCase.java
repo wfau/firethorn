@@ -21,13 +21,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**

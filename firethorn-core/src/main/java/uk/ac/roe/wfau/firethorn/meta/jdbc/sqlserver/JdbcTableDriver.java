@@ -38,55 +38,55 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class JdbcTableDriver
     implements JdbcTable.JdbcDriver
     {
-    
+
     /**
      * SQL statement to TRUNCATE all data in a table.
-     * 
+     *
      */
-    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {name}" ; 
+    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {name}" ;
 
     /**
      * SQL statement to DELETE all data from a table.
-     * 
+     *
      */
-    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {name}" ; 
+    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {name}" ;
 
     /**
      * SQL statement to DROP a table.
-     * 
+     *
      */
-    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {name}" ; 
+    protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {name}" ;
 
     /**
      * SQL statement to CREATE a schema.
-     * 
+     *
      */
-    protected static final String CREATE_SCHEMA_STATEMENT = "CREATE SCHEMA {name}" ; 
+    protected static final String CREATE_SCHEMA_STATEMENT = "CREATE SCHEMA {name}" ;
 
     /**
      * SQL statement to DROP a schema.
-     * 
+     *
      */
-    protected static final String DROP_SCHEMA_STATEMENT = "DROP SCHEMA {name}" ; 
+    protected static final String DROP_SCHEMA_STATEMENT = "DROP SCHEMA {name}" ;
 
     @Override
     @UpdateMethod
-    public void delete(JdbcTable table)
+    public void delete(final JdbcTable table)
         {
         log.debug("Delete JdbcTable [{}]", table.name());
-        JdbcConnection connection = table.resource().connection();
+        final JdbcConnection connection = table.resource().connection();
         final String statement = DELETE_DATA_STATEMENT.replace(
             "{name}",
             table.namebuilder().toString()
             );
         try {
             log.debug("Executing SQL [{}]", statement);
-            int result = connection.open().createStatement().executeUpdate(
+            final int result = connection.open().createStatement().executeUpdate(
                 statement
                 );
             log.debug("result [{}]", result);
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.warn("SQLException while attempting to delete table data [{}]", ouch.getMessage());
             log.warn("SQL statement [{}]", statement);
@@ -98,22 +98,22 @@ public class JdbcTableDriver
 
     @Override
     @DeleteMethod
-    public void drop(JdbcTable table)
+    public void drop(final JdbcTable table)
         {
         log.debug("Drop JdbcTable [{}]", table.name());
-        JdbcConnection connection = table.resource().connection();
+        final JdbcConnection connection = table.resource().connection();
         final String statement = DROP_TABLE_STATEMENT.replace(
             "{name}",
             table.namebuilder().toString()
             );
         try {
             log.debug("Executing SQL [{}]", statement);
-            int result = connection.open().createStatement().executeUpdate(
+            final int result = connection.open().createStatement().executeUpdate(
                 statement
                 );
             log.debug("result [{}]", result);
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
             log.warn("SQL statement [{}]", statement);
@@ -125,7 +125,7 @@ public class JdbcTableDriver
 
     @Override
     @CreateMethod
-    public void create(JdbcTable table)
+    public void create(final JdbcTable table)
         {
         log.debug("Create JdbcTable [{}]", table.name());
         }

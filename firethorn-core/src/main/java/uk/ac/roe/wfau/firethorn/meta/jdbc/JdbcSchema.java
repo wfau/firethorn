@@ -197,7 +197,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         public void scan();
 
         /**
-         * Get the next set of tables to process. 
+         * Get the next set of tables to process.
          *
          */
         public Iterable<JdbcTable> pending(final DateTime date);

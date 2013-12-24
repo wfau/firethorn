@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
     )
 /**
  * Transactional annotation for an atomic select operation.
- * 
+ *
  */
 public @interface SelectAtomicMethod
     {

@@ -110,10 +110,4 @@ public interface HibernateThings
      */
     public Entity first(final Query query);
 
-    /**
-     * Execute a Runnable within a Session.
-     * 
-    public void execute(Runnable runnable);
-     */
-    
     }

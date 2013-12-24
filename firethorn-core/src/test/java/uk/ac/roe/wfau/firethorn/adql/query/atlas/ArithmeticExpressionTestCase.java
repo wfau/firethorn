@@ -37,15 +37,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -60,15 +60,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (geNum + reNum)" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -76,22 +76,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test012S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum AS mysum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -106,15 +106,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (geNum + reNum) AS mysum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -129,15 +129,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 1" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -152,15 +152,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 1 AS mysum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -175,15 +175,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 1.0" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1.0 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -198,15 +198,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 1.0 AS mysum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 1.0 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -221,15 +221,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 0x01" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 0x01 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -244,15 +244,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    geNum + reNum + 0x01 AS mysum" +
             " FROM" +
             "    atlasMergeLog",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum + 0x01 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
@@ -262,22 +262,22 @@ public class ArithmeticExpressionTestCase
         }
 
 // --------------
-    
+
     @Test
     public void test020S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -285,22 +285,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test021S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (extNum + class)" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -315,15 +315,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -338,15 +338,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (extNum + class) AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -361,15 +361,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 1" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -384,15 +384,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 1 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -407,15 +407,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 1.0" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1.0 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -430,15 +430,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 1.0 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 1.0 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -453,15 +453,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 0x01" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 0x01 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -476,15 +476,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    extNum + class + 0x01 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class + 0x01 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -492,24 +492,24 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     // --------------
-    
+
     @Test
     public void test030S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -517,22 +517,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test031S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (aProf2 + aProf3)" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -540,22 +540,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test032S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -570,15 +570,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (aProf2 + aProf3) AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -593,15 +593,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 1" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -616,15 +616,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 1 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -639,15 +639,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 1.0" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1.0 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -662,15 +662,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 1.0 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 1.0 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -685,15 +685,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 0x01" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 0x01 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -708,15 +708,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    aProf2 + aProf3 + 0x01 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 + 0x01 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -724,7 +724,7 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
 // --------------
 
     @Test
@@ -733,15 +733,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -749,22 +749,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test041S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (objID + multiframeID)" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -779,15 +779,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -795,22 +795,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test043S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (objID + multiframeID) AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -825,15 +825,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 1" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -848,15 +848,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 1 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -864,22 +864,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test046S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 1.0" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1.0 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -894,15 +894,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 1.0 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 1.0 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -917,15 +917,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 0x01" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 0x01 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -940,15 +940,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    objID + multiframeID + 0x01 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID + 0x01 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -956,7 +956,7 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
 // --------------
 
     @Test
@@ -965,15 +965,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -988,15 +988,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (isoMag + isoFlux)" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1011,15 +1011,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1034,15 +1034,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1057,15 +1057,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1080,15 +1080,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1.0" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1103,15 +1103,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1.0 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1126,15 +1126,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1.0" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS SUM" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1149,15 +1149,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    isoMag + isoFlux + 1.0 AS mysum" +
             " FROM" +
             "    atlasDetection",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS mysum" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
@@ -1165,24 +1165,24 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
 // --------------
-    
+
     @Test
     public void test060S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS SUM" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1190,22 +1190,22 @@ public class ArithmeticExpressionTestCase
                 }
             );
         }
-    
+
     @Test
     public void test061S()
         {
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (ra + dec)" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS SUM" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1220,15 +1220,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec AS mysum" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS mysum" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1243,15 +1243,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    (ra + dec) AS mysum" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS mysum" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1266,15 +1266,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 1" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1 AS SUM" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1289,15 +1289,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 1 AS mysum" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1 AS mysum" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1312,15 +1312,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 1.0" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1.0 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1.0 AS SUM" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1335,15 +1335,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 1.0 AS mysum" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1.0 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 1.0 AS mysum" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1358,15 +1358,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 0x01" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 0x01 AS SUM" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 0x01 AS SUM" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -1381,15 +1381,15 @@ public class ArithmeticExpressionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra + dec + 0x01 AS mysum" +
             " FROM" +
             "    twomass_psc",
 
-            " SELECT TOP 10" + 
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 0x01 AS mysum" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec + 0x01 AS mysum" +
+            " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {

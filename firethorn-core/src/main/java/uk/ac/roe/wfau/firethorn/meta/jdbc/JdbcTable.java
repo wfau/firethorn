@@ -22,8 +22,6 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
-import lombok.extern.slf4j.Slf4j;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -82,6 +80,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * @deprecated
      *
      */
+    @Deprecated
     public static interface Builder
         {
         /**
@@ -101,33 +100,33 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * Physical JDBC factory interface.
      * @todo Move this up to resource ?
-     * 
+     *
      */
     public static interface JdbcDriver
         {
         /**
          * Create a 'physical' JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource. 
-         * 
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
          */
         public void create(final JdbcTable table);
 
         /**
          * Delete (DELETE) a JDBC data.
-         * *This should only be reachable via a transactional method on our parent resource. 
-         * 
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
          */
         public void delete(final JdbcTable table);
 
         /**
          * Delete (DROP) a JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource. 
-         * 
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
          */
         public void drop(final JdbcTable table);
 
         }
-    
+
     /**
      * Table factory interface.
      *
@@ -167,17 +166,17 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
         /**
          * Our physical JDBC factory.
-         * 
+         *
          */
         public JdbcTable.JdbcDriver driver();
 
         /**
          * Get the next set of tables to process.
-         * This is just for clean up for now ... 
+         * This is just for clean up for now ...
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date);
-        
+
         }
 
     @Override
@@ -266,9 +265,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * Enum for the physical table status.
      * @todo Move up to resource ?
-     * 
+     *
      */
-    @Slf4j
     public static enum JdbcStatus
         {
         CREATED(),
@@ -278,7 +276,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         UNKNOWN();
 
         }
-    
+
     /**
      * JDBC table metadata.
      *
@@ -294,7 +292,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
             /**
              * The table row count.
-             * 
+             *
              */
             public Long count();
 
@@ -306,19 +304,19 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
             /**
              * Set the JDBC table type.
-             * 
+             *
              */
             public void type(final JdbcType type);
 
             /**
              * The JDBC table status.
-             * 
+             *
              */
             public JdbcTable.JdbcStatus status() ;
 
             /**
              * Set the JDBC table status.
-             * 
+             *
              */
             public void status(final JdbcTable.JdbcStatus status) ;
 

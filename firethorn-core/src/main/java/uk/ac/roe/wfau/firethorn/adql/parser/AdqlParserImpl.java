@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import liquibase.exception.DuplicateChangeSetException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,6 @@ import adql.query.operand.NumericConstant;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
-import adql.query.operand.function.DefaultUDF;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
@@ -165,17 +163,17 @@ implements AdqlParser
          * Public constructor.
          *
          */
-        public AdqlQueryFactoryImpl(boolean unknowns)
+        public AdqlQueryFactoryImpl(final boolean unknowns)
             {
             super(unknowns);
             }
-        
+
         /**
          * Create a SelectItem.
          *
          */
         @Override
-        public SelectItem createSelectItem(final ADQLOperand operand, final String alias, ADQLQuery parent)
+        public SelectItem createSelectItem(final ADQLOperand operand, final String alias, final ADQLQuery parent)
         throws Exception
             {
             log.debug("createSelectItem(ADQLOperand, String)");
@@ -275,7 +273,7 @@ implements AdqlParser
                 }
 
             @Override
-            public ADQLOperand getParameter(int index)
+            public ADQLOperand getParameter(final int index)
                 throws ArrayIndexOutOfBoundsException
                 {
                 // TODO Auto-generated method stub
@@ -283,13 +281,13 @@ implements AdqlParser
                 }
 
             @Override
-            public ADQLOperand setParameter(int index, ADQLOperand replacer)
+            public ADQLOperand setParameter(final int index, final ADQLOperand replacer)
                 throws ArrayIndexOutOfBoundsException, NullPointerException, Exception
                 {
                 // TODO Auto-generated method stub
                 return null;
                 }
-            
+
             }
 
         /**
@@ -320,7 +318,7 @@ implements AdqlParser
 
         /**
          * A hexadecimal numeric.
-         * 
+         *
          */
         public static class HexConstant
         extends NumericConstant
@@ -328,13 +326,13 @@ implements AdqlParser
             {
             /**
              * Hexadecimal prefix.
-             * 
+             *
              */
             protected static final String PREFIX = "0x";
 
             /**
              * Create a hex value from a long.
-             * 
+             *
              */
             public HexConstant(final long value)
                 {
@@ -345,7 +343,7 @@ implements AdqlParser
 
             /**
              * Create a hex value from a String.
-             * 
+             *
              */
             public HexConstant(final String value, final boolean check)
             throws NumberFormatException
@@ -358,7 +356,7 @@ implements AdqlParser
 
             /**
              * Copy a hex value.
-             * 
+             *
              */
             public HexConstant(final HexConstant origin)
                 {
@@ -370,7 +368,7 @@ implements AdqlParser
 
             /**
              * Warning - there may be rounding errors.
-             * 
+             *
              */
             @Override
             public final void setValue(final double value)
@@ -408,7 +406,7 @@ implements AdqlParser
 
             /**
              * Warning - there may be rounding errors.
-             * 
+             *
              */
             public double getDoubleValue()
             throws NumberFormatException
@@ -420,14 +418,14 @@ implements AdqlParser
 
             /**
              * Warning - there may be rounding errors.
-             * 
+             *
              */
             public double getDoubleValue(final String value)
             throws NumberFormatException
                 {
                 log.debug("getDoubleValue()");
                 log.debug("  value [{}]", value);
-                String temp = value ; 
+                String temp = value ;
                 if (temp.startsWith(PREFIX))
                     {
                     temp = temp.substring(2);
@@ -447,7 +445,7 @@ implements AdqlParser
                 try {
                     return this.getDoubleValue();
                     }
-                catch(NumberFormatException ouch)
+                catch(final NumberFormatException ouch)
                     {
                     return Double.NaN;
                     }
@@ -694,7 +692,7 @@ implements AdqlParser
         {
         if (level == Level.STRICT)
             {
-            OperationType type = oper.getOperation(); 
+            final OperationType type = oper.getOperation();
             if (type == OperationType.MOD)
                 {
                 throw new AdqlParserException(
@@ -715,7 +713,7 @@ implements AdqlParser
                     "Binary AND operator '&' is not supported in ADQL"
                     );
                 }
-            
+
             else if (type == OperationType.BIT_XOR)
                 {
                 throw new AdqlParserException(
@@ -724,7 +722,7 @@ implements AdqlParser
                 }
             }
         }
-    
+
     /**
      * Process an Operation.
      * @throws AdqlParserException
@@ -797,7 +795,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final SelectAllColumns selectall)
-    throws DuplicateFieldException    
+    throws DuplicateFieldException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, SelectAllColumns)");
         //
@@ -883,11 +881,11 @@ implements AdqlParser
             log.warn("ADQLTable getDBLink() is unexpected class [{}]", table.getDBLink().getClass().getName());
             }
         }
-    
+
     /**
      * Add a SELECT field to a query.
      * @Deprecated - only used by SelectAll
-     * 
+     *
      */
     @Deprecated
     public void additem(final AdqlParserQuery subject,final MySelectField field)
@@ -895,26 +893,26 @@ implements AdqlParser
         {
         subject.add(
             field
-            );        
+            );
         }
 
     /**
      * Add a SELECT item to a query.
-     * TODO Try renaming the item ? 
-     * 
+     * TODO Try renaming the item ?
+     *
      */
     public void additem(final AdqlParserQuery subject,final MySelectItem item)
     throws DuplicateFieldException
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-        boolean ismain = item.item().isMain();
-        
+        final boolean ismain = item.item().isMain();
+
         // check if is main
     		if (item.item().isMain()){
     			subject.add(
     				item
-    				);        
+    				);
     		}
         }
 
@@ -1013,7 +1011,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query)
-    throws DuplicateFieldException    
+    throws DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery)");
         log.debug("  ADQLQuery [{}]", query.getName());
@@ -1054,7 +1052,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final AdqlTable table)
-    throws DuplicateFieldException    
+    throws DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, AdqlTable)");
         log.debug("  AdqlTable [{}]", table.namebuilder());
@@ -1079,7 +1077,7 @@ implements AdqlParser
         );
 
     /**
-     * Local copy of the AdqlQuery interface. 
+     * Local copy of the AdqlQuery interface.
      *
      */
     public static interface MySelectField
@@ -1088,21 +1086,21 @@ implements AdqlParser
         }
 
     /**
-     * Extends the SelectField interface to include a SelectItem. 
+     * Extends the SelectField interface to include a SelectItem.
      *
      */
     public static interface MySelectItem
     extends MySelectField
         {
         public String alias();
-        public void alias(String alias);
+        public void alias(final String alias);
 
         public SelectItem item();
 
         }
 
     /**
-     * Inner class to represent a static SelectField. 
+     * Inner class to represent a static SelectField.
      *
      */
     public static class MySelectFieldImpl
@@ -1157,9 +1155,9 @@ implements AdqlParser
             return null ;
             }
         }
-    
+
     /**
-     * Inner class to wrap a SelectField with an optional change of name. 
+     * Inner class to wrap a SelectField with an optional change of name.
      *
      */
     public static class MySelectFieldWrapper
@@ -1218,7 +1216,7 @@ implements AdqlParser
         }
 
     /**
-     * Inner class to wrap a SelectItem. 
+     * Inner class to wrap a SelectItem.
      *
      */
     public static class MySelectItemWrapper
@@ -1233,7 +1231,7 @@ implements AdqlParser
                 );
             }
 
-        private SelectItem item ;
+        private final SelectItem item ;
         @Override
         public SelectItem item()
             {
@@ -1245,7 +1243,7 @@ implements AdqlParser
             return item.getAlias();
             }
         @Override
-        public void alias(String alias)
+        public void alias(final String alias)
             {
             item.setAlias(
                 alias
@@ -1256,8 +1254,8 @@ implements AdqlParser
             {
             return ((item.hasAlias()) ? item.getAlias() : item.getName());
             }
-        
-        private MySelectField field;
+
+        private final MySelectField field;
         public MySelectField field()
             {
             return this.field ;
@@ -1285,7 +1283,7 @@ implements AdqlParser
         }
 
     /**
-     * Inner class to wrap an ADQLOperand, adding the operand type. 
+     * Inner class to wrap an ADQLOperand, adding the operand type.
      *
      */
     public static class MySelectOperWrapper
@@ -1311,15 +1309,15 @@ implements AdqlParser
             this.oper = oper;
             }
 
-        private ADQLOperand oper ;
+        private final ADQLOperand oper ;
         public ADQLOperand oper()
             {
             return this.oper;
             }
         }
-    
+
     /**
-     * Inner class to wrap an AdqlColumn, with an optional name change. 
+     * Inner class to wrap an AdqlColumn, with an optional name change.
      *
      */
     public static class MyAdqlColumnWrapper
@@ -1397,9 +1395,9 @@ implements AdqlParser
 
     /**
      * Get the type for an ADQLOperand.
-     * 
+     *
      */
-    protected static AdqlColumn.Type type(ADQLOperand operand)
+    protected static AdqlColumn.Type type(final ADQLOperand operand)
     throws AdqlParserException
         {
         log.debug("type(ADQLOperand)");
@@ -1439,7 +1437,7 @@ implements AdqlParser
                 );
             }
         }
-    
+
     /**
      * Wrap an ADQLOperand.
      *
@@ -1452,7 +1450,7 @@ implements AdqlParser
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-        
+
         if (oper instanceof StringConstant)
             {
             return new MySelectOperWrapper(
@@ -1503,9 +1501,9 @@ implements AdqlParser
 
     /**
      * Get the type of an ADQLColumn.
-     * 
+     *
      */
-    protected static AdqlColumn.Type type(ADQLColumn column)
+    protected static AdqlColumn.Type type(final ADQLColumn column)
     throws AdqlParserException
         {
         log.debug("type(ADQLColumn)");
@@ -1570,12 +1568,12 @@ implements AdqlParser
             column
             );
         }
-    
+
     /**
      * Wrap a Negative Operand.
      *
      */
-    public static MySelectField wrap(NegativeOperand oper)
+    public static MySelectField wrap(final NegativeOperand oper)
     throws AdqlParserException
         {
         log.debug("wrap(NegativeOperand)");
@@ -1589,12 +1587,12 @@ implements AdqlParser
     		    )
             );
         }
-    
+
     /**
      * Get the smallest type for a numeric value.
-     * 
+     *
      */
-    protected static AdqlColumn.Type type(NumericConstant number)
+    protected static AdqlColumn.Type type(final NumericConstant number)
         {
         log.debug("type(NumericConstant)");
         log.debug("  number [{}]", number);
@@ -1618,7 +1616,7 @@ implements AdqlParser
         //
         // Not a floating point number.
         else {
-            long value = number.getIntegerValue();
+            final long value = number.getIntegerValue();
             if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
                 {
                 return AdqlColumn.Type.INTEGER;
@@ -1641,8 +1639,8 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        AdqlColumn.Type t1 = type(oper.getLeftOperand());
-        AdqlColumn.Type t2 = type(oper.getRightOperand());
+        final AdqlColumn.Type t1 = type(oper.getLeftOperand());
+        final AdqlColumn.Type t2 = type(oper.getRightOperand());
 
         if ((t1 == AdqlColumn.Type.DOUBLECOMPLEX) || (t2 == AdqlColumn.Type.DOUBLECOMPLEX))
             {
@@ -1653,7 +1651,7 @@ implements AdqlParser
             {
             return AdqlColumn.Type.FLOATCOMPLEX;
             }
-        
+
         else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE))
             {
             return AdqlColumn.Type.DOUBLE;
@@ -1663,7 +1661,7 @@ implements AdqlParser
             {
             return AdqlColumn.Type.FLOAT;
             }
-        
+
         else if ((t1 == AdqlColumn.Type.LONG) || (t2 == AdqlColumn.Type.LONG))
             {
             return AdqlColumn.Type.LONG;
@@ -1678,7 +1676,7 @@ implements AdqlParser
             {
             return AdqlColumn.Type.SHORT;
             }
-        
+
         else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE))
             {
             return AdqlColumn.Type.BYTE;
@@ -1713,7 +1711,7 @@ implements AdqlParser
                 );
             }
         }
-    
+
     /**
      * Wrap an Operation.
      *
@@ -1803,7 +1801,7 @@ implements AdqlParser
             case COUNT :
             case COUNT_ALL :
                 return AdqlColumn.Type.LONG;
-    
+
             case AVG:
             case MAX:
             case MIN:
@@ -1811,7 +1809,7 @@ implements AdqlParser
                 return type(
                     funct.getParameter(0)
                     );
-    
+
             default :
                 throw new AdqlParserException(
                     "Unknown ADQLFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1859,7 +1857,7 @@ implements AdqlParser
 
     /**
      * Get the floating point type of an ADQLOperand.
-     * 
+     *
      */
     public static AdqlColumn.Type ftype(final ADQLOperand oper)
     throws AdqlParserException
@@ -1872,11 +1870,11 @@ implements AdqlParser
             case SHORT:
             case INTEGER:
             case FLOAT:
-                return Type.FLOAT; 
+                return Type.FLOAT;
 
             case LONG:
             case DOUBLE:
-                return Type.DOUBLE; 
+                return Type.DOUBLE;
 
             default :
                 throw new AdqlParserException(
@@ -1908,7 +1906,7 @@ implements AdqlParser
                 return ftype(
                     funct.getParameter(0)
                     );
-                
+
             case LOG:
             case LOG10:
             case POWER:
@@ -1927,7 +1925,7 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.Type.DOUBLE;
-    
+
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"

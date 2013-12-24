@@ -187,5 +187,5 @@ extends BaseResource<JdbcSchema>
      *
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
-    
+
     }

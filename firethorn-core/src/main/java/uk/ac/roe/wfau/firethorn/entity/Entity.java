@@ -112,7 +112,7 @@ public interface Entity
          *
          */
         public LinkFactory<EntityType> links();
-        
+
         }
 
     /**

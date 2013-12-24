@@ -159,7 +159,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
 
     /**
      * Enum for the ADQL table status.
-     * 
+     *
      */
     public static enum AdqlStatus
         {
@@ -186,19 +186,19 @@ extends BaseTable<AdqlTable, AdqlColumn>
             {
             /**
              * The table row count.
-             * 
+             *
              */
             public Long count();
 
             /**
              * The ADQL table status.
-             * 
+             *
              */
             public AdqlStatus status();
 
             /**
              * Set the ADQL table status.
-             * 
+             *
              */
             public void status(final AdqlStatus status);
 

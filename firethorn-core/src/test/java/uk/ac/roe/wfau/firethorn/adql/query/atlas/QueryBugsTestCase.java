@@ -23,11 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -50,7 +47,7 @@ public class QueryBugsTestCase
         validate(
             Level.STRICT,
             State.PARSE_ERROR,
-        
+
             " SELECT TOP 10" +
             "    distanceMins AS distance" +
             " FROM" +
@@ -69,17 +66,17 @@ public class QueryBugsTestCase
         final AdqlQuery query = validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    distanceMins AS distance" +
             " FROM" +
             "    atlasSourceXtwomass_psc",
 
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS dist" + 
-            " FROM" + 
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS dist" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc",
-            
+
             new ExpectedField[] {
                 new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
                 }
@@ -102,7 +99,7 @@ public class QueryBugsTestCase
         validate(
             Level.STRICT,
             State.PARSE_ERROR,
-        
+
             " SELECT TOP 10" +
             "    ra," +
             "    dec" +
@@ -126,17 +123,17 @@ public class QueryBugsTestCase
         final AdqlQuery query = validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    ra," +
             "    dec" +
             " FROM" +
             "    TWOMASS..twomass_psc",
-            
-            " SELECT TOP 10" + 
-            "    twomass.dbo.twomass_psc.ra  AS ra," + 
-            "    twomass.dbo.twomass_psc.dec AS dec" + 
-            " FROM" + 
+
+            " SELECT TOP 10" +
+            "    twomass.dbo.twomass_psc.ra  AS ra," +
+            "    twomass.dbo.twomass_psc.dec AS dec" +
+            " FROM" +
             "    twomass.dbo.twomass_psc",
 
             new ExpectedField[] {
@@ -162,7 +159,7 @@ public class QueryBugsTestCase
         validate(
             Level.STRICT,
             State.PARSE_ERROR,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec," +
@@ -190,7 +187,7 @@ public class QueryBugsTestCase
         validate(
             Level.LEGACY,
             State.PARSE_ERROR,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec," +
@@ -218,7 +215,7 @@ public class QueryBugsTestCase
         validate(
             Level.STRICT,
             State.PARSE_ERROR,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec" +
@@ -241,7 +238,7 @@ public class QueryBugsTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec" +
@@ -250,12 +247,12 @@ public class QueryBugsTestCase
             " WHERE" +
             "    atlas.sourceID % 100 = 0",
 
-            " SELECT TOP 10" + 
-            "    atlas.ra  AS ra," + 
-            "    atlas.dec AS dec" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas" + 
-            " WHERE" + 
+            " SELECT TOP 10" +
+            "    atlas.ra  AS ra," +
+            "    atlas.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas" +
+            " WHERE" +
             "    atlas.sourceid % 100 = 0",
 
             new ExpectedField[] {
@@ -277,7 +274,7 @@ public class QueryBugsTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec" +
@@ -299,26 +296,26 @@ public class QueryBugsTestCase
             "            masterObjID = neighbours.masterObjID" +
             "        )",
 
-            " SELECT TOP 10" + 
-            "    atlas.ra AS ra," + 
-            "    atlas.dec AS dec" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," + 
-            "    twomass.dbo.twomass_psc AS twomass," + 
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" + 
-            " WHERE" + 
-            "    neighbours.masterobjid = atlas.sourceid" + 
-            " AND" + 
-            "    neighbours.slaveobjid = twomass.pts_key" + 
-            " AND" + 
-            "    neighbours.distancemins IN" + 
-            "        (" + 
-            "        SELECT" + 
-            "            MIN({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) AS min" + 
-            "        FROM" + 
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" + 
-            "        WHERE" + 
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid" + 
+            " SELECT TOP 10" +
+            "    atlas.ra AS ra," +
+            "    atlas.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," +
+            "    twomass.dbo.twomass_psc AS twomass," +
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" +
+            " WHERE" +
+            "    neighbours.masterobjid = atlas.sourceid" +
+            " AND" +
+            "    neighbours.slaveobjid = twomass.pts_key" +
+            " AND" +
+            "    neighbours.distancemins IN" +
+            "        (" +
+            "        SELECT" +
+            "            MIN({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) AS min" +
+            "        FROM" +
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" +
+            "        WHERE" +
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid" +
             "        )",
 
             new ExpectedField[] {
@@ -338,7 +335,7 @@ public class QueryBugsTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    atlas.ra," +
             "    atlas.dec" +
@@ -360,26 +357,26 @@ public class QueryBugsTestCase
             "            distanceMins < 0.01" +
             "        )",
 
-            " SELECT TOP 10" + 
-            "    atlas.ra  AS ra," + 
-            "    atlas.dec AS dec" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," + 
-            "    twomass.dbo.twomass_psc AS twomass," + 
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" + 
-            " WHERE" + 
-            "    neighbours.masterobjid = atlas.sourceid" + 
-            " AND" + 
-            "    neighbours.slaveobjid = twomass.pts_key" + 
-            " AND" + 
-            "    neighbours.distancemins IN" + 
-            "        (" + 
-            "        SELECT" + 
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS distancemins" + 
-            "        FROM" + 
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" + 
-            "        WHERE" + 
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01" + 
+            " SELECT TOP 10" +
+            "    atlas.ra  AS ra," +
+            "    atlas.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," +
+            "    twomass.dbo.twomass_psc AS twomass," +
+            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" +
+            " WHERE" +
+            "    neighbours.masterobjid = atlas.sourceid" +
+            " AND" +
+            "    neighbours.slaveobjid = twomass.pts_key" +
+            " AND" +
+            "    neighbours.distancemins IN" +
+            "        (" +
+            "        SELECT" +
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS distancemins" +
+            "        FROM" +
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" +
+            "        WHERE" +
+            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01" +
             "        )",
 
             new ExpectedField[] {
@@ -388,7 +385,7 @@ public class QueryBugsTestCase
                 }
             );
         }
-    
+
     /**
      * DATETIME column.
      *
@@ -399,17 +396,17 @@ public class QueryBugsTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 10" +
             "    utDate," +
             "    dateObs" +
             " FROM" +
             "    multiframe",
-            
-            " SELECT TOP 10" + 
-            "    {ATLAS_VERSION}.dbo.multiframe.utdate  AS utdate," + 
-            "    {ATLAS_VERSION}.dbo.multiframe.dateobs AS dateobs" + 
-            " FROM" + 
+
+            " SELECT TOP 10" +
+            "    {ATLAS_VERSION}.dbo.multiframe.utdate  AS utdate," +
+            "    {ATLAS_VERSION}.dbo.multiframe.dateobs AS dateobs" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.multiframe",
 
             new ExpectedField[] {
@@ -448,18 +445,18 @@ public class QueryBugsTestCase
             "    ) AS sources" +
             " WHERE" +
             "    neighbours.masterObjID - sources.ident < 1000000",
-            
-            " SELECT TOP 100" + 
-            "    neighbours.distancemins AS distancemins" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj AS neighbours," + 
-            "    (" + 
-            "    SELECT TOP 10" + 
-            "        {ATLAS_VERSION}.dbo.atlassource.sourceid AS ident" + 
-            "    FROM" + 
-            "        {ATLAS_VERSION}.dbo.atlassource" + 
-            "    ) AS sources" + 
-            " WHERE" + 
+
+            " SELECT TOP 100" +
+            "    neighbours.distancemins AS distancemins" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj AS neighbours," +
+            "    (" +
+            "    SELECT TOP 10" +
+            "        {ATLAS_VERSION}.dbo.atlassource.sourceid AS ident" +
+            "    FROM" +
+            "        {ATLAS_VERSION}.dbo.atlassource" +
+            "    ) AS sources" +
+            " WHERE" +
             "    neighbours.masterobjid - sources.ident < 1000000",
 
             new ExpectedField[] {
@@ -485,12 +482,12 @@ public class QueryBugsTestCase
             "    Multiframe" +
             " WHERE" +
             "    project LIKE 'ATLAS%'",
-            
-            " SELECT" + 
-            "    COUNT(*) AS COUNT_ALL" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.multiframe" + 
-            " WHERE" + 
+
+            " SELECT" +
+            "    COUNT(*) AS COUNT_ALL" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.multiframe" +
+            " WHERE" +
             "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
 
             new ExpectedField[] {
@@ -518,7 +515,7 @@ public class QueryBugsTestCase
             "    project LIKE \"ATLAS%\""
             );
         }
-    
+
     /**
      * Negative value for select expression.
      *
@@ -530,20 +527,20 @@ public class QueryBugsTestCase
             Level.LEGACY,
             State.VALID,
 
-        	" SELECT" + 
-        	"    -decBase" + 
-        	" FROM" + 
-        	"    Multiframe" + 
-        	" WHERE" + 
+        	" SELECT" +
+        	"    -decBase" +
+        	" FROM" +
+        	"    Multiframe" +
+        	" WHERE" +
         	"    MultiframeID > 0",
 
-        	" SELECT" + 
-        	"    -{ATLAS_VERSION}.dbo.multiframe.decbase AS decbase" + 
-        	" FROM" + 
-        	"    {ATLAS_VERSION}.dbo.multiframe" + 
-        	" WHERE" + 
+        	" SELECT" +
+        	"    -{ATLAS_VERSION}.dbo.multiframe.decbase AS decbase" +
+        	" FROM" +
+        	"    {ATLAS_VERSION}.dbo.multiframe" +
+        	" WHERE" +
         	"    {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0",
-        	
+
             new ExpectedField[] {
                 new ExpectedField("decBase", AdqlColumn.Type.FLOAT, 0),
                 }

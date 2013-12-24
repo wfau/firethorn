@@ -33,7 +33,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -44,7 +43,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -57,11 +55,11 @@ public class AtlasQueryTestBase
 extends TestPropertiesBase
     {
 
-    protected static final String ATLAS_VERSION = "ATLASDR1" ; 
-  //protected static final String ATLAS_VERSION = "ATLASv20131127" ; 
-  //protected static final String ATLAS_VERSION = "ATLASv20131029" ; 
-  //protected static final String ATLAS_VERSION = "ATLASv20130426" ; 
-  //protected static final String ATLAS_VERSION = "ATLASv20130304" ; 
+    protected static final String ATLAS_VERSION = "ATLASDR1" ;
+  //protected static final String ATLAS_VERSION = "ATLASv20131127" ;
+  //protected static final String ATLAS_VERSION = "ATLASv20131029" ;
+  //protected static final String ATLAS_VERSION = "ATLASv20130426" ;
+  //protected static final String ATLAS_VERSION = "ATLASv20130304" ;
 
     protected JdbcResource resource ;
     protected AdqlResource workspace ;
@@ -94,13 +92,13 @@ extends TestPropertiesBase
                     )
                 );
             }
-        catch (EntityNotFoundException ouch)
+        catch (final EntityNotFoundException ouch)
             {
             log.warn("Unable to load catalog [{}]", name);
             }
         }
 
-    
+
     public void loadSchema(final String name)
         {
         loadSchema(
@@ -120,7 +118,7 @@ extends TestPropertiesBase
                     )
                 );
             }
-        catch (EntityNotFoundException ouch)
+        catch (final EntityNotFoundException ouch)
             {
             log.warn("Unable to load schema [{}]", name);
             }
@@ -195,19 +193,19 @@ extends TestPropertiesBase
 
                 loadCatalog(
                     ATLAS_VERSION
-                    );                
-                
+                    );
+
                 loadCatalog(
                     "ROSAT"
-                    );                
-                
+                    );
+
                 loadCatalog(
                     "BestDR8"
-                    );                
+                    );
 
                 loadCatalog(
                     "TWOMASS"
-                    );                
+                    );
                 }
             }
 
@@ -452,7 +450,7 @@ extends TestPropertiesBase
         {
         return validate(Level.STRICT, status, adql, sql, fields);
         }
-    
+
     public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
         {
         return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);

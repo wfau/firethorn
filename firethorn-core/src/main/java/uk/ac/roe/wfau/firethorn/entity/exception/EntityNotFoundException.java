@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
  * Base class for not found exceptions.

@@ -36,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 
 /**
  *
@@ -257,7 +256,7 @@ extends BaseComponentEntity
                         }
 
                     @Override
-                    public void status(AdqlTable.AdqlStatus status)
+                    public void status(final AdqlTable.AdqlStatus status)
                         {
                         // TODO Auto-generated method stub
                         }

@@ -49,7 +49,6 @@ import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
 
@@ -140,7 +139,7 @@ public class JdbcConnectionEntity
                 );
             }
         }
-    
+
     public JdbcConnectionEntity()
         {
         }
@@ -785,7 +784,7 @@ public class JdbcConnectionEntity
                     this.metadata()
                     );
                 }
-            catch (MetadataException ouch)
+            catch (final MetadataException ouch)
                 {
                 log.error("Error loading JDBC metadata");
                 this.type = JdbcProductType.UNKNOWN;

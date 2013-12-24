@@ -17,10 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
-import java.util.Map;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -74,7 +71,7 @@ public interface AdqlParserQuery
     public void add(final AdqlTable table);
 
     /**
-     * An Exception thrown when a duplicate select field is added.  
+     * An Exception thrown when a duplicate select field is added.
      *
      *
      */
@@ -104,7 +101,7 @@ public interface AdqlParserQuery
      */
     public void add(final AdqlQuery.SelectField field)
     throws DuplicateFieldException;
-    
+
     /**
      * Get the ADQL parser syntax.
      *

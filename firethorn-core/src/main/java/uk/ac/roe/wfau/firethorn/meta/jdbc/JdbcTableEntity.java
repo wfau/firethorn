@@ -98,16 +98,16 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             ),
         @NamedQuery(
             name  = "JdbcTable-pending-parent.created",
-            query = " FROM" + 
-                    "    JdbcTableEntity" + 
-                    " WHERE" + 
-                    "    ((jdbcstatus = 'CREATED') OR (jdbcstatus = 'UPDATED'))" + 
-                    " AND" + 
-                    "    (parent = :parent)" + 
-                    " AND" + 
-                    "    (created <= :date)" + 
-                    " ORDER BY" + 
-                    "    ident asc" 
+            query = " FROM" +
+                    "    JdbcTableEntity" +
+                    " WHERE" +
+                    "    ((jdbcstatus = 'CREATED') OR (jdbcstatus = 'UPDATED'))" +
+                    " AND" +
+                    "    (parent = :parent)" +
+                    " AND" +
+                    "    (created <= :date)" +
+                    " ORDER BY" +
+                    "    ident asc"
             )
         }
     )
@@ -123,10 +123,10 @@ implements JdbcTable
 
     /**
      * Empty count value.
-     * 
+     *
      */
     public static final Long EMPTY_COUNT_VALUE = new Long(0L);
-    
+
     /**
      * Hibernate column mapping.
      *
@@ -370,7 +370,7 @@ implements JdbcTable
         /**
          * The physical JDBC factory implementation.
          * @todo This should depend on the local database dialect.
-         * 
+         *
          */
         @Autowired
         private JdbcTable.JdbcDriver jdbc;
@@ -686,7 +686,7 @@ implements JdbcTable
         this.jdbcstatus = next ;
         }
 
-    
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = ADQL_STATUS_COL,
@@ -717,7 +717,7 @@ implements JdbcTable
         this.adqlstatus = next;
         }
 
-    
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = JDBC_COUNT_COL,
@@ -772,7 +772,7 @@ implements JdbcTable
             EMPTY_COUNT_VALUE
             );
         }
-    
+
     @Override
     public JdbcTable.Metadata meta()
         {
@@ -802,7 +802,7 @@ implements JdbcTable
                             type
                             );
                         }
-                    
+
                     @Override
                     public JdbcTable.JdbcStatus status()
                         {
@@ -835,7 +835,7 @@ implements JdbcTable
                                         jdbcstatus(
                                             next
                                             );
-                                        break ; 
+                                        break ;
 
                                     default:
                                         throw new IllegalStateTransition(
@@ -862,7 +862,7 @@ implements JdbcTable
                                         jdbcstatus(
                                             next
                                             );
-                                        break ; 
+                                        break ;
 
                                     case CREATED:
                                     default:
@@ -886,7 +886,7 @@ implements JdbcTable
                                         jdbcstatus(
                                             next
                                             );
-                                        break ; 
+                                        break ;
 
                                     case CREATED:
                                     case UPDATED:
@@ -907,7 +907,7 @@ implements JdbcTable
                                         jdbcstatus(
                                             next
                                             );
-                                        break ; 
+                                        break ;
 
                                     case CREATED:
                                     case UPDATED:

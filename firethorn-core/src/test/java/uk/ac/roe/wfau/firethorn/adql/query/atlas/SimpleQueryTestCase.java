@@ -38,19 +38,19 @@ public class SimpleQueryTestCase
         validate(
             Level.STRICT,
             State.VALID,
-            
+
             " SELECT TOP 100" +
             "    ra," +
             "    dec" +
             " FROM" +
             "    atlasSource",
 
-            " SELECT TOP 100" + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," + 
-            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" + 
-            " FROM" + 
+            " SELECT TOP 100" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasSource",
-            
+
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)

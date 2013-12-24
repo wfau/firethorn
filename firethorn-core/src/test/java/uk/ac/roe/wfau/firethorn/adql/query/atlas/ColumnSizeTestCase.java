@@ -31,10 +31,8 @@ import org.junit.Test;
 
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -88,11 +86,11 @@ public class ColumnSizeTestCase
             " WHERE" +
             "    project LIKE 'ATLAS%'",
 
-            " SELECT" + 
-            "    {ATLAS_VERSION}.dbo.multiframe.project AS project" + 
-            " FROM" + 
-            "    {ATLAS_VERSION}.dbo.multiframe" + 
-            " WHERE" + 
+            " SELECT" +
+            "    {ATLAS_VERSION}.dbo.multiframe.project AS project" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.multiframe" +
+            " WHERE" +
             "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
 
             new ExpectedField[] {

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,15 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -430,7 +425,7 @@ public class JdbcResourceEntity
                         connection().type().schema()
                         );
                     }
-                catch (MetadataException ouch)
+                catch (final MetadataException ouch)
                     {
                     log.warn("Exception trying to access JDBC metadata");
                     throw new EntityServiceException(
@@ -549,7 +544,7 @@ public class JdbcResourceEntity
                     );
                 }
             }
-        catch (MetadataException ouch)
+        catch (final MetadataException ouch)
             {
             log.warn("Exception while scanning JdbcResource catalogs [{}]", ouch.getMessage());
             throw new EntityServiceException(
@@ -557,7 +552,7 @@ public class JdbcResourceEntity
                 ouch
                 );
             }
-        
+
 //
 // TODO
 // Reprocess the list disable missing ones ...

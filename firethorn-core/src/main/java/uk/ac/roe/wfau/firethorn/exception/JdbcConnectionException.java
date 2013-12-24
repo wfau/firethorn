@@ -35,7 +35,7 @@ public class JdbcConnectionException
      *
      */
 
-    public JdbcConnectionException(String message)
+    public JdbcConnectionException(final String message)
         {
         super(
             message

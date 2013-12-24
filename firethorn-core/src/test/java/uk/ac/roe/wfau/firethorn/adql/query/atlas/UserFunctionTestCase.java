@@ -17,15 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 
-import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -45,17 +42,17 @@ extends AtlasQueryTestBase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
 			" SELECT TOP 5" +
             "    fHMS(ra)," +
             "    fDMS(dec)" +
             " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fhms," + 
-            "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdms" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fhms," +
+            "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdms" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
@@ -65,7 +62,7 @@ extends AtlasQueryTestBase
             );
         }
 
-    
+
     @Test
     public void test002()
     throws Exception
@@ -73,17 +70,17 @@ extends AtlasQueryTestBase
         validate(
             Level.LEGACY,
             State.VALID,
-        
+
             " SELECT TOP 5" +
             "    fHMS(ra)  AS fra," +
             "    fDMS(dec) AS fdec" +
             " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fra," + 
-            "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdec" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    {ATLAS_VERSION}.dbo.fHMS({ATLAS_VERSION}.dbo.atlasSource.ra)  AS fra," +
+            "    {ATLAS_VERSION}.dbo.fDMS({ATLAS_VERSION}.dbo.atlasSource.dec) AS fdec" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {

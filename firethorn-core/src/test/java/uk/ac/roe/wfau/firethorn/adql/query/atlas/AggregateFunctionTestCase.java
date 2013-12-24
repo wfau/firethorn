@@ -17,16 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
-import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -48,17 +44,17 @@ public class AggregateFunctionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
-            " SELECT TOP 5" + 
-            "    MAX(ra)," + 
-            "    MIN(ra)" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    MAX(ra)," +
+            "    MIN(ra)" +
+            " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," + 
-            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," +
+            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -78,17 +74,17 @@ public class AggregateFunctionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
-            " SELECT TOP 5" + 
-            "    SUM(ra)," + 
-            "    AVG(ra)" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    SUM(ra)," +
+            "    AVG(ra)" +
+            " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "    SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," + 
-            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," +
+            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -108,17 +104,17 @@ public class AggregateFunctionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
-            " SELECT TOP 5" + 
-            "    -SUM(ra)," + 
-            "    +AVG(ra)" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    -SUM(ra)," +
+            "    +AVG(ra)" +
+            " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "   -SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," + 
-            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "   -SUM({ATLAS_VERSION}.dbo.atlassource.ra) AS SUM," +
+            "    AVG({ATLAS_VERSION}.dbo.atlassource.ra) AS AVG" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
@@ -127,7 +123,7 @@ public class AggregateFunctionTestCase
                 }
             );
         }
-    
+
     /**
      * COUNT()
      *
@@ -138,15 +134,15 @@ public class AggregateFunctionTestCase
         validate(
             Level.STRICT,
             State.VALID,
-        
-            " SELECT TOP 5" + 
-            "    COUNT(ra)" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    COUNT(ra)" +
+            " FROM" +
             "    atlasSource",
-            
-            " SELECT TOP 5" + 
-            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS COUNT" + 
-            " FROM" + 
+
+            " SELECT TOP 5" +
+            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS COUNT" +
+            " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {

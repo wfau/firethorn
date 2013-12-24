@@ -46,7 +46,7 @@ public class SpringThingsImpl
 
     /**
      * Our transaction wrapper.
-     * 
+     *
      */
     @Autowired
     private SpringThings.TransactionWrapper transactor;

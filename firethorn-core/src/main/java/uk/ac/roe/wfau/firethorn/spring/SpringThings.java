@@ -36,18 +36,18 @@ public interface SpringThings
          * Perform an action in a read-only transaction.
          *
          */
-        public void select(Runnable runnable);
-    
+        public void select(final Runnable runnable);
+
         /**
          * Perform an action in a read-write transaction.
          *
          */
-        public void update(Runnable runnable);
-        
+        public void update(final Runnable runnable);
+
         }
     /**
      * Our transaction wrapper.
-     * 
+     *
      */
     public SpringThings.TransactionWrapper transactor();
 
