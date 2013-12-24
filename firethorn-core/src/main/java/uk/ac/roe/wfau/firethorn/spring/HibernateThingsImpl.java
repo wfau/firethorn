@@ -332,44 +332,4 @@ public class HibernateThingsImpl
                 );
             }
         }
-
-    /*
-     * 
-    @Override
-    public void execute(final Runnable runnable)
-        {
-        log.debug("execute(Runnable)");
-
-        Session session = session();
-        log.debug("  session [{}]", session);
-        
-        boolean created = false ;
-        try {
-            if (session == null)
-                {
-                log.debug("Null session, creating new");
-                session = factory.openSession();
-                created = true ;
-                log.debug("  session [{}]", session);
-                }
-            else {
-                log.debug("Using existing session");
-                }
-
-            log.debug("  current [{}]", session());
-            runnable.run();
-
-            }
-        finally {
-            log.debug("finally ...");
-            if ((created) && (session != null))
-                {
-                log.debug("Closing created session");
-                log.debug("  session [{}]", session);
-                session.close();
-                }
-            }
-        }
-     * 
-     */
     }

@@ -99,15 +99,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
-     * JDBC table cleaner interface.
-     * 
-    public static interface Cleaner
-        {
-
-        }    
-     */
-
-    /**
      * Physical JDBC factory interface.
      * @todo Move this up to resource ?
      * 
@@ -181,7 +172,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable.JdbcDriver driver();
 
         /**
-         * Get the next set of tables to process. 
+         * Get the next set of tables to process.
+         * This is just for clean up for now ... 
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date);

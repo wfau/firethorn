@@ -137,29 +137,6 @@ implements JdbcTable
     protected static final String ADQL_STATUS_COL   = "adqlstatus" ;
     protected static final String DB_ADQL_QUERY_COL = "adqlquery"  ;
 
-    /*
-    @Component
-    public static class BackgroundWorker
-    extends AbstractComponent
-    	{
-        protected static final int SECOND    = 1000 ;
-        protected static final int MINUITE   = 60 * SECOND ;
-        protected static final int FIVE_MINUITE =  5 * MINUITE ;
-        protected static final int HALF_HOUR    = 30 * MINUITE ;
-        
-
-        @Scheduled(fixedDelay=FIVE_MINUITE)
-    	public void something() {
-    	    log.debug("Start something()");
-
-    	    JdbcResource resource = factories().jdbc().resources().userdata();
-    	    log.debug("  space [{}]", resource.ident());
-
-    	    log.debug("Done something()");
-    		}	
-    	}
-     */
-    
     /**
      * Alias factory implementation.
      * @todo Move to a separate package.
@@ -200,39 +177,6 @@ implements JdbcTable
             }
         }
 
-    /**
-     * JDBC table cleaner implementation.
-     * 
-    @Component
-    public static class Cleaner
-    extends AbstractEntityFactory<JdbcTable>
-    implements JdbcTable.Cleaner
-        {
-
-        @Override
-        public Class<?> etype()
-            {
-            return JdbcTableEntity.class ;
-            }
-
-        @Autowired
-        protected JdbcTable.IdentFactory idents ;
-        @Override
-        public JdbcTable.IdentFactory idents()
-            {
-            return this.idents ;
-            }
-
-        @Autowired
-        protected JdbcTable.LinkFactory links;
-        @Override
-        public JdbcTable.LinkFactory links()
-            {
-            return this.links;
-            }
-        }    
-     */
-    
     /**
      * Table factory implementation.
      *
@@ -872,149 +816,137 @@ implements JdbcTable
                         log.debug("  prev [{}]", jdbcstatus());
                         log.debug("  next [{}]", next);
 
-/*
-                        factories().spring().updator().update(
-                            new Update()
-                                {
-                                public void update()
+                        switch(jdbcstatus())
+                            {
+                            case CREATED:
+                                switch(next)
                                     {
- */
-                                    switch(jdbcstatus())
-                                        {
-                                        case CREATED:
-                                            switch(next)
-                                                {
-                                                case DELETED:
-                                                    jdbcdelete();
-                                                    break ;
-            
-                                                case DROPPED:
-                                                    jdbcdrop();
-                                                    break ;
-            
-                                                case CREATED:
-                                                case UPDATED:
-                                                case UNKNOWN:
-                                                    jdbcstatus(
-                                                        next
-                                                        );
-                                                    break ; 
-            
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        jdbcstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case UPDATED:
-                                            switch(next)
-                                                {
-                                                case DELETED:
-                                                    jdbcdelete();
-                                                    break ;
-            
-                                                case DROPPED:
-                                                    jdbcdrop();
-                                                    break ;
-            
-                                                case UPDATED:
-                                                case UNKNOWN:
-                                                    jdbcstatus(
-                                                        next
-                                                        );
-                                                    break ; 
-            
-                                                case CREATED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        jdbcstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case DELETED:
-                                            switch(next)
-                                                {
-                                                case DROPPED:
-                                                    jdbcdrop();
-                                                    break ;
-            
-                                                case DELETED:
-                                                case UNKNOWN:
-                                                    jdbcstatus(
-                                                        next
-                                                        );
-                                                    break ; 
-            
-                                                case CREATED:
-                                                case UPDATED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        jdbcstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case DROPPED:
-                                            switch(next)
-                                                {
-                                                case DROPPED:
-                                                case UNKNOWN:
-                                                    jdbcstatus(
-                                                        next
-                                                        );
-                                                    break ; 
-            
-                                                case CREATED:
-                                                case UPDATED:
-                                                case DELETED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        jdbcstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case UNKNOWN:
-                                            switch(next)
-                                                {
-                                                case UNKNOWN:
-                                                    jdbcstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                case CREATED:
-                                                case UPDATED:
-                                                case DELETED:
-                                                case DROPPED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        jdbcstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        default:
-                                            break ;
-            
-                                        }
-/*
+                                    case DELETED:
+                                        jdbcdelete();
+                                        break ;
+
+                                    case DROPPED:
+                                        jdbcdrop();
+                                        break ;
+
+                                    case CREATED:
+                                    case UPDATED:
+                                    case UNKNOWN:
+                                        jdbcstatus(
+                                            next
+                                            );
+                                        break ; 
+
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            jdbcstatus(),
+                                            next
+                                            );
                                     }
-                                }
-                            );
- */
+                                break ;
+
+                            case UPDATED:
+                                switch(next)
+                                    {
+                                    case DELETED:
+                                        jdbcdelete();
+                                        break ;
+
+                                    case DROPPED:
+                                        jdbcdrop();
+                                        break ;
+
+                                    case UPDATED:
+                                    case UNKNOWN:
+                                        jdbcstatus(
+                                            next
+                                            );
+                                        break ; 
+
+                                    case CREATED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            jdbcstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case DELETED:
+                                switch(next)
+                                    {
+                                    case DROPPED:
+                                        jdbcdrop();
+                                        break ;
+
+                                    case DELETED:
+                                    case UNKNOWN:
+                                        jdbcstatus(
+                                            next
+                                            );
+                                        break ; 
+
+                                    case CREATED:
+                                    case UPDATED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            jdbcstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case DROPPED:
+                                switch(next)
+                                    {
+                                    case DROPPED:
+                                    case UNKNOWN:
+                                        jdbcstatus(
+                                            next
+                                            );
+                                        break ; 
+
+                                    case CREATED:
+                                    case UPDATED:
+                                    case DELETED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            jdbcstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case UNKNOWN:
+                                switch(next)
+                                    {
+                                    case UNKNOWN:
+                                        jdbcstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    case CREATED:
+                                    case UPDATED:
+                                    case DELETED:
+                                    case DROPPED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            jdbcstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            default:
+                                break ;
+
+                            }
                         }
                     };
                 }
@@ -1043,142 +975,130 @@ implements JdbcTable
                         log.debug("  prev [{}]", adqlstatus());
                         log.debug("  next [{}]", next);
 
-/*                        
-                        factories().spring().updator().update(
-                            new Update()
-                                {
-                                public void update()
+                        switch(adqlstatus())
+                            {
+                            case CREATED:
+                                switch(next)
                                     {
- */                                    
-                                    switch(adqlstatus())
-                                        {
-                                        case CREATED:
-                                            switch(next)
-                                                {
-                                                case CREATED:
-                                                case COMPLETED:
-                                                case TRUNCATED:
-                                                case UNKNOWN:
-                                                    adqlstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                case DELETED:
-                                                    jdbcdelete();
-                                                    break ;
-            
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        adqlstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case COMPLETED:
-                                            switch(next)
-                                                {
-                                                case COMPLETED:
-                                                case UNKNOWN:
-                                                    adqlstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                case DELETED:
-                                                    jdbcdelete();
-                                                    break ;
-            
-                                                case CREATED:
-                                                case TRUNCATED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        adqlstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case TRUNCATED:
-                                            switch(next)
-                                                {
-                                                case TRUNCATED:
-                                                case UNKNOWN:
-                                                    adqlstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                case DELETED:
-                                                    jdbcdelete();
-                                                    break ;
-            
-                                                case CREATED:
-                                                case COMPLETED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        adqlstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case DELETED:
-                                            switch(next)
-                                                {
-                                                case DELETED:
-                                                case UNKNOWN:
-                                                    adqlstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                case CREATED:
-                                                case COMPLETED:
-                                                case TRUNCATED:
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        adqlstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        case UNKNOWN:
-                                            switch(next)
-                                                {
-                                                case CREATED:
-                                                case COMPLETED:
-                                                case TRUNCATED:
-                                                case DELETED:
-                                                case UNKNOWN:
-                                                    adqlstatus(
-                                                        next
-                                                        );
-                                                    break ;
-            
-                                                default:
-                                                    throw new IllegalStateTransition(
-                                                        JdbcTableEntity.this,
-                                                        adqlstatus(),
-                                                        next
-                                                        );
-                                                }
-                                            break ;
-            
-                                        default:
-                                            break ;
-                                        }
- /*
+                                    case CREATED:
+                                    case COMPLETED:
+                                    case TRUNCATED:
+                                    case UNKNOWN:
+                                        adqlstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    case DELETED:
+                                        jdbcdelete();
+                                        break ;
+
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            adqlstatus(),
+                                            next
+                                            );
                                     }
-                                }
-                            );
- */
+                                break ;
+
+                            case COMPLETED:
+                                switch(next)
+                                    {
+                                    case COMPLETED:
+                                    case UNKNOWN:
+                                        adqlstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    case DELETED:
+                                        jdbcdelete();
+                                        break ;
+
+                                    case CREATED:
+                                    case TRUNCATED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            adqlstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case TRUNCATED:
+                                switch(next)
+                                    {
+                                    case TRUNCATED:
+                                    case UNKNOWN:
+                                        adqlstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    case DELETED:
+                                        jdbcdelete();
+                                        break ;
+
+                                    case CREATED:
+                                    case COMPLETED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            adqlstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case DELETED:
+                                switch(next)
+                                    {
+                                    case DELETED:
+                                    case UNKNOWN:
+                                        adqlstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    case CREATED:
+                                    case COMPLETED:
+                                    case TRUNCATED:
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            adqlstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            case UNKNOWN:
+                                switch(next)
+                                    {
+                                    case CREATED:
+                                    case COMPLETED:
+                                    case TRUNCATED:
+                                    case DELETED:
+                                    case UNKNOWN:
+                                        adqlstatus(
+                                            next
+                                            );
+                                        break ;
+
+                                    default:
+                                        throw new IllegalStateTransition(
+                                            JdbcTableEntity.this,
+                                            adqlstatus(),
+                                            next
+                                            );
+                                    }
+                                break ;
+
+                            default:
+                                break ;
+                            }
                         }
                     };
                 }
@@ -1341,12 +1261,4 @@ implements JdbcTable
         {
         return this.query;
         }
-
-    /*
-    @Override
-    public boolean exists()
-        {
-        return true ;
-        }
-     */
     }
