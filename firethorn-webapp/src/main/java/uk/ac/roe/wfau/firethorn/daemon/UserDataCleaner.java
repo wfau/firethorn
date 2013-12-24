@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.daemon;
 import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -38,7 +40,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class UserDataCleaner
 extends AbstractComponent
     {
-    private static final Minutes lifetime = Minutes.minutes(5) ;
+    //private static final Minutes lifetime = Minutes.minutes(5) ;
+    private static final Hours lifetime = Hours.hours(24) ;
+    //private static final Days lifetime = Days.days(1) ;
 
     private long count = 0L ;
 
