@@ -200,7 +200,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Get the next set of tables to process.
          *
          */
-        public Iterable<JdbcTable> pending(final DateTime date);
+        public Iterable<JdbcTable> pending(final DateTime date, final int page);
 
         }
     @Override

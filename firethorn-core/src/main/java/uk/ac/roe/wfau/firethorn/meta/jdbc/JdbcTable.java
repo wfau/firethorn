@@ -175,7 +175,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * This is just for clean up for now ...
          *
          */
-        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date);
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
 
         }
 

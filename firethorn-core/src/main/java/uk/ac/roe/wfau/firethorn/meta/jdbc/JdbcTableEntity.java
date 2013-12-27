@@ -382,11 +382,11 @@ implements JdbcTable
 
         @Override
         @SelectMethod
-        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date)
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
             {
             log.debug("pending(JdbcSchema, DateTime)");
             return super.iterable(
-                10,
+                page,
                 super.query(
                     "JdbcTable-pending-parent.created"
                     ).setEntity(

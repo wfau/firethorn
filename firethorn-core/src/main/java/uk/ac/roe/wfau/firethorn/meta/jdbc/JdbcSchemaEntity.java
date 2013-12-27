@@ -710,11 +710,12 @@ public class JdbcSchemaEntity
                 }
 
             @Override
-            public Iterable<JdbcTable> pending(final DateTime date)
+            public Iterable<JdbcTable> pending(final DateTime date, final int page)
                 {
                 return factories().jdbc().tables().pending(
                     JdbcSchemaEntity.this,
-                    date
+                    date,
+                    page
                     );
                 }
             };

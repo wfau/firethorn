@@ -23,6 +23,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
+import org.joda.time.MutablePeriod;
+import org.joda.time.Period;
+import org.joda.time.ReadablePeriod;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -41,17 +47,79 @@ public class UserDataCleaner
 extends AbstractComponent
     {
     //private static final Minutes lifetime = Minutes.minutes(5) ;
-    private static final Hours lifetime = Hours.hours(24) ;
+    //private static final Hours lifetime = Hours.hours(24) ;
     //private static final Days lifetime = Days.days(1) ;
 
     private long count = 0L ;
 
-    @Scheduled(fixedDelay=(60 * 1000))
+    @Autowired
+    private TaskScheduler scheduler;
+
+    public TaskScheduler scheduler()
+        {
+        return this.scheduler;
+        }
+    
+    public UserDataCleaner()
+        {
+        log.debug("UserDataCleaner()");
+        }
+
+    /*
+    public void init()
+        {
+        log.debug("init()");
+        scheduler.scheduleWithFixedDelay(
+            new Runnable()
+                {
+                public void run()
+                    {
+                    log.debug("run()");
+                    something();
+                    }
+                },
+            new Long(60 * 1000)
+            );
+        }
+    */
+
+    //
+    // PT12H
+    @Value("${firethorn.cleaner.lifetime}")
+    String lifetime ;
+    
+    //
+    // 10
+    @Value("${firethorn.cleaner.pagesize}")
+    int pagesize ;
+
+    //@Scheduled(fixedDelay=(60 * 1000))
+
+    //static final long interval = 60 * 1000;
+    //@Scheduled(fixedDelay=interval)
+
+    //
+    // "*/30 * * * * ?"
+    @Scheduled(cron="${firethorn.cleaner.cron}")
     public void something()
         {
         log.debug("");
         log.debug("something()");
         log.debug("  count [{}]", count);
+
+        /*
+         * try/catch IllegalArgumentException
+         * java.lang.IllegalArgumentException: Invalid format: "MUMBLE"
+         * 
+         */
+   
+        /*
+         * PT12H 
+         * https://en.wikipedia.org/wiki/ISO_8601#Durations
+         */
+        final ReadablePeriod period = MutablePeriod.parse(lifetime);
+        log.debug(" age [{}]", lifetime);
+        log.debug(" period [{}]", period.getPeriodType());
 
         //
         // Skip the first n iterations.
@@ -67,9 +135,10 @@ extends AbstractComponent
                 @Override
                 public void run()
                     {
+
                     try {
                         final DateTime date = new DateTime().minus(
-                            lifetime
+                            period
                             );
                         log.debug("  date [{}]", date);
                         final JdbcResource resource = factories().jdbc().resources().userdata();
@@ -78,11 +147,13 @@ extends AbstractComponent
                         for (final JdbcSchema schema : resource.schemas().select())
                             {
                             log.debug("  schema [{}][{}]", schema.ident(), schema.name());
-                            for (final JdbcTable table : schema.tables().pending(date))
+                            for (final JdbcTable table : schema.tables().pending(date, pagesize))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
                                 //table.drop();
-                                table.meta().jdbc().status(JdbcTable.JdbcStatus.DROPPED);
+                                table.meta().jdbc().status(
+                                    JdbcTable.JdbcStatus.DROPPED
+                                    );
                                 }
                             }
                         }
