@@ -83,23 +83,37 @@ extends AbstractComponent
         }
     */
 
-    //
-    // PT12H
+    /*
+     * The interval between each run.
+     * Expressed as a ISO_8601 duration.
+     * https://en.wikipedia.org/wiki/ISO_8601#Durations
+     * e.g. PT12H
+     * 
+     */
     @Value("${firethorn.cleaner.lifetime}")
     String lifetime ;
     
-    //
-    // 10
+    /*
+     * The number of rows to delete on each run.
+     * e.g. 10
+     * 
+     */
     @Value("${firethorn.cleaner.pagesize}")
     int pagesize ;
 
-    //@Scheduled(fixedDelay=(60 * 1000))
+    /*
+     * The number of runs to skip at the start.
+     * e.g. 10
+     * 
+     */
+    @Value("${firethorn.cleaner.skipfirst}")
+    int skipfirst ;
 
-    //static final long interval = 60 * 1000;
-    //@Scheduled(fixedDelay=interval)
-
-    //
-    // "*/30 * * * * ?"
+    /*
+     * The Spring Scheduled cron expression.
+     * e.g. '0 0/10 * * * ?'
+     * 
+     */
     @Scheduled(cron="${firethorn.cleaner.cron}")
     public void something()
         {
@@ -118,12 +132,13 @@ extends AbstractComponent
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);
-        log.debug(" age [{}]", lifetime);
-        log.debug(" period [{}]", period.getPeriodType());
+        log.debug(" lifetime [{}]", lifetime);
+        log.debug(" period   [{}]", period.getPeriodType());
 
         //
-        // Skip the first n iterations.
-        if (count++ < 10)
+        // Skip the first few iterations.
+        // Allow time for startup.
+        if (count++ < skipfirst)
             {
             log.debug("skipping");
             return ;
@@ -140,14 +155,14 @@ extends AbstractComponent
                         final DateTime date = new DateTime().minus(
                             period
                             );
-                        log.debug("  date [{}]", date);
+                        log.debug("  cutoff   [{}]", date);
                         final JdbcResource resource = factories().jdbc().resources().userdata();
                         log.debug("  resource [{}][{}]", resource.ident(), resource.name());
 
                         for (final JdbcSchema schema : resource.schemas().select())
                             {
                             log.debug("  schema [{}][{}]", schema.ident(), schema.name());
-                            for (final JdbcTable table : schema.tables().pending(date, pagesize))
+                            for (final JdbcTable table : schema.tables().pending(date, skipfirst))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
                                 //table.drop();
