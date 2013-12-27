@@ -1133,7 +1133,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS SUM" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -1156,7 +1156,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 0x01 AS mysum" +
+            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux + 1.0 AS mysum" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
