@@ -320,9 +320,9 @@ public class MathFunctionTestCase
 
     /**
      * sign() in LEGACY mode.
-     * TODO
      *
      */
+    @Test
     public void test007L()
         {
         validate(
@@ -350,7 +350,6 @@ public class MathFunctionTestCase
      * TODO
      *
      */
-    @Test
     public void test008S()
         {
         validate(
@@ -366,9 +365,9 @@ public class MathFunctionTestCase
 
     /**
      * square() in LEGACY mode.
-     * TODO
      *
      */
+    @Test
     public void test008L()
         {
         validate(
@@ -381,12 +380,12 @@ public class MathFunctionTestCase
             "    atlassource",
 
             " SELECT" +
-            "    SQUARE({ATLAS_VERSION}.dbo.atlassource.ra) AS SIGN" +
+            "    SQUARE({ATLAS_VERSION}.dbo.atlassource.ra) AS SQUARE" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("SQUARE", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SQUARE", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         }
