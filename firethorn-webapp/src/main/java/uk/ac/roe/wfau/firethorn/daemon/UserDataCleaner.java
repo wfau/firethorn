@@ -132,8 +132,9 @@ extends AbstractComponent
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);
+        log.debug(" pagesize [{}]", pagesize);
         log.debug(" lifetime [{}]", lifetime);
-        log.debug(" period   [{}]", period.getPeriodType());
+        log.debug(" period   [{}]", period);
 
         //
         // Skip the first few iterations.
@@ -162,7 +163,7 @@ extends AbstractComponent
                         for (final JdbcSchema schema : resource.schemas().select())
                             {
                             log.debug("  schema [{}][{}]", schema.ident(), schema.name());
-                            for (final JdbcTable table : schema.tables().pending(date, skipfirst))
+                            for (final JdbcTable table : schema.tables().pending(date, pagesize))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
                                 //table.drop();
