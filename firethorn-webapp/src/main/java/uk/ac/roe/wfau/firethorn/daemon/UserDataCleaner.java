@@ -83,6 +83,25 @@ extends AbstractComponent
         }
     */
 
+    /**
+     * The action to take to clean up a table.
+     * TODO
+     * 
+     */
+    public static enum Action
+        {
+        DELETE(),
+        DROP();
+        }
+
+    /**
+     * The action to take to clean up a table.
+     * TODO
+     * 
+     */
+    @Value("${firethorn.cleaner.action}")
+    Action action ;
+    
     /*
      * The interval between each run.
      * Expressed as a ISO_8601 duration.

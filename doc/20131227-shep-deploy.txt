@@ -114,6 +114,7 @@
     +   # http://javahunter.wordpress.com/2011/05/05/cronscheduler-in-spring/
     +
     +   firethorn.cleaner.cron=0 0/10 * * * ?
+    +   firethorn.cleaner.action=DELETE
     +   firethorn.cleaner.lifetime=PT24H
     +   firethorn.cleaner.pagesize=10
     +   firethorn.cleaner.skipfirst=2
