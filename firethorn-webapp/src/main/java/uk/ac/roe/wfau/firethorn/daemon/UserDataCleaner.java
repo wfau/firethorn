@@ -100,7 +100,7 @@ extends AbstractComponent
      * 
      */
     @Value("${firethorn.cleaner.action}")
-    Action action ;
+    Action action;
     
     /*
      * The interval between each run.
