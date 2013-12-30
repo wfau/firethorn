@@ -28,8 +28,63 @@
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
+# -----------------------------------------------------------------------------------
+# Add the test data sources.
+#[user@desktop]
+
+    gedit "${deployprop:?}" &
+
+    +   #--------------------------------------------
+    +   # TWOMASS database login
+    +
+    +   firethorn.twomass.url=jdbc:jtds:sqlserver://ramses5:1433/TWOMASS
+    +   firethorn.twomass.user=firethorn
+    +   firethorn.twomass.pass=firethornpw
+    +   firethorn.twomass.type=mssql
+    +   firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
+    +
+    +   #--------------------------------------------
+    +   # TWOXMM database login
+    +
+    +   firethorn.twoxmm.url=jdbc:jtds:sqlserver://ramses5:1433/TWOMASS
+    +   firethorn.twoxmm.user=firethorn
+    +   firethorn.twoxmm.pass=firethornpw
+    +   firethorn.twoxmm.type=mssql
+    +   firethorn.twoxmm.driver=net.sourceforge.jtds.jdbc.Driver
+    +
+    +   #--------------------------------------------
+    +   # UKIDSS database login
+    +
+    +   firethorn.ukidss.url=jdbc:jtds:sqlserver://localhost:1435/UKIDSSDR5PLUS
+    +   firethorn.ukidss.user=firethorn
+    +   firethorn.ukidss.pass=firethornpw
+    +   firethorn.ukidss.type=mssql
+    +   firethorn.ukidss.driver=net.sourceforge.jtds.jdbc.Driver
+
+
+# ------------------------------------------------
+# Deploy our deployment properties
+#[user@desktop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
 # ----------------------------------------------------
-# Login to the test VM.
+# Login to the test VM and run the JUnit tests.
 #[user@desktop]
 
     source "${deploylist:?}"
@@ -41,10 +96,141 @@
             hg pull
             hg update
 
+            mvn -P all clean install
+
             pushd 'firethorn-core'
 
                 mvn -D skipTests=false -D test=LoggedQueryTestCase test 
 
-            popd
+                    .........
+                    .........
+                    Exception: java.lang.OutOfMemoryError thrown from the UncaughtExceptionHandler in thread "ThreadedStreamConsumer"
+                    Exception in thread "Thread-1" java.lang.OutOfMemoryError: Java heap space
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# -----------------------------------------------------
+
+
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+            cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        popd
+    exit
+    
+
+# -----------------------------------------------------
+# Run the tests.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.testing"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+            looptest()
+                {
+                exec 6<> ${logged} 
+                while read <&6 adql
+                do
+                    if [[ "${adql}" == '' ]]
+                    then
+                        echo "SKIP [${adql}]"
+                    else                    
+                        if [[ "${adql}" =~ ^# ]]
+                        then
+                            echo "SKIP [${adql}]"
+                        else
+                            echo "--------"
+                            echo "ADQL [${adql}]"
+
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                            
+                            echo "--------"
+                            echo "Pause ...."                            
+                            sleep 1
+                        fi
+                    fi
+                done
+                echo "Done"
+                exec 6>&-
+                }
+
+            looptest
+
+
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 0"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 1"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 2"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 3"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 4"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 5"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 6"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 7"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 8"
+            #source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 9"
 
 
