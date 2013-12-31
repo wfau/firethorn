@@ -1,0 +1,217 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create new test VM
+#[root@desktop]
+
+    ischnura-createvm
+
+        Available machine names
+        [1] nu
+        [2] xi
+        [3] omicron
+        [4] pi
+        Select machine name (1) 4
+
+        Available base images
+        [1] centos-63-base-20130106.qcow
+        [2] fedora-17-base-20130106.qcow
+        [3] ubuntu-12-base-20130106.qcow
+        Select base image (1) 3
+
+        ....
+
+# -----------------------------------------------------
+# Install toolikts.
+#[user@desktop]
+
+    testhost=pi
+    ssh "root@${testhost:?}"
+
+        apt-get update
+
+        apt-get -y install pwgen
+        apt-get -y install mercurial
+        apt-get -y install openjdk-7-jdk
+        apt-get -y install maven2
+
+    exit
+
+#
+# Add test user account.
+#[user@desktop]
+
+    testhost=pi
+    ssh "root@${testhost:?}"
+
+        username='tester'
+        useradd --create-home --shell /bin/bash --groups users "${username:?}"
+        userhome=$(getent passwd "${username:?}" | cut -d: -f6)
+
+        if [ ! -e "${userhome:?}/.ssh" ]
+        then
+            mkdir "${userhome:?}/.ssh"
+        fi
+
+        cp "${HOME}/.ssh/authorized_keys" "${userhome:?}/.ssh"
+
+        chown -R "${username:?}" "${userhome:?}/.ssh"
+        chgrp -R "${username:?}" "${userhome:?}/.ssh"
+        chmod g=,o=,u=rwx "${userhome:?}/.ssh"
+
+    exit
+
+# -----------------------------------------------------
+# Push a copy of our firethorn properties.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    
+    scp "${HOME:?}/firethorn.properties" "${testuser:?}@${testhost:?}:firethorn.properties"
+
+# -----------------------------------------------------
+# Clone the firethorn source code.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        if [ ! -e "${HOME:?}/firethorn.settings" ]
+        then
+            cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+export MAVEN_OPTS=-Xmx128m
+EOF
+        fi
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+        coderepo='http://wfau.metagrid.co.uk/code/firethorn/'
+
+        # Local cache
+        #repouser=xxxx
+        #repohost=xxxx.metagrid.co.uk
+        #repopath='/var/local/projects/edinburgh/wfau/firethorn/devel'
+        #coderepo="ssh://${repouser:?}@${repohost:?}/${repopath:?}"
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${coderepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+    exit
+
+# -----------------------------------------------------
+# Open the SSH tunnel to ROE.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        sshuser=xxxx
+        sshhost=xxxx
+        
+        ssh-keyscan ${sshhost:?} >> ~/.ssh/known_hosts
+        ssh -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshuser:?}@${sshhost:?}"
+
+# -----------------------------------------------------
+# Build and run the firethorn webapp.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P all clean install
+
+            pushd 'firethorn-webapp'
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+# -----------------------------------------------------
+# Build and run the ogsa-dai webapp.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn clean compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                webappversion=$(
+                    sed -n '
+                        s/firethorn.webapp.version=\(.*\) *$/\1/p
+                        ' "${HOME:?}/firethorn.properties"
+                        )
+                
+                webappbase="target/firethorn-ogsadai-webapp-${webappversion:?}"
+                if [ ! -e "${webappbase:?}" ]
+                then
+                    echo "ERROR : Unable to configure webapp [${webappversion:?}]"
+                    echo "ERROR : failed to locate webapp directory [${webappbase:?}]"
+                else
+                    echo "DEBUG : Configuring webapp [${webappversion:?}]"
+                    pushd target/firethorn-ogsadai-webapp-${webappversion:?}/WEB-INF/etc/dai
+
+                        jdbcconfig twomass  firethorn.twomass
+                        jdbcconfig ukidss   firethorn.ukidss
+                        jdbcconfig atlas    firethorn.atlas
+                        jdbcconfig wfau     firethorn.wfau
+                        jdbcconfig userdata firethorn.user
+
+                    popd
+                fi
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+
