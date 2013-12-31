@@ -190,7 +190,7 @@ EOF
 
                 webappversion=$(
                     sed -n '
-                        s/firethorn.webapp.version=\(.*\) *$/\1/p
+                        s/firethorn\.webapp\.version=\(.*\) *$/\1/p
                         ' "${HOME:?}/firethorn.properties"
                         )
                 
