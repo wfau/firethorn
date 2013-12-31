@@ -55,6 +55,8 @@
         apt-get -y install openjdk-7-jdk
         apt-get -y install maven2
 
+        apt-get -y install libjson-perl
+ 
     exit
 
 #
@@ -169,7 +171,6 @@ EOF
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
-
 # -----------------------------------------------------
 # Build and run the ogsa-dai webapp.
 #[user@desktop]
@@ -214,4 +215,98 @@ EOF
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
+# -----------------------------------------------------
+# Run the ogsa-dai start fix.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+# BUG may need to repeat the metadoc import more than once to get it to set $adqlschema
+# Seems to be network speed related.
+
+            cat > "${HOME:?}/firethorn.spaces" << EOF
+jdbcspace=${jdbcspace:?}
+adqlspace=${adqlspace:?}
+atlashome=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Run the tests.
+#[user@desktop]
+
+    testhost=pi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${HOME:?}/firethorn.spaces"
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
 
