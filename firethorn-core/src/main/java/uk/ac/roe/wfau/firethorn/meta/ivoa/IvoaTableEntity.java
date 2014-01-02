@@ -34,11 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -114,9 +114,9 @@ public class IvoaTableEntity
      *
      */
     @Repository
-    public static class Factory
-    extends BaseTableEntity.Factory<IvoaSchema, IvoaTable>
-    implements IvoaTable.Factory
+    public static class EntityFactory
+    extends BaseTableEntity.EntityFactory<IvoaSchema, IvoaTable>
+    implements IvoaTable.EntityFactory
         {
 
         @Override
@@ -126,7 +126,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public IvoaTable create(final IvoaSchema parent, final String name)
             {
             return this.insert(
@@ -138,7 +138,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<IvoaTable> select(final IvoaSchema parent)
             {
             return super.list(
@@ -152,7 +152,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaTable select(final IvoaSchema parent, final String name)
         throws NameNotFoundException
             {
@@ -170,7 +170,7 @@ public class IvoaTableEntity
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -181,7 +181,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaTable search(final IvoaSchema parent, final String name)
             {
             return super.first(
@@ -198,9 +198,9 @@ public class IvoaTableEntity
             }
 
         @Autowired
-        protected IvoaColumn.Factory columns;
+        protected IvoaColumn.EntityFactory columns;
         @Override
-        public IvoaColumn.Factory columns()
+        public IvoaColumn.EntityFactory columns()
             {
             return this.columns;
             }

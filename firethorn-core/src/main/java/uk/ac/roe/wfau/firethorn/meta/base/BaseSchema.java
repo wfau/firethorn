@@ -61,7 +61,7 @@ extends BaseComponent
      * Schema factory interface.
      *
      */
-    public static interface Factory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
+    public static interface EntityFactory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
     extends Entity.EntityFactory<SchemaType>
         {
         /**

@@ -26,11 +26,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -84,7 +82,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @Override
-    @SelectEntityMethod
+    @SelectMethod
     public EntityType select(final Identifier ident)
     throws IdentifierNotFoundException
         {
@@ -109,8 +107,7 @@ implements Entity.EntityFactory<EntityType>
     /**
      * Delete an Entity.
      *
-     */
-    @DeleteEntityMethod
+    @DeleteMethod
     public void delete(final EntityType entity)
         {
         //log.debug("delete [{}]", entity);
@@ -129,6 +126,7 @@ implements Entity.EntityFactory<EntityType>
                 );
             }
         }
+     */
 
     /**
      * Flush changes to the database.
@@ -152,9 +150,9 @@ implements Entity.EntityFactory<EntityType>
      * Select a single object from the results of a query, or throws NotFoundException if the results are empty.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     public EntityType single(final Query query)
-    throws NotFoundException
+    throws EntityNotFoundException
         {
         @SuppressWarnings("unchecked")
         final EntityType result = (EntityType) factories().hibernate().single(
@@ -165,7 +163,7 @@ implements Entity.EntityFactory<EntityType>
             return result ;
             }
         else {
-            throw new NotFoundException();
+            throw new EntityNotFoundException();
             }
         }
 
@@ -173,7 +171,7 @@ implements Entity.EntityFactory<EntityType>
      * Return the first result of a query, or null if the results are empty.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     @SuppressWarnings("unchecked")
     public EntityType first(final Query query)
         {
@@ -186,13 +184,13 @@ implements Entity.EntityFactory<EntityType>
      * Select an Iterable set of objects.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     public Iterable<EntityType> iterable(final Query query)
         {
         return new Iterable<EntityType>()
             {
             @Override
-            @SelectEntityMethod
+            @SelectMethod
             @SuppressWarnings("unchecked")
             public Iterator<EntityType> iterator()
                 {
@@ -210,14 +208,112 @@ implements Entity.EntityFactory<EntityType>
         }
 
     /**
+     * Select an Iterable set of objects.
+     *
+     */
+    @SelectMethod
+    public Iterable<EntityType> iterable(final int limit, final Query query)
+        {
+        return new Iterable<EntityType>()
+            {
+            @Override
+            @SelectMethod
+            @SuppressWarnings("unchecked")
+            public Iterator<EntityType> iterator()
+                {
+                try {
+                    query.setMaxResults(limit);
+                    return query.iterate();
+                    }
+                catch (final HibernateException ouch)
+                    {
+                    throw factories().hibernate().convert(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
+
+    /**
+     * Select an Iterable set of objects.
+     *
+     */
+    @SelectMethod
+    public Iterable<EntityType> iterable(final int first, final int limit, final Query query)
+        {
+        return new Iterable<EntityType>()
+            {
+            @Override
+            @SelectMethod
+            @SuppressWarnings("unchecked")
+            public Iterator<EntityType> iterator()
+                {
+                try {
+                    query.setFirstResult(first);
+                    query.setMaxResults(limit);
+                    return query.iterate();
+                    }
+                catch (final HibernateException ouch)
+                    {
+                    throw factories().hibernate().convert(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
+
+    /**
      * Select a List of objects.
      *
      */
-    @SelectEntityMethod
+    @SelectMethod
     @SuppressWarnings("unchecked")
     public List<EntityType> list(final Query query)
         {
         try {
+            return query.list();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw factories().hibernate().convert(
+                ouch
+                );
+            }
+        }
+
+    /**
+     * Select a List of objects.
+     *
+     */
+    @SelectMethod
+    @SuppressWarnings("unchecked")
+    public List<EntityType> list(final int limit, final Query query)
+        {
+        try {
+            query.setMaxResults(limit);
+            return query.list();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw factories().hibernate().convert(
+                ouch
+                );
+            }
+        }
+
+    /**
+     * Select a List of objects.
+     *
+     */
+    @SelectMethod
+    @SuppressWarnings("unchecked")
+    public List<EntityType> list(final int first, final int limit, final Query query)
+        {
+        try {
+            query.setFirstResult(first);
+            query.setMaxResults(limit);
             return query.list();
             }
         catch (final HibernateException ouch)
@@ -239,19 +335,6 @@ implements Entity.EntityFactory<EntityType>
         // Using wildcards in a HQL query with named parameters.
         // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
         return new StringBuilder(text).append("%").toString();
-        }
-
-    @Override
-    public EntityType empty()
-        {
-        return null ;
-        }
-
-    @Override
-    @CreateEntityMethod
-    public void createEntity(final Runnable oper)
-        {
-        oper.run();
         }
 
     }

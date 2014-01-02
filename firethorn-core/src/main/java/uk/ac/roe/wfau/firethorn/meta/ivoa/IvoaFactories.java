@@ -27,24 +27,24 @@ public interface IvoaFactories
      * Our resource factory.
      *
      */
-    public IvoaResource.Factory resources();
+    public IvoaResource.EntityFactory resources();
 
     /**
      * Our schema factory.
      *
      */
-    public IvoaSchema.Factory schemas();
+    public IvoaSchema.EntityFactory schemas();
 
     /**
      * Our table factory.
      *
      */
-    public IvoaTable.Factory tables();
+    public IvoaTable.EntityFactory tables();
 
     /**
      * Our column factory.
      *
      */
-    public IvoaColumn.Factory  columns();
+    public IvoaColumn.EntityFactory  columns();
 
     }

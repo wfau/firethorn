@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -52,8 +52,8 @@ extends BaseResource<JdbcSchema>
      * Resource factory interface.
      *
      */
-    public static interface Factory
-    extends BaseResource.Factory<JdbcResource>
+    public static interface EntityFactory
+    extends BaseResource.EntityFactory<JdbcResource>
         {
 
         /**
@@ -78,7 +78,7 @@ extends BaseResource<JdbcSchema>
          * Our schema factory.
          *
          */
-        public JdbcSchema.Factory schemas();
+        public JdbcSchema.EntityFactory schemas();
 
         /**
          * Select the default 'userdata' Resource.
@@ -105,7 +105,7 @@ extends BaseResource<JdbcSchema>
          *
          */
         public JdbcSchema select(final String catalog, final String schema)
-        throws NotFoundException;
+        throws EntityNotFoundException;
 
         /**
          * Search for a schema by catalog and schema name.
@@ -136,7 +136,7 @@ extends BaseResource<JdbcSchema>
          *
          */
         public JdbcSchema simple()
-        throws NotFoundException;
+        throws EntityNotFoundException;
 
         }
 
@@ -187,23 +187,5 @@ extends BaseResource<JdbcSchema>
      *
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
-
-    /**
-     * The SQL metadata needed to create a column.
-     *
-     *
-    public interface CreateColumn
-        {
-        public String name();
-        public String type();
-        }
-
-    **
-     * The SQL metadata needed to create a column.
-     *
-     *
-    public CreateColumn create();
-    *
-    */
 
     }

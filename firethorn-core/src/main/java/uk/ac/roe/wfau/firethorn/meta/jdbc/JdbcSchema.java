@@ -17,9 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import org.joda.time.DateTime;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
@@ -85,8 +87,8 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      * Schema factory interface.
      *
      */
-    public static interface Factory
-    extends BaseSchema.Factory<JdbcResource, JdbcSchema>
+    public static interface EntityFactory
+    extends BaseSchema.EntityFactory<JdbcResource, JdbcSchema>
         {
         /**
          * Create a new schema for an identity.
@@ -106,7 +108,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NotFoundException;
+        throws EntityNotFoundException;
 
         /**
          * Search for a schema.
@@ -124,7 +126,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * The schema table factory.
          *
          */
-        public JdbcTable.Factory tables();
+        public JdbcTable.EntityFactory tables();
 
         /**
          * NameFactory implementation.
@@ -180,7 +182,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new table.
          *
          */
-        public JdbcTable create(final String name, final JdbcTable.TableType type);
+        public JdbcTable create(final String name, final JdbcTable.JdbcType type);
 
         /**
          *  Create a new table.
@@ -193,6 +195,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public void scan();
+
+        /**
+         * Get the next set of tables to process.
+         *
+         */
+        public Iterable<JdbcTable> pending(final DateTime date, final int page);
 
         }
     @Override

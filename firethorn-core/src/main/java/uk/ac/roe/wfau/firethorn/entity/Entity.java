@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
+
     /**
      * Common interface for a name factory.
      *
@@ -101,13 +102,6 @@ public interface Entity
         throws IdentifierNotFoundException;
 
         /**
-         * Select a specific Entity by UUID.
-         *
-        public EntityType select(final UUID uuid)
-        throws NotFoundException;
-         */
-
-        /**
          * Our local Identifier factory.
          *
          */
@@ -118,19 +112,6 @@ public interface Entity
          *
          */
         public LinkFactory<EntityType> links();
-
-        /**
-         * Our 'empty' entity instance.
-         * This can be used to represent things like 'nobody', 'no results', or an empty resource, schema, table or column.
-         *
-         */
-        public EntityType empty();
-
-        /**
-         * Wrap a runnable operation in a write transaction.
-         *
-         */
-        public void createEntity(final Runnable oper);
 
         }
 
@@ -169,13 +150,6 @@ public interface Entity
      *
      */
     public void refresh();
-
-    /**
-     * Delete this Entity from the database.
-     *
-     */
-    public void delete();
-
 
     }
 

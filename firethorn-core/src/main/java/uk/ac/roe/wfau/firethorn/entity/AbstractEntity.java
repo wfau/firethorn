@@ -74,6 +74,7 @@ implements Entity
 
     protected static final String DB_CREATED_COL  = "created"  ;
     protected static final String DB_MODIFIED_COL = "modified" ;
+    protected static final String DB_ACCESSED_COL = "accessed" ;
 
     /**
      * Access to our ComponentFactories singleton instance.
@@ -346,7 +347,6 @@ implements Entity
     /**
      * Delete this Entity from the database.
      *
-     */
     @Override
     public void delete()
         {
@@ -354,5 +354,6 @@ implements Entity
             this
             );
         }
+     */
     }
 

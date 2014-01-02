@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.test.TestRoot;
 
@@ -104,5 +105,31 @@ extends TestRoot
             }
         log.debug("-- Test completed --");
         log.debug("Status [{}]", services().executor().status(ident));
+        }
+
+    @Test
+    public void test001()
+    throws Exception
+        {
+        log.debug("-- Creating test --");
+        final TestJob job = services().factory().create(
+            "fred",
+            new Integer(
+                5
+                )
+            );
+
+        log.debug("Status  [{}]", job.status());
+        log.debug("Length  [{}]", job.length());
+        log.debug("Factory [{}]", job.factory());
+
+        factories().tests().executor().update(
+            job.ident(),
+            Job.Status.RUNNING,
+            10
+            );
+
+        Thread.sleep(20000);
+
         }
     }

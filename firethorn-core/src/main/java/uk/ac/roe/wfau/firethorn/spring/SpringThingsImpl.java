@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+
 /**
  * SpringThings implementation.
  *
@@ -41,5 +42,18 @@ public class SpringThingsImpl
     public ApplicationContext context()
         {
         return this.context ;
+        }
+
+    /**
+     * Our transaction wrapper.
+     *
+     */
+    @Autowired
+    private SpringThings.TransactionWrapper transactor;
+
+    @Override
+    public SpringThings.TransactionWrapper transactor()
+        {
+        return this.transactor;
         }
     }

@@ -58,7 +58,7 @@ extends BaseColumn<IvoaColumn>
      * Column factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseColumn.EntityFactory<IvoaTable, IvoaColumn>
         {
         /**

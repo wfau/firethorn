@@ -63,7 +63,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
      *
      */
     public static interface Factory
-    extends BaseSchema.Factory<AdqlResource, AdqlSchema>
+    extends BaseSchema.EntityFactory<AdqlResource, AdqlSchema>
         {
         /**
          * The schema table factory.

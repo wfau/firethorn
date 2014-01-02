@@ -418,21 +418,21 @@ extends TwomassQueryTestBase
                 new ExpectedColumn("countdec", AdqlColumn.Type.LONG, 0, "countdec", JdbcColumn.Type.BIGINT, 19),
                 new ExpectedColumn("countall", AdqlColumn.Type.LONG, 0, "countall", JdbcColumn.Type.BIGINT, 19),
 
-                new ExpectedColumn("MIN",    AdqlColumn.Type.DOUBLE, 0, "MIN",      JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("minra",  AdqlColumn.Type.DOUBLE, 0, "minra",    JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("mindec", AdqlColumn.Type.DOUBLE, 0, "mindec",   JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("MIN",    AdqlColumn.Type.DOUBLE, 0, "MIN",      JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("minra",  AdqlColumn.Type.DOUBLE, 0, "minra",    JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("mindec", AdqlColumn.Type.DOUBLE, 0, "mindec",   JdbcColumn.Type.DOUBLE, 0),
 
-                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",      JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("maxra",  AdqlColumn.Type.DOUBLE, 0, "maxra",    JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec",   JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",      JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("maxra",  AdqlColumn.Type.DOUBLE, 0, "maxra",    JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec",   JdbcColumn.Type.DOUBLE, 0),
 
-                new ExpectedColumn("AVG",    AdqlColumn.Type.DOUBLE, 0, "AVG",      JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("avgra",  AdqlColumn.Type.DOUBLE, 0, "avgra",    JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("avgdec", AdqlColumn.Type.DOUBLE, 0, "avgdec",   JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("AVG",    AdqlColumn.Type.DOUBLE, 0, "AVG",      JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("avgra",  AdqlColumn.Type.DOUBLE, 0, "avgra",    JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("avgdec", AdqlColumn.Type.DOUBLE, 0, "avgdec",   JdbcColumn.Type.DOUBLE, 0),
 
-                new ExpectedColumn("SUM",    AdqlColumn.Type.DOUBLE, 0, "SUM",      JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("sumra",  AdqlColumn.Type.DOUBLE, 0, "sumra",    JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("sumdec", AdqlColumn.Type.DOUBLE, 0, "sumdec",   JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("SUM",    AdqlColumn.Type.DOUBLE, 0, "SUM",      JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("sumra",  AdqlColumn.Type.DOUBLE, 0, "sumra",    JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("sumdec", AdqlColumn.Type.DOUBLE, 0, "sumdec",   JdbcColumn.Type.DOUBLE, 0),
 
                 }
             );

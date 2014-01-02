@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -78,7 +78,7 @@ public class TableMappingController
     public TableMappingBean select(
         @PathVariable(TableMappingController.TABLE_ALIAS_FIELD)
         final String alias
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         return new TableMappingBean(
             factories().base().tables().resolve(
                 alias

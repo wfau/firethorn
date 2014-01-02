@@ -77,4 +77,9 @@ extends NamedEntityBeanImpl<TableType>
         {
         return entity().link().concat("/columns/select");
         }
+
+    public interface MetadataBean
+        {
+        }
+
     }

@@ -38,13 +38,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
  *
@@ -92,9 +94,9 @@ public class JdbcResourceEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<JdbcResource>
-    implements JdbcResource.Factory
+    implements JdbcResource.EntityFactory
         {
 
         @Override
@@ -104,7 +106,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcResource> select()
             {
             return super.iterable(
@@ -115,7 +117,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource create(final String ogsaid, final String name, final String url)
             {
             return this.create(
@@ -127,7 +129,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url)
             {
             return super.insert(
@@ -141,7 +143,7 @@ public class JdbcResourceEntity
             }
 
 		@Override
-        @CreateEntityMethod
+        @CreateMethod
 		public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
@@ -156,9 +158,9 @@ public class JdbcResourceEntity
 			}
 
         @Autowired
-        protected JdbcSchema.Factory schemas;
+        protected JdbcSchema.EntityFactory schemas;
         @Override
-        public JdbcSchema.Factory schemas()
+        public JdbcSchema.EntityFactory schemas()
             {
             return this.schemas;
             }
@@ -199,7 +201,7 @@ public class JdbcResourceEntity
          *
          */
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcResource userdata()
             {
             log.debug("userdata()");
@@ -219,7 +221,7 @@ public class JdbcResourceEntity
             return userdata ;
             }
 
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcResource ogsaid(final String ogsaid)
             {
             return super.first(
@@ -231,6 +233,7 @@ public class JdbcResourceEntity
                         )
                 );
             }
+
         }
 
     protected JdbcResourceEntity()
@@ -385,7 +388,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
-            throws NotFoundException
+            throws EntityNotFoundException
                 {
                 return select(
                     factories().jdbc().schemas().names().fullname(
@@ -413,13 +416,23 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema simple()
-            throws NotFoundException
+            throws EntityNotFoundException
                 {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    connection().catalog(),
-                    connection().type().schema()
-                    );
+                try {
+                    return factories().jdbc().schemas().select(
+                        JdbcResourceEntity.this,
+                        connection().catalog(),
+                        connection().type().schema()
+                        );
+                    }
+                catch (final MetadataException ouch)
+                    {
+                    log.warn("Exception trying to access JDBC metadata");
+                    throw new EntityServiceException(
+                        "Exception trying to access JDBC metadata",
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -492,43 +505,54 @@ public class JdbcResourceEntity
     protected void scanimpl()
         {
         log.debug("scanimpl()");
-        //
-        // Default to using the catalog name from the Connection.
-        // Explicitly set it to 'ALL_CATALOGS' to get all.
-        if (this.catalog == null)
-            {
-            this.catalog = connection().catalog();
-            }
-        //
-        // Scan all the catalogs.
-        if (ALL_CATALOGS.equals(this.catalog))
-            {
-            for (final String cname : connection().catalogs())
+        try {
+            //
+            // Default to using the catalog name from the Connection.
+            // Explicitly set it to 'ALL_CATALOGS' to get all.
+            if (this.catalog == null)
                 {
-                try {
-                    scanimpl(
-                        cname
-                        );
-                    }
-                catch (final Exception ouch)
+                this.catalog = connection().catalog();
+                }
+            //
+            // Scan all the catalogs.
+            if (ALL_CATALOGS.equals(this.catalog))
+                {
+                for (final String cname : connection().catalogs())
                     {
-                    log.debug("Exception in catalog processing loop");
-                    log.debug("Exception text   [{}]", ouch.getMessage());
-                    log.debug("Exception string [{}]", ouch.toString());
-                    log.debug("Exception class  [{}]", ouch.getClass().toString());
-                    //
-                    // Continue with the rest of the catalogs ...
-                    //
+                    try {
+                        scanimpl(
+                            cname
+                            );
+                        }
+                    catch (final Exception ouch)
+                        {
+                        log.warn("Exception in catalog processing loop");
+                        log.warn("Exception text   [{}]", ouch.getMessage());
+                        log.warn("Exception string [{}]", ouch.toString());
+                        log.warn("Exception class  [{}]", ouch.getClass().toString());
+                        //
+                        // Continue with the rest of the catalogs ...
+                        //
+                        }
                     }
                 }
+            //
+            // Just scan one catalog.
+            else {
+                scanimpl(
+                    this.catalog
+                    );
+                }
             }
-        //
-        // Just scan one catalog.
-        else {
-            scanimpl(
-                this.catalog
+        catch (final MetadataException ouch)
+            {
+            log.warn("Exception while scanning JdbcResource catalogs [{}]", ouch.getMessage());
+            throw new EntityServiceException(
+                "Exception while scanning JdbcResource catalogs",
+                ouch
                 );
             }
+
 //
 // TODO
 // Reprocess the list disable missing ones ...
@@ -682,10 +706,10 @@ public class JdbcResourceEntity
                     }
                 catch (final SQLException ouch)
                     {
-                    log.error("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
-                    log.debug("Exception text   [{}]", ouch.getMessage());
-                    log.debug("Exception string [{}]", ouch.toString());
-                    log.debug("Exception class  [{}]", ouch.getClass().toString());
+                    log.warn("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
+                    log.warn("Exception text   [{}]", ouch.getMessage());
+                    log.warn("Exception string [{}]", ouch.toString());
+                    log.warn("Exception class  [{}]", ouch.getClass().toString());
                     throw connection().translator().translate(
                         "Reading JDBC catalog schemas",
                         null,
@@ -693,6 +717,14 @@ public class JdbcResourceEntity
                         );
                     }
                 }
+            }
+        catch (final MetadataException ouch)
+            {
+            log.warn("Exception while reading JdbcResource catalog metadata [{}]", ouch.getMessage());
+            throw new EntityServiceException(
+                "Exception while reading JdbcResource catalog metadata",
+                ouch
+                );
             }
         finally {
             connection().close();

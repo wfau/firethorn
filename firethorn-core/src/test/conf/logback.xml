@@ -54,6 +54,9 @@
 	<!--+
 	    | Spring loggers.
 	    +-->
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>
@@ -61,7 +64,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.jdbc">
-		<level value="INFO" />
+		<level value="INDO" />
 	</logger>
 	<logger name="org.springframework.context">
 		<level value="INFO" />
@@ -75,8 +78,26 @@
 	<logger name="org.springframework.aop">
 		<level value="INFO" />
 	</logger>
+	<logger name="org.springframework.orm">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Spring scheduling.
+	    +-->
 	<logger name="org.springframework.scheduling">
-		<level value="DEBUG" />
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Spring transactions.
+        | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
+	    +-->
+	<logger name="org.springframework.transaction">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.transaction.interceptor">
+		<level value="TRACE" />
 	</logger>
 
 	<!--+
@@ -86,17 +107,6 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.hibernate.SQL">
-		<level value="INFO" />
-	</logger>
-
-	<!--+
-	    | Hibernate transactions.
-        | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
-	    +-->
-	<logger name="org.springframework.transaction">
-		<level value="DEBUG" />
-	</logger>
-	<logger name="org.springframework.orm">
 		<level value="INFO" />
 	</logger>
 

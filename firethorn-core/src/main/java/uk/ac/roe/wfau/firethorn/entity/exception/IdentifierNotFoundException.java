@@ -28,11 +28,10 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class IdentifierNotFoundException
-extends NotFoundException
+extends EntityNotFoundException
     {
-
     /**
-     *
+     * Serialzable version UID.
      *
      */
     private static final long serialVersionUID = 2020955869837050984L;

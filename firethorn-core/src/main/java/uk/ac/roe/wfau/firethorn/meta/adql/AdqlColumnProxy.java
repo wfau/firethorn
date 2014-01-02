@@ -69,15 +69,6 @@ implements AdqlColumn
         }
 
     /**
-     * TODO Move to proxy base class
-     */
-    @Override
-    public void delete()
-        {
-        throw new UnsupportedOperationException();
-        }
-
-    /**
      * Iterable wrapper.
      * @todo Make this generic and move to a separate class.
      *

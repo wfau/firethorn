@@ -58,8 +58,8 @@ extends BaseTable<IvoaTable, IvoaColumn>
      * Table factory interface.
      *
      */
-    public static interface Factory
-    extends BaseTable.Factory<IvoaSchema, IvoaTable>
+    public static interface EntityFactory
+    extends BaseTable.EntityFactory<IvoaSchema, IvoaTable>
         {
         /**
          * Create a new table.
@@ -71,7 +71,7 @@ extends BaseTable<IvoaTable, IvoaColumn>
          * The table column factory.
          *
          */
-        public IvoaColumn.Factory columns();
+        public IvoaColumn.EntityFactory columns();
         }
 
     @Override

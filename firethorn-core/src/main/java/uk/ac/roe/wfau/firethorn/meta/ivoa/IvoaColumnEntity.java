@@ -39,10 +39,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
@@ -123,9 +123,9 @@ public class IvoaColumnEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<IvoaColumn>
-    implements IvoaColumn.Factory
+    implements IvoaColumn.EntityFactory
         {
 
         @Override
@@ -135,7 +135,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public IvoaColumn create(final IvoaTable parent, final String name)
             {
             return this.insert(
@@ -147,7 +147,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<IvoaColumn> select(final IvoaTable parent)
             {
             return super.list(
@@ -161,7 +161,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)
         throws NameNotFoundException
             {
@@ -179,7 +179,7 @@ public class IvoaColumnEntity
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -190,7 +190,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public IvoaColumn search(final IvoaTable parent, final String name)
             {
             return super.first(

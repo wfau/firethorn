@@ -33,6 +33,7 @@ import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
@@ -263,6 +264,7 @@ public class SQLServerTranslator
         final StringBuilder builder = new StringBuilder();
         //
         // If the function is user defined.
+//ZRQ-UDF
         if (function instanceof UserDefinedFunction)
             {
             //
@@ -433,6 +435,42 @@ public class SQLServerTranslator
             }
         else{
             return all.toADQL();
+            }
+        }
+
+    /**
+     * Replacement for the PostgreSQLTranslator method.
+     *
+     *
+     */
+    @Override
+    public String translate(final MathFunction funct) throws TranslationException
+        {
+        switch(funct.getType())
+            {
+            case LOG:
+                return "log(" + translate(funct.getParameter(0)) + ")";
+
+            case LOG10:
+                return "log10(" + translate(funct.getParameter(0)) + ")";
+
+            case RAND:
+                return "rand(" + translate(funct.getParameter(0)) + ")";
+
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
+            case ROUND:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
+            case TRUNCATE:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
+
+            default:
+                return getDefaultADQLFunction(
+                    funct
+                    );
             }
         }
     }

@@ -17,9 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
-import java.util.List;
-import java.util.Map;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -473,8 +470,8 @@ extends NamedEntity, Job
         {
         /**
          * The original SelectItem.
-         * 
-        public abstract SelectItem item(); 
+         *
+        public abstract SelectItem item();
          */
 
         /**
@@ -482,7 +479,7 @@ extends NamedEntity, Job
          *
          */
         public abstract String name();
-        
+
         /**
          * The field size.
          *

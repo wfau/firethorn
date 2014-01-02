@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -137,7 +137,7 @@ public class JdbcResourceController
     public JdbcResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException  {
+        ) throws EntityNotFoundException  {
         log.debug("entity() [{}]", ident);
         final JdbcResource entity = factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(

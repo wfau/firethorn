@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -90,14 +90,14 @@ public class JdbcSchemaController
 
     /**
      * Get the target schema based on the identifier in the request.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcSchema entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("schema() [{}]", ident);
         return factories().jdbc().schemas().select(
             factories().jdbc().schemas().idents().ident(

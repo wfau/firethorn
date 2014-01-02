@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -67,10 +69,22 @@ public class JdbcTableController
     public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * POST param for the table name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.table.update.name" ;
+    public static final String TABLE_NAME_PARAM = "urn:jdbc.table.name" ;
+
+    /**
+     * POST param for the JDBC status.
+     *
+     */
+    public static final String JDBC_STATUS_PARAM = "urn:jdbc.table.jdbc.status" ;
+
+    /**
+     * POST param for the ADQL status.
+     *
+     */
+    public static final String ADQL_STATUS_PARAM = "urn:jdbc.table.adql.status" ;
 
 
     @Override
@@ -91,14 +105,14 @@ public class JdbcTableController
 
     /**
      * Get the target table based on the identifier in the request.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
         return factories().jdbc().tables().select(
             factories().jdbc().tables().idents().ident(
@@ -118,6 +132,78 @@ public class JdbcTableController
         final JdbcTable entity
         ){
         log.debug("select()");
+        return bean(
+            entity
+            );
+        }
+
+    /**
+     * POST update name request.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_CONTENT)
+    public JdbcTableBean update(
+        @ModelAttribute(TARGET_ENTITY)
+        final JdbcTable entity,
+        @RequestParam(value=TABLE_NAME_PARAM, required=true)
+        final String name
+        ){
+        log.debug("update(String)");
+        log.debug(" name [{}]", name);
+        //
+        // Needs a transaction ..
+        if (null != name)
+            {
+            entity.name(
+                name
+                );
+            }
+        return bean(
+            entity
+            );
+        }
+
+    /**
+     * POST update request.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    public JdbcTableBean update(
+        @ModelAttribute(TARGET_ENTITY)
+        final JdbcTable entity,
+        @RequestParam(value=JDBC_STATUS_PARAM, required=false)
+        final JdbcTable.JdbcStatus jdbcstatus,
+        @RequestParam(value=ADQL_STATUS_PARAM, required=false)
+        final AdqlTable.AdqlStatus adqlstatus
+        ){
+        log.debug("update(JdbcTable.JdbcStatus)");
+        log.debug(" jdbcstatus [{}]", jdbcstatus);
+        log.debug(" adqlstatus [{}]", adqlstatus);
+
+        factories().spring().transactor().update(
+            new Runnable()
+                {
+                @Override
+                public void run()
+                    {
+                    if (null != jdbcstatus)
+                        {
+                        entity.meta().jdbc().status(
+                            jdbcstatus
+                            );
+                        }
+                    if (null != adqlstatus)
+                        {
+                        entity.meta().adql().status(
+                            adqlstatus
+                            );
+                        }
+                    }
+                }
+            );
+
         return bean(
             entity
             );

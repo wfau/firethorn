@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
  *
@@ -125,7 +125,7 @@ extends JdbcResourceTestBase
             );
         }
 
-    @Test(expected=NotFoundException.class)
+    @Test(expected=EntityNotFoundException.class)
     public void test008()
     throws Exception
         {
@@ -176,7 +176,7 @@ extends JdbcResourceTestBase
             );
         }
 
-    @Test(expected=NotFoundException.class)
+    @Test(expected=EntityNotFoundException.class)
     public void test010()
     throws Exception
         {
@@ -203,7 +203,7 @@ extends JdbcResourceTestBase
                     );
         }
 
-    @Test(expected=NotFoundException.class)
+    @Test(expected=EntityNotFoundException.class)
     public void test011()
     throws Exception
         {

@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,23 +38,45 @@ import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController;
 
 @Slf4j
 @Controller
-@RequestMapping("/tap/{ident}/")
+@RequestMapping("/tap/{ident}/async")
 public class AdqlTapAsyncController extends AbstractController {
 	
+	
+   /**
+	 * Default query schema
+	 */
 	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
+	
+	
+   /**
+    * VOTable MIME type.
+    *
+    */
+   public static final String VOTABLE_MIME = "application/x-votable+xml" ;
+   
+   /**
+    * TextXml MIME type.
+    *
+    */
+   public static final String TEXT_XML_MIME = "text/xml" ;
+
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub
-		return path("/tap/{ident}/") ;
+		return path("/tap/{ident}/async") ;
 	}
-	 /**
+	
+	/**
      * Get the target workspace based on the ident in the path. 
      *
      */
@@ -67,58 +93,104 @@ public class AdqlTapAsyncController extends AbstractController {
             );
         }
 
+    @RequestMapping(value="/{jobid}/phase", method = RequestMethod.GET)
+	@ResponseBody
+    public String phase(@PathVariable String jobid) {
+        return jobid;
+    }
     
+    @RequestMapping(value="/{jobid}/quote", method = RequestMethod.GET)
+	@ResponseBody
+    public String quote(@PathVariable String jobid) {
+        return "quote";
+    }
+    
+    @RequestMapping(value="/{jobid}/executionduration", method = RequestMethod.GET)
+	@ResponseBody
+    public String executionduration(@PathVariable String jobid) {
+        return "executionduration";
+    }
+ 
+    @RequestMapping(value="/{jobid}/destruction", method = RequestMethod.GET)
+	@ResponseBody
+    public String destruction(@PathVariable String jobid) {
+        return "destruction";
+    }
+    
+    @RequestMapping(value="/{jobid}/error", method = RequestMethod.GET)
+    
+    public String error(@PathVariable String jobid) {
+        return "error";
+    }
+    
+    
+    @RequestMapping(value="/{jobid}/results", method = RequestMethod.GET)
+	@ResponseBody
+    public String results(@PathVariable String jobid) {
+        return "results";
+    }
+  
     
     /**
      * Web service method
      * Create an Async query job
      * 
      */
-	@RequestMapping(value="async", method = RequestMethod.GET)
-	public @ResponseBody XMLResponse createAsyncJob(
+	@RequestMapping( method = RequestMethod.GET)
+	@ResponseBody
+	public String createAsyncJob(
         @ModelAttribute("urn:adql.resource.entity")
         AdqlResource resource,
+        final HttpServletResponse response,
         @RequestParam("QUERY") String QUERY,
         @RequestParam("LANG") String LANG,
         @RequestParam("REQUEST") String REQUEST    
-        ){
+        ) throws IdentifierNotFoundException, IOException {
 		
-	
-		XMLResponse xmlResponse = new XMLResponse("");
-	
 		
-		try {
+
+			AdqlSchema schema;
+		    
 			if (REQUEST.equalsIgnoreCase("doQuery") && LANG.equalsIgnoreCase("ADQL")){
-				AdqlSchema schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
-
-						if (schema == null)
-						{
-						 schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
+				try{
+					schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
+				}  catch (final NameNotFoundException ouch) {
+					schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
+				}
+				
+				try {
+					
+					AdqlQuery query = schema.queries().create(
+					                QUERY
+					                );
+				
+					if (query!=null){
+					
+						Status jobstatus = query.prepare();
+						if (jobstatus == Status.READY){
+							jobstatus = query.execute();
 						}
-				 
-				 AdqlQuery q = schema.queries().create(
-				                QUERY
-				                );
-					log.error("Schema :::::::::  [{}]",q.toString());
+						
+						return "query";
+	
+					}
+				
 
-				xmlResponse = new XMLResponse(q.ident().toString());
+				} catch (final Exception ouch) {
+					log.error("Exception caught [{}]", ouch);
+					ouch.printStackTrace();
+
+		        }
+				
 
 			} else {
-				xmlResponse = new XMLResponse("Invalid params");
+				
 				log.error("Invalid Params [{}][{}][{}]",REQUEST,LANG, QUERY);
 
 			}
-		} catch (final Exception ouch) {
-			log.error("Exception caught [{}]", ouch.getMessage());
-			xmlResponse = new XMLResponse("Invalid params");
-
-        }
+			return "query";
 		
-		return xmlResponse;
-			
         }
-
-
 
 	 
 }

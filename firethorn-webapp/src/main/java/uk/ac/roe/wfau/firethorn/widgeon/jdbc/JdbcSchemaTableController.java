@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -109,7 +109,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
     public JdbcSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().jdbc().schemas().select(
             factories().jdbc().schemas().idents().ident(
@@ -145,7 +145,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);
         return bean(
             schema.tables().select(

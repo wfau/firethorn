@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -89,14 +89,14 @@ public class JdbcColumnController
 
     /**
      * Get the target column based on the identifier in the request.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcColumn entity(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
         return factories().jdbc().columns().select(
             factories().jdbc().columns().idents().ident(

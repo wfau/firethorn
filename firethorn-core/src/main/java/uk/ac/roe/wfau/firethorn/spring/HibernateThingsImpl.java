@@ -51,7 +51,9 @@ public class HibernateThingsImpl
     @Override
     public DataAccessException convert(final HibernateException ouch)
         {
-        log.error("Hibernate excepion [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+        log.debug("convert(HibernateException)");
+        log.debug("Hibernate excepion [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+        log.debug("  excepion ", ouch);
         throw ouch ;
         }
 
@@ -64,7 +66,14 @@ public class HibernateThingsImpl
     @Override
     public Session session()
         {
-        return this.factory.getCurrentSession();
+        try {
+            return this.factory.getCurrentSession();
+            }
+        catch (final HibernateException ouch)
+            {
+            log.debug("Exception reading current session [{}]", ouch.getMessage());
+            return null ;
+            }
         }
 
     @Override

@@ -111,8 +111,8 @@ extends TwomassQueryTestBase
                 );
             }
         assertEquals(
-            i,
-            results.length
+            results.length,
+            i
             );
         }
     }

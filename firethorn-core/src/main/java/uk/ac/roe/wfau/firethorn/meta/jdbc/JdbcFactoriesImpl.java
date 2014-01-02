@@ -30,25 +30,25 @@ public class JdbcFactoriesImpl
     {
 
     @Autowired
-    private JdbcResource.Factory resources;
+    private JdbcResource.EntityFactory resources;
     @Override
-    public JdbcResource.Factory resources()
+    public JdbcResource.EntityFactory resources()
         {
         return this.resources;
         }
 
     @Autowired
-    private JdbcSchema.Factory schemas;
+    private JdbcSchema.EntityFactory schemas;
     @Override
-    public JdbcSchema.Factory schemas()
+    public JdbcSchema.EntityFactory schemas()
         {
         return this.schemas;
         }
 
     @Autowired
-    private JdbcTable.Factory tables;
+    private JdbcTable.EntityFactory tables;
     @Override
-    public JdbcTable.Factory tables()
+    public JdbcTable.EntityFactory tables()
         {
         return this.tables;
         }

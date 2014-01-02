@@ -178,7 +178,11 @@ extends AbstractNamedEntity
  */
         if (this.scanprev == 0)
             {
+            log.debug("Running scan ...");
             scansync();
+            }
+        else {
+            log.debug("Skipping scan ...");
             }
         }
 

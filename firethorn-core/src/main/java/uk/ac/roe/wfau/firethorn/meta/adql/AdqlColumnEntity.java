@@ -38,11 +38,11 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
@@ -136,7 +136,7 @@ public class AdqlColumnEntity
         private AdqlTable.Factory tables ;
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlColumn select(final Identifier ident)
         throws IdentifierNotFoundException
             {
@@ -166,7 +166,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
             {
             return this.insert(
@@ -178,7 +178,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
             {
             return this.insert(
@@ -191,7 +191,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<AdqlColumn> select(final AdqlTable parent)
             {
             return super.list(
@@ -205,7 +205,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlColumn select(final AdqlTable parent, final String name)
         throws NameNotFoundException
             {
@@ -222,7 +222,7 @@ public class AdqlColumnEntity
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -233,7 +233,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public AdqlColumn search(final AdqlTable parent, final String name)
             {
             return super.first(

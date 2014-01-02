@@ -123,15 +123,6 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
         }
      */
 
-    /**
-     * Test method.
-     *
-    public void resource(final BaseResource<SchemaType> parent)
-        {
-        this.parent = parent;
-        }
-     */
-
     @Override
     public StringBuilder namebuilder()
         {

@@ -49,10 +49,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
  *
@@ -184,6 +184,7 @@ implements Job
 
         /**
          * Our local service implementation.
+         * @todo simplify what is essentially 'this'.
          *
          */
         protected Job.Executor executor()
@@ -216,12 +217,14 @@ implements Job
         @SelectAtomicMethod
         public Status status(final Identifier ident)
             {
+            log.debug("status(Identifier)");
+            log.debug("  ident [{}]", ident);
             try {
                 return resolver().select(
                     ident
                     ).status();
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to get job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -233,6 +236,8 @@ implements Job
         public Status status(final Identifier ident, final Status status)
             {
             log.debug("status(Identifier, Status)");
+            log.debug("  ident  [{}]", ident);
+            log.debug("  status [{}]", status);
             try {
                 final Job job = resolver().select(
                     ident
@@ -242,7 +247,7 @@ implements Job
                         status
                         );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -373,7 +378,7 @@ else {
     return Status.ERROR;
     }
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -387,7 +392,7 @@ else {
 
         @Async
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Future<Status> execute(final Identifier ident)
             {
             log.debug("execute(Identifier)");
@@ -399,7 +404,7 @@ else {
                         ).execute()
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
                 return new AsyncResult<Status>(

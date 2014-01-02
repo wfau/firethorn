@@ -26,19 +26,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class IdentifierFormatException
-extends RuntimeException
+extends InputFormatException
     {
-
     /**
-     *
+     * Serialzable version UID.
      *
      */
     private static final long serialVersionUID = -7604911350682400120L;
+
     /**
      * Default message for simple constructor.
      *
      */
-    public static final String DEFAULT_MESSAGE = "Invalid identifier [:ident:]" ;
+    public static final String DEFAULT_MESSAGE = "Identifier syntax error [:ident:]" ;
 
     /**
      * Create a default message.
@@ -55,17 +55,15 @@ extends RuntimeException
             ident,
             message(
                 ident
-                ),
-            null
+                )
             );
         }
 
     public IdentifierFormatException(final String ident, final String message)
         {
-        this(
+        super(
             ident,
-            message,
-            null
+            message
             );
         }
 
@@ -83,17 +81,10 @@ extends RuntimeException
     public IdentifierFormatException(final String ident, final String message, final Throwable cause)
         {
         super(
+            ident,
             message,
             cause
             );
-        this.ident = ident ;
-        }
-
-    private final String ident;
-
-    public String ident()
-        {
-        return this.ident;
         }
     }
 

@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
@@ -135,7 +135,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * JSON request to select by name.
-     * @throws NotFoundException
+     * @throws EntityNotFoundException
      *
      */
     @ResponseBody

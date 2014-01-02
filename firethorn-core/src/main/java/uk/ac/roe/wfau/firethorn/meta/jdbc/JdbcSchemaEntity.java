@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -43,16 +44,18 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
  *
@@ -202,9 +205,9 @@ public class JdbcSchemaEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<JdbcSchema>
-    implements JdbcSchema.Factory
+    implements JdbcSchema.EntityFactory
         {
 
         @Override
@@ -214,7 +217,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
             {
 // TODO Need the resource catalog name ?
@@ -235,7 +238,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
             {
             return this.create(
@@ -249,7 +252,7 @@ public class JdbcSchemaEntity
                 );
             }
 
-        @CreateEntityMethod
+        @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
             return this.insert(
@@ -263,7 +266,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent)
             {
             return super.list(
@@ -277,9 +280,9 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NotFoundException
+        throws EntityNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
@@ -295,14 +298,14 @@ public class JdbcSchemaEntity
                 return found ;
                 }
             else {
-                throw new NotFoundException(
+                throw new EntityNotFoundException(
                     "Unable to find matching schema [" + catalog + "][" + found  + "]"
                     );
                 }
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
@@ -375,15 +378,14 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
         throws NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
             log.debug("  Schema   [{}]", name);
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "JdbcSchema-select-parent.name"
@@ -396,7 +398,7 @@ public class JdbcSchemaEntity
                         )
                     );
                 }
-            catch (final NotFoundException ouch)
+            catch (final EntityNotFoundException ouch)
                 {
                 log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -407,7 +409,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String name)
             {
             return super.first(
@@ -424,7 +426,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity owner)
             {
             return super.iterable(
@@ -441,9 +443,9 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcTable.Factory tables;
+        protected JdbcTable.EntityFactory tables;
         @Override
-        public JdbcTable.Factory tables()
+        public JdbcTable.EntityFactory tables()
             {
             return this.tables;
             }
@@ -656,7 +658,7 @@ public class JdbcSchemaEntity
                 }
 
             @Override
-            public JdbcTable create(final String name, final JdbcTable.TableType type)
+            public JdbcTable create(final String name, final JdbcTable.JdbcType type)
                 {
                 final JdbcTable result = factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
@@ -704,6 +706,16 @@ public class JdbcSchemaEntity
                 // TODO Add parent constraint.
                 return factories().jdbc().tables().select(
                     ident
+                    );
+                }
+
+            @Override
+            public Iterable<JdbcTable> pending(final DateTime date, final int page)
+                {
+                return factories().jdbc().tables().pending(
+                    JdbcSchemaEntity.this,
+                    date,
+                    page
                     );
                 }
             };
@@ -756,16 +768,16 @@ public class JdbcSchemaEntity
                                 ttname
                                 );
                             table.meta().jdbc().type(
-                                JdbcTable.TableType.match(
+                                JdbcTable.JdbcType.match(
                                     tttype
                                     )
                                 );
                             }
-                        catch (final NotFoundException ouch)
+                        catch (final EntityNotFoundException ouch)
                             {
                             tablesimpl().create(
                                 ttname,
-                                JdbcTable.TableType.match(
+                                JdbcTable.JdbcType.match(
                                     tttype
                                     )
                                 );
@@ -786,6 +798,14 @@ public class JdbcSchemaEntity
                         );
                     }
                 }
+            }
+        catch (final MetadataException ouch)
+            {
+            log.warn("Exception while reading JdbcSchema metadata [{}]", ouch.getMessage());
+            throw new EntityServiceException(
+                "Exception while reading JdbcSchema metadata",
+                ouch
+                );
             }
         finally {
             resource().connection().close();

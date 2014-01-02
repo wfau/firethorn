@@ -48,6 +48,8 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
+import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
 
 /**
@@ -96,6 +98,46 @@ public class JdbcConnectionEntity
     public SQLExceptionConverter converter()
         {
         return converter ;
+        }
+
+    /**
+     * An Exception to indicate a problem accessing the JDBC metadata.
+     *
+     */
+    public static class MetadataException
+    extends FirethornCheckedException
+        {
+        /**
+         * Serialzable version UID.
+         *
+         */
+        private static final long serialVersionUID = -4567384444408505866L;
+
+        /**
+         * Public constructor.
+         * @param cause
+         *
+         */
+        public MetadataException(final SQLException cause)
+            {
+            super(
+                cause
+                );
+            }
+
+        /**
+         * Public constructor.
+         * @param message
+         * @param cause
+         *
+         */
+        public MetadataException(final String message, final SQLException cause)
+            {
+            super(
+                message,
+                cause
+                );
+            }
         }
 
     public JdbcConnectionEntity()
@@ -508,7 +550,7 @@ public class JdbcConnectionEntity
                 if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Duplicate call to open");
-                    throw new RuntimeException(
+                    throw new JdbcConnectionException(
                         "Database connection already open"
                         );
                     }
@@ -529,7 +571,7 @@ public class JdbcConnectionEntity
                 if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Out of sequence call to close");
-                    throw new RuntimeException(
+                    throw new JdbcConnectionException(
                         "Database connection already closed"
                         );
                     }
@@ -561,6 +603,7 @@ public class JdbcConnectionEntity
 
     @Override
     public DatabaseMetaData metadata()
+    throws MetadataException
         {
         log.debug("metadata()");
         final Connection connection = open();
@@ -572,7 +615,7 @@ public class JdbcConnectionEntity
             catch (final SQLException ouch)
                 {
                 log.warn("Exception fetching JDBC metadata [{}]", ouch.getMessage());
-                throw new JdbcMetadataAccessException(
+                throw new MetadataException(
                     ouch
                     );
                 }
@@ -582,6 +625,7 @@ public class JdbcConnectionEntity
 
     @Override
     public String catalog()
+    throws MetadataException
         {
         final Connection connection = open();
         if (connection != null)
@@ -592,7 +636,7 @@ public class JdbcConnectionEntity
             catch (final SQLException ouch)
                 {
                 log.warn("Exception fetching JDBC catalog name [{}]", ouch.getMessage());
-                throw new JdbcMetadataAccessException(
+                throw new MetadataException(
                     ouch
                     );
                 }
@@ -602,6 +646,7 @@ public class JdbcConnectionEntity
 
     @Override
     public Iterable<String> catalogs()
+    throws MetadataException
         {
         final List<String> catalogs = new ArrayList<String>();
         try {
@@ -619,7 +664,7 @@ public class JdbcConnectionEntity
         catch(final SQLException ouch)
             {
             log.warn("Exception fetching JDBC catalog list [{}]", ouch.getMessage());
-            throw new JdbcMetadataAccessException(
+            throw new MetadataException(
                 ouch
                 );
             }
@@ -734,9 +779,16 @@ public class JdbcConnectionEntity
         {
         if (this.type == null)
             {
-            this.type = JdbcProductType.match(
-                this.metadata()
-                );
+            try {
+                this.type = JdbcProductType.match(
+                    this.metadata()
+                    );
+                }
+            catch (final MetadataException ouch)
+                {
+                log.error("Error loading JDBC metadata");
+                this.type = JdbcProductType.UNKNOWN;
+                }
             }
         return this.type;
         }

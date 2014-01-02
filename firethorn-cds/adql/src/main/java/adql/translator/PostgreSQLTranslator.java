@@ -522,7 +522,7 @@ public class PostgreSQLTranslator implements ADQLTranslator {
 	}
 
 	public String translate(Operation op) throws TranslationException {
-		return translate(op.getLeftOperand())+op.getOperation().toADQL()+translate(op.getRightOperand());
+		return translate(op.getLeftOperand()) + " " + op.getOperation().toADQL() + " " + translate(op.getRightOperand());
 	}
 
 	/* ************************ */

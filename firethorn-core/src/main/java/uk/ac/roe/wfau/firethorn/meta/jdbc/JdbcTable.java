@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -75,8 +77,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Builder interface that manipulates the 'real' JDBC tables.
+     * @deprecated
      *
      */
+    @Deprecated
     public static interface Builder
         {
         /**
@@ -94,11 +98,41 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * Physical JDBC factory interface.
+     * @todo Move this up to resource ?
+     *
+     */
+    public static interface JdbcDriver
+        {
+        /**
+         * Create a 'physical' JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
+         */
+        public void create(final JdbcTable table);
+
+        /**
+         * Delete (DELETE) a JDBC data.
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
+         */
+        public void delete(final JdbcTable table);
+
+        /**
+         * Delete (DROP) a JDBC table.
+         * *This should only be reachable via a transactional method on our parent resource.
+         *
+         */
+        public void drop(final JdbcTable table);
+
+        }
+
+    /**
      * Table factory interface.
      *
      */
-    public static interface Factory
-    extends BaseTable.Factory<JdbcSchema, JdbcTable>
+    public static interface EntityFactory
+    extends BaseTable.EntityFactory<JdbcSchema, JdbcTable>
         {
         /**
          * Create a new table.
@@ -110,7 +144,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new table.
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final String name, final TableType type);
+        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
 
         /**
          * Create a new query table.
@@ -129,6 +163,19 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable.Builder builder();
+
+        /**
+         * Our physical JDBC factory.
+         *
+         */
+        public JdbcTable.JdbcDriver driver();
+
+        /**
+         * Get the next set of tables to process.
+         * This is just for clean up for now ...
+         *
+         */
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
 
         }
 
@@ -172,16 +219,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public Columns columns();
 
     /**
-     * Flag to indicate that the physical table exists.
+     * Enum for the JDBC table types.
      *
      */
-    public boolean exists();
-
-    /**
-     * JDBC table types.
-     *
-     */
-    public static enum TableType
+    public static enum JdbcType
         {
         TABLE("TABLE"),
         VIEW("VIEW"),
@@ -197,14 +238,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
             return this.jdbc;
             }
 
-        private TableType(final String jdbc)
+        private JdbcType(final String jdbc)
             {
             this.jdbc = jdbc;
             }
 
-        static protected Map<String, TableType> mapping = new HashMap<String, TableType>();
+        static protected Map<String, JdbcType> mapping = new HashMap<String, JdbcType>();
         static {
-            for (final TableType type : TableType.values())
+            for (final JdbcType type : JdbcType.values())
                 {
                 mapping.put(
                     type.jdbc,
@@ -213,12 +254,27 @@ extends BaseTable<JdbcTable, JdbcColumn>
                 }
             }
 
-        static public TableType match(final String string)
+        static public JdbcType match(final String string)
             {
             return mapping.get(
                 string
                 );
             }
+        }
+
+    /**
+     * Enum for the physical table status.
+     * @todo Move up to resource ?
+     *
+     */
+    public static enum JdbcStatus
+        {
+        CREATED(),
+        UPDATED(),
+        DELETED(),
+        DROPPED(),
+        UNKNOWN();
+
         }
 
     /**
@@ -235,16 +291,34 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public interface JdbcMetadata {
 
             /**
-             * Get the database table type.
+             * The table row count.
              *
              */
-            public TableType type();
+            public Long count();
 
             /**
-             * Set the database table type.
+             * Get the JDBC table type.
              *
              */
-            public void type(final TableType type);
+            public JdbcType type();
+
+            /**
+             * Set the JDBC table type.
+             *
+             */
+            public void type(final JdbcType type);
+
+            /**
+             * The JDBC table status.
+             *
+             */
+            public JdbcTable.JdbcStatus status() ;
+
+            /**
+             * Set the JDBC table status.
+             *
+             */
+            public void status(final JdbcTable.JdbcStatus status) ;
 
             }
 

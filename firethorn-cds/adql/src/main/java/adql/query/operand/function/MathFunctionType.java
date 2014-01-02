@@ -37,6 +37,8 @@ public enum MathFunctionType {
 	LOG10(1),	// returns the base 10 logarithm of a double value.
 	MOD(2),
 	PI(0),
+	SQUARE(1),
+	SIGN(1),
 	POWER(2),
 	RADIANS(1),
 	SQRT(1),

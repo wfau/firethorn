@@ -31,9 +31,9 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -69,7 +69,7 @@ extends BaseComponentEntity
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public BaseTable select(final Identifier ident)
         throws IdentifierNotFoundException
             {
@@ -119,7 +119,7 @@ extends BaseComponentEntity
 
         @Override
         public BaseTable<?,?> resolve(final String alias)
-        throws NotFoundException
+        throws EntityNotFoundException
             {
             return this.select(
                 this.idents.ident(
@@ -136,9 +136,9 @@ extends BaseComponentEntity
      *
      */
     @Repository
-    public static abstract class Factory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
+    public static abstract class EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
     extends AbstractEntityFactory<TableType>
-    implements BaseTable.Factory<SchemaType, TableType>
+    implements BaseTable.EntityFactory<SchemaType, TableType>
         {
         }
 
@@ -231,6 +231,8 @@ extends BaseComponentEntity
         return root().query();
         }
 
+
+    // TODO make this abstract and implement in the entity classes.
     @Override
     public AdqlTable.Metadata meta()
         {
@@ -241,7 +243,23 @@ extends BaseComponentEntity
                 {
                 return new AdqlTable.Metadata.AdqlMetadata()
                     {
+                    @Override
+                    public Long count()
+                        {
+                        return base().meta().adql().count();
+                        }
 
+                    @Override
+                    public AdqlTable.AdqlStatus status()
+                        {
+                        return base().meta().adql().status();
+                        }
+
+                    @Override
+                    public void status(final AdqlTable.AdqlStatus status)
+                        {
+                        // TODO Auto-generated method stub
+                        }
                     };
                 }
             };

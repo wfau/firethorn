@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
@@ -28,6 +32,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 public class JdbcTableBean
 extends BaseTableBean<JdbcTable>
     {
+    /**
+     * Bean wrapper for <code>Iterable&lt;JdbcTable&gt;</code>.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<JdbcTable, JdbcTableBean>
         {
@@ -45,6 +53,7 @@ extends BaseTableBean<JdbcTable>
                 );
             }
         }
+
     /**
      * Public constructor.
      *
@@ -66,5 +75,67 @@ extends BaseTableBean<JdbcTable>
         else {
             return null ;
             }
+        }
+
+    public interface MetadataBean
+    extends AdqlTableBean.MetadataBean
+        {
+        public interface JdbcMetadataBean
+            {
+            public Long getCount();
+            public JdbcTable.JdbcType getType();
+            public JdbcTable.JdbcStatus getStatus();
+            }
+        public JdbcMetadataBean getJdbc();
+        }
+
+    public MetadataBean getMetadata()
+        {
+        return new MetadataBean()
+            {
+            @Override
+            public AdqlMetadataBean getAdql()
+                {
+                return new AdqlMetadataBean()
+                    {
+                    @Override
+                    public Long getCount()
+                        {
+                        return entity().meta().adql().count();
+                        }
+
+                    @Override
+                    public AdqlStatus getStatus()
+                        {
+                        return entity().meta().adql().status();
+                        }
+                    };
+                }
+
+            @Override
+            public JdbcMetadataBean getJdbc()
+                {
+                return new JdbcMetadataBean()
+                    {
+                    @Override
+                    public Long getCount()
+                        {
+                        return entity().meta().jdbc().count();
+                        }
+
+                    @Override
+                    public JdbcType getType()
+                        {
+                        return entity().meta().jdbc().type();
+                        }
+
+                    @Override
+                    public JdbcStatus getStatus()
+                        {
+                        return entity().meta().jdbc().status();
+                        }
+                    };
+                }
+            };
         }
     }

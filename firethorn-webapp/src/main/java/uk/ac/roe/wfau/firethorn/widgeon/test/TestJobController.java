@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -318,7 +318,7 @@ public class TestJobController
     public Bean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
         return bean(
             factories().tests().resolver().select(
                 factories().tests().idents().ident(
@@ -347,7 +347,7 @@ public class TestJobController
         final Job.Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout
-        ) throws NotFoundException {
+        ) throws EntityNotFoundException {
 
         log.debug("---- ---- ---- ----");
         log.debug("JSON update(String, Integer, Status, Integer)");
@@ -394,7 +394,7 @@ public class TestJobController
          *
          */
         public void update(final TestJob  job, final String  name, final Integer length, final Integer limit)
-        throws NotFoundException;
+        throws EntityNotFoundException;
 
         }
 
@@ -423,7 +423,7 @@ public class TestJobController
             final Integer length,
             final Integer limit
             )
-        throws NotFoundException
+        throws EntityNotFoundException
             {
             log.debug("---- ---- ---- ----");
             log.debug("update(TestJob, String, Integer)");

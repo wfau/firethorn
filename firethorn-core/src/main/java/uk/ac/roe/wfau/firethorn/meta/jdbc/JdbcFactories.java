@@ -27,19 +27,19 @@ public interface JdbcFactories
      * Our resource factory.
      *
      */
-    public JdbcResource.Factory resources();
+    public JdbcResource.EntityFactory resources();
 
     /**
      * Our schema factory.
      *
      */
-    public JdbcSchema.Factory schemas();
+    public JdbcSchema.EntityFactory schemas();
 
     /**
      * Our table factory.
      *
      */
-    public JdbcTable.Factory tables();
+    public JdbcTable.EntityFactory tables();
 
     /**
      * Our column factory.
