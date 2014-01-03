@@ -401,7 +401,7 @@ jdbcspace=${jdbcspace:?}
 adqlspace=${adqlspace:?}
 atlashome=${adqlschema:?}
 EOF
-                ln -s "firethorn.spaces.${datetime:?}" firethorn.spaces
+                ln -s -f "firethorn.spaces.${datetime:?}" firethorn.spaces
             popd
 
             // Not mounted

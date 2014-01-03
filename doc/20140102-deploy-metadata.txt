@@ -1,0 +1,382 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Add a metadoc for the ATLASv20131127 release.
+#
+
+# -------------------------------------------------------------------------------------------
+# Add the new metadoc.
+#[user@desktop]
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'metadata/metadocs'
+
+            cp  ATLASv20131029_TablesSchema.xml ATLASv20131127_TablesSchema.xml
+
+            gedit ATLASv20131127_TablesSchema.xml &
+
+                -   <Name>ATLASv20131029</Name>
+                +   <Name>ATLASv20131127</Name>
+
+            hg add
+            hg commit -m "Added metadoc for ATLASv20131127 (using copy of ATLASv20131029)"
+            hg push
+
+# -------------------------------------------------------------------------------------------
+# Update our test service.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+
+# -------------------------------------------------------------------------------------------
+# Import the new metadata.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+
+        popd
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${HOME:?}/firethorn.spaces"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131127_TablesSchema.xml"
+
+        popd
+
+        cat "${HOME:?}/firethorn.spaces"
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Remove the old metadata.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+            USE [FirethornMetadataShep0108TEST]
+            go
+
+            SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'FT0108%'
+            go
+ 
+            SELECT parent, ident, name, jdbccatalog, jdbcschema FROM FT0108JdbcSchemaEntity WHERE name LIKE 'ATLAS%' ;
+            go
+
+                parent      ident       name                jdbccatalog     jdbcschema
+                32769       163840      ATLASDR1.dbo        ATLASDR1        dbo                                                                                                                                                                                                                                                            
+                32769       163841      ATLASv20130304.dbo  ATLASv20130304  dbo                                                                                                                                                                                                                                                            
+                32769       163842      ATLASv20130426.dbo  ATLASv20130426  dbo                                                                                                                                                                                                                                                            
+                32769       163843      ATLASv20131029.dbo  ATLASv20131029  dbo                                                                                                                                                                                                                                                            
+                32769       163844      ATLASv20131127.dbo  ATLASv20131127  dbo                                                                                                                                                                                                                                                            
+
+
+            SELECT parent, base, ident, name FROM FT0108AdqlSchemaEntity WHERE name LIKE 'ATLAS%' ;
+            go
+
+                parent      base        ident       name                                                                                                                                                                                                                                                           
+                32770       163840      163889      ATLASDR1
+                32770       163844      163890      ATLASv20131029
+                32771       163889      163909      atlas
+                32772       163889      163913      ATLASDR1                                                                                                                                                                                                                                                       
+                32773       163889      163915      ATLASDR1                                                                                                                                                                                                                                                       
+                32770       163844      163916      ATLASv20131127                                                                                                                                                                                                                                                 
+
+
+            SELECT
+                jdbc.ident,
+                jdbc.name,
+
+                adql.base,
+                adql.ident,
+                adql.name
+            FROM
+                FT0108AdqlSchemaEntity AS adql
+            JOIN
+                FT0108JdbcSchemaEntity AS jdbc
+            ON
+                adql.base = jdbc.ident
+            WHERE
+                adql.name LIKE 'ATLAS%' ;
+
+                ident       name                    base        ident       name
+                163840      ATLASDR1.dbo            163840      163889      ATLASDR1
+                163844      ATLASv20131127.dbo      163844      163890      ATLASv20131029
+                163844      ATLASv20131127.dbo      163844      163916      ATLASv20131127
+
+
+            #-------- 
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163890' ;
+            go
+            
+                FAIL : The DELETE statement conflicted with the REFERENCE constraint "FK_badwq8hew73rprcfjj9n86ak9". The conflict occurred in database "FirethornMetadataShep0108TEST", table "dbo.FT0108AdqlTableEntity", column 'parent'.
+
+
+            #-------- 
+
+            ALTER TABLE [dbo].[FT0108AdqlTableEntity] DROP CONSTRAINT [FK_badwq8hew73rprcfjj9n86ak9]
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlTableEntity]  WITH CHECK ADD  CONSTRAINT [FK_badwq8hew73rprcfjj9n86ak9] FOREIGN KEY([parent])
+            REFERENCES [dbo].[FT0108AdqlSchemaEntity] ([ident]) ON DELETE CASCADE
+            go
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163890' ;
+            go
+
+                FAIL : The DELETE statement conflicted with the REFERENCE constraint "FK_ef3ytobk5ju585n7vc8866gsw". The conflict occurred in database "FirethornMetadataShep0108TEST", table "dbo.FT0108AdqlColumnEntity", column 'parent'.
+
+
+
+            #-------- 
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity] DROP CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw]
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity]  WITH CHECK ADD  CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw] FOREIGN KEY([parent])
+            REFERENCES [dbo].[FT0108AdqlTableEntity] ([ident]) ON DELETE CASCADE
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity] CHECK CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw]
+            go
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163890' ;
+            go
+
+                PASS : (1 row affected)
+
+# -------------------------------------------------------------------------------------------
+# Update our live service.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+
+# -------------------------------------------------------------------------------------------
+# Import the new metadata.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg branch
+            hg update default
+            hg pull
+            hg update
+
+        popd
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${HOME:?}/firethorn.spaces"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131127_TablesSchema.xml"
+
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Remove the old metadata.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+            USE [FirethornMetadataDjer0108LIVE]
+            go
+
+            SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'FT0108%'
+            go
+
+                FT0108AdqlColumnEntity
+                FT0108AdqlQueryEntity
+                .... 
+                FT0108OperationEntity
+                FT0108TestJobEntity
+
+            SELECT parent, ident, name, jdbccatalog, jdbcschema FROM FT0108JdbcSchemaEntity WHERE name LIKE 'ATLAS%' ;
+            go
+
+                parent      ident       name                jdbccatalog     jdbcschema
+                32769       163840      ATLASDR1.dbo        ATLASDR1        dbo
+                32769       163841      ATLASv20130426.dbo  ATLASv20130426  dbo                                                                                                                                                                                                                                                            
+                32769       163842      ATLASv20131127.dbo  ATLASv20131127  dbo                                      
+
+
+            SELECT parent, base, ident, name FROM FT0108AdqlSchemaEntity WHERE name LIKE 'ATLAS%' ;
+            go
+
+                parent  base    ident   name                                                                                                                                                                                                                                                           
+                32770   163840  163891  ATLASDR1
+                32770   163842  163892  ATLASv20131029
+                32771   163891  163913  atlas
+                32772   163891  163917  ATLASDR1
+                32773   163891  163919  ATLASDR1
+                32774   163891  163922  ATLASDR1
+                32775   163891  163924  ATLASDR1
+                32776   163891  163926  ATLASDR1
+                32777   163891  163929  ATLASDR1
+                32779   163892  163932  ATLASv20131029
+                32778   163892  163933  ATLASv20131029
+                32780   163891  163935  ATLASDR1
+                32781   163891  163938  ATLASDR1
+                32770   163842  163939  ATLASv20131127
+                32782   163891  163941  ATLASDR1                                                                                                                                                                                                                                                       
+                32783   163891  163943  ATLASDR1                                                                                                                                                                                                                                                       
+                32783   163939  163944  ATLASv20131127                                                                                                                                                                                                                                                 
+                32784   163939  163946  ATLASv20131127                                                             
+
+            SELECT parent, base, ident, name FROM FT0108AdqlSchemaEntity WHERE parent = 32770  AND name LIKE 'ATLAS%' ;
+            go
+
+                parent  base    ident   name                                                                                                                                                                                                                                                           
+
+                32770   163840  163891  ATLASDR1
+                32770   163842  163892  ATLASv20131029                                                                                                                                                                                                                                                 
+                32770   163842  163939  ATLASv20131127                                                               
+
+            SELECT
+                jdbc.ident,
+                jdbc.name,
+
+                adql.base,
+                adql.ident,
+                adql.name
+            FROM
+                FT0108AdqlSchemaEntity AS adql
+            JOIN
+                FT0108JdbcSchemaEntity AS jdbc
+            ON
+                adql.base = jdbc.ident
+            WHERE
+                adql.name LIKE 'ATLAS%' ;
+
+                ident       name                    base        ident       name
+                163840      ATLASDR1.dbo            163840      163891      ATLASDR1
+                163842      ATLASv20131127.dbo      163842      163892      ATLASv20131029
+                163842      ATLASv20131127.dbo      163842      163939      ATLASv20131127
+
+            SELECT
+                jdbc.ident,
+                jdbc.name,
+
+                adql.base,
+                adql.ident,
+                adql.name
+            FROM
+                FT0108AdqlSchemaEntity AS adql
+            JOIN
+                FT0108JdbcSchemaEntity AS jdbc
+            ON
+                adql.base = jdbc.ident
+            WHERE
+                jdbc.name = 'ATLASv20131127.dbo'
+            AND
+                adql.name = 'ATLASv20131029'
+
+                ident       name                    base        ident       name
+                163842      ATLASv20131127.dbo      163842      163892      ATLASv20131029                                     
+
+            #-------- 
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163892' ;
+            go
+            
+                FAIL : The DELETE statement conflicted with the REFERENCE constraint "FK_badwq8hew73rprcfjj9n86ak9". The conflict occurred in database "FirethornMetadataShep0108TEST", table "dbo.FT0108AdqlTableEntity", column 'parent'.
+
+            #-------- 
+
+            ALTER TABLE [dbo].[FT0108AdqlTableEntity] DROP CONSTRAINT [FK_badwq8hew73rprcfjj9n86ak9]
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlTableEntity]  WITH CHECK ADD  CONSTRAINT [FK_badwq8hew73rprcfjj9n86ak9] FOREIGN KEY([parent])
+            REFERENCES [dbo].[FT0108AdqlSchemaEntity] ([ident]) ON DELETE CASCADE
+            go
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163892' ;
+            go
+
+                FAIL : The DELETE statement conflicted with the REFERENCE constraint "FK_ef3ytobk5ju585n7vc8866gsw". The conflict occurred in database "FirethornMetadataShep0108TEST", table "dbo.FT0108AdqlColumnEntity", column 'parent'.
+
+            #-------- 
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity] DROP CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw]
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity]  WITH CHECK ADD  CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw] FOREIGN KEY([parent])
+            REFERENCES [dbo].[FT0108AdqlTableEntity] ([ident]) ON DELETE CASCADE
+            go
+
+            ALTER TABLE [dbo].[FT0108AdqlColumnEntity] CHECK CONSTRAINT [FK_ef3ytobk5ju585n7vc8866gsw]
+            go
+
+            DELETE FROM FT0108AdqlSchemaEntity WHERE ident = '163892' ;
+            go
+
+                PASS : (1 row affected)
+
+#-------------------------------------------------------------------------------------------------------------------------------
+
