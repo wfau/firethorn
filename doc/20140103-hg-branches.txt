@@ -1,0 +1,96 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Update Mercurial to 1.9.2.
+#[root@desktop]
+
+    wget http://pkgs.repoforge.org/mercurial/mercurial-1.9.2-1.el6.rfx.x86_64.rpm
+
+    yum localinstall mercurial-1.9.2-1.el6.rfx.x86_64.rpm 
+
+# -----------------------------------------------------
+# Enable the translant extension.
+#[user@desktop]
+
+    vi "${HOME:?}/.hgrc"
+
+        [extensions]
+    +   transplant=
+
+# -----------------------------------------------------
+# Create a new housekeeping branch.
+#[user@desktop]
+
+    #
+    # Filter to update comment during transplant.
+cat > '/tmp/filter.sh' << 'EOF'
+#!/bin/sh
+sed -i '
+    $ a\Imported change from [${hgbranch}]
+    ' "$1"
+EOF
+chmod a+x /tmp/filter.sh
+
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        hg branch zrq-20140103-housekeeping
+        hg commit -m "Created branch zrq-20140103-housekeeping"
+
+        hgbranch=dave-auth-guard
+
+#    0a1e9ea3a666 -- Created branch  (ignore)
+#    65dc84a22ffc -- Build version   (ignore)
+#    8a2c16b42d0d -- Dependency versions
+
+        hg transplant --filter /tmp/filter.sh 8a2c16b42d0d
+
+    popd
+
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+#
+# 
+#    afb7ea532007 -- Added Protector interfaces
+#    9b663fbc8499 -- Added CommunityMember
+#    cde6c9c48098 -- Added Community to tests 
+#    390470f46f1f -- Added DataSpace
+#    b731b95943e3 -- Updated JUnit tests
+#    f915739047d6 -- Added QueryProcessingException
+#    aa40da18ba34 -- Updated webapp
+#    148fb46b8323 -- Added AccessMap
+
+
+
+
+
+
+
+
+

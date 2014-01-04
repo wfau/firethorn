@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Close off old branches.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg branch
+            default
+
+        hg branches
+            default                     1039:150555f2d9f4
+            01.08-RELEASE               1033:b21f0bc0e112
+            stelios-tap                  938:a4dd3a49dcf0
+            dave-auth-guard              929:148fb46b8323
+            delete-node                  799:6f588570c570
+            dave-adql-parsing            899:516842d219b4 (inactive)
+            stelios-adql-parsing         898:22c32863816d (inactive)
+            hibernate-collections        741:8d8f28c3e9e9 (inactive)
+
+        hg update dave-adql-parsing
+        hg commit -m "Closing branch - task completed" --close-branch  
+            created new head
+        hg push
+            pushing to ......
+            remote: added 2 changesets with 1 changes to 1 files (+1 heads)
+
+        hg update stelios-adql-parsing
+        hg commit -m "Closing branch - task completed" --close-branch  
+            created new head
+        hg push
+            pushing to ......
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+        hg update hibernate-collections
+        hg commit -m "Closing branch - experiment done" --close-branch  
+            created new head
+        hg push
+            pushing to ......
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+        hg update swap-names
+        hg commit -m "Closing branch - task completed" --close-branch  
+        hg push
+            pushing to ......
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+        hg update delete-node
+        hg commit -m "Closing branch - experiment done" --close-branch  
+        hg push
+            pushing to ......
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+        hg update dave-auth-guard
+        hg commit -m "Closing branch - task completed" --close-branch  
+        hg push
+            pushing to ......
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+
+
+
+
+
+
+
+
+
