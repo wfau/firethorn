@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
@@ -29,7 +27,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  *
  */
-@Slf4j
 public class BinaryOperatorTestCase
     extends AtlasQueryTestBase
     {

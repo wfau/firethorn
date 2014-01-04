@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
 import static org.junit.Assert.assertEquals;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
@@ -27,7 +26,6 @@ import org.junit.Test;
  *
  *
  */
-@Slf4j
 public class SelectTopTestCase
 extends TwomassQueryTestBase
     {

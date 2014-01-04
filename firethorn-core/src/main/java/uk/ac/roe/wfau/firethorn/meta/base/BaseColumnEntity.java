@@ -29,7 +29,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
@@ -38,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
  *
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

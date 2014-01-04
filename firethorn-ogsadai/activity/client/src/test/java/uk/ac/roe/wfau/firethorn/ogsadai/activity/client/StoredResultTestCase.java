@@ -5,8 +5,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 import java.net.URL;
 
-import org.junit.Test;
-
 /**
  * These tests  no longer work - because we need firethorn to create the tables for us.
  *

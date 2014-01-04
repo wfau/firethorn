@@ -17,20 +17,17 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Base class for IdentFactory implementations within the webapp.
  *
  */
-@Slf4j
 public abstract class WebappLinkFactory<EntityType extends Entity>
 extends AbstractLinkFactory<EntityType>
 implements Entity.LinkFactory<EntityType>

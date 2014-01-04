@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  *
  */
-@Slf4j
 public abstract class XMLObjectReaderImpl<ObjectType>
 extends XMLReaderImpl
 implements XMLObjectReader<ObjectType>

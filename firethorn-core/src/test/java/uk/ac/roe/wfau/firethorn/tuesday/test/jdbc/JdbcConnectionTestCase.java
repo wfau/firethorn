@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
@@ -31,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/jdbc/datasource/embedded/EmbeddedDatabaseBuilder.html
  *
  */
-@Slf4j
 public class JdbcConnectionTestCase
     extends JdbcResourceTestThing
     {

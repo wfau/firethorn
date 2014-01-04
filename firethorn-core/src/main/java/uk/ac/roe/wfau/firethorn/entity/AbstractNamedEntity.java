@@ -26,8 +26,6 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.Type;
 
-import lombok.extern.slf4j.Slf4j;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 
 /**
@@ -40,7 +38,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
-@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD

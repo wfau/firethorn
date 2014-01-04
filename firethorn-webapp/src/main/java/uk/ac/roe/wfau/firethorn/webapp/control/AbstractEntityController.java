@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +27,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  * Abstract base class for Spring MVC controllers.
  *
  */
-@Slf4j
 @Controller
 public abstract class AbstractEntityController<EntityType extends Entity, BeanType extends EntityBean<EntityType>>
 extends AbstractController

@@ -22,13 +22,11 @@ import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

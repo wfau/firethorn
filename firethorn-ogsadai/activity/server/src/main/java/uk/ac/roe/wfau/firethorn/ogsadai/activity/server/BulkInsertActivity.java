@@ -7,7 +7,7 @@
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing, software 
+// Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
@@ -50,7 +50,7 @@ import uk.org.ogsadai.tuple.TupleMetadata;
  * Modified to use batch insert.
  * http://viralpatel.net/blogs/batch-insert-in-java-jdbc/
  * @author The OGSA-DAI Project Team.
- * 
+ *
  */
 public class BulkInsertActivity extends MatchedIterativeActivity
     implements ResourceActivity
@@ -58,35 +58,35 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE =
         "Copyright (c) The University of Edinburgh,  2007-2008";
-    
+
     /** Logger. */
-    private static final DAILogger LOG = 
+    private static final DAILogger LOG =
         DAILogger.getLogger(BulkInsertActivity.class);
-    
-    /** 
-     * Activity input name(<code>data</code>) - 
-     * Tuples to be bulk loaded. 
+
+    /**
+     * Activity input name(<code>data</code>) -
+     * Tuples to be bulk loaded.
      * (OGSA-DAI tuple list).
      */
     public static final String INPUT_TUPLES = "data";
 
-    /** 
-     * Activity input name(<code>tableName</code>) - 
-     * Table name. 
+    /**
+     * Activity input name(<code>tableName</code>) -
+     * Table name.
      * ({@link java.lang.String}).
      */
     public static final String INPUT_TABLE_NAME = "tableName";
-    
-    /** 
-     * Activity output name(<code>result</code>) - 
-     * Number of inserted tuples. 
+
+    /**
+     * Activity output name(<code>result</code>) -
+     * Number of inserted tuples.
      * ({@link java.lang.Integer}).
      */
     public static final String OUTPUT_RESULT = "result";
 
     /** The JDBC connection provider */
     private JDBCConnectionProvider mResource;
-    
+
     /** The database connection. */
     private Connection mConnection;
 
@@ -95,10 +95,11 @@ public class BulkInsertActivity extends MatchedIterativeActivity
 
     /** The only output of the activity. */
     private BlockWriter mOutput;
-    
+
     /**
      * {@inheritDoc}
-     */ 
+     */
+    @Override
     public Class getTargetResourceAccessorClass()
     {
         return JDBCConnectionProvider.class;
@@ -107,6 +108,7 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTargetResourceAccessor(final ResourceAccessor targetResource)
     {
         mResource = (JDBCConnectionProvider) targetResource;
@@ -115,17 +117,19 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     /**
      * {@inheritDoc}
      */
+    @Override
     protected ActivityInput[] getIterationInputs()
     {
-        return new ActivityInput[] { 
+        return new ActivityInput[] {
             new TypedActivityInput(INPUT_TABLE_NAME, String.class),
             new TupleListActivityInput(INPUT_TUPLES)
         };
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void preprocess() throws ActivityUserException,
         ActivityProcessingException, ActivityTerminatedException
     {
@@ -136,11 +140,11 @@ public class BulkInsertActivity extends MatchedIterativeActivity
             mConnection = mResource.getConnection();
             mConnection.setAutoCommit(false);
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             throw new ActivitySQLException(e);
         }
-        catch (JDBCConnectionUseException e)
+        catch (final JDBCConnectionUseException e)
         {
             throw new ActivitySQLException(e);
         }
@@ -149,18 +153,19 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void processIteration(final Object[] iterationData)
         throws ActivityProcessingException, ActivityTerminatedException,
         ActivityUserException
     {
         final String tableName = (String) iterationData[0];
         final TupleListIterator tuples = (TupleListIterator) iterationData[1];
-        
+
         final MetadataWrapper metadataWrapper = tuples.getMetadataWrapper();
         final TupleMetadata metadata = (TupleMetadata) metadataWrapper.getMetadata();
-        final String sql = 
+        final String sql =
             SQLUtilities.createInsertStatementSQL(tableName, metadata);
-            
+
         try
         {
 
@@ -171,16 +176,16 @@ public class BulkInsertActivity extends MatchedIterativeActivity
             Tuple tuple = null;
 
 
-            long batchsize  = 1000 ;
+            final long batchsize  = 1000 ;
             long batchcount = 0 ;
-            
+
             //LOG.debug("Starting loop...");
             while ((tuple = (Tuple) tuples.nextValue()) != null)
             {
                 SQLUtilities.setStatementParameters(mStatement, tuple, metadata);
                 mStatement.addBatch();
                 if ((batchcount++ % batchsize) == 0)
-                	{	
+                	{
                     //LOG.debug("Executing batch [" + batchcount + "]");
                 	mStatement.executeBatch();
                 	}
@@ -192,53 +197,54 @@ public class BulkInsertActivity extends MatchedIterativeActivity
             mConnection.commit();
             mStatement.close();
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             rollback();
             throw new ActivitySQLUserException(e);
         }
-        catch (PipeClosedException e)
+        catch (final PipeClosedException e)
         {
             rollback();
             // no more output wanted
             iterativeStageComplete();
         }
-        catch (PipeIOException e)
+        catch (final PipeIOException e)
         {
             rollback();
             throw new ActivityPipeProcessingException(e);
         }
-        catch (PipeTerminatedException e)
+        catch (final PipeTerminatedException e)
         {
             rollback();
             throw new ActivityTerminatedException();
         }
-        catch (ActivityUserException e)
+        catch (final ActivityUserException e)
         {
             rollback();
             throw e;
         }
-        catch (ActivityProcessingException e)
+        catch (final ActivityProcessingException e)
         {
             rollback();
             throw e;
         }
-        catch (ActivityTerminatedException e)
+        catch (final ActivityTerminatedException e)
         {
             rollback();
             throw e;
         }
-        catch (Throwable e)
+        catch (final Throwable e)
         {
             rollback();
             throw new ActivityProcessingException(e);
         }
-        
+
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void postprocess() throws ActivityUserException,
         ActivityProcessingException, ActivityTerminatedException
     {
@@ -247,7 +253,7 @@ public class BulkInsertActivity extends MatchedIterativeActivity
         {
             mConnection.setAutoCommit(true);
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             throw new ActivitySQLUserException(e);
         }
@@ -256,16 +262,17 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void cleanUp() throws Exception
     {
         super.cleanUp();  // clean up the superclass
-        
+
         if (mStatement != null)
         {
             mStatement.close();
         }
 
-        if (mConnection != null && !mConnection.getAutoCommit())
+        if ((mConnection != null) && !mConnection.getAutoCommit())
         {
             mConnection.rollback();
             mConnection.setAutoCommit(true);
@@ -275,7 +282,7 @@ public class BulkInsertActivity extends MatchedIterativeActivity
             mResource.releaseConnection(mConnection);
         }
     }
-    
+
     /**
      * Rolls back the database state in case of an error.
      */
@@ -285,12 +292,12 @@ public class BulkInsertActivity extends MatchedIterativeActivity
         {
             mConnection.rollback();
             mConnection.setAutoCommit(true);
-        } 
-        catch (SQLException e)
+        }
+        catch (final SQLException e)
         {
             LOG.warn(e);
         }
 
     }
-    
+
 }

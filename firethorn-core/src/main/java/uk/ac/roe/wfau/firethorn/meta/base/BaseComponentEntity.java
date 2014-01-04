@@ -156,8 +156,8 @@ extends AbstractNamedEntity
      * Set to 60 minutes for now .. should be configurable.
      * Extended to 4hrs.
      *
-     */
     private static final long SCAN_INTERVAL = 1000 * 60 * 60 * 4 ;
+     */
 
     /**
      * Scan our metadata.

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
@@ -26,7 +25,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
  * Bean wrapper for <code>AdqlColumn</code>.
  *
  */
-@Slf4j
 public class AdqlColumnBean
 extends BaseColumnBean<AdqlColumn>
     {

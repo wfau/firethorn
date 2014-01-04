@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,14 +52,14 @@ extends MatchedIterativeActivity
     {
 
 	/*
-	 * 
+	 *
 	 * TODO New activities based on SQLBulkLoadTupleActivity
      * 1) Reports number of rows in blocks of 1000, enabling client to track progress.
-     * 2) Returns full list of results, allowing inline results.  
+     * 2) Returns full list of results, allowing inline results.
      * 3) Combine inline results with rowid insert ...
-	 * 
+	 *
 	 */
-	
+
     /**
      * Our debug logger.
      *
@@ -170,7 +168,7 @@ extends MatchedIterativeActivity
             // Write the LIST_BEGIN marker and metadata
             writer.write(ControlBlock.LIST_BEGIN);
             writer.write(metadata);
-            
+
             //
             // Process the tuples.
             Tuple tuple ;
@@ -178,7 +176,7 @@ extends MatchedIterativeActivity
                 {
                 //
                 // Create a new list of elements.
-                ArrayList<Object> elements = new ArrayList<Object>(
+                final ArrayList<Object> elements = new ArrayList<Object>(
                     tuple.getColumnCount() + 1
                     );
                 //
@@ -190,7 +188,7 @@ extends MatchedIterativeActivity
                     );
                 //
                 // Add the rest of the columns from the tuple.
-                int count = tuple.getColumnCount();
+                final int count = tuple.getColumnCount();
                 for (int colnum = 0; colnum < count ; colnum++)
                     {
                     elements.add(

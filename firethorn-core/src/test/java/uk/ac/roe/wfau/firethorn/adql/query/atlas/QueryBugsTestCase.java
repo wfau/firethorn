@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import static org.junit.Assert.assertEquals;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
@@ -31,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  *
  */
-@Slf4j
 public class QueryBugsTestCase
     extends AtlasQueryTestBase
     {
