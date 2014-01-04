@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -33,7 +35,6 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
@@ -68,6 +69,11 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
     )
 @Table(
     name = JdbcSchemaEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = JdbcSchemaEntity.DB_PARENT_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -496,9 +502,6 @@ public class JdbcSchemaEntity
         this.schema   = schema  ;
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = JdbcResourceEntity.class

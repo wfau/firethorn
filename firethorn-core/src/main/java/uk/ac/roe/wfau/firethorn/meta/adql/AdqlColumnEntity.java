@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -28,7 +29,6 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +58,16 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
     )
 @Table(
     name = AdqlColumnEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            name = AdqlColumnEntity.DB_INDEX_NAME + AdqlColumnEntity.DB_PARENT_COL,
+            columnList = AdqlColumnEntity.DB_PARENT_COL
+            ),
+        @Index(
+            name = AdqlColumnEntity.DB_INDEX_NAME + AdqlColumnEntity.DB_BASE_COL,
+            columnList = AdqlColumnEntity.DB_BASE_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -92,6 +102,8 @@ public class AdqlColumnEntity
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlColumnEntity";
+    protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlColumnJoinTo";
+    protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlColumnIndexBy";
 
     /**
      * Hibernate column mapping.
@@ -305,9 +317,6 @@ public class AdqlColumnEntity
             }
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class
@@ -335,9 +344,6 @@ public class AdqlColumnEntity
         return this.table().resource();
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByBase"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = BaseColumnEntity.class

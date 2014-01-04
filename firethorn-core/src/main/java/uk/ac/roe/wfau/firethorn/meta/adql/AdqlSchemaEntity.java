@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -28,7 +29,6 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +60,14 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
     )
 @Table(
     name = AdqlSchemaEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = AdqlSchemaEntity.DB_PARENT_COL
+            ),
+        @Index(
+            columnList = AdqlSchemaEntity.DB_BASE_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -411,9 +419,6 @@ implements AdqlSchema
      * Our base schema.
      *
      */
-    @Index(
-        name=DB_TABLE_NAME + "IndexByBase"
-        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = BaseSchemaEntity.class
@@ -450,9 +455,6 @@ implements AdqlSchema
             }
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlResourceEntity.class

@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
  * Spring MVC controller for our TableMapping service.
+ * @todo Move to firethorn-ogsadai-metadata-server
  *
  */
 @Slf4j

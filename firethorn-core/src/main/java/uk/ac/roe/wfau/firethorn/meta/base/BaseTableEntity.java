@@ -70,7 +70,7 @@ extends BaseComponentEntity
 
         @Override
         @SelectMethod
-        public BaseTable select(final Identifier ident)
+        public BaseTable<?,?> select(final Identifier ident)
         throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
@@ -176,51 +176,8 @@ extends BaseComponentEntity
     @Override
     public abstract BaseTable<?, ?> root();
 
-    /*
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = BaseSchemaEntity.class
-        )
-    @JoinColumn(
-        name = DB_PARENT_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private BaseSchema<?, TableType> parent;
-    @Override
-    public BaseSchema<?, TableType> schema()
-        {
-        return this.parent;
-        }
-    protected void schema(final BaseSchema<?, TableType> schema)
-        {
-        this.parent = schema;
-        }
-     */
-
     @Override
     public abstract BaseResource<?> resource();
-
-    /*
-    @Override
-    @Deprecated
-    public Linked linked()
-        {
-        return new Linked()
-            {
-            @Override
-            public Iterable<AdqlTable> select()
-                {
-                //"SELECT FROM AdqlTable WHERE base = :base"
-                return null;
-                }
-            };
-        }
-    */
 
     @Override
     public abstract String alias();
