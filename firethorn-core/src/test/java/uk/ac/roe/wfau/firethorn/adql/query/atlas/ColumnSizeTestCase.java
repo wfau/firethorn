@@ -21,14 +21,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSetMetaData;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
@@ -41,7 +38,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  *
  *
  */
-@Slf4j
 public class ColumnSizeTestCase
     extends AtlasQueryTestBase
     {

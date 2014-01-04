@@ -22,7 +22,6 @@ import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,7 +32,6 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
  *
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

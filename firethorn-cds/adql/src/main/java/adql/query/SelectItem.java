@@ -24,8 +24,6 @@ import java.util.NoSuchElementException;
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.Operation;
 
-import java.util.UUID;
-import java.util.Arrays;
 /**
  * <p>Represents an item of a SELECT clause.</p>
  * 

@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.server.rest;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  * @todo Move to firethorn-ogsadai-metadata-server
  *
  */
-@Slf4j
+//@Slf4j
 @Controller
 @RequestMapping(TableMappingController.CONTROLLER_PATH)
 public class TableMappingController

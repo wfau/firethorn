@@ -44,7 +44,7 @@ public class StoredResultPipeline
             null
             );
         }
-    
+
     public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid)
         {
         //
@@ -92,10 +92,10 @@ public class StoredResultPipeline
             table
             );
         //
-		// Add our row number generator.        
+		// Add our row number generator.
 		if (rowid != null)
 			{
-			InsertRowid inserter = new InsertRowid();
+			final InsertRowid inserter = new InsertRowid();
 	        pipeline.add(
                 inserter
                 );

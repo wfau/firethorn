@@ -17,19 +17,18 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  *
  *
  */
-@Slf4j
 public class AbstractIdentFactoryTestCase
     {
 

@@ -20,11 +20,7 @@ package uk.ac.roe.wfau.firethorn.daemon;
 import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
 import org.joda.time.MutablePeriod;
-import org.joda.time.Period;
 import org.joda.time.ReadablePeriod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +55,7 @@ extends AbstractComponent
         {
         return this.scheduler;
         }
-    
+
     public UserDataCleaner()
         {
         log.debug("UserDataCleaner()");
@@ -86,7 +82,7 @@ extends AbstractComponent
     /**
      * The action to take to clean up a table.
      * TODO
-     * 
+     *
      */
     public static enum Action
         {
@@ -97,25 +93,25 @@ extends AbstractComponent
     /**
      * The action to take to clean up a table.
      * TODO
-     * 
+     *
      */
     @Value("${firethorn.cleaner.action}")
     Action action;
-    
+
     /*
      * The interval between each run.
      * Expressed as a ISO_8601 duration.
      * https://en.wikipedia.org/wiki/ISO_8601#Durations
      * e.g. PT12H
-     * 
+     *
      */
     @Value("${firethorn.cleaner.lifetime}")
     String lifetime ;
-    
+
     /*
      * The number of rows to delete on each run.
      * e.g. 10
-     * 
+     *
      */
     @Value("${firethorn.cleaner.pagesize}")
     int pagesize ;
@@ -123,7 +119,7 @@ extends AbstractComponent
     /*
      * The number of runs to skip at the start.
      * e.g. 10
-     * 
+     *
      */
     @Value("${firethorn.cleaner.skipfirst}")
     int skipfirst ;
@@ -131,7 +127,7 @@ extends AbstractComponent
     /*
      * The Spring Scheduled cron expression.
      * e.g. '0 0/10 * * * ?'
-     * 
+     *
      */
     @Scheduled(cron="${firethorn.cleaner.cron}")
     public void something()
@@ -143,11 +139,11 @@ extends AbstractComponent
         /*
          * try/catch IllegalArgumentException
          * java.lang.IllegalArgumentException: Invalid format: "MUMBLE"
-         * 
+         *
          */
-   
+
         /*
-         * PT12H 
+         * PT12H
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);

@@ -21,8 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,13 +36,9 @@ import adql.db.DefaultDBTable;
 import adql.parser.ADQLParser;
 import adql.query.ADQLQuery;
 
-//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
-//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
-
 /**
  *
  */
-@Slf4j
 public class AdqlParserTestCase
 extends TestBase
     {

@@ -906,13 +906,10 @@ implements AdqlParser
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-        final boolean ismain = item.item().isMain();
-
-        // check if is main
-    		if (item.item().isMain()){
-    			subject.add(
-    				item
-    				);
+		if (item.item().isMain()){
+			subject.add(
+				item
+				);
     		}
         }
 
@@ -1926,7 +1923,7 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.Type.DOUBLE;
-            case SIGN:  
+            case SIGN:
             	 return AdqlColumn.Type.INTEGER;
             default :
                 throw new AdqlParserException(
@@ -1949,7 +1946,7 @@ implements AdqlParser
 
         switch (funct.getType())
             {
-           
+
             case ABS:
             case MOD:
             case ROUND:
@@ -1973,7 +1970,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:	
+            case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:

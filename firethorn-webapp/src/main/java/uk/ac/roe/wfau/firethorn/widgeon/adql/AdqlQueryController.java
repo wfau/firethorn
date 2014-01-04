@@ -40,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  * Spring MVC controller for <code>AdqlQuery</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
 public class AdqlQueryController

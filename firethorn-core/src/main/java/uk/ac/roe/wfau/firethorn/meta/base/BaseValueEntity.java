@@ -21,13 +21,10 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  *
  *
  */
-@Slf4j
 @Access(
     AccessType.FIELD
     )
