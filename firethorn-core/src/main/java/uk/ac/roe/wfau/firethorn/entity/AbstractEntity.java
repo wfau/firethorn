@@ -62,7 +62,7 @@ implements Entity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT0108";
+    protected static final String DB_TABLE_PREFIX = "FT0109";
 
     /**
      * Hibernate column mapping.

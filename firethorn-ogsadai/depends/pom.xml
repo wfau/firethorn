@@ -36,7 +36,7 @@
     </parent>
 
     <artifactId>firethorn-ogsadai-depends</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>FireThorn OGSA-DAI dependencies</name>
     <description>

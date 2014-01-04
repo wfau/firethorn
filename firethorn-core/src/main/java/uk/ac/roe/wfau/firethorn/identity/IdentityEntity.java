@@ -16,6 +16,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -26,7 +27,6 @@ import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     AccessType.FIELD
     )
 @Table(
-    name = IdentityEntity.DB_TABLE_NAME
+    name = IdentityEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = IdentityEntity.DB_COMMUNITY_COL
+            )
+        }
     )
 @NamedQueries(
         {
@@ -205,9 +210,6 @@ implements Identity
             }
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByCommunity"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = CommunityEntity.class

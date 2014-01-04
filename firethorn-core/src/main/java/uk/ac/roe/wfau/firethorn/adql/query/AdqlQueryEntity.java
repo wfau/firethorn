@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -46,7 +47,6 @@ import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
@@ -90,7 +90,18 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlQueryEntity.DB_TABLE_NAME
+    name = AdqlQueryEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList=AdqlQueryEntity.DB_JDBC_TABLE_COL
+            ),
+        @Index(
+            columnList=AdqlQueryEntity.DB_ADQL_TABLE_COL
+            ),
+        @Index(
+            columnList=AdqlQueryEntity.DB_ADQL_SCHEMA_COL
+            )
+        }
     )
 @NamedQueries(
         {
@@ -121,8 +132,7 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlQueryEntity";
-    protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlQueryJoinTo";
-    protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlQueryIndexBy";
+    protected static final String DB_JOIN_PREFIX  = DB_TABLE_PREFIX + "AdqlQueryJoinTo";
 
     /**
      * Hibernate column mapping.
@@ -545,9 +555,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexBySchema"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlSchemaEntity.class
@@ -890,7 +897,7 @@ implements AdqlQuery, AdqlParserQuery
         targetEntity = BaseResourceEntity.class
         )
     @JoinTable(
-        name=DB_JOIN_NAME + "BaseResource",
+        name=DB_JOIN_PREFIX + "BaseResource",
         joinColumns = {
             @JoinColumn(
                 name = "adqlquery",
@@ -1243,9 +1250,6 @@ implements AdqlQuery, AdqlParserQuery
      * Our JDBC table.
      *
      */
-    @Index(
-        name=DB_INDEX_NAME + "JdbcTable"
-        )
     @OneToOne(
         fetch = FetchType.LAZY,
         targetEntity = JdbcTableEntity.class
@@ -1262,9 +1266,6 @@ implements AdqlQuery, AdqlParserQuery
      * Our ADQL table.
      *
      */
-    @Index(
-        name=DB_INDEX_NAME + "AdqlTable"
-        )
     @OneToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class

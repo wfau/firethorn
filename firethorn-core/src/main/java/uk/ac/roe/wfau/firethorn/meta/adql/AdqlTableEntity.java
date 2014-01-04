@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -29,7 +30,6 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,17 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
     )
 @Table(
     name = AdqlTableEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = AdqlTableEntity.DB_BASE_COL
+            ),
+        @Index(
+            columnList = AdqlTableEntity.DB_PARENT_COL
+            ),
+        @Index(
+            columnList = AdqlTableEntity.DB_ADQL_QUERY_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -488,9 +499,6 @@ public class AdqlTableEntity
             }
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlSchemaEntity.class
@@ -513,9 +521,6 @@ public class AdqlTableEntity
         return this.schema.resource();
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByBase"
-        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = BaseTableEntity.class
@@ -761,9 +766,6 @@ public class AdqlTableEntity
     //
     // SQLServer won't allow a unique column to have a null value.
     // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
-    @Index(
-        name=DB_TABLE_NAME + "IndexByAdqlQuery"
-        )
     @OneToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlQueryEntity.class

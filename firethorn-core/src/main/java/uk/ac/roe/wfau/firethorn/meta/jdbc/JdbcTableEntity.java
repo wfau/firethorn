@@ -21,6 +21,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -37,7 +38,6 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
@@ -73,6 +73,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
     )
 @Table(
     name = JdbcTableEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = JdbcTableEntity.DB_PARENT_COL
+            ),
+        @Index(
+            columnList = JdbcTableEntity.DB_ADQL_QUERY_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -125,17 +133,17 @@ implements JdbcTable
      * Empty count value.
      *
      */
-    public static final Long EMPTY_COUNT_VALUE = new Long(0L);
+    protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String JDBC_TYPE_COL     = "jdbctype"   ;
-    protected static final String JDBC_COUNT_COL    = "jdbccount"  ;
-    protected static final String JDBC_STATUS_COL   = "jdbcstatus" ;
-    protected static final String ADQL_STATUS_COL   = "adqlstatus" ;
-    protected static final String DB_ADQL_QUERY_COL = "adqlquery"  ;
+    protected static final String DB_JDBC_TYPE_COL   = "jdbctype"   ;
+    protected static final String DB_JDBC_COUNT_COL  = "jdbccount"  ;
+    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus" ;
+    protected static final String DB_ADQL_STATUS_COL = "adqlstatus" ;
+    protected static final String DB_ADQL_QUERY_COL  = "adqlquery"  ;
 
     /**
      * Alias factory implementation.
@@ -448,9 +456,6 @@ implements JdbcTable
 
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = JdbcSchemaEntity.class
@@ -640,7 +645,7 @@ implements JdbcTable
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = JDBC_TYPE_COL,
+        name = DB_JDBC_TYPE_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -657,7 +662,7 @@ implements JdbcTable
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = JDBC_STATUS_COL,
+        name = DB_JDBC_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -689,7 +694,7 @@ implements JdbcTable
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = ADQL_STATUS_COL,
+        name = DB_ADQL_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -720,7 +725,7 @@ implements JdbcTable
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = JDBC_COUNT_COL,
+        name = DB_JDBC_COUNT_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -1242,9 +1247,6 @@ implements JdbcTable
     //
     // SQLServer won't allow a unique column to have a null value.
     // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
-    @Index(
-        name=DB_TABLE_NAME + "IndexByAdqlQuery"
-        )
     @OneToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlQueryEntity.class
