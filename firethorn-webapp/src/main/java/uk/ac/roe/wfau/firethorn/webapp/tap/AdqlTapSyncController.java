@@ -40,7 +40,6 @@ import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -48,6 +47,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.webapp.tap.XMLResponse;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
@@ -116,15 +117,26 @@ public class AdqlTapSyncController extends AbstractController {
         @ModelAttribute("urn:adql.resource.entity")
         AdqlResource resource,
         final HttpServletResponse response,
-        @RequestParam("QUERY") String QUERY,
-        @RequestParam("LANG") String LANG,
-        @RequestParam("REQUEST") String REQUEST    
-        ) throws NotFoundException, IOException {
+        @RequestParam(value="QUERY", required = false) String QUERY,
+        @RequestParam(value="LANG", required = false) String LANG,
+        @RequestParam(value="REQUEST", required = false) String REQUEST    
+        ) throws  IdentifierNotFoundException, IOException {
+			
 
+	        response.setContentType(
+	            TEXT_XML_MIME
+	            );
+	        response.setCharacterEncoding(
+	            "UTF-8"
+	            );
+        
+			PrintWriter writer = response.getWriter();
 			AdqlSchema schema;
 		
-			if (REQUEST.equalsIgnoreCase("doQuery") && (LANG.equalsIgnoreCase("ADQL") || LANG.equalsIgnoreCase("PQL"))){
-				
+			// Check input parameters and return VOTable with appropriate message if any errors found
+			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
+			
+			if (check){
 				// Look for default query schema, if none found create one
 				try{
 					schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
@@ -147,34 +159,63 @@ public class AdqlTapSyncController extends AbstractController {
 							jobstatus = query.execute();
 						}
 						
-						// Write results t VOTable using AdqlQueryVOTableController
-						PrintWriter writer = response.getWriter();
+						// Write results t VOTable using AdqlQueryVOTableController					
 						AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
 						adqvotable.generateVotable(writer,query);
 						
 	
 					}
 				
-
+	
 				} catch (final Exception ouch) {
 					log.error("Exception caught [{}]", ouch);
 					ouch.printStackTrace();
-
+	
 		        }
 				
 
-			} else {
-				
-				log.error("Invalid Params [{}][{}][{}]",REQUEST,LANG, QUERY);
-
 			}
-		
-		
-			
-			
         }
 
 
+		private boolean checkParams(PrintWriter writer, String REQUEST,String LANG,String QUERY){
 
+			String error_message;
+			boolean valid = true;
+			
+			// Check for errors and return appropriate VOTable error messages		
+			if (REQUEST==null){
+				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
+				valid = false;
+				return valid;
+			} else if (!REQUEST.equalsIgnoreCase("doQuery")){
+				error_message = "Invalid REQUEST: " + REQUEST;
+				XMLResponse.writeErrorToVotable(error_message, writer);
+				valid = false;
+				return valid;
+			}
+			
+			
+			if (LANG==null){
+				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
+				valid = false;
+				return valid;
+			}  else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
+				error_message = "Invalid LANGUAGE: " + LANG;
+				XMLResponse.writeErrorToVotable(error_message, writer);
+				valid = false;
+			} 
+			
+			if (QUERY==null){
+				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
+				valid = false;
+				return valid;
+			}
+
+		
+			
+			return valid;
+			
+		}
 	 
 }
