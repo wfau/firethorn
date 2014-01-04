@@ -53,9 +53,11 @@
         <!--org.hibernate.version>4.1.6.Final</org.hibernate.version-->
         <!--org.hibernate.version>4.2.0.CR1</org.hibernate.version-->
 
-		<org.spring.version>3.2.4.RELEASE</org.spring.version>
+		<!--org.spring.version>3.2.4.RELEASE</org.spring.version-->
+		<org.spring.version>4.0.0.RELEASE</org.spring.version>
         <!--org.hibernate.version>4.3.0.Beta3</org.hibernate.version-->
-        <org.hibernate.version>4.2.4.Final</org.hibernate.version>
+        <!--org.hibernate.version>4.2.4.Final</org.hibernate.version-->
+        <org.hibernate.version>4.3.0.Final</org.hibernate.version>
 		<org.aspectj.version>1.7.4.RELEASE</org.aspectj.version>
 
     </properties>
@@ -154,7 +156,7 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
         </dependency>
 
         <!--+
@@ -268,7 +270,6 @@
             <version>1.0</version>
         </dependency>
             +-->
-
 
         <!--+
             | JSTL libraries (required by Spring MVC).
