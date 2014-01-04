@@ -39,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -145,7 +146,7 @@ public class AdqlTapAsyncController extends AbstractController {
         @RequestParam("QUERY") String QUERY,
         @RequestParam("LANG") String LANG,
         @RequestParam("REQUEST") String REQUEST    
-        ) throws IdentifierNotFoundException, IOException {
+        ) throws NotFoundException, IOException {
 		
 		
 

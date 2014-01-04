@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController.FieldH
 import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController.ObjectFieldHandler;
 import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController.StringFieldHandler;
  
+@XmlRootElement(name = "xml")
 public class XMLResponse {
 	 
 	 
