@@ -266,16 +266,17 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
         hg update default
 
         pushd doc
-        mkdir notes
-        mkdir notes/zrq
-        mkdir notes/stv
 
-        hg mv 201* notes/zrq
+            mkdir notes
+            mkdir notes/zrq
+            mkdir notes/stv
 
+            hg mv 201* notes/zrq
 
+            hg commit -m "Moved notes into separate directory"
+
+        popd
     popd
-
-
 
 # -----------------------------------------------------
 # Create a new development branch.
@@ -284,27 +285,26 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        newversion=01.09-20140106-zrq-community
+
+        #
+        # Create the new branch.
         hg update default
+        hg branch "${newversion:?}"
 
-        hg branch zrq-20140103-housekeeping
-        hg commit -m "Created branch zrq-20140103-housekeeping"
+        #
+        # Update the version and commit.
+        ./bin/version.sh "${newversion:?}"
+        hg commit -m "Created branch ${newversion:?}"
 
+        #
+        # Transfer changes from previous work.
         srcbranch=dave-auth-guard
 
+#
 #    0a1e9ea3a666 -- Created branch  (ignore)
 #    65dc84a22ffc -- Build version   (ignore)
 #    8a2c16b42d0d -- Dependency versions
-
-        hg transplant --filter /tmp/filter.sh 8a2c16b42d0d
-
-        hg transplant --filter "${FIRETHORN_CODE:?}/bin/filter.sh" 8a2c16b42d0d
-
-
-    popd
-
-
-
-#
 # 
 #    afb7ea532007 -- Added Protector interfaces
 #    9b663fbc8499 -- Added CommunityMember
@@ -314,6 +314,17 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
 #    f915739047d6 -- Added QueryProcessingException
 #    aa40da18ba34 -- Updated webapp
 #    148fb46b8323 -- Added AccessMap
+#    7e005c6a3508 -- Closed branch
+
+        hg transplant --filter "${FIRETHORN_CODE:?}/bin/filter.sh" 'afb7ea532007:148fb46b8323'
+
+
+        hg commit -m "Imported changes from ${srcbranch:?}"
+
+
+    popd
+
+
 
 
 
