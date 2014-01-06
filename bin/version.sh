@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#
+# Shell script to update the project version.
 newversion=${1:?}
 source ${HOME:?}/firethorn.settings
 pushd "${FIRETHORN_CODE:?}"

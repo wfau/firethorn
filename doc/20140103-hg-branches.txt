@@ -29,7 +29,7 @@
     yum localinstall mercurial-1.9.2-1.el6.rfx.x86_64.rpm 
 
 # -----------------------------------------------------
-# Enable the translant extension.
+# Enable the transplant extension.
 #[user@desktop]
 
     vi "${HOME:?}/.hgrc"
@@ -37,20 +37,21 @@
         [extensions]
     +   transplant=
 
+    source "${HOME:?}/firethorn.settings"
+
+cat > "${FIRETHORN_CODE:?}/bin/filter.sh" << 'EOF'
+#!/bin/sh
+# Filter to update Mercurial comment during transplant.
+#
+sed -i '
+    $ a\Imported change from [${srcbranch}]
+    ' "$1"
+EOF
+chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
+
 # -----------------------------------------------------
 # Create a new housekeeping branch.
 #[user@desktop]
-
-    #
-    # Filter to update comment during transplant.
-cat > '/tmp/filter.sh' << 'EOF'
-#!/bin/sh
-sed -i '
-    $ a\Imported change from [${hgbranch}]
-    ' "$1"
-EOF
-chmod a+x /tmp/filter.sh
-
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -60,7 +61,215 @@ chmod a+x /tmp/filter.sh
         hg branch zrq-20140103-housekeeping
         hg commit -m "Created branch zrq-20140103-housekeeping"
 
-        hgbranch=dave-auth-guard
+        hg update default
+
+    popd
+
+# -----------------------------------------------------
+# Dependency updates, code tidy and housekeeping.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update zrq-20140103-housekeeping
+
+        srcbranch=dave-auth-guard
+
+#    0a1e9ea3a666 -- Created branch  (ignore)
+#    65dc84a22ffc -- Build version   (ignore)
+#    8a2c16b42d0d -- Dependency versions
+
+        hg transplant --filter "${FIRETHORN_CODE:?}/bin/filter.sh" 8a2c16b42d0d
+
+        mvn -P all versions:display-dependency-updates
+        ....
+        mvn -P all versions:display-plugin-updates
+        ....
+        hg commit -m "Updated dependencies"
+        
+        gedit ...AbstractEntity.java &
+
+        -    protected static final String DB_TABLE_PREFIX = "FT0108";
+        +    protected static final String DB_TABLE_PREFIX = "FT0109";
+
+        hg commit -m "Updated DB_TABLE_PREFIX to FT0109"
+
+        ....
+        ....
+        ....
+        ....
+        hg commit -m "Replaced Hibernate Index with javax.persistence.Index"
+
+
+        gedit bin/version.sh &
+        chmod a+x bin/version.sh
+        hg add bin/version.sh
+        hg commit -m "Added version script"
+
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Merge the housekeeping branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+            19 files updated, 0 files merged, 3 files removed, 0 files unresolved
+
+        hg pull
+            no changes found
+
+        hg update
+            0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg merge zrq-20140103-housekeeping
+            22 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg commit -m "Merged zrq-20140103-housekeeping into default"
+
+        hg push
+            ....
+            remote: added 1 changesets with 0 changes to 0 files
+
+        hg update default
+            ....
+
+    popd
+
+# -----------------------------------------------------
+# Code tidy on the housekeeping branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update zrq-20140103-housekeeping
+            0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        mvn -P all clean install
+
+        mvn -P all eclipse:eclipse
+
+        #
+        # Eclipse source code tidy ....
+        # 
+        
+        hg commit -m "Code tidy"
+
+        hg push
+            ....
+            remote: added 1 changesets with 43 changes to 43 files (+1 heads)
+
+        hg update default
+            ....
+
+    popd
+    
+# -----------------------------------------------------
+# Merge and close the housekeeping branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+            43 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg merge zrq-20140103-housekeeping
+            43 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg commit -m "Merged zrq-20140103-housekeeping into default"
+
+        hg push
+            ....
+            remote: added 1 changesets with 0 changes to 0 files (-1 heads)
+
+        hg update zrq-20140103-housekeeping
+            0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        hg commit --close-branch
+
+        hg push
+            ....
+            remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+
+        hg update default
+            ....
+
+    popd
+
+
+# -----------------------------------------------------
+# Create a new project version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        newversion=01.09-devel-01
+        ./bin/version.sh "${newversion:?}"
+
+        hg diff
+
+            diff -r c2159995d990 firethorn-annotations/pom.xml
+            --- a/firethorn-annotations/pom.xml	Sat Jan 04 08:13:59 2014 +0000
+            +++ b/firethorn-annotations/pom.xml	Sat Jan 04 08:17:13 2014 +0000
+            @@ -32,7 +32,7 @@
+                 <parent>
+                     <groupId>uk.ac.roe.wfau</groupId>
+                     <artifactId>firethorn</artifactId>
+            -        <version project='firethorn'>01.09-devel-00</version>
+            +        <version project='firethorn'>01.09-devel-01</version>
+                 </parent>
+            ....
+            ....
+            ....
+            diff -r c2159995d990 pom.xml
+            --- a/pom.xml	Sat Jan 04 08:13:59 2014 +0000
+            +++ b/pom.xml	Sat Jan 04 08:17:13 2014 +0000
+            @@ -39,7 +39,7 @@
+                     | Maven project versions
+                     | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
+                     +-->
+            -    <version project='firethorn'>01.09-devel-00</version>
+            +    <version project='firethorn'>01.09-devel-01</version>
+
+        hg commit -m "Version ${newversion:?}"
+        hg tag  -f "${newversion}"
+        hg push -f
+            ....
+            remote: added 2 changesets with 28 changes to 28 files
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        hg branch zrq-20140103-housekeeping
+        hg commit -m "Created branch zrq-20140103-housekeeping"
+
+        srcbranch=dave-auth-guard
 
 #    0a1e9ea3a666 -- Created branch  (ignore)
 #    65dc84a22ffc -- Build version   (ignore)
@@ -68,12 +277,12 @@ chmod a+x /tmp/filter.sh
 
         hg transplant --filter /tmp/filter.sh 8a2c16b42d0d
 
+        hg transplant --filter "${FIRETHORN_CODE:?}/bin/filter.sh" 8a2c16b42d0d
+
+
     popd
 
 
-# -----------------------------------------------------
-# Create a new development branch.
-#[user@desktop]
 
 #
 # 
