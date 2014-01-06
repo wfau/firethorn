@@ -203,7 +203,6 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
 
     popd
 
-
 # -----------------------------------------------------
 # Create a new project version.
 #[user@desktop]
@@ -256,6 +255,27 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
         ./bin/rsync-repo.sh
 
     popd
+
+# -----------------------------------------------------
+# Push notes into a sub-directory.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        pushd doc
+        mkdir notes
+        mkdir notes/zrq
+        mkdir notes/stv
+
+        hg mv 201* notes/zrq
+
+
+    popd
+
+
 
 # -----------------------------------------------------
 # Create a new development branch.
