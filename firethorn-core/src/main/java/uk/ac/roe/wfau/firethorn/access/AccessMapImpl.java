@@ -17,31 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parent;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 
 /**
  *
  *
  */
-@Slf4j
 @Embeddable
 @Access(
     AccessType.FIELD

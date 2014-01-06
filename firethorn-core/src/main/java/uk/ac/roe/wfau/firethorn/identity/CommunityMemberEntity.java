@@ -20,13 +20,13 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,9 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -50,7 +50,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     AccessType.FIELD
     )
 @Table(
-    name = CommunityMemberEntity.DB_TABLE_NAME
+    name = CommunityMemberEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList=CommunityMemberEntity.DB_COMMUNITY_COL
+            )
+        }
     )
 @NamedQueries(
         {
@@ -98,7 +103,7 @@ implements CommunityMember
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public CommunityMember create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
@@ -121,7 +126,7 @@ implements CommunityMember
             }
 
         @Override
-        @SelectEntityMethod
+        @SelectMethod
         public CommunityMember select(final Community community, final String name)
             {
             return super.first(
@@ -191,9 +196,6 @@ implements CommunityMember
             }
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByCommunity"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = CommunityEntity.class
@@ -252,7 +254,7 @@ implements CommunityMember
                     try {
                         this.jdbcschema = community().space().schemas().simple();
                         }
-                    catch (final NotFoundException ouch)
+                    catch (final EntityNotFoundException ouch)
                         {
                         log.error("Failed to find user space []", ouch.getMessage());
                         }

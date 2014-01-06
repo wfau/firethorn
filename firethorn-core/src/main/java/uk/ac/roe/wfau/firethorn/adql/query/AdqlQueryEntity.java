@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -37,6 +36,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -50,8 +50,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -62,9 +62,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -98,6 +97,9 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     indexes={
         @Index(
             columnList=AdqlQueryEntity.DB_JDBC_TABLE_COL
+            ),
+        @Index(
+            columnList=AdqlQueryEntity.DB_JDBC_SCHEMA_COL
             ),
         @Index(
             columnList=AdqlQueryEntity.DB_ADQL_TABLE_COL
@@ -408,7 +410,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final DataSpace space, final String input)
         throws QueryProcessingException
             {
@@ -436,7 +438,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        @CreateEntityMethod
+        @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input)
         throws QueryProcessingException
             {
@@ -625,9 +627,6 @@ implements AdqlQuery, AdqlParserQuery
         return this.schema;
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexBySpace"
-        )
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = JdbcSchemaEntity.class

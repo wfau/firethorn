@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
-import java.util.List;
-
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**

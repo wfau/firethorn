@@ -90,7 +90,15 @@ extends Exception
        this.event = event ;
        }
 
-    private QName qname ;
-    private XMLEvent event ;
+   private QName qname ;
+   public QName qname()
+       {
+       return this.qname;
+       }
 
+   private XMLEvent event ;
+   public XMLEvent event()
+       {
+       return this.event;
+       }
     }

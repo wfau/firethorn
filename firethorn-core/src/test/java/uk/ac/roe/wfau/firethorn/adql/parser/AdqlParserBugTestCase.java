@@ -61,7 +61,6 @@ extends TestBase
     /**
      * ADQL query using column aliases (ra, dec) in the WHERE clause.
      *
-     */
     private static final String FAIL_ADQL =
           "SELECT"
         + "    adql_ra  as ra,"
@@ -74,6 +73,7 @@ extends TestBase
         + " AND"
         + "    dec Between '24.0' AND '24.2'"
         ;
+     */
 
     /**
      * Select the ADQL query to use for the tests.

@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,11 +64,12 @@ public class LoggedQueryTestCase
         propagation=Propagation.REQUIRES_NEW
         )
     public void test(final int linenum, final String linestr)
+    throws QueryProcessingException
         {
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             linestr
             );
 

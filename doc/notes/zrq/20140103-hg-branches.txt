@@ -318,8 +318,146 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
 
         hg transplant --filter "${FIRETHORN_CODE:?}/bin/filter.sh" 'afb7ea532007:148fb46b8323'
 
+#
+# Many of the changes failed because code for the JUnit tests had been moved.
+# Many of the changes failed because code for the JUnit tests had been changed.
+# Boring process of hand-editing the java files and deleting the java.rej files.
 
-        hg commit -m "Imported changes from ${srcbranch:?}"
+            filtering /tmp/hg-transplant-zwCPjv
+            applying afb7ea532007
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java
+            Hunk #2 FAILED at 354
+            1 out of 2 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/Entity.java
+            Hunk #1 FAILED at 175
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/Entity.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            afb7ea532007 transplanted as a277ca9b9bb0
+            applying 9b663fbc8499
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java
+            Hunk #3 FAILED at 353
+            Hunk #4 FAILED at 365
+            Hunk #5 FAILED at 378
+            Hunk #6 FAILED at 390
+            Hunk #7 FAILED at 403
+            5 out of 13 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/Entity.java
+            Hunk #1 FAILED at 100
+            Hunk #2 FAILED at 129
+            2 out of 2 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/Entity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/IdentityEntity.java
+            Hunk #1 FAILED at 0
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/IdentityEntity.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java' for patching
+            10 out of 10 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            9b663fbc8499 transplanted as e4c6880db94d
+            applying 63e1c5fc9256
+            63e1c5fc9256681273e81f2a1dbd10be65d37d43: empty changesetapplying 09a2275f1645
+            09a2275f1645 transplanted to 46d742aa1461
+            applying cde6c9c48098
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java' for patching
+            15 out of 15 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java' for patching
+            5 out of 5 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            cde6c9c48098 transplanted as 541c6bbbb2f6
+            applying 390470f46f1f
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java
+            Hunk #1 FAILED at 63
+            Hunk #7 FAILED at 368
+            2 out of 12 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java
+            Hunk #1 FAILED at 61
+            1 out of 2 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/OperationEntity.java
+            Hunk #1 FAILED at 40
+            1 out of 2 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/OperationEntity.java.rej
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/meta/adql/AdqlSchemaEntity.java
+            Hunk #1 FAILED at 43
+            1 out of 3 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/meta/adql/AdqlSchemaEntity.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java' for patching
+            23 out of 23 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java' for patching
+            9 out of 9 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            390470f46f1f transplanted as c7b354a1a65d
+            applying b731b95943e3
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java' for patching
+            15 out of 15 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasLoggedQueryTestCase.java' for patching
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasLoggedQueryTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java' for patching
+            4 out of 4 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasSelectOperCase.java' for patching
+            7 out of 7 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasSelectOperCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/JdbcColumnSizeTestCase.java' for patching
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/JdbcColumnSizeTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/SubqueryInSelectTestCase.java' for patching
+            3 out of 3 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/SubqueryInSelectTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/UDFFunctionsTestCase.java' for patching
+            2 out of 2 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/UDFFunctionsTestCase.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+
+        hg transplant --continue
+
+            b731b95943e3 transplanted as 869fb3efee73
+            applying f915739047d6
+            patching file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java
+            Hunk #1 succeeded at 383 with fuzz 2 (offset 10 lines).
+            Hunk #2 FAILED at 384
+            Hunk #4 succeeded at 425 with fuzz 2 (offset 11 lines).
+            Hunk #6 succeeded at 453 with fuzz 2 (offset 11 lines).
+            1 out of 11 hunks FAILED -- saving rejects to file firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java.rej
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            f915739047d6 transplanted as c09ded05b693
+            applying aa40da18ba34
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java' for patching
+            15 out of 15 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryBugsTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasLoggedQueryTestCase.java' for patching
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasLoggedQueryTestCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java' for patching
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasQueryTestBase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasSelectOperCase.java' for patching
+            7 out of 7 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/AtlasSelectOperCase.java.rej
+            unable to find 'firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/JdbcColumnSizeTestCase.java' for patching
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-core/src/test/java/uk/ac/roe/wfau/firethorn/adql/query/JdbcColumnSizeTestCase.java.rej
+            patching file firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/identity/IdentityController.java
+            Hunk #1 FAILED at 0
+            1 out of 1 hunks FAILED -- saving rejects to file firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/identity/IdentityController.java.rej
+            patching file firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/widgeon/adql/AdqlSchemaQueryController.java
+            Hunk #1 succeeded at 31 with fuzz 2 (offset 0 lines).
+            patch failed to apply
+            abort: fix up the merge and run hg transplant --continue
+
+        hg transplant --continue
+
+            aa40da18ba34 transplanted as cfdb28798e8a
+            applying 148fb46b8323
+            148fb46b8323 transplanted to e96c5297122e
+
 
 
     popd

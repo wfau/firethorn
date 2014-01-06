@@ -139,7 +139,6 @@ extends TestBase
     /**
      * ADQL query with column aliases, using column aliases (ra, dec) in the WHERE clause.
      *
-     */
     private static final String[] QUERY_001 = {
 
           "SELECT"
@@ -176,6 +175,7 @@ extends TestBase
         "jdbc_pts"
 
         };
+     */
 
     /**
      * ADQL query with column and table aliases, using column names (adql_ra, adql_dec) in the WHERE clause.

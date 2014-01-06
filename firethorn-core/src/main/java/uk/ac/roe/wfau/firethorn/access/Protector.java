@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**

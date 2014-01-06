@@ -30,11 +30,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -43,8 +44,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-
-import uk.ac.roe.wfau.firethorn.identity.Community;
 
 /**
  *
@@ -78,10 +77,10 @@ extends TestPropertiesBase
     public void loadCatalog(final String name, final String alias)
         {
         try {
-            this.workspace.schemas().create(
+            this.adqlresource.schemas().create(
                 BaseComponent.CopyDepth.THIN,
                 alias,
-                resource.schemas().select(
+                jdbcresource.schemas().select(
                     name,
                     "dbo"
                     )
@@ -104,10 +103,10 @@ extends TestPropertiesBase
     public void loadSchema(final String name, final String alias)
         {
         try {
-            this.testspace.schemas().create(
+            this.testresource.schemas().create(
                 BaseComponent.CopyDepth.THIN,
                 alias,
-                this.workspace.schemas().select(
+                this.adqlresource.schemas().select(
                     name
                     )
                 );
@@ -132,6 +131,7 @@ extends TestPropertiesBase
      * Test catalog names.
      * 
      */
+    public static final String ATLAS_VERSION = "ATLASDR1" ;
     public static final String ATLAS_CATALOG_NAME   = "ATLASDR1" ;
     public static final String BEST_CATALOG_NAME    = "BestDR8" ;
     public static final String ROSAT_CATALOG_NAME   = "ROSAT" ;
@@ -281,6 +281,7 @@ extends TestPropertiesBase
                 {
                 this.queryschema = this.testresource.schemas().create(
                     QUERY_SCHEMA_NAME
+                    );
                 }
             }
         }
@@ -448,6 +449,7 @@ extends TestPropertiesBase
  */
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
@@ -471,26 +473,31 @@ extends TestPropertiesBase
         }
 
     public AdqlQuery validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, status, adql, sql, fields);
         }
 
     public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
         }
 
     public AdqlQuery validate(final String adql, final String sql)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
+    throws QueryProcessingException
         {
         return validate(level, status, adql, sql, null);
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+    throws QueryProcessingException
         {
         return validate(level, status, adql, null, null);
         }
