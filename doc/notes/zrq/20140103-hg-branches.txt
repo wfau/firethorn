@@ -458,7 +458,18 @@ chmod a+x "${FIRETHORN_CODE:?}/bin/filter.sh"
             applying 148fb46b8323
             148fb46b8323 transplanted to e96c5297122e
 
+        ....
+        ....
+        ....
+        ....
 
+        mvn -P all clean install
+
+        hg commit -m "Fixed side effects of transplants"
+
+        hg push --new-branch
+            ....
+            remote: added 11 changesets with 87 changes to 66 files
 
     popd
 
