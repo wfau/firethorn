@@ -47,18 +47,13 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.tap.XMLResponse;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
 public class AdqlTapSyncController extends AbstractController {
 	
-	
-	/**
-	 * Default query schema
-	 */
-	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
 	
 	/**
 	 * Timeout for query job in miliseconds
@@ -139,9 +134,9 @@ public class AdqlTapSyncController extends AbstractController {
 			if (check){
 				// Look for default query schema, if none found create one
 				try{
-					schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
+					schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
 				}  catch (final NameNotFoundException ouch) {
-					schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
+					schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
 				}
 				
 				try {
@@ -185,29 +180,29 @@ public class AdqlTapSyncController extends AbstractController {
 			
 			// Check for errors and return appropriate VOTable error messages		
 			if (REQUEST==null){
-				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
+				TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
 				valid = false;
 				return valid;
 			} else if (!REQUEST.equalsIgnoreCase("doQuery")){
 				error_message = "Invalid REQUEST: " + REQUEST;
-				XMLResponse.writeErrorToVotable(error_message, writer);
+				TapError.writeErrorToVotable(error_message, writer);
 				valid = false;
 				return valid;
 			}
 			
 			
 			if (LANG==null){
-				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
+				TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
 				valid = false;
 				return valid;
 			}  else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
 				error_message = "Invalid LANGUAGE: " + LANG;
-				XMLResponse.writeErrorToVotable(error_message, writer);
+				TapError.writeErrorToVotable(error_message, writer);
 				valid = false;
 			} 
 			
 			if (QUERY==null){
-				XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
+				TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
 				valid = false;
 				return valid;
 			}

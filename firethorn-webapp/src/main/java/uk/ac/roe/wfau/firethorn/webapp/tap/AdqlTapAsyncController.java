@@ -53,17 +53,12 @@ public class AdqlTapAsyncController extends AbstractController {
 	
 	
    /**
-	 * Default query schema
-	 */
-	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
-	
-	
-   /**
     * VOTable MIME type.
     *
     */
    public static final String VOTABLE_MIME = "application/x-votable+xml" ;
    
+   public static final String FIRETHORN_TAP_BASE ="http://localhost:8080/firethorn/tap/";
    /**
     * TextXml MIME type.
     *
@@ -86,123 +81,160 @@ public class AdqlTapAsyncController extends AbstractController {
         final String ident
         ) throws IdentifierNotFoundException  {
         log.debug("entity() [{}]", ident);
+      
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
                 )
             );
         }
+   
 
-    @RequestMapping(value="/{jobid}/phase", method = RequestMethod.GET)
+	/**
+     * Get the target workspace based on the query in the path. 
+     *
+     */
+    @ModelAttribute("urn:adql.resource.query")
+    public AdqlQuery queryentity(
+        @PathVariable("jobid")
+        final String jobid
+        ) throws IdentifierNotFoundException  {
+        log.debug("query() [{}]", jobid);
+     
+		return factories().adql().queries().select(
+		            factories().adql().queries().idents().ident(
+		            		jobid
+		                )
+		            );
+    }
+		
+		
+    @RequestMapping(value="", method = RequestMethod.POST)
+  	@ResponseBody
+      public String initAsyncJob (
+    		  @ModelAttribute("urn:adql.resource.entity")
+    	        AdqlResource resource,
+    		  @RequestParam(value="LANG", required = false) String LANG,
+    		  @RequestParam(value="REQUEST", required = false) String REQUEST)
+    				  throws  IdentifierNotFoundException, Exception {
+ 
+    		UWSJob uwsjob = new UWSJob();
+    	 	return FIRETHORN_TAP_BASE + "async/" + uwsjob.getJobId();
+      }
+
+    
+
+    @RequestMapping(value="/{jobid}/parameters", method = RequestMethod.POST)
+  	@ResponseBody
+      public String setparameters (
+    		  @PathVariable String jobid,
+    		  @ModelAttribute("urn:adql.resource.entity")
+    	        AdqlResource resource,
+    	      @ModelAttribute("urn:adql.resource.query")
+    	        AdqlQuery queryentity,
+    	      @RequestParam(value="LANG", required = false) String LANG,
+    		  @RequestParam(value="REQUEST", required = false) String REQUEST,
+    		  @RequestParam(value="QUERY", required = false) String QUERY
+    		  ) throws  IdentifierNotFoundException, Exception {
+    		
+    		UWSJob uwsjob;
+    		if (queryentity!=null && resource!=null){
+    			uwsjob = new UWSJob(queryentity, resource);
+    		} else {
+    			uwsjob = new UWSJob();
+    		}
+    		
+    		String queryid = "";
+    		if (REQUEST!=null) uwsjob.setRequest(REQUEST);
+    		if (LANG!=null) uwsjob.setLang(LANG);
+    		if (QUERY!=null) uwsjob.setQuery(QUERY);
+    		
+    		queryid = uwsjob.getQueryId();
+    	 	return queryid;
+      }
+    
+    
+    @RequestMapping(value="/{jobid}/phase", method = RequestMethod.POST)
 	@ResponseBody
-    public String phase(@PathVariable String jobid) {
-        return jobid;
+    public void phase(@PathVariable String jobid,
+    		@ModelAttribute("urn:adql.resource.entity")
+    			AdqlResource resource,
+    		@ModelAttribute("urn:adql.resource.query")
+    	        AdqlQuery queryentity,
+    		final HttpServletResponse response,
+    		@RequestParam(value="PHASE", required = true) String PHASE) throws Exception {
+
+    	UWSJob uwsjob = new UWSJob(queryentity, resource);
+		PrintWriter writer = response.getWriter();
+	
+		if (PHASE==null){
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
+		} else {
+			uwsjob.setPhase(PHASE);
+		}
+		writer.append(queryentity.ident().toString());
+		//writer.append(uwsjob.getQueryId());
+	 	
     }
     
     @RequestMapping(value="/{jobid}/quote", method = RequestMethod.GET)
 	@ResponseBody
-    public String quote(@PathVariable String jobid) {
+    public String quote(
+    	  @PathVariable String jobid,
+  		  @ModelAttribute("urn:adql.resource.entity")
+  	        AdqlResource resource,
+  	      @ModelAttribute("urn:adql.resource.query")
+  	        AdqlQuery queryentity) {
         return "quote";
     }
     
     @RequestMapping(value="/{jobid}/executionduration", method = RequestMethod.GET	)
 	@ResponseBody
-    public String executionduration(@PathVariable String jobid) {
+    public String executionduration(
+    	  @PathVariable String jobid,
+  		  @ModelAttribute("urn:adql.resource.query")
+  	        AdqlQuery queryentity,
+  	      @ModelAttribute("urn:adql.resource.entity")
+    		AdqlResource resource) {
         return "executionduration";
     }
  
-    @RequestMapping(value="/{jobid}/parameters", method = RequestMethod.POST)
-	@ResponseBody
-    public String parameters(@PathVariable String jobid) {
-        return "parameters";
-    }
     
     @RequestMapping(value="/{jobid}/destruction", method = RequestMethod.GET)
    	@ResponseBody
-       public String destruction(@PathVariable String jobid) {
+    public String destruction(
+    		@PathVariable String jobid,
+  		  	@ModelAttribute("urn:adql.resource.entity")
+  	        	AdqlResource resource,
+  	        @ModelAttribute("urn:adql.resource.query")
+  	        	AdqlQuery queryentity) {
            return "destruction";
        }
     
     @RequestMapping(value="/{jobid}/error", method = RequestMethod.GET)
-    
-    public String error(@PathVariable String jobid) {
+    @ResponseBody
+    public String error(
+    		@PathVariable String jobid,
+  		  	@ModelAttribute("urn:adql.resource.entity")
+  	        	AdqlResource resource,
+  	        @ModelAttribute("urn:adql.resource.query")
+    			AdqlQuery queryentity) {
         return "error";
     }
     
     
     @RequestMapping(value="/{jobid}/results", method = RequestMethod.GET)
 	@ResponseBody
-    public String results(@PathVariable String jobid) {
+    public String results(
+    		@PathVariable String jobid,
+  		  	@ModelAttribute("urn:adql.resource.entity")
+  	        	AdqlResource resource,
+  	        @ModelAttribute("urn:adql.resource.query")
+  	        	AdqlQuery queryentity) {
         return "results";
     }
   
     
-    /**
-     * Web service method
-     * Create an Async query job
-     * 
-     */
-	@RequestMapping( method = RequestMethod.GET)
-	@ResponseBody
-	public String createAsyncJob(
-        @ModelAttribute("urn:adql.resource.entity")
-        AdqlResource resource,
-        final HttpServletResponse response,
-        @RequestParam(value="QUERY", required = false) String QUERY,
-        @RequestParam(value="LANG", required = false) String LANG,
-        @RequestParam(value="REQUEST", required = false) String REQUEST 
-        ) throws IdentifierNotFoundException, IOException {
-		
-		
-		PrintWriter writer = response.getWriter();
-		AdqlSchema schema;
-	
-		// Check input parameters and return VOTable with appropriate message if any errors found
-		boolean check = checkParams(writer, REQUEST, LANG, QUERY);
-		
-		if (check){
-			
-				try{
-					schema = resource.schemas().select(DEFAULT_QUERY_SCHEMA);
-				}  catch (final NameNotFoundException ouch) {
-					schema = resource.schemas().create(DEFAULT_QUERY_SCHEMA);
-				}
-				
-				try {
-					
-					AdqlQuery query = schema.queries().create(
-					                QUERY
-					                );
-				
-					if (query!=null){
-					
-						Status jobstatus = query.prepare();
-						if (jobstatus == Status.READY){
-							jobstatus = query.execute();
-						}
-						
-						return "query";
-	
-					}
-				
-
-				} catch (final Exception ouch) {
-					log.error("Exception caught [{}]", ouch);
-					ouch.printStackTrace();
-
-		        }
-				
-
-			} else {
-				
-				log.error("Invalid Params [{}][{}][{}]",REQUEST,LANG, QUERY);
-
-			}
-			return "query";
-		
-        }
-
-
 	private boolean checkParams(PrintWriter writer, String REQUEST,String LANG,String QUERY){
 
 		String error_message;
@@ -210,34 +242,31 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		// Check for errors and return appropriate VOTable error messages		
 		if (REQUEST==null){
-			XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
 			valid = false;
 			return valid;
 		} else if (!REQUEST.equalsIgnoreCase("doQuery")){
 			error_message = "Invalid REQUEST: " + REQUEST;
-			XMLResponse.writeErrorToVotable(error_message, writer);
+			TapError.writeErrorToVotable(error_message, writer);
 			valid = false;
 			return valid;
 		}
 		
-		
 		if (LANG==null){
-			XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
 			valid = false;
 			return valid;
 		}  else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
 			error_message = "Invalid LANGUAGE: " + LANG;
-			XMLResponse.writeErrorToVotable(error_message, writer);
+			TapError.writeErrorToVotable(error_message, writer);
 			valid = false;
 		} 
 		
 		if (QUERY==null){
-			XMLResponse.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
 			valid = false;
 			return valid;
 		}
-
-	
 		
 		return valid;
 		

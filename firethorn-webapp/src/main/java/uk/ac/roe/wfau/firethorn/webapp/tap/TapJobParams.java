@@ -29,6 +29,11 @@ public class TapJobParams  {
 
 	public static final String PARAM_PROGRESSION = "progression";
 
+	/**
+	 * Default query schema
+	 */
+	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
+
 
 
 
