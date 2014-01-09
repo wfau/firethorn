@@ -19,8 +19,6 @@
 #
 # Shell script to update the project version.
 newversion=${1:?}
-source ${HOME:?}/firethorn.settings
-pushd "${FIRETHORN_CODE:?}"
 
     #
     # Check all is up to date ..
@@ -40,5 +38,4 @@ pushd "${FIRETHORN_CODE:?}"
     #hg tag  -f "${newversion}"
     #hg push -f
 
-popd
 
