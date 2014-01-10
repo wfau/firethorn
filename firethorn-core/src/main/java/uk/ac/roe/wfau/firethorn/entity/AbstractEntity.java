@@ -142,7 +142,7 @@ implements Entity
         super();
         if (init)
             {
-            this.owner = factories().context().identity();
+            this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
 

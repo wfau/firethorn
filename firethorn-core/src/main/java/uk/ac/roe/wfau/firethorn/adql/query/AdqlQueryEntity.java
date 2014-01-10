@@ -225,7 +225,7 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public DataSpace space()
                     {
-                    return ParamFactory.this.factories.context().space();
+                    return ParamFactory.this.factories.contexts().current().space();
                     }
                 };
             }
@@ -258,7 +258,7 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public DataSpace space()
                     {
-                    return ParamFactory.this.factories.context().space();
+                    return ParamFactory.this.factories.contexts().current().space();
                     }
                 };
             }
@@ -388,7 +388,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             return create(
                 schema,
-                factories().context().space(),
+                factories().contexts().current().space(),
                 params.param(),
                 input,
                 names().name()
@@ -402,7 +402,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             return create(
                 schema,
-                factories().context().space(),
+                factories().contexts().current().space(),
                 params.param(),
                 input,
                 names().name(name)

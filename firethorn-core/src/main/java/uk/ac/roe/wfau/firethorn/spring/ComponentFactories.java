@@ -21,8 +21,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
-import uk.ac.roe.wfau.firethorn.identity.DataSpace;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -124,41 +122,9 @@ public interface ComponentFactories
     public AdqlQuery.Services queries();
 
     /**
-     * The current context.
+     * Access to the current Context factory.
      *
      */
-    public static interface Context
-        {
-        /**
-         * The current Operation.
-         *
-         */
-        public Operation oper();
-
-        /**
-         * The primary Authentication.
-         *
-         */
-        public Authentication auth();
-
-        /**
-         * The primary Identity.
-         *
-         */
-        public Identity identity();
-
-        /**
-         * The data storage space.
-         * 
-         */
-        public DataSpace space();
-        
-        }
-    
-    /**
-     * Access to the current context.
-     *
-     */
-    public Context context();
+    public Context.Factory contexts();
 
     }

@@ -156,18 +156,6 @@ public class ComponentFactoriesImpl
         }
 
     /**
-     * Our Autowired Identity factory.
-     *
-    @Autowired
-    protected Identity.EntityFactory identities ;
-    @Override
-    public Identity.EntityFactory identities()
-        {
-        return this.identities;
-        }
-     */
-
-    /**
      * Our Autowired Identity context factory.
      *
      */
@@ -251,66 +239,11 @@ public class ComponentFactoriesImpl
         return this.authentications;
         }
 
+    @Autowired
+    protected Context.Factory contexts;
     @Override
-    public Context context()
+    public Context.Factory contexts()
         {
-        return new Context()
-            {
-            @Override
-            public Operation oper()
-                {
-                return operations().current();
-                }
-
-            @Override
-            public Authentication auth()
-                {
-                Operation oper = oper();
-                if (oper != null)
-                    {
-                    return oper.auth().primary();
-                    }
-                return null ;
-                }
-
-            @Override
-            public Identity identity()
-                {
-                Authentication auth = auth();
-                if (auth != null)
-                    {
-                    return auth.identity();
-                    }
-                return null ;
-                }
-
-            @Override
-            public DataSpace space()
-                {
-                return new DataSpace()
-                    {
-                    @Override
-                    public JdbcSchema jdbc()
-                        {
-                        Identity identity = identity();
-                        if (identity != null)
-                            {
-                            if (identity instanceof CommunityMember)
-                                {
-                                return ((CommunityMember)identity).space(
-                                    true
-                                    ); 
-                                }
-                            }
-                        return null;
-                        }
-                    @Override
-                    public AdqlSchema adql()
-                        {
-                        return null;
-                        }
-                    };
-                }
-            };
+        return this.contexts;
         }
     }
