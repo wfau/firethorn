@@ -108,25 +108,41 @@ public class AdqlTapAsyncController extends AbstractController {
 		            );
     }
 		
-		
-    @RequestMapping(value="", method = RequestMethod.POST)
-  	@ResponseBody
+      @ResponseBody
+      @RequestMapping(method = RequestMethod.POST, produces="text/plain")
       public String initAsyncJob (
     		  @ModelAttribute("urn:adql.resource.entity")
-    	        AdqlResource resource,
+    		  AdqlResource resource,
     		  @RequestParam(value="LANG", required = false) String LANG,
-    		  @RequestParam(value="REQUEST", required = false) String REQUEST)
-    				  throws  IdentifierNotFoundException, Exception {
+    		  @RequestParam(value="REQUEST", required = false) String REQUEST,
+    		  @RequestParam(value="QUERY", required = false) String QUERY
+    		  ) throws Exception {
  
-    		UWSJob uwsjob = new UWSJob();
-    	 	return FIRETHORN_TAP_BASE + "async/" + uwsjob.getJobId();
-      }
+				UWSJob uwsjob;
+	    		//PrintWriter writer = response.getWriter();
+	    		String queryid = "";
+	    		
+				//if ( resource!=null){
+				//	uwsjob = new UWSJob(resource);
+				//} else {
+				//	uwsjob = new UWSJob();
+				//}
+				
+				//	if (REQUEST!=null) uwsjob.setRequest(REQUEST);
+				//	if (LANG!=null) uwsjob.setLang(LANG);
+				//	if (QUERY!=null) uwsjob.setQuery(QUERY);
+				//	queryid = uwsjob.getQueryId();
+	    		return "Go here: ";
+	    	//	writer.append(FIRETHORN_TAP_BASE + "async/");
+	    	//	writer.append(uwsjob.getQueryId());
+    }
+				 
 
     
 
     @RequestMapping(value="/{jobid}/parameters", method = RequestMethod.POST)
   	@ResponseBody
-      public String setparameters (
+    public void setparameters (
     		  @PathVariable String jobid,
     		  @ModelAttribute("urn:adql.resource.entity")
     	        AdqlResource resource,
@@ -134,23 +150,27 @@ public class AdqlTapAsyncController extends AbstractController {
     	        AdqlQuery queryentity,
     	      @RequestParam(value="LANG", required = false) String LANG,
     		  @RequestParam(value="REQUEST", required = false) String REQUEST,
-    		  @RequestParam(value="QUERY", required = false) String QUERY
+    		  @RequestParam(value="QUERY", required = false) String QUERY,
+    		  final HttpServletResponse response
     		  ) throws  IdentifierNotFoundException, Exception {
     		
+    		PrintWriter writer = response.getWriter();
     		UWSJob uwsjob;
+    		String queryid = "";
+    		
     		if (queryentity!=null && resource!=null){
     			uwsjob = new UWSJob(queryentity, resource);
     		} else {
     			uwsjob = new UWSJob();
     		}
     		
-    		String queryid = "";
+    		
     		if (REQUEST!=null) uwsjob.setRequest(REQUEST);
     		if (LANG!=null) uwsjob.setLang(LANG);
     		if (QUERY!=null) uwsjob.setQuery(QUERY);
     		
     		queryid = uwsjob.getQueryId();
-    	 	return queryid;
+    		writer.append(queryid);
       }
     
     
@@ -162,17 +182,34 @@ public class AdqlTapAsyncController extends AbstractController {
     		@ModelAttribute("urn:adql.resource.query")
     	        AdqlQuery queryentity,
     		final HttpServletResponse response,
-    		@RequestParam(value="PHASE", required = true) String PHASE) throws Exception {
+    		@RequestParam(value="PHASE", required = true) String PHASE) throws  IdentifierNotFoundException, Exception {
+    	
+    	PrintWriter writer = response.getWriter();
+    	UWSJob uwsjob;
+    	String queryid = "";
 
-    	UWSJob uwsjob = new UWSJob(queryentity, resource);
-		PrintWriter writer = response.getWriter();
+    	try{
+			
+			if (queryentity!=null && resource!=null){
+				uwsjob = new UWSJob(queryentity, resource);
+			} else {
+				uwsjob = new UWSJob();
+			}
+			//queryid = uwsjob.getResults();
+
+			if (PHASE==null){
+				TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
+			} else {
+				uwsjob.setPhase(PHASE);
+			}
+			
+			writer.append(uwsjob.getQueryId());
+			
+  		} catch (Exception e) {
+  			writer.append("ERROR");
+  		}
+		
 	
-		if (PHASE==null){
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
-		} else {
-			uwsjob.setPhase(PHASE);
-		}
-		writer.append(queryentity.ident().toString());
 		//writer.append(uwsjob.getQueryId());
 	 	
     }
@@ -223,7 +260,7 @@ public class AdqlTapAsyncController extends AbstractController {
     }
     
     
-    @RequestMapping(value="/{jobid}/results", method = RequestMethod.GET)
+    @RequestMapping(value="/{jobid}/results", method = RequestMethod.POST)
 	@ResponseBody
     public String results(
     		@PathVariable String jobid,
@@ -231,7 +268,25 @@ public class AdqlTapAsyncController extends AbstractController {
   	        	AdqlResource resource,
   	        @ModelAttribute("urn:adql.resource.query")
   	        	AdqlQuery queryentity) {
-        return "results";
+    	
+	    	String queryid = "";
+	    	UWSJob uwsjob;
+	  		try{
+				
+				if (queryentity!=null && resource!=null){
+					uwsjob = new UWSJob(queryentity, resource);
+				} else {
+					uwsjob = new UWSJob();
+				}
+				queryid = uwsjob.getResults();
+	  		} catch (Exception e) {
+	  			
+	  		}
+				
+				
+			
+			
+		 	return queryid;
     }
   
     
