@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,7 @@ extends TestRoot
      *
      */
     @Before
-    public final void oper()
+    public void oper()
         {
         final Operation operation = factories().operations().create(
             TEST_OPER_TARGET,
@@ -93,7 +94,7 @@ extends TestRoot
      * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
      *
      */
-    //@Test
+    @Test
     public void empty()
     throws Exception
         {
