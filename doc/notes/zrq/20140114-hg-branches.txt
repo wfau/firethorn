@@ -164,12 +164,18 @@
     pushd "${FIRETHORN_CODE:?}"
 
         #
+        # Close the branch.
+        hg update "${newbranch:?}"
+        hg commit --close-branch -m "Closed branch ${newbranch:?}"
+
+        #
         # Merge the branch
         hg update default
         hg merge  "${newbranch:?}"
+        hg commit -m "Merged ${newbranch:?}"
 
         #
-        # Update the version
+        # Create a new main version
         newversion=1.9.2
         ./bin/version.sh "${newversion:?}"
 
@@ -187,4 +193,5 @@
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
 
-        
+    popd
+
