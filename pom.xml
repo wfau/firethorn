@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>01.09-devel-01</version>
+    <version project='firethorn'>1.9.2</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -411,29 +411,28 @@
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-util</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-table</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-votable</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-fits</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-tamfits</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>
