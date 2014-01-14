@@ -1,0 +1,190 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2014 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Update Mercurial to 1.9.2.
+#[root@laptop]
+
+    wget http://pkgs.repoforge.org/mercurial/mercurial-1.9.2-1.el6.rfx.i686.rpm
+
+    yum localinstall mercurial-1.9.2-1.el6.rfx.i686.rpm 
+
+# -----------------------------------------------------
+# Create a new housekeeping branch.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        newbranch=1.9.1-housekeeping
+
+        hg branch "${newbranch:?}"
+
+        ./bin/version.sh "${newbranch:?}"
+
+        hg commit -m "Created branch ${newbranch:?}"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Download and install updated version of still jars.
+#[user@laptop]
+
+    #
+    # http://www.star.bris.ac.uk/~mbt/stil/stil_jars.zip
+    
+    pushd /home/Zarquan/Downloads/stil_jars/
+    
+        for name in 'fits' 'util' 'table' 'votable' 'tamfits'
+        do
+
+            echo "Name [${name}]"
+
+            jarfile=${name?}.jar
+            fullname=stil-${name?}
+            version=3.0.5
+            group=uk.ac.starlink
+
+            mvn install:install-file  \
+                -Dfile=${jarfile?} \
+                -DgroupId=${group?} \
+                -DartifactId=${fullname?} \
+                -Dversion=${version?} \
+                -Dpackaging=jar \
+                -DcreateChecksum=true
+
+        done
+    popd    
+
+# -----------------------------------------------------
+# Push the labelled versions to our Maven repository.
+#[user@laptop]
+
+    rsync \
+        --recursive --copy-links --checksum \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --exclude='/uk/ac/roe/wfau/**' \
+        --exclude='/uk/org/ogsadai/**' \
+        --include='*' \
+        /var/local/toolkits/maven/repository/ \
+        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
+
+# -----------------------------------------------------
+# Update our dependency versions.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit pom.xml &
+
+            <!--+
+                | Starlink libraries.
+                | http://www.star.bris.ac.uk/~mbt/stil/
+                +-->
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-util</artifactId>
+        -       <version>3.0.4</version>
+        +       <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-table</artifactId>
+        -       <version>3.0.4</version>
+        +       <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-votable</artifactId>
+        -       <version>3.0.4</version>
+        +       <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-fits</artifactId>
+        -       <version>3.0.4</version>
+        +       <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-tamfits</artifactId>
+        -       <version>3.0.4</version>
+        +       <version>3.0.5</version>
+            </dependency>
+
+    popd
+    
+# -----------------------------------------------------
+# Check it all builds.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        
+        #
+        # testing .....
+        #
+
+        hg commit -m "Updated to STIL version 3.0.5"
+        
+    popd
+
+# -----------------------------------------------------
+# Merge the changes back into main.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Merge the branch
+        hg update default
+        hg merge  "${newbranch:?}"
+
+        #
+        # Update the version
+        newversion=1.9.2
+        ./bin/version.sh "${newversion:?}"
+
+        #
+        # Commit and tag the new version.
+        hg commit -m "Version ${newversion:?}"
+        hg tag  -f "${newversion}"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+        
