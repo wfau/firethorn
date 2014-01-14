@@ -28,7 +28,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-database</artifactId>
-        <version project='firethorn'>01.09-devel-01</version>
+        <version project='firethorn'>1.9.1-housekeeping</version>
     </parent>
 
     <artifactId>firethorn-database-userdata</artifactId>
