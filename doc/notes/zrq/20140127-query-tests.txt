@@ -36,8 +36,8 @@
         #
         # Create the new branch based on default.
         hg update default
-        hg branch "{newbranch:?}"
-        hg commit -m "Created branch [{newbranch:?}]"
+        hg branch "${newbranch:?}"
+        hg commit -m "Created branch [${newbranch:?}]"
         hg push --new-branch
 
     popd
@@ -49,7 +49,7 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg update "{newbranch:?}"
+        hg update "${newbranch:?}"
 
         #
         # .....
@@ -72,9 +72,9 @@
         hg pull
         hg update
 
-        hg merge "{newbranch:?}"
+        hg merge "${newbranch:?}"
 
-        hg commit -m "Merged branch ["{newbranch:?}"] into default"
+        hg commit -m "Merged branch ["${newbranch:?}"] into default"
 
         hg push
 
@@ -96,17 +96,17 @@
         # Fix any conflicts ...
         #
 
-        hg merge "{newbranch:?}"
+        hg merge "${newbranch:?}"
 
         #
         # Fix any conflicts ...
         #
 
-        hg commit -m "Merged branch [{newbranch:?}] into default"
+        hg commit -m "Merged branch [${newbranch:?}] into default"
         hg push
 
-        hg update "{newbranch:?}"
-        hg commit --close-branch
+        hg update "${newbranch:?}"
+        hg commit --close-branch -m "Closing branch [${newbranch:?}]"
         hg push
 
         hg update default
