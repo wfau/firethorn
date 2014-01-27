@@ -24,13 +24,18 @@
 # Create a new branch.
 #[user@desktop]
 
-    newbranch=zrq-20140127-query-tests
+    newbranch=1.9.2-zrq-query-tests
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg update default
+        #
+        # Check we have the most recent version.
+        hg pull
 
+        #
+        # Create the new branch based on default.
+        hg update default
         hg branch "{newbranch:?}"
         hg commit -m "Created branch [{newbranch:?}]"
         hg push --new-branch
