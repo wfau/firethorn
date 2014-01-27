@@ -1,0 +1,137 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    newbranch=zrq-20140127-query-tests
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        hg branch "{newbranch:?}"
+        hg commit -m "Created branch [{newbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Add the new code ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "{newbranch:?}"
+
+        #
+        # .....
+        #
+
+        hg commit -m "..."
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Merge the branch back into default.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        hg pull
+        hg update
+
+        hg merge "{newbranch:?}"
+
+        hg commit -m "Merged branch ["{newbranch:?}"] into default"
+
+        hg push
+
+    popd
+    
+# -----------------------------------------------------
+# Merge and close the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        hg pull
+        hg update
+
+        #
+        # Fix any conflicts ...
+        #
+
+        hg merge "{newbranch:?}"
+
+        #
+        # Fix any conflicts ...
+        #
+
+        hg commit -m "Merged branch [{newbranch:?}] into default"
+        hg push
+
+        hg update "{newbranch:?}"
+        hg commit --close-branch
+        hg push
+
+        hg update default
+
+    popd
+
+# -----------------------------------------------------
+# Increment the project version.
+#[user@desktop]
+
+    newversion=01.09-devel-01
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        ./bin/version.sh "${newversion:?}"
+
+        hg commit -m "Version ${newversion:?}"
+        hg tag  -f "${newversion}"
+        hg push -f
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+    popd
+
