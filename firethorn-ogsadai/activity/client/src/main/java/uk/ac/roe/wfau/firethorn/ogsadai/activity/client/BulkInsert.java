@@ -28,6 +28,7 @@ import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
 import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
 import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
+import uk.org.ogsadai.data.BooleanData;
 import uk.org.ogsadai.data.StringData;
 
 /**
@@ -63,6 +64,13 @@ public class BulkInsert extends BaseResourceActivity
     public final static String TABLENAME_INPUT = "tableName";
 
     /**
+     * Activity input name(<code>writeFlag</code>) -
+     * Table name.
+     * (<code>String</code>).
+     */
+    public final static String WRITE_FLAG_INPUT = "writeFlag";
+
+    /**
      * Activity output name(<code>result</code>) -
      * Number of inserted tuples.
      * (<code>Integer</code>).
@@ -71,6 +79,9 @@ public class BulkInsert extends BaseResourceActivity
 
     /** Data input. */
     private final ActivityInput mDataInput;
+
+    /** WriteData input. */
+    private final ActivityInput mWriteFlagInput;
 
     /** Tablename input. */
     private final ActivityInput mTableNameInput;
@@ -86,6 +97,7 @@ public class BulkInsert extends BaseResourceActivity
     {
         super(DEFAULT_ACTIVITY_NAME);
         mDataInput = new SimpleActivityInput(DATA_INPUT);
+        mWriteFlagInput = new SimpleActivityInput(WRITE_FLAG_INPUT);
         mTableNameInput = new SimpleActivityInput(TABLENAME_INPUT);
 
         mResultOutput = new SimpleActivityOutput(OUTPUT_RESULT);
@@ -109,6 +121,25 @@ public class BulkInsert extends BaseResourceActivity
     public void connectTableNameInput(final SingleActivityOutput output)
     {
         mTableNameInput.connect(output);
+    }
+
+    
+    /**
+     * Adds a new write flag.
+     *
+     */
+    public void addWriteFlag(final Boolean writeFlag)
+    {
+        mWriteFlagInput.add(new BooleanData(writeFlag));
+    }
+
+    /**
+     * Connects the write flag input to the given output.
+     *
+     */
+    public void connectWriteFlagInput(final SingleActivityOutput output)
+    {
+        mWriteFlagInput.connect(output);
     }
 
     /**
@@ -136,7 +167,7 @@ public class BulkInsert extends BaseResourceActivity
     @Override
     protected ActivityInput[] getInputs()
     {
-        return new ActivityInput[]{ mDataInput, mTableNameInput };
+        return new ActivityInput[]{ mWriteFlagInput, mDataInput, mTableNameInput };
     }
 
     /**

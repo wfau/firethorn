@@ -71,6 +71,13 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     public static final String INPUT_TUPLES = "data";
 
     /**
+     * Activity input name(<code>writeFlag</code>) -
+     * Flag to switch the write ON/OFF.
+     * ({@link java.lang.String}).
+     */
+    public static final String INPUT_WRITE_FLAG = "writeFlag";
+
+    /**
      * Activity input name(<code>tableName</code>) -
      * Table name.
      * ({@link java.lang.String}).
@@ -121,6 +128,7 @@ public class BulkInsertActivity extends MatchedIterativeActivity
     protected ActivityInput[] getIterationInputs()
     {
         return new ActivityInput[] {
+            new TypedActivityInput(INPUT_WRITE_FLAG, Boolean.class),
             new TypedActivityInput(INPUT_TABLE_NAME, String.class),
             new TupleListActivityInput(INPUT_TUPLES)
         };
@@ -158,8 +166,9 @@ public class BulkInsertActivity extends MatchedIterativeActivity
         throws ActivityProcessingException, ActivityTerminatedException,
         ActivityUserException
     {
-        final String tableName = (String) iterationData[0];
-        final TupleListIterator tuples = (TupleListIterator) iterationData[1];
+        final Boolean writeFlag = (Boolean) iterationData[0];
+        final String tableName = (String) iterationData[1];
+        final TupleListIterator tuples = (TupleListIterator) iterationData[2];
 
         final MetadataWrapper metadataWrapper = tuples.getMetadataWrapper();
         final TupleMetadata metadata = (TupleMetadata) metadataWrapper.getMetadata();
@@ -170,32 +179,48 @@ public class BulkInsertActivity extends MatchedIterativeActivity
         {
 
             LOG.debug("Preparing statement ...");
+            LOG.debug("  write flag [" + writeFlag + "]");
 
         	mStatement = mConnection.prepareStatement(sql);
             //int totalCount = 0;
             Tuple tuple = null;
 
 
-            final long batchsize  = 1000 ;
+            final long batchsize = 1000 ;
             long batchcount = 0 ;
 
             //LOG.debug("Starting loop...");
+            LOG.debug("TIMESTAMP starting data write");
+
             while ((tuple = (Tuple) tuples.nextValue()) != null)
             {
                 SQLUtilities.setStatementParameters(mStatement, tuple, metadata);
                 mStatement.addBatch();
                 if ((batchcount++ % batchsize) == 0)
                 	{
-                    //LOG.debug("Executing batch [" + batchcount + "]");
-                	mStatement.executeBatch();
+                	if (writeFlag)
+                		{
+                        //LOG.debug("Executing batch [" + batchcount + "]");
+                		mStatement.executeBatch();
+                		}
+                	else {
+                        //LOG.debug("Skipping batch [" + batchcount + "]");
+                		}
                 	}
             }
-            //LOG.debug("Executing final batch [" + batchcount + "]");
-        	mStatement.executeBatch();
+        	if (writeFlag)
+				{
+                //LOG.debug("Executing final batch [" + batchcount + "]");
+        		mStatement.executeBatch();
+				}
+        	else {
+                //LOG.debug("Skipping final batch [" + batchcount + "]");
+        		}
 
             mOutput.write(new Long(batchcount));
             mConnection.commit();
             mStatement.close();
+            LOG.debug("TIMESTAMP finishing data write");
         }
         catch (final SQLException e)
         {

@@ -146,18 +146,21 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=CREATE_QUERY, required=true)
-        final String query,
+        final String input,
         @RequestParam(value=CREATE_ROWID, required=false)
         final String rowid,
         @RequestParam(value=CREATE_NAME, required=false)
         final String name
         ){
-        return created(
-            schema.queries().create(
-                query,
-                rowid,
-                name
-                )
+    	log.info("TIMESTAMP starting query create");
+    	AdqlQuery query = schema.queries().create(
+            input,
+            rowid,
+            name
+            );
+    	log.info("TIMESTAMP finishing query create");
+    	return created(
+            query
             );
         }
     }

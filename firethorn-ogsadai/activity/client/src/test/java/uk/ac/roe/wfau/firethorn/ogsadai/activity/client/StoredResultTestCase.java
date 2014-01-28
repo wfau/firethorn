@@ -86,6 +86,7 @@ extends SimpleQueryTestBase
                 )
             );
         pipeline.execute(
+    		Boolean.TRUE,
             "twomass",
             "userdata",
             unique("table"),
@@ -115,6 +116,7 @@ extends SimpleQueryTestBase
                 )
             );
         pipeline.execute(
+    		Boolean.TRUE,
             "twomass",
             "userdata",
             unique("table"),

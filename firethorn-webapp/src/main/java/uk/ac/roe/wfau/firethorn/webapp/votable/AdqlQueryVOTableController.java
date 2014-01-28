@@ -286,6 +286,8 @@ public class AdqlQueryVOTableController
         final AdqlQuery   query
         ){
 
+    	log.info("TIMESTAMP begin VOTABLE generate");
+
         final AdqlTable table= query.results().adql();
         final JdbcTable jdbc = query.results().jdbc();
 
@@ -551,8 +553,9 @@ public class AdqlQueryVOTableController
             writer.append("</RESOURCE>");
         writer.append("</vot:VOTABLE>");
 
+    	log.info("TIMESTAMP done VOTABLE generate");
 
-    }
+    	}
 
 
     /**
@@ -574,18 +577,15 @@ public class AdqlQueryVOTableController
             "UTF-8"
             );
 
-
-
-        final PrintWriter writer = response.getWriter();
-
-
         final AdqlQuery query = factories().adql().queries().select(
             factories().adql().queries().idents().ident(
                 ident
                 )
             );
 
-		generateVotable(writer,query);
-
+		generateVotable(
+				response.getWriter(),
+			query
+			);
         }
     }

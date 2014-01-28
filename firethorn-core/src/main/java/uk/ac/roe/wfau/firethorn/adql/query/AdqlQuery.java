@@ -63,6 +63,12 @@ extends NamedEntity, Job
         public String store();
 
         /**
+         * Flag to enable/diable write.
+         *
+         */
+        public Boolean write();
+
+        /**
          * The ADQL parser level.
          *
          */

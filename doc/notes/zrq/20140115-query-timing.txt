@@ -1,0 +1,627 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2014 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new branch to work on.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        newbranch=1.9.2-zrq-query-timing
+
+        hg branch "${newbranch:?}"
+
+        ./bin/version.sh "${newbranch:?}"
+
+        hg commit -m "Created branch ${newbranch:?}"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Update the Eclipse settings.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Edit the code to add the markers.
+#[user@laptop]
+
+    ....
+
+# -----------------------------------------------------
+# Build new version.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Run the firethorn service locally.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# Run the ogsa-dai service locally.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            webappversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                    )
+            echo "version [${webappversion:?}]"
+
+            pushd target/firethorn-ogsadai-webapp-${webappversion:?}/WEB-INF/etc/dai
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        datetime=$(date +%Y%m%d%H%M%S)
+        pushd "${HOME:?}"
+                cat > "firethorn.spaces.${datetime:?}" << EOF
+jdbcspace=${jdbcspace:?}
+adqlspace=${adqlspace:?}
+atlashome=${adqlschema:?}
+EOF
+            ln -s -f "firethorn.spaces.${datetime:?}" firethorn.spaces
+        popd
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+    popd
+
+# -----------------------------------------------------
+# Run a local test.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                twomass_psc
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100000 ra, dec FROM atlassource"
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
+
+# -----------------------------------------------------
+# Push to Maven repo.
+#[user@laptop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------------------
+# Use the test VMs.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+# -------------------------------------------------------------------------------------------
+# Create clean metadata and userdata database(s).
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database properties.
+        #dbversion=ZRQ0109DEV
+        #dbversion=STV0109DEV
+        dbversion=Shep0109TEST
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/sqlserver.properties"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${devhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath='J:\\Dave\\SQLServer\\firethorn\\metadata'
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${devhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath='J:\\Dave\\SQLServer\\firethorn\\userdata'
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Create our userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Shutdown tomcat.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Stop   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Stopping [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" '${HOME}/tomcat/bin/shutdown.sh'
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# ------------------------------------------------
+# Deploy our test properties
+#[user@desktop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# -----------------------------------------------------
+# Clean the logs.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Clean   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Cleaning [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'rm ${HOME}/tomcat/logs/*'
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# -----------------------------------------------------
+# restart tomcat.
+#[user@laptop]
+
+    ssh "${fireuser:?}@${firehost:?}" '${HOME}/tomcat/bin/startup.sh'
+
+    ssh "${ogsauser:?}@${ogsahost:?}" '${HOME}/tomcat/bin/startup.sh'
+
+# ----------------------------------------------------
+# Deploy FireThorn webapp.
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.webapp.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+        
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+    exit
+
+#----------------------------------------------------
+# Deploy the OGSADAI webapp.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.webapp.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-ogsadai-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=$(
+            sed -n '
+                s/firethorn.ogsadai.context=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Load the test metadata.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1'       'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+#BUG - REST calls don't return anything
+#FIX - run the import command twice :-(
+
+            datetime=$(date +%Y%m%d%H%M%S)
+            pushd "${HOME:?}"
+                cat > "firethorn.spaces.${datetime:?}" << EOF
+jdbcspace=${jdbcspace:?}
+adqlspace=${adqlspace:?}
+atlashome=${adqlschema:?}
+EOF
+                ln -s -f "firethorn.spaces.${datetime:?}" firethorn.spaces
+            popd
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        popd
+
+        cat "${HOME:?}/firethorn.spaces"
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+
+jdbcspace=/jdbc/resource/32769
+adqlspace=/adql/resource/32770
+atlashome=/adql/schema/163889
+
+# -------------------------------------------------------------------------------------------
+# Configure Python service.
+# need to be member of group 'users'
+#[user@desktop]
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
+        ~   firethorn_base=http://coccinea:8080/firethorn
+
+    exit
+
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+            source "${HOME:?}/firethorn.spaces"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test query workspace'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT ra, dec FROM atlassource"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Collect the logs.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}" 'cat ${HOME}/tomcat/logs/catalina.out | gzip' > ${firehost:?}.tomcat.log.gz
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}" 'cat ${HOME}/tomcat/logs/catalina.out | gzip' > ${ogsahost:?}.tomcat.log.gz
+
+# -----------------------------------------------------
+# Process the logs.
+#[user@laptop]
+
+    source "${deploylist:?}"
+    gunzip --stdout ${firehost:?}.tomcat.log.gz | grep 'TIMESTAMP' > ${firehost:?}.timing.log
+    gunzip --stdout ${ogsahost:?}.tomcat.log.gz | grep 'TIMESTAMP' > ${ogsahost:?}.timing.log
+
+
+
+

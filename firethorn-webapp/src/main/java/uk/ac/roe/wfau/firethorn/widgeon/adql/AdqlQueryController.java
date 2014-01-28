@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  * Spring MVC controller for <code>AdqlQuery</code>.
  *
  */
+@Slf4j
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
 public class AdqlQueryController
@@ -146,6 +147,10 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
+log.info("TIMESTAMP starting query update");
+log.debug("  name   [{}]", name);
+log.debug("  input  [{}]", input);
+log.debug("  status [{}]", status);
 
         final AdqlQuery query = factories().queries().resolver().select(
             factories().queries().idents().ident(
@@ -170,6 +175,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
                 timeout
                 );
             }
+log.info("TIMESTAMP finishing query update");
 
         return bean(
             query

@@ -162,8 +162,9 @@ implements AdqlQuery, AdqlParserQuery
      */
     protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
     protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
+    protected static final String DB_OGSADAI_WRITE_COL    = "ogsadaiwrite";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
-
+    
     /**
      * Param factory implementation.
      * @todo Move to a separate class.
@@ -181,6 +182,9 @@ implements AdqlQuery, AdqlParserQuery
 
         @Value("${firethorn.ogsadai.store}")
         private String store ;
+
+        @Value("${firethorn.ogsadai.write}")
+        private Boolean write;
 
         @Value("${firethorn.ogsadai.endpoint}")
         private String endpoint ;
@@ -210,6 +214,11 @@ implements AdqlQuery, AdqlParserQuery
                     {
                     return ParamFactory.this.level;
                     }
+				@Override
+				public Boolean write()
+					{
+					return ParamFactory.this.write;
+					}
                 };
             }
 
@@ -238,6 +247,11 @@ implements AdqlQuery, AdqlParserQuery
                     {
                     return change;
                     }
+				@Override
+				public Boolean write()
+					{
+					return ParamFactory.this.write;
+					}
                 };
             }
         }
@@ -759,12 +773,21 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
+    @Column(
+            name = DB_OGSADAI_WRITE_COL,
+            unique = false,
+            nullable = true,
+            updatable = true
+            )
+    private Boolean write ;
+
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.store    = params.store();
         this.level    = params.level();
         this.endpoint = params.endpoint();
+        this.write    = params.write();
         }
 
     @Override
@@ -794,6 +817,12 @@ implements AdqlQuery, AdqlParserQuery
             public AdqlQuery.Syntax.Level level()
                 {
                 return AdqlQueryEntity.this.level;
+                }
+
+            @Override
+            public Boolean write()
+                {
+                return AdqlQueryEntity.this.write;
                 }
             };
         }
@@ -1007,7 +1036,15 @@ implements AdqlQuery, AdqlParserQuery
                     Status.EDITING
                     );
                 }
+            else if (this.input.trim().length() == 0)
+            	{
+	            return status(
+	                Status.EDITING
+	                );
+	            }
             else {
+            	log.info("TIMESTAMP begin query parsing");
+            	log.info("TIMESTAMP [{}]", cleaned().replaceAll("\n", "").replaceAll("\\s{2,}", " "));
                 //
                 // Create the two query parsers.
                 // TODO - The parsers should be part of the resource/schema.
@@ -1043,6 +1080,7 @@ implements AdqlQuery, AdqlParserQuery
                         this
                         );
                     }
+            	log.info("TIMESTAMP done query parsing");
                 //
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
@@ -1121,7 +1159,8 @@ implements AdqlQuery, AdqlParserQuery
         {
         log.debug("execute()");
         log.debug("  AdqlQuery [{}]", ident());
-
+        
+        
         Status result = services().executor().status(
             ident(),
             Status.RUNNING
@@ -1148,6 +1187,7 @@ implements AdqlQuery, AdqlParserQuery
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode     [{}]", query.mode());
                 log.debug("-- Store    [{}]", params().store());
+                log.debug("-- write    [{}]", params().write());
                 log.debug("-- Endpoint [{}]", params().endpoint());
 
 
@@ -1158,13 +1198,16 @@ implements AdqlQuery, AdqlParserQuery
                 final String tablename = query.results().jdbc().namebuilder().toString() ;
                 log.debug("-- Table    [{}]", tablename);
 
+            	log.info("TIMESTAMP sending query to OGSA-DAI");
                 final PipelineResult frog = pipeline.execute(
+            		params().write(),
                     target,
                     params().store(),
                     tablename,
                     query.osql(),
                     query.rowid()
                     );
+            	log.info("TIMESTAMP response back from OGSA-DAI");
 
                 if (frog != null)
                     {
@@ -1297,14 +1340,19 @@ implements AdqlQuery, AdqlParserQuery
             // Create our tables.
             if (identity.space(true) != null)
                 {
-                log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
+            	log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
+            	log.info("TIMESTAMP creating JDBC result table");
                 this.jdbctable = identity.space().tables().create(
                     this
                     );
+            	log.info("TIMESTAMP done JDBC result table");
+
                 // Should this be FULL or THIN ?
+            	log.info("TIMESTAMP creating ADQL result table");
                 this.adqltable = this.schema().tables().create(
                     this
                     );
+            	log.info("TIMESTAMP done ADQL result table");
                 }
 // no-owner fallback.
             else {

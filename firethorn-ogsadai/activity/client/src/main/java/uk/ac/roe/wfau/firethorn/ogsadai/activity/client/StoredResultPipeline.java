@@ -34,9 +34,10 @@ public class StoredResultPipeline
         this.endpoint = endpoint ;
         }
 
-    public PipelineResult execute(final String source, final String store, final String table, final String query)
+    public PipelineResult execute(final Boolean write, final String source, final String store, final String table, final String query)
         {
         return execute(
+            write,
             source,
             store,
             table,
@@ -45,7 +46,7 @@ public class StoredResultPipeline
             );
         }
 
-    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid)
+    public PipelineResult execute(final Boolean write, final String source, final String store, final String table, final String query, final String rowid)
         {
         //
         // Create our ogsadai client.
@@ -77,6 +78,7 @@ public class StoredResultPipeline
         selector.addExpression(
             query
             );
+
         //
         // Create our results writer.
         final BulkInsert writer = new BulkInsert();
@@ -90,6 +92,9 @@ public class StoredResultPipeline
             );
         writer.addTableName(
             table
+            );
+        writer.addWriteFlag(
+            write
             );
         //
 		// Add our row number generator.
@@ -114,6 +119,7 @@ public class StoredResultPipeline
                 selector.getDataOutput()
                 );
 			}
+
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
@@ -121,7 +127,7 @@ public class StoredResultPipeline
             delivery
             );
         delivery.connectInput(
-            writer.getDataOutput()
+        		writer.getDataOutput()
             );
         //
         // Execute our pipeline.

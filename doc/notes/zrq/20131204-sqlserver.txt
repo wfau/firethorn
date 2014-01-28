@@ -20,8 +20,12 @@
 
 #----------------------------------------
 # Use the Windows GUI to check.
-#[user@laptop]
+#[user@desktop]
 
     ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35'
+
+#[user@laptop]
  
+    ssh -X fenrir 'rdesktop -ken-gb -g1024x600 -x l -u dave ramses9'
+    ssh -X fenrir 'rdesktop -ken-gb -g1024x600 -x l -u dave ramses2'
 

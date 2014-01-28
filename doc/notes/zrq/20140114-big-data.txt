@@ -1,0 +1,138 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Load testing ....
+#
+
+
+# -----------------------------------------------------
+# Fetch properties from desktop.
+#[user@laptop]
+
+    scp threonine:firethorn.properties "${HOME:?}"
+    scp threonine:firethorn/* "${HOME:?}/firethorn/"
+
+# -----------------------------------------------------
+# Use the test VMs.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+# ------------------------------------------------
+# Deploy our test properties
+#[user@desktop]
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# -----------------------------------------------------
+# Run the tests.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.spaces"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 0"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 1"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 2"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 3"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 4"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 5"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 6"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 7"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 8"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT * FROM atlasSource WHERE sourceID % 10 = 9"
+
+http://pyratest2:8080/firethorn/adql/query/262157
+
+    ssh shep
+
+        pushd /home/dave/storage
+        
+            mkdir atlas-dr1
+            pushd atlas-dr1
+
+                ident=262157
+
+                curl "http://pyratest2:8080/firethorn/adql/query/${ident:?}" > "${ident:?}.json" 
+                curl "http://pyratest2:8080/firethorn/adql/query/${ident:?}/votable" | gzip > "${ident:?}.vot.gz" 
+
+
+
+    rsync \
+        --recursive \
+        --stats --human-readable --progress \
+        dave@shep:/home/dave/storage/atlas-dr1/ \
+        /media/201310262343/atlas-dr1
+
+
