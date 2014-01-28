@@ -105,30 +105,3 @@
     popd
 
 
-# -----------------------------------------------------
-# Increment the project version.
-#[user@desktop]
-
-    newversion=01.09-devel-01
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        hg update default
-
-        ./bin/version.sh "${newversion:?}"
-
-        hg commit -m "Version ${newversion:?}"
-        hg tag  -f "${newversion}"
-        hg push -f
-
-        #
-        # Re-build everything.
-        mvn -P all clean install
-
-        #
-        # Push to our public repositiry.
-        ./bin/rsync-repo.sh
-
-    popd
-
