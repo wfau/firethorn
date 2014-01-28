@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>1.9.3</version>
+        <version project='firethorn'>1.9.3-stv-datatable-controller</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
