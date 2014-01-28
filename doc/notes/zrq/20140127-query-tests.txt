@@ -58,39 +58,17 @@
         # .....
         #
 
-        hg commit -m ######
+        hg commit -m "Added JUnit tests"
         hg push
 
     popd
 
 # -----------------------------------------------------
-# Merge the branch back into default.
+# Merge the new branch into default.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-
-        hg update default
-
-        hg pull
-        hg update
-
-        hg merge "${newbranch:?}"
-
-        hg commit -m "Merged branch ["${newbranch:?}"] into default"
-
-        hg push
-
-    popd
-    
-# -----------------------------------------------------
-# Merge the new branch.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        hg update default
 
         hg pull
         hg update
@@ -99,13 +77,14 @@
         # Fix any conflicts ...
         #
 
+        hg update default
         hg merge "${newbranch:?}"
 
         #
         # Fix any conflicts ...
         #
 
-        hg commit -m "Merged branch [${newbranch:?}] into default"
+        hg commit -m "Merged branch ["${newbranch:?}"] into [default]"
         hg push
 
     popd
