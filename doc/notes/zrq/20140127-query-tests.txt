@@ -24,15 +24,20 @@
 # Create a new branch.
 #[user@desktop]
 
-    newbranch=zrq-20140127-query-tests
+    newbranch=1.9.2-zrq-query-tests
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg update default
+        #
+        # Check we have the most recent version.
+        hg pull
 
-        hg branch "{newbranch:?}"
-        hg commit -m "Created branch [{newbranch:?}]"
+        #
+        # Create the new branch based on default.
+        hg update default
+        hg branch "${newbranch:?}"
+        hg commit -m "Created branch [${newbranch:?}]"
         hg push --new-branch
 
     popd
@@ -44,13 +49,16 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg update "{newbranch:?}"
+        hg update "${newbranch:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
 
         #
         # .....
         #
 
-        hg commit -m "..."
+        hg commit -m "Added JUnit tests"
         hg push
 
     popd
@@ -67,16 +75,16 @@
         hg pull
         hg update
 
-        hg merge "{newbranch:?}"
+        hg merge "${newbranch:?}"
 
-        hg commit -m "Merged branch ["{newbranch:?}"] into default"
+        hg commit -m "Merged branch ["${newbranch:?}"] into default"
 
         hg push
 
     popd
     
 # -----------------------------------------------------
-# Merge and close the branch.
+# Merge the new branch.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -91,22 +99,32 @@
         # Fix any conflicts ...
         #
 
-        hg merge "{newbranch:?}"
+        hg merge "${newbranch:?}"
 
         #
         # Fix any conflicts ...
         #
 
-        hg commit -m "Merged branch [{newbranch:?}] into default"
+        hg commit -m "Merged branch [${newbranch:?}] into default"
         hg push
 
-        hg update "{newbranch:?}"
-        hg commit --close-branch
+    popd
+
+# -----------------------------------------------------
+# Close the new branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${newbranch:?}"
+        hg commit --close-branch -m "Closing branch [${newbranch:?}]"
         hg push
 
         hg update default
 
     popd
+
 
 # -----------------------------------------------------
 # Increment the project version.
