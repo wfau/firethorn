@@ -41,7 +41,7 @@
         #
         # Set the project version
         ./bin/version.sh "${newbranch:?}"
-        hg commit -m "Version [${newversion:?}]"
+        hg commit -m "Version [${newbranch:?}]"
         hg push
 
         #
