@@ -76,7 +76,6 @@
         hg update
 
         hg merge "${newbranch:?}"
-
         hg commit -m "Merged branch ["${newbranch:?}"] into default"
 
         hg push

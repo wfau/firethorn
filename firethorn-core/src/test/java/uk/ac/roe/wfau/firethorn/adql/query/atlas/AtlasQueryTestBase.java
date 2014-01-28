@@ -204,6 +204,10 @@ extends TestPropertiesBase
                     );
 
                 loadCatalog(
+                    "BestDR9"
+                    );
+
+                loadCatalog(
                     "TWOMASS"
                     );
                 }
@@ -245,6 +249,10 @@ extends TestPropertiesBase
 
                 loadSchema(
                     "BestDR8"
+                    );
+
+                loadSchema(
+                    "BestDR9"
                     );
 
                 loadSchema(
