@@ -38,8 +38,24 @@ extends NamedEntity, Job
     {
 
     /**
+     * Public interface for test delay params.
+     * 
+     */
+    public interface DelayParam
+        {
+
+        public Integer start();
+        public Integer end();
+        public Integer row();
+
+        public Integer page();
+        public Integer size();
+
+        }
+
+    /**
      * Public interface for OGSA-DAI query params.
-     * @todo This should become the basis for an OgsaDaiservice entiry ?
+     * @todo This should become the basis for an OgsaDaiService entity ?
      *
      */
     public interface QueryParam
@@ -545,4 +561,9 @@ extends NamedEntity, Job
      */
     public Results results();
 
+    /**
+     * The query delay params.
+     * 
+     */
+    public DelayParam delays();
     }

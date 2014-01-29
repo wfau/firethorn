@@ -41,11 +41,12 @@ public class StoredResultPipeline
             store,
             table,
             query,
+            null,
             null
             );
         }
 
-    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid)
+    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid, final Integer delay)
         {
         //
         // Create our ogsadai client.
@@ -66,27 +67,39 @@ public class StoredResultPipeline
         //
         // Create our SQL query.
         final SQLQuery selector = new SQLQuery();
+        pipeline.add(
+            selector
+            );
         selector.setResourceID(
             new ResourceID(
                 source
                 )
             );
-        pipeline.add(
-                selector
-                );
         selector.addExpression(
             query
             );
         //
+        // Create our test delay.
+        final RowDelay delayer = new RowDelay(
+            delay
+            );
+        pipeline.add(
+            delayer
+            );
+        delayer.connectDataInput(
+            selector.getDataOutput()
+            );
+
+        //
         // Create our results writer.
         final BulkInsert writer = new BulkInsert();
+        pipeline.add(
+            writer
+            );
         writer.setResourceID(
             new ResourceID(
                 store
                 )
-            );
-        pipeline.add(
-            writer
             );
         writer.addTableName(
             table
@@ -103,15 +116,15 @@ public class StoredResultPipeline
 				rowid
 				);
 		    inserter.connectDataInput(
-		        selector.getDataOutput()
+		        delayer.getDataOutput()
 		        );
 	        writer.connectDataInput(
-                inserter.getResultOutput()
+                inserter.getDataOutput()
                 );
 			}
 		else {
 	        writer.connectDataInput(
-                selector.getDataOutput()
+                delayer.getDataOutput()
                 );
 			}
         //

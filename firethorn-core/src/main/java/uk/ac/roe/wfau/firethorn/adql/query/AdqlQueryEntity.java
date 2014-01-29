@@ -57,6 +57,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.DelayParam;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -1163,7 +1164,8 @@ implements AdqlQuery, AdqlParserQuery
                     params().store(),
                     tablename,
                     query.osql(),
-                    query.rowid()
+                    query.rowid(),
+                    query.delays().row()
                     );
 
                 if (frog != null)
@@ -1346,6 +1348,43 @@ implements AdqlQuery, AdqlParserQuery
             public AdqlTable adql()
                 {
                 return AdqlQueryEntity.this.adqltable;
+                }
+            };
+        }
+
+    @Override
+    public DelayParam delays()
+        {
+        return new DelayParam()
+            {
+            @Override
+            public Integer start()
+                {
+                return null;
+                }
+
+            @Override
+            public Integer end()
+                {
+                return null;
+                }
+
+            @Override
+            public Integer row()
+                {
+                return new Integer(1000);
+                }
+
+            @Override
+            public Integer page()
+                {
+                return null;
+                }
+
+            @Override
+            public Integer size()
+                {
+                return null;
                 }
             };
         }

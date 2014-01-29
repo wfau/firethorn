@@ -68,13 +68,12 @@
         </dependency>
 
         <!--+
-            | Common activity classes.
+            | Our common activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-common</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
         <!--+
