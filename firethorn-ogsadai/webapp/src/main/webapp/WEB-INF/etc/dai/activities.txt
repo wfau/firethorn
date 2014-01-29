@@ -666,5 +666,10 @@ class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.BulkInsertActivity
 description=
 CONFIG
 END
+id=uk.ac.roe.wfau.firethorn.RowDelay
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.RowDelayActivity
+description=
+CONFIG
+END
 EOF
 
