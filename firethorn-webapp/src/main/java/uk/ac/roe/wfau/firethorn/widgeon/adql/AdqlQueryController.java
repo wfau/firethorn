@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  * Spring MVC controller for <code>AdqlQuery</code>.
  *
  */
+@Slf4j
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
 public class AdqlQueryController
@@ -93,6 +94,25 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      */
     public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
 
+    
+    /**
+     * MVC property for the first delay.
+     *
+     */
+    public static final String UPDATE_DELAY_FIRST = "adql.query.update.delay.first" ;
+    
+    /**
+     * MVC property for the row delay.
+     *
+     */
+    public static final String UPDATE_DELAY_EVERY = "adql.query.update.delay.every" ;
+
+    /**
+     * MVC property for the last delay.
+     *
+     */
+    public static final String UPDATE_DELAY_LAST = "adql.query.update.delay.last" ;
+    
     @Override
     public AdqlQueryBean bean(final AdqlQuery entity)
         {
@@ -139,6 +159,12 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)
         final String input,
+        @RequestParam(value=UPDATE_DELAY_FIRST, required=false)
+        final Integer first,
+        @RequestParam(value=UPDATE_DELAY_EVERY, required=false)
+        final Integer every,
+        @RequestParam(value=UPDATE_DELAY_LAST, required=false)
+        final Integer last,
         @RequestParam(value=UPDATE_STATUS, required=false)
         final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
@@ -155,10 +181,61 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
         if ((name != null) || (input != null))
             {
-            this.helper.update(
-                query,
-                name,
-                input
+            update(
+                new Runnable()
+                    {
+                    @Override
+                    public void run()
+                        {
+                        if (name != null)
+                            {
+                            if (name.length() > 0)
+                                {
+                                query.name(
+                                    name
+                                    );
+                                }
+                            }
+                        if (input != null)
+                            {
+                            query.input(
+                                input
+                                );
+                            }
+                        }
+                    }
+                );
+            }
+
+        if ((first != null) || (every != null) || (last != null))
+            {
+            log.debug("Delays [{}][{}][{}]",first, every, last);
+            update(
+                new Runnable()
+                    {
+                    @Override
+                    public void run()
+                        {
+                        if (first != null)
+                            {
+                            query.delays().ogsa().first(
+                                first
+                                );
+                            }
+                        if (every != null)
+                            {
+                            query.delays().ogsa().every(
+                                every
+                                );
+                            }
+                        if (last != null)
+                            {
+                            query.delays().ogsa().last(
+                                last
+                                );
+                            }
+                        }
+                    }
                 );
             }
 
@@ -174,69 +251,5 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         return bean(
             query
             ) ;
-        }
-
-    /**
-     * Transactional helper.
-     *
-     */
-    public static interface Helper
-        {
-
-        /**
-         * Update the properties.
-         *
-         */
-        public void update(final AdqlQuery query, final String  name, final String input);
-
-        }
-
-    /**
-     * Transactional helper.
-     *
-     */
-    @Autowired
-    private Helper helper ;
-
-    /**
-     * Transactional helper.
-     *
-     */
-    @Slf4j
-    @Component
-    public static class HelperImpl
-    extends AbstractComponent
-    implements Helper
-        {
-        @Override
-        @UpdateAtomicMethod
-        public void update(
-            final AdqlQuery query,
-            final String  name,
-            final String input
-            ) {
-            log.debug("---- ---- ---- ----");
-            log.debug("update(AdqlQuery, String, String)");
-            log.debug("  Name  [{}]", name);
-            log.debug("  Input [{}]", input);
-            if (name != null)
-                {
-                log.debug("Setting name");
-                if (name.length() > 0)
-                    {
-                    query.name(
-                        name
-                        );
-                    }
-                }
-            if (input != null)
-                {
-                log.debug("Setting input");
-                query.input(
-                    input
-                    );
-                }
-            log.debug("---- ----");
-            }
         }
     }

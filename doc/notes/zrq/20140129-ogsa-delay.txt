@@ -94,6 +94,8 @@
 
         pushd 'firethorn-ogsadai/webapp'
 
+            pushd ../activity/ ; mvn clean install ; popd
+
             mvn clean compile war:war
 
             source src/test/bin/jdbc-functions.sh
@@ -151,7 +153,7 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Run the tests.
+# Run some tests.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.testing"

@@ -28,6 +28,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 
 /**
  *
@@ -38,21 +40,53 @@ extends NamedEntity, Job
     {
 
     /**
-     * Public interface for test delay params.
+     * Query timing statistics.
      * 
      */
-    public interface DelayParam
+    public interface TimingStats
         {
-
-        public Integer start();
-        public Integer end();
-        public Integer row();
-
-        public Integer page();
-        public Integer size();
-
         }
 
+    /**
+     * The query timing statistics.
+     * 
+     */
+    public TimingStats stats();
+
+    /**
+     * Query delay properties.
+     * 
+     */
+    public interface Delays
+        {
+
+        /**
+         * The OGSA-DAI pipeline delays. 
+         *
+         */
+        public interface PipelineDelays
+        extends Delay.Param
+            {
+            public void first(final Integer value);
+            public void last(final Integer value);
+            public void every(final Integer value);
+            }
+        
+        /**
+         * Delays inside OGSA-DAI. 
+         *
+         */
+        public PipelineDelays ogsa();
+        
+        }
+
+    /**
+     * The query delays.
+     * 
+     */
+    public Delays delays();
+
+    
     /**
      * Public interface for OGSA-DAI query params.
      * @todo This should become the basis for an OgsaDaiService entity ?
@@ -561,9 +595,4 @@ extends NamedEntity, Job
      */
     public Results results();
 
-    /**
-     * The query delay params.
-     * 
-     */
-    public DelayParam delays();
     }

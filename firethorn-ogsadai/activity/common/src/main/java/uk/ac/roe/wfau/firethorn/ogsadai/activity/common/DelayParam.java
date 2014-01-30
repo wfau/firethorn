@@ -19,22 +19,20 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
 
 /**
- * Parameter names for the RowDelayActivity.
+ * Parameter names for the DelayActivity.
  *
  */
-public class RowDelayParam
+public class DelayParam
     {
 
-    public static final String START_DELAY_INPUT = "start.delay" ;
-    public static final String END_DELAY_INPUT   = "end.delay"   ;
-    public static final String PAGE_SIZE_INPUT   = "page.size"   ;
-    public static final String PAGE_DELAY_INPUT  = "page.delay"  ;
-    public static final String ROW_DELAY_INPUT   = "row.delay"   ;
+    public static final String DELAY_FIRST_INPUT = "delay.first" ;
+    public static final String DELAY_LAST_INPUT  = "delay.last"  ;
+    public static final String DELAY_EVERY_INPUT = "delay.every" ;
 
     public static final String TUPLE_ITER_INPUT  = "tuples" ;
     public static final String TUPLE_ITER_OUTPUT = "tuples" ;
 
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.RowDelay" ;
-    
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delay" ;
+
     }
 

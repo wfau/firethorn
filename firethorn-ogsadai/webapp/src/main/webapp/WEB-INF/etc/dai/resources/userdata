@@ -22,7 +22,6 @@ uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
 uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
 uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
 uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
-uk.ac.roe.wfau.firethorn.CreateTable=uk.ac.roe.wfau.firethorn.CreateTable
 uk.ac.roe.wfau.firethorn.BulkInsert=uk.ac.roe.wfau.firethorn.BulkInsert
 END
 dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource

@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelayParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -30,17 +31,15 @@ import uk.org.ogsadai.activity.io.BlockWriter;
 import uk.org.ogsadai.activity.io.ControlBlock;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
-import uk.org.ogsadai.activity.io.TypedActivityInput;
+import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.tuple.Tuple;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.RowDelayParam ;
 
 /**
  *
  *
  */
-public class RowDelayActivity
+public class DelayActivity
 extends MatchedIterativeActivity
     {
 
@@ -49,44 +48,41 @@ extends MatchedIterativeActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        RowDelayActivity.class
+        DelayActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public RowDelayActivity()
+    public DelayActivity()
         {
         super();
         }
 
+    private static final Integer DEFAULT_VALUE = new Integer(0);
+    
     @Override
     public ActivityInput[] getIterationInputs()
         {
         return new ActivityInput[] {
-            new TypedActivityInput(
-                RowDelayParam.START_DELAY_INPUT,
-                Integer.class
+            new TypedOptionalActivityInput(
+                DelayParam.DELAY_FIRST_INPUT,
+                Integer.class,
+                DEFAULT_VALUE
                 ),
-            new TypedActivityInput(
-                RowDelayParam.END_DELAY_INPUT,
-                Integer.class
+            new TypedOptionalActivityInput(
+                DelayParam.DELAY_LAST_INPUT,
+                Integer.class,
+                DEFAULT_VALUE
                 ),
-            new TypedActivityInput(
-                RowDelayParam.PAGE_SIZE_INPUT,
-                Integer.class
-                ),
-            new TypedActivityInput(
-                RowDelayParam.PAGE_DELAY_INPUT,
-                Integer.class
-                ),
-            new TypedActivityInput(
-                RowDelayParam.ROW_DELAY_INPUT,
-                Integer.class
+            new TypedOptionalActivityInput(
+                DelayParam.DELAY_EVERY_INPUT,
+                Integer.class,
+                DEFAULT_VALUE
                 ),
             new TupleListActivityInput(
-                RowDelayParam.TUPLE_ITER_INPUT
+                DelayParam.TUPLE_ITER_INPUT
                 )
             };
         }
@@ -103,10 +99,10 @@ extends MatchedIterativeActivity
         {
     	try {
             validateOutput(
-                RowDelayParam.TUPLE_ITER_OUTPUT
+                DelayParam.TUPLE_ITER_OUTPUT
                 );
             writer = getOutput(
-                RowDelayParam.TUPLE_ITER_OUTPUT
+                DelayParam.TUPLE_ITER_OUTPUT
                 );
             }
         catch (final Exception ouch)
@@ -119,7 +115,7 @@ extends MatchedIterativeActivity
         }
 
     @Override
-    protected void processIteration(final Object[] iteration)
+    protected void processIteration(final Object[] inputs)
     throws ActivityProcessingException,
            ActivityTerminatedException,
            ActivityUserException
@@ -127,55 +123,35 @@ extends MatchedIterativeActivity
         try {
             //
             // Get our delay values.
-            final Integer startDelay = (Integer) iteration[0];
-            final Integer endDelay   = (Integer) iteration[1];
-            final Integer pageSize   = (Integer) iteration[2];
-            final Integer pageDelay  = (Integer) iteration[3];
-            final Integer rowDelay   = (Integer) iteration[4];
+            final Integer first = (Integer) inputs[0];
+            final Integer last  = (Integer) inputs[1];
+            final Integer every = (Integer) inputs[2];
             //
             // Get our tuple iterator.
-            final TupleListIterator tuples = (TupleListIterator) iteration[5];
+            final TupleListIterator tuples = (TupleListIterator) inputs[3];
             //
             // Write the LIST_BEGIN marker and the tuple metadata.
             writer.write(
                 ControlBlock.LIST_BEGIN
                 );
             writer.write(
-                tuples.getMetadataWrapper().getMetadata()
+                tuples.getMetadataWrapper()
                 );
             //
             // Wait for the initial delay.
-            logger.debug("Start [{}]", startDelay);
+            logger.debug("First [{}]", first);
             pause(
-                startDelay
+                first
                 );
             //
             // Process our tuples.
-            Tuple tuple ;
-            int   count = 0 ;
-            while ((tuple = (Tuple) tuples.nextValue()) != null)
+            for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
                 //
-                // Wait for the page delay.
-                logger.debug("Page [{}][{}]", pageSize, pageDelay);
-                if ((pageSize != null) && (pageSize > 0))
-                    {
-                    if (count >= pageSize)
-                        {
-                        count = 0 ;
-                        pause(
-                            pageDelay
-                            );
-                        }
-                    else {
-                        count++ ;
-                        }
-                    }
-                //
-                // Wait for the row delay
-                logger.debug("Row [{}]", rowDelay);
+                // Wait for the tuple delay
+                logger.debug("Tuple [{}]", every);
                 pause(
-                    rowDelay
+                    every
                     );
                 //
                 // Write the tuple to our output.
@@ -185,9 +161,9 @@ extends MatchedIterativeActivity
                 }
             //
             // Wait for the final delay.
-            logger.debug("End [{}]", endDelay);
+            logger.debug("Last [{}]", last);
             pause(
-                endDelay
+                last
                 );
             //
             // Write the list end marker

@@ -5,6 +5,10 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 import java.net.URL;
 
+import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
+
 /**
  * These tests  no longer work - because we need firethorn to create the tables for us.
  *
@@ -73,10 +77,10 @@ extends SimpleQueryTestBase
         }
 
     /**
-     * Single catalog, TWOMASS.
+     * Single catalog.
      *
      */
-    //@Test
+    @Test
     public void test001()
     throws Exception
         {
@@ -86,26 +90,72 @@ extends SimpleQueryTestBase
                 )
             );
         pipeline.execute(
-            "twomass",
-            "userdata",
-            unique("table"),
-            " SELECT" +
-            "    twomass.ra," +
-            "    twomass.dec" +
-            " FROM" +
-            "    twomass_psc AS twomass" +
-            " WHERE" +
-            "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
-            " AND" +
-            "    twomass.dec BETWEEN '20.0' AND '22.9'"
+            new PipelineParam()
+                {
+                @Override
+                public String table()
+                    {
+                    return unique("table");
+                    }
+                
+                @Override
+                public String store()
+                    {
+                    return "userdata";
+                    }
+                
+                @Override
+                public String source()
+                    {
+                    return "twomass";
+                    }
+            
+                @Override
+                public String query()
+                    {
+                    return "" + 
+                    " SELECT" +
+                    "    twomass.ra," +
+                    "    twomass.dec" +
+                    " FROM" +
+                    "    twomass_psc AS twomass" +
+                    " WHERE" +
+                    "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
+                    " AND" +
+                    "    twomass.dec BETWEEN '20.0' AND '22.9'" ;
+                    }
+                
+                @Override
+                public Param delays()
+                    {
+                    return new Param()
+                        {
+                        @Override
+                        public Integer first()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public Integer last()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public Integer every()
+                            {
+                            return null;
+                            }
+                        };
+                    }
+                }
             );
         }
 
     /**
-     * Single catalog with rowid.
+     * Single catalog with rowid and delay.
      *
      */
-    //@Test
+    @Test
     public void test002()
     throws Exception
         {
@@ -115,19 +165,66 @@ extends SimpleQueryTestBase
                 )
             );
         pipeline.execute(
-            "twomass",
-            "userdata",
-            unique("table"),
-            " SELECT" +
-            "    twomass.ra," +
-            "    twomass.dec" +
-            " FROM" +
-            "    twomass_psc AS twomass" +
-            " WHERE" +
-            "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
-            " AND" +
-            "    twomass.dec BETWEEN '20.0' AND '22.9'",
-            "rowid"
+            new PipelineParam()
+                {
+                @Override
+                public String table()
+                    {
+                    return unique("table");
+                    }
+                
+                @Override
+                public String store()
+                    {
+                    return "userdata";
+                    }
+                
+                @Override
+                public String source()
+                    {
+                    return "twomass";
+                    }
+            
+                @Override
+                public String query()
+                    {
+                    return "" + 
+                    " SELECT" +
+                    "    twomass.ra," +
+                    "    twomass.dec" +
+                    " FROM" +
+                    "    twomass_psc AS twomass" +
+                    " WHERE" +
+                    "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
+                    " AND" +
+                    "    twomass.dec BETWEEN '20.0' AND '22.9'" ;
+                    }
+                
+                @Override
+                public Param delays()
+                    {
+                    return new Param()
+                        {
+                        @Override
+                        public Integer first()
+                            {
+                            return new Integer(500);
+                            }
+
+                        @Override
+                        public Integer last()
+                            {
+                            return new Integer(10);
+                            }
+
+                        @Override
+                        public Integer every()
+                            {
+                            return new Integer(500);
+                            }
+                        };
+                    }
+                }
             );
         }
     }

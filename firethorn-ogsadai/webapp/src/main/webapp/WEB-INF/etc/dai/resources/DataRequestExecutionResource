@@ -87,6 +87,7 @@ uk.org.ogsadai.CharArraysResize=uk.org.ogsadai.CharArraysResize
 uk.org.ogsadai.ByteArraysResize=uk.org.ogsadai.ByteArraysResize
 uk.org.ogsadai.Tee=uk.org.ogsadai.Tee
 uk.ac.roe.wfau.firethorn.InsertRowid=uk.ac.roe.wfau.firethorn.InsertRowid
+uk.ac.roe.wfau.firethorn.Delay=uk.ac.roe.wfau.firethorn.Delay
 END
 acceptRequests=true
 ENGINE-CONFIG

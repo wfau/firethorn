@@ -34,6 +34,7 @@ public class StoredResultPipeline
         this.endpoint = endpoint ;
         }
 
+    /*
     public PipelineResult execute(final String source, final String store, final String table, final String query)
         {
         return execute(
@@ -45,8 +46,9 @@ public class StoredResultPipeline
             null
             );
         }
+    */
 
-    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid, final Integer delay)
+    public PipelineResult execute(final PipelineParam param)
         {
         //
         // Create our ogsadai client.
@@ -72,24 +74,35 @@ public class StoredResultPipeline
             );
         selector.setResourceID(
             new ResourceID(
-                source
+                param.source()
                 )
             );
         selector.addExpression(
-            query
+            param.query()
             );
         //
         // Create our test delay.
-        final RowDelay delayer = new RowDelay(
-            delay
+        final Delay delay = new Delay(
+            param.delays()
             );
         pipeline.add(
-            delayer
+            delay
             );
-        delayer.connectDataInput(
+        delay.input(
             selector.getDataOutput()
             );
-
+        //
+		// Add our row number generator.
+		final InsertRowid inserter = new InsertRowid();
+        pipeline.add(
+            inserter
+            );
+		inserter.setColname(
+			"_rowid"
+			);
+	    inserter.connectDataInput(
+	        delay.output()
+	        );
         //
         // Create our results writer.
         final BulkInsert writer = new BulkInsert();
@@ -98,35 +111,15 @@ public class StoredResultPipeline
             );
         writer.setResourceID(
             new ResourceID(
-                store
+                param.store()
                 )
             );
         writer.addTableName(
-            table
+            param.table()
             );
-        //
-		// Add our row number generator.
-		if (rowid != null)
-			{
-			final InsertRowid inserter = new InsertRowid();
-	        pipeline.add(
-                inserter
-                );
-			inserter.setColname(
-				rowid
-				);
-		    inserter.connectDataInput(
-		        delayer.getDataOutput()
-		        );
-	        writer.connectDataInput(
-                inserter.getDataOutput()
-                );
-			}
-		else {
-	        writer.connectDataInput(
-                delayer.getDataOutput()
-                );
-			}
+        writer.connectDataInput(
+            inserter.getDataOutput()
+            );
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();

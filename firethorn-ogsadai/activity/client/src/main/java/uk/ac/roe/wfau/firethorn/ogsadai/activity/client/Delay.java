@@ -29,66 +29,71 @@ import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.data.IntegerData;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.RowDelayParam ;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelayParam ;
 
 /**
  * Client proxy for RowDelayActivity.
  *
  */
-public class RowDelay
+public class Delay
 extends BaseActivity implements Activity
     {
+    /**
+     * Public interface for the Activity parameters.
+     *
+     */
+    public static interface Param
+        {
+        public Integer first();
+        public Integer last();
+        public Integer every();
+        }
+
     /**
      * Activity input - start delay.
      *
      */
-    private final ActivityInput startDelay;
+    private final ActivityInput first;
 
     /**
      * Activity input - end delay.
      *
      */
-    private final ActivityInput endDelay;
-    
-    /**
-     * Activity input - page size.
-     *
-     */
-    private final ActivityInput pageSize;
-    
-    /**
-     * Activity input - page delay.
-     *
-     */
-    private final ActivityInput pageDelay;
+    private final ActivityInput last;
 
     /**
      * Activity input - row delay.
      *
      */
-    private final ActivityInput rowDelay;
+    private final ActivityInput every;
     
     /**
      * Activity input - tuples.
      *
      */
-    private final ActivityInput tupleInput;
+    private final ActivityInput input;
 
     /**
      * Activity output - tuples.
      *
      */
-    private final ActivityOutput tupleOutput;
+    private final ActivityOutput output;
 
     /**
      * Simple constructor with just a row delay.
      *
      */
-    public RowDelay(final Integer delay)
+    public Delay(final Param param)
         {
         this();
-        this.setRowDelay(
-            delay
+        this.first(
+            param.first()
+            );
+        this.every(
+            param.every()
+            );
+        this.last(
+            param.last()
             );
         }
 
@@ -96,33 +101,32 @@ extends BaseActivity implements Activity
      * Public constructor.
      *
      */
-    public RowDelay()
+    public Delay()
         {
         super(
             new ActivityName(
-                RowDelayParam.ACTIVITY_NAME
+                DelayParam.ACTIVITY_NAME
                 )
             );
-        startDelay = new SimpleActivityInput(
-            RowDelayParam.START_DELAY_INPUT
+        first = new SimpleActivityInput(
+            DelayParam.DELAY_FIRST_INPUT,
+            true
             );
-        endDelay   = new SimpleActivityInput(
-            RowDelayParam.END_DELAY_INPUT
+        last = new SimpleActivityInput(
+            DelayParam.DELAY_LAST_INPUT,
+            true
             );
-        pageSize   = new SimpleActivityInput(
-            RowDelayParam.PAGE_SIZE_INPUT
+        every = new SimpleActivityInput(
+            DelayParam.DELAY_EVERY_INPUT,
+            true
             );
-        pageDelay  = new SimpleActivityInput(
-            RowDelayParam.PAGE_DELAY_INPUT
+        input = new SimpleActivityInput(
+            DelayParam.TUPLE_ITER_INPUT,
+            false
             );
-        rowDelay   = new SimpleActivityInput(
-            RowDelayParam.ROW_DELAY_INPUT
-            );
-        tupleInput = new SimpleActivityInput(
-            RowDelayParam.TUPLE_ITER_INPUT
-            );
-        tupleOutput = new SimpleActivityOutput(
-            RowDelayParam.TUPLE_ITER_OUTPUT
+        output = new SimpleActivityOutput(
+            DelayParam.TUPLE_ITER_OUTPUT,
+            false
             );
         }
 
@@ -130,74 +134,57 @@ extends BaseActivity implements Activity
      * Set the start delay.
      *
      */
-    public void setStartDelay(final Integer value)
+    public void first(final Integer value)
         {
-        startDelay.add(
-            new IntegerData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            first.add(
+                new IntegerData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
      * Set the end delay.
      *
      */
-    public void setEndDelay(final Integer value)
+    public void last(final Integer value)
         {
-        endDelay.add(
-            new IntegerData(
-                value
-                )
-            );
-        }
-
-    /**
-     * Set the page size.
-     *
-     */
-    public void setPageSize(final Integer value)
-        {
-        pageSize.add(
-            new IntegerData(
-                value
-                )
-            );
-        }
-
-    /**
-     * Set the page delay.
-     *
-     */
-    public void setpageDelay(final Integer value)
-        {
-        pageDelay.add(
-            new IntegerData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            last.add(
+                new IntegerData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
      * Set the row delay.
      *
      */
-    public void setRowDelay(final Integer value)
+    public void every(final Integer value)
         {
-        rowDelay.add(
-            new IntegerData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            every.add(
+                new IntegerData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
      * Add the tuples input.
      *
      */
-    public void connectDataInput(final SingleActivityOutput source)
+    public void input(final SingleActivityOutput source)
         {
-        tupleInput.connect(
+        input.connect(
             source
             );
         }
@@ -206,9 +193,9 @@ extends BaseActivity implements Activity
      * Get the tuples output.
      *
      */
-    public SingleActivityOutput getDataOutput()
+    public SingleActivityOutput output()
         {
-        return tupleOutput.getSingleActivityOutputs()[0];
+        return output.getSingleActivityOutputs()[0];
         }
 
     /**
@@ -219,12 +206,10 @@ extends BaseActivity implements Activity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            startDelay,
-            endDelay,
-            pageSize,
-            pageDelay,
-            rowDelay,
-            tupleInput
+            first,
+            last,
+            every,
+            input
             };
         }
 
@@ -236,14 +221,10 @@ extends BaseActivity implements Activity
     protected ActivityOutput[] getOutputs()
         {
         return new ActivityOutput[]{
-            tupleOutput
+            output
             };
         }
 
-    /**
-     * Validate the inputs and outputs.
-     *
-     */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
