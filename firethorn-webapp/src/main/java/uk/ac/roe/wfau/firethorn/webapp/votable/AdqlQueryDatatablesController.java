@@ -172,7 +172,7 @@ public class AdqlQueryDatatablesController
     public Path path()
         {
         return path(
-            AdqlQueryLinkFactory.VOTABLE_PATH
+            AdqlQueryLinkFactory.DATATABLE_PATH
             );
         }
 
@@ -297,6 +297,7 @@ public class AdqlQueryDatatablesController
 
 					  column = itemIterator.next();
 					  cols.add(column);
+
 					  if (column.name() != null){
 						  writer.append('"' + column.name() + '"');
 					  }
@@ -357,20 +358,22 @@ public class AdqlQueryDatatablesController
                                         );
                                     break ;
                                 }
+
                             }
                         
+                        FieldHandler handler;
+                       
                         while (results.next())
                             {
                             writer.append("{");
-                            
-                            FieldHandler handler;
                             Iterator<FieldHandler> handlerIterator = handlers.iterator();
-                            Iterator<AdqlColumn> colterator = table.columns().select().iterator();
+                            Iterator<AdqlColumn> colterator = cols.iterator();
+
             				while (handlerIterator.hasNext()) {
-            					
+
             					 if (colterator.hasNext()) {
 	    							  column = colterator.next();
-	    							 
+
 	    							  if (column.name() != null){
 	    								  writer.append('"' + column.name() + '"');
 	    								  writer.append(":");
@@ -384,12 +387,12 @@ public class AdqlQueryDatatablesController
             					  handler.write(
                                      writer
                                   );
-                           
+
             					  if (handlerIterator.hasNext()) {
             						   writer.append(",");
 
             					  }
-                            }
+}
                             
                             writer.append("}");
                             if (!results.isLast()){
@@ -417,6 +420,7 @@ public class AdqlQueryDatatablesController
                                 }
                             }
                         }
+
                     writer.append("]]");
   
     }
