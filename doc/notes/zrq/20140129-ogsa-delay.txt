@@ -187,7 +187,7 @@ EOF
 
         source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
             SELECT
-                TOP 11111
+                TOP 123456
                 ra,
                 dec
             FROM
@@ -196,7 +196,7 @@ EOF
 
         source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
             SELECT
-                TOP 11111
+                TOP 123456
                 ra,
                 dec
             FROM

@@ -79,4 +79,11 @@ extends BaseTableBean<AdqlTable>
             }
         public AdqlMetadataBean getAdql();
         }
+
+    public String getVotable()
+        {
+        return entity().link().concat(
+            AdqlTableLinkFactory.VOTABLE_NAME
+            );
+        }
     }
