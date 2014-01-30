@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean.FormatsBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
@@ -135,6 +136,34 @@ extends BaseTableBean<JdbcTable>
                         return entity().meta().jdbc().status();
                         }
                     };
+                }
+            };
+        }
+
+    public interface FormatsBean
+    extends BaseTableBean.FormatsBean
+        {
+        public String getVotable();
+        public String getDatatable();
+        }
+
+    public FormatsBean getFormats()
+        {
+        return new FormatsBean()
+            {
+            @Override
+            public String getVotable()
+                {
+                return entity().link().concat(
+                    JdbcTableLinkFactory.VOTABLE_NAME
+                    );
+                }
+            @Override
+            public String getDatatable()
+                {
+                return entity().link().concat(
+                    JdbcTableLinkFactory.DATATABLE_NAME
+                    );
                 }
             };
         }
