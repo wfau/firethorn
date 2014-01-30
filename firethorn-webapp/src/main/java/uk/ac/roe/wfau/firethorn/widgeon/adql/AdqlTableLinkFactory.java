@@ -73,7 +73,7 @@ implements AdqlTable.LinkFactory
      * The URI path for the DataTable representation.
      *
      */
-    public static final String DATATABLE_NAME = "/datatable ";
+    public static final String DATATABLE_NAME = "/datatable";
 
     /**
      * The URI path for the DataTable representation.
