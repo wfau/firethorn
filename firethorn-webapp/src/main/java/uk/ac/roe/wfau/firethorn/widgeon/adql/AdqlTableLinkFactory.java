@@ -67,7 +67,7 @@ implements AdqlTable.LinkFactory
      * The URI path for the VOTable representation.
      *
      */
-    public static final String VOTABLE_PATH = TABLE_PATH + "/" + IDENT_TOKEN + VOTABLE_NAME;
+    public static final String VOTABLE_PATH = TABLE_PATH + "/" + VOTABLE_NAME;
 
     /**
      * The URI path for the DataTable representation.
@@ -79,7 +79,7 @@ implements AdqlTable.LinkFactory
      * The URI path for the DataTable representation.
      *
      */
-    public static final String DATATABLE_PATH = TABLE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
+    public static final String DATATABLE_PATH = TABLE_PATH + "/" + DATATABLE_NAME;
     
     @Override
     public String link(final AdqlTable entity)
