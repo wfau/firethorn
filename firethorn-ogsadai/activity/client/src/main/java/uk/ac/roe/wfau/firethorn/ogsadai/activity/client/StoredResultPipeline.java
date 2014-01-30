@@ -1,4 +1,19 @@
 /**
+ * Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
@@ -33,20 +48,6 @@ public class StoredResultPipeline
         {
         this.endpoint = endpoint ;
         }
-
-    /*
-    public PipelineResult execute(final String source, final String store, final String table, final String query)
-        {
-        return execute(
-            source,
-            store,
-            table,
-            query,
-            null,
-            null
-            );
-        }
-    */
 
     public PipelineResult execute(final PipelineParam param)
         {
@@ -93,33 +94,44 @@ public class StoredResultPipeline
             );
         //
 		// Add our row number generator.
-		final InsertRowid inserter = new InsertRowid();
+		final InsertRowid rowid = new InsertRowid();
         pipeline.add(
-            inserter
+            rowid
             );
-		inserter.setColname(
+		rowid.setColname(
 			"_rowid"
 			);
-	    inserter.connectDataInput(
+	    rowid.connectDataInput(
 	        delay.output()
 	        );
         //
         // Create our results writer.
-        final BulkInsert writer = new BulkInsert();
+        final Insert inserter = new Insert();
         pipeline.add(
-            writer
+            inserter
             );
-        writer.setResourceID(
+        inserter.resource(
             new ResourceID(
                 param.store()
                 )
             );
-        writer.addTableName(
+        inserter.table(
             param.table()
             );
-        writer.connectDataInput(
-            inserter.getDataOutput()
+        inserter.input(
+            rowid.getDataOutput()
             );
+/*
+ * 
+        inserter.first(
+            20
+            );
+        inserter.block(
+            2000
+            );
+ * 
+ */
+        
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
@@ -127,7 +139,7 @@ public class StoredResultPipeline
             delivery
             );
         delivery.connectInput(
-            writer.getDataOutput()
+            inserter.output()
             );
         //
         // Execute our pipeline.

@@ -67,22 +67,22 @@ extends MatchedIterativeActivity
         {
         return new ActivityInput[] {
             new TypedOptionalActivityInput(
-                DelayParam.DELAY_FIRST_INPUT,
+                DelayParam.FIRST_DELAY,
                 Integer.class,
                 DEFAULT_VALUE
                 ),
             new TypedOptionalActivityInput(
-                DelayParam.DELAY_LAST_INPUT,
+                DelayParam.LAST_DELAY,
                 Integer.class,
                 DEFAULT_VALUE
                 ),
             new TypedOptionalActivityInput(
-                DelayParam.DELAY_EVERY_INPUT,
+                DelayParam.EVERY_DELAY,
                 Integer.class,
                 DEFAULT_VALUE
                 ),
             new TupleListActivityInput(
-                DelayParam.TUPLE_ITER_INPUT
+                DelayParam.TUPLE_INPUT
                 )
             };
         }
@@ -99,10 +99,10 @@ extends MatchedIterativeActivity
         {
     	try {
             validateOutput(
-                DelayParam.TUPLE_ITER_OUTPUT
+                DelayParam.TUPLE_OUTPUT
                 );
             writer = getOutput(
-                DelayParam.TUPLE_ITER_OUTPUT
+                DelayParam.TUPLE_OUTPUT
                 );
             }
         catch (final Exception ouch)
@@ -139,7 +139,6 @@ extends MatchedIterativeActivity
                 );
             //
             // Wait for the initial delay.
-            logger.debug("First [{}]", first);
             pause(
                 first
                 );
@@ -147,21 +146,15 @@ extends MatchedIterativeActivity
             // Process our tuples.
             for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
-                //
-                // Wait for the tuple delay
-                logger.debug("Tuple [{}]", every);
                 pause(
                     every
                     );
-                //
-                // Write the tuple to our output.
                 writer.write(
                     tuple
                     );
                 }
             //
             // Wait for the final delay.
-            logger.debug("Last [{}]", last);
             pause(
                 last
                 );

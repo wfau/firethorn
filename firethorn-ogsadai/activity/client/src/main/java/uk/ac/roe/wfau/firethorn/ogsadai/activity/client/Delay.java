@@ -109,23 +109,23 @@ extends BaseActivity implements Activity
                 )
             );
         first = new SimpleActivityInput(
-            DelayParam.DELAY_FIRST_INPUT,
+            DelayParam.FIRST_DELAY,
             true
             );
         last = new SimpleActivityInput(
-            DelayParam.DELAY_LAST_INPUT,
+            DelayParam.LAST_DELAY,
             true
             );
         every = new SimpleActivityInput(
-            DelayParam.DELAY_EVERY_INPUT,
+            DelayParam.EVERY_DELAY,
             true
             );
         input = new SimpleActivityInput(
-            DelayParam.TUPLE_ITER_INPUT,
+            DelayParam.TUPLE_INPUT,
             false
             );
         output = new SimpleActivityOutput(
-            DelayParam.TUPLE_ITER_OUTPUT,
+            DelayParam.TUPLE_OUTPUT,
             false
             );
         }

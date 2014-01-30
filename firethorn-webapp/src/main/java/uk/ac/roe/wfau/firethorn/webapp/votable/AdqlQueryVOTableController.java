@@ -462,7 +462,12 @@ public class AdqlQueryVOTableController
                     log.error("In Votable [{}]", query.link());
                     final JdbcProductType type  = jdbc.resource().connection().type();
                     final Connection connection = jdbc.resource().connection().open();
+                    int isolation = Connection.TRANSACTION_NONE;
                     try {
+                        isolation = connection.getTransactionIsolation();
+                        connection.setTransactionIsolation(
+                            Connection.TRANSACTION_READ_UNCOMMITTED
+                            );
                         //
                         // http://stackoverflow.com/questions/858836/does-a-resultset-load-all-data-into-memory-or-only-when-requested
                         final Statement statement = connection.createStatement(
@@ -537,6 +542,9 @@ public class AdqlQueryVOTableController
                             {
                             try {
                                 connection.close();
+                                connection.setTransactionIsolation(
+                                    isolation
+                                    );
                                 }
                             catch (final SQLException ouch)
                                 {

@@ -22,17 +22,18 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
  * Parameter names for the DelayActivity.
  *
  */
-public class DelayParam
+public class InsertParam
     {
 
-    public static final String FIRST_DELAY = "delay.first" ;
-    public static final String LAST_DELAY  = "delay.last"  ;
-    public static final String EVERY_DELAY = "delay.every" ;
+    public static final String FIRST_SIZE = "first.size" ;
+    public static final String BLOCK_SIZE = "block.size"  ;
 
+    public static final String TABLE_NAME = "table.name"  ;
+    
     public static final String TUPLE_INPUT  = "tuples" ;
     public static final String TUPLE_OUTPUT = "tuples" ;
 
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delay" ;
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Insert" ;
 
     }
 
