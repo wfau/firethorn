@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableLinkFactory;
 
 /**
  * Spring Controller to generate VOTable response for an AdqlTable.
@@ -40,15 +40,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableLinkFactory;
  *
  */
 @Controller
-@RequestMapping(AdqlTableLinkFactory.VOTABLE_PATH)
-public class AdqlTableVOTableController
+@RequestMapping(JdbcTableLinkFactory.VOTABLE_PATH)
+public class JdbcTableVOTableController
 extends BaseTableVOTableController
     {
     /**
      * Public constructor.
      *
      */
-    public AdqlTableVOTableController()
+    public JdbcTableVOTableController()
         {
         super();
         }
@@ -57,7 +57,7 @@ extends BaseTableVOTableController
     public Path path()
         {
         return path(
-            AdqlTableLinkFactory.VOTABLE_PATH
+            JdbcTableLinkFactory.VOTABLE_PATH
             );
         }
 
@@ -80,8 +80,8 @@ extends BaseTableVOTableController
             );
 		table(
 		    response.getWriter(),
-	        factories().adql().tables().select(
-	            factories().adql().tables().idents().ident(
+	        factories().jdbc().tables().select(
+	            factories().jdbc().tables().idents().ident(
 	                ident
 	                )
 	            )
