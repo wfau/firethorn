@@ -18,11 +18,8 @@
 package uk.ac.roe.wfau.firethorn.webapp.votable;
 
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +32,6 @@ import org.joda.time.format.ISODateTimeFormat;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 
 /**
  * Spring Controller to generate VOTable response for a table.
@@ -48,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
  */
 @Slf4j
 public abstract class BaseTableVOTableController
-extends AbstractController
+extends AbstractTableController
     {
     /**
      * Public constructor.
@@ -70,64 +64,6 @@ extends AbstractController
      *
      */
     public static final String TEXT_XML_MIME = "text/xml" ;
-
-    /**
-     * Public interface for a field formatter.
-     *
-     */
-    public interface FieldFormatter
-        {
-        /**
-         * Format the field as a String.
-         *
-         */
-        public String format(final ResultSet results)
-        throws SQLException;
-        }
-    
-    /**
-     * Abstract base class for a FieldWriter.
-     *
-     */
-    public static abstract class AbstractFormatter
-    implements FieldFormatter
-        {
-        /**
-         *  Protected constructor.
-         *
-         */
-        public AbstractFormatter(final BaseColumn<?> column)
-            {
-            this.column  = column;
-            }
-
-        protected final BaseColumn<?> column  ;
-
-        }
-
-    /**
-     * A simple formatter for objects.
-     *
-     */
-    public static class SimpleFormatter
-    extends AbstractFormatter
-        {
-        public SimpleFormatter(final BaseColumn<?> column)
-            {
-            super(
-                column
-                );
-            }
-
-        @Override
-        public String format(final ResultSet results)
-        throws SQLException
-            {
-            return results.getObject(
-                column.root().name()
-                ).toString();
-            }
-        }
 
     /**
      * Escape string values for XML.
@@ -187,89 +123,11 @@ extends AbstractController
             }
         }
 
-    /*
-     * TODO refactor this to use our AdqlParser classes. 
-     *
-     */
-    public String select(final BaseTable<?,?> table, final JdbcProductType type)
-        {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(
-            "SELECT"
-            );
-
-        String glue = " ";
-        for (final BaseColumn<?> column : table.columns().select())
-            {
-            log.debug("Column [{}][{}]", column.ident(), column.name());
-            builder.append(
-                glue
-                );
-            glue = ", ";
-            select(
-                builder,
-                column,
-                type
-                );
-            }
-        builder.append(
-            " FROM "
-            );
-        builder.append(
-            table.root().namebuilder()
-            );
-        /*
-         * Only if we have added a rownum column.
-        builder.append(
-            " ORDER BY 1"
-            );
-         */
-        log.debug("VOTABLE SQL [{}]", builder.toString());
-        return builder.toString();
-        }
-
-    public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
-        {
-    	log.debug("select(StringBuilder, AdqlColumn, JdbcProductType)");
-        //
-        // Postgresql dialect
-        if (type == JdbcProductType.PGSQL)
-            {
-            builder.append('"');
-            builder.append(
-                column.root().name()
-                );
-            builder.append('"');
-            }
-        //
-        // SQLServer dialect
-        // http://technet.microsoft.com/en-us/library/ms174450.aspx
-        else if (type == JdbcProductType.MSSQL)
-            {
-            builder.append(
-                column.root().name()
-                );
-            }
-        //
-        // Generic SQL dialect
-        else {
-            builder.append(
-                column.root().name()
-                );
-            }
-        builder.append(
-            " AS "
-            );
-        builder.append(
-            column.name()
-            );
-        }
-
     /**
      * Generate the table header.
      * 
      */
+    @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
         {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>");
@@ -324,7 +182,7 @@ extends AbstractController
             writer.append("'");
             }
         writer.append(">");
-        
+
         for (final BaseColumn<?> column : table.columns().select())
             {
             field(
@@ -332,10 +190,13 @@ extends AbstractController
                 column
                 );
             }
+
+        writer.append("<DATA>");
+        writer.append("<TABLEDATA>");
         }            
         
     /**
-     * Generate the metadata for a column.
+     * Generate the metadata for a field.
      * 
      */
     public void field(final PrintWriter writer, final BaseColumn<?> column)
@@ -437,45 +298,27 @@ extends AbstractController
         }
 
     /**
-     * Generate the table rows.
+     * Generate a table row.
      * 
      */
-    public void rows(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
+    @Override
+    public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException
         {
-        while (results.next())
-            {
-            writer.append("<TR>");
-            cells(
-                formatters,
-                writer,
-                results
-                );
-            writer.append("</TR>");
-            }
-        }
-
-    /**
-     * Generate the table cells.
-     * 
-     */
-    public void cells(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
-        {
-        for (final FieldFormatter formatter : formatters)
-            {
-            cell(
-                formatter,
-                writer,
-                results
-                );
-            }
+        writer.append("<TR>");
+        cells(
+            formatters,
+            writer,
+            results
+            );
+        writer.append("</TR>");
         }
 
     /**
      * Generate a table cell.
      * 
      */
+    @Override
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
     throws SQLException
         {
@@ -492,6 +335,7 @@ extends AbstractController
      * Generate the table footer.
      * 
      */
+    @Override
     public void foot(final PrintWriter writer, final BaseTable<?,?> table)
         {
         writer.append("</TABLEDATA>");
@@ -502,132 +346,31 @@ extends AbstractController
         }
 
     /**
-     * Generate the table body.
+     * Select a formatter for a field.
      * 
      */
-    public void body(final PrintWriter writer, final BaseTable<?,?> base)
+    @Override
+    public FieldFormatter formatter(final BaseColumn<?> column)
         {
-        writer.append("<DATA>");
-        writer.append("<TABLEDATA>");
-
-        //
-        // If the root table is a JDBC table.
-        if (base.root() instanceof JdbcTable)
+        switch(column.meta().adql().type())
             {
-            final JdbcTable jdbc = (JdbcTable) base.root();
-
-            final JdbcProductType type  = jdbc.resource().connection().type();
-            final Connection connection = jdbc.resource().connection().open();
-
-            int isolation = Connection.TRANSACTION_NONE;
-
-            try {
-                //
-                // Use isolation level to peek at live data.
-                // http://redmine.roe.ac.uk/issues/324
-                // http://www.precisejava.com/javaperf/j2ee/JDBC.htm#JDBC107
-                isolation = connection.getTransactionIsolation();
-                connection.setTransactionIsolation(
-                    Connection.TRANSACTION_READ_UNCOMMITTED
+            case CHAR :
+            case UNICODE:
+                return new XmlStringFormatter(
+                    column
                     );
-                //
-                // Use statement params to prevent buffering of large data.
-                // http://stackoverflow.com/questions/858836/does-a-resultset-load-all-data-into-memory-or-only-when-requested
-                final Statement statement = connection.createStatement(
-                    ResultSet.TYPE_FORWARD_ONLY,
-                    ResultSet.CONCUR_READ_ONLY
-                    );
-                statement.setFetchSize(
-                    100
-                    );
-                final ResultSet results = statement.executeQuery(
-                    select(
-                        base,
-                        type
-                        )
-                    );
-
-                //final ResultSetMetaData colmeta = results.getMetaData();
-                //final int colcount = colmeta.getColumnCount();
-
-                final List<FieldFormatter> formatters = new ArrayList<FieldFormatter>();
-                for (final BaseColumn<?> column : base.columns().select())
-                    {
-                    switch(column.meta().adql().type())
-                        {
-                        case CHAR :
-                        case UNICODE:
-                            formatters.add(
-                                new XmlStringFormatter(
-                                    column
-                                    )
-                                );
-                            break ;
-
-                        case DATE :
-                        case TIME:
-                        case DATETIME :
-                            formatters.add(
-                                new XmlDateTimeFormatter(
-                                    column
-                                    )
-                                );
-                            break ;
-
-                        default :
-                            formatters.add(
-                                new SimpleFormatter(
-                                    column
-                                    )
-                                );
-                            break ;
-                        }
-                    }
-
-                rows(
-                    formatters,
-                    writer,
-                    results
-                    );
-                }
-
-            catch (final SQLException ouch)
-                {
-                log.error("Exception reading SQL results [{}]", ouch.getMessage());
-                }
-            catch (final Exception ouch)
-                {
-                log.error("Exception writing VOTable output [{}]", ouch.getMessage());
-                }
-            finally {
-                if (connection != null)
-                    {
-                    try {
-                        connection.close();
-                        connection.setTransactionIsolation(
-                            isolation
-                            );
-                        }
-                    catch (final SQLException ouch)
-                        {
-                        log.error("Exception closing SQL connection [{}]", ouch.getMessage());
-                        }
-                    }
-                }
-            }
-        else {
-            log.error("Unable to process root table type [{}]", base.root().getClass().getName());
-            }
-        }
     
-    /**
-     * Generate the table.
-     *
-     */
-    public void table(final PrintWriter writer, final BaseTable<?,?> table) 
-        {
-        head(writer, table);
-        body(writer, table);
-        foot(writer, table);
+            case DATE :
+            case TIME:
+            case DATETIME :
+                return new XmlDateTimeFormatter(
+                    column
+                    );
+    
+            default :
+                return new SimpleFormatter(
+                    column
+                    );
+            }
         }
     }

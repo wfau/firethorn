@@ -35,9 +35,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableLinkFactory;
 /**
  * Spring Controller to generate VOTable response for an AdqlTable.
  * 
- * Based on the VOTable-1.3 specification.
- * http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
- *
  */
 @Controller
 @RequestMapping(AdqlTableLinkFactory.VOTABLE_PATH)
