@@ -231,6 +231,11 @@ EOF
         #
         # Deploy a specific version
         webappversion=1.9.3-zrq-ogsa-delay
+        webappversion=1.9.2
+        webappversion=1.9.3-stv-datatable-controller
+
+        webappversion=1.9.3-zrq-ogsa-delay
+        webappversion=1.9.3-stv-datatable-controller
         
         webappproject=firethorn-webapp
         webapppath=${HOME}/webapps
@@ -288,7 +293,12 @@ EOF
         #
         # Deploy a specific version
         webappversion=1.9.3-zrq-ogsa-delay
+        webappversion=1.9.3
+        webappversion=1.9.3-stv-datatable-controller
 
+        webappversion=1.9.3-zrq-ogsa-delay
+        webappversion=1.9.3-stv-datatable-controller
+        
         webappproject=firethorn-ogsadai-webapp
         webapppath=${HOME}/webapps
         webappfile=${webappproject:?}-${webappversion:?}.war
@@ -474,6 +484,18 @@ EOF
     exit
 
 # -----------------------------------------------------
+# Tweak the test params.
+#[user@desktop]
+
+    ssh firethorn@pyratest3
+
+        source "${HOME:?}/firethorn.spaces"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        vi "${FIRETHORN_TEST:?}/05-02-execute-query.sh"
+
+# -----------------------------------------------------
 # Run some test queries.
 #[user@desktop]
 
@@ -494,8 +516,10 @@ EOF
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
             source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
-            source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "SELECT TOP 100 ra,dec FROM twomass_psc"
-
+            for i in {0..10}
+            do
+                source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra,dec FROM twomass_psc"
+            done
 
 # -----------------------------------------------------
 # Close the branch.

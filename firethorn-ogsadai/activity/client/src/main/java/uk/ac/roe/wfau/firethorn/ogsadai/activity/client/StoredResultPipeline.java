@@ -93,8 +93,7 @@ public class StoredResultPipeline
             selector.getDataOutput()
             );
 /*
- * 
- *         
+ *
         //
 		// Add our row number generator.
         final InsertRowid rowid = new InsertRowid();

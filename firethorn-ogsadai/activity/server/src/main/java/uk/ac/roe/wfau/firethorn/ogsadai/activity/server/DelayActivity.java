@@ -180,22 +180,17 @@ extends MatchedIterativeActivity
         }
     
     /**
-     * Helper method to wrap up the parameter checking and exception handling.
+     * Helper method to wrap up the parameter checking.
      * 
      */
     private void pause(Integer delay)
+    throws InterruptedException
         {
         if ((delay != null) && (delay > 0))
             {
-            try {
-                Thread.sleep(
-                    delay
-                    );
-                }
-            catch (InterruptedException ouch)
-                {
-                logger.warn("Exception during pause", ouch);
-                }
+            Thread.sleep(
+                delay
+                );
             }
         }
     }

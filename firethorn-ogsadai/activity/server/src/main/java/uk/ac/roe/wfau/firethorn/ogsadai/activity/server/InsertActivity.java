@@ -79,18 +79,6 @@ implements ResourceActivity
     private Connection connection;
 
     /**
-     * The Connection autocommit value.
-     * 
-     */
-    private boolean commit = false ;
-
-    /**
-     * Our Connection transaction level.
-     * 
-     */
-    private int isolation = Connection.TRANSACTION_NONE ;
-
-    /**
      * Our JDBC update statement.
      * 
      */
@@ -174,13 +162,6 @@ implements ResourceActivity
         try {
             log.debug("Preparing connection");
             connection = provider.getConnection();
-
-            isolation= connection.getTransactionIsolation();
-            connection.setTransactionIsolation(
-                Connection.TRANSACTION_READ_UNCOMMITTED
-                );
-
-            commit = connection.getAutoCommit();
             connection.setAutoCommit(
                 false
                 );
@@ -213,7 +194,7 @@ implements ResourceActivity
         final String insert = SQLUtilities.createInsertStatementSQL(table, metadata);
 
         try {
-            log.debug("Preparing statement");
+            //log.debug("Processing iter ..");
         	statement = connection.prepareStatement(insert);
 
             long count = 0 ;
@@ -230,13 +211,13 @@ implements ResourceActivity
                     //log.debug("Row [" + total + "]");
                     }
                 //
-                // Write the remaining rows in batches.
+                // Write the rest in batches.
                 else {
                     statement.addBatch();
                     if (++count >= block)
                     	{
                     	statement.executeBatch();
-                    	log.debug("Block [" + count + "][" + total + "]");
+                    	log.debug("XX Block [" + count + "][" + total + "]");
                         count = 0;
                     	}
                     }
@@ -247,7 +228,7 @@ implements ResourceActivity
             if (count != 0)
                 {
                 statement.executeBatch();
-                log.debug("Last [" + count + "][" + total + "]");
+                //log.debug("Last [" + count + "][" + total + "]");
                 }
 
             writer.write(
@@ -261,35 +242,43 @@ implements ResourceActivity
 
         catch (final SQLException e)
             {
+            rollback();
             throw new ActivitySQLUserException(e);
             }
-        catch (final PipeClosedException e)
+        catch (final PipeClosedException ouch)
             {
+            rollback();
             iterativeStageComplete();
             }
-        catch (final PipeIOException e)
+        catch (final PipeIOException ouch)
             {
-            throw new ActivityPipeProcessingException(e);
+            rollback();
+            throw new ActivityPipeProcessingException(ouch);
             }
-        catch (final PipeTerminatedException e)
+        catch (final PipeTerminatedException ouch)
             {
+            rollback();
             throw new ActivityTerminatedException();
             }
-        catch (final ActivityUserException e)
+        catch (final ActivityUserException ouch)
             {
-            throw e;
+            rollback();
+            throw ouch;
             }
-        catch (final ActivityProcessingException e)
+        catch (final ActivityProcessingException ouch)
             {
-            throw e;
+            rollback();
+            throw ouch;
             }
-        catch (final ActivityTerminatedException e)
+        catch (final ActivityTerminatedException ouch)
             {
-            throw e;
+            rollback();
+            throw ouch;
             }
-        catch (final Throwable e)
+        catch (final Throwable ouch)
             {
-            throw new ActivityProcessingException(e);
+            rollback();
+            throw new ActivityProcessingException(ouch);
             }
         finally
             {
@@ -304,10 +293,7 @@ implements ResourceActivity
             {
             try {
                 connection.setAutoCommit(
-                    commit
-                    );
-                connection.setTransactionIsolation(
-                    isolation 
+                    true
                     );
                 }
             catch (final SQLException e)
@@ -327,14 +313,11 @@ implements ResourceActivity
             statement.close();
             }
 
-        if (connection != null)
+        if ((connection != null) && (connection.getAutoCommit() == false))
             {
             connection.rollback();
             connection.setAutoCommit(
-                commit
-                );
-            connection.setTransactionIsolation(
-                isolation 
+                true
                 );
             }
 
@@ -343,6 +326,20 @@ implements ResourceActivity
             provider.releaseConnection(
                 connection
                 );
+            }
+        }
+
+    private void rollback()
+        {
+        try {
+            connection.rollback();
+            connection.setAutoCommit(
+                true
+                );
+            }
+        catch (final SQLException ouch)
+            {
+            log.error(ouch);
             }
         }
     }
