@@ -241,6 +241,8 @@ implements JdbcTable
                 );
 
             // Add our rowid column
+/*
+ *
             if (query.rowid() != null)
                 {
                 table.columns().create(
@@ -248,6 +250,8 @@ implements JdbcTable
                     JdbcColumn.Type.BIGINT
                     );
                 }
+ * 
+ */
             //
             // Add the select fields.
             for (final AdqlQuery.SelectField field : query.fields())
