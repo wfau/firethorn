@@ -348,7 +348,7 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Run tests on the remote server ....
+# Update source on test vm.
 #[user@desktop]
 
     deploytype=test
@@ -474,13 +474,10 @@ EOF
         popd
     exit
 
-
-
 # -----------------------------------------------------
 # Run some test queries.
 #[user@desktop]
 
-    source "${deploylist:?}"
     ssh firethorn@pyratest3
 
         source "${HOME:?}/firethorn.spaces"
@@ -499,12 +496,6 @@ EOF
             source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
             source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "SELECT TOP 100 ra,dec FROM twomass_psc"
-
-
-
-
-
-
 
 
 # -----------------------------------------------------
