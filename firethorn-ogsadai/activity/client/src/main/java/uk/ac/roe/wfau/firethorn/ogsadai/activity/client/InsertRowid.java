@@ -123,7 +123,7 @@ extends BaseActivity implements Activity
      * Get the tuples output.
      *
      */
-    public SingleActivityOutput getResultOutput()
+    public SingleActivityOutput getDataOutput()
         {
         return output.getSingleActivityOutputs()[0];
         }

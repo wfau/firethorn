@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
  *
  *
  */
-public class BaseTableBean<TableType extends BaseTable<?,?>>
+public abstract class BaseTableBean<TableType extends BaseTable<?,?>>
 extends NamedEntityBeanImpl<TableType>
     {
 
@@ -81,5 +81,10 @@ extends NamedEntityBeanImpl<TableType>
     public interface MetadataBean
         {
         }
-
+    abstract public MetadataBean getMetadata();
+    
+    public interface FormatsBean
+        {
+        }
+    abstract public FormatsBean getFormats();
     }

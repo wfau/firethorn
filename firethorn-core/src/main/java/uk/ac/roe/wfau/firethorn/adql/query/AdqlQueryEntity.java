@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.Basic;
+import javax.persistence.Embedded;
 import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -77,8 +79,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
 
 /**
  *
@@ -525,6 +529,7 @@ implements AdqlQuery, AdqlParserQuery
      */
     protected AdqlQueryEntity()
         {
+        super();
         }
 
     /**
@@ -539,6 +544,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.rowid  = rowid ;
         this.schema = schema;
+        this.delays = new AdqlQueryDelays();
         this.params(
             params
             );
@@ -1152,18 +1158,45 @@ implements AdqlQuery, AdqlParserQuery
 
 
                 // TODO - Check for valid resource ident in prepare().
-                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
-                log.debug("-- Target   [{}]", target);
-
+                final String source = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
+                log.debug("-- Source   [{}]", source);
                 final String tablename = query.results().jdbc().namebuilder().toString() ;
                 log.debug("-- Table    [{}]", tablename);
 
                 final PipelineResult frog = pipeline.execute(
-                    target,
-                    params().store(),
-                    tablename,
-                    query.osql(),
-                    query.rowid()
+                    new PipelineParam()
+                        {
+                        @Override
+                        public String table()
+                            {
+                            return tablename;
+                            }
+                        @Override
+                        public String store()
+                            {
+                            return params().store();
+                            }
+                        @Override
+                        public String source()
+                            {
+                            return source;
+                            }
+                        @Override
+                        public String query()
+                            {
+                            return query.osql();
+                            }
+                        @Override
+                        public String rowid()
+                            {
+                            return query.rowid();
+                            }
+                        @Override
+                        public Param delays()
+                            {
+                            return query.delays().ogsa();
+                            }
+                        }
                     );
 
                 if (frog != null)
@@ -1348,5 +1381,29 @@ implements AdqlQuery, AdqlParserQuery
                 return AdqlQueryEntity.this.adqltable;
                 }
             };
+        }
+
+    @Embedded
+    private AdqlQueryDelays delays;
+    
+    @Override
+    public Delays delays()
+        {
+        /*
+         * Need to check for null.
+         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.delays == null)
+            {
+            this.delays = new AdqlQueryDelays(); 
+            }
+        return this.delays ;
+        }
+
+    @Override
+    public TimingStats stats()
+        {
+        return null ;
         }
     }

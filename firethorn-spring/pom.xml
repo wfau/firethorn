@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.9.3</version>
+        <version project='firethorn'>1.9.3-zrq-ogsa-delay</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -324,7 +324,7 @@
 	    <dependency>
 		    <groupId>org.hibernate</groupId>
 		    <artifactId>hibernate-validator</artifactId>
-		    <version>4.2.0.Final</version>
+		    <version>5.0.2.Final</version>
 	    </dependency>
 
         <!--+

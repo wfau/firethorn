@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+
 
 /**
  * SpringThings implementation.
@@ -32,7 +35,7 @@ public class SpringThingsImpl
     implements SpringThings
     {
     /**
-     * Our Spring ApplicationContext.
+     * Autowired Spring ApplicationContext.
      *
      */
     @Autowired
@@ -45,7 +48,30 @@ public class SpringThingsImpl
         }
 
     /**
-     * Our transaction wrapper.
+     * TransactionWrapper implementation.
+     *
+     */
+    @Component
+    public static class TransactionWrapper
+        implements SpringThings.TransactionWrapper
+        {
+        @Override
+        @SelectMethod
+        public void select(final Runnable runnable)
+            {
+            runnable.run();
+            }
+
+        @Override
+        @UpdateMethod
+        public void update(final Runnable runnable)
+            {
+            runnable.run();
+            }
+        }
+    
+    /**
+     * Autowired TransactionWrapper instance.
      *
      */
     @Autowired

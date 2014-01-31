@@ -22,9 +22,14 @@ import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -34,7 +39,6 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  *
  */
 @Slf4j
-@Controller
 public abstract class AbstractController
     {
 
@@ -91,7 +95,7 @@ public abstract class AbstractController
         }
 
     /**
-     * Autowired system services.
+     * Autowired ComponentFactories instance.
      *
      */
     @Autowired
@@ -150,6 +154,32 @@ public abstract class AbstractController
         return new PathImpl(
             string
             );
+        }
+    
+    /**
+     * Run a Runnable in a Select transaction.
+     * 
+     */
+    public void select(final Runnable runnable)
+        {
+        log.debug("select(Runnable) ------------");
+        factories().spring().transactor().select(
+            runnable
+            );
+        log.debug("-----------------------------");
+        }
+
+    /**
+     * Run a Runnable in an Update transaction.
+     * 
+     */
+    public void update(final Runnable runnable)
+        {
+        log.debug("update(Runnable) ------------");
+        factories().spring().transactor().update(
+            runnable
+            );
+        log.debug("-----------------------------");
         }
     }
 

@@ -1,4 +1,19 @@
 /**
+ * Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
@@ -34,18 +49,7 @@ public class StoredResultPipeline
         this.endpoint = endpoint ;
         }
 
-    public PipelineResult execute(final String source, final String store, final String table, final String query)
-        {
-        return execute(
-            source,
-            store,
-            table,
-            query,
-            null
-            );
-        }
-
-    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid)
+    public PipelineResult execute(final PipelineParam param)
         {
         //
         // Create our ogsadai client.
@@ -66,54 +70,64 @@ public class StoredResultPipeline
         //
         // Create our SQL query.
         final SQLQuery selector = new SQLQuery();
+        pipeline.add(
+            selector
+            );
         selector.setResourceID(
             new ResourceID(
-                source
+                param.source()
                 )
             );
-        pipeline.add(
-                selector
-                );
         selector.addExpression(
-            query
+            param.query()
             );
         //
-        // Create our results writer.
-        final BulkInsert writer = new BulkInsert();
-        writer.setResourceID(
-            new ResourceID(
-                store
-                )
+        // Create our test delay.
+        final Delay delay = new Delay(
+            param.delays()
             );
         pipeline.add(
-            writer
+            delay
             );
-        writer.addTableName(
-            table
+        delay.input(
+            selector.getDataOutput()
             );
+/*
+ *
         //
 		// Add our row number generator.
-		if (rowid != null)
-			{
-			final InsertRowid inserter = new InsertRowid();
-	        pipeline.add(
-                inserter
-                );
-			inserter.setColname(
-				rowid
-				);
-		    inserter.connectDataInput(
-		        selector.getDataOutput()
-		        );
-	        writer.connectDataInput(
-                inserter.getResultOutput()
-                );
-			}
-		else {
-	        writer.connectDataInput(
-                selector.getDataOutput()
-                );
-			}
+        final InsertRowid rowid = new InsertRowid();
+        pipeline.add(
+            rowid
+            );
+		rowid.setColname(
+		    param.rowid()
+			);
+	    rowid.connectDataInput(
+	        delay.output()
+	        );
+ *         
+ *         
+ */
+	    
+	    //
+        // Create our results writer.
+        final Insert inserter = new Insert();
+        pipeline.add(
+            inserter
+            );
+        inserter.resource(
+            new ResourceID(
+                param.store()
+                )
+            );
+        inserter.table(
+            param.table()
+            );
+        inserter.input(
+            delay.output()
+            );
+        
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
@@ -121,7 +135,7 @@ public class StoredResultPipeline
             delivery
             );
         delivery.connectInput(
-            writer.getDataOutput()
+            inserter.output()
             );
         //
         // Execute our pipeline.

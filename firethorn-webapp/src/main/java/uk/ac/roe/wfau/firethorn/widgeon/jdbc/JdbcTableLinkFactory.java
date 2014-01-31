@@ -56,6 +56,30 @@ implements JdbcTable.LinkFactory
      */
     public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
+    /**
+     * The URI path for the VOTable representation.
+     *
+     */
+    public static final String VOTABLE_NAME = "/votable";
+
+    /**
+     * The URI path for the VOTable representation.
+     *
+     */
+    public static final String VOTABLE_PATH = TABLE_PATH + "/" + VOTABLE_NAME;
+
+    /**
+     * The URI path for the DataTable representation.
+     *
+     */
+    public static final String DATATABLE_NAME = "/datatable";
+
+    /**
+     * The URI path for the DataTable representation.
+     *
+     */
+    public static final String DATATABLE_PATH = TABLE_PATH + "/" + DATATABLE_NAME;
+    
     @Override
     public String link(final JdbcTable entity)
         {

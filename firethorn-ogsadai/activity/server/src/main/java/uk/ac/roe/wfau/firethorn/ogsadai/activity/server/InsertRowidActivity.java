@@ -137,6 +137,7 @@ extends MatchedIterativeActivity
         {
         logger.debug("processIteration(Object[])");
         try {
+
             //
             // Get the column name.
             final String colname = (String) iteration[0];
@@ -144,6 +145,7 @@ extends MatchedIterativeActivity
             //
             // Get the tuple iterator.
             final TupleListIterator tuples = (TupleListIterator) iteration[1];
+
             //
             // Create the metadata for our new column and combine it with the original.
             final MetadataWrapper metadata = new MetadataWrapper(
@@ -164,6 +166,7 @@ extends MatchedIterativeActivity
 	                )
                 );
 
+            
             //
             // Write the LIST_BEGIN marker and metadata
             writer.write(ControlBlock.LIST_BEGIN);

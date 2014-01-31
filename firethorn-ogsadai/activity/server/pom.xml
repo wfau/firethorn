@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>1.9.3</version>
+        <version project='firethorn'>1.9.3-zrq-ogsa-delay</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
@@ -68,13 +68,12 @@
         </dependency>
 
         <!--+
-            | Common activity classes.
+            | Our common activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-common</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
         <!--+

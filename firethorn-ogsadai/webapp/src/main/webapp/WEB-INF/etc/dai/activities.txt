@@ -661,8 +661,13 @@ class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.InsertRowidActivity
 description=
 CONFIG
 END
-id=uk.ac.roe.wfau.firethorn.BulkInsert
-class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.BulkInsertActivity
+id=uk.ac.roe.wfau.firethorn.Insert
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.InsertActivity
+description=
+CONFIG
+END
+id=uk.ac.roe.wfau.firethorn.Delay
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.DelayActivity
 description=
 CONFIG
 END

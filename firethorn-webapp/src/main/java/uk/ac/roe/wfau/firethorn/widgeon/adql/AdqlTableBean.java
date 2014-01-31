@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
@@ -78,5 +79,56 @@ extends BaseTableBean<AdqlTable>
             public AdqlTable.AdqlStatus getStatus();
             }
         public AdqlMetadataBean getAdql();
+        }
+    public MetadataBean getMetadata()
+        {
+        return new MetadataBean()
+            {
+            @Override
+            public AdqlMetadataBean getAdql()
+                {
+                return new AdqlMetadataBean()
+                    {
+                    @Override
+                    public Long getCount()
+                        {
+                        return entity().meta().adql().count();
+                        }
+                    @Override
+                    public AdqlStatus getStatus()
+                        {
+                        return entity().meta().adql().status();
+                        }
+                    };
+                }
+            };
+        }
+
+    public interface FormatsBean
+    extends BaseTableBean.FormatsBean
+        {
+        public String getVotable();
+        public String getDatatable();
+        }
+
+    public FormatsBean getFormats()
+        {
+        return new FormatsBean()
+            {
+            @Override
+            public String getVotable()
+                {
+                return entity().link().concat(
+                    AdqlTableLinkFactory.VOTABLE_NAME
+                    );
+                }
+            @Override
+            public String getDatatable()
+                {
+                return entity().link().concat(
+                    AdqlTableLinkFactory.DATATABLE_NAME
+                    );
+                }
+            };
         }
     }

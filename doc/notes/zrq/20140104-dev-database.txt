@@ -120,6 +120,5 @@ cat  "${databasefile:?}"
             popd
         popd
 
-
     exit
 
