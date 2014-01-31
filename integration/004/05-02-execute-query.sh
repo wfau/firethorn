@@ -22,7 +22,6 @@
 adqltext=${1:?}
 rowidcol=rowid
 
-#    --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
 #
 # Create the query.
 POST "${queryschema:?}/queries/create" \

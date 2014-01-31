@@ -124,7 +124,13 @@ extends SimpleQueryTestBase
                     " AND" +
                     "    twomass.dec BETWEEN '20.0' AND '22.9'" ;
                     }
-                
+
+                @Override
+                public String rowid()
+                    {
+                    return null;
+                    }
+
                 @Override
                 public Param delays()
                     {
@@ -199,7 +205,13 @@ extends SimpleQueryTestBase
                     " AND" +
                     "    twomass.dec BETWEEN '20.0' AND '22.9'" ;
                     }
-                
+
+                @Override
+                public String rowid()
+                    {
+                    return null;
+                    }
+
                 @Override
                 public Param delays()
                     {

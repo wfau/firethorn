@@ -213,7 +213,6 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
         ./bin/rsync-repo.sh
 
     popd

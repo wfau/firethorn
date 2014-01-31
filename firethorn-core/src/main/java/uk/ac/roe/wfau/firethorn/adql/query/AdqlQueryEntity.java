@@ -1187,6 +1187,11 @@ implements AdqlQuery, AdqlParserQuery
                             return query.osql();
                             }
                         @Override
+                        public String rowid()
+                            {
+                            return query.rowid();
+                            }
+                        @Override
                         public Param delays()
                             {
                             return query.delays().ogsa();

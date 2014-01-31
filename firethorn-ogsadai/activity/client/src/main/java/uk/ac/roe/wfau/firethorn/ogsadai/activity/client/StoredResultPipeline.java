@@ -92,19 +92,26 @@ public class StoredResultPipeline
         delay.input(
             selector.getDataOutput()
             );
+/*
+ * 
+ *         
         //
 		// Add our row number generator.
-		final InsertRowid rowid = new InsertRowid();
+        final InsertRowid rowid = new InsertRowid();
         pipeline.add(
             rowid
             );
 		rowid.setColname(
-			"_rowid"
+		    param.rowid()
 			);
 	    rowid.connectDataInput(
 	        delay.output()
 	        );
-        //
+ *         
+ *         
+ */
+	    
+	    //
         // Create our results writer.
         final Insert inserter = new Insert();
         pipeline.add(
@@ -119,18 +126,8 @@ public class StoredResultPipeline
             param.table()
             );
         inserter.input(
-            rowid.getDataOutput()
+            delay.output()
             );
-/*
- * 
-        inserter.first(
-            20
-            );
-        inserter.block(
-            2000
-            );
- * 
- */
         
         //
         // Create our delivery handler.

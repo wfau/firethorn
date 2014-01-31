@@ -28,6 +28,7 @@ public interface PipelineParam
     public String store();
     public String table();
     public String query();
+    public String rowid();
 
     public Delay.Param delays();
     
