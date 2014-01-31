@@ -573,7 +573,7 @@ EOF
 
         ./bin/version.sh "${newversion:?}"
 
-        hg commit -m "Version [${newversion:?}]"
+        hg commit -m "version [${newversion:?}]"
         hg tag  -f "${newversion}"
         hg push
 
