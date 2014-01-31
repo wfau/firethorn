@@ -32,10 +32,7 @@
 
     newbranch=[version]-[who]-[description]
 
-    newbranch=1.9.3-stv-datatable-controller
-    newbranch=1.9.3-zrq-ogsa-delay
     newbranch=1.9.4-zrq-example
-
 
 # -----------------------------------------------------
 # Create the new branch.
@@ -79,9 +76,17 @@
 
         #
         # .....
-        # .....
+        #
+
+        hg commit -m "..."
+        hg push
+
+        #
         # .....
         #
+
+        hg commit -m "..."
+        hg push
 
     popd
 
