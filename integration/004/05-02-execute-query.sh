@@ -40,7 +40,7 @@ POST "${queryident:?}" \
     --header "firethorn.auth.identity:${identity:?}"    \
     --header "firethorn.auth.community:${community:?}"  \
     --data-urlencode "adql.query.update.delay.first=10000" \
-    --data-urlencode "adql.query.update.delay.every=100" \
+    --data-urlencode "adql.query.update.delay.every=10" \
     --data-urlencode "adql.query.update.delay.last=10000"  \
      | ./pp
 

@@ -206,19 +206,6 @@ EOF
                 twomass_psc
             "
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Publish the jars and wars.
 #[user@desktop]
@@ -232,7 +219,64 @@ EOF
     popd
 
 # -------------------------------------------------------------------------------------------
-# Deploy our test service.
+# Deploy our firethorn service.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        #
+        # Deploy a specific version
+        webappversion=1.9.3-zrq-ogsa-delay
+        
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+        
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Watch the logs ...
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Deploy our ogsa-dai service.
 #[user@desktop]
 
     deploytype=test
@@ -303,26 +347,158 @@ EOF
 
     exit
 
+# -----------------------------------------------------
+# Run tests on the remote server ....
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        #
+        # Test a specific version
+        newbranch=1.9.3-zrq-ogsa-delay
+
+        #
+        # Check we have the right branch.
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update 
+            hg update "${newbranch:?}"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+            cat > "${HOME:?}/firethorn.spaces" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'  'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Run some test queries.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.spaces"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    TOP 12345
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                "
+
+            source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+                SELECT
+                    TOP 12345
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                "
+        popd
+    exit
 
 
 
+# -----------------------------------------------------
+# Run some test queries.
+#[user@desktop]
 
+    source "${deploylist:?}"
+    ssh firethorn@pyratest3
 
+        source "${HOME:?}/firethorn.spaces"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
 
+        pushd $(mktemp --directory)
 
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
 
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
-
-
-
-
-
-
-
-
-
-
-
+            source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "SELECT TOP 100 ra,dec FROM twomass_psc"
 
 
 
