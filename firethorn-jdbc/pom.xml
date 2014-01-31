@@ -28,7 +28,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.9.3-zrq-ogsa-delay</version>
+        <version project='firethorn'>1.9.4</version>
     </parent>
 
     <artifactId>firethorn-jdbc</artifactId>
