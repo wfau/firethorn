@@ -21,13 +21,16 @@
 #
 
 # -----------------------------------------------------
-# Example template for a development branch.
+# Managing Mercurial branches.
 # http://redmine.roe.ac.uk/projects/wva/wiki/20140108MercurialBranches
+#
+# Example branches
 # http://wfau.metagrid.co.uk/code/firethorn/graph/9aadad0e6b82
+# http://wfau.metagrid.co.uk/code/firethorn/graph/17a1d7d7843a
 #
 
 # -----------------------------------------------------
-# Set the branch name, based on pattern 
+# Set the branch name.
 #[user@desktop]
 
     newbranch=[version]-[who]-[description]
@@ -145,8 +148,8 @@
         ./bin/version.sh "${newversion:?}"
 
         #
-        # Tag the new version.
-        hg commit -m "version-${newversion:?}"
+        # Commit and tag the new version.
+        hg commit -m "Snapshot [version-${newversion:?}]"
         hg tag    -f "version-${newversion:?}"
         hg push
 
