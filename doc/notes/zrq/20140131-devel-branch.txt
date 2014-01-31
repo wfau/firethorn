@@ -21,12 +21,18 @@
 #
 
 # -----------------------------------------------------
-# Example template for development branch
+# Example template for a development branch.
+# http://redmine.roe.ac.uk/projects/wva/wiki/20140108MercurialBranches
+# http://wfau.metagrid.co.uk/code/firethorn/graph/9aadad0e6b82
+#
+
+# -----------------------------------------------------
+# Set the branch name, based on pattern 
 #[user@desktop]
 
+    newbranch=[version]-[who]-[description]
 
     newbranch=1.9.4-zrq-example
-
 
 # -----------------------------------------------------
 # Create the new branch.
@@ -51,7 +57,7 @@
 
         #
         # Commit and push the new branch.
-        hg commit -m "Created branch [${newbranch:?}]"
+        hg commit -m "Creating [branch-${newbranch:?}]"
         hg push --new-branch
 
         #
@@ -70,9 +76,17 @@
 
         #
         # .....
-        # .....
+        #
+
+        hg commit -m "..."
+        hg push
+
+        #
         # .....
         #
+
+        hg commit -m "..."
+        hg push
 
     popd
 
@@ -84,7 +98,7 @@
     pushd "${FIRETHORN_CODE:?}"
 
         hg update "${newbranch:?}"
-        hg commit --close-branch -m "Closing branch [${newbranch:?}]"
+        hg commit --close-branch -m "Closing [branch-${newbranch:?}]"
         hg push
 
     popd
@@ -110,7 +124,7 @@
         # Fix any conflicts ...
         #
 
-        hg commit -m "Merged branch ["${newbranch:?}"] into [default]"
+        hg commit -m "Merging [branch-${newbranch:?}] into [default]"
         hg push
 
     popd
@@ -132,8 +146,8 @@
 
         #
         # Tag the new version.
-        hg commit -m "version [${newversion:?}]"
-        hg tag  -f "${newversion}"
+        hg commit -m "version-${newversion:?}"
+        hg tag    -f "version-${newversion:?}"
         hg push
 
         #
