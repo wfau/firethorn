@@ -19,6 +19,12 @@
 #
 # Shell script to rsync from our local Maven repository to our public repository.
 
+#
+# Use the defaul Maven repo location.
+MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
+
+#
+# Sync the FireThorn binaries.
 rsync \
     --recursive --copy-links --checksum \
     --stats --human-readable --progress \
@@ -30,9 +36,11 @@ rsync \
     --include='/uk/ac/roe/wfau' \
     --include='/uk/ac/roe/wfau/**' \
     --exclude='*' \
-    /var/local/toolkits/maven/repository/ \
+    "${MAVEN_LOCAL_REPO:?}"/ \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
 
+#
+# Sync the OGSA-DAI binaries.
 rsync \
     --recursive --copy-links --checksum \
     --stats --human-readable --progress \
@@ -43,9 +51,11 @@ rsync \
     --include='/uk/org/ogsadai' \
     --include='/uk/org/ogsadai/**' \
     --exclude='*' \
-    /var/local/toolkits/maven/repository/ \
+    "${MAVEN_LOCAL_REPO:?}"/ \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/ogsadai
 
+#
+# Sync the 3rd party binaries.
 rsync \
     --recursive --copy-links --checksum \
     --stats --human-readable --progress \
@@ -54,6 +64,6 @@ rsync \
     --exclude='/uk/ac/roe/wfau/**' \
     --exclude='/uk/org/ogsadai/**' \
     --include='*' \
-    /var/local/toolkits/maven/repository/ \
+    "${MAVEN_LOCAL_REPO:?}"/ \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
 
