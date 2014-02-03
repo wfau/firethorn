@@ -34,7 +34,6 @@
 #[user@desktop]
 
     newbranch=[version]-[who]-[description]
-
     newbranch=1.9.4-zrq-example
 
 # -----------------------------------------------------

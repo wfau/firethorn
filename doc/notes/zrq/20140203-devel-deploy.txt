@@ -1,0 +1,183 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Managing tomcat deployments.
+
+
+# -----------------------------------------------------
+# Clean build of everything.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Publish the jars and wars.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Deploy our firethorn service.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        #############################################
+        #       Deploy a specific version           #
+        #############################################
+        webappversion=[version]-[who]-[description]
+        webappversion=1.9.4-zrq-example
+
+        
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+        
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Watch the logs ...
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Deploy our ogsa-dai service.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        #############################################
+        #       Deploy a specific version           #
+        #############################################
+        webappversion=[version]-[who]-[description]
+        webappversion=1.9.4-zrq-example
+
+        
+        webappproject=firethorn-ogsadai-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+
+        #
+        # Download the war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=$(
+            sed -n '
+                s/firethorn.ogsadai.context=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+
+        #
+        # Watch the logs ...
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+    exit
+
