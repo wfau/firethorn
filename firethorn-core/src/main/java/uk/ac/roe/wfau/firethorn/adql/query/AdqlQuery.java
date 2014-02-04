@@ -29,7 +29,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 
 /**
  *
@@ -43,7 +42,7 @@ extends NamedEntity, Job
      * Query timing statistics.
      * 
      */
-    public interface TimingStats
+    public interface Timings
         {
         /**
          * Timestamp (absolute) for the start of query processing.
@@ -81,7 +80,7 @@ extends NamedEntity, Job
      * The query timing statistics.
      * 
      */
-    public TimingStats stats();
+    public Timings timings();
 
     /**
      * Query delay properties.

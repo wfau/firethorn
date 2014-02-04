@@ -1021,7 +1021,7 @@ implements AdqlQuery, AdqlParserQuery
             else {
                 //
                 // Log the start time.
-                this.stats().adqlstart();
+                this.timings().adqlstart();
                 //
                 // Create the two query parsers.
                 // TODO - The parsers should be part of the resource/schema.
@@ -1059,7 +1059,7 @@ implements AdqlQuery, AdqlParserQuery
                     }
                 //
                 // Log the end time.
-                this.stats().adqldone();
+                this.timings().adqldone();
                 //
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
@@ -1149,7 +1149,7 @@ implements AdqlQuery, AdqlParserQuery
             log.debug("-- AdqlQuery running [{}]", ident());
             //
             // Log the start time.
-            this.stats().ogsastart();
+            this.timings().ogsastart();
             try {
             
                 log.debug("-- AdqlQuery resolving [{}]", ident());
@@ -1256,7 +1256,7 @@ implements AdqlQuery, AdqlParserQuery
             finally {
                 //
                 // Log the rnd time.
-                this.stats().ogsadone();
+                this.timings().ogsadone();
                 }
             }
         return result ;
@@ -1345,7 +1345,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             //
             // Log the start time.
-            this.stats().jdbcstart();
+            this.timings().jdbcstart();
             
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
@@ -1372,7 +1372,7 @@ implements AdqlQuery, AdqlParserQuery
 //Why does the query need to know where the JdbcTable is ?
             //
             // Log the end time.
-            this.stats().jdbcdone();
+            this.timings().jdbcdone();
 
             }
 
@@ -1430,10 +1430,10 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Embedded
-    private AdqlQueryStats stats;
+    private AdqlQueryTimings stats;
     
     @Override
-    public AdqlQueryStats stats()
+    public AdqlQueryTimings timings()
         {
         /*
          * Need to check for null.
@@ -1442,7 +1442,7 @@ implements AdqlQuery, AdqlParserQuery
          */
         if (this.stats== null)
             {
-            this.stats= new AdqlQueryStats(); 
+            this.stats= new AdqlQueryTimings(); 
             }
         return this.stats;
         }

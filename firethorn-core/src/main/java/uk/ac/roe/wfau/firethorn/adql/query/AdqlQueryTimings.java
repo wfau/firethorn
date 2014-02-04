@@ -37,15 +37,15 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 @Access(
     AccessType.FIELD
     )
-public class AdqlQueryStats
-    implements AdqlQuery.TimingStats
+public class AdqlQueryTimings
+implements AdqlQuery.Timings
     {
 
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryStats()
+    protected AdqlQueryTimings()
         {
         log.debug("AdqlQueryStats()");
         }
@@ -55,7 +55,7 @@ public class AdqlQueryStats
      * @param init A flag to distinguish this from the default constructor.
      * 
      */
-    protected AdqlQueryStats(boolean init)
+    protected AdqlQueryTimings(boolean init)
         {
         log.debug("AdqlQueryStats(boolean)");
         if (init)
