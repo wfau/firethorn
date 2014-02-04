@@ -45,6 +45,36 @@ extends NamedEntity, Job
      */
     public interface TimingStats
         {
+        /**
+         * Timestamp (absolute) for the start of query processing.
+         * 
+         */
+        public Long start();  
+
+        /**
+         * Timestamp (duration) for the ADQL parsing.
+         * 
+         */
+        public Long adql();  
+
+        /**
+         * Timestamp (duration) for creating the JDBC table.
+         * 
+         */
+        public Long jdbc();  
+
+        /**
+         * Timestamp (duration) for the OGSA-DAI processing.
+         * 
+         */
+        public Long ogsa();  
+
+        /**
+         * Timestamp (dutation) for the whole query processing.
+         * 
+         */
+        public Long total();  
+
         }
 
     /**
