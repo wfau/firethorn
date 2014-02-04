@@ -177,22 +177,25 @@ implements Job
     implements Job.Executor
         {
         /**
-         * Our local service implementation.
+         * Our service implementation.
          *
          */
+        @Autowired
         private Job.Executor executor;
 
         /**
-         * Our local service implementation.
+         * Our service implementation.
          * @todo simplify what is essentially 'this'.
          *
          */
-        protected Job.Executor executor()
+        protected synchronized Job.Executor executor()
             {
+/*
             if (this.executor == null)
                 {
                 this.executor = factories().jobs().executor();
                 }
+ */
             return this.executor ;
             }
 
@@ -258,7 +261,6 @@ implements Job
                 return Status.ERROR;
                 }
             }
-
 
         @Override
         public Status update(final Identifier ident, final Status next, final Integer timeout)
