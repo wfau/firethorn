@@ -129,7 +129,7 @@
 # Increment the project version.
 #[user@desktop]
 
-    newversion=1.9.5
+    newversion=1.9.6
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
