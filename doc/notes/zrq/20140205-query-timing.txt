@@ -1,0 +1,127 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check the database for results.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+            USE [FirethornMetadataZRQ0109DEV]
+            go
+
+            SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'FT0109%'
+            go
+
+                FT0109AdqlColumnEntity                                                                                                                                            
+                FT0109AdqlQueryEntity                                                                                                                                             
+                FT0109AdqlQueryJoinToBaseResource                                                                                                                                 
+                FT0109AdqlResourceEntity                                                                                                                                          
+                FT0109AdqlSchemaEntity                                                                                                                                            
+                FT0109AdqlTableEntity                                                                                                                                             
+                FT0109AuthenticationEntity                                                                                                                                        
+                FT0109CommunityEntity                                                                                                                                             
+                FT0109ConfigProperty                                                                                                                                              
+                FT0109IdentityEntity                                                                                                                                              
+                FT0109IvoaColumnEntity                                                                                                                                            
+                FT0109IvoaResourceEntity                                                                                                                                          
+                FT0109IvoaSchemaEntity                                                                                                                                            
+                FT0109IvoaTableEntity                                                                                                                                             
+                FT0109JdbcColumnEntity                                                                                                                                            
+                FT0109JdbcResourceEntity                                                                                                                                          
+                FT0109JdbcSchemaEntity                                                                                                                                            
+                FT0109JdbcTableEntity                                                                                                                                             
+                FT0109JobEntity                                                                                                                                                   
+                FT0109OperationEntity                                                                                                                                             
+                FT0109TestJobEntity                                                                                                                                               
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0109JobEntity'
+            go
+
+                ident                                                                                                                                                                                                                                                          
+                created                                                                                                                                                                                                                                                        
+                modified                                                                                                                                                                                                                                                       
+                name                                                                                                                                                                                                                                                           
+                text                                                                                                                                                                                                                                                           
+                completed                                                                                                                                                                                                                                                        
+                queued                                                                                                                                                                                                                                                         
+                started                                                                                                                                                                                                                                                        
+                jobstatus                                                                                                                                                                                                                                                      
+                owner     
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0109AdqlQueryEntity'
+            go
+
+                adql                                                                                                                                                                                                                                                           
+                ogsadelayevery                                                                                                                                                                                                                                                 
+                ogsadelayfirst                                                                                                                                                                                                                                                 
+                ogsadelaylast                                                                                                                                                                                                                                                  
+                ogsadaidqp                                                                                                                                                                                                                                                     
+                ogsadaiendpoint                                                                                                                                                                                                                                                
+                input                                                                                                                                                                                                                                                          
+                syntaxlevel                                                                                                                                                                                                                                                    
+                syntaxmessage                                                                                                                                                                                                                                                  
+                mode                                                                                                                                                                                                                                                           
+                osql                                                                                                                                                                                                                                                           
+                rowid                                                                                                                                                                                                                                                          
+                ogsadaistore                                                                                                                                                                                                                                                   
+                syntaxstate                                                                                                                                                                                                                                                    
+                ident                                                                                                                                                                                                                                                          
+                adqltable                                                                                                                                                                                                                                                      
+                jdbctable                                                                                                                                                                                                                                                      
+                adqlschema                                                                                                                                                                                                                                                     
+                timingadql                                                                                                                                                                                                                                                     
+                timingjdbc                                                                                                                                                                                                                                                     
+                timingogsa                                                                                                                                                                                                                                                     
+                timingstart                                                                                                                                                                                                                                                    
+                timingtotal                                                                                                                                                                                                                                                    
+
+
+            SELECT
+                job.ident, 
+                job.modified, 
+                job.completed,
+                query.timingadql,
+                query.timingjdbc,
+                query.timingogsa,
+                query.timingstart,
+                query.timingtotal
+            FROM
+                FT0109AdqlQueryEntity AS query
+            JOIN
+                FT0109JobEntity AS job
+            ON
+                query.ident = job.ident
+            ORDER BY
+                job.ident
+            go                
+
+
+

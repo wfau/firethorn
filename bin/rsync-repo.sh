@@ -20,7 +20,11 @@
 # Shell script to rsync from our local Maven repository to our public repository.
 
 #
-# Use the defaul Maven repo location.
+# Load the local settings.
+source "${HOME:?}/firethorn.settings"
+
+#
+# Update the Maven repo location.
 MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
 
 #
