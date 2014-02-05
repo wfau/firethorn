@@ -88,9 +88,9 @@ implements Job
      *
      */
     protected static final String DB_JOBSTATUS_COL = "jobstatus" ;
-    protected static final String DB_QUEUED_COL    = "queued"  ;
-    protected static final String DB_STARTED_COL   = "started" ;
-    protected static final String DB_FINISHED_COL  = "finshed" ;
+    protected static final String DB_QUEUED_COL    = "queued"    ;
+    protected static final String DB_STARTED_COL   = "started"   ;
+    protected static final String DB_COMPLETED_COL = "completed" ;
 
     /**
      * Local service implementations.
@@ -177,17 +177,18 @@ implements Job
     implements Job.Executor
         {
         /**
-         * Our local service implementation.
+         * Our service implementation.
          *
          */
         private Job.Executor executor;
 
         /**
-         * Our local service implementation.
+         * Our service implementation.
          * @todo simplify what is essentially 'this'.
+         * @autowired fails to resolve the recursive reference.
          *
          */
-        protected Job.Executor executor()
+        protected synchronized Job.Executor executor()
             {
             if (this.executor == null)
                 {
@@ -258,7 +259,6 @@ implements Job
                 return Status.ERROR;
                 }
             }
-
 
         @Override
         public Status update(final Identifier ident, final Status next, final Integer timeout)
@@ -623,7 +623,7 @@ else {
      *
      */
     @Column(
-        name = DB_FINISHED_COL,
+        name = DB_COMPLETED_COL,
         unique = false,
         nullable = true,
         updatable = true

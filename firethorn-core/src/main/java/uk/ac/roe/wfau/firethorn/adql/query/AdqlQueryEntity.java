@@ -28,17 +28,16 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.Basic;
-import javax.persistence.Embedded;
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -52,8 +51,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -64,8 +63,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -79,10 +78,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
 
 /**
  *
@@ -1013,7 +1012,16 @@ implements AdqlQuery, AdqlParserQuery
                     Status.EDITING
                     );
                 }
+            else if (this.input.trim().length() == 0)
+                {
+                return status(
+                    Status.EDITING
+                    );
+                }
             else {
+                //
+                // Log the start time.
+                this.timings().adqlstart();
                 //
                 // Create the two query parsers.
                 // TODO - The parsers should be part of the resource/schema.
@@ -1049,6 +1057,9 @@ implements AdqlQuery, AdqlParserQuery
                         this
                         );
                     }
+                //
+                // Log the end time.
+                this.timings().adqldone();
                 //
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
@@ -1136,7 +1147,11 @@ implements AdqlQuery, AdqlParserQuery
         if (result == Status.RUNNING)
             {
             log.debug("-- AdqlQuery running [{}]", ident());
+            //
+            // Log the start time.
+            this.timings().ogsastart();
             try {
+            
                 log.debug("-- AdqlQuery resolving [{}]", ident());
                 final AdqlQuery query = services().resolver().select(
                         ident()
@@ -1238,6 +1253,11 @@ implements AdqlQuery, AdqlParserQuery
                     Status.FAILED
                     );
                 }
+            finally {
+                //
+                // Log the done time.
+                this.timings().ogsadone();
+                }
             }
         return result ;
         }
@@ -1323,6 +1343,10 @@ implements AdqlQuery, AdqlParserQuery
 
         if (this.syntax == State.VALID)
             {
+            //
+            // Log the start time.
+            this.timings().jdbcstart();
+            
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
@@ -1346,6 +1370,10 @@ implements AdqlQuery, AdqlParserQuery
                 }
 //TODO
 //Why does the query need to know where the JdbcTable is ?
+            //
+            // Log the end time.
+            this.timings().jdbcdone();
+
             }
 
         else {
@@ -1401,9 +1429,21 @@ implements AdqlQuery, AdqlParserQuery
         return this.delays ;
         }
 
+    @Embedded
+    private AdqlQueryTimings stats;
+    
     @Override
-    public TimingStats stats()
+    public AdqlQueryTimings timings()
         {
-        return null ;
+        /*
+         * Need to check for null.
+         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.stats== null)
+            {
+            this.stats= new AdqlQueryTimings(); 
+            }
+        return this.stats;
         }
     }

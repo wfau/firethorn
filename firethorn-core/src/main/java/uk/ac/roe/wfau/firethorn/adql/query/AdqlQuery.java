@@ -29,7 +29,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 
 /**
  *
@@ -43,15 +42,45 @@ extends NamedEntity, Job
      * Query timing statistics.
      * 
      */
-    public interface TimingStats
+    public interface Timings
         {
+        /**
+         * Timestamp (absolute) for the start of query processing.
+         * 
+         */
+        public Long start();  
+
+        /**
+         * Timestamp (duration) for the ADQL parsing.
+         * 
+         */
+        public Long adql();  
+
+        /**
+         * Timestamp (duration) for creating the JDBC table.
+         * 
+         */
+        public Long jdbc();  
+
+        /**
+         * Timestamp (duration) for the OGSA-DAI processing.
+         * 
+         */
+        public Long ogsa();  
+
+        /**
+         * Timestamp (dutation) for the whole query processing.
+         * 
+         */
+        public Long total();  
+
         }
 
     /**
      * The query timing statistics.
      * 
      */
-    public TimingStats stats();
+    public Timings timings();
 
     /**
      * Query delay properties.
