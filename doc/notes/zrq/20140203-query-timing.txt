@@ -103,8 +103,8 @@
 # https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
 #[user@desktop]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
 
         hg pull
         hg update
