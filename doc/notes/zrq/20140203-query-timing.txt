@@ -83,8 +83,6 @@
 
     popd
 
-
-
 # -----------------------------------------------------
 # Close the branch.
 #[user@desktop]
@@ -157,15 +155,22 @@
 
     popd
 
-
-
 # -----------------------------------------------------
-# Set the branch name.
+# Close an old branch.
 #[user@desktop]
 
     oldbranch=1.9.2-zrq-query-timing
-    
-    
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${oldbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg push
+
+        hg update default
+
+    popd
     
 
 

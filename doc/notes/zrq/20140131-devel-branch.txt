@@ -101,6 +101,8 @@
 
         hg update "${newbranch:?}"
         hg commit --close-branch -m "Closing [branch-${newbranch:?}]"
+        hg update default
+
         hg push
 
     popd
