@@ -84,8 +84,6 @@
     popd
 
 # -----------------------------------------------------
-# -----------------------------------------------------
-# -----------------------------------------------------
 # Close the branch.
 #[user@desktop]
 
@@ -103,8 +101,8 @@
 # https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
 #[user@desktop]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
 
         hg pull
         hg update
@@ -129,7 +127,7 @@
 # Increment the project version.
 #[user@desktop]
 
-    newversion=1.9.5
+    newversion=1.9.6
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -156,5 +154,24 @@
         ./bin/rsync-repo.sh
 
     popd
+
+# -----------------------------------------------------
+# Close an old branch.
+#[user@desktop]
+
+    oldbranch=1.9.5-zrq-query-timing
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${oldbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg update "default"
+        hg push
+
+        hg update default
+
+    popd
+    
 
 
