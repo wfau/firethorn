@@ -94,6 +94,8 @@
         hg commit --close-branch -m "Closing [branch-${newbranch:?}]"
         hg push
 
+        hg update default
+
     popd
 
 # -----------------------------------------------------
@@ -159,7 +161,7 @@
 # Close an old branch.
 #[user@desktop]
 
-    oldbranch=1.9.2-zrq-query-timing
+    oldbranch=1.9.5-zrq-query-timing
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
