@@ -1255,7 +1255,7 @@ implements AdqlQuery, AdqlParserQuery
                 }
             finally {
                 //
-                // Log the rnd time.
+                // Log the done time.
                 this.timings().ogsadone();
                 }
             }

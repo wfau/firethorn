@@ -88,9 +88,9 @@ implements Job
      *
      */
     protected static final String DB_JOBSTATUS_COL = "jobstatus" ;
-    protected static final String DB_QUEUED_COL    = "queued"  ;
-    protected static final String DB_STARTED_COL   = "started" ;
-    protected static final String DB_FINISHED_COL  = "finshed" ;
+    protected static final String DB_QUEUED_COL    = "queued"    ;
+    protected static final String DB_STARTED_COL   = "started"   ;
+    protected static final String DB_COMPLETED_COL = "completed" ;
 
     /**
      * Local service implementations.
@@ -180,22 +180,20 @@ implements Job
          * Our service implementation.
          *
          */
-        @Autowired
         private Job.Executor executor;
 
         /**
          * Our service implementation.
          * @todo simplify what is essentially 'this'.
+         * @autowired fails to resolve the recursive reference.
          *
          */
         protected synchronized Job.Executor executor()
             {
-/*
             if (this.executor == null)
                 {
                 this.executor = factories().jobs().executor();
                 }
- */
             return this.executor ;
             }
 
@@ -625,7 +623,7 @@ else {
      *
      */
     @Column(
-        name = DB_FINISHED_COL,
+        name = DB_COMPLETED_COL,
         unique = false,
         nullable = true,
         updatable = true
