@@ -35,7 +35,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.identity.CommunityMemberEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -142,8 +142,7 @@ implements Entity
         super();
         if (init)
             {
-            //this.uuid = factories().uuids().uuid();
-            this.owner = factories().identities().current();
+            this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
 
@@ -210,7 +209,7 @@ implements Entity
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = IdentityEntity.class
+        targetEntity = CommunityMemberEntity.class
         )
     @JoinColumn(
         name = DB_OWNER_COL,
@@ -315,6 +314,7 @@ implements Entity
 
     /**
      * Object hashCode() method (based on ident only).
+     * @TODO This is probably wrong ... should it be based on all the fields rather than just the ident ?
      *
      */
     @Override
@@ -344,16 +344,10 @@ implements Entity
         log.debug("---- ----");
         }
 
-    /**
-     * Delete this Entity from the database.
-     *
     @Override
-    public void delete()
+    public EntityProtector protector()
         {
-        factories().hibernate().delete(
-            this
-            );
+        return null ;
         }
-     */
     }
 

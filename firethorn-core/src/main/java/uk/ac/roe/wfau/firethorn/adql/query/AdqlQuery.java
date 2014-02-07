@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -147,6 +148,12 @@ extends NamedEntity, Job
          */
         public AdqlQuery.Syntax.Level level();
 
+        /**
+         * The DataSpace to store the results.
+         * 
+         */
+        public DataSpace space();
+
         }
 
     /**
@@ -274,34 +281,32 @@ extends NamedEntity, Job
     extends Job.Factory<AdqlQuery>
         {
         /**
-         * Create a new query.
+         * Create a new query, using the default settings.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input)
+        throws QueryProcessingException;
 
         /**
-         * Create a new query.
+         * Create a new query, with a specific name.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input)
+        throws QueryProcessingException;
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam and name.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name);
-
-        /**
-         * Create a new query.
-         *
-         */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam param, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
          * Select all the queries from a resource.
@@ -316,7 +321,7 @@ extends NamedEntity, Job
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
 
         /**
-         * OGSA-DAI param factory.
+         * Local QueryParam factory.
          *
          */
         public ParamFactory params();
@@ -458,13 +463,13 @@ extends NamedEntity, Job
     public Syntax syntax();
 
     /**
-     * The OGSA-DAI query params.
+     * The query params.
      *
      */
-    public QueryParam params();
+    public QueryParam param();
 
     /**
-     * OGSA-DAI query mode.
+     * The query mode.
      *
      */
     public enum Mode
@@ -484,7 +489,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * The OGSA-DAI query mode.
+     * The query mode.
      *
      */
     public Mode mode();
@@ -494,6 +499,13 @@ extends NamedEntity, Job
      *
      */
     public AdqlSchema schema();
+
+    /**
+     * The JDBC schema to store the results.
+     * @todo Change this to be a DataSpace
+     *
+     */
+    public JdbcSchema space();
 
     /**
      * The processed ADQL query.

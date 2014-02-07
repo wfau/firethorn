@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -44,10 +45,12 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.DataSpace;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -373,7 +376,7 @@ implements AdqlSchema
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
-        final AdqlTable table = factories().adql().tables().create(
+        factories().adql().tables().create(
             depth,
             AdqlSchemaEntity.this,
             base
@@ -758,6 +761,7 @@ implements AdqlSchema
             {
             @Override
             public AdqlQuery create(final String query)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
@@ -766,34 +770,36 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final String query, final String rowid)
+            public AdqlQuery create(final String query, final String name)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
                     query,
-                    rowid
-                    );
-                }
-
-            @Override
-            public AdqlQuery create(final String query, final String rowid, final String name)
-                {
-                return factories().adql().queries().create(
-                    AdqlSchemaEntity.this,
-                    query,
-                    rowid,
                     name
                     );
                 }
 
-
             @Override
-            public AdqlQuery create(final QueryParam params, final String query)
+            public AdqlQuery create(final QueryParam param, final String query)
+            throws QueryProcessingException
                 {
                 return factories().adql().queries().create(
-                    params,
                     AdqlSchemaEntity.this,
+                    param,
                     query
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final QueryParam param, final String query, final String name)
+            throws QueryProcessingException
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    param,
+                    query,
+                    name
                     );
                 }
 
@@ -811,6 +817,5 @@ implements AdqlSchema
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
     }

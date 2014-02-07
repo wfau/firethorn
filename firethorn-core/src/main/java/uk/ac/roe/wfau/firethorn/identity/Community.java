@@ -79,33 +79,40 @@ extends Entity, NamedEntity
          *
          */
         public Community select(final String uri);
+
+    /**
+         * Our local CommunityMember member factory.
+         * 
+     */
+        public CommunityMember.EntityFactory members();
+
         }
 
     /**
      * Access to the Identities in this Community.
      *
      */
-    public interface Identities
+    public interface Members
         {
         /**
-         * Create a new Identity.
+         * Create a new member.
          *
          */
-        public Identity create(final String name);
+        public CommunityMember create(final String name);
 
         /**
-         * Select an existing Identity.
+         * Select an existing Member.
          *
          */
-        public Identity select(final String name);
+        public CommunityMember select(final String name);
 
         }
 
     /**
-     * Access to the Identities in this Community.
+     * Access to the Community Members.
      *
      */
-    public Identities identities();
+    public Members members();
 
     /**
      * The unique identifier for this Community.

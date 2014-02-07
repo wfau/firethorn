@@ -81,16 +81,24 @@ extends Exception
      *
      *
      */
-   public XMLParserException(final String message, final QName qname, final XMLEvent event)
-       {
-       super(
-           message
-           );
-       this.qname = qname ;
-       this.event = event ;
-       }
+    public XMLParserException(final String message, final QName qname, final XMLEvent event)
+        {
+        super(
+            message
+            );
+        this.qname = qname ;
+        this.event = event ;
+        }
 
     private QName qname ;
-    private XMLEvent event ;
+    public QName qname()
+        {
+        return this.qname;
+        }
 
+    private XMLEvent event ;
+    public XMLEvent event()
+        {
+        return this.event;
+        }
     }

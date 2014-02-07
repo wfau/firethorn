@@ -172,6 +172,14 @@ implements Community
             {
             return this.links;
             }
+
+        @Autowired
+        protected CommunityMember.EntityFactory members;
+        @Override
+        public CommunityMember.EntityFactory members()
+            {
+            return this.members;
+            }
         }
 
     /**
@@ -215,23 +223,23 @@ implements Community
         }
 
     @Override
-    public Identities identities()
+    public Members members()
         {
-        return new Identities()
+        return new Members()
             {
             @Override
-            public Identity create(final String name)
+            public CommunityMember create(final String name)
                 {
-                return factories().identities().create(
+                return factories().communities().members().create(
                     CommunityEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Identity select(final String name)
+            public CommunityMember select(final String name)
                 {
-                return factories().identities().select(
+                return factories().communities().members().select(
                     CommunityEntity.this,
                     name
                     );

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -33,6 +34,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test010S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -56,6 +58,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test011S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -79,6 +82,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test012S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -102,6 +106,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test013S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -125,6 +130,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test014S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -148,6 +154,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test015S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -171,6 +178,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test016S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -194,6 +202,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test017S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -217,6 +226,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test018S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -240,6 +250,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test019S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -265,6 +276,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test020S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -288,6 +300,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test021S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -311,6 +324,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test022S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -334,6 +348,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test023S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -357,6 +372,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test024S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -380,6 +396,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test025S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -403,6 +420,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test026S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -426,6 +444,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test027S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -449,6 +468,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test028S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -472,6 +492,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test029S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -497,6 +518,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test030S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -520,6 +542,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test031S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -543,6 +566,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test032S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -566,6 +590,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test033S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -589,6 +614,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test034S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -612,6 +638,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test035S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -635,6 +662,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test036S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -658,6 +686,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test037S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -681,6 +710,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test038S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -704,6 +734,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test039S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -729,6 +760,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test040S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -752,6 +784,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test041S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -775,6 +808,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test042S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -798,6 +832,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test043S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -821,6 +856,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test044S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -844,6 +880,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test045S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -867,6 +904,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test046S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -890,6 +928,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test047S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -913,6 +952,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test048S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -936,6 +976,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test049S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -961,6 +1002,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test050S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -984,6 +1026,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test051S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1007,6 +1050,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test052S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1030,6 +1074,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test054S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1053,6 +1098,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test055S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1076,6 +1122,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test056S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1099,6 +1146,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test057S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1122,6 +1170,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test058S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1145,6 +1194,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test059S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1170,6 +1220,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test060S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1193,6 +1244,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test061S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1216,6 +1268,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test062S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1239,6 +1292,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test063S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1262,6 +1316,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test064S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1285,6 +1340,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test065S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1308,6 +1364,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test066S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1331,6 +1388,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test067S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1354,6 +1412,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test068S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -1377,6 +1436,7 @@ public class ArithmeticExpressionTestCase
 
     @Test
     public void test069S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,

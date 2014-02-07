@@ -30,11 +30,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -43,7 +44,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-
 
 /**
  *
@@ -55,17 +55,11 @@ public class AtlasQueryTestBase
 extends TestPropertiesBase
     {
 
-    protected static final String ATLAS_VERSION = "ATLASDR1" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20131127" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20131029" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20130426" ;
-  //protected static final String ATLAS_VERSION = "ATLASv20130304" ;
+    protected JdbcResource jdbcresource ;
+    protected AdqlResource adqlresource ;
+    protected AdqlResource testresource ;
 
-    protected JdbcResource resource ;
-    protected AdqlResource workspace ;
-    protected AdqlResource testspace ;
-
-    protected AdqlSchema queryspace ;
+    protected AdqlSchema queryschema ;
 
     public void schema()
         {
@@ -83,10 +77,10 @@ extends TestPropertiesBase
     public void loadCatalog(final String name, final String alias)
         {
         try {
-            this.workspace.schemas().create(
+            this.adqlresource.schemas().create(
                 BaseComponent.CopyDepth.THIN,
                 alias,
-                resource.schemas().select(
+                jdbcresource.schemas().select(
                     name,
                     "dbo"
                     )
@@ -97,7 +91,6 @@ extends TestPropertiesBase
             log.warn("Unable to load catalog [{}]", name);
             }
         }
-
 
     public void loadSchema(final String name)
         {
@@ -110,10 +103,10 @@ extends TestPropertiesBase
     public void loadSchema(final String name, final String alias)
         {
         try {
-            this.testspace.schemas().create(
+            this.testresource.schemas().create(
                 BaseComponent.CopyDepth.THIN,
                 alias,
-                this.workspace.schemas().select(
+                this.adqlresource.schemas().select(
                     name
                     )
                 );
@@ -125,6 +118,27 @@ extends TestPropertiesBase
         }
 
     /**
+     * Test property names.
+     * 
+     */
+    public static final String JDBC_RESOURCE_PROP = "atlas.jdbc.resource";
+    public static final String ADQL_RESOURCE_PROP = "atlas.adql.resource";
+    public static final String TEST_RESOURCE_PROP = "atlas.test.resource";
+
+    public static final String QUERY_SCHEMA_NAME  = "queryschema";
+
+    /**
+     * Test catalog names.
+     * 
+     */
+    public static final String ATLAS_VERSION = "ATLASDR1" ;
+    public static final String ATLAS_CATALOG_NAME   = "ATLASDR1" ;
+    public static final String BEST_CATALOG_NAME    = "BestDR8" ;
+    public static final String ROSAT_CATALOG_NAME   = "ROSAT" ;
+    public static final String TWOMASS_CATALOG_NAME = "TWOMASS" ;
+    
+
+    /**
      * Load our test resources.
      *
      */
@@ -134,16 +148,16 @@ extends TestPropertiesBase
         {
         //
         // Create our JDBC resource.
-        if (resource == null)
+        if (jdbcresource == null)
             {
-            log.debug("Loading test resource");
-            final String prop = testprops().getProperty("jdbc.space");
-            if (prop != null)
+            log.debug("Loading JDBC resource");
+            final String ident = testprops().getProperty(JDBC_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
-                    resource = factories().jdbc().resources().select(
+                    jdbcresource = factories().jdbc().resources().select(
                         factories().jdbc().resources().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
@@ -152,10 +166,11 @@ extends TestPropertiesBase
                     log.debug("Unable to load JDBC resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (resource == null)
+
+            if (jdbcresource == null)
                 {
                 log.debug("Null JDBC resource, creating new one");
-                resource = factories().jdbc().resources().create(
+                jdbcresource = factories().jdbc().resources().create(
                     "atlas",
                     "*",
                     "atlas",
@@ -165,17 +180,17 @@ extends TestPropertiesBase
             }
 
         //
-        // Create our ADQL workspace.
-        if (this.workspace == null)
+        // Create our ADQL resource.
+        if (this.adqlresource == null)
             {
-            log.debug("Loading test workspace");
-            final String prop = testprops().getProperty("adql.space");
-            if (prop != null)
+            log.debug("Loading ADQL resource");
+            final String ident = testprops().getProperty(ADQL_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
-                    this.workspace = factories().adql().resources().select(
+                    this.adqlresource = factories().adql().resources().select(
                         factories().adql().resources().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
@@ -184,95 +199,88 @@ extends TestPropertiesBase
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (this.workspace == null)
+            if (this.adqlresource == null)
                 {
                 log.debug("Null ADQL resource, creating new one");
-                this.workspace = factories().adql().resources().create(
-                    "workspace"
+                this.adqlresource = factories().adql().resources().create(
+                    "ADQL resource"
                     );
 
                 loadCatalog(
-                    ATLAS_VERSION
+                    ATLAS_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "ROSAT"
+                    ROSAT_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "BestDR8"
+                    BEST_CATALOG_NAME
                     );
 
                 loadCatalog(
-                    "BestDR9"
-                    );
-
-                loadCatalog(
-                    "TWOMASS"
+                    TWOMASS_CATALOG_NAME
                     );
                 }
             }
 
         //
-        // Create our ADQL workspace.
-        if (this.testspace == null)
+        // Create our test workspace.
+        if (this.testresource == null)
             {
-            log.debug("Loading test schema");
-            final String prop = testprops().getProperty("test.space");
-            if (prop != null)
+            log.debug("Loading TEST resource");
+            final String ident = testprops().getProperty(TEST_RESOURCE_PROP);
+            if (ident != null)
                 {
                 try {
-                    this.testspace = factories().adql().resources().select(
+                    this.testresource = factories().adql().resources().select(
                         factories().adql().schemas().idents().ident(
-                            prop
+                            ident
                             )
                         );
                     }
                 catch (final IdentifierNotFoundException ouch)
                     {
-                    log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
+                    log.debug("Unable to load TEST resource from test config [{}]", ouch.getMessage());
                     }
                 }
-            if (this.testspace == null)
+            if (this.testresource == null)
                 {
-                this.testspace = factories().adql().resources().create(
-                    "testspace"
+                this.testresource = factories().adql().resources().create(
+                    "TEST resource"
                     );
 
                 loadSchema(
-                    ATLAS_VERSION
+                    ATLAS_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "ROSAT"
+                    ROSAT_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "BestDR8"
+                    BEST_CATALOG_NAME
                     );
 
                 loadSchema(
-                    "BestDR9"
-                    );
-
-                loadSchema(
-                    "TWOMASS"
+                    TWOMASS_CATALOG_NAME
                     );
                 }
             }
 
         //
         // Create our ADQL query space.
-        if (this.queryspace == null)
+        if (this.queryschema == null)
             {
-            log.debug("Loading test schema");
-            this.queryspace = this.testspace.schemas().search(
-                "queryspace"
+            log.debug("Loading QUERY schema");
+            this.queryschema = this.testresource.schemas().search(
+                QUERY_SCHEMA_NAME
                 );
-            if (this.queryspace == null)
+
+            if (this.queryschema == null)
                 {
-                this.queryspace = this.testspace.schemas().create(
-                    "queryspace"
+                this.queryschema = this.testresource.schemas().create(
+                    QUERY_SCHEMA_NAME
                     );
                 }
             }
@@ -286,17 +294,26 @@ extends TestPropertiesBase
     public void saveResources()
         {
         log.debug("Saving test resources");
-        if (this.resource != null)
+        if (this.jdbcresource != null)
             {
-            testprops().setProperty("jdbc.space", this.resource.ident().toString());
+            testprops().setProperty(
+                JDBC_RESOURCE_PROP,
+                this.jdbcresource.ident().toString()
+                );
             }
-        if (this.workspace != null)
+        if (this.adqlresource != null)
             {
-            testprops().setProperty("adql.space", this.workspace.ident().toString());
+            testprops().setProperty(
+                ADQL_RESOURCE_PROP,
+                this.adqlresource.ident().toString()
+                );
             }
-        if (this.testspace != null)
+        if (this.testresource != null)
             {
-            testprops().setProperty("test.space", this.testspace.ident().toString());
+            testprops().setProperty(
+                TEST_RESOURCE_PROP,
+                this.testresource.ident().toString()
+                );
             }
         }
 
@@ -432,8 +449,9 @@ extends TestPropertiesBase
  */
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryschema.queries().create(
             factories().queries().params().param(
                 level
                 ),
@@ -455,26 +473,31 @@ extends TestPropertiesBase
         }
 
     public AdqlQuery validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, status, adql, sql, fields);
         }
 
     public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
         }
 
     public AdqlQuery validate(final String adql, final String sql)
+    throws QueryProcessingException
         {
         return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
+    throws QueryProcessingException
         {
         return validate(level, status, adql, sql, null);
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+    throws QueryProcessingException
         {
         return validate(level, status, adql, null, null);
         }

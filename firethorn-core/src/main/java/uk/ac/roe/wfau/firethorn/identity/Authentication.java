@@ -26,14 +26,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 public interface Authentication
 extends Entity
     {
-    /**
-     * Name factory interface.
-     *
-    public static interface NameFactory
-    extends Entity.NameFactory
-        {
-        }
-     */
 
     /**
      * Link factory interface.

@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -382,5 +383,13 @@ public class AdqlTableProxy
                     );
                 }
             };
+        }
+
+    @Override
+    public EntityProtector protector()
+        {
+        // TODO Auto-generated method stub
+        // A combination of protection from base and parent ? 
+        return null;
         }
     }
