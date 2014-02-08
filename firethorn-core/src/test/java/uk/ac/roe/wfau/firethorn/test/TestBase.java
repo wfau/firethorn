@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,14 +47,14 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 public abstract class TestBase
 extends TestRoot
     {
-    public static final String TEST_OPER_TARGET = "test" ;
-    public static final String TEST_OPER_METHOD = "test" ;
-    public static final String TEST_OPER_SOURCE = "test" ;
+    public static final String TEST_OPER_TARGET = "test-target" ;
+    public static final String TEST_OPER_METHOD = "test-method" ;
+    public static final String TEST_OPER_SOURCE = "test-source" ;
 
-    public static final String TEST_AUTH_METHOD    = "test" ;
-    public static final String TEST_IDENTITY_NAME  = "Tester (identity)" ;
-    public static final String TEST_COMMUNITY_URI  = "test" ;
-    public static final String TEST_COMMUNITY_NAME = "Tester (group)" ;
+    public static final String TEST_AUTH_METHOD    = "urn:test-auth" ;
+    public static final String TEST_COMMUNITY_URI  = "urn:test" ;
+    public static final String TEST_COMMUNITY_NAME = "Test community" ;
+    public static final String TEST_COMMUNITY_USER = "Test user" ;
 
     /**
      * Initialise our operation and identity.
@@ -61,7 +62,7 @@ extends TestRoot
      *
      */
     @Before
-    public final void oper()
+    public void oper()
         {
         final Operation operation = factories().operations().create(
             TEST_OPER_TARGET,
@@ -71,33 +72,29 @@ extends TestRoot
 
         log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-        operation.authentications().resolve();
-        if (operation.authentications().primary() == null)
+        if (operation.auth().primary() == null)
             {
-            operation.authentications().create(
-                factories().identities().create(
+            operation.auth().create(
                     factories().communities().create(
                         TEST_COMMUNITY_NAME,
                         TEST_COMMUNITY_URI
-                        ),
-                    TEST_IDENTITY_NAME
+                    ).members().create(
+                        TEST_COMMUNITY_USER
                     ),
                 TEST_AUTH_METHOD
                 );
             }
 
-        operation.authentications().resolve();
-        final Authentication primary = operation.authentications().primary();
+        final Authentication primary = operation.auth().primary();
         log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
 
         }
 
     /**
      * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
-     * @throws Exception
      *
-    @Test
      */
+    @Test
     public void empty()
     throws Exception
         {

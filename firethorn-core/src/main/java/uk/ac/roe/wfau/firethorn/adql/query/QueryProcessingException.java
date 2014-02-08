@@ -15,38 +15,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.util.xml;
+package uk.ac.roe.wfau.firethorn.adql.query;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.events.XMLEvent;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  *
  */
-public class XMLParserException
-extends Exception
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+public class QueryProcessingException
+    extends Exception
     {
 
     /**
-     *
+     * Serial version UID
      *
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2400544777912750220L;
 
     /**
-     *
+     * Public constructor.
      *
      */
-    public XMLParserException()
+    public QueryProcessingException()
         {
         }
 
     /**
-     *
+     * Public constructor.
      *
      */
-    public XMLParserException(final String message)
+    public QueryProcessingException(String message)
         {
         super(
             message
@@ -54,51 +55,25 @@ extends Exception
         }
 
     /**
-     *
-     *
-     */
-   public XMLParserException(final String message, final Throwable cause)
-       {
-       super(
-           message,
-           cause
-           );
-       }
-
-    /**
-     *
+     * Public constructor.
      *
      */
-    public XMLParserException(final String message, final QName qname)
+    public QueryProcessingException(Throwable cause)
         {
         super(
-            message
+            cause
             );
-        this.qname = qname ;
         }
 
     /**
-     *
+     * Public constructor.
      *
      */
-    public XMLParserException(final String message, final QName qname, final XMLEvent event)
+    public QueryProcessingException(String message, Throwable cause)
         {
         super(
-            message
+            message,
+            cause
             );
-        this.qname = qname ;
-        this.event = event ;
-        }
-
-    private QName qname ;
-    public QName qname()
-        {
-        return this.qname;
-        }
-
-    private XMLEvent event ;
-    public XMLEvent event()
-        {
-        return this.event;
         }
     }

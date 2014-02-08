@@ -46,9 +46,6 @@ extends TestBase
     private JdbcResource twomass ;
     private JdbcResource wfau    ;
 
-    private JdbcResource resource ;
-    private JdbcSchema   schema   ;
-
     /**
      * Create our resources.
      *
@@ -69,19 +66,6 @@ extends TestBase
             "test:wfau",
             "spring:RoeWFAU"
             );
-
-        this.resource = factories().jdbc().resources().create(
-            "userdata",
-            "userdata",
-            "spring:FireThornUserData"
-            );
-// TODO do we need this ?
-/*
-        this.schema = this.resource.schemas().create(
-            null,
-            "PUBLIC"
-            );
-*/
         }
 
     /**

@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
@@ -39,6 +40,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0101()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -170,6 +172,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0201()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -214,6 +217,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0301()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -266,6 +270,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0401()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -451,6 +456,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0501()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -550,6 +556,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0601()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,

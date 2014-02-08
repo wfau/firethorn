@@ -79,7 +79,7 @@ implements HandlerInterceptor
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("after()");
+        log.debug("afterCompletion()");
         final Operation oper = operations().current();
         log.debug("Operation [{}][{}]", oper.ident(), oper.target());
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
