@@ -16,11 +16,11 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -50,10 +50,10 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     AccessType.FIELD
     )
 @Table(
-    name = IdentityEntity.DB_TABLE_NAME,
+    name = CommunityMemberEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList = IdentityEntity.DB_COMMUNITY_COL
+            columnList=CommunityMemberEntity.DB_COMMUNITY_COL
             )
         }
     )
@@ -61,24 +61,24 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
         {
         @NamedQuery(
             name = "Identity-select-all",
-            query = "FROM IdentityEntity ORDER BY ident desc"
+            query = "FROM CommunityMemberEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name = "Identity-select-community.name",
-            query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
+            query = "FROM CommunityMemberEntity WHERE community = :community AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class IdentityEntity
+public class CommunityMemberEntity
 extends AbstractNamedEntity
-implements Identity
+implements CommunityMember
     {
 
     /**
      * Hibernate table mapping.
      *
      */
-    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IdentityEntity";
+    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "CommunityMemberEntity";
 
     /**
      * Hibernate column mapping.
@@ -93,45 +93,31 @@ implements Identity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<Identity>
-    implements Identity.EntityFactory
+    extends AbstractEntityFactory<CommunityMember>
+    implements CommunityMember.EntityFactory
         {
         @Override
         public Class<?> etype()
             {
-            return IdentityEntity.class;
-            }
-
-        @Override
-        public Identity current()
-            {
-            final Operation oper = factories().operations().current() ;
-            if (oper != null)
-                {
-                if (oper.authentications().primary() != null)
-                    {
-                    return oper.authentications().primary().identity();
-                    }
-                }
-            return null ;
+            return CommunityMemberEntity.class;
             }
 
         @Override
         @CreateMethod
-        public Identity create(final Community community, final String name)
+        public CommunityMember create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
-            final Identity identity = this.select(
+            final CommunityMember member = this.select(
                 community,
                 name
                 );
-            if (identity != null)
+            if (member != null)
                 {
-                return identity ;
+                return member ;
                 }
             else {
                 return super.insert(
-                    new IdentityEntity(
+                    new CommunityMemberEntity(
                         community,
                         name
                         )
@@ -141,7 +127,7 @@ implements Identity
 
         @Override
         @SelectMethod
-        public Identity select(final Community community, final String name)
+        public CommunityMember select(final Community community, final String name)
             {
             return super.first(
                 super.query(
@@ -157,17 +143,17 @@ implements Identity
             }
 
         @Autowired
-        protected Identity.IdentFactory idents;
+        protected CommunityMember.IdentFactory idents;
         @Override
-        public Identity.IdentFactory idents()
+        public CommunityMember.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        protected Identity.LinkFactory links;
+        protected CommunityMember.LinkFactory links;
         @Override
-        public Identity.LinkFactory links()
+        public CommunityMember.LinkFactory links()
             {
             return this.links;
             }
@@ -178,7 +164,7 @@ implements Identity
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected IdentityEntity()
+    protected CommunityMemberEntity()
         {
         super();
         }
@@ -187,7 +173,7 @@ implements Identity
      * Create a new IdentityEntity, setting the owner to null.
      *
      */
-    protected IdentityEntity(final Community community, final String name)
+    protected CommunityMemberEntity(final Community community, final String name)
         {
         super(name);
         this.community = community;
@@ -200,13 +186,13 @@ implements Identity
     @Override
     public Identity owner()
         {
-        if (super.owner() == null)
+        if (super.owner() != null)
             {
-            return this;
+            return super.owner();
             }
         else
             {
-            return super.owner();
+            return this;
             }
         }
 
@@ -230,7 +216,7 @@ implements Identity
     @Override
     public String link()
         {
-        return factories().identities().links().link(
+        return factories().communities().members().links().link(
             this
             );
         }
