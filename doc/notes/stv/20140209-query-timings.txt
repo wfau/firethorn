@@ -1,0 +1,110 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+
+Time Comparisons [9 February 2014]
+----------------------------------
+
+############
+## Test 1 ##
+############
+
+    Server: Shepseskaf.roe.ac.uk
+    firethorn :1.9.3-stv-datatable-controller
+    osa-webpy-gui: Datatables version 
+
+         
+         Run 1 
+         select top 100000 * from atlassource 
+         query time: 2m 29 s
+         datatables processing: 1m 58s
+
+
+         Run 2 
+         select top 10000 * from atlassource 
+         query time: 23.8s
+         datatables processing: 14.1s
+         
+         Run 3 
+         select top 1000 * from atlassource 
+         query time: 13.8s
+         datatables processing: 5.81s
+
+
+############
+## Test 2 ##
+############
+
+    Server: Shepseskaf.roe.ac.uk
+    firethorn :1.9.3-stv-datatable-controller
+    osa-webpy-gui:Json fix version 
+
+
+         Run 1 
+         select top 100000 * from atlassource 
+         query time: 1m 17s
+         datatables processing:17.52s
+         
+         Run 2 
+         select top 10000 * from atlassource 
+         query time: 16.8s
+         datatables processing: 2.56s
+
+         Run 3 
+         select top 1000 * from atlassource 
+         query time: 10.7s
+         datatables processing: 936ms
+
+
+############
+## Test 3 ##
+############
+
+    Server: djer.roe.ac.uk
+    firethorn : 1.9.3 ? (live)
+    osa-webpy-gui: live version (1.0)
+
+
+         Run 1 
+         select top 100000 * from atlassource 
+         query time: 7m 51s
+         datatables processing: 20.74s
+
+         
+         Run 2 
+         select top 10000 * from atlassource 
+         query time: 50.96s
+         datatables processing: 2.84s
+         
+         Run 3 
+         select top 1000 * from atlassource 
+         query time: 14s
+         datatables processing: 1.22s
+
+
+
+
+
+

@@ -20,3 +20,11 @@
 #
 #
 
+Environment variables:
+
+SOFCOMMON : set to location where there is a checkout of http://gaia.esac.esa.int/dpacsvn/DPAC/CU1/software/common
+DOCCOMMON : set to location where there is a checkout of http://gaia.esac.esa.int/dpacsvn/DPAC/CU1/docs/common
+TEXMFLOCAL : set to $DOCCOMMON/texmf   (you also need to have done mktexlsr etc)
+JAVA_HOME : set to the JDK install directory
+
+Some of the tests use latex, and I think you also need 'ispell' installed (this for Linux, not sure how we would handle Windows
