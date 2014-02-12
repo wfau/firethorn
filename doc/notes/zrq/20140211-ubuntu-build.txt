@@ -1,0 +1,427 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Based on virtual machine images created by ischnura 20140211-ubuntu-base.txt
+# https://github.com/Zarquan/ischnura-kvm/blob/master/doc/notes/20140211-ubuntu-base.txt
+# http://data.metagrid.co.uk/ischnura/base/ubuntu-13-base-20140211.tar.gz
+#
+
+# -----------------------------------------
+# Create a new VM ...
+#[root@kvm-server] 
+
+    ischnura-createvm
+
+        [1] nu
+        [2] xi
+        ....
+        Select machine name (1) 2
+
+        Available base images
+        ....
+        [6] ubuntu-12-base-20130106.qcow
+        [7] ubuntu-13-base-20140211.qcow
+
+        Select base image (1) 7 
+
+        INFO : Node name [xi]
+        INFO : Base name [ubuntu-13-base-20140211.qcow]
+        INFO : Disc name [xi.qcow]
+        INFO : Disc size [8G]
+        ....
+
+# -----------------------------------------
+# Update the system.
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y update
+        apt-get -y upgrade
+
+    exit
+
+# -----------------------------------------
+# Install the some core tools.
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y install wget;
+        apt-get -y install htop;
+        apt-get -y install pwgen;
+        apt-get -y install finger;
+
+    exit
+
+# -----------------------------------------
+# Install the Java JDK.
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y install openjdk-7-jre;
+        apt-get -y install openjdk-7-jdk;
+
+    exit
+    
+# -----------------------------------------
+# Install Mercurial, Subversion and Git 
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y install mercurial;
+        apt-get -y install subversion;
+        apt-get -y install git;
+
+    exit
+
+# -----------------------------------------
+# Install JSON library
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y install libjson-perl
+
+    exit
+
+# -----------------------------------------
+# Install Maven
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        apt-get -y install maven2
+
+    exit    
+
+# -----------------------------------------
+# Create our test user.
+#[user@desktop] 
+
+    testhost=xi
+    testroot=root
+    ssh "${testroot:?}@${testhost:?}"
+
+        testuser=tester
+        testpass=$(pwgen 16 1)
+
+        useradd --create-home --shell /bin/bash --groups users "${testuser:?}"
+
+        testhome=$(getent passwd "${testuser:?}" | cut -d: -f6)
+        pushd "${testhome:?}"
+
+            if [ ! -e '.ssh' ]
+            then
+                mkdir '.ssh'
+            fi
+            pushd '.ssh'
+
+                if [ ! -e 'keys' ]
+                then
+                    mkdir 'keys'
+                fi
+                pushd 'keys'
+                    wget 'http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub'
+                    wget 'http://data.metagrid.co.uk/sshkeys/jenifer.metagrid.co.uk.pub'
+                popd
+
+                for keyfile in $(find 'keys' -name '*.pub')
+                do
+                    echo "[${keyfile:?}]"
+                    cat  "${keyfile:?}" >> 'authorized_keys'
+                done
+
+            popd
+
+            chown "$(id --user  ${testuser:?})" '.ssh'
+            chgrp "$(id --group ${testuser:?})" '.ssh'
+            chmod g=,o=,u=rwx '.ssh'
+
+        popd
+    exit
+
+# -----------------------------------------
+# Install a clone of the codebase.
+#[user@desktop] 
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        if [ ! -e "${HOME:?}/firethorn.settings" ]
+        then
+            cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_CODE=${HOME:?}/firethorn/code
+FIRETHORN_CONF=${HOME:?}/firethorn/conf
+EOF
+        fi
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+        coderepo='http://wfau.metagrid.co.uk/code/firethorn/'
+
+        # Local cache
+        repouser=xxxx
+        repohost=xxxx.metagrid.co.uk
+        repopath='/var/local/projects/edinburgh/wfau/firethorn/devel'
+        coderepo="ssh://${repouser:?}@${repohost:?}/${repopath:?}"
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${coderepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+    exit
+
+# -----------------------------------------
+# Install a our deployment properties.
+#[user@desktop] 
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+
+        cp "${FIRETHORN_CODE:?}/conf/base.properties" "${HOME:?}/firethorn.properties"
+
+        vi "${HOME:?}/firethorn.properties"
+
+            firethorn.meta.url=jdbc:jtds:sqlserver://#server#:#port#/#database#
+            firethorn.meta.user=#username#
+            firethorn.meta.pass=#password#
+
+            firethorn.user.url=jdbc:jtds:sqlserver://#server#:#port#/#database#
+            firethorn.user.user=#username#
+            firethorn.user.pass=#password#
+
+            firethorn.wfau.url=jdbc:jtds:sqlserver://#server#:#port#/#database#
+            firethorn.wfau.user=#username#
+            firethorn.wfau.pass=#password#
+
+            firethorn.atlas.url=jdbc:jtds:sqlserver://#server#:#port#/#database#
+            firethorn.atlas.user=#username#
+            firethorn.atlas.pass=#password#
+
+    exit
+
+# -----------------------------------------------------
+# Open the SSH JDBC tunnel to ROE.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        sshuser=xxxx
+        sshhost=fenrir.roe.ac.uk
+        
+        ssh-keyscan ${sshhost:?} >> ~/.ssh/known_hosts
+        ssh -L '*:1432:ramses2:1433' -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshuser:?}@${sshhost:?}"
+
+    exit
+
+# -----------------------------------------------------
+# Build the main codebase.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P all clean install
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Build and run the firethorn webapp.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            pushd 'firethorn-webapp'
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Build and run the ogsa-dai webapp.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn clean compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                projversion=$(
+                    sed -n "
+                        s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                        " pom.xml
+                    )
+     
+                pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                    jdbcconfig atlas    firethorn.atlas
+                    jdbcconfig userdata firethorn.user
+
+                popd
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+            cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    testhost=xi
+    testuser=tester
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.testing"
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    TOP 12345
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                "
+
+            source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+                SELECT
+                    TOP 12345
+                    ra,
+                    dec
+                FROM
+                    atlassource
+                "
+        popd
+    exit
+
+
+
