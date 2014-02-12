@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
