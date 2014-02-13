@@ -1138,128 +1138,135 @@ implements AdqlQuery, AdqlParserQuery
         {
         log.debug("execute()");
         log.debug("  AdqlQuery [{}]", ident());
+        try {
+            this.timings().querystart();
 
-        Status result = services().executor().status(
-            ident(),
-            Status.RUNNING
-            );
+            Status result = services().executor().status(
+                ident(),
+                Status.RUNNING
+                );
 
-        if (result == Status.RUNNING)
-            {
-            log.debug("-- AdqlQuery running [{}]", ident());
-            //
-            // Log the start time.
-            this.timings().ogsastart();
-            try {
-            
-                log.debug("-- AdqlQuery resolving [{}]", ident());
-                final AdqlQuery query = services().resolver().select(
-                        ident()
-                        );
+            if (result == Status.RUNNING)
+                {
+                log.debug("-- AdqlQuery running [{}]", ident());
                 //
-                // Create our server client.
-                log.debug("-- Pipeline endpoint [{}]", params().endpoint());
-                final StoredResultPipeline pipeline = new StoredResultPipeline(
-                    new URL(
-                        params().endpoint()
-                        )
-                    );
-                log.debug("-- Pipeline [{}]", pipeline);
-
-                log.debug("-- AdqlQuery executing [{}]", ident());
-                log.debug("-- Mode     [{}]", query.mode());
-                log.debug("-- Store    [{}]", params().store());
-                log.debug("-- Endpoint [{}]", params().endpoint());
-
-
-                // TODO - Check for valid resource ident in prepare().
-                final String source = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
-                log.debug("-- Source   [{}]", source);
-                final String tablename = query.results().jdbc().namebuilder().toString() ;
-                log.debug("-- Table    [{}]", tablename);
-
-                final PipelineResult frog = pipeline.execute(
-                    new PipelineParam()
-                        {
-                        @Override
-                        public String table()
-                            {
-                            return tablename;
-                            }
-                        @Override
-                        public String store()
-                            {
-                            return params().store();
-                            }
-                        @Override
-                        public String source()
-                            {
-                            return source;
-                            }
-                        @Override
-                        public String query()
-                            {
-                            return query.osql();
-                            }
-                        @Override
-                        public String rowid()
-                            {
-                            return query.rowid();
-                            }
-                        @Override
-                        public Param delays()
-                            {
-                            return query.delays().ogsa();
-                            }
-                        }
-                    );
-
-                if (frog != null)
-                    {
-                    log.debug("-- AdqlQuery result [{}][{}]", ident(), frog.result());
-
-                    if (frog.result() == PipelineResult.Result.COMPLETED)
-                        {
-                        result = services().executor().status(
-                            ident(),
-                            Status.COMPLETED
+                // Log the start time.
+                this.timings().ogsastart();
+                try {
+                
+                    log.debug("-- AdqlQuery resolving [{}]", ident());
+                    final AdqlQuery query = services().resolver().select(
+                            ident()
                             );
+                    //
+                    // Create our server client.
+                    log.debug("-- Pipeline endpoint [{}]", params().endpoint());
+                    final StoredResultPipeline pipeline = new StoredResultPipeline(
+                        new URL(
+                            params().endpoint()
+                            )
+                        );
+                    log.debug("-- Pipeline [{}]", pipeline);
+    
+                    log.debug("-- AdqlQuery executing [{}]", ident());
+                    log.debug("-- Mode     [{}]", query.mode());
+                    log.debug("-- Store    [{}]", params().store());
+                    log.debug("-- Endpoint [{}]", params().endpoint());
+    
+    
+                    // TODO - Check for valid resource ident in prepare().
+                    final String source = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
+                    log.debug("-- Source   [{}]", source);
+                    final String tablename = query.results().jdbc().namebuilder().toString() ;
+                    log.debug("-- Table    [{}]", tablename);
+    
+                    final PipelineResult frog = pipeline.execute(
+                        new PipelineParam()
+                            {
+                            @Override
+                            public String table()
+                                {
+                                return tablename;
+                                }
+                            @Override
+                            public String store()
+                                {
+                                return params().store();
+                                }
+                            @Override
+                            public String source()
+                                {
+                                return source;
+                                }
+                            @Override
+                            public String query()
+                                {
+                                return query.osql();
+                                }
+                            @Override
+                            public String rowid()
+                                {
+                                return query.rowid();
+                                }
+                            @Override
+                            public Param delays()
+                                {
+                                return query.delays().ogsa();
+                                }
+                            }
+                        );
+    
+                    if (frog != null)
+                        {
+                        log.debug("-- AdqlQuery result [{}][{}]", ident(), frog.result());
+    
+                        if (frog.result() == PipelineResult.Result.COMPLETED)
+                            {
+                            result = services().executor().status(
+                                ident(),
+                                Status.COMPLETED
+                                );
+                            }
+                        else {
+                            result = services().executor().status(
+                                ident(),
+                                Status.FAILED
+                                );
+                            }
                         }
                     else {
+                        log.debug("-- AdqlQuery [{}] NULL results", ident());
                         result = services().executor().status(
                             ident(),
                             Status.FAILED
                             );
                         }
                     }
-                else {
-                    log.debug("-- AdqlQuery [{}] NULL results", ident());
+                catch (final EntityNotFoundException ouch)
+                    {
+                    log.debug("Unable to find query [{}][{}]", ident(), ouch.getMessage());
+                    result = Status.ERROR;
+                    }
+                catch (final Exception ouch)
+                    {
+                    log.debug("Unable to execute query [{}][{}][{}]", ident(), ouch.getClass().getName(), ouch.getMessage());
                     result = services().executor().status(
                         ident(),
                         Status.FAILED
                         );
                     }
+                finally {
+                    //
+                    // Log the done time.
+                    this.timings().ogsadone();
+                    }
                 }
-            catch (final EntityNotFoundException ouch)
-                {
-                log.debug("Unable to find query [{}][{}]", ident(), ouch.getMessage());
-                result = Status.ERROR;
-                }
-            catch (final Exception ouch)
-                {
-                log.debug("Unable to execute query [{}][{}][{}]", ident(), ouch.getClass().getName(), ouch.getMessage());
-                result = services().executor().status(
-                    ident(),
-                    Status.FAILED
-                    );
-                }
-            finally {
-                //
-                // Log the done time.
-                this.timings().ogsadone();
-                }
+            return result ;
             }
-        return result ;
+        finally
+            {
+            this.timings().querydone();
+            }
         }
 
     @Transient
