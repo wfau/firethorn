@@ -222,10 +222,9 @@ extends AbstractTableController
         {
     	int size = 1;
     	int maxlen = formatters.size();
-    	ResultSetMetaData rsmd = results.getMetaData();
     	for (final FieldFormatter formatter : formatters)
             {
-    		  writer.append(rsmd.getColumnName(size) + " : ");
+    			writer.append('"' + formatter.name() + '"' + " : ");
 	            cell(
 	                formatter,
 	                writer,
