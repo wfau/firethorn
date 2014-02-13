@@ -38,8 +38,6 @@
         #
         # Set the new database properties.
         dbversion=ZRQ0109DEV
-        dbversion=STV0109DEV
-        dbversion=Shep0109TEST
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 
@@ -70,7 +68,7 @@
                 databasehost="${devhost:?}"
                 databaseport="1433"
                 databasename="${metadataname:?}"
-                databasepath='J:\\Dave\\SQLServer\\firethorn\\metadata'
+                databasepath='G:\\Dave\\SQLServer\\firethorn\\metadata'
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -84,6 +82,9 @@ firethorn.meta.user=${databaselogin:?}
 firethorn.meta.pass=${databasepass:?}
 EOF
 
+                # Test connection ...
+                sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
                 #
                 # Create our new metadata database.
                 sqlsed 'create-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
@@ -95,7 +96,7 @@ EOF
                 databasehost="${devhost:?}"
                 databaseport="1433"
                 databasename="${userdataname:?}"
-                databasepath='J:\\Dave\\SQLServer\\firethorn\\userdata'
+                databasepath='G:\\Dave\\SQLServer\\firethorn\\userdata'
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"

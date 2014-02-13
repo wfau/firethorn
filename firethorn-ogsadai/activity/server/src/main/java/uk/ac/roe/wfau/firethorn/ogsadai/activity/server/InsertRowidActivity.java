@@ -166,7 +166,6 @@ extends MatchedIterativeActivity
 	                )
                 );
 
-            
             //
             // Write the LIST_BEGIN marker and metadata
             writer.write(ControlBlock.LIST_BEGIN);

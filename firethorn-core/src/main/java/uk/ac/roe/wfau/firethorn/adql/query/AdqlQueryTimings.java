@@ -91,6 +91,7 @@ implements AdqlQuery.Timings
         }
     public void querystart()
         {
+        log.info("TIMING - querystart()");
         this.querystart = System.currentTimeMillis();
         this.querydone  = null;
         this.querytime  = null;
@@ -100,6 +101,7 @@ implements AdqlQuery.Timings
     private Long querydone;
     public void querydone()
         {
+        log.info("TIMING - querydone()");
         if (this.querystart != null)
             {
             this.querydone = System.currentTimeMillis();
@@ -131,6 +133,7 @@ implements AdqlQuery.Timings
     private Long adqlstart;
     public void adqlstart()
         {
+        log.info("TIMING - adqlstart()");
         this.adqlstart = System.currentTimeMillis();
         this.adqldone  = null ;
         this.adqltime  = null ;
@@ -140,6 +143,7 @@ implements AdqlQuery.Timings
     private Long adqldone;
     public void adqldone()
         {
+        log.info("TIMING - adqldone()");
         if (this.adqlstart != null)
             {
             this.adqldone = System.currentTimeMillis();
@@ -171,6 +175,7 @@ implements AdqlQuery.Timings
     private Long jdbcstart;
     public void jdbcstart()
         {
+        log.info("TIMING - jdbcstart()");
         this.jdbcstart = System.currentTimeMillis();
         this.jdbcdone  = null ;
         this.jdbctime  = null ;
@@ -180,6 +185,7 @@ implements AdqlQuery.Timings
     private Long jdbcdone;
     public void jdbcdone()
         {
+        log.info("TIMING - jdbcdone()");
         if (this.jdbcstart != null)
             {
             this.jdbcdone = System.currentTimeMillis();
@@ -211,6 +217,7 @@ implements AdqlQuery.Timings
     private Long ogsastart;
     public void ogsastart()
         {
+        log.info("TIMING - ogsastart()");
         this.ogsastart = System.currentTimeMillis();
         this.ogsadone  = null ;
         this.ogsatime  = null ;
@@ -220,6 +227,7 @@ implements AdqlQuery.Timings
     private Long ogsadone;
     public void ogsadone()
         {
+        log.info("TIMING - ogsadone()");
         if (ogsastart != null)
             {
             this.ogsadone = System.currentTimeMillis();
