@@ -15,42 +15,51 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.entity;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+package uk.ac.roe.wfau.firethorn.entity.access;
 
 import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.access.ProtectorException;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
- *
+ * An abstract base class for Protector implementations.
  *
  */
-@ResponseStatus(value = HttpStatus.FORBIDDEN)
-public class EntityProtectorException
-extends ProtectorException
+public abstract class AbstractEntityProtector
+    implements EntityProtector
     {
-    /**
-     * Serial version ID. 
-     *
-     */
-    private static final long serialVersionUID = 2997847926699125402L;
 
-    /**
-     * Public constructor.
-     * 
-     */
-    public EntityProtectorException(final Identity identity, final Action action, final Entity entity)
+    @Override
+    public Protector check(Identity identity, Action action)
+    throws ProtectorException
         {
-        super(identity, action);
-        this.entity = entity;
+        if (this.allow(identity, action))
+            {
+            return this;
+            }
+        else {
+            throw new EntityProtectorException(
+                identity,
+                action,
+                entity
+                );
+            }
         }
 
     private Entity entity;
+    @Override
     public Entity entity()
         {
         return this.entity;
         }
+
+    
+    /**
+     * Resolve an Identity with the entity.
+     * - probably better to make this part of entity itself ?
+     *  
+     */
+
     }

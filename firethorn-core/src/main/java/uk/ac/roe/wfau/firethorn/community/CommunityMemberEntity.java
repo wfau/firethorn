@@ -248,6 +248,9 @@ implements CommunityMember
                 if (community().space(true) != null)
                     {
 /*
+ * Create a separate schema for this member.
+ * Requires CREATE SCHEMA
+ * Depends on replacing Liquibase
                     this.jdbcschema = community().space().schemas().create(
                         this
                         );

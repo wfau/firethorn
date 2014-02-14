@@ -15,9 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.entity;
+package uk.ac.roe.wfau.firethorn.entity.access;
 
 import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Public interface for an Entity Protector.

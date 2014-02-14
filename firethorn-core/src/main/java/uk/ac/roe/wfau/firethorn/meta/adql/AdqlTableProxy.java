@@ -25,9 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;

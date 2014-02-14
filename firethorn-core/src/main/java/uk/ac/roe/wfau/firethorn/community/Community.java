@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.community;
 
-import uk.ac.roe.wfau.firethorn.community.CommunityMember.EntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
