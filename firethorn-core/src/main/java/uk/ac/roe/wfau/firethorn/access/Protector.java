@@ -33,7 +33,7 @@ public interface Protector
     public Iterable<Action> actions(); 
     
     /**
-     * Ask if an Identity is allowed to perform an Action on the protected object.
+     * Check if an Identity is allowed to perform an Action on the protected object.
      * 
      * @param identity
      * @param action
@@ -43,14 +43,14 @@ public interface Protector
     public boolean allow(final Identity identity, final Action action); 
 
     /**
-     * Check that an Identity is allowed to perform an Action on the protected object.
+     * Accept that an Identity is allowed to perform an Action or throw an Exception.
      * 
      * @param identity
      * @param action
      * @throws ProtectorException if the Identity is NOT allowed to perform the Action. 
      * 
      */
-    public Protector check(final Identity identity, final Action action)
+    public Protector accept(final Identity identity, final Action action)
     throws ProtectorException ; 
 
     }

@@ -44,7 +44,7 @@ implements Protector
         }
 
     @Override
-    public Protector check(final Identity identity, final Action action)
+    public Protector accept(final Identity identity, final Action action)
         throws ProtectorException
         {
         if (this.allow(identity, action))

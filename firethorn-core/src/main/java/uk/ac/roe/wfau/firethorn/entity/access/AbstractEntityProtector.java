@@ -32,7 +32,7 @@ public abstract class AbstractEntityProtector
     {
 
     @Override
-    public Protector check(Identity identity, Action action)
+    public Protector accept(Identity identity, Action action)
     throws ProtectorException
         {
         if (this.allow(identity, action))
