@@ -48,7 +48,18 @@ public interface IvoaRegistration
         {
         public String string();
         }
-    
+
+    /**
+     * 
+     * http://www.ivoa.net/documents/REC/ReR/VOResource-20080222.html
+     * http://www.ivoa.net/documents/VODataService/20100412/PR-VODataService-1.1-20100412.html
+     * 
+     * http://www.ivoa.net/documents/VOSI/20110531/REC-VOSI-1.0-20110531.html
+     * 
+     * http://dc.zah.uni-heidelberg.de/getRR/__system__/tap/run
+     * http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities
+     *
+     */
     public interface VOResource
     extends Base
         {
