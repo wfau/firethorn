@@ -62,8 +62,11 @@ extends AbstractController
          */
         public String format(final ResultSet results)
         throws SQLException;
+        
+        public String name()
+        throws SQLException;
         }
-    
+   
     /**
      * Abstract base class for a FieldFormatter.
      *
@@ -81,7 +84,13 @@ extends AbstractController
             }
 
         protected final BaseColumn<?> column  ;
-
+      
+       
+        @Override
+        public String name()
+        	{
+        	return this.column.name();
+        	}
         }
 
     /**

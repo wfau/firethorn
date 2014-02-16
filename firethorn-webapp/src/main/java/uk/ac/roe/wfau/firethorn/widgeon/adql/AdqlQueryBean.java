@@ -260,6 +260,13 @@ extends NamedEntityBeanImpl<AdqlQuery>
          *
          */
         public String getAdql();
+        
+        /**
+         * Access to a Datatable representation of the results.
+         *
+         */
+        public String getDatatable();
+		
         /**
          * The physical (JDBC) table
          *
@@ -311,6 +318,22 @@ extends NamedEntityBeanImpl<AdqlQuery>
                     AdqlQueryLinkFactory.VOTABLE_NAME
                     );
                 }
+           
+            
+            @Override
+            public String getDatatable()
+                {
+            	  if (entity().results().adql() != null)
+                  {
+            		  return entity().results().adql().link().concat(
+                              AdqlQueryLinkFactory.DATATABLE_NAME
+                           );
+                  }
+            	  else {
+            		  return null ;
+            	  }
+            };
+            
             };
         }
 
