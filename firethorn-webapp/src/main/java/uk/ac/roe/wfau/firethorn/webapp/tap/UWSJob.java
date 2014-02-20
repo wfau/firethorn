@@ -22,7 +22,9 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+
 public class UWSJob {
 	private static final long serialVersionUID = 1L;
 
@@ -87,7 +89,6 @@ public class UWSJob {
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
 	/** The quote value that indicates the quote of this job is not known. */
-
 	public static final long QUOTE_NOT_KNOWN = -1;
 	
 	/** The duration that implies an unlimited execution duration. */
@@ -123,7 +124,7 @@ public class UWSJob {
 	/* CONSTRUCTORS */
 	/* ************ */
 	public UWSJob(AdqlResource resource) throws Exception {
-		this.jobId = query.ident().toString();
+		this.jobId = "";
 		this.phase = PHASE_INITIAL;
 		this.ownerId = null;
 		this.quote = QUOTE_NOT_KNOWN;
@@ -418,8 +419,11 @@ public class UWSJob {
 				}
 				
 				try {
-					this.query = this.schema.queries().create(querystring);
-				
+					 this.query.input(
+							 querystring
+                             );				
+					
+					
 					if (this.query!=null){
 					
 						Status jobstatus = this.query.prepare();
