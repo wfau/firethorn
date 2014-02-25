@@ -63,6 +63,8 @@ extends AbstractController
         public String format(final ResultSet results)
         throws SQLException;
         
+        public String index();
+        
         public String name()
         throws SQLException;
         }
@@ -85,12 +87,28 @@ extends AbstractController
 
         protected final BaseColumn<?> column  ;
       
-       
+        
+        private String name;
         @Override
         public String name()
-        	{
-        	return this.column.name();
-        	}
+                {
+                if (this.name == null)
+                    {
+                    this.name = this.column.name();
+                    }
+                return this.name;
+                }
+
+        private String index;
+        @Override
+        public String index()
+                {
+                if (this.index == null)
+                    {
+                    this.index = this.column.root().name();
+                    }
+                return this.index;
+                }
         }
 
     /**
@@ -112,9 +130,11 @@ extends AbstractController
         throws SQLException
             {
             return results.getObject(
-                column.root().name()
+               index()
                 ).toString();
             }
+        
+      
         }
 
     /*

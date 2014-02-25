@@ -92,9 +92,9 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-            return StringEscapeUtils.escapeXml(
+            return StringEscapeUtils.escapeJson(
                 results.getString(
-                    column.root().name()
+                    index()
                     )
                 );
             }
@@ -119,7 +119,7 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-        	    return '"' +  StringEscapeUtils.escapeXml(results.getString(column.root().name())) + '"';
+        	    return '"' +  StringEscapeUtils.escapeXml(results.getString(index())) + '"';
             
             }
      
@@ -147,7 +147,7 @@ extends AbstractTableController
             return iso.print(
                 new DateTime(
                     results.getDate(
-                        column.root().name()
+                    		index()
                         )
                     )
                 );
