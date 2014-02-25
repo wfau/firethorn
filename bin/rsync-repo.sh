@@ -40,7 +40,6 @@ rsync \
     --include='/uk/ac/roe/wfau' \
     --include='/uk/ac/roe/wfau/**' \
     --exclude='*' \
-    --exclude='.cache' \
     "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
 
@@ -56,7 +55,6 @@ rsync \
     --include='/uk/org/ogsadai' \
     --include='/uk/org/ogsadai/**' \
     --exclude='*' \
-    --exclude='.cache' \
     "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/ogsadai
 
@@ -69,8 +67,7 @@ rsync \
     --omit-dir-times \
     --exclude='/uk/ac/roe/wfau/**' \
     --exclude='/uk/org/ogsadai/**' \
-    --include='*' \
-    --exclude='.cache' \
+    --exclude='/.cache' \
     "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
 
