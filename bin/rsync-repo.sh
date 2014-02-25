@@ -20,6 +20,10 @@
 # Shell script to rsync from our local Maven repository to our public repository.
 
 #
+# Need to ignore hidden Eclipse.cache directory. 
+# https://stackoverflow.com/questions/16442292/cleaning-maven-m2e-cache-directory
+
+#
 # Load the local settings.
 source "${HOME:?}/firethorn.settings"
 
