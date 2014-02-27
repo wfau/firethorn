@@ -130,10 +130,8 @@ public class AdqlTapAsyncController extends AbstractController {
 				if (REQUEST!=null) uwsjob.setRequest(REQUEST);
 				if (LANG!=null) uwsjob.setLang(LANG);
 				if (QUERY!=null) uwsjob.setQuery(QUERY);
-				queryid = uwsjob.getQueryId();
-    	
-				writer.append(FIRETHORN_TAP_BASE + "async/");
-	    		writer.append(uwsjob.getQueryId());
+
+				uwsjob.writeUWSJobToXML(uwsjob, writer);
     }
 				 
 
@@ -183,8 +181,8 @@ public class AdqlTapAsyncController extends AbstractController {
     	                    }
     	                );
     	            
-    		queryid = uwsjob.getQueryId();
-    		writer.append(queryid);
+				uwsjob.writeUWSJobToXML(uwsjob, writer);
+
       }
     
     
@@ -216,7 +214,8 @@ public class AdqlTapAsyncController extends AbstractController {
 				uwsjob.setPhase(PHASE);
 			}
 			
-			writer.append(uwsjob.getQueryId());
+			uwsjob.writeUWSJobToXML(uwsjob, writer);
+
 			
   		} catch (Exception e) {
   			writer.append("ERROR");

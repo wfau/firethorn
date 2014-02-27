@@ -244,11 +244,15 @@ public class UWSJob {
 	}
 	
 	public String getRequest(){
-		return request;
+		if (request==null){
+			return "doQuery";
+		} else {
+			return request;
+		}
 	}
 	
 	public String getResults() {
-		return query.results().toString();
+		return query.ident().toString() + "/votable";
 	}
 	
 	public AdqlQuery getQuery() {
@@ -266,7 +270,11 @@ public class UWSJob {
 	}
 
 	public String getLang() {
-		return lang;
+		if (lang==null){
+			return "ADQL";
+		} else {
+			return lang;
+		}
 	}
 
 	public void setLang(String lang) {
@@ -340,16 +348,6 @@ public class UWSJob {
      */
 	public void runQueryJob() throws IdentifierNotFoundException, IOException {
 			
-			/*For Testing purposes
-			try {
-				this.schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			} catch (final NameNotFoundException ouch) {
-				this.schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			}
-		
-			String querystring = "Select top 10 * from Filter";
-				this.query = this.schema.queries().create(querystring);
-		*/
 			try {
 			
 			
@@ -387,11 +385,7 @@ public class UWSJob {
 				this.query = this.schema.queries().create("");
 			
 				if (this.query!=null){
-					/*
-					Status jobstatus = this.query.prepare();
-					if (jobstatus == Status.READY){
-						jobstatus = query.execute();
-					}*/
+				
 				}
 			
 			} catch (final Exception ouch) {
@@ -466,7 +460,7 @@ public class UWSJob {
 		            	writer.append("<uws:parameter id='lang'>" + uwsjob.getLang() + "</uws:parameter>");
 			        }
 			        if (uwsjob.getQuery()!=null){
-		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery() + "</uws:parameter>");
+		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery().input() + "</uws:parameter>");
 			        }
 		        writer.append("</uws:parameters>");
 		        
