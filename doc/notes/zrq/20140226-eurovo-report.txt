@@ -1,0 +1,432 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Get a list f publishers from the registry.
+
+        NCSA Radio Astronomy Imaging
+        The AMIGA Group
+        UMD Astronomy Archives
+        AAVSO Archive Naming Authority
+        Canadian Astronomy Data Centre
+        Dutch National Astronomical Data Center
+        GEPI-VOPARIS DATA CENTRE
+        German Astrophysical Virtual Observatory
+        International Virtual Observatory Alliance
+        MAST
+        Minnesota Automated Plate Scanner
+        NASA/IPAC Infrared Science Archive
+        NCSA Radio Astronomy Imaging
+        Starlight Synthesis Parameters
+        The Australian Virtual Observatory
+        United States Naval Observatory, Flagstaff Station
+        International Virtual Observatory Alliance
+        PUT HERE YOUR PUBLISHER NAME IN FULL TEXT
+        AMIGA
+        Astronomical Institute of the Academy of Sciences of the Czech Republic
+        Canadian Astronomy Data Centre
+        Chandra Transmission Grating Catalog and Archive
+        Espadons/Narval legacy database (Castor)
+        German Astrophysical Virtual Observatory
+        Instituto de Astrofisica de Canarias
+        International Meteor Organization
+        NASA/HEASARC
+        NASA/IPAC
+        NASA/IPAC Infrared Science Archive    
+        NCSA Radio Astronomy Imaging    
+        OMP    
+        Splatalogue: Database for Astronomical Spectroscopy    
+        Stelar Department of Astronomical Institute of the Academy of Sciences of the Czech Republic    
+        TAN Registry    
+        The AMIGA Group    
+        The NASA/IPAC Extragalactic Database    
+        UMD Astronomy Archives    
+        Vatican Observatory Data Archive    
+        Chandra X-ray Observatory\n
+         Canadian Astronomy Data Centre            
+        Grupo de Ciencias Planetarias  (GCP, Planetary Sciences Group)      
+
+        Astro-Wise local publishing registry
+        Astronomical Institute of St.Petersburg State University (AI SPbSU)
+        Astronomical Institute of the Saint-Petersburg State University (AI SPbSU)
+        Astrospectroscopy Laboratory of the Special Astrophysical Observatory (SAO) of the Russian Acad. Sci.
+        CDS
+        CRAL-Observatoire de Lyon
+        Chandra X-ray Observatory
+        Chenzhou CUI
+        Cornell University
+        Crimean Astrophysical Observatory / Stanford University
+        Department of the Galaxy and Variable Stars, Sternberg Astronomical Institute of the Moscow State University (SAI MSU)
+        Fermilab
+        IA2 Italian Center for Astronomical Archive
+        INAF - OATs
+        INAF-IASF Milano
+        INTA/LAEFF
+        Institut d'Astrophysique de Paris (IAP)
+        Institut de m\xe9canique c\xe9leste et de calcul des \xe9ph\xe9m\xe9rides / Observatoire de Paris
+        Instituto Nazionale di Astrofisica (INAF)
+        Ioffe Physical Technical Institute
+        Istituto di Astrofisica Spaziale e Fisica Cosmica - Milano (IASF)      
+        JHU      
+        Johns Hopkins University      
+        Laboratory of the New Photometric Methods of Sternberg Astronomical Institute of the Moscow State University      
+        MAST      
+        Main (Pulkovo) Astronomical Observatory of Russian Academy of Sciences (MAO RAS)      
+        Main Astronomical Observatory of the Russian Academy of Sciences, Pulkovo      
+        Michelson Science Center      
+        NASA      
+        NASA Astrophysics Data System      
+        National Astronomical Observatory of China      
+        National Optical Astrono      
+        National Optical Astronomy Observatory      
+        National Space Science Data Center      
+        Observatoire de Haute-Provence      
+        Observatoire de Lyon      
+        Observatoire de Paris      
+        Observatoire de Paris-Meudon -> GEPI      
+        Office of Public Outreach, Space Telescope Science Institute      
+        Planetary Virtual Observatory and Laboratory      
+        STScI      
+        Smithsonian Astrophysical Observatory      
+        Sobolev Astronomical Institute of Saint-Petersbourg University      
+        Space Telescope Science      
+        Space Telescope Science Institute      
+        Space Telescope Science Institute Archive      
+        Special Astrophysical Observatory of Russian Academy of Sciences (SAO RAS)      
+        Sternberg Astronomical Institute of Moscow State University (SAI MSU)      
+        The China Virtual Observatory      
+        The Johns Hopkins Univer      
+        The Johns Hopkins University      
+        The Sloan Digital Sky Survey      
+        The World Data Center for Astronomy      
+        US Naval Observatory      
+        University of California, San Diego      
+        W. M. Keck Observatory      
+        W. M. Keck Observatory, CARA      
+        INTA/LAEFF    
+        INTA/Laboratorio de Astrofisica Espacial y Fisica Fundemental    
+        Instituto de Astrof\xedsica de Andaluc\xeda     
+        Instituto de Astrof\xedsica de Andaluc\xeda (IAA)    
+        Laboratoire d'Astrophysique de Marseille    
+        Laboratoire d'Astrophysique de Marseille - Departement d'informatique      scientifique    
+        Observatoire Astronomique de Marseille Provence    
+        Space Telescope Science    
+        The National Radio Astronomy Observatory (NRAO)    
+        MAST     
+        MAST 
+        NCSA Radio Astronomy Imaging
+        Space Telescope Science 
+        Space Telescope Science Institute
+        WFAU 
+        3CR Snapshot Team
+        AGES consortium
+        ASDC
+        ASI Science Data Center
+        Alessandro Costa
+        American Association of Variable Star Observers
+        AstroGrid
+        Astrogrid
+        Astrometry.net
+        Australia Telescope National Facility
+        BirmingHam
+        CADC
+        CASU
+        CDS
+        CDS SIMBAD service
+        CDS VizieR service
+        CESR
+        CNRS - Universite Montpellier II - GRAAL
+        CSIRO
+        CXC/MIT
+        Cambridge Astronomy Survey Unit
+        Canadian Astronomy Data Centre
+        CeSAM
+        CeSAM VO team
+        Centre de Donnees astronomiques de Strasbourg
+        Chandra X-ray Observatory
+        China-VO
+        DES Data Management
+        Dipartimento di Fisica, Universita' La Sapienza
+        ESO
+        Ed Shaya
+        European Southern Observatory
+        European Space Agency
+        FONDUE
+        GAVO at Leibniz-Institute for Astrophysics Potsdam
+        German Astrophysical Virtual Observatory
+        HELIO
+        Helio
+        IA2
+        IDOC
+        IDOC GINCO
+        IFCA(CSIC-UC)
+        IGN - LAREG
+        IMCCE - Observatoire de Paris
+        IMCCE - VO-Paris Datacentre
+        INAF
+        INAF Catania
+        INAF-CT
+        ISON
+        Institut d'Astrophysique de Paris
+        Institute of Astronomy, University of Cambridge
+        International Meteor Organization
+        International Virtual Observatory Alliance
+        IoA Cambridge
+        JHU
+        JVO
+        Japanese Virtual Observatory
+        Joint ALMA Observatory (JAO)
+        Kona Andrews, WFAU
+        LEDAS, University of Leicester
+        LUPM (Laboratoire Univers et Particules de Montpellier)
+        LUTH - VO-Paris Datacentre
+        Laboratoire d'Astrophysique de Marseille - Departement d'informatique scientifique
+        MAGIC Collaboration
+        MAST
+        MSSL
+        Millstone Hill
+        Mullard Space Science Laboratory
+        NASA/GSFC GCN
+        NASA/GSFC HEASARC
+        NASA/HEASARC
+        NASA/IPAC
+        NASA/IPAC Infrared Science Archive
+        NCSA Astronomy Digital Image Library
+        NRAO
+        National Computational Infrastructure National Facility
+        National Radio Astronomy Observatory
+        Nikolaev Astronomical Observatory
+        Nova
+        OMP
+        OMP (Observatoire Midi-Pyrenees, CNRS//MEN, France)
+        OV-GSO
+        Observatoire de Paris
+        Observatoire de Paris - GEPI
+        Observatoire des Sciences de l'Univers de Besancon (France)
+        Observatory of Strasbourg, SSC Team
+        OmegaCEN
+        Ov-gso @ irap
+        Oxford Physics
+        Riccardo Smareglia
+        SAO of RAS
+        SIM/FCUL
+        STScI
+        SVO
+        SVO CAB
+        Space Telescope European Coordinating Facility
+        Space Telescope Science
+        Space Telescope Science Institute
+        Space Telescope Science Institute Archive
+        Space Telescope Science Institute/MAST
+        Spanish Virtual Observatory
+        Special Astrophysical Observatory of RAS (SAO RAS)
+        StarDB team, Department of Astronomy, Yonsei University
+        Sternberg Astronomical Institute Virtual Observatory Project
+        TMAP
+        The Australian National University Supercomputer Facility
+        The Australian Virtual Observatory
+        The GAVO DC team
+        The NASA/IPAC Extragalactic Database
+        The National Radio Astronomy Observatory (NRAO)
+        The staff at the AIP DaCHS
+        The staff at the Argentine Virtual Observatory
+        The staff at the GAVO Data Center
+        U. Leicester
+        US Naval Observatory
+        University of Minnesota
+        VO-Paris Data Centre
+        VO-Paris Data Centre - GEPI
+        VO-Paris Data Centre - IMCCE
+        VO-Paris Data Centre - IPSL
+        VO-Paris Data Centre - LESIA
+        VO-Paris Data Centre - LUTH
+        Vatican Observatory
+        Vineeth T Shetty
+
+        WFAU
+        WFAU, Institute for Astronomy, University of Edinburgh
+        Wide Field Astronomy Unit (WFAU)
+
+        XMM at MSSL
+        Yuji SHIRASAKI
+        Yuji Shirasaki
+        ivo://Bass2000
+        ivo://anusf.anu.au
+        ivo://nf.nci.org.au
+        saada
+        voparis
+
+    -------------------------------------------------------------------------
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+    SELECT TOP 20000 ivoid, role_name FROM rr.res_role WHERE base_role = 'publisher' ORDER BY role_name ASC
+
+    xx Publishers
+    Providing xxx services
+    Guestimate of x % of 'useful' data has been VO enabled
+
+    -------------------------------------------------------------------------
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+    "SELECT TOP 20000 ivoid, role_name, role_ivoid FROM rr.res_role WHERE base_role = 'publisher' ORDER BY ivoid ASC"
+
+    sed '
+        s/^ *//
+        s/ *$//
+        s/ *\t */|/g
+        s/\\n/ /g
+        s/ *|/|/g
+        s/| */|/g
+        s/None$/ivo:\/\/null/
+        ' table-002.txt > table-003.txt
+
+    sed '
+        s/^ivo:\([^|]*ceaapplication|.*\)/###:\1/
+        ' table-003.txt | less
+
+    -------------------------------------------------------------------------
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+    SELECT
+        TOP 20000
+        rr.resource.ivoid,
+        rr.resource.res_type,
+        rr.res_role.role_name,
+        rr.res_role.role_ivoid
+    FROM
+        rr.resource
+    JOIN
+        rr.res_role
+    ON
+        rr.resource.ivoid = rr.res_role.ivoid
+    WHERE
+        rr.res_role.base_role = 'publisher'
+    AND (
+        rr.resource.res_type = 'vs:datacollection'
+        OR
+        rr.resource.res_type = 'vs:catalogservice'
+        )
+    ORDER BY
+        ivoid ASC
+
+    sed '
+        s/^ *//
+        s/ *$//
+        s/ *\t */|/g
+        s/\\n/ /g
+        s/ *|/|/g
+        s/| */|/g
+        s/None$/ivo:\/\/null/
+        ' table-004.txt > table-005.txt
+
+    -------------------------------------------------------------------------
+
+    SELECT
+       COUNT(rr.resource.ivoid)
+    FROM
+        rr.resource
+    JOIN
+        rr.res_role
+    ON
+        rr.resource.ivoid = rr.res_role.ivoid
+    WHERE
+        rr.res_role.base_role = 'publisher'
+    AND (
+        rr.resource.res_type = 'vs:datacollection'
+        OR
+        rr.resource.res_type = 'vs:catalogservice'
+        )
+    AND
+        rr.resource.ivoid LIKE 'ivo://wfau.roe.ac.uk/%'
+
+    -------------------------------------------------------------------------
+
+    SELECT
+        TOP 20000
+        rr.resource.ivoid,
+        rr.resource.res_type,
+        rr.interface.intf_type,
+        rr.interface.std_version,
+        rr.interface.access_url
+    FROM
+        rr.resource
+    JOIN
+        rr.res_role
+    ON
+        rr.resource.ivoid = rr.res_role.ivoid
+    JOIN
+        rr.interface
+    ON
+        rr.resource.ivoid = rr.interface.ivoid
+    WHERE
+        rr.res_role.base_role = 'publisher'
+    AND (
+        rr.resource.res_type = 'vs:datacollection'
+        OR
+        rr.resource.res_type = 'vs:catalogservice'
+        )
+    AND
+        rr.resource.ivoid LIKE 'ivo://wfau.roe.ac.uk/%'
+    ORDER BY
+        ivoid ASC
+
+
+
+    SELECT
+        TOP 20000
+        rr.resource.ivoid AS ivo,
+        rr.resource.res_type,
+        rr.capability.*,
+        rr.interface.*
+    FROM
+        rr.resource
+
+    JOIN
+        rr.res_role
+    ON
+        rr.resource.ivoid = rr.res_role.ivoid
+
+    JOIN
+        rr.capability
+    ON
+        rr.resource.ivoid = rr.capability.ivoid
+
+    JOIN
+        rr.interface
+    ON
+        rr.capability.ivoid = rr.interface.ivoid
+    AND
+        rr.capability.cap_index = rr.interface.cap_index
+
+    WHERE
+        rr.res_role.base_role = 'publisher'
+    AND (
+        rr.resource.res_type = 'vs:datacollection'
+        OR
+        rr.resource.res_type = 'vs:catalogservice'
+        )
+    AND
+        rr.resource.ivoid LIKE 'ivo://wfau.roe.ac.uk/%'
+    ORDER BY
+        ivo ASC
+        cap_index ASC
+

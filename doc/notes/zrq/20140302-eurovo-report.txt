@@ -1,0 +1,504 @@
+
+Headline --------------------------------------------------------------------------------------------------------------------------
+
+    Australasia
+        10
+
+    South America
+        4 (3 + 1)
+
+    North America
+        1029 (10 + 1 + 1018)
+
+    Asia
+        18 (16 + 1 + 1)
+
+    Europe
+        444   (3 + 63 + 44 + 99 + 83 + 43 + 6 + 103)
+        13027 (444 + 12086[CDS] + 497[LEDAS])
+
+    Russia
+        48
+
+Unknown --------------------------------------------------------------------------------------------------------------------------
+
+    International
+    1
+
+        #1
+        #http://www.imo.net/
+        ivo://imo/vmdb|vs:datacollection|International Meteor Organization|ivo://imo/imo
+
+    Vatican
+    1
+
+        #1
+        #http://www.vaticanobservatory.org/
+        ivo://vatican/vatican.siap|vs:catalogservice|Vatican Observatory|ivo://null
+
+
+    Crimea
+    1
+
+        #1
+        #http://physics1.usc.edu/solar/crimea.html
+        ivo://rvo.ru/db/uvcet|vs:datacollection|Crimean Astrophysical Observatory / Stanford University|ivo://null
+
+    Ukraine
+    4
+
+        #4
+        #http://www.nao.nikolaev.ua/index.php?language_id=2
+        ivo://nao.ua/catalogs/mars|vs:catalogservice|Nikolaev Astronomical Observatory|ivo://nao.ua/nao
+
+Details --------------------------------------------------------------------------------------------------------------------------
+
+    Australasia
+    10
+
+        #AU 24
+
+            #1
+            #http://www.atnf.csiro.au/
+            ivo://au.csiro/psrda/atnf_pulsar_data_archive|vs:catalogservice|Australia Telescope National Facility|ivo://null
+
+            #1
+            #http://aus-vo.org.au/
+            ivo://ausvo/hipassdata|vs:datacollection|The Australian Virtual Observatory|ivo://ausvo/organisation
+
+            #8
+            #http://nci.org.au/
+            ivo://nf.nci.org.au/hipass/hicat/conesearch|vs:catalogservice|ivo://nf.nci.org.au|ivo://nf.nci.org.au
+            ivo://nf.nci.org.au/wigglez/final/conesearch|vs:catalogservice|National Computational Infrastructure National Facility|ivo://nf.nci.org.au
+
+            #14
+            #http://www.anusf.anu.edu.au/
+            ivo://anusf.anu.au/hipass/hicat/conesearch|vs:catalogservice|ivo://anusf.anu.au|ivo://anusf.anu.au
+
+    South America
+    3 + 1
+
+        #AR 3
+
+            #3
+            #http://nova.conicet.gov.ar/
+            ivo://ar.nova/fcaglp/q/ssa|vs:catalogservice|Nova|ivo://null
+
+        #BR 1
+
+            #1
+            #http://astro.ufsc.br/starlight/
+            ivo://starlight.ufsc/synthesis.bs|vs:catalogservice|Starlight Synthesis Parameters|ivo://starlight.ufsc/synthesis
+
+    North America
+    10 + 1 + 1018
+
+        #CA 10
+
+            #10
+            #http://www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/
+            ivo://cadc.nrc.ca/archive/cfht|vs:datacollection|Canadian Astronomy Data Centre|ivo://cadc.nrc.ca/org
+
+        #MX
+
+            #1
+            #http://haro.astrossp.unam.mx/indexspm.htm
+            ivo://vo.sim/clusters|vs:catalogservice|SIM/FCUL|ivo://null
+
+        #US 1018
+
+            #3
+            #http://www.dlib.org/dlib/october97/adil/10plante.html
+            ivo://adil.ncsa/adil|vs:datacollection|NCSA Astronomy Digital Image Library|ivo://null
+
+            #1
+            #http://adsabs.harvard.edu/index.html
+            ivo://ads.harvard.edu/cone|vs:catalogservice|NASA Astrophysics Data System|ivo://ads.harvard.edu/ads
+
+            #1
+            #http://aps.umn.edu/
+            ivo://aps.umn/mapsdb|vs:datacollection|Minnesota Automated Plate Scanner|ivo://aps.umn/maps
+
+            #2
+            #https://www.noao.edu/
+            ivo://archive.noao.edu/ndwfs/skynode|vs:catalogservice|National Optical Astronomy Observatory|ivo://null
+
+            #42
+            #http://www.stsci.edu/portal/
+            ivo://archive.stsci.edu/borg|vs:catalogservice|Space Telescope Science Institute Archive|ivo://archive.stsci.edu/stsci-arc
+
+            #2
+            #https://www.cornell.edu/
+            ivo://arecibo.cornell/hiarchive|vs:catalogservice|Cornell University|ivo://arecibo.cornell/egg
+
+            #4
+            #http://chandra.harvard.edu/
+            ivo://cxc.harvard.edu/cda|vs:catalogservice|Chandra X-ray Observatory|ivo://cxc.harvard.edu/cxo
+
+            #2
+            #http://tgcat.mit.edu/
+            ivo://cxc.mit/tgcat/scs|vs:catalogservice|Chandra Transmission Grating Catalog and Archive|ivo://cxc.mit/tgcat
+
+            #46
+            #http://www.jhu.edu/
+            ivo://sdss.jhu/openskynode/dls|vs:catalogservice|JHU|ivo://null
+            ivo://sdss.jhu/services/siapdr5-images|vs:catalogservice|The Johns Hopkins University|ivo://null
+
+            #3
+            #http://www.usno.navy.mil/USNO
+            ivo://fs.usno/cat/nomad|vs:catalogservice|United States Naval Observatory, Flagstaff Station|ivo://fs.usno/org
+
+            #5
+            #http://nssdc.gsfc.nasa.gov/
+            ivo://gov.nasa.gsfc.nssdc/asuv-00020|vs:datacollection|NASA|ivo://null
+
+            #1
+            #http://www.stsci.edu/portal/
+            ivo://opo.stsci/hst_pr_sia|vs:catalogservice|Office of Public Outreach, Space Telescope Science Institute|ivo://null
+
+            #17
+            #http://irsa.ipac.caltech.edu/
+            ivo://irsa.ipac/2mass-psc|vs:catalogservice|NASA/IPAC Infrared Science Archive|ivo://irsa.ipac/irsa
+
+            #1
+            #http://irsa.ipac.caltech.edu/
+            ivo://ison.clt/siap|vs:catalogservice|ISON|ivo://null
+
+            #2
+            #http://arxiv.org/abs/astro-ph/0412557
+            ivo://lca/lyman|vs:datacollection|University of California, San Diego|ivo://null
+
+            #4
+            #https://www.noao.edu/
+            ivo://nvo.noao.edu/landolt1983|vs:catalogservice|National Optical Astrono|ivo://null
+
+            #3
+            #https://archive.stsci.edu/
+            ivo://mast.stsci.edu/ssap/fuse|vs:catalogservice|MAST|null
+
+            #47
+            #https://archive.stsci.edu/
+            ivo://mast.stsci/acsggct|vs:catalogservice|MAST|ivo://null
+            ivo://mast.stsci/andromeda|vs:catalogservice|Space Telescope Science Institute Archive|ivo://null
+
+            #1
+            #http://nexsci.caltech.edu/
+            ivo://msc.koa/hires|vs:datacollection|Michelson Science Center|ivo://null
+
+            #10
+            #http://www.nrao.edu/
+            ivo://nrao.archive/nvsscatalog|vs:catalogservice|NRAO|ivo://null
+            ivo://nrao.archive/vla/class|vs:catalogservice|The National Radio Astronomy Observatory (NRAO)|ivo://null
+
+            #2
+            #http://nssdc.gsfc.nasa.gov/
+            ivo://nasa.gsfc.nssdc/nssdc|vs:datacollection|NASA|ivo://null
+
+            #1
+            #http://gcn.gsfc.nasa.gov/voevent.html
+            ivo://nasa.gsfc.tan/real-time-voevent-stream|vs:datacollection||ivo://null
+
+            #798
+            #https://heasarc.gsfc.nasa.gov/
+            ivo://nasa.heasarc/a1|vs:catalogservice|NASA/GSFC HEASARC|ivo://nasa.heasarc/asd
+
+            #19
+            #http://ned.ipac.caltech.edu/
+            ivo://ned.ipac/all_basic_data_for_object|vs:catalogservice|NASA/IPAC|ivo://ned.ipac/ned
+            ivo://ned.ipac/basic_data_allsky_by_param|vs:catalogservice|The NASA/IPAC Extragalactic Database|ivo://null
+
+            #1
+            #http://www.naic.edu/~ages/
+            ivo://ages.cardiff/ages_conesearch|vs:catalogservice|AGES consortium|ivo://null
+
+    Asia
+    16 + 1 + 1
+
+        #CN 1
+
+            #1
+            #http://www.china-vo.org/
+            ivo://cvo.naoc/dataset/cstar/scs|vs:catalogservice|China-VO|china-vo
+
+        #JP 16
+
+            #16
+            #http://jvo.nao.ac.jp/
+            ivo://jvo/agn|vs:catalogservice|JVO|ivo://null
+            ivo://jvo/ukidss|vs:catalogservice|Yuji Shirasaki|ivo://null
+
+        #KR 1
+
+            #1
+            #http://www.yonsei.ac.kr/eng/academics/colleges/science/astronomy/index.asp
+            ivo://stardb/nsvs/cs|vs:catalogservice|StarDB team, Department of Astronomy, Yonsei University|ivo://null
+
+    Europe
+    3 + 63 + 44 + 99 + (12086) + 83 + 43 + 6 + (497) + 103
+
+        #CZ 3
+
+            #3
+            #http://www.asu.cas.cz/
+            ivo://asu.cas.cz/stel/heros|vs:catalogservice|Stelar Department of Astronomical Institute of the Academy of Sciences of the Czech Republic|ivo://asu.cas.cz/stel
+
+        #DE 63
+
+            #4
+            #http://www.g-vo.org/
+            ivo://www.g-vo.org/sia.service.rosat|vs:catalogservice|German Astrophysical Virtual Observatory|ivo://www.g-vo.org/gavo
+
+            #2
+            #http://www.aip.de/en/research/research-area-drt/research-groups-and-projects-1/e-science/german-astrophysical-virtual-observatory
+            ivo://aip.gavo.org/__system__/adql/query|vs:catalogservice|GAVO at Leibniz-Institute for Astrophysics Potsdam|ivo://null
+
+            #56
+            #http://dc.zah.uni-heidelberg.de/
+            ivo://org.gavo.dc/__system__/adql/query|vs:catalogservice|The GAVO DC team|ivo://null
+
+            #1
+            #https://magic.mpp.mpg.de/
+            ivo://magic/ssa|vs:catalogservice|MAGIC Collaboration|ivo://null
+
+        #ES 44
+
+            #1
+            #http://amiga.iaa.es/p/1-homepage.htm
+            ivo://svo.amiga.iaa.es/conesearch|vs:catalogservice|The AMIGA Group|ivo://svo.amiga.iaa.es/amiga
+
+            #37
+            #http://svo.cab.inta-csic.es/main/index.php
+            ivo://svo.cab/alhambra_siap_f814w|vs:catalogservice|Spanish Virtual Observatory|ivo://svo.cab
+
+            #2
+            #http://www.iaa.es/
+            ivo://svo.iaa/models/ssp/general|vs:catalogservice|Instituto de Astrof\xedsica de Andaluc\xeda (IAA)|ivo://svo.iaa/iaa
+
+            #1
+            #http://www.iaa.es/
+            ivo://svo.ifca/axis|vs:catalogservice|IFCA(CSIC-UC)|ivo://null
+
+            #1
+            #http://www.laeff.cab.inta-csic.es/projects/jwlaeff/main/index.php
+            ivo://svo/omc/ssap|vs:catalogservice|INTA/LAEFF|ivo://null
+
+            #1
+            #http://www.ajax.ehu.es/
+            ivo://gcp/iopw/pvol|vs:datacollection|Grupo de Ciencias Planetarias  (GCP, Planetary Sciences Group)|ivo://null
+
+            #1
+            #http://www.iac.es/index.php?lang=en
+            ivo://iacvo/iacvo.iac80|vs:catalogservice|Instituto de Astrofisica de Canarias|ivo://iacvo/iacvo.auth
+
+        #EU 99
+
+            #5
+            #http://www.stecf.org/
+            ivo://stecf/hla/sia|vs:catalogservice|Space Telescope European Coordinating Facility|ivo://stecf
+
+            #4
+            #http://www.esa.int/ESA
+            ivo://esavo/isda/siap|vs:catalogservice|European Space Agency|ivo://null
+
+            #3
+            #http://www.eso.org/public/
+            ivo://eso.org/dss|vs:catalogservice|ESO|ivo://eso.org
+
+            #87
+            #http://helio-vo.eu/
+            ivo://helio-vo.eu/hec|vs:catalogservice|HELIO|ivo://null
+            ivo://helio-vo.eu/hec/table/aad_gle|vs:datacollection|INAF|ivo://null
+            ivo://helio-vo.eu/uoc|vs:catalogservice|HELIO|ivo://null
+            ivo://helio-vo.eu/uoc/turin|vs:catalogservice|Vineeth T Shetty|ivo://null
+
+        #FR (12086) + 83
+
+            #12086
+            #http://vizier.u-strasbg.fr/
+            ivo://cds.vizier/b/astorb|vs:catalogservice|CDS|ivo://cds
+
+            #13
+            #http://www.obspm.fr/?lang=en
+            ivo://voparis-gepi.obspm.fr/vopsat.src-j|vs:catalogservice|Observatoire de Paris|ivo://null
+            ivo://voparis.obspm.gepi/bestars/bess|vs:datacollection|GEPI-VOPARIS DATA CENTRE|ivo://voparis.obspm.gepi/gepi
+
+            #1
+            #http://www.iap.fr/
+            ivo://vopdc.iap/fss|vs:catalogservice|Institut d'Astrophysique de Paris|ivo://vopdc.iap
+
+            #31
+            #http://voparis-srv.obspm.fr/portal/
+            ivo://vopdc.obspm/dfbs|vs:catalogservice|VO-Paris Data Centre|ivo://vopdc.obspm
+            ivo://vopdc.obspm/gepi/bestars/besc|vs:catalogservice|VO-Paris Data Centre - GEPI|ivo://vopdc.obspm/gepi
+
+            #8
+            #http://xcatdb.unistra.fr/3xmm/
+            ivo://xcatdb/2xmm/cs|vs:catalogservice|Observatory of Strasbourg, SSC Team|ivo://null
+
+            #1
+            #http://www.obspm.fr/?lang=en
+            ivo://basebe.obspm.fr/bess0.1|vs:catalogservice|Observatoire de Paris-Meudon -> GEPI|ivo://null
+
+            #1
+            #https://ov-gso.irap.omp.eu/doku.php
+            ivo://ov-gso/ssap/polarbase|vs:catalogservice|OV-GSO|ivo://ov-gso
+
+            #1
+            #http://aladin.u-strasbg.fr/aladin.gml
+            ivo://cds.aladin/sia|vs:catalogservice|CDS|ivo://null
+
+            #2
+            #http://simbad.u-strasbg.fr/simbad/
+            ivo://cds.simbad/tap|vs:catalogservice|CDS SIMBAD service|ivo://cds.simbad
+
+            #1
+            #http://cds.u-strasbg.fr/
+            ivo://cds/tycho2/basicskynode|vs:catalogservice|CDS|ivo://null
+
+            #1
+            #http://cds.u-strasbg.fr/
+            ivo://cds/usno-b1/basicskynode|vs:catalogservice|CDS|ivo://null
+
+            #1
+            #http://www.lam.fr/
+            ivo://fr.oamp.lam/ssa/cencos-vvds_deep|vs:catalogservice|Laboratoire d'Astrophysique de Marseille - Departement d'informatique scientifique|ivo://fr.oamp.lam/lam
+
+            #1
+            #http://web.lupm.univ-montp2.fr/
+            ivo://graal.fr/ssa-pollux|vs:catalogservice|LUPM (Laboratoire Univers et Particules de Montpellier)|ivo://null
+
+            #1
+            #http://web.lupm.univ-montp2.fr/
+            ivo://graal/ssa-pollux|vs:catalogservice|CNRS - Universite Montpellier II - GRAAL|ivo://graal
+
+            #1
+            #http://www.iap.fr/
+            ivo://iap.fr/fuse/ssa|vs:catalogservice|Institut d'Astrophysique de Paris (IAP)|ivo://iap.fr/iap
+
+            #2
+            #https://idoc.ias.u-psud.fr/ginco
+            ivo://idoc.ginco/herschel/pacs|vs:catalogservice|IDOC GINCO|ivo://idoc.ginco
+            ivo://idoc.ginco/herschel/spire|vs:catalogservice|IDOC GINCO|ivo://idoc.ginco
+
+            #1
+            #http://www.obs-hp.fr/welcome.shtml
+            ivo://obs-hp.fr/elodie/ssa|vs:catalogservice|Observatoire de Haute-Provence|ivo://obs-hp.fr/obs-hp
+
+            #2
+            #http://cral.univ-lyon1.fr/
+            ivo://obs-lyon.fr/elodie/interp|vs:catalogservice|Observatoire de Lyon|ivo://obs-lyon.fr/obs-lyon
+
+            #5
+            #http://www.obspm.fr/?lang=en
+            ivo://obspm.fr/cai/esor|vs:catalogservice|Observatoire de Paris|ivo://obspm.fr/obspm
+            ivo://obspm.fr/imcce/skybot/service|vs:catalogservice|IMCCE - VO-Paris Datacentre|ivo://obspm.fr/imcce
+
+            #5
+            #http://www.lam.fr/cesam/?lang=fr
+            ivo://lam.cesam/cs/cencos-vvds_deep|vs:catalogservice|CeSAM VO team|ivo://null
+            ivo://lam.cesam/ssa/cencos-vvds_deep|vs:catalogservice|Laboratoire d'Astrophysique de Marseille - Departement d'informatique scientifique|ivo://fr.oamp.lam/lam
+
+            #1
+            #http://www.obs-mip.fr/
+            ivo://leden/ssap/castor|vs:catalogservice|OMP (Observatoire Midi-Pyrenees, CNRS//MEN, France)|ivo://null
+
+            #1
+            #http://cdsweb.u-strasbg.fr/~allen/3CRSnapshots/Welcome.html
+            ivo://3crsnapshots/sia|vs:catalogservice|3CR Snapshot Team|ivo://3crsnapshots
+
+            #1
+            #http://magics.bagn.obs-mip.fr/
+            ivo://castor/castor/ssap/v2|vs:catalogservice|OMP|ivo://castor/castor/ssap
+
+            #1
+            #http://tblegacy.bagn.obs-mip.fr/
+            ivo://bass2000/narval|vs:catalogservice|ivo://Bass2000|ivo://null
+
+        #IT 43
+
+            #2
+            #http://www.phys.uniroma1.it/fisica/
+            ivo://byurakan.phys.uniroma1.it/dfbs-ssa|vs:catalogservice|Dipartimento di Fisica, Universita' La Sapienza|ivo://null
+
+            #35
+            #http://www.inaf.it/it
+            ivo://ia2.inaf.it/edu/inaf_oats/svas/c14/siap|vs:catalogservice|IA2|ivo://null
+
+            #1
+            #http://www.inaf.it/it
+            ivo://ia2.inaf/tng/sia|vs:catalogservice|INAF - OATs|ivo://null
+
+            #4
+            #http://www.iasf-milano.inaf.it/
+            ivo://obelix.lambrate.inaf.it/vodb/cone/vvds_f02_deep|vs:catalogservice|INAF-IASF Milano|ivo://null
+
+            #IT
+            #http://www.asdc.asi.it/ASDC_source_catalogs.html
+            ivo://asdc/tap|vs:catalogservice|ASDC|ivo://asdc
+
+        #NL 6
+
+            #6
+            #http://www.astro-wise.org/projects/COMALS/
+            ivo://omegacen/comals|vs:datacollection|Dutch National Astronomical Data Center|ivo://omegacen/omegacen
+
+        #UK (497) + 103
+
+            #497
+            #http://www.ledas.ac.uk/
+            ivo://uk.ac.le.star.tmpledas/ledas/ledas/a1|vs:catalogservice|LEDAS, University of Leicester|ivo://null
+
+            #10
+            #http://casu.ast.cam.ac.uk/
+            ivo://uk.ac.cam.ast/iphas-dsa-catalog/dbo|vs:catalogservice|Cambridge Astronomy Survey Unit|ivo://null
+
+            #87
+            #http://www.roe.ac.uk/ifa/wfau/
+            ivo://wfau.roe.ac.uk/6df-dsa|vs:catalogservice|WFAU, Institute for Astronomy, University of Edinburgh|ivo://wfau.roe.ac.uk
+
+            #6
+            #http://www.ucl.ac.uk/mssl
+            ivo://mssl.ucl.ac.uk/chianti_dsa/chianti|vs:catalogservice|Mullard Space Science Laboratory|ivo://null
+
+    Russia 48
+
+        #RU 48
+
+            #25
+            #http://www.sai.msu.ru/
+            ivo://astronet.ru/cas/denis|vs:catalogservice|Sternberg Astronomical Institute Virtual Observatory Project|ivo://astronet.ru/organisation
+
+            #8
+            #http://www.sai.msu.ru/
+            ivo://rvo.ru/cat/bexraybinaries|vs:datacollection|Sternberg Astronomical Institute of Moscow State University (SAI MSU)|ivo://null
+
+            #4
+            #https://www.sao.ru/Doc-en/
+            ivo://rvo.ru/cat/mcpstars|vs:datacollection|Special Astrophysical Observatory of Russian Academy of Sciences (SAO RAS)|ivo://null
+
+            #2
+            #http://www.astro.spbu.ru/
+            ivo://rvo.ru/cat/multiscomp|vs:datacollection|Astronomical Institute of the Saint-Petersburg State University (AI SPbSU)|ivo://null
+
+            #4
+            #http://www.gao.spb.ru/
+            ivo://rvo.ru/cat/pos_vbs|vs:datacollection|Main (Pulkovo) Astronomical Observatory of Russian Academy of Sciences (MAO RAS)|ivo://null
+
+            #1
+            #http://www.sai.msu.ru/
+            ivo://rvo.ru/cat/wbvr_bright|vs:datacollection|Laboratory of the New Photometric Methods of Sternberg Astronomical Institute of the Moscow State University|ivo://null
+
+            #1
+            #http://www.astro.spbu.ru/
+            ivo://rvo.ru/db/clgal|vs:datacollection|Sobolev Astronomical Institute of Saint-Petersbourg University|ivo://null
+
+
+            #1
+            #http://www.ioffe.rssi.ru/index_en.html
+            ivo://rvo.ru/images/opt_ns|vs:catalogservice|Ioffe Physical Technical Institute|ivo://null
+
+            #2
+            #https://www.sao.ru/Doc-en/
+            ivo://sao.ru/cats-sn/wsdb|vs:catalogservice|Special Astrophysical Observatory of RAS (SAO RAS)|ivo://sao.ru
+
+

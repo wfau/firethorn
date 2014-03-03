@@ -1,0 +1,67 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    status: Pending approval
+    id: /roe.ac.uk Modify record
+    name: The Royal Observatory, Edinburgh
+    public: true
+    maintainers: zarquan
+    writers: zarquan
+
+    status: Approved
+    id: /firethorn Modify record
+    name: Firethorn webservice
+    public: true
+    maintainers: zarquan
+    writers: zarquan
+
+
+
+    /firethorn/adql-column
+    http://purl.org/firethorn/adql-column
+
+    /firethorn/adql-column-1.0
+    http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-column-1.0.json
+
+
+
+
+
+    adql-resource-1.0
+    adql-catalog-1.0
+    adql-schema-1.0
+    adql-table-1.0
+    adql-column-1.0
+
+    jdbc-resource-1.0
+    jdbc-catalog-1.0
+    jdbc-schema-1.0
+    jdbc-table-1.0
+    jdbc-column-1.0
+
+    ivoa-resource-1.0
+    ivoa-catalog-1.0
+    ivoa-schema-1.0
+    ivoa-table-1.0
+    ivoa-column-1.0
+
+
