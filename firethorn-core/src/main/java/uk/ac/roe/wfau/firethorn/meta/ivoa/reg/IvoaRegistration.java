@@ -23,31 +23,36 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa.reg;
  */
 public interface IvoaRegistration
     {
-    public interface Base
+    public interface VOElement
         {
-        public boolean understood();
         }
-
+    
     public interface IdentifierURI
         {
         public String string();
         }
 
+    /*
     public interface ResourceName
         {
         public IdentifierURI ident();
         public String name();
         }
-    
+     */
+
+    /*
     public interface UTCDateTime
         {
         public String string();
         }
+     */
 
+    /*
     public interface UTCTimestamp
         {
         public String string();
         }
+     */
 
     /**
      * 
@@ -61,7 +66,7 @@ public interface IvoaRegistration
      *
      */
     public interface VOResource
-    extends Base
+    extends VOElement
         {
         public String created();
         public String updated();
@@ -72,7 +77,7 @@ public interface IvoaRegistration
         public IdentifierURI ident();
         
         public interface ValidationLevel
-        extends Base
+        extends VOElement
             {
             public Integer integer();
             }
@@ -81,11 +86,11 @@ public interface IvoaRegistration
         }
 
     public interface VOService
-    extends VOResource, Base
+    extends VOResource, VOElement
         {
 
         public interface Capability
-        extends Base
+        extends VOElement
             {
             public String standardId();
             public String description();
@@ -93,13 +98,13 @@ public interface IvoaRegistration
             public Iterable<ValidationLevel> validationLevels();
             
             public interface Interface
-            extends Base
+            extends VOElement
                 {
                 public String role(); 
                 public String version(); 
 
                 public interface AccessURL
-                extends Base
+                extends VOElement
                     {
                     public String url();
                     public String use();
@@ -107,7 +112,7 @@ public interface IvoaRegistration
                 public Iterable<AccessURL> accessURLs(); 
 
                 public interface SecurityMethod
-                extends Base
+                extends VOElement
                     {
                     }
                 public Iterable<SecurityMethod> securityMethods();

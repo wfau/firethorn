@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Information on Service 'GAVO Data Center TAP service'
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/info
+
+    Async endpoint
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async
+
+    Service Capabilities
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities
+
+    VOSI Table Set
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata
+
+
+    Start with registration
+
+        Scan the registration, identity the TAP services.
+        Create corresponding IvoaResource(s) as required.
+
+            for each VOResource
+                if is VOService
+                    foreach VOCapability
+                        if capability == TAPService
+                            if (resource == null)
+                                {
+                                resource = factories().ivoa().create(
+                                    endpoint,
+                                    title,
+                                    uri
+                                    )
+                                }
+                            else {
+                                resource.endpoints().create(
+                                    endpoint
+                                    )
+                                }
+
+    
+    Start with TAP endpoint => IvoaResource
+    Start with VOSI tables endpoint => generate schema
+    
+    
+    curl http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata
+    <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+    <tableset
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd"
+        xsi:type="vs:TableSet"
+        >
+        <schema>
+            <name>amanda</name>
+                <title>AMANDA-II neutrino candidates</title>
+                <description>
+                    A list of neutrino candidate events recorded by the AMANDA-II neutrino
+                    telescope during the period 2000-2006.
+                </description>
+                <table>
+                    <name>amanda.nucand</name>
+                    <description>
+                        Detection parameters of neutrino candidates recorded by the AMANDA-II
+                        telescope. This table can be queried on the web at
+                        http://dc.g-vo.org/amanda/q/web
+                    </description>
+                    <column>
+                        <name>nualpha</name>
+                        <description>
+                            Neutrino arrival direction, RA
+                        </description>
+                        <unit>deg</unit>
+                        <ucd>pos.eq.ra;meta.main</ucd>
+                        <dataType arraysize="1" xsi:type="vs:VOTableType">float</dataType>
+                    </column>
+                    <column>
+                        <name>nudelta</name>
+                        <description>
+                            Neutrino arrival direction, Declination
+                        </description>
+                        <unit>deg</unit>
+                        <ucd>pos.eq.dec;meta.main</ucd>
+                        <dataType arraysize="1" xsi:type="vs:VOTableType">float</dataType>
+                    </column>
+                    <column>
+                        <name>nch</name>
+                        <description>
+                            Number of optical modules hit in an event
+                        </description>
+                        <ucd>meta.number</ucd>
+                        <dataType arraysize="1" xsi:type="vs:VOTableType">short</dataType>
+                    </column>
+    

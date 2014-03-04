@@ -157,7 +157,7 @@ public class IvoaResourceEntity
         {
         this(
             endpoint,
-            "...."
+            endpoint
             );
         }
 
