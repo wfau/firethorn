@@ -51,20 +51,6 @@ import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController;
 @RequestMapping("/tap/{ident}/async")
 public class AdqlTapAsyncController extends AbstractController {
 	
-	
-   /**
-    * VOTable MIME type.
-    *
-    */
-   public static final String VOTABLE_MIME = "application/x-votable+xml" ;
-   
-   public static final String FIRETHORN_TAP_BASE ="http://localhost:8080/firethorn/tap/";
-   /**
-    * TextXml MIME type.
-    *
-    */
-   public static final String TEXT_XML_MIME = "text/xml" ;
-
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub

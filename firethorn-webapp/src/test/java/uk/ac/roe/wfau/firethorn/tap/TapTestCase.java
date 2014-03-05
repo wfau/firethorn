@@ -73,9 +73,10 @@ extends TestBase
         
     	uwsjob.setPhase(phase);
         log.debug("Setting PHASE to: [{}]" , phase);
+    
+    	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
+    
 
-        
-    	log.debug("Getting results of job",  uwsjob.getResults());
     	
     	
         }

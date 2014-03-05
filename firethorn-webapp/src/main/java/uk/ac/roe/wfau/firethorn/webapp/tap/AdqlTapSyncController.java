@@ -20,12 +20,9 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-
 import javax.persistence.EnumType;
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,9 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
-
 import adql.query.ADQLQuery;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -49,6 +44,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
+
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
@@ -64,18 +61,6 @@ public class AdqlTapSyncController extends AbstractController {
 	 * Param to start a job
 	 */
 	static final Status STARTJOB = Status.RUNNING;
-	
-	 /**
-     * VOTable MIME type.
-     *
-     */
-    public static final String VOTABLE_MIME = "application/x-votable+xml" ;
-    
-    /**
-     * TextXml MIME type.
-     *
-     */
-    public static final String TEXT_XML_MIME = "text/xml" ;
 
 	@Override
 	public Path path() {
@@ -107,7 +92,7 @@ public class AdqlTapSyncController extends AbstractController {
      * Create an Async query job
      * 
      */
-	@RequestMapping(value="sync", method = RequestMethod.GET, produces=TEXT_XML_MIME)
+	@RequestMapping(value="sync", method = RequestMethod.GET, produces=CommonParams.TEXT_XML_MIME)
 	public void createSyncJob(
         @ModelAttribute("urn:adql.resource.entity")
         AdqlResource resource,
@@ -119,7 +104,7 @@ public class AdqlTapSyncController extends AbstractController {
 			
 
 	        response.setContentType(
-	            TEXT_XML_MIME
+	        		CommonParams.TEXT_XML_MIME
 	            );
 	        response.setCharacterEncoding(
 	            "UTF-8"

@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 
 public class UWSJob {
 	private static final long serialVersionUID = 1L;
@@ -252,7 +253,9 @@ public class UWSJob {
 	}
 	
 	public String getResults() {
-		return query.ident().toString() + "/votable";
+		String id = query.ident().toString();
+		String url = CommonParams.FIRETHORN_QUERY_BASE + query.ident().toString() + "/votable";
+		return url;
 	}
 	
 	public AdqlQuery getQuery() {
