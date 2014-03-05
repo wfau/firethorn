@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
     |
-    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
     | All rights reserved.
     |
     | This program is free software: you can redistribute it and/or modify
@@ -42,17 +42,29 @@
 		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.womble">
+		<level value="DEBUG"/>
+	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
+		<level value="DEBUG"/>
+	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.util.xml">
 		<level value="WARN"/>
 	</logger>
 
 	<!--+
 	    | Spring loggers.
 	    +-->
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.beans">
 		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.jdbc">
+		<level value="INDO" />
 	</logger>
 	<logger name="org.springframework.context">
 		<level value="INFO" />
@@ -66,16 +78,26 @@
 	<logger name="org.springframework.aop">
 		<level value="INFO" />
 	</logger>
+	<logger name="org.springframework.orm">
+		<level value="INFO" />
+	</logger>
 
 	<!--+
-	    | Hibernate transactions.
+	    | Spring scheduling.
+	    +-->
+	<logger name="org.springframework.scheduling">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Spring transactions.
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
 		<level value="INFO" />
 	</logger>
-	<logger name="org.springframework.orm">
-		<level value="INFO" />
+	<logger name="org.springframework.transaction.interceptor">
+		<level value="TRACE" />
 	</logger>
 
 	<!--+
@@ -89,12 +111,52 @@
 	</logger>
 
 	<!--+
+	    | Hibernate proxy narrowing warning.
+	    | https://jira.atlassian.com/browse/CONF-4981
+	    | http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367
+        | https://forum.hibernate.org/viewtopic.php?p=2404391
+	    +-->
+    <logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog">
+        <level value="ERROR" />
+    </logger>
+
+	<!--+
+	    | C3PO loggers
+	    | Including wierd DEBUG via Exception logging.
+	    | http://stackoverflow.com/questions/8403227/weird-error-close-by-client-stack-trace
+	    | http://forum.springsource.org/archive/index.php/t-47689.html 
+	    | https://forum.hibernate.org/viewtopic.php?f=1&t=982410
+	    +-->
+	<logger name="com.mchange">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.mchange.v2.async">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.mchange.v2.c3p0.impl.C3P0ImplUtils">
+		<level value="WARN" />
+	</logger>
+
+	<!--+
 	    | StarLink VOTable parser.
 	    +-->
 	<logger name="uk.ac.starlink">
 		<level value="INFO" />
 	</logger>
 
+	<!--+
+	    | OGSA-DAI loggers.
+	    +-->
+	<logger name="uk.org.ogsadai">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Liquibase loggers.
+	    +-->
+	<logger name="liquibase">
+		<level value="WARN" />
+	</logger>
 
 	<!--+
 	    | Root logger.

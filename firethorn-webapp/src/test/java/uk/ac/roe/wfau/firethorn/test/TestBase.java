@@ -17,38 +17,24 @@
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
-import java.net.URI;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.Ignore;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
- * Base class for tests.
- * The test is run using SpringJUnit4ClassRunner in order to support the @Autowired annotation.
+ * Transactional base class for tests.
+ * Using Propagation.REQUIRES_NEW create a new transaction for each test.
  *
  */
 @Slf4j
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-    locations = {
-        "classpath:testdata-config.xml",
-        "classpath:hibernate-config.xml",
-        "classpath:scheduler-config.xml",
-        "classpath:component-config.xml"
-        }
-    )
+@Ignore
 @Transactional(
     readOnly=false,
     propagation=Propagation.REQUIRES_NEW
@@ -58,137 +44,60 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     defaultRollback = false
     )
 public abstract class TestBase
+extends TestRoot
     {
+    public static final String TEST_OPER_TARGET = "test" ;
+    public static final String TEST_OPER_METHOD = "test" ;
+    public static final String TEST_OPER_SOURCE = "test" ;
+
+    public static final String TEST_AUTH_METHOD    = "test" ;
+    public static final String TEST_IDENTITY_NAME  = "Tester (identity)" ;
+    public static final String TEST_COMMUNITY_URI  = "test" ;
+    public static final String TEST_COMMUNITY_NAME = "Tester (group)" ;
 
     /**
-     * Our component Factories.
+     * Initialise our operation and identity.
+     * http://stackoverflow.com/questions/6076599/what-order-are-the-junit-before-after-called
      *
      */
-    @Autowired
-    private ComponentFactories factories;
-
-    /**
-     * Our component Factories.
-     *
-     */
-    public ComponentFactories factories()
-        {
-        return this.factories;
-        }
-
     @Before
-    public void before()
-    throws Exception
+    public final void oper()
         {
-        log.debug("before()");
-        }
-
-    @After
-    public void after()
-    throws Exception
-        {
-        log.debug("after()");
-        }
-
-    public void flush()
-        {
-        log.debug("flush()");
-        factories().hibernate().flush();
-        }
-
-    /**
-     * The test class load time.
-     *
-     */
-    protected static long start = System.currentTimeMillis() ;
-
-    /**
-     * A shared counter for unique names.
-     *
-     */
-    protected static long uniques = 0 ;
-
-    /**
-     * Glue for generated names.
-     *
-     */
-    public static final String UNIQUE_NAME_GLUE = "." ;
-
-    /**
-     * Generate a unique string.
-     *
-     */
-    public String unique()
-        {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(
-            String.valueOf(
-                start
-                )
+        final Operation operation = factories().operations().create(
+            TEST_OPER_TARGET,
+            TEST_OPER_METHOD,
+            TEST_OPER_SOURCE
             );
-        builder.append(
-            UNIQUE_NAME_GLUE
-            );
-        builder.append(
-            String.valueOf(
-                uniques++
-                )
-            );
-        return builder.toString();
-        }
 
-    /**
-     * Generate a unique string.
-     *
-     */
-    public String unique(final String prefix)
-        {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(
-            prefix
-            );
-        builder.append(
-            UNIQUE_NAME_GLUE
-            );
-        builder.append(
-            unique()
-            );
-        return builder.toString();
-        }
+        log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-    /**
-     * Generate a unique URI.
-     *
-     */
-    public URI unique(final URI base)
-        {
-        return base.resolve(
-            URI.create(
-                unique()
-                )
-            );
-        }
-
-    /**
-     * Count the members in a Iterable set.
-     *
-     */
-    public long count(final Iterable<?> iterable)
-        {
-        long count = 0 ;
-        for (final Object object : iterable)
+        operation.authentications().resolve();
+        if (operation.authentications().primary() == null)
             {
-            count++ ;
+            operation.authentications().create(
+                factories().identities().create(
+                    factories().communities().create(
+                        TEST_COMMUNITY_NAME,
+                        TEST_COMMUNITY_URI
+                        ),
+                    TEST_IDENTITY_NAME
+                    ),
+                TEST_AUTH_METHOD
+                );
             }
-        return count ;
+
+        operation.authentications().resolve();
+        final Authentication primary = operation.authentications().primary();
+        log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
+
         }
 
     /**
      * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
      * @throws Exception
      *
-     */
     @Test
+     */
     public void empty()
     throws Exception
         {
