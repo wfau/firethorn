@@ -16,18 +16,33 @@ import java.util.Vector;
 import java.lang.IllegalStateException;
 import javax.servlet.ServletOutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
-public class UWSJob {
-	private static final long serialVersionUID = 1L;
+
+@Slf4j
+@Component
+public class UWSJob  extends AbstractController {
 
 	/* ********* */
 	/* CONSTANTS */
@@ -296,10 +311,14 @@ public class UWSJob {
 		} 
 	}
 	
+	public String getFullQueryURL() {
+		String id = this.query.ident().toString();
+		String url = CommonParams.FIRETHORN_QUERY_BASE + query.ident().toString();
+		return url;
+	}
 	
 	
 	public String getQueryId() {
-		// TODO Auto-generated method stub
 		return this.query.ident().toString();
 	}
 
@@ -403,7 +422,7 @@ public class UWSJob {
      * Prepare a query job
      * 
      */
-	public void prepareQueryJob(String querystring) throws IdentifierNotFoundException, IOException {
+	public void prepareQueryJob(final String querystring) throws IdentifierNotFoundException, IOException {
 			
 			if (resource!=null){
 				
@@ -416,17 +435,31 @@ public class UWSJob {
 				}
 				
 				try {
-					 this.query.input(
+					/* this.query.input(
 							 querystring
-                             );				
-					
-					
+                             );	*/
+					factories().spring().transactor().update(
+					           
+			                new Runnable()
+			                    {
+			                    @Override
+			                    public void run()
+			                        {
+			                      
+			                        if (querystring != null)
+			                            {
+			                        	query.input(
+			                        			querystring
+			                                );
+			                            }
+			                        }
+			                    }
+			               
+				    );
+				
+				
 					if (this.query!=null){
-					
 						Status jobstatus = this.query.prepare();
-						/*if (jobstatus == Status.READY){
-							jobstatus = query.execute();
-						}*/
 					}
 				
 				} catch (final Exception ouch) {
@@ -476,6 +509,12 @@ public class UWSJob {
 	       
 	        writer.append("</uws:job>");
 		
+	}
+
+	@Override
+	public Path path() {
+		// TODO Auto-generated method stub
+		return path("/tap/{ident}/async") ;
 	}
 
 

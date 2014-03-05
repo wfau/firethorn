@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.tap;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import sun.net.www.URLConnection;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -37,6 +43,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
+import uk.ac.roe.wfau.firethorn.webapp.tap.AdqlTapAsyncController;
+
 /**
  *
  *
@@ -46,16 +54,41 @@ public class TapTestCase
 extends TestBase
     {
 	
+	String ident = "32771";
+	String querystring = "Select top 10 * from atlas.Filter";
+	String phase = "RUNNING";
+	static AdqlQuery query;
 	
+	public void readFromURL(final String surl){
+		
+		URL url = null;
+		String inputLine;
+
+		try {
+		    url = new URL(surl);
+		} catch (MalformedURLException e) {
+		    e.printStackTrace();
+		}
+		BufferedReader in;
+		try {
+		    java.net.URLConnection con = url.openConnection();
+		    con.setReadTimeout( 100000 ); //1 second
+		    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		    while ((inputLine = in.readLine()) != null) {
+		        System.out.println(inputLine);
+		    }
+		    in.close();
+
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
 	
     @Test
-    public void test001()
+    public void test000()
     throws Exception
         {
-    	String ident = "32771";
-    	String query = "Select top 10 * from Filter";
-    	String phase = "RUNNING";
-    	
+
     	AdqlResource resource =  factories().adql().resources().select(
     	                factories().adql().resources().idents().ident(
     	                    ident
@@ -65,17 +98,85 @@ extends TestBase
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
 
     	UWSJob uwsjob = new UWSJob(resource);
-        log.debug("New Empty Query ID: [{}]" , uwsjob.getQueryId());
+        String queryid = uwsjob.getFullQueryURL();
+        query = uwsjob.getQuery();
+        log.debug("New Empty Query URL: [{}]" , queryid);
+      
 
-    	uwsjob.setQuery(query);
-        log.debug("Setting QUERY input to: [{}]" , query);
+        }
+    
+    
+    
+	
+    @Test
+    public void test001()
+    throws Exception
+        {
+    	
+     	AdqlResource resource =  factories().adql().resources().select(
+                factories().adql().resources().idents().ident(
+                    ident
+                    )
+                );
+
+     	log.debug("Creating new UWSJob with resource: [{}]" , ident);
+		UWSJob uwsjob = new UWSJob(query, resource);
+		uwsjob.setQuery(querystring);
+		
+        log.debug("Setting QUERY input to: [{}]" , querystring);
         
         
+
+    	
+    	
+        }
+    
+    
+	
+    @Test
+    public void test002()
+    throws Exception
+        {
+  
+    	
+    	AdqlResource resource =  factories().adql().resources().select(
+    	                factories().adql().resources().idents().ident(
+    	                    ident
+    	                    )
+    	                );
+    	
+        log.debug("Creating new UWSJob with resource: [{}]" , ident);
+
+		UWSJob uwsjob = new UWSJob(query, resource);
+     
     	uwsjob.setPhase(phase);
         log.debug("Setting PHASE to: [{}]" , phase);
     
-    	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
+
+    	
+    	
+        }
     
+    
+	
+    @Test
+    public void test003()
+    throws Exception
+        {
+    	
+    	
+    	AdqlResource resource =  factories().adql().resources().select(
+    	                factories().adql().resources().idents().ident(
+    	                    ident
+    	                    )
+    	                );
+    	
+      
+		UWSJob uwsjob = new UWSJob(query, resource);
+      
+    	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
+        readFromURL( uwsjob.getFullQueryURL());
+
 
     	
     	
