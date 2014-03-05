@@ -38,11 +38,10 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
-
+import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 
 @Slf4j
-@Component
-public class UWSJob  extends AbstractController {
+public class UWSJob {
 
 	/* ********* */
 	/* CONSTANTS */
@@ -135,23 +134,29 @@ public class UWSJob  extends AbstractController {
 	 * might be a large piece of text such as a stack trace.</i> */
 	protected TapError errorSummary = null;
 
+	/**
+	 * UWSJobFactory
+	 */
+	private UWSJobFactory myFactory;
 
+	protected UWSJob(UWSJobFactory f, AdqlResource resource) throws Exception {
+		    myFactory = f ;
+		    this.jobId = "";
+			this.phase = PHASE_INITIAL;
+			this.ownerId = null;
+			this.quote = QUOTE_NOT_KNOWN;
+			/*this.destructionTime = destruction;
+			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
+			this.startTime = new Date();
+			errorSummary = new TapError();
+			this.resource = resource;
+			createNewQuery();
+	}
+	
 	/* ************ */
 	/* CONSTRUCTORS */
 	/* ************ */
-	public UWSJob(AdqlResource resource) throws Exception {
-		this.jobId = "";
-		this.phase = PHASE_INITIAL;
-		this.ownerId = null;
-		this.quote = QUOTE_NOT_KNOWN;
-		/*this.destructionTime = destruction;
-		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
-		this.startTime = new Date();
-		errorSummary = new TapError();
-		this.resource = resource;
-		createNewQuery();
-		
-	}
+
 	
 	public UWSJob(AdqlQuery query, AdqlResource resource) throws Exception {
 		this.jobId = query.ident().toString();
@@ -165,38 +170,6 @@ public class UWSJob  extends AbstractController {
 		this.resource = resource;
 		this.query = query;
 		
-	}
-	
-	public UWSJob() throws Exception {
-		this.jobId = generateJobId();
-		this.phase = PHASE_INITIAL;
-		this.ownerId = null;
-		this.quote = QUOTE_NOT_KNOWN;
-		/*this.destructionTime = destruction;
-		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
-		this.startTime = new Date();
-		errorSummary = new TapError();
-		
-	}
-	
-	public UWSJob(String jobID, final long quote, final long startTime, final long endTime, final String phase, final String ownerId, final TapError error) throws Exception {
-		if (jobID == null)
-			jobID = generateJobId();
-
-		this.jobId = jobID;
-		this.phase = phase;
-		this.ownerId = ownerId;
-		this.quote = quote;
-		/*this.destructionTime = destruction;
-		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
-
-		if (startTime > 0)
-			this.startTime = new Date(startTime);
-		if (endTime > 0)
-			this.endTime = new Date(endTime);
-
-		errorSummary = error;
-
 	}
 
 	public long getQuote() {
@@ -435,10 +408,7 @@ public class UWSJob  extends AbstractController {
 				}
 				
 				try {
-					/* this.query.input(
-							 querystring
-                             );	*/
-					factories().spring().transactor().update(
+					myFactory.factories().spring().transactor().update(
 					           
 			                new Runnable()
 			                    {
@@ -511,12 +481,6 @@ public class UWSJob  extends AbstractController {
 		
 	}
 
-	@Override
-	public Path path() {
-		// TODO Auto-generated method stub
-		return path("/tap/{ident}/async") ;
-	}
-
-
+	
  
 }

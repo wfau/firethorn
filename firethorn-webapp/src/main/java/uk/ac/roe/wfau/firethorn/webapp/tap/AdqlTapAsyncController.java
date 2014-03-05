@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import adql.query.ADQLQuery;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -45,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController;
+import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 
 @Slf4j
 @Controller
@@ -56,6 +56,9 @@ public class AdqlTapAsyncController extends AbstractController {
 		// TODO Auto-generated method stub
 		return path("/tap/{ident}/async") ;
 	}
+	
+	@Autowired
+	 private UWSJobFactory uwsfactory = new UWSJobFactory();
 	
 	/**
      * Get the target workspace based on the ident in the path. 
@@ -102,15 +105,16 @@ public class AdqlTapAsyncController extends AbstractController {
     		  @RequestParam(value="QUERY", required = false) String QUERY,
     		  final HttpServletResponse response
     		  ) throws Exception {
- 
-				UWSJob uwsjob;
+	    	   
+    	  		UWSJobFactory uwsfact;
+    	  		UWSJob uwsjob;
 	    		PrintWriter writer = response.getWriter();
 	    		String queryid = "";
 	    		
 				if ( resource!=null){
-					uwsjob = new UWSJob(resource);
+					uwsjob = uwsfactory.create(resource);
 				} else {
-					uwsjob = new UWSJob();
+					uwsjob = uwsfactory.create(resource);
 				}
 				
 				if (REQUEST!=null) uwsjob.setRequest(REQUEST);
@@ -137,14 +141,15 @@ public class AdqlTapAsyncController extends AbstractController {
     		
     		PrintWriter writer = response.getWriter();
     		UWSJob uwsjob;
+    		UWSJobFactory uwsfact;
     		String queryid = "";
     		final AdqlQuery queryentity = getqueryentity(jobid);
-    		
-    		if (queryentity!=null && resource!=null){
-    			uwsjob = new UWSJob(queryentity, resource);
-    		} else {
-    			uwsjob = new UWSJob();
-    		}
+    	
+			if ( resource!=null){
+				uwsjob = uwsfactory.create(resource,queryentity);
+			} else {
+				uwsjob = uwsfactory.create(resource,queryentity);
+			}
     		
     		
     		if (REQUEST!=null) uwsjob.setRequest(REQUEST);
@@ -186,12 +191,13 @@ public class AdqlTapAsyncController extends AbstractController {
     	AdqlQuery queryentity = getqueryentity(jobid);
     	
     	try{
-			
-			if (queryentity!=null && resource!=null){
-				uwsjob = new UWSJob(queryentity, resource);
+
+			if ( resource!=null){
+				uwsjob = uwsfactory.create(resource,queryentity);
 			} else {
-				uwsjob = new UWSJob();
+				uwsjob = uwsfactory.create(resource,queryentity);
 			}
+			
 			//queryid = uwsjob.getResults();
 
 			if (PHASE==null){
@@ -268,12 +274,15 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	    	try{
 				
-				if (queryentity!=null && resource!=null){
-					uwsjob = new UWSJob(queryentity, resource);
+
+				if ( resource!=null){
+					uwsjob = uwsfactory.create(resource,queryentity);
 				} else {
-					uwsjob = new UWSJob();
+					uwsjob = uwsfactory.create(resource,queryentity);
 				}
+				
 				queryid = uwsjob.getResults();
+				
 	  		} catch (Exception e) {
 	  			
 	  		}

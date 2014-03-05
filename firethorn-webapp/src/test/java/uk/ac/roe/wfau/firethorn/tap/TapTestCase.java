@@ -32,6 +32,7 @@ import javax.naming.NameNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import sun.net.www.URLConnection;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -44,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
 import uk.ac.roe.wfau.firethorn.webapp.tap.AdqlTapAsyncController;
+import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 
 /**
  *
@@ -58,6 +60,9 @@ extends TestBase
 	String querystring = "Select top 10 * from atlas.Filter";
 	String phase = "RUNNING";
 	static AdqlQuery query;
+	
+	@Autowired
+	 private UWSJobFactory uwsfactory = new UWSJobFactory();
 	
 	public void readFromURL(final String surl){
 		
@@ -97,7 +102,7 @@ extends TestBase
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
 
-    	UWSJob uwsjob = new UWSJob(resource);
+    	UWSJob uwsjob = uwsfactory.create(resource);
         String queryid = uwsjob.getFullQueryURL();
         query = uwsjob.getQuery();
         log.debug("New Empty Query URL: [{}]" , queryid);
@@ -120,7 +125,7 @@ extends TestBase
                 );
 
      	log.debug("Creating new UWSJob with resource: [{}]" , ident);
-		UWSJob uwsjob = new UWSJob(query, resource);
+    	UWSJob uwsjob = uwsfactory.create(resource, query);
 		uwsjob.setQuery(querystring);
 		
         log.debug("Setting QUERY input to: [{}]" , querystring);
@@ -147,8 +152,7 @@ extends TestBase
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
 
-		UWSJob uwsjob = new UWSJob(query, resource);
-     
+    	UWSJob uwsjob = uwsfactory.create(resource, query);     
     	uwsjob.setPhase(phase);
         log.debug("Setting PHASE to: [{}]" , phase);
     
