@@ -158,7 +158,7 @@ public class UWSJob {
 	/* ************ */
 
 	
-	public UWSJob(AdqlQuery query, AdqlResource resource) throws Exception {
+	public UWSJob(UWSJobFactory f, AdqlResource resource,  AdqlQuery query) throws Exception {
 		this.jobId = query.ident().toString();
 		this.phase = PHASE_INITIAL;
 		this.ownerId = null;

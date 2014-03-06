@@ -145,10 +145,10 @@ public class AdqlTapAsyncController extends AbstractController {
     		String queryid = "";
     		final AdqlQuery queryentity = getqueryentity(jobid);
     	
-			if ( resource!=null){
+			if ( queryentity!=null){
 				uwsjob = uwsfactory.create(resource,queryentity);
 			} else {
-				uwsjob = uwsfactory.create(resource,queryentity);
+				uwsjob = uwsfactory.create(resource);
 			}
     		
     		
@@ -192,10 +192,10 @@ public class AdqlTapAsyncController extends AbstractController {
     	
     	try{
 
-			if ( resource!=null){
+			if ( queryentity!=null){
 				uwsjob = uwsfactory.create(resource,queryentity);
 			} else {
-				uwsjob = uwsfactory.create(resource,queryentity);
+				uwsjob = uwsfactory.create(resource);
 			}
 			
 			//queryid = uwsjob.getResults();
@@ -203,7 +203,15 @@ public class AdqlTapAsyncController extends AbstractController {
 			if (PHASE==null){
 				TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
 			} else {
-				uwsjob.setPhase(PHASE);
+
+				if (queryentity!=null){
+				
+					Status jobstatus = queryentity.prepare();
+					if (jobstatus == Status.READY){
+						jobstatus = queryentity.execute();
+					}
+				}
+				//uwsjob.setPhase(PHASE);
 			}
 			
 			uwsjob.writeUWSJobToXML(uwsjob, writer);

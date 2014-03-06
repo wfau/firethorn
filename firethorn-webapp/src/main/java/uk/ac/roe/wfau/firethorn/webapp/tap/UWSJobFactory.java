@@ -34,7 +34,7 @@ class UWSJobFactory {
       }
  
     public UWSJob create(AdqlResource resource, AdqlQuery query) throws Exception {
-       return new UWSJob(this, resource);
+       return new UWSJob(this, resource, query);
       }
 
 }
