@@ -176,7 +176,7 @@ extends TestBase
     	                );
     	
       
-		UWSJob uwsjob = new UWSJob(query, resource);
+    	UWSJob uwsjob = uwsfactory.create(resource, query);     
       
     	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
         readFromURL( uwsjob.getFullQueryURL());
