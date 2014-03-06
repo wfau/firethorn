@@ -32,7 +32,7 @@ public class TapJobParams  {
 	/**
 	 * Default query schema
 	 */
-	static final String DEFAULT_QUERY_SCHEMA = "query_schema";
+	public static final String DEFAULT_QUERY_SCHEMA = "query_schema";
 
 
 

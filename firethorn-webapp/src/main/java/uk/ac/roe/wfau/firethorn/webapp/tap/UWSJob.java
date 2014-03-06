@@ -150,7 +150,7 @@ public class UWSJob {
 			this.startTime = new Date();
 			errorSummary = new TapError();
 			this.resource = resource;
-			createNewQuery();
+			this.query = f.createNewQuery(resource);
 	}
 	
 	/* ************ */
@@ -159,6 +159,7 @@ public class UWSJob {
 
 	
 	public UWSJob(UWSJobFactory f, AdqlResource resource,  AdqlQuery query) throws Exception {
+		myFactory = f ;
 		this.jobId = query.ident().toString();
 		this.phase = PHASE_INITIAL;
 		this.ownerId = null;
@@ -180,16 +181,16 @@ public class UWSJob {
 		this.quote = quote;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public String getStartTime() {
+		return this.query.created().toString();
 	}
 
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public String getEndTime() {
+		return this.query.modified().toString();
 	}
 
 	public void setEndTime(Date endTime) {
@@ -254,7 +255,7 @@ public class UWSJob {
 	
 		//set query
 		try {
-			prepareQueryJob(querystring);
+			myFactory.prepareQueryJob(this.resource, this.query, querystring);
 		}  catch (Exception ouch) {
 			ouch.printStackTrace();
 		}
@@ -277,7 +278,7 @@ public class UWSJob {
 		if (this.phase.equalsIgnoreCase(PHASE_RUN)){
 			//run query
 			try {
-				runQueryJob();
+				myFactory.runQueryJob(this.query);
 			}  catch (Exception ouch) {
 				ouch.printStackTrace();
 			}
@@ -340,18 +341,29 @@ public class UWSJob {
      * 
      * Run an query job
      * 
-     */
+    
 	public void runQueryJob() throws IdentifierNotFoundException, IOException {
 			
 			try {
 			
-			
-				if (this.query!=null){
-				
-					Status jobstatus = this.query.prepare();
-					if (jobstatus == Status.READY){
-						jobstatus = this.query.execute();
-					}
+				if (query!=null){
+
+					myFactory.factories().spring().transactor().update(
+							   new Runnable()
+			                    {
+			                    @Override
+			                    public void run()
+			                        {
+			                      
+			                    	query.execute();
+			        				
+			                        }
+			                    }
+				          );
+				//	Status jobstatus = this.query.prepare();
+				//	if (jobstatus == Status.READY){
+				//		jobstatus = this.query.execute();
+				//	}
 				}
 			
 			} catch (final Exception ouch) {
@@ -359,14 +371,14 @@ public class UWSJob {
 
 	        }
 				
-        }
+        } */
 	
 	
 	 /**
      * 
      * Create a query job
      * 
-     */
+    
 	public void createNewQuery() throws IdentifierNotFoundException, IOException {
 			
 
@@ -388,17 +400,16 @@ public class UWSJob {
 
 	        }
 				
-        }
+        } */
 
     /**
      * 
      * Prepare a query job
      * 
-     */
+     
 	public void prepareQueryJob(final String querystring) throws IdentifierNotFoundException, IOException {
 			
 			if (resource!=null){
-				
 				
 				try {
 					this.schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
@@ -428,8 +439,8 @@ public class UWSJob {
 				    );
 				
 				
-					if (this.query!=null){
-						Status jobstatus = this.query.prepare();
+					if (query!=null){
+						Status jobstatus = query.prepare();
 					}
 				
 				} catch (final Exception ouch) {
@@ -438,7 +449,7 @@ public class UWSJob {
 		        }
 			}
 				
-        }
+        }  */
 
 
 	/**

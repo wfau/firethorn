@@ -17,33 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.io.IOException;
+
 import java.io.PrintWriter;
-import java.sql.SQLException;
-
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 
 @Slf4j
@@ -106,22 +101,32 @@ public class AdqlTapAsyncController extends AbstractController {
     		  final HttpServletResponse response
     		  ) throws Exception {
 	    	   
-    	  		UWSJobFactory uwsfact;
     	  		UWSJob uwsjob;
 	    		PrintWriter writer = response.getWriter();
-	    		String queryid = "";
-	    		
+	    		AdqlQuery qry;
 				if ( resource!=null){
-					uwsjob = uwsfactory.create(resource);
+				
+				
+					if (QUERY!=null) {
+						qry = uwsfactory.createNewQuery(resource, QUERY);
+						uwsjob = uwsfactory.create(resource,qry);
+						uwsjob.setQuery(QUERY);
+					} else {
+						qry = uwsfactory.createNewQuery(resource);
+						uwsjob = uwsfactory.create(resource, qry);
+					}
+
+					if (REQUEST!=null) uwsjob.setRequest(REQUEST);
+					if (LANG!=null) uwsjob.setLang(LANG);
+					
+					UWSJob.writeUWSJobToXML(uwsjob, writer);
+					
 				} else {
-					uwsjob = uwsfactory.create(resource);
+					
+					TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING, writer);
 				}
 				
-				if (REQUEST!=null) uwsjob.setRequest(REQUEST);
-				if (LANG!=null) uwsjob.setLang(LANG);
-				if (QUERY!=null) uwsjob.setQuery(QUERY);
-
-				uwsjob.writeUWSJobToXML(uwsjob, writer);
+			
     }
 				 
 
@@ -141,8 +146,6 @@ public class AdqlTapAsyncController extends AbstractController {
     		
     		PrintWriter writer = response.getWriter();
     		UWSJob uwsjob;
-    		UWSJobFactory uwsfact;
-    		String queryid = "";
     		final AdqlQuery queryentity = getqueryentity(jobid);
     	
 			if ( queryentity!=null){
@@ -154,30 +157,16 @@ public class AdqlTapAsyncController extends AbstractController {
     		
     		if (REQUEST!=null) uwsjob.setRequest(REQUEST);
     		if (LANG!=null) uwsjob.setLang(LANG);
-    		//if (QUERY!=null) uwsjob.setQuery(QUERY);
-    		   update(
-    	                new Runnable()
-    	                    {
-    	                    @Override
-    	                    public void run()
-    	                        {
-    	                      
-    	                        if (QUERY != null)
-    	                            {
-    	                        	queryentity.input(
-    	                            		QUERY
-    	                                );
-    	                            }
-    	                        }
-    	                    }
-    	                );
+    		if (QUERY!=null) uwsjob.setQuery(QUERY);
+    	
     	            
-				uwsjob.writeUWSJobToXML(uwsjob, writer);
+			UWSJob.writeUWSJobToXML(uwsjob, writer);
 
       }
     
     
     @RequestMapping(value="/{jobid}/phase", method = RequestMethod.POST)
+    @UpdateAtomicMethod
 	@ResponseBody
     public void phase(@PathVariable String jobid,
     		@ModelAttribute("urn:adql.resource.entity")
@@ -187,7 +176,6 @@ public class AdqlTapAsyncController extends AbstractController {
     	
     	PrintWriter writer = response.getWriter();
     	UWSJob uwsjob;
-    	String queryid = "";
     	AdqlQuery queryentity = getqueryentity(jobid);
     	
     	try{
@@ -198,23 +186,15 @@ public class AdqlTapAsyncController extends AbstractController {
 				uwsjob = uwsfactory.create(resource);
 			}
 			
-			//queryid = uwsjob.getResults();
 
 			if (PHASE==null){
 				TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
 			} else {
-
-				if (queryentity!=null){
-				
-					Status jobstatus = queryentity.prepare();
-					if (jobstatus == Status.READY){
-						jobstatus = queryentity.execute();
-					}
-				}
 				//uwsjob.setPhase(PHASE);
+				uwsfactory.runQueryJob(queryentity);
 			}
 			
-			uwsjob.writeUWSJobToXML(uwsjob, writer);
+			UWSJob.writeUWSJobToXML(uwsjob, writer);
 
 			
   		} catch (Exception e) {

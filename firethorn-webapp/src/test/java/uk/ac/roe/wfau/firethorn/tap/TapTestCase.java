@@ -34,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import adql.query.ADQLQuery;
+
 import sun.net.www.URLConnection;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -41,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
@@ -58,8 +61,9 @@ extends TestBase
 	
 	String ident = "32771";
 	String querystring = "Select top 10 * from atlas.Filter";
-	String phase = "RUNNING";
+	String phase = "RUN";
 	static AdqlQuery query;
+	
 	
 	@Autowired
 	 private UWSJobFactory uwsfactory = new UWSJobFactory();
@@ -101,10 +105,18 @@ extends TestBase
     	                );
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
-
-    	UWSJob uwsjob = uwsfactory.create(resource);
+        /*
+        AdqlSchema querySchema;
+		try {
+			querySchema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
+		} catch (final Exception ouch) {
+			querySchema= resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
+		}
+		
+		AdqlQuery q =  querySchema.queries().create(querystring);*/
+        query = uwsfactory.createNewQuery(resource, querystring);
+    	UWSJob uwsjob = uwsfactory.create(resource, query);
         String queryid = uwsjob.getFullQueryURL();
-        query = uwsjob.getQuery();
         log.debug("New Empty Query URL: [{}]" , queryid);
       
 
@@ -127,7 +139,8 @@ extends TestBase
      	log.debug("Creating new UWSJob with resource: [{}]" , ident);
     	UWSJob uwsjob = uwsfactory.create(resource, query);
 		uwsjob.setQuery(querystring);
-		
+        String queryid = uwsjob.getFullQueryURL();
+        log.debug("Query URL: [{}]" , queryid);
         log.debug("Setting QUERY input to: [{}]" , querystring);
         
         
@@ -153,7 +166,11 @@ extends TestBase
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
 
     	UWSJob uwsjob = uwsfactory.create(resource, query);     
-    	uwsjob.setPhase(phase);
+		uwsfactory.runQueryJob(query);
+
+    	//uwsjob.setPhase(phase);
+        String queryid = uwsjob.getFullQueryURL();
+        log.debug("Query URL: [{}]" , queryid);
         log.debug("Setting PHASE to: [{}]" , phase);
     
 
@@ -177,7 +194,8 @@ extends TestBase
     	
       
     	UWSJob uwsjob = uwsfactory.create(resource, query);     
-      
+        String queryid = uwsjob.getFullQueryURL();
+        log.debug("Query URL: [{}]" , queryid);
     	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
         readFromURL( uwsjob.getFullQueryURL());
 
