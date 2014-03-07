@@ -1,20 +1,14 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
@@ -110,7 +104,7 @@ class UWSJobFactory {
 			}
 			
 			try {
-				query = schema.queries().create("");
+				query = schema.queries().create(null);
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -202,6 +196,46 @@ class UWSJobFactory {
 			}
 				
         } 
+    
+	/**
+	 * Write UWSJob in XML format
+	 * @param errorMessage
+	 * @param writer
+	 */
+	public static void writeUWSJobToXML (UWSJob uwsjob, PrintWriter writer){
+		
+	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
+	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
+	     
+	            writer.append("<uws:jobId>" + uwsjob.getJobId() + "</uws:jobId>");
+	            writer.append("<uws:ownerId xsi:nil='true'>" + uwsjob.getOwnerId() + "</uws:ownerId>");
+	            writer.append("<uws:phase>" + uwsjob.getPhase() + "</uws:phase>");
+	            writer.append("<uws:startTime xsi:nil='true'>" + uwsjob.getStartTime() + "</uws:startTime>");
+	            writer.append("<uws:endTime xsi:nil='true'>" + uwsjob.getEndTime() + "</uws:endTime>");
+	            writer.append("<uws:executionDuration>" + uwsjob.getExecutionDuration() + "<uws:executionDuration>");
+	            writer.append("<uws:destruction>" + uwsjob.getDestructionTime() + "</uws:destruction>");
+	            writer.append("<uws:parameters>");
+			        if (uwsjob.getRequest()!=null){
+		            	writer.append("<uws:parameter id='request'>" + uwsjob.getRequest() + "</uws:parameter>");
+			        }
+			        if (uwsjob.getLang()!=null){
+		            	writer.append("<uws:parameter id='lang'>" + uwsjob.getLang() + "</uws:parameter>");
+			        }
+			        if (uwsjob.getQuery()!=null){
+		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery().input() + "</uws:parameter>");
+			        }
+		        writer.append("</uws:parameters>");
+		        
+		        writer.append("<uws:results>");
+			        if (uwsjob.getQuery() !=null){
+		            	writer.append("<uws:result id='result'  xlink:href='" + uwsjob.getResults() + "'></uws:result>");
+			        }
+			    
+		        writer.append("</uws:results>");
+	       
+	        writer.append("</uws:job>");
+		
+	}
 
 }
 

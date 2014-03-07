@@ -119,7 +119,7 @@ public class AdqlTapAsyncController extends AbstractController {
 					if (REQUEST!=null) uwsjob.setRequest(REQUEST);
 					if (LANG!=null) uwsjob.setLang(LANG);
 					
-					UWSJob.writeUWSJobToXML(uwsjob, writer);
+					uwsfactory.writeUWSJobToXML(uwsjob, writer);
 					
 				} else {
 					
@@ -160,7 +160,7 @@ public class AdqlTapAsyncController extends AbstractController {
     		if (QUERY!=null) uwsjob.setQuery(QUERY);
     	
     	            
-			UWSJob.writeUWSJobToXML(uwsjob, writer);
+			uwsfactory.writeUWSJobToXML(uwsjob, writer);
 
       }
     
@@ -194,7 +194,7 @@ public class AdqlTapAsyncController extends AbstractController {
 				uwsfactory.runQueryJob(queryentity);
 			}
 			
-			UWSJob.writeUWSJobToXML(uwsjob, writer);
+			uwsfactory.writeUWSJobToXML(uwsjob, writer);
 
 			
   		} catch (Exception e) {

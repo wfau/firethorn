@@ -105,16 +105,7 @@ extends TestBase
     	                );
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
-        /*
-        AdqlSchema querySchema;
-		try {
-			querySchema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-		} catch (final Exception ouch) {
-			querySchema= resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-		}
-		
-		AdqlQuery q =  querySchema.queries().create(querystring);*/
-        query = uwsfactory.createNewQuery(resource, querystring);
+        query = uwsfactory.createNewQuery(resource);
     	UWSJob uwsjob = uwsfactory.create(resource, query);
         String queryid = uwsjob.getFullQueryURL();
         log.debug("New Empty Query URL: [{}]" , queryid);
