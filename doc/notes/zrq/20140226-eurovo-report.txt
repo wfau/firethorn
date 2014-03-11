@@ -430,3 +430,50 @@
         ivo ASC
         cap_index ASC
 
+
+
+
+    SELECT
+        res_table.ivoid,
+        COUNT(res_table.table_name)
+    FROM
+        rr.res_table
+    GROUP BY
+        ivoid
+
+
+---------------------------------------------------------
+
+    SELECT
+        COUNT(rr.res_table.table_name)
+    FROM
+        rr.res_table
+    WHERE
+        rr.res_table.ivoid LIKE 'ivo://cds.vizier/%'
+
+    > 26203
+
+
+    SELECT
+        rr.res_table.ivoid,
+        COUNT(rr.res_table.table_name)
+    FROM
+        rr.res_table
+    WHERE
+        rr.res_table.ivoid NOT LIKE 'ivo://cds.vizier/%'
+    GROUP BY
+        rr.res_table.ivoid
+
+    > Only matches 64 services ?
+
+
+
+    SELECT
+        COUNT(rr.res_table.table_name)
+    FROM
+        rr.res_table
+    WHERE
+        rr.res_table.ivoid LIKE 'ivo://wfau.roe.ac.uk/%'
+
+    > None for ROE
+

@@ -1,0 +1,150 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Update our KVM images to include the project user accounts.
+#
+
+    volname=ubuntu-13-wfau-20140304
+    volfile=${volname}.qcow
+
+    tmpfile=$(mktemp --suffix '.qcow')
+
+# -----------------------------------------
+# Download and unpack our base image.
+#[root@kvm-server] 
+
+    wget http://data.metagrid.co.uk/ischnura/base/ubuntu-13-base-20140211.tar.gz
+    tar -xvzf ubuntu-13-base-20140211.tar.gz
+
+    cp ubuntu-13-base-20140211.qcow ${tmpfile:?}
+
+#---------------------------------------------------------------------
+# Prepare (clean) the virtual machine image.
+#[root@kvm-server] 
+
+    virt-sysprep --add ${tmpfile:?}
+
+#---------------------------------------------------------------------
+# Add our startup script(s).
+#[root@kvm-server] 
+
+    cat > script.a << 'EOF'
+
+    createuser()
+        {
+        local name=$1:?
+        local pkey=$2:?
+        
+        useradd --create-home ${name:?}
+
+        userhome=/home/${name:?}
+
+        if [ ! -e "${userhome:?}/.ssh" ]
+        then
+            mkdir "${userhome:?}/.ssh"
+        fi
+
+        pushd "${userhome:?}/.ssh"
+
+            if [ ! -e 'keys' ]
+            then
+                mkdir 'keys'
+            fi
+            pushd 'keys'
+                wget "${}"
+            popd
+
+            for keyfile in $(find 'keys' -name '*.pub')
+            do
+                echo "${keyfile:?}" 
+                cat  "${keyfile:?}" >> 'authorized_keys'
+            done
+
+        popd
+        
+        chown "${name:?}:${name:?}" "${userhome:?}/.ssh"
+        chmod g=,o=,u=rwx "${userhome:?}/.ssh"
+        }
+
+createuser frog 'http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub'
+createuser toad 'http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub'
+
+EOF
+
+    virt-sysprep \
+        --enable 'firstboot' \
+        --add ${tmpfile:?} \
+        --firstboot 'script.a'
+
+#
+# Not available on CentOS
+#       virt-sysprep \
+#           --add ${tmpfile:?} \
+#           --root-password random
+#
+
+    
+# -----------------------------------------
+# Create our managed volume.
+#[root@kvm-server] 
+
+    volpool=base
+
+    virsh vol-delete --pool "${volpool:?}" "${volfile:?}"
+    virsh vol-create-as "${volpool:?}" "${volfile:?}" 8GiB --allocation 0 --format qcow2
+    
+    virsh vol-upload --pool "${volpool:?}" "${volfile:?}" "${tmpfile:?}"
+    virsh vol-info   --pool "${volpool:?}" "${volfile:?}"
+    virsh vol-path   --pool "${volpool:?}" "${volfile:?}"
+
+# -----------------------------------------
+# Try using our new image ...
+#[root@kvm-server] 
+
+    ischnura-createvm
+
+        ....
+        [4] pi
+        ....
+        Select machine name (1) 4
+
+        ....
+        [6] ubuntu-13-wfau-20140304.qcow
+        ....
+        Select base image (1) 6
+
+        INFO : Node name [pi]
+        INFO : Base name [ubuntu-13-wfau-20140304.qcow]
+        INFO : Disc name [pi.qcow]
+        INFO : Disc size [8G]
+        ....
+
+
+... fails
+re-test with just the tar-gz image ?
+re-test with just the original image ?
+
+
+
+
+
