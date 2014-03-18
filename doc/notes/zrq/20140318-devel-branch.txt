@@ -1,0 +1,140 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#   Closing the ivoa-metadata branch.
+#   Starting a new OGSA-DAI testing branch
+
+# -----------------------------------------------------
+#[user@desktop]
+
+    workversion=1.9.6-zrq-ivoa-data
+    baseversion=1.9.7-dev-SNAPSHOT
+
+# -----------------------------------------------------
+# Close the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg branch
+        hg update "${workversion:?}"
+        hg commit --close-branch -m "Closing [branch-${workversion:?}]"
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Merge the branch into default.
+# https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Merge the changes.
+        hg update default
+        hg merge "${workversion:?}"
+
+        #
+        # Fix conflicts ...
+        #
+
+        #
+        # Fix the project version.
+        ./bin/version.sh "${baseversion:?}"
+
+        #
+        # Commit the changes.
+        hg commit -m "Merging [branch-${workversion:?}] into [${baseversion:?}]"
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Update the project version.
+#[user@desktop]
+
+    newversion=1.9.8-dev-SNAPSHOT
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${newversion:?}"
+
+        #
+        # Commit and tag the new version.
+        hg commit -m "Snapshot [version-${newversion:?}]"
+        hg tag    -f "version-${newversion:?}"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------------------
+# Create the new branch.
+#[user@desktop]
+
+    newbranch=[version]-[who]-[description]
+    newbranch=1.9.8-zrq-ogsadai-dqp
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check we have the most recent version.
+        hg pull
+        hg update
+
+        #
+        # Create the new branch.
+        hg update default
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
