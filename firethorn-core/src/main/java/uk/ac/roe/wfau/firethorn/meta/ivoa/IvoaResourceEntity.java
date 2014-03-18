@@ -17,10 +17,18 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
@@ -35,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
  *
@@ -62,7 +71,7 @@ public class IvoaResourceEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
 
     protected static final String DB_URI_COL  = "uri";
-    protected static final String DB_URL_COL  = "url";
+    protected static final String DB_ENDPOINT_URL_COL  = "url";
 
     /**
      * Our Entity Factory implementation.
@@ -93,10 +102,22 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String name)
+        public IvoaResource create(final String endpoint)
             {
             return super.insert(
                 new IvoaResourceEntity(
+                    endpoint
+                    )
+                );
+            }
+        
+        @Override
+        @CreateMethod
+        public IvoaResource create(final String endpoint, final String name)
+            {
+            return super.insert(
+                new IvoaResourceEntity(
+                    endpoint,
                     name
                     )
                 );
@@ -132,9 +153,24 @@ public class IvoaResourceEntity
         super();
         }
 
-    protected IvoaResourceEntity(final String name)
+    protected IvoaResourceEntity(final String endpoint)
         {
-        super(name);
+        this(
+            endpoint,
+            endpoint
+            );
+        }
+
+    protected IvoaResourceEntity(final String endpoint, final String name)
+        {
+        super(
+            name
+            );
+        endpoints.add(
+            new Endpoint(
+                endpoint
+                )
+            );
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -154,25 +190,6 @@ public class IvoaResourceEntity
     public void uri(final String uri)
         {
         this.uri = uri;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_URL_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String url;
-    @Override
-    public String url()
-        {
-        return this.url;
-        }
-    @Override
-    public void url(final String url)
-        {
-        this.url = url;
         }
 
     @Override
@@ -243,6 +260,63 @@ public class IvoaResourceEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
 
+    /**
+     * Embeddable implementation of the Endpoint interface. 
+     *
+     */
+    @Embeddable
+    public class Endpoint 
+    implements IvoaResource.Endpoint
+        {
+        /**
+         * Protected constructor.
+         *
+         */
+        protected Endpoint(String url)
+            {
+            this.url = url ;
+            }
+        
+        @Basic(fetch = FetchType.EAGER)
+        @Column(
+            name = DB_ENDPOINT_URL_COL,
+            unique = false,
+            nullable = true,
+            updatable = true
+            )
+        private String url;
+        @Override
+        public String url()
+            {
+            return this.url;
+            }
+        }
+
+    @ElementCollection
+    @CollectionTable(
+         name="Endpoints",
+         joinColumns=@JoinColumn(
+             name="service"
+             )
+         )
+    @Column(name="nickname")
+    private Set<Endpoint> endpoints = new HashSet<Endpoint>();
+    
+    @Override
+    public Endpoints endpoints()
+        {
+        return new Endpoints()
+            {
+            @Override
+            public Iterable<IvoaResource.Endpoint> select()
+                {
+                return new GenericIterable<IvoaResource.Endpoint, Endpoint>(
+                    endpoints
+                    ); 
+                }
+            };
         }
     }
+

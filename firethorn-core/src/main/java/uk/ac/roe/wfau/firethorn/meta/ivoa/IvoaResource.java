@@ -57,7 +57,13 @@ extends BaseResource<IvoaSchema>
          * Create a new Resource.
          *
          */
-        public IvoaResource create(final String name);
+        public IvoaResource create(final String endpoint);
+
+        /**
+         * Create a new Resource.
+         *
+         */
+        public IvoaResource create(final String endpoint, final String name);
 
         /**
          * The resource schema factory.
@@ -77,10 +83,55 @@ extends BaseResource<IvoaSchema>
     @Override
     public Schemas schemas();
 
+    /**
+     * The resource registry URI.
+     *
+     */
     public String uri();
+
+    /**
+     * The resource registry URI.
+     *
+     */
     public void uri(final String uri);
 
-    public String url();
-    public void url(final String url);
+    /**
+     * Public interface for a service Endpoint.
+     * 
+     */
+    public interface Endpoint
+        {
+        /**
+         * The resource endpoint URL.
+         *
+         */
+        public String url();
 
+        /**
+         * Get the service capabilities.
+         * 
+         */
+
+        }
+
+    /**
+     * Public  interface for the service Endpoint(s).
+     * 
+     */
+    public interface Endpoints
+        {
+        /**
+         * Select a list of the service Endpoint(s).
+         * 
+         */
+        public Iterable<Endpoint> select();
+        
+        }
+    
+    /**
+     * Access to the service Endpoint(s).
+     * 
+     */
+    public Endpoints endpoints();
+    
     }
