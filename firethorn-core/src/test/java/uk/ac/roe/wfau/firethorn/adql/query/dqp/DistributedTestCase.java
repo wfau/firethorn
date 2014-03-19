@@ -35,6 +35,44 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 public class DistributedTestCase
 extends DistributedQueryTestBase
     {
+    @Before
+    public void loadTestResources()
+    throws Exception
+        {
+        replace(
+            "{ATLAS_SOURCE}",
+            adqlResource(
+                "atlas.adql.resource"
+                ).schemas().select(
+                    ATLAS_VERSION
+                    ).tables().select(
+                        "atlasSource"
+                        ).base().alias()
+            );
+
+        replace(
+            "{ATLAS_CROSS}",
+            adqlResource(
+                "atlas.adql.resource"
+                ).schemas().select(
+                    ATLAS_VERSION
+                    ).tables().select(
+                        "atlasSourceXtwomass_psc"
+                        ).base().alias()
+            );
+
+        replace(
+            "{TWOMASS_SOURCE}",
+            adqlResource(
+                "twomass.adql.resource"
+                ).schemas().select(
+                    "remote_twomass"
+                    ).tables().select(
+                        "twomass_psc"
+                        ).base().alias()
+            );
+        }
+
     @Test
     public void test000()
     throws Exception
@@ -203,44 +241,6 @@ extends DistributedQueryTestBase
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
-            );
-        }
-    
-    @Before
-    public void loadTestResources()
-    throws Exception
-        {
-        replace(
-            "{ATLAS_SOURCE}",
-            adqlResource(
-                "atlas.adql.resource"
-                ).schemas().select(
-                    ATLAS_VERSION
-                    ).tables().select(
-                        "atlasSource"
-                        ).base().alias()
-            );
-
-        replace(
-            "{ATLAS_CROSS}",
-            adqlResource(
-                "atlas.adql.resource"
-                ).schemas().select(
-                    ATLAS_VERSION
-                    ).tables().select(
-                        "atlasSourceXtwomass_psc"
-                        ).base().alias()
-            );
-
-        replace(
-            "{TWOMASS_SOURCE}",
-            adqlResource(
-                "twomass.adql.resource"
-                ).schemas().select(
-                    "remote_twomass"
-                    ).tables().select(
-                        "twomass_psc"
-                        ).base().alias()
             );
         }
     }
