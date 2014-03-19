@@ -479,7 +479,7 @@ extends TestPropertiesBase
 
     private Map<String, String> replacements = new HashMap<String, String>(); 
 
-    protected void replacement(final String match, final String value)
+    protected void replace(final String match, final String value)
         {
         replacements.put(
             match,

@@ -47,7 +47,7 @@ extends AbstractQueryTestBase
         {
         log.debug("loadAtlasResources()");
 
-        replacement(
+        replace(
             "{ATLAS_VERSION}",
             ATLAS_VERSION
             );
@@ -64,7 +64,7 @@ extends AbstractQueryTestBase
             "atlas.adql.resource"
             );
 
-        testSchema(adqlspace, jdbcspace, "ATLASDR1");
+        testSchema(adqlspace, jdbcspace, ATLAS_VERSION);
         testSchema(adqlspace, jdbcspace, "ROSAT");
         testSchema(adqlspace, jdbcspace, "BestDR8");
         testSchema(adqlspace, jdbcspace, "BestDR9");

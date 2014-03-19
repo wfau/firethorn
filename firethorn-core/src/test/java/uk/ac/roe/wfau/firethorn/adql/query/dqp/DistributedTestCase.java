@@ -210,7 +210,7 @@ extends DistributedQueryTestBase
     public void loadTestResources()
     throws Exception
         {
-        replacement(
+        replace(
             "{ATLAS_SOURCE}",
             adqlResource(
                 "atlas.adql.resource"
@@ -221,7 +221,7 @@ extends DistributedQueryTestBase
                         ).base().alias()
             );
 
-        replacement(
+        replace(
             "{ATLAS_CROSS}",
             adqlResource(
                 "atlas.adql.resource"
@@ -232,7 +232,7 @@ extends DistributedQueryTestBase
                         ).base().alias()
             );
 
-        replacement(
+        replace(
             "{TWOMASS_SOURCE}",
             adqlResource(
                 "twomass.adql.resource"
