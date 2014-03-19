@@ -354,7 +354,7 @@ implements AdqlSchema
         }
 
     /**
-     * Create a copy of a base table.
+     * Create a copy of a base table, with CopyDepth set to FULL. 
      *
      */
     protected void realize(final BaseTable<?, ?> base)

@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,14 +94,14 @@ extends TestRoot
         }
 
     /**
-     * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
+     * Empty test to prevent Eclipse from throwing an initializationError if it runs this as a test.
      * @throws Exception
      *
     @Test
-     */
-    public void empty()
+    public void notest()
     throws Exception
         {
         }
+     */
     }
 

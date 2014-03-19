@@ -27,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -57,10 +59,6 @@ public class TestPropertiesBase
                     )
                 );
             }
-        catch (final FileNotFoundException ouch)
-            {
-            //log.debug("FileNotFoundException loading test properties [{}]", PROPERTIES_FILE);
-            }
         catch (final IOException ouch)
             {
             log.error("IOException loading test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
@@ -83,5 +81,16 @@ public class TestPropertiesBase
             {
             log.error("IOException saving test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
             }
+        }
+
+    /**
+     * Empty test to prevent Eclipse from throwing an initializationError if it runs this as a test.
+     * @throws Exception
+     *
+     */
+    @Test
+    public void notest()
+    throws Exception
+        {
         }
     }

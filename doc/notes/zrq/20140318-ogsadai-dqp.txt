@@ -1,0 +1,79 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+
+    Testing DQP distributed queries.
+
+    Create a 'local' resource for TwoMass.
+    Using separate tunneled JDBC connection. 
+
+    Import metadata for the TwoMass resource.
+    Distributed query spanning the Atlas and TwoMass.
+
+
+    atlasSourceXtwomass_psc
+    atlasSourceXtwomass_xsc
+
+# -----------------------------------------------------
+# Update our firethorn properties
+#[user@desktop]
+
+    gedit ${HOME:?}/firethorn.properties
+
+        firethorn.twomass.url=jdbc:jtds:sqlserver://localhost:1435/TWOMASS
+        firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.twomass.type=mssql
+        firethorn.twomass.user=xxxxxxxx
+        firethorn.twomass.pass=xxxxxxxx
+
+# -----------------------------------------------------
+# Update the test configuration
+#[user@desktop]
+
+    gedit firethorn-core/src/test/conf/database-config.xml
+
+        <!--+
+            | SSH tunnel to ROE database server.
+            | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+            +-->
+        <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+            <!--+
+                | DataSource properties.
+                +-->
+            <property name="jdbcUrl"     value="${firethorn.twomass.url}"/>
+            <property name="user"        value="${firethorn.twomass.user}"/>
+            <property name="password"    value="${firethorn.twomass.pass}"/>
+            <property name="driverClass" value="${firethorn.twomass.driver}"/>
+            <!--+
+                | C3P0 connection pool.
+                +-->
+            <property name="minPoolSize" value="5" />
+            <property name="maxPoolSize" value="10" />
+            <property name="maxIdleTime" value="60" />
+        </bean>
+
+# -----------------------------------------------------
+# Add the TWOMASS metadata. 
+#[user@desktop]
+
+

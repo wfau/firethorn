@@ -388,7 +388,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
-            throws EntityNotFoundException
+            throws NameNotFoundException
                 {
                 return select(
                     factories().jdbc().schemas().names().fullname(
