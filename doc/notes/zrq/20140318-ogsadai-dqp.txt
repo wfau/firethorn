@@ -76,4 +76,43 @@
 # Add the TWOMASS metadata. 
 #[user@desktop]
 
+    ......
+
+    public class DistributedTestCase
+    extends DistributedQueryTestBase
+        {
+        // ....
+        }
+
+    public class DistributedQueryTestBase
+    extends AtlasQueryTestBase
+        {
+        // ....
+        }
+
+    public class AtlasQueryTestBase
+    extends AbstractQueryTestBase
+        {
+        // ....
+        }
+
+    public class AbstractQueryTestBase
+    extends TestPropertiesBase
+        {
+        // ....
+        }
+
+    public class TestPropertiesBase
+    extends TestBase
+        {
+        // ....
+        }
+
+    public abstract class TestBase
+    extends TestRoot
+        {
+        // ....
+        }
+
+
 

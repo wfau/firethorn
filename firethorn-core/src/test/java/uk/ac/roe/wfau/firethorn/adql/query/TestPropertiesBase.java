@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
@@ -37,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  */
 @Slf4j
 public class TestPropertiesBase
-    extends TestBase
+extends TestBase
     {
 
     private static final String PROPERTIES_FILE = "target/junit-test.properties" ;
@@ -81,16 +79,5 @@ public class TestPropertiesBase
             {
             log.error("IOException saving test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
             }
-        }
-
-    /**
-     * Empty test to prevent Eclipse from throwing an initializationError if it runs this as a test.
-     * @throws Exception
-     *
-     */
-    @Test
-    public void notest()
-    throws Exception
-        {
         }
     }

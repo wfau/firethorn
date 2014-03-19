@@ -17,11 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.dqp;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;

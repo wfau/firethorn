@@ -97,11 +97,11 @@ extends TestRoot
      * Empty test to prevent Eclipse from throwing an initializationError if it runs this as a test.
      * @throws Exception
      *
+     */
     @Test
     public void notest()
     throws Exception
         {
         }
-     */
     }
 

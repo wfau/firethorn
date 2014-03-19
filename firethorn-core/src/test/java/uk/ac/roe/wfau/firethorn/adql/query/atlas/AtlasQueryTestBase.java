@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
+import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -30,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 @Slf4j
-//@Ignore
+@Ignore
 public class AtlasQueryTestBase
 extends AbstractQueryTestBase
     {
