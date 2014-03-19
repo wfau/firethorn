@@ -115,11 +115,11 @@ extends TestPropertiesBase
                     name,
                     url
                     );
-                jdbc.put(
-                    tag,
-                    found
-                    );
                 }
+            jdbc.put(
+                tag,
+                found
+                );
             }
         return found ;
         }
@@ -170,11 +170,11 @@ extends TestPropertiesBase
                 found = factories().adql().resources().create(
                     name
                     );
-                adql.put(
-                    tag,
-                    found
-                    );
                 }
+            adql.put(
+                tag,
+                found
+                );
             }
         return found ;
         }
@@ -477,11 +477,36 @@ extends TestPropertiesBase
         return s8;
         }
 
-    public void validate(final AdqlQuery query, final String expected)
+    private Map<String, String> replacements = new HashMap<String, String>(); 
+
+    protected void replacement(final String match, final String value)
+        {
+        replacements.put(
+            match,
+            value
+            );
+        }
+
+    protected String expand(final String input)
+        {
+        String result = input ;
+        for (Map.Entry<String, String> entry : replacements.entrySet())
+            {
+            result = result.replace(
+                entry.getKey(),
+                entry.getValue()
+                );
+            }
+        return result ;
+        }
+    
+    public void validate(final AdqlQuery query, final String input)
         {
         assertEquals(
             clean(
-                expected
+                expand(
+                    input
+                    )
                 ),
             clean(
                 query.osql()

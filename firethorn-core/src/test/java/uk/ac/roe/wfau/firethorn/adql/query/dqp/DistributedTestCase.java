@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.dqp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
+import org.junit.Before;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
@@ -43,7 +47,7 @@ extends DistributedQueryTestBase
             "    ra," +
             "    dec" +
             " FROM" +
-            "    ATLASDR1.atlasSource",
+            "    atlasSource",
 
             " SELECT TOP 100" +
             "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," +
@@ -55,6 +59,188 @@ extends DistributedQueryTestBase
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
                 }
+            );
+        }
+
+    @Test
+    public void test001()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    local_twomass.twomass_psc",
+
+            " SELECT TOP 100" +
+            "    TWOMASS.dbo.twomass_psc.ra  AS ra," +
+            "    TWOMASS.dbo.twomass_psc.dec AS dec" +
+            " FROM" +
+            "    TWOMASS.dbo.twomass_psc",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    @Test
+    public void test002()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    remote_twomass.twomass_psc",
+
+            " SELECT TOP 100" +
+            "    TWOMASS.dbo.twomass_psc.ra  AS ra," +
+            "    TWOMASS.dbo.twomass_psc.dec AS dec" +
+            " FROM" +
+            "    TWOMASS.dbo.twomass_psc",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " JOIN" +
+            "    atlasSourceXtwomass_psc" +
+            " ON" +
+            "    atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID" +
+            " JOIN" +
+            "    local_twomass.twomass_psc" +
+            " ON" +
+            "    local_twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID" +
+            "",
+
+            " SELECT TOP 100" + 
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlasSource" + 
+            " INNER JOIN" + 
+            "    {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc" + 
+            " ON" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.sourceid = {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.masterObjID" + 
+            " INNER JOIN" + 
+            "    TWOMASS.dbo.twomass_psc" + 
+            " ON" +
+            "    TWOMASS.dbo.twomass_psc.pts_key = {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.slaveObjID" + 
+            "",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    @Test
+    public void test004()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " JOIN" +
+            "    atlasSourceXtwomass_psc" +
+            " ON" +
+            "    atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID" +
+            " JOIN" +
+            "    remote_twomass.twomass_psc" +
+            " ON" +
+            "    remote_twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID" +
+            "",
+
+            " SELECT TOP 100" + 
+            "    {ATLAS_SOURCE}.ra  AS ra," +
+            "    {ATLAS_SOURCE}.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_SOURCE}" + 
+            " INNER JOIN" + 
+            "    {ATLAS_CROSS}" + 
+            " ON" +
+            "    {ATLAS_SOURCE}.sourceid = {ATLAS_CROSS}.masterObjID" + 
+            " INNER JOIN" + 
+            "    {TWOMASS_SOURCE}" + 
+            " ON" +
+            "    {TWOMASS_SOURCE}.pts_key = {ATLAS_CROSS}.slaveObjID" +
+            "",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+    
+    @Before
+    public void loadTestResources()
+    throws Exception
+        {
+        replacement(
+            "{ATLAS_SOURCE}",
+            adqlResource(
+                "atlas.adql.resource"
+                ).schemas().select(
+                    ATLAS_VERSION
+                    ).tables().select(
+                        "atlasSource"
+                        ).base().alias()
+            );
+
+        replacement(
+            "{ATLAS_CROSS}",
+            adqlResource(
+                "atlas.adql.resource"
+                ).schemas().select(
+                    ATLAS_VERSION
+                    ).tables().select(
+                        "atlasSourceXtwomass_psc"
+                        ).base().alias()
+            );
+
+        replacement(
+            "{TWOMASS_SOURCE}",
+            adqlResource(
+                "twomass.adql.resource"
+                ).schemas().select(
+                    "remote_twomass"
+                    ).tables().select(
+                        "twomass_psc"
+                        ).base().alias()
             );
         }
     }

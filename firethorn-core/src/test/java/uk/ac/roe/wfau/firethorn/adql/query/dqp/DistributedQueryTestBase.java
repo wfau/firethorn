@@ -51,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 @Slf4j
-@Ignore
+//@Ignore
 public class DistributedQueryTestBase
 extends AtlasQueryTestBase
     {
@@ -64,17 +64,14 @@ extends AtlasQueryTestBase
     public void loadLocalTwomass()
     throws Exception
         {
-        super.loadAtlasResources();
-
+        log.debug("loadLocalTwomass()");
         AdqlResource adqlspace = adqlResource(
             "atlas.adql.resource"
             );
         JdbcResource jdbcspace = jdbcResource(
             "atlas.jdbc.resource"
             );
-
         testSchema(adqlspace, jdbcspace, "local_twomass", "TWOMASS");
-
         }
 
     /**
@@ -85,6 +82,7 @@ extends AtlasQueryTestBase
     public void loadRemoteTwomass()
     throws Exception
         {
+        log.debug("loadRemoteTwomass()");
         JdbcResource jdbcspace = jdbcResource(
             "twomass.jdbc.resource",
             "twomass.jdbc.resource",

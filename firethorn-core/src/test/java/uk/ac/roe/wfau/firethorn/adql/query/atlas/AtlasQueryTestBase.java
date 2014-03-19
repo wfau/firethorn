@@ -17,32 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Iterator;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.TestPropertiesBase;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -50,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 @Slf4j
-@Ignore
+//@Ignore
 public class AtlasQueryTestBase
 extends AbstractQueryTestBase
     {
@@ -66,6 +46,12 @@ extends AbstractQueryTestBase
     throws Exception
         {
         log.debug("loadAtlasResources()");
+
+        replacement(
+            "{ATLAS_VERSION}",
+            ATLAS_VERSION
+            );
+        
         JdbcResource jdbcspace = jdbcResource(
             "atlas.jdbc.resource",
             "atlas.jdbc.resource",
@@ -84,19 +70,6 @@ extends AbstractQueryTestBase
         testSchema(adqlspace, jdbcspace, "BestDR9");
         testSchema(adqlspace, jdbcspace, "TWOMASS");
 
-        }
-
-    @Override
-    public void validate(final AdqlQuery query, final String sql)
-        {
-        assertEquals(
-            clean(
-                sql.replace("{ATLAS_VERSION}", ATLAS_VERSION)
-                ),
-            clean(
-                query.osql()
-                )
-            );
         }
     }
 
