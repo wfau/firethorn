@@ -71,7 +71,7 @@
 
              -->
 
-                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.OrderedSweepJoin"/>
+                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
 
                     </list>
                 </property>
