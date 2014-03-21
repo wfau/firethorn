@@ -1,0 +1,430 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# TODO
+
+    Query data from TAP resource
+    Dymanic creation of TAP resource.
+    Dymanic creation of DQP federation.
+
+# -----------------------------------------------------
+# Add the TWOMASS TAP resource to OGSA-DAI
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/resources/twomass"
+
+        id=twomasstap
+        type=uk.org.ogsadai.DATA_RESOURCE
+        creationTime=null
+        terminationTime=null
+        PROPERTIES
+        END
+        CONFIG
+    +   dai.astro.tapurl=http://wfaudata.roe.ac.uk/twomass-dsa/TAP/
+    -   dai.driver.class=net.sourceforge.jtds.jdbc.Driver
+    -   dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/TWOMASS
+    -   dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+        END
+        ACTIVITIES
+    +   uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+    -   uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+    -   uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+    -   uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+    -   uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+    -   uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+    -   uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+    -   uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+    -   uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+    -   uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+    -   uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
+    -   uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+    -   uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+        END
+    +   dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+    -   dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+
+# -----------------------------------------------------
+# Re-run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Try query the TAP service.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            "
+
+
+        ....
+
+        2014-03-21 18:46:22,251 DEBUG astro.ADQLQueryActivity [pool-1-thread-5,debug:84] ADQL QUERY: SELECT TOP 123 TWOMASS.dbo.twomass_psc.ra AS ra , TWOMASS.dbo.twomass_psc.dec AS dec FROM TWOMASS.dbo.twomass_psc
+        2014-03-21 18:46:22,251 DEBUG astro.ADQLQueryActivity [pool-1-thread-5,debug:84] TAP URL: http://wfaudata.roe.ac.uk/twomass-dsa/TAP
+        2014-03-21 18:46:22,253 DEBUG file.SimpleFileLoginProvider [pool-1-thread-3,debug:84] In getLogin: ResourceID:  User ID: null
+        2014-03-21 18:46:22,253 DEBUG file.SimpleFileLoginProvider [pool-1-thread-3,debug:84] Found 0 lines that match
+        2014-03-21 18:46:22,254 DEBUG file.SimpleFileLoginProvider [pool-1-thread-3,debug:84] Failed to find entry. Looking for wildcard
+        2014-03-21 18:46:22,255 DEBUG file.SimpleFileLoginProvider [pool-1-thread-3,debug:84] Found a login for null
+        2014-03-21 18:46:22,264 DEBUG astro.ADQLQueryActivity [pool-1-thread-5,debug:84] TAP PARAMETER: VERSION=1.0
+        2014-03-21 18:46:22,269 DEBUG astro.ADQLQueryActivity [pool-1-thread-5,debug:84] TAP PARAMETER: REQUEST=doQuery
+        2014-03-21 18:46:22,269 DEBUG astro.ADQLQueryActivity [pool-1-thread-5,debug:84] TAP PARAMETER: LANG=ADQL
+
+        ....
+
+        Activity:
+            activity name   = uk.org.ogsadai.SQLQuery
+            instance name   = uk.org.ogsadai.SQLQuery-ogsadai-9b89212f-6039-4cfa-ba9d-77fa6f42809f
+            target resource = twomass
+            inputs:
+                Literal: expression : SELECT TOP 123 TWOMASS.dbo.twomass_psc.ra AS ra , TWOMASS.dbo.twomass_psc.dec AS dec
+        FROM TWOMASS.dbo.twomass_psc
+            outputs:
+                ActivityOutputStream[name=data,pipeName=ogsadai-53a87980-9dbe-4a1d-8660-0930e0a6f798,source=uk.org.ogsadai.SQLQuery-ogsadai-9b89212f-6039-4cfa-ba9d-77fa6f42809f
+
+
+        2014-03-21 18:46:24,808 DEBUG event.LoggingActivityListener [pool-1-thread-5,debug:84] uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
+	        at uk.org.ogsadai.activity.astro.ADQLQueryActivity.processIteration(ADQLQueryActivity.java:389)
+	        at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	        at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	        at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	        at java.lang.Thread.run(Thread.java:744)
+        Caused by: java.lang.NoClassDefFoundError: uk/ac/starlink/votable/VOTableBuilder
+	        at uk.org.ogsadai.activity.astro.ADQLQueryActivity.processIteration(ADQLQueryActivity.java:352)
+	        ... 9 more
+        Caused by: java.lang.ClassNotFoundException: uk.ac.starlink.votable.VOTableBuilder
+	        at org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoader.java:1702)
+	        at org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoader.java:1547)
+	        ... 10 more
+
+# -----------------------------------------------------
+# BUGS
+
+        Re-using metadata for the local service means it inserts the .dbo. schema into the ADQL query.
+
+        ADQLQueryActivity requires VOTableBuilder from the STIL library.
+
+
+# -----------------------------------------------------
+# Add the StarLink libraries.
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/pom.xml"
+
+        <project>
+            ....
+            <dependencies>
+            ....
+
+    +           <!--+
+    +               | Starlink libraries.
+    +               | http://www.star.bris.ac.uk/~mbt/stil/
+    +               +-->
+    +           <dependency>
+    +               <groupId>uk.ac.starlink</groupId>
+    +               <artifactId>stil-util</artifactId>
+    +           </dependency>
+    +           <dependency>
+    +               <groupId>uk.ac.starlink</groupId>
+    +               <artifactId>stil-table</artifactId>
+    +           </dependency>
+    +           <dependency>
+    +               <groupId>uk.ac.starlink</groupId>
+    +               <artifactId>stil-votable</artifactId>
+    +           </dependency>
+
+            </dependencies>
+            ....
+        </project>
+
+# -----------------------------------------------------
+# Try query the TAP service.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            "
+
+
+        ....
+
+        POST /twomass-dsa/TAP/ HTTP/1.1
+        Content-Length: 161
+        Content-Type: application/x-www-form-urlencoded
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        VERSION=1.0&REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+123+TWOMASS.dbo.twomass_psc.ra+AS+ra+%2C+TWOMASS.dbo.twomass_psc.dec+AS+dec%0AFROM+TWOMASS.dbo.twomass_pscHTTP/1.1 200 OK
+
+        Date: Fri, 21 Mar 2014 21:02:00 GMT
+        Server: Apache-Coyote/1.1
+        Content-Type: text/html;charset=UTF-8
+        Content-Length: 2545
+        Vary: Accept-Encoding
+        Keep-Alive: timeout=5, max=100
+        Connection: Keep-Alive
+
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+        <html>
+        <head>
+        <title>TAP controls</title>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+        <style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
+        </head>
+
+# -----------------------------------------------------
+# BUGS
+
+    GAH
+    Looks like I was using the wrong query class :-(
+
+# -----------------------------------------------------
+# Change the ADQLQuery activity class to the ADQLAsyncQueryActivity 
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/activities.txt"
+
+        id=uk.org.ogsadai.ADQLQuery
+    -   class=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+    +   class=uk.org.ogsadai.activity.astro.ADQLAsyncQueryActivity
+        description=
+        CONFIG
+        END
+
+# Try query the TAP service.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            "
+
+
+        ....
+
+        POST /twomass-dsa/TAP/async HTTP/1.1
+        Content-Length: 161
+        Content-Type: application/x-www-form-urlencoded
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        VERSION=1.0&REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+123+TWOMASS.dbo.twomass_psc.ra+AS+ra+%2C+TWOMASS.dbo.twomass_psc.dec+AS+dec%0AFROM+TWOMASS.dbo.twomass_pscHTTP/1.1 303 See Other
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Location: http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/35ee5160:144b1584dfa:-7e3e
+        Content-Length: 0
+        Keep-Alive: timeout=5, max=100
+        Connection: Keep-Alive
+
+        GET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e HTTP/1.1
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        HTTP/1.1 200 OK
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Content-Type: text/xml;charset=ISO-8859-1
+        Content-Length: 545
+        Vary: Accept-Encoding
+        Keep-Alive: timeout=5, max=99
+        Connection: Keep-Alive
+
+        <?xml version='1.0'?>
+        <?xml-stylesheet href='../uws-job-to-html.xsl' type='text/xsl'?>
+        <uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0rc3' >
+          <uws:jobId>35ee5160:144b1584dfa:-7e3e</uws:jobId>
+          <uws:phase>PENDING</uws:phase>
+          <uws:startTime nil='true'/>
+          <uws:endTime nil='true'/>
+          <uws:duration nil='true'/>
+          <uws:destruction>2014-03-22T22:09:09+0000</uws:destruction>
+          <uws:results>
+            <uws:result id='result'/>
+          </uws:results>
+          <uws:errorSummary>
+            <uws:status>OK</uws:status>
+          </uws:errorSummary>
+        </uws:job>
+        POST /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e/phase HTTP/1.1
+        Content-Length: 9
+        Content-Type: application/x-www-form-urlencoded
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        PHASE=RUNHTTP/1.1 303 See Other
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Location: http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/35ee5160:144b1584dfa:-7e3e
+        Content-Length: 0
+        Keep-Alive: timeout=5, max=98
+        Connection: Keep-Alive
+
+        GET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e HTTP/1.1
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        HTTP/1.1 200 OK
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Content-Type: text/xml;charset=ISO-8859-1
+        Content-Length: 575
+        Vary: Accept-Encoding
+        Keep-Alive: timeout=5, max=97
+        Connection: Keep-Alive
+
+        <?xml version='1.0'?>
+        <?xml-stylesheet href='../uws-job-to-html.xsl' type='text/xsl'?>
+        <uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0rc3' >
+          <uws:jobId>35ee5160:144b1584dfa:-7e3e</uws:jobId>
+          <uws:phase>EXECUTING</uws:phase>
+          <uws:startTime>2014-03-21T22:09:10+0000</uws:startTime>
+          <uws:endTime nil='true'/>
+          <uws:duration nil='true'/>
+          <uws:destruction>2014-03-22T22:09:09+0000</uws:destruction>
+          <uws:results>
+            <uws:result id='result'/>
+          </uws:results>
+          <uws:errorSummary>
+            <uws:status>OK</uws:status>
+          </uws:errorSummary>
+        </uws:job>
+        GET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e/phase HTTP/1.1
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        HTTP/1.1 200 OK
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Content-Type: text/plain;charset=ISO-8859-1
+        Content-Length: 5
+        Vary: Accept-Encoding
+        Keep-Alive: timeout=5, max=96
+        Connection: Keep-Alive
+
+        ERRORGET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e HTTP/1.1
+        Host: wfaudata.roe.ac.uk
+        Connection: Keep-Alive
+        User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
+
+        HTTP/1.1 200 OK
+        Date: Fri, 21 Mar 2014 22:09:09 GMT
+        Server: Apache-Coyote/1.1
+        Content-Type: text/xml;charset=ISO-8859-1
+        Content-Length: 1877
+        Vary: Accept-Encoding
+        Keep-Alive: timeout=5, max=95
+        Connection: Keep-Alive
+
+        <?xml version='1.0'?>
+        <?xml-stylesheet href='../uws-job-to-html.xsl' type='text/xsl'?>
+        <uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0rc3' >
+          <uws:jobId>35ee5160:144b1584dfa:-7e3e</uws:jobId>
+          <uws:phase>ERROR</uws:phase>
+          <uws:startTime>2014-03-21T22:09:10+0000</uws:startTime>
+          <uws:endTime nil='true'/>
+          <uws:duration nil='true'/>
+          <uws:destruction>2014-03-22T22:09:09+0000</uws:destruction>
+          <uws:results>
+            <uws:result id='result'/>
+          </uws:results>
+          <uws:errorSummary>
+            <uws:status>ERROR:  ()
+        com.microsoft.sqlserver.jdbc.SQLServerException: The multi-part identifier "TWOMASS.DBO.TWOMASS_PSC.ra" could not be bound.
+        .at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement.getNextResult(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement.doExecuteStatement(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement$StmtExecCmd.doExecute(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.TDSCommand.execute(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeCommand(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeStatement(Unknown Source)
+        .at com.microsoft.sqlserver.jdbc.SQLServerStatement.execute(Unknown Source)
+        .at org.astrogrid.tableserver.jdbc.JdbcPlugin.askQuery(JdbcPlugin.java:155)
+        .at org.astrogrid.dataservice.queriers.Querier.ask(Querier.java:205)
+        .at org.astrogrid.dataservice.queriers.Querier.run(Querier.java:178)
+        .at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+        .at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+        .at java.lang.Thread.run(Thread.java:619)
+        </uws:status>
+          </uws:errorSummary>
+        </uws:job>
+
+
+
+
+

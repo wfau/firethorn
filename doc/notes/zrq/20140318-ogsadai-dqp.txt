@@ -50,7 +50,7 @@
 # Update the test configuration
 #[user@desktop]
 
-    gedit firethorn-core/src/test/conf/database-config.xml
+    gedit "${FIRETHORN_CODE:?}/firethorn-core/src/test/conf/database-config.xml"
 
         <!--+
             | SSH tunnel to ROE database server.
@@ -407,9 +407,9 @@ twomassschema=/adql/schema/9273447
             AND
                 twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
             AND
-                atlasSource.ra  < 1.0
+                atlasSource.ra  > 1.0
             AND
-                atlasSource.ra  > 2.0
+                atlasSource.ra  < 2.0
             AND
                 atlasSource.dec > 1.0
             AND
@@ -440,6 +440,89 @@ twomassschema=/adql/schema/9273447
         at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
         ... 10 more
 
+
+# -----------------------------------------------------
+# Add 'twomass' node to the DQP federation.
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/dqp/testdqp/DQPContext.xml"
+
+        <!--+
+            | TWOMASS data node.
+            +-->
+    +   <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    +       <constructor-arg name="resourceID"     value="twomass"/>
+    +       <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+    +       <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+    +       <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+    +       <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    +   </bean>
+
+        .....
+
+        <!--+
+            | DQP federation.
+            +-->
+        <bean id="federation" 
+            class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
+
+            <property name="metadataServiceFactory">
+                <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.MetadataServiceFactoryImpl">
+                    <constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/>
+                </bean>
+            </property>
+
+            <property name="dataNodesMap">
+                <map>
+                    .....
+                +   <entry key="twomass">
+                +       <ref bean="twomass"/>
+                +   </entry>
+                    <entry key="atlas">
+                        <ref bean="atlas"/>
+                    </entry>
+                    .....
+                </map>
+                .....
+            </property>
+            .....
+        </bean>
+
+# -----------------------------------------------------
+# Re-run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
 # -----------------------------------------------------
 # Try a distributed query.
 #[user@desktop]
@@ -457,7 +540,68 @@ twomassschema=/adql/schema/9273447
             AND
                 twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
             AND
-                atlasSource.ra  < 1.0
+                atlasSource.ra  > 1.0
             AND
-                atlasSource.ra  > 2.0
+                atlasSource.ra  < 2.0
+            AND
+                atlasSource.dec > 1.0
+            AND
+                atlasSource.dec < 2.0
+            AND
+                twomass.twomass_psc.ra > 1.0
+            AND
+                twomass.twomass_psc.ra < 2.0
+            AND
+                twomass.twomass_psc.dec > 1.0
+            AND
+                twomass.twomass_psc.dec < 2.0
+            "
+
+    RUNNING
+    RUNNING
+    RUNNING
+    COMPLETED
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 0 AND 30
+            AND
+                atlasSource.dec BETWEEN 0 AND 30
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 0 AND 30
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 0 AND 30
+            "
+
+    RUNNING
+    RUNNING
+    RUNNING
+    COMPLETED
+
+# -----------------------------------------------------
+# WARNING - BUG
+# -----------------------------------------------------
+
+    A missing data node in the DQP federation causes a NullPointer Exception deep in the QueryGraph evaluation.
+    
+    Major TODO is to implement dymanic creation and configuration of DQP federation data resources.
+
+    Still TODO is to wire this up to a TAP service.
 
