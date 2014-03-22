@@ -872,5 +872,20 @@
 
         Yay .. works !!
 
+# -----------------------------------------------------
+# TODO
+
+    Test remote TAP with DQP.
+
+    Metadata for the IvoaResource, IvoaSchema, IvoaTable, IvoaColumn
+    Service data (endpoint etc).
+
+    Our own OGSA-DAI TAP Activity.
+    OGSA-DAI Activity for status callbacks.
+
+    Dynamic OGSA-DAI components ...
+
+
+
 
 
