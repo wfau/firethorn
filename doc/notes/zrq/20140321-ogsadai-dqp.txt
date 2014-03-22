@@ -96,9 +96,8 @@
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
-        popd
-    popd
-
+            .....
+            
 # -----------------------------------------------------
 # Try query the TAP service.
 #[user@desktop]
@@ -597,7 +596,7 @@
 
 
 # -----------------------------------------------------
-# Try 'tweaking' the TWOMASS table metadata.
+# Try 'tweaking' the TWOMASS schema metadata.
 #[user@desktop]
 
     deploytype=test
@@ -747,4 +746,131 @@
             "
 
         ....
+
+        2014-03-22 04:52:51,586 DEBUG astro.ADQLAsyncQueryActivity [pool-1-thread-13,debug:84] Waiting for job to complete
+        2014-03-22 04:52:51,586 DEBUG astro.ADQLAsyncQueryActivity [pool-1-thread-13,debug:84] Poll interval: 500ms
+        2014-03-22 04:52:51,587 DEBUG astro.ADQLAsyncQueryActivity [pool-1-thread-13,debug:84] No timeout.
+        2014-03-22 04:52:52,158 DEBUG activity.MatchedIterativeActivity [pool-1-thread-13,debug:84] performing clean-up
+        2014-03-22 04:52:52,160 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] uk.org.ogsadai.activity.ActivityUserException: A user problem has occured during activity processing.
+	        at uk.org.ogsadai.activity.astro.ADQLAsyncQueryActivity$2.call(ADQLAsyncQueryActivity.java:566)
+	        at uk.org.ogsadai.activity.astro.ADQLAsyncQueryActivity$2.call(ADQLAsyncQueryActivity.java:525)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	        at java.lang.Thread.run(Thread.java:744)
+        Caused by: uk.org.ogsadai.activity.astro.QueryFailedException: ERROR:  ()
+        com.microsoft.sqlserver.jdbc.SQLServerException: Invalid object name 'TWOMASS.twomass_psc'.
+	        at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement.getNextResult(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement.doExecuteStatement(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement$StmtExecCmd.doExecute(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.TDSCommand.execute(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeCommand(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeStatement(Unknown Source)
+	        at com.microsoft.sqlserver.jdbc.SQLServerStatement.execute(Unknown Source)
+	        at org.astrogrid.tableserver.jdbc.JdbcPlugin.askQuery(JdbcPlugin.java:155)
+	        at org.astrogrid.dataservice.queriers.Querier.ask(Querier.java:205)
+	        at org.astrogrid.dataservice.queriers.Querier.run(Querier.java:178)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	        at java.lang.Thread.run(Thread.java:619)
+
+# -----------------------------------------------------
+# Try 'tweaking' the TWOMASS schema metadata.
+#[user@desktop]
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0109JdbcTableEntity'
+            go
+
+# -----------------------------------------------------
+# Swap to using the GAVO TAP service.
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/resources/twomass"
+
+        id=twomass
+        type=uk.org.ogsadai.DATA_RESOURCE
+        creationTime=null
+        terminationTime=null
+        PROPERTIES
+        END
+        CONFIG
+    -   dai.astro.tapurl=http://wfaudata.roe.ac.uk/twomass-dsa/TAP/
+    +   dai.astro.tapurl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+        END
+        ACTIVITIES
+        uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+        END
+        dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+
+# -----------------------------------------------------
+# Update the TWOMASS schema metadata.
+#[user@desktop]
+
+            UPDATE FT0109JdbcSchemaEntity SET name = 'twomass' WHERE ident = '9273446'
+            go
+
+            UPDATE FT0109JdbcTableEntity SET name = 'data' WHERE ident = '9306259'
+            go
+
+            UPDATE FT0109JdbcColumnEntity SET name = 'RAJ2000' WHERE ident = '9343494'
+            go
+
+            UPDATE FT0109JdbcColumnEntity SET name = 'DEJ2000' WHERE ident = '9343495'
+            go
+
+
+# -----------------------------------------------------
+# Re-run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+            ....
+
+# -----------------------------------------------------
+# Try query the TAP service.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass_psc
+            "
+
+        ....
+
+        Yay .. works !!
+
+
 
