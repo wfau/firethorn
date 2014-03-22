@@ -241,7 +241,6 @@
 # -----------------------------------------------------
 # BUGS
 
-    GAH
     Looks like I was using the wrong query class :-(
 
 # -----------------------------------------------------
@@ -257,6 +256,7 @@
         CONFIG
         END
 
+# -----------------------------------------------------
 # Try query the TAP service.
 #[user@desktop]
 
@@ -279,7 +279,9 @@
         Connection: Keep-Alive
         User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
 
-        VERSION=1.0&REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+123+TWOMASS.dbo.twomass_psc.ra+AS+ra+%2C+TWOMASS.dbo.twomass_psc.dec+AS+dec%0AFROM+TWOMASS.dbo.twomass_pscHTTP/1.1 303 See Other
+        VERSION=1.0&REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+123+TWOMASS.dbo.twomass_psc.ra+AS+ra+%2C+TWOMASS.dbo.twomass_psc.dec+AS+dec%0AFROM+TWOMASS.dbo.twomass_psc
+        
+        HTTP/1.1 303 See Other
         Date: Fri, 21 Mar 2014 22:09:09 GMT
         Server: Apache-Coyote/1.1
         Location: http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/35ee5160:144b1584dfa:-7e3e
@@ -317,6 +319,7 @@
             <uws:status>OK</uws:status>
           </uws:errorSummary>
         </uws:job>
+
         POST /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e/phase HTTP/1.1
         Content-Length: 9
         Content-Type: application/x-www-form-urlencoded
@@ -324,7 +327,9 @@
         Connection: Keep-Alive
         User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
 
-        PHASE=RUNHTTP/1.1 303 See Other
+        PHASE=RUN
+
+        HTTP/1.1 303 See Other
         Date: Fri, 21 Mar 2014 22:09:09 GMT
         Server: Apache-Coyote/1.1
         Location: http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/35ee5160:144b1584dfa:-7e3e
@@ -362,6 +367,7 @@
             <uws:status>OK</uws:status>
           </uws:errorSummary>
         </uws:job>
+
         GET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e/phase HTTP/1.1
         Host: wfaudata.roe.ac.uk
         Connection: Keep-Alive
@@ -376,7 +382,9 @@
         Keep-Alive: timeout=5, max=96
         Connection: Keep-Alive
 
-        ERRORGET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e HTTP/1.1
+        ERROR
+        
+        GET /twomass-dsa/TAP/async/35ee5160:144b1584dfa:-7e3e HTTP/1.1
         Host: wfaudata.roe.ac.uk
         Connection: Keep-Alive
         User-Agent: Apache-HttpClient/4.3.1 (java 1.5)
@@ -424,7 +432,319 @@
           </uws:errorSummary>
         </uws:job>
 
+# -----------------------------------------------------
+# BUGS
+
+    Some of the ogsadai jars get included twice.
+
+    The metadata client includes the following.
+
+    cat "${FIRETHORN_CODE:?}/firethorn-ogsadai/metadata/client/pom.xml"
+
+        ....
+        <!--+
+            | The OGSA-DAI components used by our code.
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-dqp-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-astro-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+        ....
+
+    Which are also built into the original OGSA-DAI webapp.
+    
+    Our webapp starts with the OGSA-DAI webapp and includes the metadata client.
+    Including the metadata client also pulls in a second version of the libraries in its dependencies list.
+    Need to find a way of removing the duplicates.    
+
+    Important one for us is the ogsadai-astro-server jar.
+    Might be better to create our own version of the astro activities.
+
+# -----------------------------------------------------
+# Locate the TWOMASS schema metadata.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            "
 
 
+        ....
 
+        # JSON details of the query.
+        {
+        "resources" : [
+            "http://localhost:8080/firethorn/jdbc/resource/9240580"
+            ],
+        "input" : "SELECT TOP 123 ra, dec FROM twomass.twomass_psc",
+        "mode" : "DIRECT",
+        "status" : "READY",
+        "schema" : "http://localhost:8080/firethorn/adql/schema/9273450",
+        "osql" : "SELECT TOP 123 TWOMASS.dbo.twomass_psc.ra AS ra , TWOMASS.dbo.twomass_psc.dec AS dec\nFROM TWOMASS.dbo.twomass_psc",
+        "tables" : [
+            "http://localhost:8080/firethorn/adql/table/(9273448:9306269)"
+            ],
+        "text" : null,
+        "syntax" : {
+            "friendly" : null,
+            "status" : "VALID",
+            "message" : null
+            },
+        "owner" : "http://localhost:8080/firethorn/auth/identity/9175041",
+        "workspace" : "http://localhost:8080/firethorn/adql/resource/9240582",
+        "name" : "QUERY_20140321_220859450",
+        "ident" : "http://localhost:8080/firethorn/adql/query/9371680",
+        "modified" : "2014-03-21T22:09:03.444",
+        "rowid" : "rowid",
+        "created" : "2014-03-21T22:08:59.451",
+        "adql" : "SELECT TOP 123 ra , dec\nFROM twomass.twomass_psc",
+        "fields" : [
+                {
+                "length" : 0,
+                "name" : "ra",
+                "type" : "DOUBLE"
+                },
+                {
+                "length" : 0,
+                "name" : "dec",
+                "type" : "DOUBLE"
+                }
+            ],
+        "columns" : [],
+        "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-query-1.0.json",
+        "results" : {
+            "jdbc" : "http://localhost:8080/firethorn/jdbc/table/9306334",
+            "adql" : "http://localhost:8080/firethorn/adql/table/9306335",
+            "votable" : "http://localhost:8080/firethorn/adql/query/9371680/votable",
+            "datatable" : "http://localhost:8080/firethorn/adql/table/9306335/datatable"
+            }
+        }
+
+        # Includes a list of the resources used.
+        "resources" : [
+            "http://localhost:8080/firethorn/jdbc/resource/9240580"
+            ],
+
+        # JSON details of the resource.
+        {
+        "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json",
+        "ogsadai": "twomass",
+        "connection": {
+            "user": null,
+            "uri": "spring:RoeTWOMASS",
+            "status": "CREATED"
+            },
+        "fullname": "TWOMASS JDBC conection",
+        "schemas": "http://localhost:8080/firethorn/jdbc/resource/9240580/schemas/select",
+        "name": "TWOMASS JDBC conection",
+        "text": null,
+        "ident": "http://localhost:8080/firethorn/jdbc/resource/9240580",
+        "modified": "2014-03-19T18:17:51.803",
+        "created": "2014-03-19T18:17:51.803",
+        "owner": "http://localhost:8080/firethorn/auth/identity/9175040"
+        }
+
+        # Includes a URL for the list of the schemas.
+        "schemas": "http://localhost:8080/firethorn/jdbc/resource/9240580/schemas/select",
+
+        # The list of schemas contains details of the TWOMASS schema.
+        [
+            {
+            "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-schema-1.0.json",
+            "fullname": "TWOMASS.dbo",
+            "tables": "http://localhost:8080/firethorn/jdbc/schema/9273446/tables/select",
+            "root": "http://localhost:8080/firethorn/jdbc/schema/9273446",
+            "base": "http://localhost:8080/firethorn/jdbc/schema/9273446",
+            "resource": "http://localhost:8080/firethorn/jdbc/resource/9240580",
+            "parent": "http://localhost:8080/firethorn/jdbc/resource/9240580",
+            "depth": "FULL",
+            "name": "TWOMASS.dbo",
+            "text": null,
+            "ident": "http://localhost:8080/firethorn/jdbc/schema/9273446",
+            "modified": "2014-03-19T18:18:02.087",
+            "created": "2014-03-19T18:18:02.087",
+            "owner": "http://localhost:8080/firethorn/auth/identity/9175040"
+            }
+        ]
+
+        # Which gives us the ident of the schema we want.
+        "ident": "http://localhost:8080/firethorn/jdbc/schema/9273446",
+
+
+# -----------------------------------------------------
+# Try 'tweaking' the TWOMASS table metadata.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+            use [FirethornMetadataZRQ0109DEV]
+            go
+
+            SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'FT0109%'
+            go
+
+                table_name
+                -------------------------------------
+                FT0109AdqlColumnEntity
+                FT0109AdqlQueryEntity
+                FT0109AdqlQueryJoinToBaseResource
+                FT0109AdqlResourceEntity
+                FT0109AdqlSchemaEntity
+                FT0109AdqlTableEntity
+                FT0109AuthenticationEntity
+                FT0109CommunityEntity
+                FT0109ConfigProperty
+                FT0109IdentityEntity
+                FT0109IvoaColumnEntity
+                FT0109IvoaResourceEntity
+                FT0109IvoaSchemaEntity
+                FT0109IvoaTableEntity
+                FT0109JdbcColumnEntity
+                FT0109JdbcResourceEntity
+                FT0109JdbcSchemaEntity
+                FT0109JdbcTableEntity
+                FT0109JobEntity
+                FT0109OperationEntity
+                FT0109TestJobEntity
+
+            SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0109JdbcSchemaEntity'
+            go
+
+                column_name
+                --------------
+                ident
+                created
+                modified
+                name
+                text
+                copydepth
+                scantime
+                status
+                owner
+                jdbccatalog
+                jdbcschema
+                parent
+
+            SELECT * FROM FT0109JdbcSchemaEntity WHERE ident = '9273446'
+            go
+
+                ident       created                         modified                        name            text        copydepth       scantime                status      owner       jdbccatalog     jdbcschema      parent  
+                ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                9273446     2014-03-19 18:18:02.0870000     2014-03-19 18:18:02.0870000     TWOMASS.dbo     NULL        FULL            1395253087735.000000    CREATED     9175040     TWOMASS         dbo             9240580
+
+
+            UPDATE FT0109JdbcSchemaEntity SET name = 'TWOMASS' WHERE ident = '9273446'
+            go
+
+# -----------------------------------------------------
+# Check the schema metadata is updated.
+#[user@desktop]
+
+    curl 'http://localhost:8080/firethorn/jdbc/schema/9273446' | ./pp
+
+        {
+       "base" : "http://localhost:8080/firethorn/jdbc/schema/9273446",
+       "owner" : "http://localhost:8080/firethorn/auth/identity/9175040",
+       "parent" : "http://localhost:8080/firethorn/jdbc/resource/9240580",
+       "name" : "TWOMASS",
+       "depth" : "FULL",
+       "ident" : "http://localhost:8080/firethorn/jdbc/schema/9273446",
+       "modified" : "2014-03-19T18:18:02.087",
+       "resource" : "http://localhost:8080/firethorn/jdbc/resource/9240580",
+       "created" : "2014-03-19T18:18:02.087",
+       "tables" : "http://localhost:8080/firethorn/jdbc/schema/9273446/tables/select",
+       "text" : null,
+       "fullname" : "TWOMASS",
+       "root" : "http://localhost:8080/firethorn/jdbc/schema/9273446",
+       "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-schema-1.0.json"
+        }
+
+    curl 'http://localhost:8080/firethorn/jdbc/schema/9273446/tables/select' | ./pp
+
+        [
+            ....
+            {
+            "schema" : "http://localhost:8080/firethorn/jdbc/schema/9273446",
+            "formats" : {
+                "votable" : "http://localhost:8080/firethorn/jdbc/table/9306259/votable",
+                "datatable" : "http://localhost:8080/firethorn/jdbc/table/9306259/datatable"
+                },
+            "text" : null,
+            "metadata" : {
+                "jdbc" : {
+                    "count" : 0,
+                    "status" : "CREATED",
+                    "type" : "TABLE"
+                    },
+                "adql" : {
+                    "count" : 0,
+                    "status" : "CREATED"
+                    }
+                },
+            "root" : "http://localhost:8080/firethorn/jdbc/table/9306259",
+            "owner" : "http://localhost:8080/firethorn/auth/identity/9175040",
+            "base" : "http://localhost:8080/firethorn/jdbc/table/9306259",
+            "parent" : "http://localhost:8080/firethorn/jdbc/schema/9273446",
+            "query" : null,
+            "name" : "twomass_psc",
+            "depth" : "FULL",
+            "ident" : "http://localhost:8080/firethorn/jdbc/table/9306259",
+            "modified" : "2014-03-19T18:18:06.160",
+            "created" : "2014-03-19T18:18:06.160",
+            "fullname" : "TWOMASS.twomass_psc",
+            "columns" : "http://localhost:8080/firethorn/jdbc/table/9306259/columns/select",
+            "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-table-1.0.json",
+            "alias" : "JDBC_9306259"
+            },
+            ....
+        ]
+
+# -----------------------------------------------------
+# Try query the TAP service.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass_psc
+            "
+
+        ....
 
