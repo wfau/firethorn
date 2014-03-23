@@ -993,5 +993,31 @@
 
     The DISTRIBUTED ADQL parser is generating the wrong column names.
     Should be JDBC_9306259.RAJ2000 not JDBC_9306259.ra.
+
+        SELECT
+            JDBC_9306116.ra AS atra,
+            JDBC_9306116.dec AS atdec,
+            JDBC_9306259.ra AS tmra,
+            JDBC_9306259.dec AS tmdec
+        FROM
+            JDBC_9306116
+        INNER JOIN
+            JDBC_9306140
+        ON
+            JDBC_9306116.sourceID = JDBC_9306140.masterObjID
+        INNER JOIN
+            JDBC_9306259
+        ON
+            JDBC_9306259.pts_key = JDBC_9306140.slaveObjID
+        WHERE
+            JDBC_9306116.ra BETWEEN 180 AND 181
+        AND
+            JDBC_9306116.dec BETWEEN -3 AND -2
+        AND
+            JDBC_9306259.pts_key BETWEEN 180 AND 181
+        AND
+            JDBC_9306259.pts_key BETWEEN -3 AND -2
     
+    We are getting JDBC alias for the table, but ADQL name for the column.
+
 
