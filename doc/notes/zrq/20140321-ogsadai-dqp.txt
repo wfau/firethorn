@@ -885,7 +885,113 @@
 
     Dynamic OGSA-DAI components ...
 
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
 
+        #
+        # Finding likely candidates ..
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                COUNT(atlasSource.ra),
+                MAX(atlasSource.ra) AS minatra,
+                MIN(atlasSource.ra) AS maxatra,
+                MAX(atlasSource.dec) AS minatdec,
+                MIN(atlasSource.dec) AS maxatdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                atlasSourceXtwomass_psc.masterObjID IS NOT NULL
+            AND
+                atlasSourceXtwomass_psc.slaveObjID IS NOT NULL
+            "
 
+        <TABLEDATA>
+            <TR>
+                <TD>2666</TD>
+                <TD>180.99925950746623</TD>
+                <TD>180.00002584422873</TD>
+                <TD>-2.0887356562119153</TD>
+                <TD>-2.9995998484434456</TD>
+            </TR>
+        </TABLEDATA>
 
+        #
+        # Finding likely candidates ..
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                COUNT(twomass_psc.ra) AS countra,
+                MAX(twomass_psc.ra) AS minatra,
+                MIN(twomass_psc.ra) AS maxatra,
+                MAX(twomass_psc.dec) AS minatdec,
+                MIN(twomass_psc.dec) AS maxatdec
+            FROM
+                twomass_psc
+            WHERE
+                twomass_psc.ra  BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+        <TABLEDATA>
+            <TR>
+                <TD>1863</TD>
+                <TD>180.999257</TD>
+                <TD>180.000256</TD>
+                <TD>-2.000478</TD>
+                <TD>-2.999654</TD>
+            </TR>
+        </TABLEDATA>
+
+        #
+        # Try the JOIN  ..
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.pts_key BETWEEN 180 AND 181
+            AND
+                twomass_psc.pts_key BETWEEN -3 AND -2
+            "
+
+        ....
+        Caused by: uk.org.ogsadai.dqp.lqp.exceptions.AttributeNotFoundException: Attribute not found: JDBC_9306259.ra
+            at uk.org.ogsadai.dqp.lqp.HeadingImpl.getMatchingAttribute(HeadingImpl.java:161)
+            at uk.org.ogsadai.dqp.lqp.operators.ProjectOperator.localUpdate(ProjectOperator.java:432)
+            at uk.org.ogsadai.dqp.lqp.operators.ProjectOperator.<init>(ProjectOperator.java:246)
+            at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildQuery(LQPBuilder.java:516)
+            at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildStatement(LQPBuilder.java:211)
+            at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildLQP(LQPBuilder.java:133)
+            at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:129)
+            ... 12 more
+
+    The DISTRIBUTED ADQL parser is generating the wrong column names.
+    Should be JDBC_9306259.RAJ2000 not JDBC_9306259.ra.
+    
 

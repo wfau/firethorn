@@ -20,6 +20,9 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
@@ -28,6 +31,7 @@ import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.from.ADQLTable;
+import adql.query.operand.ADQLColumn;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -276,4 +280,54 @@ public class OgsaDQPTranslator
             return all.toADQL();
             }
         }
+
+    /**
+     * Override the PostgreSQLTranslator method ...
+     *
+    @Override
+    public String translate(final ADQLColumn column)
+        throws TranslationException
+        {
+        log.debug("translate(ADQLColumn)");
+        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
+
+
+        if (column.getDBLink() == null)
+            {
+            log.warn("ADQLColumn getDBLink() is NULL");
+            return super.translate(
+                column
+                );
+            }
+        else if (column.getDBLink() instanceof AdqlDBColumn)
+            {
+            final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
+            log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
+            return translate(
+                adql
+                );
+            }
+        else {
+            log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());
+            return super.translate(
+                column
+                );
+            }
+        }
+     */
+
+    /*
+    public String translate(AdqlColumn column)
+    throws TranslationException
+        {
+        log.debug("translate(AdqlColumn)");
+        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
+        log.debug("  fullname [{}]", column.namebuilder().toString());
+        log.debug("  basename [{}]", column.base().namebuilder().toString());
+        log.debug("  rootname [{}]", column.root().namebuilder().toString());
+
+        return column.root().namebuilder().toString();
+
+        }
+    */
     }
