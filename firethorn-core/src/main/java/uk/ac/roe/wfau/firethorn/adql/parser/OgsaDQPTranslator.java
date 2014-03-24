@@ -257,19 +257,19 @@ public class OgsaDQPTranslator
                 {
                 if (cols.length() > 0)
                     {
-                        cols.append(',');
-                        }
+                    cols.append(',');
+                    }
                 if (col.getTable() != null)
                     {
                     final String fullDbName = appendFullDBName(new StringBuffer(), col.getTable()).toString();
                     if (mapAlias.containsKey(fullDbName))
                         {
-                            appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
-                            }
+                        appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
+                        }
                     else
                         {
-                            cols.append(fullDbName).append('.');
-                            }
+                        cols.append(fullDbName).append('.');
+                        }
                     }
                 appendIdentifier(cols, col.getDBName(), IdentifierField.COLUMN);
                 cols.append(" AS ").append(col.getADQLName());
@@ -284,14 +284,13 @@ public class OgsaDQPTranslator
     /**
      * Override the PostgreSQLTranslator method ...
      *
+     */
     @Override
     public String translate(final ADQLColumn column)
         throws TranslationException
         {
-        log.debug("translate(ADQLColumn)");
-        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
-
-
+//        log.debug("translate(ADQLColumn)");
+//        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
         if (column.getDBLink() == null)
             {
             log.warn("ADQLColumn getDBLink() is NULL");
@@ -314,20 +313,29 @@ public class OgsaDQPTranslator
                 );
             }
         }
-     */
 
     /*
+     * 
+     * 
+     */
     public String translate(AdqlColumn column)
     throws TranslationException
         {
-        log.debug("translate(AdqlColumn)");
-        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
-        log.debug("  fullname [{}]", column.namebuilder().toString());
-        log.debug("  basename [{}]", column.base().namebuilder().toString());
-        log.debug("  rootname [{}]", column.root().namebuilder().toString());
-
-        return column.root().namebuilder().toString();
-
+//        log.debug("translate(AdqlColumn)");
+//        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
+//        log.debug("  fullname [{}]", column.namebuilder().toString());
+//        log.debug("  basename [{}]", column.base().namebuilder().toString());
+//        log.debug("  rootname [{}]", column.root().namebuilder().toString());
+        StringBuilder builder = new StringBuilder(
+            column.root().table().alias()
+            );
+        builder.append(
+            '.'
+            );
+        builder.append(
+            column.root().name()
+            );
+//        log.debug("  ogsaname [{}]", builder.toString());
+        return builder.toString();
         }
-    */
     }

@@ -975,9 +975,9 @@
             AND
                 atlasSource.dec BETWEEN -3 AND -2
             AND
-                twomass_psc.pts_key BETWEEN 180 AND 181
+                twomass_psc.ra BETWEEN 180 AND 181
             AND
-                twomass_psc.pts_key BETWEEN -3 AND -2
+                twomass_psc.dec BETWEEN -3 AND -2
             "
 
         ....
@@ -1014,10 +1014,34 @@
         AND
             JDBC_9306116.dec BETWEEN -3 AND -2
         AND
-            JDBC_9306259.pts_key BETWEEN 180 AND 181
+            JDBC_9306259.ra BETWEEN 180 AND 181
         AND
-            JDBC_9306259.pts_key BETWEEN -3 AND -2
+            JDBC_9306259.dec BETWEEN -3 AND -2
     
     We are getting JDBC alias for the table, but ADQL name for the column.
 
+# -----------------------------------------------------
+# Fix OgsaDQPTranslator to use the OGSA-DAI alias and the root name.
+#[user@desktop]
+    
+    gedit "${FIRETHORN_CODE:?}/firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/parser/OgsaDQPTranslator.java
+
+        public String translate(AdqlColumn column)
+        throws TranslationException
+            {
+            StringBuilder builder = new StringBuilder(
+                column.root().table().alias()
+                );
+            builder.append(
+                '.'
+                );
+            builder.append(
+                column.root().name()
+                );
+            return builder.toString();
+            }
+    
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
 
