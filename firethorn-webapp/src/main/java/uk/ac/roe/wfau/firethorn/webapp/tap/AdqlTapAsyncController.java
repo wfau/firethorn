@@ -53,7 +53,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 	
 	@Autowired
-	 private UWSJobFactory uwsfactory = new UWSJobFactory();
+	 private UWSJobFactory uwsfactory;
 	
 	/**
      * Get the target workspace based on the ident in the path. 

@@ -3,42 +3,31 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
 
 @Slf4j
-@Component
+@Component("wednesday")
 @Transactional(
     readOnly=false
     )
 public
-class UWSJobFactory {
-	/**
-     * Autowired ComponentFactories instance.
-     *
-     */
-    @Autowired
-    private ComponentFactories factories;
+class UWSJobFactory extends AbstractComponent{
 
-    /**
-     * Our system services.
-     *
-     */
-    public ComponentFactories factories(){
-        return this.factories;
-    }
-    
+   
     public UWSJob create(AdqlResource resource) throws Exception {
        return new UWSJob(this, resource);
       }

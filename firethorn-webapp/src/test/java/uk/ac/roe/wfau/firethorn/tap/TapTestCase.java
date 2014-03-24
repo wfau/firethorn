@@ -22,32 +22,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javax.naming.NameNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import adql.query.ADQLQuery;
-
-import sun.net.www.URLConnection;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
-import uk.ac.roe.wfau.firethorn.webapp.tap.AdqlTapAsyncController;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 
 /**
@@ -55,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
  *
  */
 @Slf4j
+@Component("tuesday")
 public class TapTestCase
 extends TestBase
     {
@@ -66,8 +53,16 @@ extends TestBase
 	
 	
 	@Autowired
-	 private UWSJobFactory uwsfactory = new UWSJobFactory();
+	private UWSJobFactory uwsfactory;
 	
+	/**
+     * Our system services.
+     *
+     */
+    public ComponentFactories factories(){
+        return uwsfactory.factories();	
+    }
+    
 	public void readFromURL(final String surl){
 		
 		URL url = null;
@@ -105,7 +100,7 @@ extends TestBase
     	                );
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
-        query = uwsfactory.createNewQuery(resource);
+        query = uwsfactory.createNewQuery(resource, "Select top 1 ra,dec from atlas.atlassource");
     	UWSJob uwsjob = uwsfactory.create(resource, query);
         String queryid = uwsjob.getFullQueryURL();
         log.debug("New Empty Query URL: [{}]" , queryid);

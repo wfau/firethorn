@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:txn="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        "
+    >
+
+    <!--+
+        | Hibernate SessionFactory.
+        +-->
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+        <!--+
+            | Database connection.
+            +-->
+        <property name="dataSource" ref="FireThornMetaData"/>
+
+        <!--+
+            | List the packages to scan.
+            | http://stackoverflow.com/a/9757033
+            +-->
+        <property name="packagesToScan">
+            <list>
+                <value>uk.ac.roe.wfau.firethorn.job</value>
+                <value>uk.ac.roe.wfau.firethorn.meta</value>
+                <value>uk.ac.roe.wfau.firethorn.adql</value>
+                <value>uk.ac.roe.wfau.firethorn.config</value>
+                <value>uk.ac.roe.wfau.firethorn.identity</value>
+            </list>
+        </property>
+
+        <!--+
+            | List our annotated entity beans.
+        <property name="annotatedClasses">
+            <list>
+                <value>uk.ac.roe.wfau.firethorn.job.test.TestJobEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.identity.CommunityEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity</value>
+
+            </list>
+        </property>
+            +-->
+
+        <!--+
+            | Set the component naming strategy.
+            | https://forum.hibernate.org/viewtopic.php?p=2404537
+        <property name="namingStrategy">
+            <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+        </property>
+            +-->
+
+        <!--+
+            | Replace the Hibernate config with bean properties.
+            | http://docs.jboss.org/hibernate/core/3.3/reference/en/html/session-configuration.html
+            +-->
+        <property name="hibernateProperties">
+            <props>
+
+                <!--+
+                    | Automatically update the database tables (test only).
+                    +-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+
+                <!--+
+                    | Add a prefix to embedded components.
+                    | http://stackoverflow.com/questions/3046677/automatically-add-a-prefix-to-column-names-for-embeddable-classes
+                    +-->
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultComponentSafeNamingStrategy</prop>
+
+                <!--+
+                    | Jadira usertype registration.
+                    | http://usertype.sourceforge.net/
+                    +-->
+                <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
+
+                <!--+
+                    | c3p0 connection settings moved to DataSource config.
+                    | https://docs.jboss.org/hibernate/orm/4.0/devguide/en-US/html/ch01.html#d0e318
+                    | https://community.jboss.org/wiki/HowToConfigureTheC3P0ConnectionPool
+                    | http://www.mkyong.com/hibernate/how-to-configure-the-c3p0-connection-pool-in-hibernate/
+                    | https://community.jboss.org/wiki/HowToConfigureTheC3P0ConnectionPool
+                    | http://stackoverflow.com/questions/475893/what-are-the-required-c3p0-settings-for-hibernate-in-order-to-avoid-deadlocks
+                <prop key="c3p0.min_size">5</prop>
+                <prop key="c3p0.max_size">10</prop>
+                <prop key="hibernate.c3p0.min_size">5</prop>
+                <prop key="hibernate.c3p0.max_size">10</prop>
+                <prop key="hibernate.c3p0.timeout"></prop>
+                <prop key="hibernate.c3p0.max_statements"></prop>
+                    | Optional properties.
+                    | https://docs.jboss.org/hibernate/orm/3.3/reference/en/html/session-configuration.html#configuration-optional
+                    | hibernate.default_schema 
+                    | hibernate.default_catalog  
+                    +-->
+
+            </props>
+        </property>
+
+    </bean>
+
+    <!--+
+        | Create our HibernateTransactionManager instance.
+        +-->
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
+    </bean>
+
+    <!--+
+        | Provide support for the @Transactional annotation.
+        | The transaction-manager attribute is optional if the TransactionManager bean is called 'transactionManager'.
+        | The proxy-target-class setting is needed to solve apparent clash between @Autowired and @Transactional
+        | http://forum.springsource.org/showthread.php?57995-Strange-clash-Transactional-Autowired
+        +-->
+    <txn:annotation-driven
+        transaction-manager="FireThornTransactionManager"
+         proxy-target-class="true"
+         />
+
+</beans>
+
