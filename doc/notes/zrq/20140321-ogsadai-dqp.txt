@@ -1045,3 +1045,59 @@
 # Try a distributed query.
 #[user@desktop]
 
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                twomass_psc.ra  AS tmra,
+                atlasSource.dec AS atdec,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+    I think it works :-)
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                twomass_psc.ra  AS tmra,
+                atlasSource.ra  - twomass_psc.ra  AS dxra,
+                atlasSource.dec AS atdec,
+                twomass_psc.dec AS tmdec,
+                atlasSource.dec - twomass_psc.dec  AS dxdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+

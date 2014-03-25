@@ -1,0 +1,454 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------------------------------------
+# Create a local VM to act as the client.
+#[root@kvm-server]
+
+    ischnura-createvm
+
+        [1] tau
+        ....
+        [1] centos-63-base-20130106.qcow
+        ....
+
+        INFO : Node name [tau]
+        INFO : Base name [centos-63-base-20130106.qcow]
+        INFO : Disc name [tau.qcow]
+        INFO : Disc size [8G]
+
+# ------------------------------------------
+# Login to the local VM as root.
+#[user@desktop] 
+
+    ssh root@tau
+
+# ------------------------------------------
+# Install EPEL and ELREPO repositories.
+# https://fedoraproject.org/wiki/EPEL
+#[root@tau] 
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+
+# ------------------------------------------
+# Install things needed by the GoogleCloud client.
+#[root@tau]
+
+    yum -y install curl
+    yum -y install python
+    yum -y install openssh-clients
+
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+
+# ------------------------------------------
+# Create our test user.
+#[root@tau]
+
+    createuser()
+        {
+        local name=${1:?}
+        local pkey=${2:?}
+        
+        useradd --create-home ${name:?}
+
+        userhome=/home/${name:?}
+
+        if [ ! -e "${userhome:?}/.ssh" ]
+        then
+            mkdir "${userhome:?}/.ssh"
+        fi
+
+        pushd "${userhome:?}/.ssh"
+
+            if [ ! -e 'keys' ]
+            then
+                mkdir 'keys'
+            fi
+            pushd 'keys'
+                wget "${pkey:?}"
+            popd
+
+            for keyfile in $(find 'keys' -name '*.pub')
+            do
+                echo "${keyfile:?}" 
+                cat  "${keyfile:?}" >> 'authorized_keys'
+            done
+
+        popd
+        
+        chown "${name:?}:${name:?}" "${userhome:?}/.ssh"
+        chmod g=,o=,u=rwx "${userhome:?}/.ssh"
+        }
+
+    createuser tester 'http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub'
+
+    exit
+    
+# ------------------------------------------
+# Login as test user.
+#[user@desktop]
+
+    ssh tester@tau
+
+# ------------------------------------------
+# Install the GoogleCloud SDK.
+#[tester@tau]
+
+    curl https://dl.google.com/dl/cloudsdk/release/install_google_cloud_sdk.bash | bash
+
+        Welcome to the Google Cloud SDK!
+
+        The Google Cloud SDK is currently in developer preview. To help improve the
+        quality of this product, we collect anonymized data on how the SDK is used.
+        You may choose to opt out of this collection now (by choosing 'N' at the below
+        prompt), or at any time in the future by running the following command:
+            gcloud config --global-only set disable_usage_reporting true
+
+        Do you want to help improve the Google Cloud SDK (Y/n)?  
+
+        This will install all the core command line tools necessary for working with
+        the Google Cloud Platform.
+
+        If you are developing an App Engine application, please select the 
+        language your application is written in.  This will install the 
+        required tools and runtimes for working in that language.  If 
+        necessary, you can add and remove languages later through the gcloud 
+        component manager.
+          [1]  Java
+          [2]  Python and PHP
+          [3]  Go
+          [4]  No App Engine (you can install App Engine tools later)
+        Please enter your numeric choice (4):  
+
+        The following components will be installed:
+            ------------------------------------------------------------------------------
+            | Big Query Command Line Tool                          |     2.0.18 | < 1 MB |
+            | Big Query Command Line Tool (Platform Specific)      |     2.0.18 | < 1 MB |
+            | Cloud SDK Core Command Line Tools                    |          1 |        |
+            | Cloud SDK Core Libraries (Platform Specific)         | 2014.03.24 | < 1 MB |
+            | Cloud SQL Admin Command Line Interface               | 2014.03.18 | < 1 MB |
+            | Cloud Storage Command Line Tool                      |       3.42 | 1.8 MB |
+            | Cloud Storage Command Line Tool (Platform Specific)  |       3.42 | < 1 MB |
+            | Compute Engine Command Line Tool                     |     1.14.2 | < 1 MB |
+            | Compute Engine Command Line Tool (Platform Specific) |     1.13.0 | < 1 MB |
+            ------------------------------------------------------------------------------
+
+        Creating update staging area...
+
+
+        Installing: Big Query Command Line Tool ... Done
+        Installing: Big Query Command Line Tool (Platform Specific) ... Done
+        Installing: Cloud SDK Core Command Line Tools ... Done
+        Installing: Cloud SDK Core Libraries (Platform Specific) ... Done
+        Installing: Cloud SQL Admin Command Line Interface ... Done
+        Installing: Cloud Storage Command Line Tool ... Done
+        Installing: Cloud Storage Command Line Tool (Platform Specific) ... Done
+        Installing: Compute Engine Command Line Tool ... Done
+        Installing: Compute Engine Command Line Tool (Platform Specific) ... Done
+
+        Creating backup and activating new installation...
+
+        Done!
+
+    exit
+
+# ------------------------------------------
+# Login again to access the GoogleCloud SDK.
+# *** Use -a to prevent agent forwarding of our own keys ***
+#[user@desktop]
+
+    ssh -a tester@tau
+
+# ------------------------------------------
+# Authenticate the GoogleCloud SDK.
+#[tester@tau]
+
+    gcloud auth login --no-launch-browser
+
+        Go to the following link in your browser:
+
+            https://accounts.google.com/o/oauth2/auth?.......................
+
+        Enter verification code:
+        
+            ................
+
+    You can view your existing projects and create new ones in the Google 
+    Developers Console at: https://console.developers.google.com. If you 
+    have a project ready, you can enter it now.
+
+    Enter your Google Cloud project ID (or leave blank to not set): 
+
+            ................
+
+    You are logged in as xxxxxxxx@gmail.com.
+
+# ------------------------------------------
+# Create a GoogleCloud VM.
+#[tester@tau]
+
+    projid=....
+    vmname=tomcat7b
+
+    gcutil listinstances
+
+        +------+------+--------+------------+-------------+
+        | name | zone | status | network-ip | external-ip |
+        +------+------+--------+------------+-------------+
+
+    gcutil --project "${projid:?}" addinstance "${vmname:?}"
+
+        Select a zone:
+        1: europe-west1-a  (maintenance starts in 79 days)
+        2: us-central1-a
+        3: us-central1-b
+        >>> 1
+
+        Select a machine type:
+        1: n1-standard-1	1 vCPU, 3.75 GB RAM
+        2: n1-standard-2	2 vCPUs, 7.5 GB RAM
+        3: n1-standard-4	4 vCPUs, 15 GB RAM
+        4: n1-standard-8	8 vCPUs, 30 GB RAM
+        5: n1-highcpu-2	2 vCPUs, 1.8 GB RAM
+        6: n1-highcpu-4	4 vCPUs, 3.6 GB RAM
+        7: n1-highcpu-8	8 vCPUs, 7.2 GB RAM
+        8: n1-highmem-2	2 vCPUs, 13 GB RAM
+        9: n1-highmem-4	4 vCPUs, 26 GB RAM
+        10: n1-highmem-8	8 vCPUs, 52 GB RAM
+        11: f1-micro	1 vCPU (shared physical core) and 0.6 GB RAM
+        12: g1-small	1 vCPU (shared physical core) and 1.7 GB RAM
+        >>> 11
+
+        Select an image:
+        1: projects/centos-cloud/global/images/centos-6-v20140318
+        2: projects/debian-cloud/global/images/backports-debian-7-wheezy-v20140318
+        3: projects/debian-cloud/global/images/debian-7-wheezy-v20140318
+        4: projects/rhel-cloud/global/images/rhel-6-v20140318
+        5: projects/suse-cloud/global/images/sles-11-sp3-v20140306
+        6: projects/debian-cloud/global/images/debian-6-squeeze-v20130926 (DEPRECATED)
+        7: projects/suse-cloud/global/images/sles11-sp3-v20131209 (DEPRECATED)
+        >>> 1
+
+        WARNING: You don't have an ssh key for Google Compute Engine. Creating one now...
+        Enter passphrase (empty for no passphrase): 
+        Enter same passphrase again: 
+
+
+        INFO: Waiting for insert of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for insert of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for insert of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for insert of instance tomcat7b. Sleeping for 3s.
+
+        Table of resources:
+
+        +----------+---------------+----------------+----------------+---------+
+        | name     | network-ip    | external-ip    | zone           | status  |
+        +----------+---------------+----------------+----------------+---------+
+        | tomcat7b | 10.240.115.65 | 23.251.133.101 | europe-west1-a | RUNNING |
+        +----------+---------------+----------------+----------------+---------+
+
+        Table of operations:
+
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+        | name                                                    | status | insert-time                   | operation-type |
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+        | operation-1395761544569-4f5700f0ae489-397c5492-b23c4fcd | DONE   | 2014-03-25T08:32:24.569-07:00 | insert         |
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+
+    gcutil --project "${projid:?}" getinstance "${vmname:?}"
+
+        INFO: Zone for tomcat7b detected as europe-west1-a.
+        +------------------------+--------------------------------------------------------------------+
+        | name                   | tomcat7b                                                           |
+        | description            |                                                                    |
+        | creation-time          | 2014-03-25T08:32:29.000-07:00                                      |
+        | machine                | europe-west1-a/machineTypes/f1-micro                               |
+        | image                  |                                                                    |
+        | kernel                 |                                                                    |
+        | zone                   | europe-west1-a                                                     |
+        | tags-fingerprint       | ............                                                       |
+        | metadata-fingerprint   | ............                                                       |
+        | status                 | RUNNING                                                            |
+        | status-message         |                                                                    |
+        | on-host-maintenance    | MIGRATE                                                            |
+        | automatic-restart      | True                                                               |
+        | disk                   |                                                                    |
+        |   type                 | PERSISTENT                                                         |
+        |   mode                 | READ_WRITE                                                         |
+        |   device-name          | tomcat7b                                                           |
+        |   source               | https://www.googleapis.com/compute/v1/projects/..................  |
+        |   boot                 | True                                                               |
+        |   autoDelete           | True                                                               |
+        | network-interface      |                                                                    |
+        |   network              | https://www.googleapis.com/compute/v1/projects/................... |
+        |   ip                   | 10.240.115.65                                                      |
+        |   access-configuration | External NAT                                                       |
+        |   type                 | ONE_TO_ONE_NAT                                                     |
+        |   external-ip          | 23.251.133.101                                                     |
+        +------------------------+--------------------------------------------------------------------+
+
+# ------------------------------------------
+# Login to our GoogleCloud VM.
+#[tester@tau]
+
+    gcutil --service_version "v1" --project "${projid:?}" ssh --zone "europe-west1-a" "${vmname:?}"
+
+        INFO: Running command line: ssh -o UserKnownHostsFile=/dev/null -o CheckHostIP=no -o StrictHostKeyChecking=no -i /home/tester/.ssh/google_compute_engine -A -p 22 tester@23.251.133.101 --
+        Warning: Permanently added '23.251.133.101' (RSA) to the list of known hosts.
+        Enter passphrase for key '/home/tester/.ssh/google_compute_engine': 
+
+# ------------------------------------------
+# Explore our GoogleCloud VM.
+#[tester@tomcat7b] 
+
+    #
+    # Our user account is automatically added to the sudoers list
+    sudo cat /etc/sudoers
+
+        ....
+        ## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)
+        #includedir /etc/sudoers.d
+        tester ALL=NOPASSWD: ALL
+
+    #
+    # See what is installed.
+    sudo yum list installed
+
+        abrt.x86_64
+        abrt-addon-ccpp.x86_64
+        abrt-addon-kerneloops.x86_64
+        abrt-addon-python.x86_64
+        abrt-cli.x86_64
+        abrt-libs.x86_64
+        abrt-tui.x86_64
+        ....
+        yum.noarch
+        yum-cron.noarch
+        yum-metadata-parser.x86_64
+        yum-plugin-downloadonly.noarch
+        yum-plugin-fastestmirror.noarch
+        yum-plugin-security.noarch
+        yum-utils.noarch
+        zip.x86_64
+        zlib.x86_64
+
+    #
+    # See what needs updating.
+    sudo yum update
+
+        ....
+
+# ------------------------------------------
+# Install Tomcat-7 on our GoogleCloud VM.
+#[tester@tomcat7b] 
+
+    #
+    # Install the EPEL repository
+    sudo yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    sudo yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+
+    #
+    # Install Java
+    sudo yum -y install java-1.7.0-openjdk
+    sudo yum -y install java-1.7.0-openjdk-devel
+    
+    #
+    # Install Tomcat
+    sudo yum -y install tomcat-7*
+    sudo yum -y install tomcat-native
+
+# ------------------------------------------
+# Fix for Tomcat-7 on CentOS bug.
+#[tester@tomcat7b] 
+
+    sudo chmod a+rx /var/log/tomcat
+    sudo chmod g+rw /var/log/tomcat
+
+# ------------------------------------------
+# Start Tomcat-7 ...
+#[tester@tomcat7b] 
+
+    sudo service tomcat start
+
+# ------------------------------------------
+# Check we get a valid response from Tomcat.
+#[user@desktop]
+
+    curl --head 'http://23.251.133.101:8080/'
+    
+        HTTP/1.1 404 Not Found
+        Server: Apache-Coyote/1.1
+        Content-Length: 0
+        Date: Tue, 25 Mar 2014 16:57:08 GMT
+
+# ------------------------------------------
+# Delete our GoogleCloud VM.
+#[tester@tau]
+
+    gcutil deleteinstance --project "${projid:?}" "${vmname:?}"
+
+        Delete instance tomcat7b? [y/n]
+        >>> y
+        INFO: Zone for tomcat7b detected as europe-west1-a.
+        Delete persistent boot disk tomcat7b? [y/n]
+        >>> y
+
+        INFO: Auto-delete on tomcat7b (tomcat7b) is already enabled.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+        INFO: Waiting for delete of instance tomcat7b. Sleeping for 3s.
+
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+        | name                                                    | status | insert-time                   | operation-type |
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+        | operation-1395770755326-4f572340e7c20-0404453c-9cdaa46c | DONE   | 2014-03-25T11:05:55.326-07:00 | delete         |
+        +---------------------------------------------------------+--------+-------------------------------+----------------+
+
+    
+    gcutil listinstances
+
+        +------+------+--------+------------+-------------+
+        | name | zone | status | network-ip | external-ip |
+        +------+------+--------+------------+-------------+
+
+
+
+
