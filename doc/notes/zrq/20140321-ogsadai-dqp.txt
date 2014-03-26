@@ -63,7 +63,6 @@
     +   dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
     -   dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
 
-
 # -----------------------------------------------------
 # Re-run the ogsa-dai service  ....
 #[user@desktop]
@@ -110,7 +109,6 @@
             FROM
                 twomass.twomass_psc
             "
-
 
         ....
 
