@@ -325,5 +325,31 @@ public class GroupByBugsTestCase
                 }
             );
         }
-   
+
+    /**
+     * Missing GROUP BY clause passes ADQL parser.
+     * Works in the ADQL parser, but fails in SQLServer - NOT VALID SQL.
+     *
+     * ** Bug is that this should be rejected by the parser, with an appropriate syntax error.
+     * ** Allowing this to get through the ADQL parser causes side effects later on in OGSA-DAI and SQLServer.
+     * 
+     */
+    @Test
+    public void test008()
+        {
+        final AdqlQuery query = validate(
+            Level.LEGACY,
+            State.PARSE_ERROR,
+
+            " SELECT" +
+            "    ROUND(l*6.0,0)/6.0 AS lon," +
+            "    ROUND(b*6.0,0)/6.0 AS lat," +
+            "    COUNT(*)           AS num" +
+            " FROM" +
+            "    ATLASDR1.atlasSource" +
+            " WHERE" +
+            "    (priOrSec=0 OR priOrSec=frameSetID)"
+            );
+        }
+
     }
