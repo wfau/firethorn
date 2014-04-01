@@ -1,0 +1,68 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-------------------------------
+# Using SSH to create a SOCKS proxy to access external resources.
+#[user@laptop]
+
+    #
+    # Problem:
+    # The WIFI network at ROE requires the local VPN,
+    # which blocks a number of commonly used ports.
+    #
+
+    #
+    # Connect a SOCKS proxy tunnel to an external host.
+    ssh -D 2001 polyester.andrews.metagrid.co.uk
+    
+    #
+    # Configure Jabber client to use SOCKS proxy on port 2001.
+    # Type : SOCKS 5
+    # Host : localhost
+    # Port : 2001
+    # Jabber traffic is now routed via the tunnel host,
+    # avoiding the local network.  
+
+#-------------------------------
+# Add an alias to our SSH config.
+#[user@laptop]
+
+    `gedit "${HOME:?}/.ssh/config"
+
+        Host polyjabber
+            DynamicForward 2001
+            HostName polyester.andrews.metagrid.co.uk
+            User Zarquan
+            IdentityFile ~/.ssh/zarquan.metagrid.co.uk
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#-------------------------------
+# Configure Pigin Jabber client to use SOCKS proxy on port 2001.
+#[user@laptop]
+
+    ....
+    ....
+    ....
+    profit :-)
+ 
