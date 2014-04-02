@@ -1,57 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
-    | All rights reserved.
-    |
-    | This program is free software: you can redistribute it and/or modify
-    | it under the terms of the GNU General Public License as published by
-    | the Free Software Foundation, either version 3 of the License, or
-    | (at your option) any later version.
-    |
-    | This program is distributed in the hope that it will be useful,
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    | GNU General Public License for more details.
-    |
-    | You should have received a copy of the GNU General Public License
-    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    |
-    +-->
-<beans
-    xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:txn="http://www.springframework.org/schema/tx"
-    xmlns:cxt="http://www.springframework.org/schema/context"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd
-        "
-    >
-
-    <!--+
-        | Use a local properties file.
-        | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
-        +-->
-    <cxt:property-placeholder location="file:${user.home}/firethorn.properties"/>
-
-	 <!--+
-        | Scan for Spring annotated classes.
-        +-->
-    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn">
-        <!--+
-            | Exclude test implementations.
-            | http://static.springsource.org/spring/docs/3.0.0.M3/reference/html/ch04s12.html#beans-scanning-filters
-        <cxt:exclude-filter type="regex" expression="uk\.ac\.roe\.wfau\.firethorn\.test\..*"/>
-            +-->
-    </cxt:component-scan>
-
-</beans>
-
+ÿß·ÿú^7«ó¯»‹¸c‹¯ÓÃñß_ûÍ³û¾3=Ë7÷±§ëz:;Ë¿‹¡ÿrÿ†=³‹S{W¢¿û‰/cý«³ïs¯W‰çªç‹;ë¿Ã¶×obÍ7úòÇƒvë÷33Ÿ?÷·õëÝÿ2ú{{Úëûÿó³ë›³î_{7ï¿›ˆKë?¯ß¶9?½cçóÿ3Ÿ=ß¿›á«ûý
++«ûÛ£Ÿ³ßssû6>wgÏ_êSäãÿ".Wªñ>¿üÏ3ûyãû{;/¾¯?ÚzÞ»©ùÿ‘K¾?ó¹w{Rýÿï¿ÿ7¿>»qÛ6›Oƒ[Û}ÿƒ3¦'Øwùñï?Ú·/¾sÿn½?[¥¿ù³«1ßÓ¾¿«/Ú¾?¯›¿‡ýÛWÏûó÷X>3ûÕ¯ú¯wŸºM7«ÿýãíúÿçxsùø±÷H¾»óÞ Ü·í»×¿o>uòß›ç¾÷ÿ­³˜gXóã»Ÿ¿¿n~ƒñOK¿?ÿûûU¥zÞsþ7=Û?û2N¡>ÿû‹uÝ+·û[÷Ä¯ŽñÇX¯²Ïr¯´ëv¯uk2§+³Ÿº¯ï)Óíúó¯;ÛVœ·O#?ŠÑ^ó»—7Ÿ2[£ïZÿÿú?ðÛ³¿·¿×û‘2Ÿ7OÃšÚÂ8¯oÚè?~+«6Ð{ë#iø¿3¿ò«}ÉuÃŠµÕê¯ïçmÿß·ÿû^7«ó¯»›ºã›¯ÓÃñß#ûÍ³ûþ;Ë7›÷±§ëú:;Ë+¿«£ÿrÿ†ÿ=Ÿ³‹Sÿ{W¢¿û‹/cý«³ïs¿WÉçªç‹;û¿ã¶÷orÍ7úòÇƒvë÷;3Ÿ?÷¿÷ÿëÝÿ6û{{Úëûÿó³ë›³îß{7ï¿ÛŠKë?¯ÿ·;?¿cç÷ÿ3Ÿ=ß¿»á»ûýJ;«ûÛ£ßóßósû6¾wÏgßßêSåãÿ*._îñ­>ÿýÏ³ûyãûû;/þ¯Ú~Þ»«ûÿ‘k¾?÷ùw{wýÿï¿ÿ7¿~»qÛ6»Oƒ[Û}ÿƒ3®/ßùñï?ú·/¾wÿn¿?[¥­¿ù·«3ÿ÷þ¿«/Û¿¿ÿ¯›¿ÇÿÛWïûó÷X>3ûÝ¯ú¯wŸúM7«ÿýóíúÿçx¿sùø±÷K¾»óÞ(Ü·í¿÷¿ï~÷òß›ç¾÷ÿ­³ØgXóã»Ÿ?¿¿î~ƒñOK¿?ÿûÿU¥zÞóþ77=û?û3O¡Í>ÿÿ‹uÝ+¿û[÷Æ¯žñÇX¯ºÏz¯µëv¯uo2¯Ÿ«³¿»ïï)ßíúó¯;Û^·O£?šÕó»·7Ÿr[£ïzÿÿú?ðÛ³¿·¿ßû±2¿7OÃšÚÎ8¯oÚê?~+«6Ð{ë#iù¿3¿ò«ÉuÃŠµÕú¯ïçmÿß·ÿû^7«ó¯»›ºã›¯ÓÃñßûÍ³ûþ;Ë7›÷±§ëz:;Ë+¿«£ÿsÿ†=Ÿ³‹Sÿ{W¢¿û‹/cý«³ïs¯WÉçªç‹;ë¿ã¶×orÍ7úòÇƒvë÷;3Ÿ?÷¿÷ëÝÿ6û{{Úëûÿó³ë›³îß{7ï¿ÛŠKë?¯ß·;?½cç÷ÿ3Ÿ=ß¿›á»ûýJ;«ûÛ£ß³ßósû6¾wÏgÏßêSåãÿ"._îñ­>ÿýÏ³ûyëûû;/þ¯?Ú~Þ»©ûÿ‘k¾?óùw{wýÿï¿ÿ7¿~»qÛ6»Oƒ[ß}ÿƒ3®/ßùñï?ú·/¾sÿn¿?[¥­¿ù³«3ÿ÷þ¿«/Û¿¿¯Ÿ¿ÇÿÛWïûó÷X>3ûÝ¯ú¯wŸºM7«ÿýóíúÿçx¿sùø±÷K¾»óÞ*Ü·í¿÷¿ï~wúß›ç¾÷ÿ­³ÜgXóã»Ÿ=¿¿n~ƒñOK¿?ÿûÿU¥zÞóþ77=û?û3N¡Ï>ÿÿ‹uÝ+¿û[÷Ä¯žñÇX¯²Ïr¯¶ëv¯uo2¯Ÿ+³¿»¿ÿ)ßíúó¯{Û^œ·O£?šÑó»·7Ÿr[£ïZÿÿú?ðÛ³¿÷¿ßû±:¿7OÃºÚÊ8¯oÚê?~+«6Ð{ë#iù¿3¿ò«ÉuÃŠµÕê¯ÿçmÿß·ÿû^7«ó¯»‹ºã»¯ÓÃñÿ#ûÍ³û¾;=Ë7›÷±§ëú:;Ë+¿«£ÿsÿ†=Ÿ³‹Sÿ{W¢¿û‹/cý«³ïs¿WÉçªç‹;ë¿ã¶×orÍ7úòÇƒvë÷;3Ÿ?÷¿õëÝÿ6û{{Úûûÿó³ë›³îß{7ï¿ÛŠKë?¯ÿ·9?¿cç÷ÿ3Ÿ=ß¿›á»ûýJ;«ûÛ£ß³ß{sû6¾wßgÏßêSåãÿ".®ñ­>ÿýÏ3ûyãûû;/þ¯Ú~Þ»©ûÿ‘K¾¿÷¹w{sýÿï¿ÿ7¿>»qÛ6»Oƒ[ÿ}ÿƒ3®'ßùñï?ú·/¾sÿn¿?[¥¿ù³«;ÿ÷þ¿«/Ú¿¿¯›¿‡ÿÛWïûó÷X>3ûÝ¯ú¯wŸºM7«ÿýóíúÿçx¿sùø±÷K¾»óÞ*Ü·í»×¿ï~wòß›ç¾÷ÿ­»œgZóã»Ÿ?¿¿n~ƒñOK¿?ÿûûU¥zÞsþ7=û?û3O¡Í>ÿÿ‹uÝ+¿û[÷Ä¯žñÇX¯ºÏr¯´ëv¯uo2¯Ÿ«³¿¾¿ï)Ûíúó¯;Û^·O£?šÕó»·7Ÿr[£ïZÿÿú?ðÛ³¿÷¿ßû±:¿7OÃšÚÎ8¯oÚê?~+«6Ð{ë#iù¿3¿ò«ÉuÃŠµÕú¯ïçmÿß·ÿû^7«ó¯»‹¸c‹¯ÓÃñß_ûÍ³û¾3=Ë7›÷±§ëz:;Ë+¿«¡ÿrÿ†=Ÿ³‹S{W¢»û‰/cý«³ïs¯WÉçªç‹;ë¿ã¶×orÍ7úòÇ}ƒvë÷33Ÿ?ó¿õëÝÿ2ú{{Úûûÿó³ë›³îß{7ï¿›ŠKë?¯Ÿ·9?½cçóÿ3Ÿ=ß¿›á»ûýJ;«ûÛ£ß³ßssû6¾vOgÏßêSäãÿ"*Wªñ­>ÿýÏ3ûyãû{;/þ¯

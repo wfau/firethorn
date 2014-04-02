@@ -20,7 +20,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
 
 @Slf4j
-@Component("wednesday")
+@Component
 @Transactional(
     readOnly=false
     )

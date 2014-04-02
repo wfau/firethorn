@@ -46,13 +46,13 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 @ContextConfiguration(
     locations = {
         "classpath:database-config.xml",
+        "classpath:hibernate-config.xml",
         "classpath:component-config.xml",
-        "classpath:spring-context.xml",
-        "classpath:spring-servlet.xml"
+        "classpath:scheduler-config.xml"
         
         }
     )
-public abstract class TestRoot
+public abstract class TestRoot 
     {
 
     /**

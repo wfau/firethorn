@@ -52,6 +52,8 @@
                 <value>uk.ac.roe.wfau.firethorn.adql</value>
                 <value>uk.ac.roe.wfau.firethorn.config</value>
                 <value>uk.ac.roe.wfau.firethorn.identity</value>
+                <value>uk.ac.roe.wfau.firethorn.tap</value>
+                
             </list>
         </property>
 

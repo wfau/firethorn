@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -41,13 +42,13 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
  *
  */
 @Slf4j
-@Component("tuesday")
 public class TapTestCase
 extends TestBase
     {
 	
 	String ident = "32771";
 	String querystring = "Select top 10 * from atlas.Filter";
+	String querystringinit = "Select top 5 * from atlas.Filter";
 	String phase = "RUN";
 	static AdqlQuery query;
 	
@@ -92,7 +93,9 @@ extends TestBase
     public void test000()
     throws Exception
         {
-
+    	/**
+    	 * Create job
+    	 */
     	AdqlResource resource =  factories().adql().resources().select(
     	                factories().adql().resources().idents().ident(
     	                    ident
@@ -100,7 +103,7 @@ extends TestBase
     	                );
     	
         log.debug("Creating new UWSJob with resource: [{}]" , ident);
-        query = uwsfactory.createNewQuery(resource, "Select top 1 ra,dec from atlas.atlassource");
+        query = uwsfactory.createNewQuery(resource, querystringinit);
     	UWSJob uwsjob = uwsfactory.create(resource, query);
         String queryid = uwsjob.getFullQueryURL();
         log.debug("New Empty Query URL: [{}]" , queryid);
@@ -115,7 +118,9 @@ extends TestBase
     public void test001()
     throws Exception
         {
-    	
+    	/**
+    	 * Change query
+    	 */
      	AdqlResource resource =  factories().adql().resources().select(
                 factories().adql().resources().idents().ident(
                     ident
@@ -141,7 +146,9 @@ extends TestBase
     public void test002()
     throws Exception
         {
-  
+    	/**
+    	 * Run query
+    	 */
     	
     	AdqlResource resource =  factories().adql().resources().select(
     	                factories().adql().resources().idents().ident(
@@ -170,7 +177,9 @@ extends TestBase
     public void test003()
     throws Exception
         {
-    	
+    	/**
+    	 * Get results
+    	 */
     	
     	AdqlResource resource =  factories().adql().resources().select(
     	                factories().adql().resources().idents().ident(
@@ -185,6 +194,7 @@ extends TestBase
     	log.debug("Getting results of job: [{}] ", uwsjob.getResults());
         readFromURL( uwsjob.getFullQueryURL());
 
+        readFromURL( uwsjob.getFullQueryURL() + "/votable");
 
     	
     	
