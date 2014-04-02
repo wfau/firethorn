@@ -144,13 +144,13 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-            return iso.print(
+            return '"' + iso.print(
                 new DateTime(
                     results.getDate(
                     		index()
                         )
                     )
-                );
+                ) + '"';
             }
         }
 
