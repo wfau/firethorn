@@ -25,11 +25,13 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
+import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
+import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
@@ -473,4 +475,38 @@ public class SQLServerTranslator
                     );
             }
         }
+
+	public String translate(ADQLObject object) throws TranslationException
+		{
+		StringBuilder builder = new StringBuilder();
+
+		log.debug("translate(ADQLObject)");
+		log.debug("  object [{}][{}]", object.getName(), object.getClass().getName());
+
+		if (object instanceof ConstraintsGroup)
+			{
+			builder.append(
+				'('
+				);
+			builder.append(
+				super.translate(
+					object
+					)
+				);
+			builder.append(
+				')'
+				);
+			}
+		else {
+			builder.append(
+				super.translate(
+					object
+					)
+				);
+			}
+
+		String result = builder.toString();
+		log.debug("  result [{}]", result);
+		return result;
+		}
     }
