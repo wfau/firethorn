@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.9.8-dev-SNAPSHOT</version>
+    <version project='firethorn'>1.9.8-zrq-adql-brackets</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
