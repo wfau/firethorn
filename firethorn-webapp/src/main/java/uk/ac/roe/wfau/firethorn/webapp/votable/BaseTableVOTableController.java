@@ -87,7 +87,7 @@ extends AbstractTableController
             {
             return StringEscapeUtils.escapeXml(
                 results.getString(
-                    column.root().name()
+                    index()
                     )
                 );
             }
@@ -116,7 +116,7 @@ extends AbstractTableController
             return iso.print(
                 new DateTime(
                     results.getDate(
-                        column.root().name()
+                            index()
                         )
                     )
                 );

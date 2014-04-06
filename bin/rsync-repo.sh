@@ -20,6 +20,10 @@
 # Shell script to rsync from our local Maven repository to our public repository.
 
 #
+# Need to ignore hidden Eclipse.cache directory. 
+# https://stackoverflow.com/questions/16442292/cleaning-maven-m2e-cache-directory
+
+#
 # Load the local settings.
 source "${HOME:?}/firethorn.settings"
 
@@ -40,7 +44,7 @@ rsync \
     --include='/uk/ac/roe/wfau' \
     --include='/uk/ac/roe/wfau/**' \
     --exclude='*' \
-    "${MAVEN_REPO:?}"/ \
+    "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
 
 #
@@ -55,7 +59,7 @@ rsync \
     --include='/uk/org/ogsadai' \
     --include='/uk/org/ogsadai/**' \
     --exclude='*' \
-    "${MAVEN_REPO:?}"/ \
+    "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/ogsadai
 
 #
@@ -67,7 +71,7 @@ rsync \
     --omit-dir-times \
     --exclude='/uk/ac/roe/wfau/**' \
     --exclude='/uk/org/ogsadai/**' \
-    --include='*' \
-    "${MAVEN_REPO:?}"/ \
+    --exclude='/.cache' \
+    "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
 
