@@ -25,8 +25,10 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
+import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
+import adql.query.ClauseConstraints;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
@@ -476,37 +478,45 @@ public class SQLServerTranslator
             }
         }
 
-	public String translate(ADQLObject object) throws TranslationException
-		{
-		StringBuilder builder = new StringBuilder();
+    /**
+     * Override the PostgreSQLTranslator method to add '()' brackets for a ConstraintsGroup.
+     * @see RedmineBug450TestCase
+     * @see  
+     *   
+     */
+	@Override
+    protected String getDefaultADQLList(ADQLList<? extends ADQLObject> list)
+	throws TranslationException
+	    {
+        StringBuilder builder = new StringBuilder();
 
-		log.debug("translate(ADQLObject)");
-		log.debug("  object [{}][{}]", object.getName(), object.getClass().getName());
+        log.debug("translate(ADQLList<>)");
+        log.debug("  list [{}][{}]", list.getName(), list.getClass().getName());
 
-		if (object instanceof ConstraintsGroup)
-			{
-			builder.append(
-				'('
-				);
-			builder.append(
-				super.translate(
-					object
-					)
-				);
-			builder.append(
-				')'
-				);
-			}
-		else {
-			builder.append(
-				super.translate(
-					object
-					)
-				);
-			}
+        if (list instanceof ConstraintsGroup)
+            {
+            builder.append(
+                '('
+                );
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            builder.append(
+                ')'
+                );
+            }
+        else {
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            }
 
-		String result = builder.toString();
-		log.debug("  result [{}]", result);
-		return result;
-		}
+        String result = builder.toString();
+        log.debug("  result [{}]", result);
+        return result;
+	    }
     }

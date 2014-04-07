@@ -31,6 +31,10 @@ public class RedmineBug450TestCase
     extends AtlasQueryTestBase
     {
 
+    /**
+     * Test with brackets on the 'OR'.
+     *
+     */
     @Test
     public void test001()
         {
@@ -44,7 +48,21 @@ public class RedmineBug450TestCase
             " FROM" +
             "    atlasSource" +
             " WHERE" +
-            "    (ra > 10 AND ra < 20) OR (dec > 100 AND dec < 110)",
+            "    (" +
+            "        ra > 180" +
+            "    AND" +
+            "        ra < 181" +
+            "    )" +
+            "AND" +
+            "    (" +
+            "    dec > -3" +
+            "        AND" +
+            "        (" +
+            "            dec < -2" +
+            "        OR" +
+            "            dec < -3" +
+            "        )" +
+            "    )",
 
             " SELECT" +
             "    {ATLAS_VERSION}.dbo.atlassource.ra as ra," +
@@ -52,7 +70,153 @@ public class RedmineBug450TestCase
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " WHERE" +
-            "    ({ATLAS_VERSION}.dbo.atlassource.ra > 10 AND {ATLAS_VERSION}.dbo.atlassource.ra < 20) OR ({ATLAS_VERSION}.dbo.atlassource.dec > 100 AND {ATLAS_VERSION}.dbo.atlassource.dec < 110)",
+            "    ({ATLAS_VERSION}.dbo.atlassource.ra > 180 AND {ATLAS_VERSION}.dbo.atlassource.ra < 181)" +
+            " AND" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.dec > -3 AND ({ATLAS_VERSION}.dbo.atlassource.dec < -2 OR {ATLAS_VERSION}.dbo.atlassource.dec < -3))",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * Test with brackets on the 'AND'.
+     *
+     */
+    @Test
+    public void test002()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " WHERE" +
+            "    (" +
+            "        ra > 180" +
+            "    AND" +
+            "        ra < 181" +
+            "    )" +
+            "AND" +
+            "    (" +
+            "        (" +
+            "            dec > -3" +
+            "        AND" +
+            "            dec < -2" +
+            "        )" +
+            "    OR" +
+            "        dec < -3" +
+            "    )",
+
+            " SELECT" +
+            "    {ATLAS_VERSION}.dbo.atlassource.ra as ra," +
+            "    {ATLAS_VERSION}.dbo.atlassource.dec as dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource" +
+            " WHERE" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.ra > 180 AND {ATLAS_VERSION}.dbo.atlassource.ra < 181)" +
+            " AND" +
+            "    (({ATLAS_VERSION}.dbo.atlassource.dec > -3 AND {ATLAS_VERSION}.dbo.atlassource.dec < -2) OR {ATLAS_VERSION}.dbo.atlassource.dec < -3)",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * Test with brackets on all of the comparisons.
+     *
+     */
+    @Test
+    public void test003()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " WHERE" +
+            "    (" +
+            "        (ra > 180)" +
+            "    AND" +
+            "        (ra < 181)" +
+            "    )" +
+            "AND" +
+            "    (" +
+            "    (dec > -3)" +
+            "        AND" +
+            "        (" +
+            "            (dec < -2)" +
+            "        OR" +
+            "            (dec < -3)" +
+            "        )" +
+            "    )",
+
+            " SELECT" +
+            "    {ATLAS_VERSION}.dbo.atlassource.ra as ra," +
+            "    {ATLAS_VERSION}.dbo.atlassource.dec as dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource" +
+            " WHERE" +
+            "    (({ATLAS_VERSION}.dbo.atlassource.ra > 180) AND ({ATLAS_VERSION}.dbo.atlassource.ra < 181))" +
+            " AND" +
+            "    (({ATLAS_VERSION}.dbo.atlassource.dec > -3) AND (({ATLAS_VERSION}.dbo.atlassource.dec < -2) OR ({ATLAS_VERSION}.dbo.atlassource.dec < -3)))",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                }
+            );
+        }
+
+    /**
+     * Test with no extra brackets.
+     *
+     */
+    @Test
+    public void test004()
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource" +
+            " WHERE" +
+            "    ra > 180" +
+            "AND" +
+            "    ra < 181" +
+            "AND" +
+            "    dec > -3" +
+            "AND" +
+            "    dec < -2" +
+            "OR" +
+            "    dec < -3",
+
+            " SELECT" +
+            "    {ATLAS_VERSION}.dbo.atlassource.ra as ra," +
+            "    {ATLAS_VERSION}.dbo.atlassource.dec as dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource" +
+            " WHERE" +
+            "    {ATLAS_VERSION}.dbo.atlassource.ra > 180 AND {ATLAS_VERSION}.dbo.atlassource.ra < 181" +
+            " AND" +
+            "    {ATLAS_VERSION}.dbo.atlassource.dec > -3 AND {ATLAS_VERSION}.dbo.atlassource.dec < -2 OR {ATLAS_VERSION}.dbo.atlassource.dec < -3",
 
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
