@@ -71,3 +71,18 @@
         popd
     popd
 
+# -----------------------------------------------------
+# Find the cause and fix the bug .....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd 'firethorn-core'
+        
+            ....
+            mvn -P all clean install
+            mvn -D 'skipTests=false' -D 'test=RedmineBug450TestCase' test
+
+        popd
+    popd
+
