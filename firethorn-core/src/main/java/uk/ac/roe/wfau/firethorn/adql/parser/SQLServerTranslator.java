@@ -25,11 +25,15 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
+import adql.query.ADQLList;
+import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
+import adql.query.ClauseConstraints;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
+import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
@@ -473,4 +477,46 @@ public class SQLServerTranslator
                     );
             }
         }
+
+    /**
+     * Override the PostgreSQLTranslator method to add '()' brackets for a ConstraintsGroup.
+     * @see RedmineBug450TestCase
+     * @see  
+     *   
+     */
+	@Override
+    protected String getDefaultADQLList(ADQLList<? extends ADQLObject> list)
+	throws TranslationException
+	    {
+        StringBuilder builder = new StringBuilder();
+
+        log.debug("translate(ADQLList<>)");
+        log.debug("  list [{}][{}]", list.getName(), list.getClass().getName());
+
+        if (list instanceof ConstraintsGroup)
+            {
+            builder.append(
+                '('
+                );
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            builder.append(
+                ')'
+                );
+            }
+        else {
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            }
+
+        String result = builder.toString();
+        log.debug("  result [{}]", result);
+        return result;
+	    }
     }
