@@ -130,7 +130,6 @@
         # Commit and tag the new version.
         hg commit -m "Snapshot [version-${newversion:?}]"
         hg tag    -f "version-${newversion:?}"
-        hg push
 
         #
         # Re-build everything.
@@ -141,6 +140,23 @@
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
 
+        # Some issues with directpry permissions.
+        # Needed to allow group write to directories on the server.
+        # find . -type d -exec chmod g+rws {} \;
+
     popd
 
+# -----------------------------------------------------
+# Push our changes to the shared repository..
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg push
+
+    popd
+
+
+    # The branch close operations don't show up in the main repository.
 
