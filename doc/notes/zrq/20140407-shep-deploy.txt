@@ -524,7 +524,41 @@ EOF
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
 
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT ra, dec FROM atlassource"
+            #12278
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    ((dec > -3 AND dec < -2) OR dec < -3)
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND dec < -2 OR dec < -3)
+                "
 
         popd
     exit
