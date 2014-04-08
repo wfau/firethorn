@@ -23,23 +23,25 @@ jdbccatalogname=${1:?}
 jdbcschemaname=${2:?}
 adqlschemaname=${3:?}
 
-POST "${jdbcspace:?}/schemas/select" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
     --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
+    "${endpointurl:?}/${jdbcspace:?}/schemas/select" \
     | ./pp | tee jdbc-schema.json
 
 jdbcschemaident=$(
     cat jdbc-schema.json | ident
     )
 
-POST "${adqlspace:?}/schemas/import" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.schema.import.name=${adqlschemaname:?}" \
     --data   "adql.resource.schema.import.base=${jdbcschemaident:?}" \
+    "${endpointurl:?}/${adqlspace:?}/schemas/import" \
     | ./pp | tee adql-schema.json
 
 adqlschema=$(

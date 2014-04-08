@@ -25,7 +25,7 @@ resourceuri=${2:?}
 catalogname=${3:?}
 ogsadainame=${4:?}
 
-POST "/jdbc/resource/create" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
@@ -33,6 +33,7 @@ POST "/jdbc/resource/create" \
     --data   "jdbc.resource.create.name=${resourcename:?}" \
     --data   "jdbc.resource.create.catalog=${catalogname:?}" \
     --data   "jdbc.resource.create.ogsadai=${ogsadainame:?}" \
+    "${endpointurl:?}/jdbc/resource/create" \
     | ./pp | tee jdbc-space.json
 
 jdbcspace=$(

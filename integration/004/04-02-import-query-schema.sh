@@ -22,22 +22,24 @@
 baseschemaname=${1:?}
 queryschemaname=${2:?}
 
-POST "${adqlspace:?}/schemas/select" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
+    "${endpointurl:?}/${adqlspace:?}/schemas/select" \
     | ./pp | tee base-schema.json
 
 baseschema=$(
     cat base-schema.json | ident
     )
 
-POST "${queryspace:?}/schemas/import" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
+    "${endpointurl:?}/${queryspace:?}/schemas/import" \
     | ./pp | tee query-schema.json
 
 

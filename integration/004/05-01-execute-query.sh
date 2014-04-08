@@ -24,11 +24,12 @@ rowidcol=rowid
 
 #
 # Create the query.
-POST "${queryschema:?}/queries/create" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
     --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
+    "${endpointurl:?}/${queryschema:?}/queries/create" \
      | ./pp | tee query-job.json
 
 queryident=$(
