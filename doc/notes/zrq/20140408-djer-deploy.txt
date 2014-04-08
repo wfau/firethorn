@@ -21,97 +21,15 @@
 #
 
 # -------------------------------------------------------------------------------------------
-# Create our release branch.
+# Our current release branch.
 #[user@desktop]
 
     newrelease=1.9.10-release
     newversion=1.9.10-alpha
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        #
-        # Check we have the most recent version.
-        hg pull
-        hg update default
-
-        #
-        # Create the release branch.
-        hg branch "${newrelease:?}"
-
-        #
-        # Commit and push the new version.
-        hg commit -m "Creating [branch-${newrelease:?}]"
-        hg push --new-branch
-
-    popd
-
-# -------------------------------------------------------------------------------------------
-# Increment the main branch version.
-#[user@desktop]
-
-    devversion=1.10.0-dev-SNAPSHOT
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        #
-        # Swap to the default branch.
-        hg update default
-
-        #
-        # Set the project version.
-        ./bin/version.sh "${devversion:?}"
-
-        #
-        # Commit and tag the new version.
-        hg commit -m "Snapshot [version-${devversion:?}]"
-        hg tag    -f "version-${devversion:?}"
-        hg push
-
-        #
-        # Re-build everything.
-        mvn -P all clean install
-
-        #
-        # Push to our Maven repositiry.
-        ./bin/rsync-repo.sh
-
-    popd
-
-# -------------------------------------------------------------------------------------------
-# Create the alpha release version.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        #
-        # Swap to the release branch.
-        hg update "${newversion:?}"
-
-        #
-        # Set the project version.
-        ./bin/version.sh "${newversion:?}"
-
-        #
-        # Commit and tag the new version.
-        hg commit -m "Release [version-${newversion:?}]"
-        hg tag    -f "version-${newversion:?}"
-        hg push
-
-        #
-        # Re-build everything.
-        mvn -P all clean install
-
-        #
-        # Push to our Maven repositiry.
-        ./bin/rsync-repo.sh
-
-    popd
-
 # -------------------------------------------------------------------------------------------
 # Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
 #[user@desktop]
 
     deploytype=test
@@ -123,7 +41,7 @@
 
         #
         # Set the new database name.
-        dbversion=SHEP010910TEST
+        dbversion=DJER010910LIVE
 
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
@@ -223,7 +141,7 @@ cat  "${databasefile:?}"
 # Update our deployment properties
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -243,7 +161,7 @@ cat  "${databasefile:?}"
 # Deploy our deployment properties
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -268,12 +186,12 @@ cat  "${databasefile:?}"
 # Tail the FireThorn Tomcat log.
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
     source "${deploylist:?}"
-    ssh -L 9092:localhost:8080 "${fireuser:?}@${firehost:?}"
+    ssh -L 9090:localhost:8080 "${fireuser:?}@${firehost:?}"
 
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
@@ -281,7 +199,7 @@ cat  "${databasefile:?}"
 # Deploy FireThorn webapp.
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -330,16 +248,17 @@ cat  "${databasefile:?}"
             "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
 
     exit
+
 # ----------------------------------------------------
 # Tail the OGSADAI Tomcat log.
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
     source "${deploylist:?}"
-    ssh -L 9093:localhost:8080 "${ogsauser:?}@${ogsahost}" 
+    ssh -L 9091:localhost:8080 "${ogsauser:?}@${ogsahost}" 
 
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
@@ -347,7 +266,7 @@ cat  "${databasefile:?}"
 # Deploy the OGSADAI webapp.
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -415,7 +334,7 @@ cat  "${databasefile:?}"
 # Import the table metadata.
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -425,6 +344,13 @@ cat  "${databasefile:?}"
         source "${HOME:?}/firethorn.settings"
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
         FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+#
+# Temp fix - use metadata code on a specific branch
+pushd "${FIRETHORN_CODE:?}"
+    hg pull
+    hg update '1.9.10-release'
+popd
 
         pushd $(mktemp --directory)
 
@@ -477,17 +403,19 @@ EOF
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
 
-            ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
-    
         popd
+
+        ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+        cat "${HOME:?}/firethorn.spaces"
+
     exit
 
 # -------------------------------------------------------------------------------------------
 # Configure Python service.
-# need to be member of group 'users'
+# (need to be member of group 'users')
 #[user@desktop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -496,18 +424,27 @@ EOF
 
         vi /var/www/osa/firethorn.ini
 
-        ~   adqlspace=http://pyratest2:8080/firethorn/adql/resource/32770
-        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/163889
-        ~   atlasprivate=http://pyratest2:8080/firethorn/adql/schema/163890
-        ~   firethorn_base=http://pyratest2:8080/firethorn
+        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
+        ~   atlasprivate=http://coccinea:8080/firethorn/adql/schema/163890
+        ~   firethorn_base=http://coccinea:8080/firethorn
 
     exit
+
+# -------------------------------------------------------------------------------------------
+# SSH tunnel to access Tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
 
 # -----------------------------------------------------
 # Run test queries.
 #[user@laptop]
 
-    deploytype=test
+    deploytype=live
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
@@ -521,7 +458,6 @@ EOF
 
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-           #adqlcopydepth=THIN
 
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
             source "${HOME:?}/firethorn.spaces"

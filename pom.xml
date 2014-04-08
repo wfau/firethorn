@@ -580,9 +580,18 @@
                 <artifactId>maven-site-plugin</artifactId>
             </plugin>
 
+            <!--+
+                | Exclude test classes ?
+                | https://stackoverflow.com/questions/10681560/how-do-i-exclude-sources-from-my-test-folder-from-my-classpath-using-maven
+                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <sourceExcludes>
+                        <exclude>**/MyExcludedFile.java</exclude>
+                    </sourceExcludes>
+                </configuration>
             </plugin>
 
             <plugin>
