@@ -1,0 +1,36 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Process of fixing ADQL Group by bug (redmine task http://redmine.roe.ac.uk/issues/445)
+
+Step 1.
+-------
+- In GroupBy function, changed ColumnReference -> ADQLOperand and ColumnRef() -> ValueExpression()
+- javacc adqlGrammarjj
+
+getPosition(); from ParseException.java cannot be found error
+
+Step 2.
+------
+Fixed by adding old ParserException.java file
+
+
