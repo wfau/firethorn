@@ -476,9 +476,6 @@ EOF
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100000 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
 
             #12278
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "

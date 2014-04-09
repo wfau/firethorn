@@ -88,7 +88,7 @@
 
         #
         # Swap to the release branch.
-        hg update "${newversion:?}"
+        hg update "${newrelease:?}"
 
         #
         # Set the project version.
