@@ -239,3 +239,90 @@
         popd
     exit
 
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+#
+# Need to get the Hg branch name from properties
+        pushd "${FIRETHORN_CODE:?}"
+            hg pull
+            hg update '1.9.10-release'
+        popd
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+            source "${HOME:?}/firethorn.spaces"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test query workspace'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
+
+            #12278
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    ((dec > -3 AND dec < -2) OR dec < -3)
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND dec < -2 OR dec < -3)
+                "
+
+        popd
+    exit
+
+
