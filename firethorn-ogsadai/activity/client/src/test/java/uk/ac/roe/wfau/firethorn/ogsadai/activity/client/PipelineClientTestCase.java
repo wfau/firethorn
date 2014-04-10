@@ -7,13 +7,13 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
 
 /**
  * These tests  no longer work - because we need firethorn to create the tables for us.
  *
  */
-public class StoredResultTestCase
+public class PipelineClientTestCase
 extends SimpleQueryTestBase
     {
     /**
@@ -84,7 +84,7 @@ extends SimpleQueryTestBase
     public void test001()
     throws Exception
         {
-        final StoredResultPipeline pipeline = new StoredResultPipeline(
+        final PipelineClient pipeline = new PipelineClient(
             new URL(
                 endpoint
                 )
@@ -92,17 +92,6 @@ extends SimpleQueryTestBase
         pipeline.execute(
             new PipelineParam()
                 {
-                @Override
-                public String table()
-                    {
-                    return unique("table");
-                    }
-                
-                @Override
-                public String store()
-                    {
-                    return "userdata";
-                    }
                 
                 @Override
                 public String source()
@@ -126,46 +115,66 @@ extends SimpleQueryTestBase
                     }
 
                 @Override
-                public String rowid()
+                public InsertClient.Param insert()
                     {
-                    return null;
-                    }
-
-                @Override
-                public Param delays()
-                    {
-                    return new Param()
+                    return new InsertClient.Param()
                         {
+                        @Override
+                        public String table()
+                            {
+                            return unique("table");
+                            }
+                        
+                        @Override
+                        public String store()
+                            {
+                            return "userdata";
+                            }
+
                         @Override
                         public Integer first()
                             {
                             return null;
                             }
+
                         @Override
-                        public Integer last()
-                            {
-                            return null;
-                            }
-                        @Override
-                        public Integer every()
+                        public Integer block()
                             {
                             return null;
                             }
                         };
+                    }
+
+                @Override
+                public DelaysClient.Param delays()
+                    {
+                    return null;
+                    }
+
+                @Override
+                public LimitsClient.Param limits()
+                    {
+                    return null;
+                    }
+
+                @Override
+                public RownumClient.Param rows()
+                    {
+                    return null;
                     }
                 }
             );
         }
 
     /**
-     * Single catalog with rowid and delay.
+     * Single catalog with delay.
      *
      */
     @Test
     public void test002()
     throws Exception
         {
-        final StoredResultPipeline pipeline = new StoredResultPipeline(
+        final PipelineClient pipeline = new PipelineClient(
             new URL(
                 endpoint
                 )
@@ -173,18 +182,6 @@ extends SimpleQueryTestBase
         pipeline.execute(
             new PipelineParam()
                 {
-                @Override
-                public String table()
-                    {
-                    return unique("table");
-                    }
-                
-                @Override
-                public String store()
-                    {
-                    return "userdata";
-                    }
-                
                 @Override
                 public String source()
                     {
@@ -207,11 +204,36 @@ extends SimpleQueryTestBase
                     }
 
                 @Override
-                public String rowid()
+                public InsertClient.Param insert()
                     {
-                    return null;
-                    }
+                    return new InsertClient.Param()
+                        {
+                        @Override
+                        public String table()
+                            {
+                            return unique("table");
+                            }
+                        
+                        @Override
+                        public String store()
+                            {
+                            return "userdata";
+                            }
 
+                        @Override
+                        public Integer first()
+                            {
+                            return null;
+                            }
+
+                        @Override
+                        public Integer block()
+                            {
+                            return null;
+                            }
+                        };
+                    }
+                
                 @Override
                 public Param delays()
                     {
@@ -220,21 +242,33 @@ extends SimpleQueryTestBase
                         @Override
                         public Integer first()
                             {
-                            return new Integer(500);
+                            return new Integer(100);
                             }
 
                         @Override
                         public Integer last()
                             {
-                            return new Integer(10);
+                            return new Integer(100);
                             }
 
                         @Override
                         public Integer every()
                             {
-                            return new Integer(500);
+                            return new Integer(5);
                             }
                         };
+                    }
+
+                @Override
+                public LimitsClient.Param limits()
+                    {
+                    return null;
+                    }
+
+                @Override
+                public RownumClient.Param rows()
+                    {
+                    return null;
                     }
                 }
             );

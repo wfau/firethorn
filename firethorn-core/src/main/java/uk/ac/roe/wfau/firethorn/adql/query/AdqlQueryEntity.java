@@ -78,10 +78,14 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.InsertClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
 
 /**
  *
@@ -1161,7 +1165,7 @@ implements AdqlQuery, AdqlParserQuery
                     //
                     // Create our server client.
                     log.debug("-- Pipeline endpoint [{}]", params().endpoint());
-                    final StoredResultPipeline pipeline = new StoredResultPipeline(
+                    final PipelineClient pipeline = new PipelineClient(
                         new URL(
                             params().endpoint()
                             )
@@ -1184,16 +1188,6 @@ implements AdqlQuery, AdqlParserQuery
                         new PipelineParam()
                             {
                             @Override
-                            public String table()
-                                {
-                                return tablename;
-                                }
-                            @Override
-                            public String store()
-                                {
-                                return params().store();
-                                }
-                            @Override
                             public String source()
                                 {
                                 return source;
@@ -1204,14 +1198,49 @@ implements AdqlQuery, AdqlParserQuery
                                 return query.osql();
                                 }
                             @Override
-                            public String rowid()
+                            public InsertClient.Param insert()
                                 {
-                                return query.rowid();
+                                return new InsertClient.Param()
+                                    {
+                                    @Override
+                                    public String store()
+                                        {
+                                        return params().store();
+                                        }
+
+                                    @Override
+                                    public String table()
+                                        {
+                                        return tablename;
+                                        }
+
+                                    @Override
+                                    public Integer first()
+                                        {
+                                        return null;
+                                        }
+
+                                    @Override
+                                    public Integer block()
+                                        {
+                                        return null;
+                                        }
+                                    };
                                 }
                             @Override
-                            public Param delays()
+                            public DelaysClient.Param delays()
                                 {
                                 return query.delays().ogsa();
+                                }
+                            @Override
+                            public RownumClient.Param rows()
+                                {
+                                return null;
+                                }
+                            @Override
+                            public LimitsClient.Param limits()
+                                {
+                                return query.limits().ogsa();
                                 }
                             }
                         );
@@ -1418,6 +1447,28 @@ implements AdqlQuery, AdqlParserQuery
             };
         }
 
+    @Embedded
+    private AdqlQueryLimits limits;
+    
+    @Override
+    public Limits limits()
+        {
+        /*
+         * Need to check for null.
+         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.limits == null)
+            {
+            this.limits = new AdqlQueryLimits(
+                new Long(1000),
+                new Long(0),
+                new Long(0)
+                ); 
+            }
+        return this.limits ;
+        }
+    
     @Embedded
     private AdqlQueryDelays delays;
     

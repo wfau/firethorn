@@ -28,7 +28,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
 
 /**
  *
@@ -83,6 +84,56 @@ extends NamedEntity, Job
     public Timings timings();
 
     /**
+     * Query limits.
+     * 
+     */
+    public interface Limits
+        {
+        /**
+         * The OGSA-DAI pipeline limits. 
+         *
+         */
+        public interface OgsaLimits
+        extends LimitsClient.Param
+            {
+            /**
+             * The row limit.
+             * @param value The row limit.
+             *
+             */
+            public void rows(final Long value);
+
+            /**
+             * The cells limit.
+             * @param value The cells limit.
+             *
+             */
+            public void cells(final Long value);
+
+            /**
+             * The time limit.
+             * @param value The time limit.
+             *
+             */
+            public void time(final Long value);
+            
+            }
+
+        /**
+         * The OGSA-DAI limits. 
+         *
+         */
+        public OgsaLimits ogsa();
+
+        }
+
+    /**
+     * The query limits.
+     * 
+     */
+    public Limits limits();
+    
+    /**
      * Query delay properties.
      * 
      */
@@ -93,19 +144,36 @@ extends NamedEntity, Job
          * The OGSA-DAI pipeline delays. 
          *
          */
-        public interface PipelineDelays
-        extends Delay.Param
+        public interface OgsaDelays
+        extends DelaysClient.Param
             {
+            /**
+             * The delay before the first row.
+             * @param value The delay value.
+             *
+             */
             public void first(final Integer value);
+
+            /**
+             * The delay after the last row.
+             * @param value The delay value.
+             *
+             */
             public void last(final Integer value);
+
+            /**
+             * The delay between each row.
+             * @param value The delay value.
+             *
+             */
             public void every(final Integer value);
             }
         
         /**
-         * Delays inside OGSA-DAI. 
+         * The OGSA-DAI delays. 
          *
          */
-        public PipelineDelays ogsa();
+        public OgsaDelays ogsa();
         
         }
 
@@ -114,7 +182,6 @@ extends NamedEntity, Job
      * 
      */
     public Delays delays();
-
     
     /**
      * Public interface for OGSA-DAI query params.

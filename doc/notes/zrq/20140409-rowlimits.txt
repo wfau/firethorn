@@ -1,0 +1,299 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create the new branch.
+#[user@desktop]
+
+    devbranch=[version]-[who]-[description]
+    devbranch=1.10.0-zrq-rowlimits
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check we have the most recent version.
+        hg pull
+        hg update
+
+        #
+        # Create the new branch.
+        hg update default
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Find the cause and fix the bug .....
+#[user@desktop]
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Build everything  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run the firethorn service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+        buildapp()
+            {
+            pushd ../firethorn-core ; mvn clean install ; popd
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+            }
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+        buildapp()
+            {
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+            }
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+    popd
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass_psc
+            "
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlassource
+            "
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Merge the branch into default.
+# https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update
+
+        #
+        # Fix any conflicts ...
+        #
+
+        hg update default
+        hg merge "${devbranch:?}"
+
+        #
+        # Fix any conflicts ...
+        #
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Close the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Increment the project version.
+#[user@desktop]
+
+    mainversion=1.10.1-dev-SNAPSHOT
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${mainversion:?}"
+
+        #
+        # Commit and tag the new version.
+        hg commit -m "Snapshot [version-${mainversion:?}]"
+        hg tag    -f "version-${mainversion:?}"
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+        # Some issues with directpry permissions.
+        # Needed to allow group write to directories on the server.
+        # find . -type d -exec chmod g+rws {} \;
+
+    popd
+
+

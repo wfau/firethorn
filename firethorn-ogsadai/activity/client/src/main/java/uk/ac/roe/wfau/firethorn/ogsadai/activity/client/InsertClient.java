@@ -29,87 +29,132 @@ import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
-import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
-import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.data.IntegerData;
 import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Copy of the OGSA-DAI SQLBulkLoadTupleActivity modified to use batch insert.
- * http://viralpatel.net/blogs/batch-insert-in-java-jdbc/
+ * Client for our Insert Activity.
  *
  */
-public class Insert
+public class InsertClient
 extends BaseResourceActivity
 implements ResourceActivity
     {
 
     /**
      * Public interface for the Activity parameters.
+     * @todo Move this to the common package.
      *
      */
     public static interface Param
         {
+        /**
+         * The target resource name.
+         * @return The target resource name.
+         *
+         */
+        public String store();
+
+        /**
+         * The target table name.
+         * @return The target table name.
+         *
+         */
+        public String table();
+
+        /**
+         * The first block size.
+         * @return The first block size.
+         *
+         */
         public Integer first();
+
+        /**
+         * The main block size.
+         * @return The main block size.
+         *
+         */
         public Integer block();
-        public String  table();
+        
         }
     
     /**
-     * Tuple data input.
+     * The input tuples
      *
      */
     private final ActivityInput input;
 
     /**
-     * Table name input.
+     * The target table name.
      *
      */
     private final ActivityInput table;
 
     /**
-     * First block size.
+     * The first block size.
      *
      */
     private final ActivityInput first;
 
     /**
-     * Main block size.
+     * The main block size.
      *
      */
     private final ActivityInput block;
     
     /**
-     * Tuple data output.
+     * The output tuples
      *
      */
     private final ActivityOutput output;
 
     /**
      * Public constructor.
+     * @param source The tuple input source.
+     * @param param The Activity parameters.
      * 
      */
-    public Insert(final Param param)
+    public InsertClient(final SingleActivityOutput source, final Param param)
+        {
+        this(
+            param
+            );
+        input(
+            source
+            );
+        }
+
+    /**
+     * Public constructor.
+     * @param param The Activity parameters.
+     * 
+     */
+    public InsertClient(final Param param)
         {
         this();
-        table(
-            param.table()
-            );
-        first(
-            param.first()
-            );
-        block(
-            param.block()
-            );
+        if (param != null)
+            {
+            resource(
+                param.store()
+                );
+            table(
+                param.table()
+                );
+            first(
+                param.first()
+                );
+            block(
+                param.block()
+                );
+            }
         }
     
     /**
      * Public constructor.
      * 
      */
-    public Insert()
+    public InsertClient()
         {
         super(
             new ActivityName(
@@ -138,9 +183,22 @@ implements ResourceActivity
      * Set the target resource.
      *
      */
+    public void resource(final String ident)
+        {
+        this.resource(
+            new ResourceID(
+                ident
+                )
+            );
+        }
+
+    /**
+     * Set the target resource.
+     *
+     */
     public void resource(final ResourceID ident)
         {
-        setResourceID(
+        this.setResourceID(
             ident
             );
         }
@@ -151,11 +209,14 @@ implements ResourceActivity
      */
     public void table(final String value)
         {
-        table.add(
-            new StringData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            table.add(
+                new StringData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
@@ -164,11 +225,14 @@ implements ResourceActivity
      */
     public void first(final Integer value)
         {
-        first.add(
-            new IntegerData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            first.add(
+                new IntegerData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
@@ -177,29 +241,44 @@ implements ResourceActivity
      */
     public void block(final Integer value)
         {
-        block.add(
-            new IntegerData(
-                value
-                )
-            );
+        if (value != null)
+            {
+            block.add(
+                new IntegerData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
      * Connect the tuple input.
+     * @param source The tuple input.
      *
      */
-    public void input(final SingleActivityOutput output)
+    public void input(final SingleActivityOutput source)
         {
         input.connect(
-            output
+            source
             );
+        }
+
+    /**
+     * Get the tuple output.
+     * @return The tuples output
+     *
+     */
+    public SingleActivityOutput output()
+        {
+        return output.getSingleActivityOutputs()[0];
         }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void validateIOState() throws ActivityIOIllegalStateException
+    protected void validateIOState()
+    throws ActivityIOIllegalStateException
         {
         }
 
@@ -229,62 +308,4 @@ implements ResourceActivity
           output
           };
         }
-
-    /**
-     * Get the data output.
-     *
-     */
-    public SingleActivityOutput output()
-        {
-        return output.getSingleActivityOutputs()[0];
-        }
-
-    /**
-     * Determines if more results are available.
-     *
-     * @return
-     *   true if more data is available, false otherwise
-     *
-     * @throws DataStreamErrorException
-     *             if there is an error on the data stream.
-     * @throws UnexpectedDataValueException
-     *             if there is an unexpected data value on the data stream.
-     * @throws DataSourceUsageException
-     *             if there is an error reading from a data source.
-     *
-    public boolean hasNextResult() throws
-        DataStreamErrorException,
-        UnexpectedDataValueException,
-        DataSourceUsageException
-        {
-        return output.getDataValueIterator().hasNext();
-        }
-     */
-
-    /**
-     * Gets the number of tuples loaded by the next bulk load.
-     *
-     * @return
-     *   the number of tuples which were loaded, if more results are present
-     *   -1 if no more results are available
-     *
-     * @throws DataStreamErrorException
-     *             if there is an error on the data stream.
-     * @throws UnexpectedDataValueException
-     *             if there is an unexpected data value on the data stream.
-     * @throws DataSourceUsageException
-     *             if there is an error reading from a data source.
-     *
-    public int nextResult() throws
-        DataStreamErrorException,
-        UnexpectedDataValueException,
-        DataSourceUsageException
-        {
-        if ( !hasNextResult())
-            {
-            return -1;
-            }
-        return output.getDataValueIterator().nextAsInt();
-        }
-     */
     }

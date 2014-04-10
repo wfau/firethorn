@@ -16,28 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.org.ogsadai.activity.ActivityName;
-import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
+import uk.org.ogsadai.client.toolkit.ResourceActivity;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
-import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
+import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.data.StringData;
 
 /**
- * Client proxy for InsertRowidActivity.
+ * <p>
+ * Client proxy for
+ * <code>uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTableActivity</code>.
+ * </p>
  *
  */
-public class InsertRowid
-extends BaseActivity implements Activity
+public class CreateTable
+extends BaseResourceActivity
+implements ResourceActivity
     {
 
     /**
@@ -45,7 +49,7 @@ extends BaseActivity implements Activity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        InsertRowid.class
+        CreateTable.class
         );
 
     /*
@@ -54,14 +58,14 @@ extends BaseActivity implements Activity
      */
     private final static ActivityName DEFAULT_ACTIVITY_NAME =
         new ActivityName(
-            "uk.ac.roe.wfau.firethorn.InsertRowid"
+            "uk.ac.roe.wfau.firethorn.CreateTable"
             );
 
     /**
-     * Activity input - column name.
+     * Activity input - table name.
      *
      */
-    private final ActivityInput colname;
+    private final ActivityInput table;
 
     /**
      * Activity input - tuples.
@@ -79,13 +83,13 @@ extends BaseActivity implements Activity
      * Public constructor.
      *
      */
-    public InsertRowid()
+    public CreateTable()
         {
         super(
             DEFAULT_ACTIVITY_NAME
             );
-        colname = new SimpleActivityInput(
-            "colname"
+        table = new SimpleActivityInput(
+            "table"
             );
         tuples = new SimpleActivityInput(
             "tuples"
@@ -95,24 +99,27 @@ extends BaseActivity implements Activity
             );
         }
 
+
     /**
-     * Set the rowid column name.
+     * Add the table name.
+     * @param value The table name.
      *
      */
-    public void setColname(final String name)
+    public void setTableName(final String value)
         {
-        colname.add(
+        table.add(
             new StringData(
-                name
+                value
                 )
             );
         }
 
     /**
      * Add the tuples input.
+     * @param output The tuples source.
      *
      */
-    public void connectDataInput(final SingleActivityOutput source)
+    public void connectTuples(final SingleActivityOutput source)
         {
         tuples.connect(
             source
@@ -129,20 +136,20 @@ extends BaseActivity implements Activity
         }
 
     /**
-     * Get the activity inputs.
+     * Gets the activity inputs.
      *
      */
     @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            colname,
+            table,
             tuples
             };
         }
 
     /**
-     * Get the activity outputs.
+     * Gets the activity outputs.
      *
      */
     @Override
@@ -162,6 +169,7 @@ extends BaseActivity implements Activity
     throws ActivityIOIllegalStateException
         {
         }
+
     }
 
 

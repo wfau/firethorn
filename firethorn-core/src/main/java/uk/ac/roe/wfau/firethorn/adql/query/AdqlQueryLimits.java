@@ -27,7 +27,7 @@ import javax.persistence.FetchType;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of the query delays.
+ * Implementation of the query limits.
  *
  */
 @Slf4j
@@ -35,105 +35,105 @@ import lombok.extern.slf4j.Slf4j;
 @Access(
     AccessType.FIELD
     )
-public class AdqlQueryDelays
-implements AdqlQuery.Delays
+public class AdqlQueryLimits
+implements AdqlQuery.Limits
     {
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryDelays()
+    protected AdqlQueryLimits()
         {
-        log.debug("AdqlQueryDelays()");
+        log.debug("AdqlQueryLimits()");
         }
 
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryDelays(final Integer first, final Integer every, final Integer last)
+    protected AdqlQueryLimits(final Long rows, final Long cell, final Long time)
         {
-        log.debug("AdqlQueryDelays(Integer, Integer, Integer)");
-        this.ogsafirst = first ;
-        this.ogsaevery = every ;
-        this.ogsalast  = last  ;
+        log.debug("AdqlQueryLimits(Long, Long, Long)");
+        this.ogsarows = rows ;
+        this.ogsacell = cell ;
+        this.ogsatime = time ;
         }
     
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_OGSA_DELAY_FIRST_COL = "ogsadelayfirst";
-    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
-    protected static final String DB_OGSA_DELAY_EVERY_COL = "ogsadelayevery";
+    protected static final String DB_OGSA_LIMIT_ROWS_COL = "ogsalimitrows";
+    protected static final String DB_OGSA_LIMIT_CELL_COL = "ogsalimitcell";
+    protected static final String DB_OGSA_LIMIT_TIME_COL = "ogsalimittime";
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_FIRST_COL,
+        name = DB_OGSA_LIMIT_ROWS_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer ogsafirst;
+    private Long ogsarows;
     
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_LAST_COL,
+        name = DB_OGSA_LIMIT_CELL_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer ogsalast;
+    private Long ogsacell;
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_EVERY_COL,
+        name = DB_OGSA_LIMIT_TIME_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer ogsaevery;
+    private Long ogsatime;
 
     @Override
-    public OgsaDelays ogsa()
+    public OgsaLimits ogsa()
         {
-        return new OgsaDelays()
+        return new OgsaLimits()
             {
             @Override
-            public Integer first()
+            public Long rows()
                 {
-                return ogsafirst;
+                return ogsarows;
                 }
             @Override
-            public void first(Integer value)
+            public void rows(Long value)
                 {
-                ogsafirst = value;
+                ogsarows = value;
                 }
             @Override
-            public Integer last()
+            public Long cells()
                 {
-                return ogsalast;
+                return ogsacell;
                 }
             @Override
-            public void last(Integer value)
+            public void cells(Long value)
                 {
-                ogsalast = value;
+                ogsacell = value;
                 }
             @Override
-            public Integer every()
+            public Long time()
                 {
-                return ogsaevery;
+                return ogsatime;
                 }
             @Override
-            public void every(Integer value)
+            public void time(Long value)
                 {
-                ogsaevery = value ;
+                ogsatime = value ;
                 }
             };
         }

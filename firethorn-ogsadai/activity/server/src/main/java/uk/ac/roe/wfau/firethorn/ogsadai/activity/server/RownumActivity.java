@@ -20,9 +20,11 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.RownumParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -30,6 +32,7 @@ import uk.org.ogsadai.activity.MatchedIterativeActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.BlockWriter;
 import uk.org.ogsadai.activity.io.ControlBlock;
+import uk.org.ogsadai.activity.io.PipeClosedException;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
@@ -44,10 +47,10 @@ import uk.org.ogsadai.tuple.TupleMetadata;
 import uk.org.ogsadai.tuple.TupleTypes;
 
 /**
- *
+ * Activity to add a row number column.
  *
  */
-public class BatchInsertActivity
+public class RownumActivity
 extends MatchedIterativeActivity
     {
 
@@ -56,38 +59,31 @@ extends MatchedIterativeActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        BatchInsertActivity.class
+        RownumActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public BatchInsertActivity()
+    public RownumActivity()
         {
         super();
-        logger.debug("InsertRowidActivity()");
         }
 
     /**
-     * Get a list of the ActivityInputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     public ActivityInput[] getIterationInputs()
         {
-        logger.debug("getIterationInputs()");
         return new ActivityInput[] {
             new TypedActivityInput(
-                "rowidcolumn",
-                String.class
-                ),
-            new TypedActivityInput(
-                "maxrowcount",
+                RownumParam.COLUMN_NAME,
                 String.class
                 ),
             new TupleListActivityInput(
-                "tuples"
+                RownumParam.TUPLE_INPUT
                 )
             };
         }
@@ -99,17 +95,20 @@ extends MatchedIterativeActivity
     private BlockWriter writer;
 
     /**
-     * Pre-processing.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
+        logger.debug("preprocess()");
     	try {
-            logger.debug("Validating outputs");
-            validateOutput("result");
-            writer = getOutput("result");
+            validateOutput(
+                RownumParam.TUPLE_OUTPUT
+                );
+            writer = getOutput(
+                RownumParam.TUPLE_OUTPUT
+                );
             }
         catch (final Exception ouch)
             {
@@ -121,8 +120,7 @@ extends MatchedIterativeActivity
         }
 
     /**
-     * Process an iteration.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected void processIteration(final Object[] iteration)
@@ -132,6 +130,7 @@ extends MatchedIterativeActivity
         {
         logger.debug("processIteration(Object[])");
         try {
+
             //
             // Get the column name.
             final String colname = (String) iteration[0];
@@ -139,6 +138,7 @@ extends MatchedIterativeActivity
             //
             // Get the tuple iterator.
             final TupleListIterator tuples = (TupleListIterator) iteration[1];
+
             //
             // Create the metadata for our new column and combine it with the original.
             final MetadataWrapper metadata = new MetadataWrapper(
@@ -203,7 +203,17 @@ extends MatchedIterativeActivity
 
             //
             // Write the list end marker
-            writer.write(ControlBlock.LIST_END);
+            done();
+            }
+        catch (final ActivityProcessingException ouch)
+            {
+            throw ouch ;
+            }
+        catch (final PipeClosedException ouch)
+            {
+            logger.warn("PipeClosed during processing");
+            iterativeStageComplete();
+            done();
             }
         catch (final Throwable ouch)
             {
@@ -215,14 +225,35 @@ extends MatchedIterativeActivity
         }
 
     /**
-     * Post-processing.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected void postprocess()
     throws ActivityProcessingException
         {
         logger.debug("postprocess()");
+        }
+
+    // Common base class ?
+    private void done()
+    throws ActivityProcessingException
+        {
+        try {
+            writer.write(
+                ControlBlock.LIST_END
+                );
+            }
+        catch (final PipeClosedException ouch)
+            {
+            logger.warn("PipeClosed during done");
+            }
+        catch (final Throwable ouch)
+            {
+            logger.warn("Exception during closing", ouch);
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
         }
     }
 

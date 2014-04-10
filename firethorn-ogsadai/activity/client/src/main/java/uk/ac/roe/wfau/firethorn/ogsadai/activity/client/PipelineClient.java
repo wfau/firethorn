@@ -27,28 +27,40 @@ import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.Server;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-//import uk.org.ogsadai.client.toolkit.activities.sql.SQLBulkLoadTuple;
 import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
 import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.request.RequestExecutionStatus;
 
 /**
- *
+ * Pipeline client that connects the components we need.
  *
  */
 @Slf4j
-public class StoredResultPipeline
+public class PipelineClient
     {
     public static final String DRER_IDENT = "DataRequestExecutionResource" ;
 
     private final URL endpoint ;
 
-    public StoredResultPipeline(final URL endpoint)
+    /**
+     * Public constructor.
+     *
+     * @param endpoint The OGSA-DAI service endpoint URL.
+     *
+     */
+    public PipelineClient(final URL endpoint)
         {
         this.endpoint = endpoint ;
         }
 
+    /**
+     * Execute the pipeline, using the supplied parameters. 
+     * 
+     * @param param The pipeline parameters
+     * @return The PipelineResult.
+     *
+     */
     public PipelineResult execute(final PipelineParam param)
         {
         //
@@ -68,64 +80,59 @@ public class StoredResultPipeline
         // Create our pipeline.
         final PipelineWorkflow pipeline = new PipelineWorkflow();
         //
-        // Create our SQL query.
-        final SQLQuery selector = new SQLQuery();
+        // Add our SQLQuery Activity.
+        final SQLQuery select = new SQLQuery();
         pipeline.add(
-            selector
+            select
             );
-        selector.setResourceID(
+        select.setResourceID(
             new ResourceID(
                 param.source()
                 )
             );
-        selector.addExpression(
+        select.addExpression(
             param.query()
             );
+
         //
-        // Create our test delay.
-        final Delay delay = new Delay(
+        // Add our Delays Activity.
+        final DelaysClient delay = new DelaysClient(
+            select.getDataOutput(),
             param.delays()
             );
         pipeline.add(
             delay
             );
-        delay.input(
-            selector.getDataOutput()
+
+        //
+        // Add our Limits Activity.
+        final LimitsClient limits = new LimitsClient(
+            delay.output(),
+            param.limits()
+            );
+        pipeline.add(
+            limits
             );
 /*
- *
         //
 		// Add our row number generator.
-        final InsertRowid rowid = new InsertRowid();
-        pipeline.add(
-            rowid
+        final RowsClient rows = new RowsClient(
+            delay.output(),
+            param.rows()
             );
-		rowid.setColname(
-		    param.rowid()
-			);
-	    rowid.connectDataInput(
-	        delay.output()
-	        );
- *         
- *         
+        pipeline.add(
+            rows
+            );
  */
 	    
 	    //
-        // Create our results writer.
-        final Insert inserter = new Insert();
+        // Create our Insert Activity.
+        final InsertClient insert = new InsertClient(
+            limits.output(),
+            param.insert()
+            );
         pipeline.add(
-            inserter
-            );
-        inserter.resource(
-            new ResourceID(
-                param.store()
-                )
-            );
-        inserter.table(
-            param.table()
-            );
-        inserter.input(
-            delay.output()
+            insert
             );
         
         //
@@ -135,7 +142,7 @@ public class StoredResultPipeline
             delivery
             );
         delivery.connectInput(
-            inserter.output()
+            insert.output()
             );
         //
         // Execute our pipeline.

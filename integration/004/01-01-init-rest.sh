@@ -43,7 +43,7 @@ endpointurl=${endpointurl:-'http://localhost:8080/firethorn'}
 
 #
 # Initialise our REST client.
-resty "${endpointurl:?}" -W -H 'Accept: application/json'
+#resty "${endpointurl:?}" -W -H 'Accept: application/json'
 
 #
 # Unique name generator 
@@ -105,10 +105,11 @@ runquery()
     {
     local query=${1:?}
     local status=$(
-        POST "${query:?}" \
+        curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
+            "${endpointurl:?}/${query:?}" \
             | status
             )
 
@@ -116,9 +117,10 @@ runquery()
     do
         sleep 1
         status=$(
-            GET "${query:?}" \
+            curl \
                 --header "firethorn.auth.identity:${identity:?}" \
                 --header "firethorn.auth.community:${community:?}" \
+                "${endpointurl:?}/${query:?}" \
                 | status
                 )
         echo "${status:?}"

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,32 +47,23 @@ import uk.org.ogsadai.tuple.TupleTypes;
  *
  *
  */
-public class InsertRowidActivity
+public class BatchInsertActivity
 extends MatchedIterativeActivity
     {
-
-	/*
-	 *
-	 * TODO New activities based on SQLBulkLoadTupleActivity
-     * 1) Reports number of rows in blocks of 1000, enabling client to track progress.
-     * 2) Returns full list of results, allowing inline results.
-     * 3) Combine inline results with rowid insert ...
-	 *
-	 */
 
     /**
      * Our debug logger.
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        InsertRowidActivity.class
+        BatchInsertActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public InsertRowidActivity()
+    public BatchInsertActivity()
         {
         super();
         logger.debug("InsertRowidActivity()");
@@ -88,7 +79,11 @@ extends MatchedIterativeActivity
         logger.debug("getIterationInputs()");
         return new ActivityInput[] {
             new TypedActivityInput(
-                "colname",
+                "rowidcolumn",
+                String.class
+                ),
+            new TypedActivityInput(
+                "maxrowcount",
                 String.class
                 ),
             new TupleListActivityInput(
@@ -137,7 +132,6 @@ extends MatchedIterativeActivity
         {
         logger.debug("processIteration(Object[])");
         try {
-
             //
             // Get the column name.
             final String colname = (String) iteration[0];
@@ -145,7 +139,6 @@ extends MatchedIterativeActivity
             //
             // Get the tuple iterator.
             final TupleListIterator tuples = (TupleListIterator) iteration[1];
-
             //
             // Create the metadata for our new column and combine it with the original.
             final MetadataWrapper metadata = new MetadataWrapper(

@@ -21,7 +21,8 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelayParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelaysParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.LimitsParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -29,17 +30,21 @@ import uk.org.ogsadai.activity.MatchedIterativeActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.BlockWriter;
 import uk.org.ogsadai.activity.io.ControlBlock;
+import uk.org.ogsadai.activity.io.PipeClosedException;
+import uk.org.ogsadai.activity.io.PipeIOException;
+import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
+import uk.org.ogsadai.exception.ErrorID;
 import uk.org.ogsadai.tuple.Tuple;
 
 /**
- *
+ * Activity to enforce limits.
  *
  */
-public class DelayActivity
+public class LimitsActivity
 extends MatchedIterativeActivity
     {
 
@@ -48,41 +53,42 @@ extends MatchedIterativeActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        DelayActivity.class
+        LimitsActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public DelayActivity()
+    public LimitsActivity()
         {
         super();
         }
 
-    private static final Integer DEFAULT_VALUE = new Integer(0);
-    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActivityInput[] getIterationInputs()
         {
         return new ActivityInput[] {
             new TypedOptionalActivityInput(
-                DelayParam.FIRST_DELAY,
-                Integer.class,
-                DEFAULT_VALUE
+                LimitsParam.ROW_LIMIT,
+                Long.class,
+                LimitsParam.DEFAULT_ROWS
                 ),
             new TypedOptionalActivityInput(
-                DelayParam.LAST_DELAY,
-                Integer.class,
-                DEFAULT_VALUE
+                LimitsParam.CELL_LIMIT,
+                Long.class,
+                LimitsParam.DEFAULT_CELLS
                 ),
             new TypedOptionalActivityInput(
-                DelayParam.EVERY_DELAY,
-                Integer.class,
-                DEFAULT_VALUE
+                LimitsParam.TIME_LIMIT,
+                Long.class,
+                LimitsParam.DEFAULT_TIME
                 ),
             new TupleListActivityInput(
-                DelayParam.TUPLE_INPUT
+                DelaysParam.TUPLE_INPUT
                 )
             };
         }
@@ -93,16 +99,20 @@ extends MatchedIterativeActivity
      */
     private BlockWriter writer;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
+        logger.debug("preprocess()");
     	try {
             validateOutput(
-                DelayParam.TUPLE_OUTPUT
+                DelaysParam.TUPLE_OUTPUT
                 );
             writer = getOutput(
-                DelayParam.TUPLE_OUTPUT
+                DelaysParam.TUPLE_OUTPUT
                 );
             }
         catch (final Exception ouch)
@@ -114,55 +124,69 @@ extends MatchedIterativeActivity
             }
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void processIteration(final Object[] inputs)
     throws ActivityProcessingException,
            ActivityTerminatedException,
            ActivityUserException
         {
+        logger.debug("processIteration(Object[])");
         try {
             //
-            // Get our delay values.
-            final Integer first = (Integer) inputs[0];
-            final Integer last  = (Integer) inputs[1];
-            final Integer every = (Integer) inputs[2];
+            // Get our limits.
+            final long maxrows  = (Long) inputs[0];
+            final long maxcells = (Long) inputs[1];
+            final long maxtime  = (Long) inputs[2];
+
             //
             // Get our tuple iterator.
             final TupleListIterator tuples = (TupleListIterator) inputs[3];
+
             //
             // Write the LIST_BEGIN marker and the tuple metadata.
+            logger.debug("Starting");
             writer.write(
                 ControlBlock.LIST_BEGIN
                 );
             writer.write(
                 tuples.getMetadataWrapper()
                 );
-            //
-            // Wait for the initial delay.
-            pause(
-                first
-                );
+
             //
             // Process our tuples.
+            long rowcount = 0 ; 
             for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
-                pause(
-                    every
-                    );
                 writer.write(
                     tuple
                     );
+                rowcount++;
+                if (maxrows != 0)
+                    {
+                    if (rowcount >= maxrows)
+                        {
+                        logger.debug("STOP -- Row limit reached [{}]", maxrows);
+                        iterativeStageComplete();
+                        break ;
+                        }
+                    }
                 }
             //
-            // Wait for the final delay.
-            pause(
-                last
-                );
-            //
             // Write the list end marker
-            writer.write(
-                ControlBlock.LIST_END
-                );
+            done();
+            }
+        catch (final ActivityProcessingException ouch)
+            {
+            throw ouch ;
+            }
+        catch (final PipeClosedException ouch)
+            {
+            logger.warn("PipeClosed during processing");
+            iterativeStageComplete();
+            done();
             }
         catch (final Throwable ouch)
             {
@@ -173,23 +197,34 @@ extends MatchedIterativeActivity
             }
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void postprocess()
     throws ActivityProcessingException
         {
+        logger.debug("postprocess()");
         }
-    
-    /**
-     * Helper method to wrap up the parameter checking.
-     * 
-     */
-    private void pause(Integer delay)
-    throws InterruptedException
+
+    // Common base class ?
+    private void done()
+    throws ActivityProcessingException
         {
-        if ((delay != null) && (delay > 0))
+        try {
+            writer.write(
+                ControlBlock.LIST_END
+                );
+            }
+        catch (final PipeClosedException ouch)
             {
-            Thread.sleep(
-                delay
+            logger.warn("PipeClosed during done");
+            }
+        catch (final Throwable ouch)
+            {
+            logger.warn("Exception during closing", ouch);
+            throw new ActivityProcessingException(
+                ouch
                 );
             }
         }
