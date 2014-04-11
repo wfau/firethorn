@@ -1461,7 +1461,7 @@ implements AdqlQuery, AdqlParserQuery
         if (this.limits == null)
             {
             this.limits = new AdqlQueryLimits(
-                new Long(1000),
+                new Long(100),
                 new Long(0),
                 new Long(0)
                 ); 

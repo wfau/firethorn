@@ -389,7 +389,7 @@ description=
 CONFIG
 END
 id=uk.org.ogsadai.SQLQuery
-class=uk.org.ogsadai.activity.sql.SQLQueryActivity
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.MySQLQueryActivity
 description=
 CONFIG
 END

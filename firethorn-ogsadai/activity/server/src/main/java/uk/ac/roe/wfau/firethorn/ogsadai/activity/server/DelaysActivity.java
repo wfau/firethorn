@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
  * All rights reserved.
  *
