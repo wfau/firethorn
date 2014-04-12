@@ -52,7 +52,6 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.InsertActivity;
 import uk.org.ogsadai.activity.ActivityContractName;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -70,6 +69,8 @@ import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
+import uk.org.ogsadai.activity.sql.CallableStatement;
+import uk.org.ogsadai.activity.sql.SQLUtilities;
 import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.EnhancedJDBCConnectionProvider;
@@ -78,80 +79,10 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCSettings;
 
 /**
- * An activity that executes an SQL query on a target relation data resource and
- * produces a list of tuples containing the results of the query.
- * <p>
- * Activity inputs:
- * </p>
- * <ul>
- * <li>
- * <code>expression</code>. Type: {@link java.lang.String}. SQL query 
- * expression.
- * </li>
- * </ul>
- * <p>
- * Activity outputs:
- * </p>
- * <ul>
- * <li>
- * <code>data</code>. Type: OGSA-DAI list of 
- * {@link uk.org.ogsadai.tuple.Tuple} with the first item in the list an 
- * instance of {@link uk.org.ogsadai.metadata.MetadataWrapper} containing a 
- * {@link uk.org.ogsadai.tuple.TupleMetadata} object.  The tuples produced
- * by the query.
- * </li>
- * </ul>
- * <p>
- * Configuration parameters: none.
- * </p>
- * <p>
- * Activity input/output ordering: none.
- * </p>
- * <p>
- * Activity contracts: 
- * </p>
- * <ul>
- * <li>
- * <code>uk.org.ogsadai.activity.contract.SQLQuery</code>
- * </li>
- * </ul>
- * <p>
- * Target data resource:
- * <ul>
- * <li>
- * {@link uk.org.ogsadai.resource.dataresource.jdbc.EnhancedJDBCConnectionProvider}
- * </li>
- * </ul>
- * </p>
- * </p>
- * <p>
- * Behaviour: 
- * </p>
- * <ul>
- * <li>
- * This activity accepts a sequence of SQL query expressions as input and is 
- * targeted at a relational data resource. In each iteration one input query is
- * processed by executing the query across the target data resource. The results
- * of each iteration is a OGSA-DAI list of tuples with a metadata header block. 
- * </li>
- * <li>
- * Partial data may be produced if an error occurs at any stage of processing. 
- * </li>
- * <li>
- * An <code>ActivitySQLUserException</code> is raised if there was an access 
- * error at the data resource for example syntax errors in the SQL  expression
- * or if the target table does not exist.  
- * </li>
- * </ul> 
- * <p>
- * Note that the behaviour of this activity if given an SQL update
- * is in line with that of the JDBC API i.e. the behaviour is
- * undefined and it cannot be guaranteed as to whether the update will
- * or will not have been applied. Please use SQLUpdate
- * for updates. 
- * </p>
- *
- * @author The OGSA-DAI Project Team.
+ * A replacement for the OGDA-DAI SQLQueryActivity classs.
+ * Minimal changes to the processIteration() method to be able to handle a PipeClosedException correctly.
+ * Unable to do this with by extending SQLQueryActivity because the class members are private.  
+ *  
  */
 public class MySQLQueryActivity 
     extends MatchedIterativeActivity 
@@ -316,20 +247,28 @@ public class MySQLQueryActivity
             ResultSet resultSet = executeQuery(expression);
 
             logger.debug("Processing tuples");
-            MySQLUtilities.createTupleList(
-                resultSet, 
-                getOutput(), 
-                mColumnTypeMapper,
-                mResource.getResource().getResourceID(),
-                mServiceAddresses.getDataRequestExecutionService(),
-                mSettings.getResourceMetaDataHandler(),
-                true,
-                true
-                );
+            try {
+                SQLUtilities.createTupleList(
+                    resultSet, 
+                    getOutput(), 
+                    mColumnTypeMapper,
+                    mResource.getResource().getResourceID(),
+                    mServiceAddresses.getDataRequestExecutionService(),
+                    mSettings.getResourceMetaDataHandler(),
+                    true,
+                    true
+                    );
+                }
+            catch (PipeClosedException ouch)
+                {
+                logger.debug("PipeClosedException in createTupleList()");
+                iterativeStageComplete();
+                }
+            
             logger.debug("Processing done");
 
             logger.debug("Closing result set and statement");
-long before = System.currentTimeMillis();
+            long before = System.currentTimeMillis();
 
             try {
                 mStatement.cancel();
@@ -345,23 +284,13 @@ long before = System.currentTimeMillis();
                 {
                 logger.debug("Exception trying to close JDBC statement [{}]", ouch.getMessage());
                 }
-            //resultSet.close();
-
-long after = System.currentTimeMillis();
-logger.debug("Time taken [{}]", (after - before));
-        
-        
+            long after = System.currentTimeMillis();
+            logger.debug("Time taken [{}]", (after - before));
             }
 
         catch (SQLException e)
             {
             throw new ActivitySQLUserException(e);
-            }
-        catch (PipeClosedException e)
-            {
-            logger.debug("PipeClosedException caught inprocessIteration");
-            // no more output wanted so we can finish processing
-            iterativeStageComplete();
             }
         catch (PipeIOException e)
             {
@@ -399,7 +328,7 @@ logger.debug("Time taken [{}]", (after - before));
         // query in the background - class definition is below.
         LOG.debug("Creating CallableStatement for query");
         Callable<ResultSet> statementCall = 
-            new MyCallableStatement(mStatement, expression);
+            new CallableStatement(mStatement, expression);
 
         LOG.debug("Submitting CallableStatement to ExecutorService");
         Future<ResultSet> future = mExecutorService.submit(statementCall);
