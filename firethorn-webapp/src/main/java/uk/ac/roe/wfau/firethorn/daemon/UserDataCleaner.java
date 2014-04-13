@@ -88,7 +88,9 @@ extends AbstractComponent
 
     /**
      * The action to take to clean up a table, DROP or DELETE.
-     * Default : DROP
+     * 
+     * Property : firethorn.cleaner.action
+     * Default  : DROP
      *
      */
     @Value("${firethorn.cleaner.action:DROP}")
@@ -98,7 +100,9 @@ extends AbstractComponent
      * The interval between each run.
      * Expressed as a ISO_8601 duration.
      * https://en.wikipedia.org/wiki/ISO_8601#Durations
-     * Default : PT24H
+     *
+     * Property : firethorn.cleaner.lifetime
+     * Default  : PT24H
      *
      */
     @Value("${firethorn.cleaner.lifetime:PT24H}")
@@ -106,7 +110,8 @@ extends AbstractComponent
 
     /**
      * The number of rows to delete on each run.
-     * Default : 10
+     * Property : firethorn.cleaner.pagesize
+     * Default  : 10
      *
      */
     @Value("${firethorn.cleaner.pagesize:10}")
@@ -114,22 +119,24 @@ extends AbstractComponent
 
     /**
      * The number of runs to skip at the start.
+     * Property : firethorn.cleaner.skipfirst
      * Default : 5
      *
      */
     @Value("${firethorn.cleaner.skipfirst:5}")
     int skipfirst ;
 
-    /*
+    /**
      * The Spring Scheduled cron expression.
-     * Default : '0 0/10 * * * ?'
+     * Property : firethorn.cleaner.cron
+     * Default  : '0 0/10 * * * ?'
      *
      */
     @Scheduled(cron="${firethorn.cleaner.cron:0 0/10 * * * ?}")
     public void process()
         {
         log.debug("");
-        log.debug("something()");
+        log.debug("process()");
         log.debug("  count [{}]", count);
 
         /*
@@ -141,6 +148,8 @@ extends AbstractComponent
         /*
          * PT12H
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
+         * @todo Catch and handle syntax errors.
+         * 
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);
         log.debug(" pagesize [{}]", pagesize);

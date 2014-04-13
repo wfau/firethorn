@@ -37,21 +37,63 @@ implements AdqlQuery.Limits
     public static class Factory
     implements AdqlQuery.Limits.Factory
         {
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.rows.default
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.rows.default:0}")
         private Long defaultrows;
 
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.rows.absolute
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.rows.absolute:0}")
         private Long absoluterows;
 
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.cells.default
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.cells.default:0}")
         private Long defaultcells;
 
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.cells.absolute
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.cells.absolute:0}")
         private Long absolutecells;
 
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.time.default
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.time.default:0}")
         private Long defaulttime;
 
+        /*
+         * @Value properties with defaults.
+         * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * Property : firethorn.limits.time.absolute
+         * Default  : 0
+         * 
+         */
         @Value("${firethorn.limits.time.absolute:0}")
         private Long absolutetime;
 
