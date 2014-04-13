@@ -27,7 +27,8 @@ import javax.persistence.FetchType;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of the query limits.
+ * Embeddable implementation of the AdqlQuery.QueryLimits interface.
+ * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
  *
  */
 @Slf4j
@@ -36,27 +37,40 @@ import lombok.extern.slf4j.Slf4j;
     AccessType.FIELD
     )
 public class AdqlQueryLimits
-implements AdqlQuery.Limits
+extends BaseQueryLimits
+implements AdqlQuery.QueryLimits
     {
+    
     /**
      * Protected constructor.
      * 
      */
     protected AdqlQueryLimits()
         {
-        log.debug("AdqlQueryLimits()");
         }
 
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryLimits(final Long rows, final Long cell, final Long time)
+    protected AdqlQueryLimits(final AdqlQuery.Limits limits)
         {
-        log.debug("AdqlQueryLimits(Long, Long, Long)");
-        this.ogsarows = rows ;
-        this.ogsacell = cell ;
-        this.ogsatime = time ;
+        this(
+            ((limits != null) ? limits.rows()  : null), 
+            ((limits != null) ? limits.cells() : null), 
+            ((limits != null) ? limits.time()  : null) 
+            );
+        }
+
+    /**
+     * Protected constructor.
+     * 
+     */
+    protected AdqlQueryLimits(final Long rows, final Long cells, final Long time)
+        {
+        this.ogsarows = rows  ;
+        this.ogsacell = cells ;
+        this.ogsatime = time  ;
         }
     
     /**
@@ -101,40 +115,33 @@ implements AdqlQuery.Limits
     private Long ogsatime;
 
     @Override
-    public OgsaLimits ogsa()
+    public Long rows()
         {
-        return new OgsaLimits()
-            {
-            @Override
-            public Long rows()
-                {
-                return ogsarows;
-                }
-            @Override
-            public void rows(Long value)
-                {
-                ogsarows = value;
-                }
-            @Override
-            public Long cells()
-                {
-                return ogsacell;
-                }
-            @Override
-            public void cells(Long value)
-                {
-                ogsacell = value;
-                }
-            @Override
-            public Long time()
-                {
-                return ogsatime;
-                }
-            @Override
-            public void time(Long value)
-                {
-                ogsatime = value ;
-                }
-            };
+        return ogsarows;
+        }
+    @Override
+    public void rows(Long value)
+        {
+        ogsarows = value;
+        }
+    @Override
+    public Long cells()
+        {
+        return ogsacell;
+        }
+    @Override
+    public void cells(Long value)
+        {
+        ogsacell = value;
+        }
+    @Override
+    public Long time()
+        {
+        return ogsatime;
+        }
+    @Override
+    public void time(Long value)
+        {
+        ogsatime = value ;
         }
     }

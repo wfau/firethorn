@@ -77,7 +77,18 @@ implements AdqlQuery.Delays
         updatable = true
         )
     private Integer ogsafirst;
-    
+
+    @Override
+    public Integer first()
+        {
+        return ogsafirst;
+        }
+    @Override
+    public void first(Integer value)
+        {
+        ogsafirst = value;
+        }
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -88,7 +99,18 @@ implements AdqlQuery.Delays
         updatable = true
         )
     private Integer ogsalast;
-
+    
+    @Override
+    public Integer last()
+        {
+        return ogsalast;
+        }
+    @Override
+    public void last(Integer value)
+        {
+        ogsalast = value;
+        }
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -101,40 +123,13 @@ implements AdqlQuery.Delays
     private Integer ogsaevery;
 
     @Override
-    public OgsaDelays ogsa()
+    public Integer every()
         {
-        return new OgsaDelays()
-            {
-            @Override
-            public Integer first()
-                {
-                return ogsafirst;
-                }
-            @Override
-            public void first(Integer value)
-                {
-                ogsafirst = value;
-                }
-            @Override
-            public Integer last()
-                {
-                return ogsalast;
-                }
-            @Override
-            public void last(Integer value)
-                {
-                ogsalast = value;
-                }
-            @Override
-            public Integer every()
-                {
-                return ogsaevery;
-                }
-            @Override
-            public void every(Integer value)
-                {
-                ogsaevery = value ;
-                }
-            };
+        return ogsaevery;
+        }
+    @Override
+    public void every(Integer value)
+        {
+        ogsaevery = value ;
         }
     }

@@ -42,9 +42,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class UserDataCleaner
 extends AbstractComponent
     {
-    //private static final Minutes lifetime = Minutes.minutes(5) ;
-    //private static final Hours lifetime = Hours.hours(24) ;
-    //private static final Days lifetime = Days.days(1) ;
 
     private long count = 0L ;
 
@@ -81,7 +78,6 @@ extends AbstractComponent
 
     /**
      * The action to take to clean up a table.
-     * TODO
      *
      */
     public static enum Action
@@ -91,46 +87,46 @@ extends AbstractComponent
         }
 
     /**
-     * The action to take to clean up a table.
-     * TODO
+     * The action to take to clean up a table, DROP or DELETE.
+     * Default : DROP
      *
      */
-    @Value("${firethorn.cleaner.action}")
+    @Value("${firethorn.cleaner.action:DROP}")
     Action action;
 
-    /*
+    /**
      * The interval between each run.
      * Expressed as a ISO_8601 duration.
      * https://en.wikipedia.org/wiki/ISO_8601#Durations
-     * e.g. PT12H
+     * Default : PT24H
      *
      */
-    @Value("${firethorn.cleaner.lifetime}")
+    @Value("${firethorn.cleaner.lifetime:PT24H}")
     String lifetime ;
 
-    /*
+    /**
      * The number of rows to delete on each run.
-     * e.g. 10
+     * Default : 10
      *
      */
-    @Value("${firethorn.cleaner.pagesize}")
+    @Value("${firethorn.cleaner.pagesize:10}")
     int pagesize ;
 
-    /*
+    /**
      * The number of runs to skip at the start.
-     * e.g. 10
+     * Default : 5
      *
      */
-    @Value("${firethorn.cleaner.skipfirst}")
+    @Value("${firethorn.cleaner.skipfirst:5}")
     int skipfirst ;
 
     /*
      * The Spring Scheduled cron expression.
-     * e.g. '0 0/10 * * * ?'
+     * Default : '0 0/10 * * * ?'
      *
      */
-    @Scheduled(cron="${firethorn.cleaner.cron}")
-    public void something()
+    @Scheduled(cron="${firethorn.cleaner.cron:0 0/10 * * * ?}")
+    public void process()
         {
         log.debug("");
         log.debug("something()");
@@ -166,7 +162,6 @@ extends AbstractComponent
                 @Override
                 public void run()
                     {
-
                     try {
                         final DateTime date = new DateTime().minus(
                             period
@@ -190,7 +185,7 @@ extends AbstractComponent
                         }
                     catch (final Exception ouch)
                         {
-                        log.warn("Exception in something() [{}]", ouch.getMessage());
+                        log.warn("Exception in processing() [{}]", ouch.getMessage());
                         }
                     }
                 }

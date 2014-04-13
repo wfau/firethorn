@@ -481,6 +481,14 @@ implements AdqlQuery, AdqlParserQuery
             return this.params;
             }
 
+        @Autowired
+        private AdqlQuery.Limits.Factory limits ;
+        @Override
+        public AdqlQuery.Limits.Factory limits()
+            {
+            return this.limits;
+            }
+
         @Override
         @SelectMethod
         public Iterable<AdqlQuery> select()
@@ -548,6 +556,7 @@ implements AdqlQuery, AdqlParserQuery
         this.rowid  = rowid ;
         this.schema = schema;
         this.delays = new AdqlQueryDelays();
+        this.limits = new AdqlQueryLimits();
         this.params(
             params
             );
@@ -1230,7 +1239,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public DelaysClient.Param delays()
                                 {
-                                return query.delays().ogsa();
+                                return query.delays();
                                 }
                             @Override
                             public RownumClient.Param rows()
@@ -1240,7 +1249,9 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public LimitsClient.Param limits()
                                 {
-                                return query.limits().ogsa();
+                                return factories().adql().queries().limits().runtime(
+                                    query.limits()
+                                    );
                                 }
                             }
                         );
@@ -1449,26 +1460,40 @@ implements AdqlQuery, AdqlParserQuery
 
     @Embedded
     private AdqlQueryLimits limits;
+
     
     @Override
-    public Limits limits()
+    public QueryLimits limits()
         {
         /*
          * Need to check for null.
-         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
          * http://stackoverflow.com/a/1324391
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimits(
-                new Long(100),
-                new Long(0),
-                new Long(0)
-                ); 
+            this.limits = new AdqlQueryLimits();
             }
         return this.limits ;
         }
-    
+
+    @Override
+    public void limits(final Limits limits)
+        {
+        this.limits = new AdqlQueryLimits(
+            limits
+            );
+        }
+
+    public void limits(final Long rows, final Long cells, final Long time)
+        {
+        this.limits = new AdqlQueryLimits(
+            rows,
+            cells,
+            time
+            );
+        }
+
     @Embedded
     private AdqlQueryDelays delays;
     
@@ -1477,12 +1502,12 @@ implements AdqlQuery, AdqlParserQuery
         {
         /*
          * Need to check for null.
-         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
          * http://stackoverflow.com/a/1324391
          */
         if (this.delays == null)
             {
-            this.delays = new AdqlQueryDelays(); 
+            this.delays = new AdqlQueryDelays();
             }
         return this.delays ;
         }
@@ -1495,12 +1520,12 @@ implements AdqlQuery, AdqlParserQuery
         {
         /*
          * Need to check for null.
-         * "Hibernate considers (enbedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
          * http://stackoverflow.com/a/1324391
          */
         if (this.stats== null)
             {
-            this.stats= new AdqlQueryTimings(); 
+            this.stats= new AdqlQueryTimings();
             }
         return this.stats;
         }

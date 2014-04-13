@@ -141,6 +141,10 @@ extends MatchedIterativeActivity
             final long maxcells = (Long) inputs[1];
             final long maxtime  = (Long) inputs[2];
 
+            logger.debug("Max rows  [{}]", maxrows);
+            logger.debug("Max cells [{}]", maxcells);
+            logger.debug("Max time  [{}]", maxtime);
+            
             //
             // Get our tuple iterator.
             final TupleListIterator tuples = (TupleListIterator) inputs[3];
