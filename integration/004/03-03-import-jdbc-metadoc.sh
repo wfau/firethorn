@@ -24,22 +24,24 @@ jdbccatalogname=${1:?}
 jdbcschemaname=${2:?}
 metadocfile=${3:?}
 
-POST "${jdbcspace:?}/schemas/select" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
     --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
+    "${endpointurl:?}/${jdbcspace:?}/schemas/select" \
     | ./pp | tee jdbc-schema.json
 
 jdbcschemaident=$(
     cat jdbc-schema.json | ident
     )
 
-POST "${adqlspace:?}/metadoc/import" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \
     --form   "urn:schema.metadoc.file=@${metadocfile:?}" \
+    "${endpointurl:?}/${adqlspace:?}/metadoc/import" \
     | ./pp | tee adql-schema.json
 
 adqlschema=$(

@@ -116,13 +116,13 @@ firethorn.user.pass=${databasepass:?}
 EOF
 
                 #
-                # Delete our old suerdata database.
+                # Delete our old userdata database.
                 sqlsed 'delete-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
                 sqlsed 'delete-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
                 sqlsed 'delete-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
 
                 #
-                # Create our userdata database (including empty table).
+                # Create our new userdata database (including empty table).
                 sqlsed 'create-database.sql'   | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
                 sqlsed 'create-login.sql'      | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
                 sqlsed 'create-user.sql'       | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"

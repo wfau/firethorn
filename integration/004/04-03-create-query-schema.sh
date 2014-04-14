@@ -21,11 +21,12 @@
 
 queryschemaname=${1:-"query-$(date '+%Y%m%d%H%M%S.%N')"}
 
-POST "${queryspace?}/schemas/create" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.schema.create.name=${queryschemaname:?}" \
+    "${endpointurl:?}/${queryspace?}/schemas/create" \
     | ./pp | tee query-schema.json
 
 

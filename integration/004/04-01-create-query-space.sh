@@ -21,11 +21,12 @@
 
 resourcename=${1:?}
 
-POST "/adql/resource/create" \
+curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.create.name=${resourcename:?}" \
+    "${endpointurl:?}/adql/resource/create" \
     | ./pp | tee query-space.json
 
 queryspace=$(

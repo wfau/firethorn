@@ -4701,6 +4701,8 @@
          <ErrorColumn></ErrorColumn>
       </Column>
    </Table>
+<!--+
+    |
    <Table ID="atlasSourceXnvssSource">
       <Name>atlasSourceXnvssSource</Name>
       <Description><![CDATA[ Cross-neighbours between atlas and nvssSource]]></Description>
@@ -4729,6 +4731,8 @@
          <ErrorColumn></ErrorColumn>
       </Column>
    </Table>
+    |
+    +-->   
    <Table ID="FilterSections">
       <Name>FilterSections</Name>
       <Description><![CDATA[ Contains details of the different sections of sectioned OMEGACAM filters]]></Description>
