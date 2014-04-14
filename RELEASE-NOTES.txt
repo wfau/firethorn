@@ -1,3 +1,15 @@
+
+Next version
+-------------------------
+
+firethorn-1.10.0-zrq-rowlimits
+
+    Created a new OGSA-DAI component, LimitsActivity, to implement row limits.
+    Updated the other OGSA-DAI Activity(s) to hande PipeClosedException correctly.
+    Created a copy of the OGSA-DAI SQLQuery component to fix PipeClosedException handling.
+    Added FireThorn configuration properties for default and absolute limits.
+
+
 Version 1.9.7 (2014-3-25)
 -------------------------
 

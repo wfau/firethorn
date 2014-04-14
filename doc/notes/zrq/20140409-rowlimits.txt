@@ -308,4 +308,26 @@ EOF
 
     popd
 
+# -----------------------------------------------------
+# Close old unused branches.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update '01.09-20140106-zrq-community'
+        hg commit --close-branch -m "Closing [01.09-20140106-zrq-community]"
+        hg push
+
+        hg update '01.08-RELEASE'
+        hg commit --close-branch -m "Closing [branch-01.08-RELEASE]"
+        hg push
+        
+        hg update '1.9.7-release'
+        hg commit --close-branch -m "Closing [1.9.7-release]"
+        hg push
+
+    popd
+
+
 
