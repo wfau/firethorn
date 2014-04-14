@@ -1,0 +1,12 @@
+Version 1.10.2 (2014-14-08)
+-------------------------
+
+    Firethorn
+    ---------
+    Bug fix #440
+     http://redmine.roe.ac.uk/issues/440
+
+
+
+
+

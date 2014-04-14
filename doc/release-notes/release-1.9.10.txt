@@ -1,0 +1,16 @@
+Version 1.9.10 (2014-04-08)
+-------------------------
+
+    Firethorn
+    ---------
+
+    Bug fix #450
+        http://redmine.roe.ac.uk/issues/450
+        Brackets missing in output WHERE clause 
+        http://redmine.roe.ac.uk/projects/wva/repository/revisions/7ca9caa94a24
+
+    Bug fix
+        Added quotes to datetime values in BaseTableDataTableController.java
+        http://redmine.roe.ac.uk/projects/wva/repository/revisions/94d95c680c80
+
+

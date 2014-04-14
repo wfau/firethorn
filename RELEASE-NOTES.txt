@@ -1,97 +1,31 @@
+Version 1.10.2 (2014-14-08)
+-------------------------
+
+    Firethorn
+    ---------
+    Bug fix #440
+     http://redmine.roe.ac.uk/issues/440
+     Fixes Group By bug, allowing expressions in the GROUP BY clause
+
+
 Version 1.9.10 (2014-04-08)
 -------------------------
 
-    Firethorn
-    ---------
-
-    Bug fix #450
-        http://redmine.roe.ac.uk/issues/450
-        Brackets missing in output WHERE clause 
-        http://redmine.roe.ac.uk/projects/wva/repository/revisions/7ca9caa94a24
-
-    Bug fix
-        Added quotes to datetime values in BaseTableDataTableController.java
-        http://redmine.roe.ac.uk/projects/wva/repository/revisions/94d95c680c80
-
+    Changes:
+    - Fixed bug http://redmine.roe.ac.uk/issues/450
+    - Added quotes to datetime values in BaseTableDataTableController.java
 
 Version 1.9.7 (2014-3-25)
 -------------------------
-
-    GUI (web.py)
-    ------------
-
-    Bug Fixes:
-    - Fixed issues with calculation of elapsed time 
-    - Fixed error reporting (with max size calculations/max runtime calculations)
-    - Fixed issue with logging of unsuccesful queryies
-
-    Development:
-    - Refactoring to use the firethorn DataTables Controller
-        (Replace atpy VOTable parsing) 
-    - Replace json parsing to use a different library to improve optimization 
-
-    Firethorn
-    ---------
-
-    Bug Fixes:
+   
+   Changes:
+    - Webpy OSA GUI changes to version 1.2.1 in parallel with this version
     - Fixed bug "AbstractTableController has a performance problem caused by calling column.root().name() for every row."
-
-    Development:
     - Create Datatables Controller, that creates a data format, usable by the Js "Datatables" library on the front end.
     - Refactored VOtable controller code (Abstract classes/code refactoring)   
 
 
-    Testing & Performance comparisons
-    ---------------------------------
-
-    GUI Testing:
-    (GUI webpy JUnit tests run successfully)
-    Query tests top 10/1000/10000 * from atlassource, by sending simultanoues queries to the server
 
 
 
-    Performance Results:
-
-    Test 1. 
-    Server: shepseskaf.roe.ac.uk
-
-    [Version 1.0.8  (Without Datatables)]
-
-
-    > Run 1 
-     select top 100000 * from atlassource 
-     query time: 7m 51s
-     datatables processing: 20.74s
-
-     
-    > Run 2 
-     select top 10000 * from atlassource 
-     query time: 50.96s
-     datatables processing: 2.84s
-     
-    > Run 3 
-     select top 1000 * from atlassource 
-     query time: 14s
-     datatables processing: 1.22s
-     
-     
-     
-    [Version 1.9.7  (With Datatables)]
-     
-    > Run 1 
-     select top 100000 * from atlassource 
-     query time: 2m 29 s
-     datatables processing: 3m 9s
-     datatables processing: 1m 58s
-
-
-    > Run 2 
-     select top 10000 * from atlassource 
-     query time: 23.8s
-     datatables processing: 14.1s
-     
-    > Run 3 
-     select top 1000 * from atlassource 
-     query time: 13.8s
-     datatables processing: 5.81s
 
