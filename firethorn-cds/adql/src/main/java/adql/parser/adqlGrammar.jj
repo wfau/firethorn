@@ -882,9 +882,9 @@ void Where(): {ClauseConstraints where = query.getWhere(); ADQLConstraint condit
 	<WHERE> ConditionsList(where)
 }
 
-void GroupBy(): {ClauseADQL<ColumnReference> groupBy = query.getGroupBy(); ColumnReference colRef = null;} {
-	<GROUP_BY> colRef=ColumnRef() { groupBy.add(colRef); }
-	( <COMMA> colRef=ColumnRef() { groupBy.add(colRef); } )*}void Having(): {ClauseConstraints having = query.getHaving();} {
+void GroupBy(): {ClauseADQL<ADQLOperand> groupBy = query.getGroupBy(); ADQLOperand colRef = null;} {
+	<GROUP_BY> colRef=ValueExpression() { groupBy.add(colRef); }
+	( <COMMA> colRef=ValueExpression() { groupBy.add(colRef); } )*}void Having(): {ClauseConstraints having = query.getHaving();} {
 	<HAVING> ConditionsList(having)}void OrderBy(): {ClauseADQL<ADQLOrder> orderBy = query.getOrderBy(); ADQLOrder order = null;} {	<ORDER_BY> order=OrderItem() {orderBy.add(order);}
 	( <COMMA> order=OrderItem() {orderBy.add(order);} )*}
 
