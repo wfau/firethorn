@@ -207,17 +207,29 @@ EOF
                 atlassource
             "
 
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 1234567
+                ra,
+                dec
+            FROM
+                atlassource
+            "
 
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlassource
+            "
 
-
-
-
-
-
-
-
-
-
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                *
+            FROM
+                atlassource
+            "
 
 # -----------------------------------------------------
 # Merge the branch into default.
