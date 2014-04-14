@@ -18,18 +18,25 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 /**
- * POublic interface for the pipeline parameters.
+ * Public interface for the pipeline parameters.
  *
  */
 public interface PipelineParam
     {
     
     public String source();
-    public String store();
-    public String table();
     public String query();
-    public String rowid();
 
-    public Delay.Param delays();
+    //public String store();
+    //public String table();
+    //public String rownum();
+
+    public RownumClient.Param rows();
     
+    public InsertClient.Param insert();
+    
+    public DelaysClient.Param  delays();
+
+    public LimitsClient.Param limits();
+
     }

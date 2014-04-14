@@ -18,11 +18,14 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelayParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.InsertParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -42,7 +45,6 @@ import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
-import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
@@ -64,7 +66,18 @@ implements ResourceActivity
      * Debug logger.
      *
      */
-    private static final DAILogger log = DAILogger.getLogger(InsertActivity.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        InsertActivity.class
+        );
+
+    /**
+     * Public constructor.
+     *
+     */
+    public InsertActivity()
+        {
+        super();
+        }
 
     /**
      * Our JDBC connection provider
@@ -94,7 +107,7 @@ implements ResourceActivity
      * {@inheritDoc}
      */
     @Override
-    public Class getTargetResourceAccessorClass()
+    public Class<? extends ResourceAccessor> getTargetResourceAccessorClass()
         {
         return JDBCConnectionProvider.class;
         }
@@ -107,18 +120,6 @@ implements ResourceActivity
         {
         provider = (JDBCConnectionProvider) resource;
         }
-
-    /**
-     * Default value for the first block size.
-     * 
-     */
-    private static final Integer DEFAULT_FIRST = new Integer(100);
-
-    /**
-     * Default value for the main block size.
-     * 
-     */
-    private static final Integer DEFAULT_BLOCK = new Integer(1000);
 
     /**
      * {@inheritDoc}
@@ -135,12 +136,12 @@ implements ResourceActivity
             new TypedOptionalActivityInput(
                 InsertParam.FIRST_SIZE,
                 Integer.class,
-                DEFAULT_FIRST
+                InsertParam.DEFAULT_FIRST
                 ),
             new TypedOptionalActivityInput(
                 InsertParam.BLOCK_SIZE,
                 Integer.class,
-                DEFAULT_BLOCK
+                InsertParam.DEFAULT_BLOCK
                 ),
             new TupleListActivityInput(
                 InsertParam.TUPLE_INPUT
@@ -155,12 +156,24 @@ implements ResourceActivity
     protected void preprocess() throws ActivityUserException,
         ActivityProcessingException, ActivityTerminatedException
         {
-        validateOutput(
-            InsertParam.TUPLE_OUTPUT
-            );
-        writer = getOutput();
+        logger.debug("preprocess()");
         try {
-            log.debug("Preparing connection");
+            validateOutput(
+                InsertParam.TUPLE_OUTPUT
+                );
+            writer = getOutput(
+                DelaysParam.TUPLE_OUTPUT
+                );
+            }
+        catch (final Exception ouch)
+            {
+            logger.warn("Exception validating outputs", ouch);
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        try {
+            logger.debug("Preparing connection");
             connection = provider.getConnection();
             connection.setAutoCommit(
                 false
@@ -183,6 +196,7 @@ implements ResourceActivity
     protected void processIteration(final Object[] inputs)
     throws ActivityProcessingException, ActivityTerminatedException, ActivityUserException
         {
+        logger.debug("processIteration(Object[])");
         final String table = (String)  inputs[0];
         final long   first = (Integer) inputs[1];
         final long   block = (Integer) inputs[2];
@@ -217,7 +231,7 @@ implements ResourceActivity
                     if (++count >= block)
                     	{
                     	statement.executeBatch();
-                    	log.debug("XX Block [" + count + "][" + total + "]");
+                    	logger.debug("XX Block [" + count + "][" + total + "]");
                         count = 0;
                     	}
                     }
@@ -240,44 +254,48 @@ implements ResourceActivity
             statement.close();
             }
 
-        catch (final SQLException e)
+        catch (final SQLException ouch)
             {
-            rollback();
-            throw new ActivitySQLUserException(e);
+            //rollback();
+            throw new ActivitySQLUserException(ouch);
             }
         catch (final PipeClosedException ouch)
             {
-            rollback();
+            logger.warn("PipeClosedException during processing");
             iterativeStageComplete();
             }
         catch (final PipeIOException ouch)
             {
-            rollback();
+            logger.warn("PipeIOException during processing", ouch);
+            //rollback();
             throw new ActivityPipeProcessingException(ouch);
             }
         catch (final PipeTerminatedException ouch)
             {
-            rollback();
+            //rollback();
             throw new ActivityTerminatedException();
             }
         catch (final ActivityUserException ouch)
             {
-            rollback();
+            logger.warn("ActivityUserException during processing", ouch);
+            //rollback();
             throw ouch;
             }
         catch (final ActivityProcessingException ouch)
             {
-            rollback();
+            logger.warn("ActivityProcessingException during processing", ouch);
+            //rollback();
             throw ouch;
             }
         catch (final ActivityTerminatedException ouch)
             {
-            rollback();
+            logger.warn("ActivityTerminatedException during processing", ouch);
+            //rollback();
             throw ouch;
             }
         catch (final Throwable ouch)
             {
-            rollback();
+            //rollback();
             throw new ActivityProcessingException(ouch);
             }
         finally
@@ -285,10 +303,16 @@ implements ResourceActivity
             }
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void postprocess() throws ActivityUserException,
-        ActivityProcessingException, ActivityTerminatedException
+    protected void postprocess()
+        throws ActivityUserException,
+            ActivityProcessingException,
+            ActivityTerminatedException
         {
+        logger.debug("postprocess()");
         if (connection != null)
             {
             try {
@@ -303,9 +327,13 @@ implements ResourceActivity
             }
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void cleanUp() throws Exception
         {
+        logger.debug("cleanUp()");
         super.cleanUp();
 
         if (statement != null)
@@ -337,9 +365,12 @@ implements ResourceActivity
                 true
                 );
             }
-        catch (final SQLException ouch)
+        catch (final Exception ouch)
             {
-            log.error(ouch);
+            logger.error(
+                "Exception during rollback()",
+                ouch
+                );
             }
         }
     }

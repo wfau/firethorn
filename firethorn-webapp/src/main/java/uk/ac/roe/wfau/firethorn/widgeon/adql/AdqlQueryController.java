@@ -108,6 +108,26 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     public static final String UPDATE_DELAY_LAST = "adql.query.update.delay.last" ;
+
+    
+    /**
+     * MVC property for the row limit.
+     *
+     */
+    public static final String UPDATE_LIMT_ROWS = "adql.query.update.limit.rows" ;
+
+    /**
+     * MVC property for the cell limit.
+     *
+     */
+    public static final String UPDATE_LIMT_CELLS = "adql.query.update.limit.cells" ;
+
+    /**
+     * MVC property for the time limit.
+     *
+     */
+    public static final String UPDATE_LIMT_TIME = "adql.query.update.limit.time" ;
+    
     
     @Override
     public AdqlQueryBean bean(final AdqlQuery entity)
@@ -165,6 +185,14 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
+    
+        @RequestParam(value=UPDATE_LIMT_ROWS, required=false)
+        final Long limitrows,
+        @RequestParam(value=UPDATE_LIMT_CELLS, required=false)
+        final Long limitcells,
+        @RequestParam(value=UPDATE_LIMT_TIME, required=false)
+        final Long limittime,
+        
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
@@ -214,19 +242,19 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
                         {
                         if (first != null)
                             {
-                            query.delays().ogsa().first(
+                            query.delays().first(
                                 first
                                 );
                             }
                         if (every != null)
                             {
-                            query.delays().ogsa().every(
+                            query.delays().every(
                                 every
                                 );
                             }
                         if (last != null)
                             {
-                            query.delays().ogsa().last(
+                            query.delays().last(
                                 last
                                 );
                             }
@@ -235,6 +263,26 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
                 );
             }
 
+        if ((limitrows != null) || (limitcells != null) || (limittime != null))
+            {
+            log.debug("Limits [{}][{}][{}]", limitrows, limitcells, limittime);
+            update(
+                new Runnable()
+                    {
+                    @Override
+                    public void run()
+                        {
+                        query.limits(
+                            limitrows,
+                            limitcells,
+                            limittime
+                            );
+                        }
+                    }
+                );
+            }
+        
+        
         if (status != null)
             {
             factories().queries().executor().update(

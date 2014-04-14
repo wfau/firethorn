@@ -18,6 +18,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.LimitsParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -27,151 +28,156 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.IntegerData;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelayParam ;
+import uk.org.ogsadai.data.LongData;
 
 /**
- * Client proxy for RowDelayActivity.
+ * Client for our Limits Activity.
  *
  */
-public class Delay
+public class LimitsClient
 extends BaseActivity implements Activity
     {
+
     /**
      * Public interface for the Activity parameters.
+     * @todo Move this to the common package.
      *
      */
     public static interface Param
         {
-        public Integer first();
-        public Integer last();
-        public Integer every();
+        /**
+         * The row limit.
+         * @return The row limit.
+         *
+         */
+        public Long rows();
+
+        /**
+         * The cells limit.
+         * @return The cells limit.
+         *
+         */
+        public Long cells();
+
+        /**
+         * The time limit.
+         * @return The time limit.
+         *
+         */
+        public Long time();
         }
 
     /**
-     * Activity input - start delay.
+     * The row limit.
      *
      */
-    private final ActivityInput first;
+    private final ActivityInput rows;
 
     /**
-     * Activity input - end delay.
+     * The cell limit.
      *
      */
-    private final ActivityInput last;
+    private final ActivityInput cells;
 
     /**
-     * Activity input - row delay.
+     * The time limit.
      *
      */
-    private final ActivityInput every;
+    private final ActivityInput time;
     
     /**
-     * Activity input - tuples.
+     * The input tuples
      *
      */
     private final ActivityInput input;
 
     /**
-     * Activity output - tuples.
+     * The output tuples
      *
      */
     private final ActivityOutput output;
 
     /**
-     * Simple constructor with just a row delay.
-     *
+     * Public constructor.
+     * @param source The tuple input source.
+     * @param param The Activity parameters.
+     * 
      */
-    public Delay(final Param param)
+    public LimitsClient(final SingleActivityOutput source, final Param param)
+        {
+        this(
+            param
+            );
+        input(
+            source
+            );
+        }
+
+    /**
+     * Public constructor.
+     * @param param The Activity parameters.
+     * 
+     */
+    public LimitsClient(final Param param)
         {
         this();
-        this.first(
-            param.first()
-            );
-        this.every(
-            param.every()
-            );
-        this.last(
-            param.last()
-            );
+        if (param != null)
+            {
+            this.rows(
+                param.rows()
+                );
+            this.cells(
+                param.cells()
+                );
+            this.time(
+                param.time()
+                );
+            }
         }
 
     /**
      * Public constructor.
      *
      */
-    public Delay()
+    public LimitsClient()
         {
         super(
             new ActivityName(
-                DelayParam.ACTIVITY_NAME
+                LimitsParam.ACTIVITY_NAME
                 )
             );
-        first = new SimpleActivityInput(
-            DelayParam.FIRST_DELAY,
+        rows = new SimpleActivityInput(
+            LimitsParam.ROW_LIMIT,
             true
             );
-        last = new SimpleActivityInput(
-            DelayParam.LAST_DELAY,
+        cells = new SimpleActivityInput(
+            LimitsParam.CELL_LIMIT,
             true
             );
-        every = new SimpleActivityInput(
-            DelayParam.EVERY_DELAY,
+        time = new SimpleActivityInput(
+            LimitsParam.TIME_LIMIT,
             true
             );
         input = new SimpleActivityInput(
-            DelayParam.TUPLE_INPUT,
+            LimitsParam.TUPLE_INPUT,
             false
             );
         output = new SimpleActivityOutput(
-            DelayParam.TUPLE_OUTPUT,
+            LimitsParam.TUPLE_OUTPUT,
             false
             );
-        }
-
-    /**
-     * Set the start delay.
-     *
-     */
-    public void first(final Integer value)
-        {
-        if (value != null)
-            {
-            first.add(
-                new IntegerData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Set the end delay.
-     *
-     */
-    public void last(final Integer value)
-        {
-        if (value != null)
-            {
-            last.add(
-                new IntegerData(
-                    value
-                    )
-                );
-            }
         }
 
     /**
      * Set the row delay.
      *
      */
-    public void every(final Integer value)
+    public void rows(final Long value)
         {
         if (value != null)
             {
-            every.add(
-                new IntegerData(
+            rows.add(
+                new LongData(
                     value
                     )
                 );
@@ -179,7 +185,40 @@ extends BaseActivity implements Activity
         }
 
     /**
-     * Add the tuples input.
+     * Set the cells limit.
+     *
+     */
+    public void cells(final Long value)
+        {
+        if (value != null)
+            {
+            cells.add(
+                new LongData(
+                    value
+                    )
+                );
+            }
+        }
+
+    /**
+     * Set the time limit.
+     *
+     */
+    public void time(final Long value)
+        {
+        if (value != null)
+            {
+            time.add(
+                new LongData(
+                    value
+                    )
+                );
+            }
+        }
+
+    /**
+     * Connect the tuples input.
+     * @param source The tuple input source.
      *
      */
     public void input(final SingleActivityOutput source)
@@ -191,6 +230,7 @@ extends BaseActivity implements Activity
 
     /**
      * Get the tuples output.
+     * @return The tuples output
      *
      */
     public SingleActivityOutput output()
@@ -199,23 +239,21 @@ extends BaseActivity implements Activity
         }
 
     /**
-     * Get the activity inputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            first,
-            last,
-            every,
+            rows,
+            cells,
+            time,
             input
             };
         }
 
     /**
-     * Get the activity outputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected ActivityOutput[] getOutputs()
@@ -225,11 +263,13 @@ extends BaseActivity implements Activity
             };
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
         }
     }
-
 

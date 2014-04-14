@@ -18,108 +18,132 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.RownumParam;
 import uk.org.ogsadai.activity.ActivityName;
+import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
-import uk.org.ogsadai.client.toolkit.ResourceActivity;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
-import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
+import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.data.StringData;
 
 /**
- * <p>
- * Client proxy for
- * <code>uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTableActivity</code>.
- * </p>
+ * Client for our Rownum Activity.
  *
  */
-public class CreateTable
-extends BaseResourceActivity
-implements ResourceActivity
+public class RownumClient
+extends BaseActivity implements Activity
     {
 
     /**
-     * Our debug logger.
+     * Public interface for the Activity parameters.
+     * @todo Move this to the common package.
      *
      */
-    private static Logger logger = LoggerFactory.getLogger(
-        CreateTable.class
-        );
-
-    /*
-     * Our default activity name.
-     *
-     */
-    private final static ActivityName DEFAULT_ACTIVITY_NAME =
-        new ActivityName(
-            "uk.ac.roe.wfau.firethorn.CreateTable"
-            );
-
-    /**
-     * Activity input - table name.
-     *
-     */
-    private final ActivityInput table;
+    public static interface Param
+        {
+        /**
+         * The target column name.
+         * @return The target column name.
+         *
+         */
+        public String column();
+        
+        }
 
     /**
-     * Activity input - tuples.
+     * Activity input - column name.
+     *
+     */
+    private final ActivityInput column;
+
+    /**
+     * The input tuples
      *
      */
     private final ActivityInput tuples;
 
     /**
-     * Activity output - tuples.
+     * The output tuples
      *
      */
     private final ActivityOutput output;
 
     /**
      * Public constructor.
-     *
+     * @param source The tuple input source.
+     * @param param The Activity parameters.
+     * 
      */
-    public CreateTable()
+    public RownumClient(final SingleActivityOutput source, final Param param)
         {
-        super(
-            DEFAULT_ACTIVITY_NAME
+        this(
+            param
             );
-        table = new SimpleActivityInput(
-            "table"
-            );
-        tuples = new SimpleActivityInput(
-            "tuples"
-            );
-        output = new SimpleActivityOutput(
-            "result"
+        input(
+            source
             );
         }
 
-
     /**
-     * Add the table name.
-     * @param value The table name.
+     * Public constructor.
+     * @param param The Activity parameters.
+     * 
+     */
+    public RownumClient(final Param param)
+        {
+        this();
+        if (param != null)
+            {
+            column(
+                param.column()
+                );
+            }
+        }
+    
+    /**
+     * Public constructor.
      *
      */
-    public void setTableName(final String value)
+    public RownumClient()
         {
-        table.add(
+        super(
+            new ActivityName(
+                RownumParam.ACTIVITY_NAME
+                )
+            );
+        column = new SimpleActivityInput(
+            RownumParam.COLUMN_NAME
+            );
+        tuples = new SimpleActivityInput(
+            RownumParam.TUPLE_INPUT
+            );
+        output = new SimpleActivityOutput(
+            RownumParam.TUPLE_OUTPUT
+            );
+        }
+
+    /**
+     * Set the column name.
+     *
+     */
+    public void column(final String name)
+        {
+        column.add(
             new StringData(
-                value
+                name
                 )
             );
         }
 
     /**
-     * Add the tuples input.
-     * @param output The tuples source.
+     * Connect the tuple input.
      *
      */
-    public void connectTuples(final SingleActivityOutput source)
+    public void input(final SingleActivityOutput source)
         {
         tuples.connect(
             source
@@ -127,30 +151,29 @@ implements ResourceActivity
         }
 
     /**
-     * Get the tuples output.
+     * Get the tuple output.
+     * @return The tuples output
      *
      */
-    public SingleActivityOutput getDataOutput()
+    public SingleActivityOutput output()
         {
         return output.getSingleActivityOutputs()[0];
         }
 
     /**
-     * Gets the activity inputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            table,
+            column,
             tuples
             };
         }
 
     /**
-     * Gets the activity outputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected ActivityOutput[] getOutputs()
@@ -161,15 +184,13 @@ implements ResourceActivity
         }
 
     /**
-     * Validate the inputs and outputs.
-     *
+     * {@inheritDoc}
      */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
         }
-
     }
 
 

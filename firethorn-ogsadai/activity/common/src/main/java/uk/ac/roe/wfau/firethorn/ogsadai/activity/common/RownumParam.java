@@ -19,20 +19,35 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
 
 /**
- * Parameter names for the DelayActivity.
+ * Parameter names for the RownumActivity.
  *
  */
-public class DelayParam
+public class RownumParam
     {
 
-    public static final String FIRST_DELAY = "delay.first" ;
-    public static final String LAST_DELAY  = "delay.last"  ;
-    public static final String EVERY_DELAY = "delay.every" ;
+    /**
+     * Parameter name for the row number column name.
+     * 
+     */
+    public static final String COLUMN_NAME = "colname" ;
 
+    /**
+     * Parameter name for the input tuples.
+     * 
+     */
     public static final String TUPLE_INPUT  = "tuples" ;
+
+    /**
+     * Parameter name for the output tuples.
+     * 
+     */
     public static final String TUPLE_OUTPUT = "tuples" ;
 
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delay" ;
+    /**
+     * Default Activity name.
+     * 
+     */
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Rownum" ;
 
     }
 

@@ -27,7 +27,8 @@ import javax.persistence.FetchType;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of the query delays.
+ * Embeddable implementation of the AdqlQuery.QueryLimits interface.
+ * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
  *
  */
 @Slf4j
@@ -35,101 +36,112 @@ import lombok.extern.slf4j.Slf4j;
 @Access(
     AccessType.FIELD
     )
-public class AdqlQueryDelays
-implements AdqlQuery.Delays
+public class AdqlQueryLimits
+extends BaseQueryLimits
+implements AdqlQuery.QueryLimits
     {
+    
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryDelays()
+    protected AdqlQueryLimits()
         {
-        log.debug("AdqlQueryDelays()");
         }
 
     /**
      * Protected constructor.
      * 
      */
-    protected AdqlQueryDelays(final Integer first, final Integer every, final Integer last)
+    protected AdqlQueryLimits(final AdqlQuery.Limits limits)
         {
-        log.debug("AdqlQueryDelays(Integer, Integer, Integer)");
-        this.ogsafirst = first ;
-        this.ogsaevery = every ;
-        this.ogsalast  = last  ;
+        this(
+            ((limits != null) ? limits.rows()  : null), 
+            ((limits != null) ? limits.cells() : null), 
+            ((limits != null) ? limits.time()  : null) 
+            );
+        }
+
+    /**
+     * Protected constructor.
+     * 
+     */
+    protected AdqlQueryLimits(final Long rows, final Long cells, final Long time)
+        {
+        this.ogsarows = rows  ;
+        this.ogsacell = cells ;
+        this.ogsatime = time  ;
         }
     
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_OGSA_DELAY_FIRST_COL = "ogsadelayfirst";
-    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
-    protected static final String DB_OGSA_DELAY_EVERY_COL = "ogsadelayevery";
+    protected static final String DB_OGSA_LIMIT_ROWS_COL = "ogsalimitrows";
+    protected static final String DB_OGSA_LIMIT_CELL_COL = "ogsalimitcell";
+    protected static final String DB_OGSA_LIMIT_TIME_COL = "ogsalimittime";
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_FIRST_COL,
+        name = DB_OGSA_LIMIT_ROWS_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer ogsafirst;
-
-    @Override
-    public Integer first()
-        {
-        return ogsafirst;
-        }
-    @Override
-    public void first(Integer value)
-        {
-        ogsafirst = value;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_OGSA_DELAY_LAST_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer ogsalast;
-    
-    @Override
-    public Integer last()
-        {
-        return ogsalast;
-        }
-    @Override
-    public void last(Integer value)
-        {
-        ogsalast = value;
-        }
+    private Long ogsarows;
     
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_EVERY_COL,
+        name = DB_OGSA_LIMIT_CELL_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer ogsaevery;
+    private Long ogsacell;
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_LIMIT_TIME_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Long ogsatime;
 
     @Override
-    public Integer every()
+    public Long rows()
         {
-        return ogsaevery;
+        return ogsarows;
         }
     @Override
-    public void every(Integer value)
+    public void rows(Long value)
         {
-        ogsaevery = value ;
+        ogsarows = value;
+        }
+    @Override
+    public Long cells()
+        {
+        return ogsacell;
+        }
+    @Override
+    public void cells(Long value)
+        {
+        ogsacell = value;
+        }
+    @Override
+    public Long time()
+        {
+        return ogsatime;
+        }
+    @Override
+    public void time(Long value)
+        {
+        ogsatime = value ;
         }
     }

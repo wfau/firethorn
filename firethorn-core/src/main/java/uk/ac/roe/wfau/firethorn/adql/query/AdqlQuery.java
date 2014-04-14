@@ -28,7 +28,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.Delay;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
 
 /**
  *
@@ -83,29 +84,184 @@ extends NamedEntity, Job
     public Timings timings();
 
     /**
+     * The Query limits.
+     * 
+     */
+    public interface Limits
+    extends LimitsClient.Param
+        {
+        /**
+         * Public factory interface.
+         * 
+         */
+        public interface Factory
+            {
+            /**
+             * Create a new Limits using the default settings. 
+             * @return A new Limits object.
+             *
+            public Limits create();
+             */
+
+            /**
+             * Create a new Limits using the values from another Limits. 
+             * @return A new Limits object.
+             *
+            public Limits create(final Limits origin);
+             */
+            
+            /**
+             * Create a new Limits using specific settings. 
+             * @return A new Limits object.
+             *
+            public Limits create(final Long rows, final Long cell, final Long time);
+             */
+            
+            /**
+             * The default system limits, used if no other limits are defined.
+             * 
+             */
+            public Limits defaults();
+
+            /**
+             * Compare a Limits with the default system limits, using the defaults to fill in any missing values.
+             * @return A new Limits containing a combination of the original limits and the system defaults.
+             * @see Limits.combine()
+             * 
+             */
+            public Limits defaults(final Limits that);
+
+            /**
+             * The absolute system limits. These will override any of the other limits.
+             * This enables us to start with the defaults set quite low, allow the user to increase the limits for a particular query, but still have an absolute upper bound.
+             * 
+             */
+            public Limits absolute();
+
+            /**
+             * Compare a Limits with the absolute system limits, using the lowest available value for each limit.
+             * @return A new Limits containing the lowest value of each limit.
+             * @see Limits.lowest()
+             * 
+             */
+            public Limits absolute(final Limits that);
+
+            /**
+             * Compare a Limits with the system defaults to fill in any missing values and then apply the system absolutes.
+             * @return A new Limits containing a combination of values from the supplied Limits, system defaults and the system absolutes.
+             * @see absolute(Limits)
+             * @see defaults(Limits) 
+             * 
+             */
+            public Limits runtime(final Limits that);
+
+            }
+        
+        /**
+         * Compare this Limits with another and return a new Limits containing the lowest value of each limit.
+         * If the value from both Limits are not null, then the lowest value is chosen.
+         * If the value from one of the Limits is null and the other is not null, then the non-null value is chosen.
+         * If the values from both of the Limits are null, then the result is null.
+         * @param left  The Limits to compare with this Limits.
+         * @return A new Limits containing a combination of the lowest values from the two Limits.
+         * 
+         */
+        public Limits lowest(final Limits that);
+
+        /**
+         * Compare this Limits with another and return a new Limits containing a combination of values from two Limits.
+         * If the value from the this Limits is not null, then this value is chosen.
+         * If the value from this Limits is null, then the value from that Limits is chosen.
+         * If the values from both of the Limits are null, then the result is null.
+         * @param left  The Limits to compare with this Limits.
+         * @return A new Limits containing a combination of the lowest values from the two Limits.
+         */
+        public Limits combine(final Limits that);
+       
+        }
+
+    /**
+     * Modifiable Query Limits
+     * 
+     */
+    public interface QueryLimits
+    extends Limits
+        {
+
+        /**
+         * The row limit.
+         * @param value The row limit.
+         *
+         */
+        public void rows(final Long value);
+
+        /**
+         * The cells limit.
+         * @param value The cells limit.
+         *
+         */
+        public void cells(final Long value);
+
+        /**
+         * The time limit.
+         * @param value The time limit.
+         *
+         */
+        public void time(final Long value);
+            
+        }
+    
+    /**
+     * The query limits.
+     * 
+     */
+    public QueryLimits limits();
+
+    /**
+     * Set the query limits using a combination of the current values and the values from another Limits object.
+     * @param limits The Limits object to combine.
+     * @see combine(Limits)
+     * 
+     */
+    public void limits(final Limits limits);
+
+    /**
+     * Set the query limits.
+     * @param rows  The rows value.
+     * @param cells The cells value.
+     * @param time  The time value.
+     * 
+     */
+    public void limits(final Long rows, final Long cells, final Long time);
+        
+    /**
      * Query delay properties.
      * 
      */
     public interface Delays
+    extends DelaysClient.Param
         {
 
         /**
-         * The OGSA-DAI pipeline delays. 
+         * The delay before the first row.
+         * @param value The delay value.
          *
          */
-        public interface PipelineDelays
-        extends Delay.Param
-            {
-            public void first(final Integer value);
-            public void last(final Integer value);
-            public void every(final Integer value);
-            }
-        
+        public void first(final Integer value);
+
         /**
-         * Delays inside OGSA-DAI. 
+         * The delay after the last row.
+         * @param value The delay value.
          *
          */
-        public PipelineDelays ogsa();
+        public void last(final Integer value);
+
+        /**
+         * The delay between each row.
+         * @param value The delay value.
+         *
+         */
+        public void every(final Integer value);
         
         }
 
@@ -114,7 +270,6 @@ extends NamedEntity, Job
      * 
      */
     public Delays delays();
-
     
     /**
      * Public interface for OGSA-DAI query params.
@@ -316,11 +471,19 @@ extends NamedEntity, Job
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
 
         /**
-         * OGSA-DAI param factory.
+         * Our OGSA-DAI param factory.
+         * @todo Move this to Services interface
          *
          */
         public ParamFactory params();
 
+        /**
+         * Our query limits factory.
+         * @todo Move this to Services interface
+         *
+         */
+        public Limits.Factory limits();
+        
         }
 
     /**

@@ -19,42 +19,48 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
 
 /**
- * Parameter names for the InsertActivity.
+ * Parameter names for the DelayActivity.
  *
  */
-public class InsertParam
+public class DelaysParam
     {
 
     /**
-     * Parameter name for the size of the first block.
+     * Parameter name for the delay before the first row.
      * 
      */
-    public static final String FIRST_SIZE = "first.size" ;
+    public static final String FIRST_DELAY = "delay.first" ;
 
     /**
-     * Default value for the first block size.
+     * Default delay before the first row (0 = no delay).
      * 
      */
-    public static final Integer DEFAULT_FIRST = new Integer(100);
+    public static final Integer DEFAULT_FIRST = new Integer(0);
+
+    /**
+     * Parameter name for the delay after the last row.
+     * 
+     */
+    public static final String LAST_DELAY  = "delay.last"  ;
+
+    /**
+     * Default delay after the last row (0 = no delay).
+     * 
+     */
+    public static final Integer DEFAULT_LAST = new Integer(0);
     
     /**
-     * Parameter name for the main block size.
+     * Parameter name for the delay between every row.
      * 
      */
-    public static final String BLOCK_SIZE = "block.size"  ;
+    public static final String EVERY_DELAY = "delay.every" ;
 
     /**
-     * Default value for the main block size.
+     * Default delay for every row (0 = no delay).
      * 
      */
-    public static final Integer DEFAULT_BLOCK = new Integer(1000);
+    public static final Integer DEFAULT_EVERY = new Integer(0);
 
-    /**
-     * Parameter name for the table name.
-     * 
-     */
-    public static final String TABLE_NAME = "table.name"  ;
-    
     /**
      * Parameter name for the input tuples.
      * 
@@ -71,7 +77,7 @@ public class InsertParam
      * Default Activity name.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Insert" ;
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delays" ;
 
     }
 
