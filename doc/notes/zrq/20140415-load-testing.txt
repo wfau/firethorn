@@ -93,3 +93,20 @@
 
             looptest
 
+# -----------------------------------------------------
+#
+
+    ran 4000 queries between 00:00 and 06:00
+    Ran ok for several hours, then Hibernate started to get SQLServer connection failures.
+    May have coincided with a scan of the user data schema.     
+
+    Logs copied to
+
+        ~/logs/20140415-firethorn-catalina.out.gz    
+        ~/logs/20140415-ogsadai-catalina.out.gz
+    
+    
+
+
+
+
