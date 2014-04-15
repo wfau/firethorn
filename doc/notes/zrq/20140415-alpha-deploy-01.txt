@@ -27,6 +27,7 @@
     newrelease=1.10.2-release
     newversion=1.10.2-alpha
 
+
 # ------------------------------------------------
 # Update our deployment properties
 #[user@desktop]
@@ -47,6 +48,7 @@
 ssh "${vmuser:?}@${vmname:?}" << EOF
     sed -i '
         s/^firethorn.webapp.version=.*$/firethorn.webapp.version=${newversion:?}/
+        s/^firethorn.ogsadai.version=.*$/firethorn.ogsadai.version=${newversion:?}/
      ' 'firethorn.properties'
 EOF
 
@@ -58,6 +60,99 @@ EOF
     done
 
 # ----------------------------------------------------
+# Shutdown the FireThorn tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        ./shutdown.sh
+
+        mv ~/tomcat/logs/catalina.out ~/logs
+
+    exit
+    
+# ----------------------------------------------------
+# Shutdown the OGSADAI tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        ~/shutdown.sh
+
+        mv ~/tomcat/logs/catalina.out ~/logs
+
+    exit
+
+# ------------------------------------------------
+# Add the limit properties (manual)
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        vi firethorn.properties
+
+        +
+        +   #--------------------------------------------
+        +   # FireThorn result limits
+        +
+        +   firethorn.limits.rows.default=100000
+        +   firethorn.limits.cells.default=0
+        +   firethorn.limits.time.default=0
+        +
+        +   firethorn.limits.rows.absolute=1000000
+        +   firethorn.limits.cells.absolute=0
+        +   firethorn.limits.time.absolute=0
+        +
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        vi firethorn.properties
+
+        +
+        +   #--------------------------------------------
+        +   # FireThorn result limits
+        +
+        +   firethorn.limits.rows.default=100000
+        +   firethorn.limits.cells.default=0
+        +   firethorn.limits.time.default=0
+        +
+        +   firethorn.limits.rows.absolute=1000000
+        +   firethorn.limits.cells.absolute=0
+        +   firethorn.limits.time.absolute=0
+        +
+
+# ----------------------------------------------------
+# Restart the FireThorn tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        ./startup.sh
+
+    exit
+    
+# ----------------------------------------------------
 # Tail the FireThorn Tomcat log.
 #[user@desktop]
 
@@ -67,6 +162,34 @@ EOF
 
     source "${deploylist:?}"
     ssh -L 9090:localhost:8080 "${fireuser:?}@${firehost:?}"
+
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+# ----------------------------------------------------
+# Restart the OGSADAI tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        ~/startup.sh
+
+    exit
+    
+# ----------------------------------------------------
+# Tail the OGSADAI Tomcat log.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L 9091:localhost:8080 "${ogsauser:?}@${ogsahost}" 
 
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
@@ -123,18 +246,6 @@ EOF
             "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
 
     exit
-# ----------------------------------------------------
-# Tail the OGSADAI Tomcat log.
-#[user@desktop]
-
-    deploytype=live
-    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
-    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
-
-    source "${deploylist:?}"
-    ssh -L 9091:localhost:8080 "${ogsauser:?}@${ogsahost}" 
-
-        tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
 #----------------------------------------------------
 # Deploy the OGSADAI webapp.
@@ -244,7 +355,7 @@ EOF
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
 
-            #12278
+            #12278/18763
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
                 SELECT
                     COUNT(*)
@@ -256,7 +367,7 @@ EOF
                     (dec > -3 AND (dec < -2 OR dec < -3))
                 "
 
-            #180146
+            #180146/296571
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
                 SELECT
                     COUNT(*)
@@ -268,7 +379,7 @@ EOF
                     ((dec > -3 AND dec < -2) OR dec < -3)
                 "
 
-            #180146
+            #180146/296571
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
                 SELECT
                     COUNT(*)

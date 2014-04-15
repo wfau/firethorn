@@ -46,6 +46,9 @@
     </description>
     
     <properties>
+
+        <project.javaversion>1.6</project.javaversion>
+
     </properties>
 
     <dependencies>
