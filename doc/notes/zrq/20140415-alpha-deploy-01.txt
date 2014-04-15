@@ -74,6 +74,10 @@ EOF
 
         mv ~/tomcat/logs/catalina.out ~/logs
 
+        pushd logs
+            gzip catalina.out
+            mv catalina.out.gz "$(date '+%Y%m%d%H%M%S')-$(hostname)-catalina.out.gz"
+        popd
     exit
     
 # ----------------------------------------------------
@@ -90,6 +94,11 @@ EOF
         ~/shutdown.sh
 
         mv ~/tomcat/logs/catalina.out ~/logs
+
+        pushd logs
+            gzip catalina.out
+            mv catalina.out.gz "$(date '+%Y%m%d%H%M%S')-$(hostname)-catalina.out.gz"
+        popd
 
     exit
 
