@@ -1,0 +1,95 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run the tests.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+            looptest()
+                {
+                exec 6<> ${logged} 
+                while read <&6 adql
+                do
+                    if [[ "${adql}" == '' ]]
+                    then
+                        echo "SKIP [${adql}]"
+                    else                    
+                        if [[ "${adql}" =~ ^# ]]
+                        then
+                            echo "SKIP [${adql}]"
+                        else
+                            echo "--------"
+                            echo "ADQL [${adql}]"
+
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                            
+                            echo "--------"
+                            echo "Pause ...."                            
+                            sleep 1
+                        fi
+                    fi
+                done
+                echo "Done"
+                exec 6>&-
+                }
+
+            looptest
+
