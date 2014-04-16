@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+14 April (1.10.2 djer release)
+-----------------------------
+
+- List of Queries tested from 10pm - 12pm (EET)
+
+
+select top 
+
+SELECT TOP 1000
+    mergedClass , ra , dec , gmrPnt , gaperMag3 , gaperMag3Err
+FROM
+    atlasSource
+WHERE
+    gAperMag3 > 13. AND gAperMag3 < 18. AND rAperMag3 < 19. AND rAperMag3 > 0. AND (priOrSec = 0 OR priOrSec = frameSetID) AND mergedClass = 1 AND ebV < 0.02
+    
+select top 0 * from Filter
+    
+select top 10 * from Filter (x5)
+
+select top 10 * from atlassource
+
+select top 100 * from atlassource
+
+select top 100 * from twomass_psc
+
+select top 100000 * from atlassource
+
+SELECT TOP 10
+              umgPnt,
+               umgPnt + umgPntErr,
+              umgPnt - umgPntErr,
+              umgPnt * umgPntErr,
+                umgPnt / umgPntErr
+            FROM
+               atlasSource AS atlas
+
+
+SELECT TOP 5
+       round(ra, 2)
+    FROM
+      atlasSource
+      
+
+SELECT
+      ra,
+       dec
+    FROM
+       atlasSource
+    WHERE
+       (
+          ra > 180
+       AND
+            ra < 181
+        )
+    AND
+        (
+        dec > -3
+           AND
+            (
+                dec < -2
+          OR
+                dec < -3
+           )
+       )
+
+
+
+
