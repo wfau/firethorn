@@ -56,4 +56,28 @@
 
     popd
 
+# -----------------------------------------------------
+# Stuff .....
+#[user@desktop]
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Build everything  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn eclipse:eclipse
+
+    popd
+
 
