@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.10.3-dev-SNAPSHOT</version>
+    <version project='firethorn'>1.10.3-zrq-backlog</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -303,7 +303,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.2</version>
+                <version>3.3</version>
             </dependency>
         	<dependency>
                 <groupId>commons-fileupload</groupId>

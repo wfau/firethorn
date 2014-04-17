@@ -303,14 +303,14 @@ extends AbstractController
             final JdbcProductType type  = jdbc.resource().connection().type();
             final Connection connection = jdbc.resource().connection().open();
 
-            int isolation = Connection.TRANSACTION_NONE;
+            // int isolation = Connection.TRANSACTION_NONE;
 
             try {
                 //
                 // Use isolation level to peek at live data.
                 // http://redmine.roe.ac.uk/issues/324
                 // http://www.precisejava.com/javaperf/j2ee/JDBC.htm#JDBC107
-                isolation = connection.getTransactionIsolation();
+                // isolation = connection.getTransactionIsolation();
                 connection.setTransactionIsolation(
                     Connection.TRANSACTION_READ_UNCOMMITTED
                     );
@@ -364,9 +364,11 @@ extends AbstractController
                     {
                     try {
                         connection.close();
+/*
                         connection.setTransactionIsolation(
                             isolation
                             );
+ */
                         }
                     catch (final SQLException ouch)
                         {

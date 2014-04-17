@@ -40,8 +40,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-    extends BaseComponentEntity
-    implements BaseSchema<SchemaType, TableType>
+extends BaseComponentEntity<SchemaType>
+implements BaseSchema<SchemaType, TableType>
     {
 
     /**

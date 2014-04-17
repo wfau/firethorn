@@ -50,8 +50,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseTableEntity<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
-extends BaseComponentEntity
-    implements BaseTable<TableType, ColumnType>
+extends BaseComponentEntity<TableType>
+implements BaseTable<TableType, ColumnType>
     {
     /**
      * Table resolver implementation.

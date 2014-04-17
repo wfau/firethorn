@@ -40,6 +40,13 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 public class AdqlColumnProxy
 implements AdqlColumn
     {
+    /**
+     * TODO Move to proxy base class
+     */
+    public AdqlColumn self()
+        {
+        return this;
+        }
 
     /**
      * TODO Move to proxy base class
@@ -57,15 +64,6 @@ implements AdqlColumn
             this.factories = ComponentFactoriesImpl.instance();
             }
         return this.factories;
-        }
-
-    /**
-     * TODO Move to proxy base class
-     */
-    @Override
-    public void refresh()
-        {
-        throw new UnsupportedOperationException();
         }
 
     /**

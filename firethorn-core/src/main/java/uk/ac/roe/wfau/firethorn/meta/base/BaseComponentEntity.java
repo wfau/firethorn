@@ -28,9 +28,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
  *
@@ -41,9 +44,9 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
     AccessType.FIELD
     )
 @MappedSuperclass
-public abstract class BaseComponentEntity
+public abstract class BaseComponentEntity<ComponentType extends BaseComponent>
 extends AbstractNamedEntity
-    implements BaseComponent
+implements BaseComponent
     {
     /**
      * Hibernate column mapping.
@@ -293,5 +296,85 @@ extends AbstractNamedEntity
     public void depth(final CopyDepth type)
         {
         this.depth = type;
+        }
+
+    
+    /**
+     * Exception thrown if loading self() fails.
+     * 
+     */
+    public static class SelfException
+    extends FirethornUncheckedException
+        {
+        /**
+         * Generated serial version UID.
+         *
+         */
+        private static final long serialVersionUID = -8936523546194517863L;
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected SelfException(final Class<?> clazz, final Identifier ident)
+            {
+            this.clazz = clazz;
+            this.ident = ident;
+            }
+
+        /**
+         * The Entity class.
+         * 
+         */
+        private Class<?> clazz ;
+
+        /**
+         * The Entity class.
+         * 
+         */
+        public Class<?> clazz()
+            {
+            return this.clazz;
+            }
+
+        /**
+         * The Entity Identifier.
+         * 
+         */
+        private Identifier ident ;
+
+        /**
+         * The Entity Identifier.
+         * 
+         */
+        public Identifier ident()
+            {
+            return this.ident;
+            }
+        }
+    
+    /**
+     * Load a persistent reference for this Entity.
+     * @return The persistent instance or proxy for the entity.
+     * @see Session#load(Class, java.io.Serializable)
+     *
+     */
+    protected ComponentType self()
+        {
+        @SuppressWarnings("unchecked")
+        final ComponentType entity = (ComponentType) factories().hibernate().session().load(
+            this.getClass(),
+            this.ident().value()
+            );
+        if (entity != null)
+            {
+            return entity ;
+            }
+        else {
+            throw new SelfException(
+                this.getClass(),
+                this.ident()
+                );
+            }
         }
     }

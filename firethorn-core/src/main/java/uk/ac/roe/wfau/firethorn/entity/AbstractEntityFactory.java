@@ -88,8 +88,7 @@ implements Entity.EntityFactory<EntityType>
         {
         log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
-        final
-        EntityType result = (EntityType) factories().hibernate().select(
+        final EntityType result = (EntityType) factories().hibernate().select(
             etype(),
             ident
             );

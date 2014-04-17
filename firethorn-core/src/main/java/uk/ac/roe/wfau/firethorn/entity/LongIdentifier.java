@@ -29,8 +29,7 @@ extends AbstractIdentifier<Long>
 
     /**
      * Public constructor.
-     * @param string
-     *      The Identifier value.
+     * @param string The Identifier value.
      *
      */
     public LongIdentifier(final String string)
@@ -44,8 +43,7 @@ extends AbstractIdentifier<Long>
 
     /**
      * Public constructor.
-     * @param value
-     *      The Identifier value.
+     * @param string The Identifier value.
      *
      */
     public LongIdentifier(final int value)
@@ -59,8 +57,7 @@ extends AbstractIdentifier<Long>
 
     /**
      * Public constructor.
-     * @param value
-     *      The Identifier value.
+     * @param string The Identifier value.
      *
      */
     public LongIdentifier(final long value)
@@ -74,8 +71,7 @@ extends AbstractIdentifier<Long>
 
     /**
      * Public constructor.
-     * @param value
-     *      The Identifier value.
+     * @param string The Identifier value.
      *
      */
     public LongIdentifier(final Long value)
@@ -85,8 +81,8 @@ extends AbstractIdentifier<Long>
 
     /**
      * Parse a String and return a Long value.
-     * @param string
-     *      The String to parse.
+     * @param string The String to parse.
+     * @throws IdentifierFormatException If the String failed to parse correctly. 
      *
      */
     public static Long parse(final String string)
@@ -107,8 +103,8 @@ extends AbstractIdentifier<Long>
 
     /**
      * Parse a String and return an Identifier.
-     * @param string
-     *      The String to parse.
+     * @param string The String to parse.
+     * @throws IdentifierFormatException If the String failed to parse correctly. 
      *
      */
     public static Identifier create(final String string)
