@@ -230,12 +230,12 @@ public class IvoaSchemaEntity
     @Override
     public BaseSchema<?, ?> base()
         {
-        return this ;
+        return self();
         }
     @Override
     public BaseSchema<?, ?> root()
         {
-        return this ;
+        return self();
         }
 
     @Override

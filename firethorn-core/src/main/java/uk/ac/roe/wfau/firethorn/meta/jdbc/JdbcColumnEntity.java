@@ -372,12 +372,12 @@ public class JdbcColumnEntity
     @Override
     public JdbcColumn base()
         {
-        return this ;
+        return self() ;
         }
     @Override
     public JdbcColumn root()
         {
-        return this ;
+        return self() ;
         }
 
     @ManyToOne(

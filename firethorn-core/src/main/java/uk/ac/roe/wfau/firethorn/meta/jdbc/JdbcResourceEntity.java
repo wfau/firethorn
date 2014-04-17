@@ -73,7 +73,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
         }
     )
 public class JdbcResourceEntity
-    extends BaseResourceEntity<JdbcSchema>
+    extends BaseResourceEntity<JdbcResource, JdbcSchema>
     implements JdbcResource
     {
     /**

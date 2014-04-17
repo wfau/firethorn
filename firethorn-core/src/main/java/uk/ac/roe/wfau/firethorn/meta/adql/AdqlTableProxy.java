@@ -47,6 +47,14 @@ public class AdqlTableProxy
     /**
      * TODO Move to proxy base class
      */
+    public AdqlTable self()
+        {
+        return this;
+        }
+    
+    /**
+     * TODO Move to proxy base class
+     */
     @Transient
     protected ComponentFactories factories ;
 
@@ -60,15 +68,6 @@ public class AdqlTableProxy
             this.factories = ComponentFactoriesImpl.instance();
             }
         return this.factories;
-        }
-
-    /**
-     * TODO Move to proxy base class
-     */
-    @Override
-    public void refresh()
-        {
-        throw new UnsupportedOperationException();
         }
 
     /**
@@ -255,9 +254,6 @@ public class AdqlTableProxy
         return base().alias();
         }
 
-    /**
-     * Copied from BaseTable.
-     */
     @Override
     public StringBuilder namebuilder()
         {
@@ -291,15 +287,6 @@ public class AdqlTableProxy
             "Can't modify a read only table"
             );
         }
-
-    /*
-    @Override
-    @Deprecated
-    public BaseTable.Linked linked()
-        {
-        return null;
-        }
-     */
 
     @Override
     public AdqlQuery query()

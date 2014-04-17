@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -26,11 +25,11 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.JoinColumn;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
@@ -65,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.util.GenericIterable;
         }
     )
 public class IvoaResourceEntity
-    extends BaseResourceEntity<IvoaSchema>
+    extends BaseResourceEntity<IvoaResource, IvoaSchema>
     implements IvoaResource
     {
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";

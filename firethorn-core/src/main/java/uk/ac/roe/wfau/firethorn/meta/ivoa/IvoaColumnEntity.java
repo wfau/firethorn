@@ -244,12 +244,12 @@ public class IvoaColumnEntity
     @Override
     public IvoaColumn base()
         {
-        return this ;
+        return self();
         }
     @Override
     public IvoaColumn root()
         {
-        return this ;
+        return self();
         }
 
     @ManyToOne(

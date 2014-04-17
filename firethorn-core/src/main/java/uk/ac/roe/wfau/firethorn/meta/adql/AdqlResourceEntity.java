@@ -58,9 +58,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
         }
     )
 public class AdqlResourceEntity
-extends BaseResourceEntity<AdqlSchema>
-    implements AdqlResource
+extends BaseResourceEntity<AdqlResource,AdqlSchema>
+implements AdqlResource
     {
+    /**
+     * Hibernate table mapping.
+     * 
+     */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlResourceEntity";
 
     /**

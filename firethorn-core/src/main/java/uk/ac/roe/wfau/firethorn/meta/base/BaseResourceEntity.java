@@ -34,8 +34,8 @@ import javax.persistence.InheritanceType;
 @Inheritance(
     strategy = InheritanceType.TABLE_PER_CLASS
     )
-public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaType,?>>
-    extends BaseComponentEntity
+public abstract class BaseResourceEntity<ResourceType extends BaseResource<SchemaType>,  SchemaType extends BaseSchema<SchemaType,?>>
+    extends BaseComponentEntity<ResourceType>
     implements BaseResource<SchemaType>
     {
 

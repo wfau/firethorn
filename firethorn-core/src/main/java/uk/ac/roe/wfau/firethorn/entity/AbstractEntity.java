@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.entity ;
 
+import java.util.Random;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -31,9 +33,12 @@ import javax.persistence.Version;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -57,19 +62,28 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 public abstract class AbstractEntity
 implements Entity
     {
-
     /**
-     * Hibernate table mapping.
+     * Shared random number generator, used to create the random part of the Entity UID.
+     * 
+     */
+    protected static final Random random = new Random(
+        System.currentTimeMillis()
+        );
+    
+    /**
+     * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT0109";
+    protected static final String DB_TABLE_PREFIX = "FT0110";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_IDENT_COL = "ident" ;
-    protected static final String DB_UUID_COL  = "uuid"  ;
+    protected static final String DB_PKEY_COL = "ident" ;
+    protected static final String DB_UID_LO_COL = "uidlo" ;
+    protected static final String DB_UID_HI_COL = "uidhi" ;
+
     protected static final String DB_OWNER_COL = "owner" ;
 
     protected static final String DB_CREATED_COL  = "created"  ;
@@ -121,7 +135,6 @@ implements Entity
         return null ;
         }
 
-
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -142,7 +155,9 @@ implements Entity
         super();
         if (init)
             {
-            //this.uuid = factories().uuids().uuid();
+            this.uidlo = random.nextLong();
+            this.uidhi = System.currentTimeMillis();
+            
             this.owner = factories().identities().current();
             this.created = new DateTime();
             }
@@ -153,7 +168,7 @@ implements Entity
         * Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
         * Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
         * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner])
-        * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
+        * Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
         *
        if (this.owner == null)
            {
@@ -167,16 +182,15 @@ implements Entity
         }
 
     /**
-     * The Entity Identifier.
+     * The database primary key.
      * Note - unique=false because @Id already adds a unique primary key.
      * https://hibernate.onjira.com/browse/HHH-5376
      * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
-     *  strategy="org.hibernate.id.MultipleHiLoPerTableGenerator"
      *
      */
     @Id
     @Column(
-        name = DB_IDENT_COL,
+        name = DB_PKEY_COL,
         unique = false,
         nullable = false,
         updatable = false
@@ -188,15 +202,15 @@ implements Entity
         name="ident-generator",
         strategy="hilo"
         )
-    private Long ident ;
+    private Long pkey ;
 
     @Override
     public Identifier ident()
         {
-        if (this.ident != null)
+        if (this.pkey != null)
             {
             return new LongIdentifier(
-                this.ident
+                this.pkey
                 );
             }
         else {
@@ -204,6 +218,38 @@ implements Entity
             }
         }
 
+    /**
+     * The lower part of the Entity UID.
+     *  
+     */
+    @Column(
+        name = DB_UID_LO_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Long uidlo ;
+    protected Long uidlo()
+        {
+        return this.uidlo;
+        }
+
+    /**
+     * The higher part of the Entity UID.
+     *  
+     */
+    @Column(
+        name = DB_UID_HI_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Long uidhi ;
+    protected Long uidhi()
+        {
+        return this.uidhi;
+        }
+    
     /**
      * The Entity owner.
      *
@@ -264,10 +310,6 @@ implements Entity
         return this.modified ;
         }
 
-    /**
-     * Object toString() method.
-     *
-     */
     @Override
     public String toString()
         {
@@ -290,50 +332,86 @@ implements Entity
         return builder.toString();
         }
 
-    /**
-     * Object equals(Object) method (based on ident only).
-     *
-     */
     @Override
     public boolean equals(final Object that)
         {
-        if (that != null)
+        if (that == null)
             {
-            if (this == that)
+            return false;
+            }
+        if (this == that)
+            {
+            return true ;
+            }
+        if (that instanceof Entity)
+            {
+            final EqualsBuilder builder = new EqualsBuilder();
+            builder.appendSuper(
+                super.equals(
+                    that
+                    )
+                );
+            if (that instanceof AbstractEntity)
                 {
-                return true ;
-                }
-            if (that instanceof Entity)
-                {
-                return this.ident().equals(
-                    ((Entity)that).ident()
+                builder.append(
+                    ((AbstractEntity)that).uidlo(),
+                    this.uidlo()
+                    );
+                builder.append(
+                    ((AbstractEntity)that).uidhi(),
+                    this.uidhi()
                     );
                 }
+           
+            else {
+                builder.append(
+                    ((Entity)that).ident(),
+                    this.ident()
+                    );
+                }
+            return builder.isEquals();
             }
-        return false ;
+        else {
+            return false ;
+            }
         }
 
-    /**
-     * Object hashCode() method (based on ident only).
-     *
-     */
     @Override
     public int hashCode()
         {
-        if (this.ident != null)
-            {
-            return this.ident.hashCode() ;
-            }
-        else {
-            return -1 ;
-            }
+        return this.hashCode(51, 97);
+        }
+
+    /**
+     * Two randomly chosen, non-zero, odd numbers must be passed in. Ideally these should be different for each class, however this is not vital.
+     * Prime numbers are preferred, especially for the multiplier. 
+     * 
+     * @param initial A non-zero, odd number used as the initial value
+     * @param multiplier A a non-zero, odd number used as the multiplier 
+     * @return The computed hashCode.
+     * @see HashCodeBuilder#HashCodeBuilder(int, int) 
+     *
+     */
+    protected int hashCode(int initial, int multiplier)
+        {
+        final HashCodeBuilder builder = new HashCodeBuilder(
+            initial,
+            multiplier
+            ); 
+        builder.append(
+            this.uidlo()
+            );
+        builder.append(
+            this.uidhi()
+            );
+        return builder.toHashCode();
         }
 
     /**
      * Refresh (fetch) this Entity from the database.
+     * @todo Remove this if possible.
      *
      */
-    @Override
     public void refresh()
         {
         log.debug("---- ---- ---- ----");
@@ -355,5 +433,6 @@ implements Entity
             );
         }
      */
+    
     }
 

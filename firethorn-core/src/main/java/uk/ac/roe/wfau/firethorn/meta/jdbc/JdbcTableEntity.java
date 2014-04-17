@@ -485,12 +485,12 @@ implements JdbcTable
     @Override
     public JdbcTable base()
         {
-        return this;
+        return self();
         }
     @Override
     public JdbcTable root()
         {
-        return this;
+        return self();
         }
 
     /*

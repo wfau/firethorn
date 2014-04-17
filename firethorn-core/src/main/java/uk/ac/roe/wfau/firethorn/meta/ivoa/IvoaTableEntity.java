@@ -273,12 +273,12 @@ public class IvoaTableEntity
     @Override
     public IvoaTable base()
         {
-        return this;
+        return self();
         }
     @Override
     public IvoaTable root()
         {
-        return this;
+        return self();
         }
 
     @Override
