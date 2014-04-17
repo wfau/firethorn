@@ -45,12 +45,6 @@ implements SearchTableApi
     {
 
     /**
-     * Wrapped implementation.
-     * 
-     */
-    protected SearchTableList inner ;
-
-    /**
      * Our AdqlResource.
      * 
      */
@@ -98,18 +92,6 @@ implements SearchTableApi
     /**
      * Public constructor.
      * 
-    public MySearchTableList(final Collection<DBTable> collection)
-        {
-        log.debug("MySearchTableList(Collection<DBTable>)");
-        inner = new SearchTableList(
-            collection
-            );
-        }
-     */
-
-    /**
-     * Public constructor.
-     * 
      */
     public MySearchTableList(final AdqlResource resource, final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode)
         {
@@ -117,53 +99,6 @@ implements SearchTableApi
         this.resource = resource;
         this.factory = factory;
         this.mode = mode ;
-        //
-        // Stuff to replace ...
-/*
-        final Set<DBTable> tables = new HashSet<DBTable>();
-        for (final AdqlSchema temp : resource.schemas().select())
-            {
-            log.debug("  schema [{}]", temp.name());
-            for (final AdqlTable table : temp.tables().select())
-                {
-                log.debug("  table  [{}][{}]", temp.name(), table.name());
-                tables.add(
-                    factory.create(
-                        mode,
-                        table
-                        )
-                    );
-                }
-            }
-        inner = new SearchTableList(
-            tables
-            );
-*/            
-        }
-    
-    
-    //@Override
-    public List<DBTable> search(String table)
-        {
-        log.debug("search(String)");
-        log.debug("  table   [{}]", table);
-        //return inner.search(table);
-        throw new UnsupportedOperationException(
-            "search(String) not implemented"
-            );
-        }
-
-    //@Override
-    public List<DBTable> search(String catalog, String schema, String table)
-        {
-        log.debug("search(String, String, String, byte)");
-        log.debug("  catalog [{}]", catalog);
-        log.debug("  schema  [{}]", schema);
-        log.debug("  table   [{}]", table);
-        //return inner.search(catalog, schema, table);
-        throw new UnsupportedOperationException(
-            "search(String, String, String) not implemented"
-            );
         }
 
     @Override
@@ -173,38 +108,49 @@ implements SearchTableApi
         log.debug("  target [{}][{}][{}]", target.getTableName(), target.getSchemaName(), target.getCatalogName());
 
         List<DBTable> tables = new ArrayList<DBTable>();
-        for (AdqlSchema schema : resource.schemas().select())
+
+        if (target.getSchemaName() != null)
             {
-            AdqlTable found = schema.tables().search(
-                target.getTableName()
-                ); 
-            if (found != null)
+            AdqlSchema schema = resource.schemas().search(
+                target.getSchemaName()
+                ) ;
+            if (schema != null)
                 {
-                log.debug("  found [{}]", found.namebuilder().toString());
-                tables.add(
-                    factory.create(
-                        mode,
-                        found
-                        )
-                    );
+                log.debug("  schema [{}]", schema.namebuilder().toString());
+                AdqlTable table = schema.tables().search(
+                    target.getTableName()
+                    ); 
+                if (table != null)
+                    {
+                    log.debug("  table [{}]", table.namebuilder().toString());
+                    tables.add(
+                        factory.create(
+                            mode,
+                            table
+                            )
+                        );
+                    }
                 }
             }
+        else {
+            for (AdqlSchema schema : resource.schemas().select())
+                {
+                AdqlTable found = schema.tables().search(
+                    target.getTableName()
+                    ); 
+                if (found != null)
+                    {
+                    log.debug("  found [{}]", found.namebuilder().toString());
+                    tables.add(
+                        factory.create(
+                            mode,
+                            found
+                            )
+                        );
+                    }
+                }
+            }
+        
         return tables ;
         }
-
-/*    
-    @Override
-    public List<DBTable> search(String catalog, String schema, String table, byte caseSensitivity)
-        {
-        log.debug("search(String, String, String, byte)");
-        log.debug("  catalog [{}]", catalog);
-        log.debug("  schema  [{}]", schema);
-        log.debug("  table   [{}]", table);
-        log.debug("  case    [{}]", caseSensitivity);
-        //return inner.search(catalog, schema, table, caseSensitivity);
-        throw new UnsupportedOperationException(
-            "search(String, String, String, byte) not implemented"
-            );
-        }
-*/
     }
