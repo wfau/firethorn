@@ -28,7 +28,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.10.3-zrq-backlog</version>
+        <version project='firethorn'>1.10.4-dev-SNAPSHOT</version>
     </parent>
 
     <artifactId>firethorn-jdbc</artifactId>
