@@ -1,6 +1,7 @@
 package adql.db;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import adql.query.IdentifierField;
 import adql.query.from.ADQLTable;
@@ -18,7 +19,7 @@ public interface SearchTableApi
      * 
      * @see TextualSearchList#get(String)
      */
-    public ArrayList<DBTable> search(final String table);
+    public List<DBTable> search(final String table);
 
     /**
      * Searches all {@link DBTable} elements which have the given catalog, schema, and table name (case insensitive).
@@ -31,7 +32,7 @@ public interface SearchTableApi
      * 
      * @see #search(String, String, String, byte)
      */
-    public ArrayList<DBTable> search(final String catalog, final String schema, final String table);
+    public List<DBTable> search(final String catalog, final String schema, final String table);
 
     /**
      * Searches all {@link DBTable} elements corresponding to the given {@link ADQLTable} (case insensitive).
@@ -42,7 +43,7 @@ public interface SearchTableApi
      * 
      * @see #search(String, String, String, byte)
      */
-    public ArrayList<DBTable> search(final ADQLTable table);
+    public List<DBTable> search(final ADQLTable table);
 
     /**
      * Searches all {@link DBTable} elements which have the given catalog, schema, and table name, with the specified case sensitivity.
@@ -56,6 +57,6 @@ public interface SearchTableApi
      * 
      * @see IdentifierField
      */
-    public ArrayList<DBTable> search(final String catalog, final String schema, final String table, final byte caseSensitivity);
+    public List<DBTable> search(final String catalog, final String schema, final String table, final byte caseSensitivity);
 
     }

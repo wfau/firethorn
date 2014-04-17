@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql.parser.green;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
@@ -114,8 +115,11 @@ implements SearchTableApi
         {
         log.debug("MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode)");
         this.resource = resource;
+        this.factory = factory;
+        this.mode = mode ;
         //
         // Stuff to replace ...
+/*
         final Set<DBTable> tables = new HashSet<DBTable>();
         for (final AdqlSchema temp : resource.schemas().select())
             {
@@ -134,43 +138,71 @@ implements SearchTableApi
         inner = new SearchTableList(
             tables
             );
+*/            
         }
     
     
     @Override
-    public ArrayList<DBTable> search(String table)
+    public List<DBTable> search(String table)
         {
         log.debug("search(String)");
         log.debug("  table   [{}]", table);
-        return inner.search(table);
+        //return inner.search(table);
+        throw new UnsupportedOperationException(
+            "search(String) not implemented"
+            );
         }
 
     @Override
-    public ArrayList<DBTable> search(String catalog, String schema, String table)
+    public List<DBTable> search(String catalog, String schema, String table)
         {
         log.debug("search(String, String, String, byte)");
         log.debug("  catalog [{}]", catalog);
         log.debug("  schema  [{}]", schema);
         log.debug("  table   [{}]", table);
-        return inner.search(catalog, schema, table);
+        //return inner.search(catalog, schema, table);
+        throw new UnsupportedOperationException(
+            "search(String, String, String) not implemented"
+            );
         }
 
     @Override
-    public ArrayList<DBTable> search(ADQLTable table)
+    public List<DBTable> search(ADQLTable target)
         {
         log.debug("search(ADQLTable)");
-        log.debug("  table   [{}]", table.getFullTableName());
-        return inner.search(table);
+        log.debug("  target [{}][{}][{}]", target.getTableName(), target.getSchemaName(), target.getCatalogName());
+
+        List<DBTable> tables = new ArrayList<DBTable>();
+        for (AdqlSchema schema : resource.schemas().select())
+            {
+            AdqlTable found = schema.tables().search(
+                target.getTableName()
+                ); 
+            if (found != null)
+                {
+                log.debug("  found [{}]", found.namebuilder().toString());
+                tables.add(
+                    factory.create(
+                        mode,
+                        found
+                        )
+                    );
+                }
+            }
+        return tables ;
         }
 
     @Override
-    public ArrayList<DBTable> search(String catalog, String schema, String table, byte caseSensitivity)
+    public List<DBTable> search(String catalog, String schema, String table, byte caseSensitivity)
         {
         log.debug("search(String, String, String, byte)");
         log.debug("  catalog [{}]", catalog);
         log.debug("  schema  [{}]", schema);
         log.debug("  table   [{}]", table);
         log.debug("  case    [{}]", caseSensitivity);
-        return inner.search(catalog, schema, table, caseSensitivity);
+        //return inner.search(catalog, schema, table, caseSensitivity);
+        throw new UnsupportedOperationException(
+            "search(String, String, String, byte) not implemented"
+            );
         }
     }
