@@ -180,12 +180,11 @@ EOF
 
         looptest()
             {
-            count=0
-
+            local count=0
             exec 6<> ${logged} 
             while read <&6 adql
             do
-                lte count++
+                let count++
                 if [[ "${adql}" == '' ]]
                 then
                     echo "[${count:?}] SKIP [${adql}]"
