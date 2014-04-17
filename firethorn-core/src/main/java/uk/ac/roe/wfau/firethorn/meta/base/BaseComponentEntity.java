@@ -28,6 +28,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.Session;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -336,13 +338,13 @@ implements BaseComponent
             }
 
         /**
-         * The Entity identifier.
+         * The Entity Identifier.
          * 
          */
         private Identifier ident ;
 
         /**
-         * The Entity identifier.
+         * The Entity Identifier.
          * 
          */
         public Identifier ident()
@@ -352,13 +354,13 @@ implements BaseComponent
         }
     
     /**
-     * Load a persistent reference to this Entity.
-     * @return A Hibernate wrapped proxy for this Entity.
+     * Load a persistent reference for this Entity.
+     * @return The persistent instance or proxy for the entity.
+     * @see Session#load(Class, java.io.Serializable)
      *
      */
     protected ComponentType self()
         {
-        //log.debug("self [{}][{}]", this.ident(), this.getClass());
         @SuppressWarnings("unchecked")
         final ComponentType entity = (ComponentType) factories().hibernate().session().load(
             this.getClass(),
@@ -366,7 +368,6 @@ implements BaseComponent
             );
         if (entity != null)
             {
-            //log.debug("entity [{}][{}]", entity.ident(), entity.getClass());
             return entity ;
             }
         else {
