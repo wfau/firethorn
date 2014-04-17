@@ -80,4 +80,135 @@
 
     popd
 
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+    popd
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass_psc
+            "
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 1234567
+                ra,
+                dec
+            FROM
+                atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                *
+            FROM
+                atlassource
+            "
+
+
+
+        logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+        looptest()
+            {
+            count=0
+
+            exec 6<> ${logged} 
+            while read <&6 adql
+            do
+                lte count++
+                if [[ "${adql}" == '' ]]
+                then
+                    echo "[${count:?}] SKIP [${adql}]"
+                else                    
+                    if [[ "${adql}" =~ ^# ]]
+                    then
+                        echo "[${count:?}] SKIP [${adql}]"
+                    else
+                        echo "--------"
+                        echo "[${count:?}] ADQL [${adql}]"
+
+                        echo "Running query"
+                        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                        
+                        echo "--------"
+                        echo "Pause ...."                            
+                        sleep 1
+                    fi
+                fi
+            done
+            echo "Done"
+            exec 6>&-
+            }
+
+        looptest
 

@@ -1036,20 +1036,13 @@ implements AdqlQuery, AdqlParserQuery
                 // Log the start time.
                 this.timings().adqlstart();
                 //
-                // Create the two query parsers.
+                // Process as a direct query.
                 // TODO - The parsers should be part of the resource/schema.
                 // TODO - Either plain ADQL or SQLServer dialect SQL.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
                     this.schema
                     );
-                // TODO - Either plain ADQL or DQP dialect SQL.
-                final AdqlParser distrib = this.factories().adql().parsers().create(
-                    Mode.DISTRIBUTED,
-                    this.schema
-                    );
-                //
-                // Process as a direct query.
                 direct.process(
                     this
                     );
@@ -1066,6 +1059,11 @@ implements AdqlQuery, AdqlParserQuery
                     log.debug("----");
                     //
                     // Process as a distributed query.
+                    // TODO - Either plain ADQL or DQP dialect SQL.
+                    final AdqlParser distrib = this.factories().adql().parsers().create(
+                        Mode.DISTRIBUTED,
+                        this.schema
+                        );
                     distrib.process(
                         this
                         );
