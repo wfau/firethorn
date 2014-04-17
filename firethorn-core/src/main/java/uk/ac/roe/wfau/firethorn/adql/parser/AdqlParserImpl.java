@@ -30,6 +30,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryCheckerImpl;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
@@ -43,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
+import adql.db.SearchTableApi;
 import adql.parser.ADQLParser;
 import adql.parser.ADQLQueryFactory;
 import adql.parser.ParseException;
@@ -110,31 +113,15 @@ implements AdqlParser
     protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlSchema schema)
         {
         this.mode = mode ;
-
-        final AdqlResource workspace = schema.resource();
-        //
-        // Create a full set of all the available tables.
-        log.debug("Initalising tables");
-        final Set<DBTable> tables = new HashSet<DBTable>();
-        for (final AdqlSchema temp : workspace.schemas().select())
-            {
-            log.debug("  schema [{}]", temp.name());
-            for (final AdqlTable table : temp.tables().select())
-                {
-                log.debug("  table  [{}][{}]", temp.name(), table.name());
-                tables.add(
-                    factory.create(
-                        this.mode,
-                        table
-                        )
-                    );
-                }
-            }
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
-            new DBChecker(
-                tables
+            new MyQueryCheckerImpl(
+                new MySearchTableList(
+                    schema.resource(),
+                    factory,
+                    mode
+                    )
                 ),
             new AdqlQueryFactoryImpl()
             );

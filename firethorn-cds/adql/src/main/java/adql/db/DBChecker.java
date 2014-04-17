@@ -70,7 +70,7 @@ import adql.search.SimpleSearchHandler;
 public class DBChecker implements QueryChecker {
 
 	/** List of all available tables ({@link DBTable}). */
-	protected SearchTableList lstTables;
+	protected SearchTableApi lstTables;
 
 
 	/* ************ */
