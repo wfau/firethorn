@@ -283,7 +283,7 @@ EOF
 # Increment the project version.
 #[user@desktop]
 
-    mainversion=1.10.1-dev-SNAPSHOT
+    mainversion=1.10.4-dev-SNAPSHOT
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
