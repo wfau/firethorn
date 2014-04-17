@@ -98,7 +98,6 @@ implements SearchTableApi
     /**
      * Public constructor.
      * 
-     */
     public MySearchTableList(final Collection<DBTable> collection)
         {
         log.debug("MySearchTableList(Collection<DBTable>)");
@@ -106,6 +105,7 @@ implements SearchTableApi
             collection
             );
         }
+     */
 
     /**
      * Public constructor.
@@ -142,7 +142,7 @@ implements SearchTableApi
         }
     
     
-    @Override
+    //@Override
     public List<DBTable> search(String table)
         {
         log.debug("search(String)");
@@ -153,7 +153,7 @@ implements SearchTableApi
             );
         }
 
-    @Override
+    //@Override
     public List<DBTable> search(String catalog, String schema, String table)
         {
         log.debug("search(String, String, String, byte)");
@@ -192,6 +192,7 @@ implements SearchTableApi
         return tables ;
         }
 
+/*    
     @Override
     public List<DBTable> search(String catalog, String schema, String table, byte caseSensitivity)
         {
@@ -205,4 +206,5 @@ implements SearchTableApi
             "search(String, String, String, byte) not implemented"
             );
         }
+*/
     }
