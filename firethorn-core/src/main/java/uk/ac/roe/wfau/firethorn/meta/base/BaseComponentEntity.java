@@ -358,7 +358,7 @@ implements BaseComponent
      */
     protected ComponentType self()
         {
-        log.debug("self [{}][{}]", this.ident(), this.getClass());
+        //log.debug("self [{}][{}]", this.ident(), this.getClass());
         @SuppressWarnings("unchecked")
         final ComponentType entity = (ComponentType) factories().hibernate().session().load(
             this.getClass(),
@@ -366,6 +366,7 @@ implements BaseComponent
             );
         if (entity != null)
             {
+            //log.debug("entity [{}][{}]", entity.ident(), entity.getClass());
             return entity ;
             }
         else {
