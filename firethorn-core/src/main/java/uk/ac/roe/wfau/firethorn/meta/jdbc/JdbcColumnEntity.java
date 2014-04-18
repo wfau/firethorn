@@ -195,10 +195,18 @@ public class JdbcColumnEntity
             log.debug("  name [{}]", field.name());
             if (field.jdbc() != null)
                 {
+                log.debug("ADQL");
+                log.debug("  name [{}]", field.adql().namebuilder());
+                log.debug("  type [{}]", field.adql().meta().adql().type());
+                log.debug("  type [{}]", field.adql().meta().adql().type().jdbc());
+                log.debug("  size [{}]", field.adql().meta().adql().arraysize());
+
                 log.debug("JDBC");
                 log.debug("  name [{}]", field.jdbc().namebuilder());
                 log.debug("  type [{}]", field.jdbc().meta().jdbc().type());
-            	// TODO include a base reference.
+                log.debug("  size [{}]", field.jdbc().meta().jdbc().size());
+                
+                // TODO include a base reference.
             	// TODO inherit the metadata
                 log.debug("");
                 return create(

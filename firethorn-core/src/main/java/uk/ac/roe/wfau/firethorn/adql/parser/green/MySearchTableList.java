@@ -109,6 +109,11 @@ implements SearchTableApi
 
         List<DBTable> tables = new ArrayList<DBTable>();
 
+        if (target.getCatalogName() != null)
+            {
+            // Check the resource name ?
+            }
+            
         if (target.getSchemaName() != null)
             {
             AdqlSchema schema = resource.schemas().search(
@@ -150,7 +155,6 @@ implements SearchTableApi
                     }
                 }
             }
-        
         return tables ;
         }
     }

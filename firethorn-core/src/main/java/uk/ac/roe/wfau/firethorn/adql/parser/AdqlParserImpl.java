@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import adql.db.DBChecker;
@@ -1339,11 +1340,18 @@ implements AdqlParser
         @Override
         public JdbcColumn jdbc()
             {
+            log.debug("wrapper.jdbc()");
             if (this.adql != null)
                 {
-                if (this.adql.root() instanceof JdbcColumn)
+                log.debug("adql [{}][{}]", adql.name(), adql.getClass());
+                BaseColumn<?> root = this.adql.root();
+                log.debug("root [{}][{}]", root.name(), root.getClass());
+                if (root instanceof JdbcColumn)
                     {
-                    return ((JdbcColumn) this.adql.root());
+                    return ((JdbcColumn) root);
+                    }
+                else {
+                    log.debug("NOT JDBC");
                     }
                 }
             return null ;
