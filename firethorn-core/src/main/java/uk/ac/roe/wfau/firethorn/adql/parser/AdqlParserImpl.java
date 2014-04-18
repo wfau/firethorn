@@ -1128,17 +1128,6 @@ implements AdqlParser
             {
             return this.type;
             }
-
-        @Override
-        public AdqlColumn adql()
-            {
-            return null;
-            }
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return null ;
-            }
         }
 
     /**
@@ -1173,18 +1162,6 @@ implements AdqlParser
         public MySelectField field()
             {
             return this.field;
-            }
-
-        @Override
-        public AdqlColumn adql()
-            {
-            return this.field.adql();
-            }
-
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return this.field.jdbc();
             }
 
         @Override
@@ -1255,16 +1232,6 @@ implements AdqlParser
             {
             return this.field.type();
             }
-        @Override
-        public AdqlColumn adql()
-            {
-            return this.field.adql();
-            }
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return this.field.jdbc();
-            }
         }
 
     /**
@@ -1331,32 +1298,7 @@ implements AdqlParser
             }
 
         private final AdqlColumn adql;
-        @Override
-        public AdqlColumn adql()
-            {
-            return this.adql;
-            }
-
-        @Override
-        public JdbcColumn jdbc()
-            {
-            log.debug("wrapper.jdbc()");
-            if (this.adql != null)
-                {
-                log.debug("adql [{}][{}]", adql.name(), adql.getClass());
-                BaseColumn<?> root = this.adql.root();
-                log.debug("root [{}][{}]", root.name(), root.getClass());
-                if (root instanceof JdbcColumn)
-                    {
-                    return ((JdbcColumn) root);
-                    }
-                else {
-                    log.debug("NOT JDBC");
-                    }
-                }
-            return null ;
-            }
-
+        
         @Override
         public Integer arraysize()
             {

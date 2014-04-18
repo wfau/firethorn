@@ -193,6 +193,8 @@ public class JdbcColumnEntity
             {
             log.debug("JdbcColumn create(JdbcTable, AdqlQuery.SelectField)");
             log.debug("  name [{}]", field.name());
+/*
+ * 
             if (field.jdbc() != null)
                 {
                 log.debug("ADQL");
@@ -205,6 +207,15 @@ public class JdbcColumnEntity
                 log.debug("  name [{}]", field.jdbc().namebuilder());
                 log.debug("  type [{}]", field.jdbc().meta().jdbc().type());
                 log.debug("  size [{}]", field.jdbc().meta().jdbc().size());
+
+                log.debug("TEST");
+                log.debug("  type [{}]", field.type().jdbc());
+                log.debug("  size [{}]", field.arraysize());
+
+                if (field.type().jdbc() != field.jdbc().meta().jdbc().type())
+                    {
+                    log.error("Type mismatch");
+                    }
                 
                 // TODO include a base reference.
             	// TODO inherit the metadata
@@ -233,8 +244,18 @@ public class JdbcColumnEntity
                     field.arraysize()
                     );
                 }
+ *             
+ */
+            return create(
+                parent,
+                field.name(),
+                field.type().jdbc(),
+                field.arraysize()
+                );
             }
 
+/*
+ * 
         private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn column)
             {
             return this.insert(
@@ -259,7 +280,8 @@ public class JdbcColumnEntity
                     )
                 );
             }
-
+ *
+ */
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
