@@ -60,8 +60,8 @@ public class Cross12TestCase
             Level.LEGACY,
             State.VALID,
             " SELECT v.sourceID, s.RA, s.Dec, /* select some useful attributes, pointing info, number of observations, min, medium, maximum, variable class, and star/galaxy class */ " +
-            " v.framesetID, ksnGoodObs, ksMinMag, ksMedianMag, ksMaxMag, variableClass, mergedClass, (ksMedianMag-ksMinMag) as ksFlareMag, COUNT(*) AS nBrightDetections /* from vvvVariability and vvvSource */" + 
-            " FROM vvvVariability as v,vvvSource as s, vvvSourceXDetectionBestMatch as b, vvvDetection as d /* first join the tables */ WHERE s.sourceID=v.sourceID " +
+            " v.framesetID, ksnGoodObs, ksMinMag, ksMedianMag, ksMaxMag, variableClass, mergedClass, (ksMedianMag-ksMinMag) as ksFlareMag, COUNT(*) AS nBrightDetections /* from atlasVariability and atlasSource */" + 
+            " FROM atlasVariability as v,atlasSource as s, atlasSourceXDetectionBestMatch as b, atlasDetection as d /* first join the tables */ WHERE s.sourceID=v.sourceID " +
             " AND b.sourceID= v.sourceID AND b.multiframeID=d.multiframeID AND b.extNum=d.extNum AND b.seqNum= d.seqNum AND " +
             " /* select the magnitude range, brighter than Ks=17 and not default. */ ksmedianMag<18. and ksmedianMag>0. AND /* at least 5 observations */ ksnGoodObs>=5 AND ksbestAper=5 " +
             " AND /* Min mag is at least 2 magnitudes brighter than median mag(but minMag is not default) */ (ksmedianMag-ksminMag)>2. and ksMinMag>0. " +

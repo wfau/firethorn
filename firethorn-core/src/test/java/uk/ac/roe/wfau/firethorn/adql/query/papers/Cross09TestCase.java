@@ -59,7 +59,7 @@ public class Cross09TestCase
             State.VALID, 
             " SELECT m.mjdObs,d.aperMag3,d.aperMag3Err, d.ppErrBits,x.flag " +
             " FROM atlasSourceXDetectionBestMatch AS x, atlasDetection AS d,Multiframe AS m " +
-            " WHERE x.sourceID=NNN AND x.multiframeID= d.multiframeID AND x.extNum=d.extNum AND x.seqNum=d.seqNum AND x.multiframeID= m.multiframeID AND d.filterID=5 " +
+            " WHERE x.sourceID=123 AND x.multiframeID= d.multiframeID AND x.extNum=d.extNum AND x.seqNum=d.seqNum AND x.multiframeID= m.multiframeID AND d.filterID=5 " +
             " ORDER BY m.mjdObs "
 
             );
@@ -76,7 +76,7 @@ public class Cross09TestCase
              State.VALID, 
              " SELECT ml.meanMjdObs,e.kaperMag3,e.kaperMag3Err e.kppErrBits,x.flag " + 
              " FROM atlasSourceXSynopticSourceBestMatch AS x, atlasSynopticSource AS e, atlasSynopticMergeLog AS ml " +
-             " WHERE x.sourceID=NNN AND x.synFrameSetID= e.synFrameSetID AND x.synSeqNum=e.synSeqNum AND e.synFrameSetID=ml.synFrameSetID " +
+             " WHERE x.sourceID=123 AND x.synFrameSetID= e.synFrameSetID AND x.synSeqNum=e.synSeqNum AND e.synFrameSetID=ml.synFrameSetID " +
              " ORDER BY ml.meanMjdObs "
              );
          }
@@ -92,7 +92,7 @@ public class Cross09TestCase
              State.VALID, 
              " SELECT ml.meanMjdObs,e.japerMag3,e.japerMag3Err, e.jppErrBits,e.kaperMag3,e.kaperMag3Err, e.kppErrBits,x.flag " +
              " FROM atlasSourceXSynopticSourceBestMatch AS x, atlasSynopticSource AS e, atlasSynopticMergeLog AS ml " +
-             " WHERE x.sourceID=NNNNNNNNNN AND x.synFrameSetID= e.synFrameSetID AND x.synSeqNum=e.synSeqNum AND e.synFrameSetID=ml.synFrameSetID " +
+             " WHERE x.sourceID=123 AND x.synFrameSetID= e.synFrameSetID AND x.synSeqNum=e.synSeqNum AND e.synFrameSetID=ml.synFrameSetID " +
              " ORDER BY ml.meanMjdObs "
 
              );
