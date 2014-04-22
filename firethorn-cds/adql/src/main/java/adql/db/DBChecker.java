@@ -22,6 +22,7 @@ package adql.db;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 
 import adql.db.exception.UnresolvedColumnException;
@@ -70,7 +71,7 @@ import adql.search.SimpleSearchHandler;
 public class DBChecker implements QueryChecker {
 
 	/** List of all available tables ({@link DBTable}). */
-	protected SearchTableList lstTables;
+	protected SearchTableApi lstTables;
 
 
 	/* ************ */
@@ -284,7 +285,7 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
 	 */
 	public DBTable resolveTable(final ADQLTable table) throws ParseException {
-		ArrayList<DBTable> tables = lstTables.search(table);
+		List<DBTable> tables = lstTables.search(table);
 
 		// good if only one table has been found:
 		if (tables.size() == 1)

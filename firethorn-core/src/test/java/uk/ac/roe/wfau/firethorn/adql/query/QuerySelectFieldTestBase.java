@@ -85,16 +85,6 @@ extends TwomassQueryTestBase
                 field.type()
                 ) ;
             }
-        @Override
-        public AdqlColumn adql()
-            {
-            return null;
-            }
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return null;
-            }
         }
 
     public void validate(final AdqlQuery query, final ExpectedField[] results)

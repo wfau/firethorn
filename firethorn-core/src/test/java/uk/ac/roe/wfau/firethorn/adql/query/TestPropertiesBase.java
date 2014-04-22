@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  *
  */
 @Slf4j
-public class TestPropertiesBase
+public abstract class TestPropertiesBase
     extends TestBase
     {
 

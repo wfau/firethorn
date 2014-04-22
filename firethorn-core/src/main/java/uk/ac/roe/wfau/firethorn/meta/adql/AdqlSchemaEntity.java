@@ -521,13 +521,27 @@ implements AdqlSchema
             @Override
             public AdqlTable search(final String name)
                 {
-                try
+                if (depth() == CopyDepth.THIN)
                     {
-                    return select(name);
+                    BaseTable<?,?> found = base().tables().search(
+                        name
+                        );
+                    if (found != null)
+                        {
+                        return new AdqlTableProxy(
+                            found,
+                            AdqlSchemaEntity.this
+                            );
+                        }
+                    else {
+                        return null ;
+                        }
                     }
-                catch (final NameNotFoundException ouch)
-                    {
-                    return null ;
+                else {
+                    return factories().adql().tables().search(
+                        AdqlSchemaEntity.this,
+                        name
+                        );
                     }
                 }
 
@@ -535,7 +549,6 @@ implements AdqlSchema
             public AdqlTable select(final String name)
             throws NameNotFoundException
                 {
-                log.debug("tables().select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.THIN)
                     {
                     return new AdqlTableProxy(

@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
@@ -737,14 +738,20 @@ extends NamedEntity, Job
         /**
          * The ADQL column.
          *
-         */
         public abstract AdqlColumn adql();
+         */
 
         /**
          * The JDBC column.
          *
-         */
         public abstract JdbcColumn jdbc();
+         */
+
+        /**
+         * The root column.
+         *
+        public abstract BaseColumn<?> root();
+         */
 
         }
 
