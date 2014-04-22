@@ -219,13 +219,6 @@
         source "${HOME:?}/firethorn.settings"
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
 
-#
-# Need to get the Hg branch name from properties
-        pushd "${FIRETHORN_CODE:?}"
-            hg pull
-            hg update '1.9.10-release'
-        popd
-
         pushd $(mktemp --directory)
 
             identity=$(pwgen 16 1)
