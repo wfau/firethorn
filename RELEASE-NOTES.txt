@@ -1,9 +1,27 @@
+Version 1.10.??
+-------------------------
+
+    Branch 1.10.4-zrq-adql-parser
+    Issue #461
+        http://redmine.roe.ac.uk/issues/461
+        Refactor the table lists in the ADQL parser to avoid loading an in memory ArrayList.
+
+    Branch 1.10.3-zrq-backlog
+    Issue #285
+        http://redmine.roe.ac.uk/issues/285
+        Inherited equals() for Hibernate entities.
+
+    Issue #360 
+        http://redmine.roe.ac.uk/issues/360
+        Implement a proxy self() method for Hibernate entities.
+
+
 Version 1.10.2 (2014-14-08)
 -------------------------
 
     Issue #440
         http://redmine.roe.ac.uk/issues/440
-        Fixes Group By bug, allowing expressions in the GROUP BY clause
+        Fixes GROUP BY bug, allowing expressions in the GROUP BY clause
 
     Issue #356
         http://redmine.roe.ac.uk/issues/356
@@ -11,6 +29,7 @@ Version 1.10.2 (2014-14-08)
         Updated the other OGSA-DAI Activity(s) to hande PipeClosedException correctly.
         Created a copy of the OGSA-DAI SQLQuery component to fix PipeClosedException handling.
         Added FireThorn configuration properties for default and absolute limits.
+
 
 Version 1.9.10 (2014-04-08)
 -------------------------
