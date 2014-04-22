@@ -218,15 +218,13 @@ EOF
 # https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
 #[user@desktop]
 
+    devbranch=$(hg branch)
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
         hg update
-
-        #
-        # Fix any conflicts ...
-        #
 
         hg update default
         hg merge "${devbranch:?}"
@@ -259,7 +257,7 @@ EOF
 # Increment the project version.
 #[user@desktop]
 
-    mainversion=1.10.1-dev-SNAPSHOT
+    newversion=1.10.5-dev-SNAPSHOT
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -268,12 +266,12 @@ EOF
 
         #
         # Set the project version.
-        ./bin/version.sh "${mainversion:?}"
+        ./bin/version.sh "${newversion:?}"
 
         #
         # Commit and tag the new version.
-        hg commit -m "Snapshot [version-${mainversion:?}]"
-        hg tag    -f "version-${mainversion:?}"
+        hg commit -m "Snapshot [version-${newversion:?}]"
+        hg tag    -f "version-${newversion:?}"
 
         #
         # Re-build everything.
