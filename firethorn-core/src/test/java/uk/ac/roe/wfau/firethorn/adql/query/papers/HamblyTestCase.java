@@ -42,7 +42,7 @@ public class HamblyTestCase
             Level.LEGACY,
             State.VALID,
             " SELECT " + 
-    		" COUNT(∗) FROM Programme AS t1, RequiredFilters AS t2" + 
+    		" COUNT(*) FROM Programme AS t1, RequiredFilters AS t2" + 
     		" WHERE t1.programmeID=t2.programmeID"
           
             );
@@ -58,7 +58,7 @@ public class HamblyTestCase
             Level.LEGACY,
             State.VALID,
             " SELECT " + 
-    		" COUNT(∗) FROM gpsSource" +
+    		" COUNT(*) FROM gpsSource" +
     		" WHERE l BETWEEN 0.0 AND 1.0"
           
             );
@@ -128,7 +128,7 @@ public class HamblyTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-            " SELECT COUNT(∗) FROM reliableLasPointSource " +
+            " SELECT COUNT(*) FROM reliableLasPointSource " +
             " WHERE SQUARE(muRA) + SQUARE(muDec) > 5.0 * SQRT(SQUARE(muRA*sigMuRA)+SQUARE(muDec*sigMuDec)) " 		
             );
         }
@@ -142,8 +142,8 @@ public class HamblyTestCase
         validate(
             Level.LEGACY,
             State.VALID,
-            " SELECT COUNT(∗) FROM reliableLasPointSource " +
-            " WHERE (j_1ObjID > 0 AND j_2ObjID < 0) OR (j 1ObjID < 0 AND j 2ObjID > 0)"
+            " SELECT COUNT(*) FROM reliableLasPointSource " +
+            " WHERE (j_1ObjID > 0 AND j_2ObjID < 0) OR (j_1ObjID < 0 AND j_2ObjID > 0)"
            );
             
         }
