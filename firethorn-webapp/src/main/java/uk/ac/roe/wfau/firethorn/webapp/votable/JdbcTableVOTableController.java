@@ -75,7 +75,7 @@ extends BaseTableVOTableController
         response.setCharacterEncoding(
             "UTF-8"
             );
-		table(
+		write(
 		    response.getWriter(),
 	        factories().jdbc().tables().select(
 	            factories().jdbc().tables().idents().ident(
