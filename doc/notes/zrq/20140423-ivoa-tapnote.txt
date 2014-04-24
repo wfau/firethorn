@@ -1,0 +1,267 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+#[user@desktop]
+# Create a local VM
+
+    ischnura-createvm 
+
+        Available machine names
+        [1] nu
+        [2] xi
+        [3] omicron
+        ....
+        Select machine name (1) 1
+
+        Available base images
+        [1] centos-63-base-20130106.qcow
+        [2] centos-65-base-20140211.qcow
+        [3] centos-65-base-20140421.qcow
+        ....
+        Select base image (1) 3
+
+        INFO : Node name [nu]
+        INFO : Base name [centos-65-base-20140421.qcow]
+        INFO : Disc name [nu.qcow]
+        INFO : Disc size [8G]
+
+        ....
+        
+        Name:           nu.qcow
+        Type:           file
+        Capacity:       8.00 GiB
+        Allocation:     196.00 KiB
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install EPEL and ELREPO
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+
+    # Not required
+    # yum --enablerepo=elrepo
+
+    #
+    # Install the jpackage repository
+    wget http://www.jpackage.org/jpackage50.repo
+
+    sed -i '
+        /^\[jpackage-rhel\]/,/^\[/ {
+            s/^enabled=.*$/enabled=1/p
+            }
+        ' jpackage50.repo
+
+    mv jpackage50.repo /etc/yum.repos.d/
+    restorecon /etc/yum.repos.d/jpackage50.repo
+
+    # Equivalent
+    #yum --enablerepo=jpackage-rhel
+
+
+# ----------------------------------------------------------
+# Install Java 1.7
+#[root@test-vm] 
+
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install system tools we need
+
+    yum -y install pwgen
+    yum -y install gzip
+    yum -y install unzip
+    yum -y install wget
+
+    yum -y install openssh-clients
+
+    yum -y install make
+    yum -y install subversion
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install document tools we need
+
+    yum -y install sed
+    yum -y install fop
+    yum -y install saxon
+    yum -y install texlive
+
+# -----------------------------------------------------
+#[root@testvm]
+# Create a local user
+
+    username=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${username:?}"
+    usermod --append --groups users "${username:?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@testvm]
+
+    if [ ! -e "/home/${username:?}/.ssh" ]
+    then
+        mkdir "/home/${username:?}/.ssh"
+    fi
+
+    pushd "/home/${username:?}/.ssh"
+    
+        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${username:?}"  "/home/${username:?}/.ssh"
+    chgrp -R "${username:?}"  "/home/${username:?}/.ssh"
+    restorecon -R -v  "/home/${username:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${username:?}/.ssh"
+    
+# -----------------------------------------------------
+# Login as test user.
+#[root@testvm]
+
+    echo "User name [${username?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "Login as  [${username?}@$(hostname -f)]"
+
+# -----------------------------------------------------
+# Transfer a copy of the code.
+#[user@testvm]
+
+    scp -r {USERNAME}@{HOSTNAME}:{PROJECTS}/volute/trunk/projects/dal/TAPNotes .
+    ....
+
+# -----------------------------------------------------
+# Download a (a specific) version of Saxon.
+#[user@testvm]
+
+    #curl --head 'http://sourceforge.net/projects/saxon/files/latest/download?source=files' 
+    #curl --head 'http://downloads.sourceforge.net/project/saxon/Saxon-HE/9.5/SaxonHE9-5-1-5J.zip?r=&ts=1398264569&use_mirror=freefr'
+    #curl --head 'http://freefr.dl.sourceforge.net/project/saxon/Saxon-HE/9.5/SaxonHE9-5-1-5J.zip'
+
+    mkdir ${HOME:?}/saxon
+
+    mkdir ${HOME:?}/saxon/saxon9
+    pushd ${HOME:?}/saxon/saxon9
+        curl --output 'SaxonHE9-5-1-5J.zip' 'http://freefr.dl.sourceforge.net/project/saxon/Saxon-HE/9.5/SaxonHE9-5-1-5J.zip'
+        unzip SaxonHE9-5-1-5J.zip
+    popd
+
+    #curl --head 'http://sourceforge.net/projects/saxon/files/Saxon-B/saxonb8-5-1.zip/download' | grep 'Location'
+    #curl --head 'http://downloads.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip?r=&ts=1398265920&use_mirror=optimate'
+    #curl --head 'http://optimate.dl.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip'
+
+    mkdir ${HOME:?}/saxon/saxonb8
+    pushd ${HOME:?}/saxon/saxonb8
+        curl --output 'saxonb8-5-1.zip' 'http://optimate.dl.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip'
+        unzip saxonb8-5-1.zip
+    popd
+
+# -----------------------------------------------------
+# patch the makefile.
+#[user@testvm]
+
+    pushd TAPNotes
+
+        cat > patch-001.txt << 'EOF'
+*** Makefile	2014-04-22 15:00:03.977196394 +0100
+--- Makefile	2014-04-23 18:11:18.000000000 +0100
+***************
+*** 55,62 ****
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-resolver.jar
+! SAXONJAR=$(JARROOT)/saxonb.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+--- 55,62 ----
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar
+! SAXONJAR=SAXONHOME/saxonb8/saxon8.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+***************
+*** 95,101 ****
+  
+  # this is for BibTex
+  %.aux: %.html
+! 	$(SAXON) -o:$@ -xsl:$(CITEEXSTYLE) -s:$< 
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+--- 95,101 ----
+  
+  # this is for BibTex
+  %.aux: %.html
+! 	$(SAXON) -o $@  $< $(CITEEXSTYLE)
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+EOF
+
+        patch < patch-001.txt 
+
+    popd
+
+# -----------------------------------------------------
+# Build the documents.
+#[user@testvm]
+
+    pushd TAPNotes
+
+#        sed -i '
+#            s|^RESOLVERJAR=.*$|RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar|
+#            ' Makefile
+
+#        sed -i '
+#            s|^SAXONJAR=.*$|SAXONJAR='${HOME}'/saxonb8/saxon8.jar|
+#            ' Makefile
+
+        #
+        # Set saxon home in the Makefile
+        sed -i '
+            s|SAXONHOME|'${HOME}/saxon'|
+            ' Makefile
+
+        make
+
+    popd
+
