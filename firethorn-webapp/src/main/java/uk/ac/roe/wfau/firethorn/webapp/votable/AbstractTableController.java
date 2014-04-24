@@ -58,13 +58,26 @@ extends AbstractController
         {
         /**
          * Format the field as a String.
+         * @return The field formatted as a String
          *
          */
         public String format(final ResultSet results)
         throws SQLException;
-        
+
+        /**
+         * The field index in a JDBC ResultSet.
+         * @return The field index.
+         * @see ResultSet#getObject(String)
+         *
+         */
         public String index();
-        
+
+        /**
+         * The ADQL field name.
+         * @return The ADQL field name.
+         * @throws SQLException
+         *
+         */
         public String name()
         throws SQLException;
         }
@@ -91,28 +104,31 @@ extends AbstractController
         private String name;
         @Override
         public String name()
+            {
+            if (this.name == null)
                 {
-                if (this.name == null)
-                    {
-                    this.name = this.column.name();
-                    }
-                return this.name;
+                this.name = this.column.name();
                 }
+            return this.name;
+            }
 
         private String index;
         @Override
         public String index()
+            {
+            if (this.index == null)
                 {
-                if (this.index == null)
-                    {
-                    this.index = this.column.root().name();
-                    }
-                return this.index;
+                this.index = this.column.root().name();
                 }
+            return this.index;
+            }
         }
 
     /**
-     * A simple formatter for objects.
+     * A simple formatter for generic fields, using {@link Object#toString()}.
+     * This should work for numeric data like Integer, Long, Float and Double.
+     * This does *NOT* apply any additional formatting or escaping of the resulting String.
+     * @see Object#toString() 
      *
      */
     public static class SimpleFormatter
@@ -133,12 +149,16 @@ extends AbstractController
                index()
                 ).toString();
             }
-        
-      
         }
 
-    /*
-     * TODO refactor this to use our AdqlParser classes. 
+    /**
+     * Generate a SQL SELECT {@link Statement} to get all the values from a {@link BaseTable}.  
+     * @todo Refactor this to use our AdqlParser.
+     * @todo Remove the {@link JdbcProductType} param.
+     * 
+     * @param table The {@link BaseTable} to query.
+     * @param type The {@link JdbcProductType} of the database.
+     * @return A {@link String} representation of the SQL {@link Statement}
      *
      */
     public String select(final BaseTable<?,?> table, final JdbcProductType type)
@@ -179,6 +199,16 @@ extends AbstractController
         return builder.toString();
         }
 
+    /**
+     * Add the column name for a {@link BaseColumn}.  
+     * @todo Refactor this to use our AdqlParser.
+     * @todo Remove the {@link JdbcProductType} param.
+     * 
+     * @param builder The {@link StringBuilder} to add the column name to.
+     * @param column The {@link BaseColumn} to query.
+     * @param type The {@link JdbcProductType} of the database.
+     * 
+     */
     public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
         {
     	log.debug("select(StringBuilder, AdqlColumn, JdbcProductType)");
