@@ -32,6 +32,10 @@ public class AdqlSchemaLinkFactory
 extends WebappLinkFactory<AdqlSchema>
 implements AdqlSchema.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaLinkFactory()
         {
         super(

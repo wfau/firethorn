@@ -77,20 +77,21 @@
         **
         POST community/{ident}
             urn:community.name
-
-        **
-        POST community/{ident}/members/select
-             => JSON[]
-
-        **
-        POST community/{ident}/members/select
-            urn:community.name
              => JSON/404
 
         **
+        GET community/{ident}/members/select
+             => 404/JSON[]
+
+        **
+        POST community/{ident}/members/select
+            urn:identity.name
+             => 404/JSON/404
+
+        **
         POST community/{ident}/members/search
-            urn:community.name
-             => JSON[]
+            urn:identity.name
+             => 404/JSON[]
 
     IdentityController
 
@@ -126,17 +127,6 @@
         GET adql/query/{ident}/datatable
             => DataTable/404
 
-
-    AdqlColumnController
-
-        GET adql/column/{ident}
-             => JSON/404
-
-        POST adql/column/{ident}
-            adql.column.update.name
-            => JSON/404
-
-
     AdqlResourceController
 
         POST adql/resource/select
@@ -154,21 +144,23 @@
             adql.resource.update.status
             => JSON/404
 
-        GET adql/resource/{ident}/schema/select
+        GET adql/resource/{ident}/schemas/select
             => 404/JSON[]
 
-        POST adql/resource/{ident}/schema/select
-            => 404/JSON
-
-        POST adql/resource/{ident}/schema/select
+        POST adql/resource/{ident}/schemas/select
             adql.resource.schema.select.name
             => 404/JSON/404
 
-        POST adql/resource/{ident}/schema/create
+        POST adql/resource/{ident}/schemas/create
             adql.resource.schema.create.name
             => 404/JSON/dup
 
-        POST adql/resource/{ident}/schema/import
+        POST adql/resource/{ident}/schemas/import
+            urn:adql.copy.depth
+            adql.resource.schema.import.base
+            => 404/JSON/dup
+
+        POST adql/resource/{ident}/schemas/import
             urn:adql.copy.depth
             adql.resource.schema.import.base
             adql.resource.schema.import.name
@@ -183,11 +175,59 @@
             adql.schema.update.name
             => JSON/404
 
+        GET adql/schema/{ident}/queries/select
+            => 404/JSON[]
+
+        GET adql/schema/{ident}/queries/create
+            adql.query.create.name
+            => 404/JSON
+
+        GET adql/schema/{ident}/tables/select
+            => 404/JSON[]
+
+        GET adql/schema/{ident}/tables/select
+            adql.schema.table.select.name
+            => 404/JSON
+
+        POST adql/schema/{ident}/tables/import
+            urn:adql.copy.depth
+            adql.schema.table.import.base
+            => 404/JSON/dup
+
+        POST adql/schema/{ident}/tables/import
+            urn:adql.copy.depth
+            adql.schema.table.import.base
+            adql.schema.table.import.name
+            => 404/JSON/dup
+
+        **
+        POST adql/schema/{ident}/tables/upload
 
 
+    AdqlTableController
 
+        GET adql/table/{ident}
+            => JSON/404
 
+        POST adql/table/{ident}
+            adql.table.update.name
+            => JSON/404
 
+        GET adql/table/{ident}/columns/select
+            => 404/JSON[]
+
+        POST adql/table/{ident}/columns/select
+            adql.table.select.name
+            => 404/JSON
+
+    AdqlColumnController
+
+        GET adql/column/{ident}
+             => JSON/404
+
+        POST adql/column/{ident}
+            adql.column.update.name
+            => JSON/404
 
 
 

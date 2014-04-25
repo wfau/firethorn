@@ -37,7 +37,8 @@ implements AdqlSchema.IdentFactory
     {
     /**
      * The type URI for this type.
-     * @todo Move this to AdqlSchema interface.
+     * @todo Move this to entity type interface.
+     * @todo Use PURLs.
      *
      */
     public static final URI TYPE_URI = URI.create(

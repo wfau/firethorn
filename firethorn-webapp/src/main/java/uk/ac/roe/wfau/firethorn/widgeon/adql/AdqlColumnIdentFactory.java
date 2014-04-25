@@ -26,6 +26,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
  * An {@link AdqlColumn.IdentFactory} implementation.
+ * @todo Use PURLs.
  *
  */
 @Component
@@ -35,8 +36,8 @@ implements AdqlColumn.IdentFactory
     {
     /**
      * The type URI for this type.
-     * @todo Move this to the AdqlColumn interface.
-     * @todo Change to a purl URL.
+     * @todo Move this to entity type interface.
+     * @todo Use PURLs.
      *
      */
     public static final URI TYPE_URI = URI.create(

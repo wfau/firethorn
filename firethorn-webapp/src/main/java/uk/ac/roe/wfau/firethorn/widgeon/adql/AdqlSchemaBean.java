@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -29,9 +30,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchemaBean;
 public class AdqlSchemaBean
 extends BaseSchemaBean<AdqlSchema>
     {
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlSchema} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlSchema, AdqlSchemaBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlSchema} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlSchema> iterable)
             {
             super(
@@ -49,6 +59,7 @@ extends BaseSchemaBean<AdqlSchema>
 
     /**
      * Public constructor.
+     * @param entity The {@link AdqlSchema} to wrap.
      *
      */
     public AdqlSchemaBean(final AdqlSchema entity)
@@ -59,8 +70,15 @@ extends BaseSchemaBean<AdqlSchema>
             );
         }
 
+    /**
+     * Access to the list of {@AdqlQuery} linked to this {@link AdqlSchema}.
+     * @return A URL to access the list of {@AdqlQuery}.
+     *
+     */
     public String getQueries()
     	{
-    	return entity().link().concat("/queries/select");
+    	return entity().link().concat(
+    	    "/queries/select"
+    	    );
     	}
     }

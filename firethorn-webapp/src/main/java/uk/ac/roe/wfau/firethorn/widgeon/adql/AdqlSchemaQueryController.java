@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -72,12 +70,6 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     public static final String CREATE_NAME = "adql.schema.query.create.name" ;
 
     /**
-     * MVC property for the create rowid.
-     *
-    public static final String CREATE_ROWID = "adql.schema.query.create.rowid" ;
-     */
-
-    /**
      * MVC property for the {@link AdqlQuery} input, [{@value}].
      *
      */
@@ -106,9 +98,9 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * Get the target {@link AdqlSchema} based on the {@Identifier} in the request path.
+     * Get the parent {@link AdqlSchema} based on the {@Identifier} in the request path.
      * @param ident The {@link AdqlSchema} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @return The target {@link AdqlSchema}.
+     * @return The parent {@link AdqlSchema}.
      * @throws IdentifierNotFoundException If the {@link AdqlSchema} could not be found.
      *
      */
@@ -126,8 +118,12 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * JSON GET request to select all.
-     *
+     * {@link RequestMethod#GET} request to select all the {@link AdqlQuery} linked to this {@link AdqlSchema}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @return An {@Iterable} set of {@link AdqlQueryBean}.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
@@ -141,8 +137,14 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * JSON POST request to create a new query.
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlQuery}.
+     * <br/>Request path : [{@value #CREATE_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @param name The {@link AdqlQuery} name, [{@value #CREATE_NAME}].
+     * @return An {@link AdqlQueryBean} wrapping the new {@link AdqlQuery}.
+     * @todo Rejects duplicate names.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)

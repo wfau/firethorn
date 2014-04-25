@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -72,6 +74,7 @@ public class AdqlSchemaController
 
     /**
      * MVC property for the {@link AdqlSchema} name, [{@value}].
+     * @todo Merge create, select and update.
      *
      */
     public static final String UPDATE_NAME = "adql.schema.update.name" ;
@@ -113,11 +116,11 @@ public class AdqlSchemaController
         }
 
     /**
-     * {@link RequestMethod#GET} request for a specific {@link AdqlSchema}.
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlSchema}.
      * <br/>Request path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param entity The {@link AdqlSchema} selected using the {@Identifier} in the request path.
-     * @return An {@link AdqlSchemaBean} wrapping the {@link AdqlSchema}.
+     * @return The selected {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
      * 
      */
     @ResponseBody
@@ -133,13 +136,13 @@ public class AdqlSchemaController
         }
 
     /**
-     * {@link RequestMethod#POST} request to update an {@link AdqlSchema}.
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlSchema}.
      * <br/>Request path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param entity The {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlSchema} params :
      * @param name   The {@link AdqlSchema} name, [{@value #UPDATE_NAME}].
-     * @return An {@link AdqlSchemaBean} wrapping the {@link AdqlSchema}.
+     * @return The updated {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
      * 
      */
     @ResponseBody

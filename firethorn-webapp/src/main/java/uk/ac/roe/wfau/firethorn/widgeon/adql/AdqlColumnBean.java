@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
@@ -29,10 +31,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
 public class AdqlColumnBean
 extends BaseColumnBean<AdqlColumn>
     {
-
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlColumn} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlColumn, AdqlColumnBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlColumn} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlColumn> iterable)
             {
             super(
@@ -47,8 +57,10 @@ extends BaseColumnBean<AdqlColumn>
                 );
             }
         }
+
     /**
      * Public constructor.
+     * @param entity The {@link AdqlColumn} to wrap.
      *
      */
     public AdqlColumnBean(final AdqlColumn entity)

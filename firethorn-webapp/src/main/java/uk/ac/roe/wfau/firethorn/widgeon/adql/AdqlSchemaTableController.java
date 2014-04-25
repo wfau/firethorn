@@ -39,7 +39,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlSchema</code> tables.
+ * Spring MVC controller to handle the {@link AdqlTable}s in an {@link AdqlSchema}.
+ * <br/>Controller path : [{@value AdqlSchemaLinkFactory#SCHEMA_TABLE_PATH}]
  *
  */
 @Slf4j
@@ -66,19 +67,21 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the {@link AdqlTable} name, [{@value}].
+     * @todo Merge select and import.
      *
      */
     public static final String SELECT_NAME = "adql.schema.table.select.name" ;
 
     /**
-     * MVC property for the import table base.
-     *
+     * MVC property for the {@Identifier} of the {@link BaseTable} to copy, [{@value}].
+     * 
      */
     public static final String IMPORT_BASE = "adql.schema.table.import.base" ;
 
     /**
-     * MVC property for the import table name.
+     * MVC property for the {@link AdqlTable} name, [{@value}].
+     * @todo Merge select and import.
      *
      */
     public static final String IMPORT_NAME = "adql.schema.table.import.name" ;
@@ -100,16 +103,18 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * Get the parent entity based on the request ident.
-     * @throws IdentifierNotFoundException
+     * Get the parent {@link AdqlSchema} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlSchema} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The parent {@link AdqlSchema}.
+     * @throws IdentifierNotFoundException If the {@link AdqlSchema} could not be found.
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-    public AdqlSchema parent(
+    public AdqlSchema entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("parent() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -118,8 +123,12 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * JSON GET request to select all.
-     *
+     * {@link RequestMethod#GET} request to select all the {@link AdqlTable}s in this {@link AdqlSchema}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @return An {@Iterable} set of {@link AdqlTableBean}.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
@@ -134,9 +143,14 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * JSON request to select by name.
-     * @throws EntityNotFoundException
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlTable} by name.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @param name The {@link AdqlTable} name to look for, [{@value #SELECT_NAME}].
+     * @return The matching {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
+     * @throws NameNotFoundException If a matching {@link AdqlTable} could not be found.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
@@ -155,9 +169,16 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * JSON request to import a table.
-     * @throws IdentifierNotFoundException
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlTable} copying the columns from a {@link BaseTable}.
+     * <br/>Request path : [{@value #IMPORT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
+     * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
+     * @throws IdentifierNotFoundException If the {@link BaseTable} could not be found.
+     * @todo Rejects duplicate names.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MIME)
@@ -183,9 +204,18 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * JSON request to import a table.
-     * @throws IdentifierNotFoundException
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlTable} copying the columns from a {@link BaseTable}.
+     * <br/>Request path : [{@value #IMPORT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
+     * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param name   The name of the new {@link AdqlTable}, [{@value #IMPORT_TABLE_NAME}].
+     * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
+     * @throws IdentifierNotFoundException If the {@link BaseTable} could not be found.
+     * @todo Rejects duplicate names.
+     * @todo Make name optional, default to the base name.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MIME)

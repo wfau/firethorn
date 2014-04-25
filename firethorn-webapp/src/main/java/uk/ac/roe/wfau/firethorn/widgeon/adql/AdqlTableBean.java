@@ -17,21 +17,32 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
- * Bean wrapper for <code>AdqlTable</code>.
+ * An {@link EntityBean} wrapper for an {@link AdqlTable}.
  *
  */
 public class AdqlTableBean
 extends BaseTableBean<AdqlTable>
     {
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlTable} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlTable, AdqlTableBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlTable} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlTable> iterable)
             {
             super(
@@ -49,6 +60,7 @@ extends BaseTableBean<AdqlTable>
 
     /**
      * Public constructor.
+     * @param entity The {@link AdqlTable} to wrap.
      *
      */
     public AdqlTableBean(final AdqlTable entity)
@@ -104,13 +116,34 @@ extends BaseTableBean<AdqlTable>
             };
         }
 
+    /**
+     * Access to the {@AdqlTable} data in different formats.   
+     *
+     */
     public interface FormatsBean
     extends BaseTableBean.FormatsBean
         {
+        /**
+         * Access to the {@AdqlTable} data as a VOTable.   
+         * @return A URL to access the {@AdqlTable} data as a VOTable.
+         * @see AdqlTableVOTableController
+         * 
+         */
         public String getVotable();
+
+        /**
+         * Access to the {@AdqlTable} data as a DataTable.
+         * @return A URL to access the {@AdqlTable} data as a DataTable.
+         * @see AdqlTableDataTableController
+         * 
+         */
         public String getDatatable();
         }
 
+    /**
+     * Access to the {@AdqlTable} data in different formats.   
+     *
+     */
     public FormatsBean getFormats()
         {
         return new FormatsBean()

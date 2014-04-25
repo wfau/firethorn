@@ -21,11 +21,13 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlTable</code>.
+ * An {@link AdqlTable.IdentFactory} implementation.
+ * @todo Use PURLs.
  *
  */
 @Component
@@ -35,7 +37,8 @@ implements AdqlTable.IdentFactory
     {
     /**
      * The type URI for this type.
-     * TODO - Move to AdqlTable interface.
+     * @todo Move this to entity type interface.
+     * @todo Use PURLs.
      *
      */
     public static final URI TYPE_URI = URI.create(

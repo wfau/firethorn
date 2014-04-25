@@ -30,13 +30,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlSchema</code> tables.
+ * Spring MVC controller to handle the {@link AdqlColumn}s in an {@link AdqlTable}.
+ * <br/>Controller path : [{@value AdqlTableLinkFactory#TABLE_COLUMN_PATH}]
  *
  */
 @Slf4j
@@ -63,7 +65,8 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the {@link AdqlColumn} name, [{@value}].
+     * @todo Merge select and import.
      *
      */
     public static final String SELECT_NAME = "adql.table.column.select.name" ;
@@ -85,16 +88,18 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * Get the parent entity based on the request ident.
-     * @throws IdentifierNotFoundException
+     * Get the parent {@link AdqlTable} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlTable} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The parent {@link AdqlTable}.
+     * @throws IdentifierNotFoundException If the {@link AdqlTable} could not be found.
      *
      */
     @ModelAttribute(AdqlTableController.TARGET_ENTITY)
-    public AdqlTable parent(
+    public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("parent() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -103,8 +108,12 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * JSON GET request to select all.
-     *
+     * {@link RequestMethod#GET} request to select all the {@link AdqlColumn}s in this {@link AdqlSchema}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
+     * @return An {@Iterable} set of {@link AdqlColumnBean}.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
@@ -119,9 +128,14 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * JSON request to select by name.
-     * @throws NameNotFoundException
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlColumn} by name.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
+     * @param name  The {@link AdqlColumn} name to look for, [{@value #SELECT_NAME}].
+     * @return The matching {@link AdqlColumn} wrapped in an {@link AdqlColumnBean}.
+     * @throws NameNotFoundException If a matching {@link AdqlColumn} could not be found.
+     * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)

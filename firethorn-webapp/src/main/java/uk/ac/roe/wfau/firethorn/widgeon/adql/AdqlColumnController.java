@@ -112,11 +112,11 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request for a {@link AdqlColumn}.
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlColumn}.
      * <br/>Request path : [{@value AdqlColumnLinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param column The {@link AdqlColumn} selected using the {@Identifier} in the request path.
-     * @return An {@link AdqlColumnBean} wrapping the {@link AdqlColumn}.
+     * @return The selected {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
      * 
      */
     @ResponseBody
@@ -131,13 +131,13 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * {@link RequestMethod#POST} request to update an {@link AdqlColumn}.
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlColumn}.
      * <br/>Request path : [{@value AdqlColumnLinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param column The {@link AdqlColumn} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlColumn} params :
      * @param name  The {@link AdqlColumn} name, [{@value #UPDATE_NAME}].
-     * @return An {@link AdqlColumnBean} wrapping the {@link AdqlColumn}.
+     * @return The updated {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
      * 
      */
     @ResponseBody

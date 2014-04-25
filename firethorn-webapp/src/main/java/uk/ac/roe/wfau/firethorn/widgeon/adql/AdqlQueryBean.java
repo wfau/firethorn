@@ -64,7 +64,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
 
     /**
      * Public constructor.
-     * @param iterable The {@link AdqlQuery} to wrap.
+     * @param entity The {@link AdqlQuery} to wrap.
      *
      */
     protected AdqlQueryBean(final AdqlQuery entity)
@@ -264,39 +264,43 @@ extends NamedEntityBeanImpl<AdqlQuery>
         }
 
     /**
-     * The query results.
+     * The {@link AdqlQuery} results.
+     * @todo Simplify this to just the {@link AdqlTable} results.
      *
      */
     public interface Results
         {
         /**
-         * The abstract (ADQL) table
+         * A URL to access the {@link AdqlTable} results
          *
          */
         public String getAdql();
         
         /**
-         * Access to a Datatable representation of the results.
-         *
-         */
-        public String getDatatable();
-		
-        /**
-         * The physical (JDBC) table
+         * A URL to access the {@link JdbcTable} results
+         * @deprecated Use the {@link AdqlTable#base()}
          *
          */
         public String getJdbc();
 
         /**
-         * Access to a VOTable representation of the results.
+         * A URL to access a VOTable representation of the results.
+         * @deprecated Use the VOTable view of the {@link AdqlTable}
          *
          */
         public String getVotable();
 
+        /**
+         * A URL to access a DataTable representation of the results.
+         * @deprecated Use the DataTable view of the {@link AdqlTable}
+         *
+         */
+        public String getDatatable();
+
         }
 
     /**
-     * The query results.
+     * The {@link AdqlQuery} results.
      *
      */
     public Results getResults()

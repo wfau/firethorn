@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -136,11 +137,11 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request for a specific {@link AdqlResource}.
+     * {@link RequestMethod#POST} request to select a specific {@link AdqlResource}.
      * <br/>Request path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @return An {@link AdqlResourceBean} wrapping the {@link AdqlResource}.
+     * @return The selected {@link AdqlResource} wrapped in a {@link AdqlResourceBean}.
      * 
      */
     @ResponseBody
@@ -162,7 +163,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * <br/>Optional {@link AdqlResource} params :
      * @param name   The {@link AdqlResource} name, [{@value #UPDATE_NAME}].
      * @param status The {@link AdqlResource} {@link BaseComponent.Status}, [{@value #UPDATE_STATUS}].
-     * @return An {@link AdqlResourceBean} wrapping the {@link AdqlResource}.
+     * @return The updated {@link AdqlResource} wrapped in a {@link AdqlResourceBean}.
      * 
      */
     @ResponseBody

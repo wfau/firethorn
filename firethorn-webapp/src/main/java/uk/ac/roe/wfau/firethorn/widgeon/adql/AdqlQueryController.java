@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -158,10 +159,10 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * HTTP GET request for an {@link AdqlQuery}.
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlQuery}.
      * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
      * @param ident The {@link AdqlQuery} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @return An {@link AdqlQueryBean} wrapping the {@link AdqlQuery}.
+     * @return The selected {@link AdqlQuery} wrapped in a {@link AdqlQueryBean}.
      * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
      * 
      */
@@ -181,7 +182,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * HTTP PORT request to update an {@link AdqlQuery}.
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlQuery}.
      * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
      * @param ident The {@link AdqlQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * <br/>Optional {@link AdqlQuery} params :
@@ -198,7 +199,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      * <br/>Optional {@link Job.Status} params :
      * @param status  The {@link AdqlQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
      * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
-     * @return An {@link AdqlQueryBean} wrapping the {@link AdqlQuery}.
+     * @return The updated {@link AdqlQuery} wrapped in a {@link AdqlQueryBean}.
      * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
      *
      */
