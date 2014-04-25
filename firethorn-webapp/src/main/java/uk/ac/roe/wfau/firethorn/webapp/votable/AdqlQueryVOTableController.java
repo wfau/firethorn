@@ -52,7 +52,10 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
 
 /**
- * Spring MVC controller for <code>AdqlTable</code>.
+ * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>.
+ * <br/>Controller path : [{@value AdqlQueryLinkFactory#VOTABLE_PATH}].
+ * @see <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>
+ * @deprecated Use the table controllers to access the result tables themselves.
  *
  */
 @Slf4j
@@ -313,7 +316,7 @@ public class AdqlQueryVOTableController
             writer.append(">");
             writer.append("<LINK");
             writer.append(" content-type='");
-            writer.append(JSON_CONTENT);
+            writer.append(JSON_MIME);
             writer.append("'");
             writer.append(" content-role='metadata'");
             writer.append(" href='");
@@ -341,7 +344,7 @@ public class AdqlQueryVOTableController
                 writer.append(">");
                 writer.append("<LINK");
                 writer.append(" content-type='");
-                writer.append(JSON_CONTENT);
+                writer.append(JSON_MIME);
                 writer.append("'");
                 writer.append(" content-role='metadata'");
                 writer.append(" href='");
@@ -440,7 +443,7 @@ public class AdqlQueryVOTableController
                     writer.append(">");
 
                     writer.append("<LINK");
-                    writer.append(" content-type='" + JSON_CONTENT + "'");
+                    writer.append(" content-type='" + JSON_MIME + "'");
                     writer.append(" content-role='metadata'");
                     writer.append(" href='" + column.link() + "'");
                     writer.append("/>");
@@ -574,26 +577,19 @@ public class AdqlQueryVOTableController
         final String ident,
         final HttpServletResponse response
         ) throws EntityNotFoundException, IOException {
-
         response.setContentType(
             TEXT_XML_MIME
             );
         response.setCharacterEncoding(
             "UTF-8"
             );
-
-
-
-        final PrintWriter writer = response.getWriter();
-
-
-        final AdqlQuery query = factories().adql().queries().select(
-            factories().adql().queries().idents().ident(
-                ident
-                )
-            );
-
-		generateVotable(writer,query);
-
+		generateVotable(
+		    response.getWriter(),
+	        factories().adql().queries().select(
+	            factories().adql().queries().idents().ident(
+	                ident
+	                )
+	            )
+		    );
         }
     }

@@ -22,10 +22,12 @@ import java.net.URI;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlQuery</code>.
+ * An {@link AdqlQuery.IdentFactory} implementation.
+ * @todo Use PURLs.
  *
  */
 @Component
@@ -35,7 +37,7 @@ implements AdqlQuery.IdentFactory
     {
     /**
      * The type URI for this type.
-     * TODO - Move to AdqlQuery interface.
+     * @todo Move this to AdqlQuery interface.
      *
      */
     public static final URI TYPE_URI = URI.create(

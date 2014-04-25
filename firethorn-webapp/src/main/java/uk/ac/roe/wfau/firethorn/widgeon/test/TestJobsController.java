@@ -98,7 +98,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<TestJobController.Bean> select(
         ){
         return TestJobController.bean(
@@ -110,7 +110,7 @@ extends AbstractController
      * JSON POST request to create a new job.
      *
      */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<TestJobController.Bean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,

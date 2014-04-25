@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpRequest;
+import org.springframework.scheduling.quartz.JobMethodInvocationFailedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,17 +30,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlQuery</code>.
+ * Spring MVC controller to handle {@link AdqlQuery} entities.
+ * <br/>Controller path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+ * @todo Add an entity() load method.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
+@RequestMapping(AdqlQueryLinkFactory.ENTITY_PATH)
 public class AdqlQueryController
 extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     {
@@ -47,7 +52,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     public Path path()
         {
         return path(
-            AdqlQueryLinkFactory.QUERY_PATH
+            AdqlQueryLinkFactory.ENTITY_PATH
             );
         }
 
@@ -61,73 +66,80 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * MVC property for the target entity.
+     * MVC property for the {@link AdqlQuery}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.query.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link AdqlQuery} name, [{@value}].
+     * @see AdqlQuery#name(String)
      *
      */
     public static final String UPDATE_NAME = "adql.query.update.name" ;
 
     /**
-     * MVC property for updating the query.
+     * MVC property for the {@link AdqlQuery} input, [{@value}].
+     * @see AdqlQuery#input(String)
      *
      */
-    public static final String UPDATE_QUERY = "adql.query.update.query" ;
+    public static final String UPDATE_INPUT = "adql.query.update.query" ;
 
     /**
-     * MVC property for updating the status.
+     * MVC property for the {@link Job.Status}, [{@value}].
+     * @see AdqlQuery#status(Status)
      *
      */
     public static final String UPDATE_STATUS = "adql.query.update.status" ;
 
     /**
-     * MVC property for the timelimit.
+     * MVC property for the {@link HttpRequest} timeout, [{@value}].
+     * The number of seconds to wait for a {@link Job.Status} change before returning a response.
      *
      */
     public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
-
     
     /**
-     * MVC property for the first delay.
+     * MVC property for the delay before the first row, [{@value}].
+     * @see AdqlQuery.Delays#first(Integer)
      *
      */
     public static final String UPDATE_DELAY_FIRST = "adql.query.update.delay.first" ;
     
     /**
-     * MVC property for the row delay.
+     * MVC property for the delay between every row, [{@value}].
+     * @see AdqlQuery.Delays#every(Integer)
      *
      */
     public static final String UPDATE_DELAY_EVERY = "adql.query.update.delay.every" ;
 
     /**
-     * MVC property for the last delay.
+     * MVC property for the delay after the last row, [{@value}].
+     * @see AdqlQuery.Delays#last(Integer)
      *
      */
     public static final String UPDATE_DELAY_LAST = "adql.query.update.delay.last" ;
 
-    
     /**
-     * MVC property for the row limit.
+     * MVC property for the row limit, [{@value}].
+     * @see AdqlQuery.ModifiableLimits#rows(Long)
      *
      */
     public static final String UPDATE_LIMT_ROWS = "adql.query.update.limit.rows" ;
 
     /**
-     * MVC property for the cell limit.
+     * MVC property for the cell limit, [{@value}].
+     * @see AdqlQuery.ModifiableLimits#cells(Long)
      *
      */
     public static final String UPDATE_LIMT_CELLS = "adql.query.update.limit.cells" ;
 
     /**
-     * MVC property for the time limit.
+     * MVC property for the time limit, [{@value}].
+     * @see AdqlQuery.ModifiableLimits#time(Long)
      *
      */
     public static final String UPDATE_LIMT_TIME = "adql.query.update.limit.time" ;
-    
     
     @Override
     public AdqlQueryBean bean(final AdqlQuery entity)
@@ -146,11 +158,15 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * JSON GET request.
-     *
+     * HTTP GET request for an {@link AdqlQuery}.
+     * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+     * @param ident The {@link AdqlQuery} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return An {@link AdqlQueryBean} wrapping the {@link AdqlQuery}.
+     * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public AdqlQueryBean select(
         @PathVariable("ident")
         final String ident
@@ -165,15 +181,33 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * JSON POST update.
+     * HTTP PORT request to update an {@link AdqlQuery}.
+     * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+     * @param ident The {@link AdqlQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * <br/>Optional {@link AdqlQuery} params :
+     * @param name  The {@link AdqlQuery} name, [{@value #UPDATE_NAME}].
+     * @param input The {@link AdqlQuery} input, [{@value #UPDATE_INPUT}].
+     * <br/>Optional {@link AdqlQuery.Delays} params :
+     * @param first The {@link AdqlQuery.Delays} delay before the first row, [{@value #UPDATE_DELAY_FIRST}].
+     * @param every The {@link AdqlQuery.Delays} delay between the every row, [{@value #UPDATE_DELAY_EVERY}].
+     * @param last  The {@link AdqlQuery.Delays} delay after the last row, [{@value #UPDATE_DELAY_LAST}].
+     * <br/>Optional {@link AdqlQuery.Limits} params :
+     * @param limitrows  The {@link AdqlQuery.Limits} row limit, [{@value #UPDATE_LIMT_ROWS}].
+     * @param limitcells The {@link AdqlQuery.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
+     * @param limittime  The {@link AdqlQuery.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
+     * <br/>Optional {@link Job.Status} params :
+     * @param status  The {@link AdqlQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
+     * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
+     * @return An {@link AdqlQueryBean} wrapping the {@link AdqlQuery}.
+     * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlQueryBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @RequestParam(value=UPDATE_QUERY, required=false)
+        @RequestParam(value=UPDATE_INPUT, required=false)
         final String input,
         @RequestParam(value=UPDATE_DELAY_FIRST, required=false)
         final Integer first,
@@ -185,14 +219,12 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
-    
         @RequestParam(value=UPDATE_LIMT_ROWS, required=false)
         final Long limitrows,
         @RequestParam(value=UPDATE_LIMT_CELLS, required=false)
         final Long limitcells,
         @RequestParam(value=UPDATE_LIMT_TIME, required=false)
         final Long limittime,
-        
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
@@ -233,7 +265,6 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
         if ((first != null) || (every != null) || (last != null))
             {
-            log.debug("Delays [{}][{}][{}]",first, every, last);
             update(
                 new Runnable()
                     {
@@ -265,7 +296,6 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
         if ((limitrows != null) || (limitcells != null) || (limittime != null))
             {
-            log.debug("Limits [{}][{}][{}]", limitrows, limitcells, limittime);
             update(
                 new Runnable()
                     {

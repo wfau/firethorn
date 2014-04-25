@@ -73,7 +73,7 @@ public class TableMappingController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public TableMappingBean select(
         @PathVariable(TableMappingController.TABLE_ALIAS_FIELD)
         final String alias

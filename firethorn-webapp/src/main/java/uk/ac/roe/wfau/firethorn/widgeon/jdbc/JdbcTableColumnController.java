@@ -124,7 +124,7 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<JdbcColumnBean> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table
@@ -140,7 +140,7 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
     public JdbcColumnBean select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,

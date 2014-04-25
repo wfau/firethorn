@@ -29,8 +29,9 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlResources</code>.
- * TODO better exception handling.
+ * Spring MVC controller to handle {@link AdqlResource} entities.
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#SERVICE_PATH}]
+ * @todo Better exception handling.
  *
  */
 @Controller
@@ -57,13 +58,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * MVC property for the select name.
-     *
-     */
-    public static final String SELECT_NAME = "adql.resource.select.name" ;
-
-    /**
-     * MVC property for the create name.
+     * MVC property for the {@link AdqlResource} name, [{@value}].
      *
      */
     public static final String CREATE_NAME = "adql.resource.create.name" ;
@@ -85,11 +80,14 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * JSON GET request to select all.
-     *
+     * {@link RequestMethod#GET} request to select all the available {@link AdqlResource}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @return An {@Iterable} set of {@link AdqlResourceBean}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<AdqlResourceBean> select(
         ){
         return bean(
@@ -98,11 +96,15 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * JSON POST request to create a new resource.
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlResource}.
+     * <br/>Request path : [{@value #CREATE_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param name The {@link AdqlResource} name, [{@value #CREATE_NAME}]
+     * @return An {@link AdqlResourceBean} wrapping the new {@link AdqlResource}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlResourceBean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name

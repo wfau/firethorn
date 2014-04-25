@@ -45,7 +45,7 @@ public abstract class AbstractController
     /**
      * HTTP content type for JSON.
      */
-    public static final String JSON_CONTENT = "application/json" ;
+    public static final String JSON_MIME = "application/json" ;
 
     /**
      * Request property for the copy depth.

@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.identity;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,19 +24,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>Identity</code>.
+ * Spring MVC controller to handle {@link Identity} entities.
+ * <br/>Controller path : [{@value IdentityLinkFactory#ENTITY_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IdentityLinkFactory.IDENTITY_PATH)
 public class IdentityController
@@ -63,16 +63,25 @@ extends AbstractController
         }
 
     /**
-     * Bean wrapper.
+     * An {@link EntityBean} wrapper for an {@link Identity}.
      *
      */
     public static class IdentityBean
     extends NamedEntityBeanImpl<Identity>
     implements NamedEntityBean<Identity>
         {
+        /**
+         * An {@link EntityBean.Iter} wrapper for an {@link Identity} {@link Iterable}.
+         *
+         */
         public static class Iter
         extends AbstractEntityBeanIter<Identity, IdentityBean>
             {
+            /**
+             * Public constructor.
+             * @param iterable The {@link Identity} {@link Iterable} to wrap.
+             *
+             */
             public Iter(final Iterable<Identity> iterable)
                 {
                 super(
@@ -88,6 +97,11 @@ extends AbstractController
                 }
             }
 
+        /**
+         * Public constructor.
+         * @param identity The {@link Identity} to wrap.
+         *
+         */
         public IdentityBean(final Identity entity)
             {
             super(
@@ -96,6 +110,12 @@ extends AbstractController
                 );
             }
 
+        /**
+         * Get a URL for the {@Link Identity} {@link Community}
+         * @return A URL for the {@link Community}.
+         * @see Identity#community
+         *
+         */
         public String getCommunity()
             {
             if (entity().community() != null)
@@ -107,6 +127,12 @@ extends AbstractController
                 }
             }
 
+        /**
+         * Get a URL for the {@link Identity} space.
+         * @return A URL for the {@link Identity} space, or null if it does not have space allocated.
+         * @see Identity#space()
+         *
+         */
         public String getSpace()
             {
             if (entity().space() != null)
@@ -120,16 +146,19 @@ extends AbstractController
         }
 
     /**
-     * JSON GET request.
-     *
+     * HTTP GET request for an {@link Identity}.
+     * <br/>Request path : [{@value IdentityLinkFactory#ENTITY_PATH}]
+     * @param ident The {@link Identity} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return An {@link IdentityBean} wrapping the {@link Identity}.
+     * @throws EntityNotFoundException If the {@link Identity} could not be found.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public IdentityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws EntityNotFoundException  {
-        log.debug("JSON GET request");
         return new IdentityBean(
             factories().identities().select(
                 factories().identities().idents().ident(

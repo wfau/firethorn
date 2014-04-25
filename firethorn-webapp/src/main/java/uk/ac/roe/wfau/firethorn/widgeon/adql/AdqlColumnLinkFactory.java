@@ -23,8 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlColumn</code>.
- * TODO
+ * An {@link AdqlColumn.LinkFactory} implementation.
  *
  */
 @Component
@@ -32,31 +31,34 @@ public class AdqlColumnLinkFactory
 extends WebappLinkFactory<AdqlColumn>
 implements AdqlColumn.LinkFactory
     {
-
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlColumnLinkFactory()
         {
         super(
-            LINK_PATH
+            SERVICE_PATH
             );
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, [{@value}].
      *
      */
-    protected static final String LINK_PATH = "/adql/column" ;
+    protected static final String SERVICE_PATH = "/adql/column" ;
 
     /**
-     * The URI path for individual columns.
+     * The URI path for an {@link AdqlColumn}, [{@value}].
      *
      */
-    public static final String COLUMN_PATH = LINK_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final AdqlColumn entity)
         {
         return link(
-            COLUMN_PATH,
+            ENTITY_PATH,
             entity
             );
         }

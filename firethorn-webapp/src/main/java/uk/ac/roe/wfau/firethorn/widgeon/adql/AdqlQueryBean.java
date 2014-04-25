@@ -24,20 +24,29 @@ import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 
 /**
- * Bean wrapper for <code>AdqlQuery</code>.
+ * An {@link EntityBean} wrapper for an {@link AdqlQuery}.
  *
  */
 public class AdqlQueryBean
 extends NamedEntityBeanImpl<AdqlQuery>
     {
-
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlQuery} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlQuery, AdqlQueryBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlQuery} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlQuery> iterable)
             {
             super(
@@ -53,6 +62,11 @@ extends NamedEntityBeanImpl<AdqlQuery>
             }
         }
 
+    /**
+     * Public constructor.
+     * @param iterable The {@link AdqlQuery} to wrap.
+     *
+     */
     protected AdqlQueryBean(final AdqlQuery entity)
         {
         super(

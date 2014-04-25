@@ -50,7 +50,7 @@ public class IdentitySpaceTestCase
             community.space()
             );
 
-        final Identity identity = community.identities().create(
+        final Identity identity = community.members().create(
             unique(
                 "test-identity"
                 )
@@ -73,7 +73,7 @@ public class IdentitySpaceTestCase
         log.debug("Test community [{}][{}]", community.ident(), community.name());
         log.debug("Community space [{}][{}]", community.space().ident(), community.space().name());
 
-        final Identity identity = community.identities().create(
+        final Identity identity = community.members().create(
             unique(
                 "test-identity"
                 )

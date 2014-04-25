@@ -314,7 +314,7 @@ public class TestJobController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public Bean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -333,7 +333,7 @@ public class TestJobController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public Bean update(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,

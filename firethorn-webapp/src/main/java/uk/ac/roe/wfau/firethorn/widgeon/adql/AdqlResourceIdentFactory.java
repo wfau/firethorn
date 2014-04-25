@@ -25,7 +25,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlResource</code>.
+ * An {@link AdqlResource.IdentFactory} implementation.
+ * @todo Use PURLs.
  *
  */
 @Component
@@ -35,7 +36,7 @@ implements AdqlResource.IdentFactory
     {
     /**
      * The type URI for this type.
-     * TODO - Move to AdqlResource interface.
+     * @todo Move this to AdqlResource interface.
      *
      */
     public static final URI TYPE_URI = URI.create(

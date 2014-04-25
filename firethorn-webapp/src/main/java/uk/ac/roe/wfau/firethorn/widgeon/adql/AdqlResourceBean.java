@@ -19,10 +19,11 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
 
 /**
- * Bean wrapper for <code>AdqlResource</code>.
+ * An {@link EntityBean} wrapper for an {@link AdqlResource}.
  *
  */
 public class AdqlResourceBean

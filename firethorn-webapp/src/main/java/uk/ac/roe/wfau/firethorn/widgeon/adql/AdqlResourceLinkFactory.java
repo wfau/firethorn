@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlResource</code>.
+ * An {@link AdqlResource.LinkFactory} implementation.
  *
  */
 @Component
@@ -31,6 +31,10 @@ public class AdqlResourceLinkFactory
 extends WebappLinkFactory<AdqlResource>
 implements AdqlResource.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlResourceLinkFactory()
         {
         super(
@@ -39,25 +43,25 @@ implements AdqlResource.LinkFactory
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, [{@value}].
      *
      */
     public static final String SERVICE_PATH = "/adql/resource";
 
     /**
-     * The URI path for individual resources.
+     * The URI path for an {@link AdqlResource}, [{@value}].
      *
      */
     public static final String RESOURCE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for resource schema.
+     * The URI path for the {@link AdqlResource} schema, [{@value}].
      *
      */
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     /**
-     * The URI path for resource metadoc.
+     * The URI path for the {@link AdqlResource} metadoc, [{@value}].
      *
      */
     public static final String RESOURCE_METADOC_PATH = RESOURCE_PATH + "/metadoc" ;

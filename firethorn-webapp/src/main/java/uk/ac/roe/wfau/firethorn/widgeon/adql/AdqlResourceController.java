@@ -35,14 +35,15 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlResource</code>.
+ * Spring MVC controller to handle {@link AdqlResource} entities.
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
  *
  */
 @Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController
-    extends AbstractEntityController<AdqlResource, AdqlResourceBean>
+extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     {
 
     @Override
@@ -63,31 +64,37 @@ public class AdqlResourceController
         }
 
     /**
-     * VOSI URL path.
+     * VOSI URL path, [{@value}].
      *
      */
     public static final String VOSI_PATH = "vosi" ;
 
     /**
-     * The VOSI view generator.
+     * The VOSI JSP page name, [{@value}].
      *
      */
-    public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
+    public static final String VOSI_VIEW = "adql/vosi-xml" ;
 
     /**
-     * MVC property for the target entity.
+     * The VOSI content type, [{@value}].
+     *
+     */
+    public static final String VOSI_MIME = "application/x-vosi+xml" ;
+
+    /**
+     * MVC property for the {@link AdqlResource}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.resource.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link AdqlResource} name, [{@value}].
      *
      */
     public static final String UPDATE_NAME = "adql.resource.update.name" ;
 
     /**
-     * MVC property for updating the status.
+     * MVC property for the {@link AdqlResource} {@link BaseComponent.Status}, [{@value}].
      *
      */
     public static final String UPDATE_STATUS = "adql.resource.update.status" ;
@@ -109,7 +116,10 @@ public class AdqlResourceController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Get the target {@link AdqlResource} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlResource} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The target {@link AdqlResource}.
+     * @throws IdentifierNotFoundException If the {@link AdqlResource} could not be found.
      *
      */
     @ModelAttribute(TARGET_ENTITY)
@@ -126,41 +136,52 @@ public class AdqlResourceController
         }
 
     /**
-     * JSON GET request.
-     *
+     * {@link RequestMethod#GET} request for a specific {@link AdqlResource}.
+     * <br/>Request path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @return An {@link AdqlResourceBean} wrapping the {@link AdqlResource}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public AdqlResourceBean select(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlResource entity
+        final AdqlResource resource
         ){
         return bean(
-            entity
+            resource
             );
         }
 
     /**
-     * JSON POST update.
-     *
+     * {@link RequestMethod#POST} request to update an {@link AdqlResource}.
+     * <br/>Request path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * <br/>Optional {@link AdqlResource} params :
+     * @param name   The {@link AdqlResource} name, [{@value #UPDATE_NAME}].
+     * @param status The {@link AdqlResource} {@link BaseComponent.Status}, [{@value #UPDATE_STATUS}].
+     * @return An {@link AdqlResourceBean} wrapping the {@link AdqlResource}.
+     * 
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlResourceBean update(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlResource entity,
-        @RequestParam(value=UPDATE_NAME, required=false) final
-        String name,
-        @RequestParam(value=UPDATE_STATUS, required=false) final
-        String status
+        final AdqlResource resource,
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final String status
         ){
 
         if (name != null)
             {
             if (name.length() > 0)
                 {
-                entity.name(
+                resource.name(
                     name
                     );
                 }
@@ -170,7 +191,7 @@ public class AdqlResourceController
             {
             if (status.length() > 0)
                 {
-                entity.status(
+                resource.status(
                     BaseComponent.Status.valueOf(
                         status
                         )
@@ -179,19 +200,23 @@ public class AdqlResourceController
             }
 
         return bean(
-            entity
+            resource
             );
         }
 
     /**
-     * VOSI GET request.
-     *
+     * {@link RequestMethod#GET} request for a VOSI view of an {@link AdqlResource}.
+     * <br/>Request path : [{@value #VOSI_PATH}]
+     * <br/>Content type : [{@value #VOSI_MIME}]
+     * @param resource The {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @return The name of the VOSI JSP page, [{@value #VOSI_VIEW}].
+     * 
      */
-    @RequestMapping(value=VOSI_PATH, method=RequestMethod.GET)
+    @RequestMapping(value=VOSI_PATH, method=RequestMethod.GET, produces=VOSI_MIME)
     public String vosi(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlResource entity
+        final AdqlResource resource
         ){
-        return VOSI_XML_VIEW ;
+        return VOSI_VIEW ;
         }
     }

@@ -128,7 +128,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<JdbcResourceBean> select(
         final ModelAndView model
         ){
@@ -142,7 +142,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<JdbcResourceBean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,

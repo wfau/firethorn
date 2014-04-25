@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.identity;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -31,7 +32,8 @@ extends Entity, NamedEntity
     {
 
     /**
-     * Link factory interface.
+     * Public interface for a {@link Community} {@link Entity.LinkFactory}.
+     * @see Entity.LinkFactory
      *
      */
     public static interface LinkFactory
@@ -40,8 +42,9 @@ extends Entity, NamedEntity
         }
 
     /**
-     * Identifier factory interface.
-     *
+     * Public interface for a {@link Community} {@link Entity.IdentFactory}.
+     * @see Entity.IdentFactory
+     * 
      */
     public static interface IdentFactory
     extends Entity.IdentFactory
@@ -49,86 +52,102 @@ extends Entity, NamedEntity
         }
 
     /**
-     * Entity factory interface for Communities.
+     * Public interface for a {@link Community} {@link Entity.EntityFactory}.
+     * @see Entity.EntityFactory
      *
      */
     public interface EntityFactory
     extends Entity.EntityFactory<Community>
         {
         /**
-         *  Create a new Community.
-         * @throws EntityNotFoundException
+         * Create a new {@link Community}.
+         * @param uri The {@link Community} URI.
          *
          */
         public Community create(final String uri);
 
         /**
-         *  Create a new Community.
+         * Create a new {@link Community}.
+         * @param name The {@link Community} name.
+         * @param uri  The {@link Community} URI.
          *
          */
         public Community create(final String name, final String uri);
 
         /**
-         *  Create a new Community.
+         * Create a new {@link Community}.
+         * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
+         * @param name  The {@link Community} name.
+         * @param uri   The {@link Community} URI.
          *
          */
         public Community create(final JdbcResource space, final String name, final String uri);
 
         /**
-         *  Select a Community based on URI.
+         * Select a Community based on URI.
+         * @param uri The {@link Community} URI.
+         * @return The corresponding {@link Community}.
+         * @throws EntityNotFoundException If no matching {@link Community} was found.
          *
          */
-        public Community select(final String uri);
+        public Community select(final String uri)
+        throws EntityNotFoundException;
+
         }
 
     /**
-     * Access to the Identities in this Community.
+     * Access to the {@link Community} members.
      *
      */
-    public interface Identities
+    public interface Members
         {
         /**
-         * Create a new Identity.
+         * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @return The new {@link Identity}.
          *
          */
         public Identity create(final String name);
 
         /**
-         * Select an existing Identity.
+         * Select an existing {@link Identity} by name.
+         * @param name The {@link Identity} name to look for.
+         * @return The corresponding {@link Identity}.
+         * @throws NameNotFoundException If no matching {@link Identity} was found.
          *
          */
-        public Identity select(final String name);
+        public Identity select(final String name)
+        throws NameNotFoundException;
 
         }
 
     /**
-     * Access to the Identities in this Community.
+     * Access to the {@link Community} members.
+     * @return A {@link Members} interface for accessing the {@link Community} members. 
      *
      */
-    public Identities identities();
+    public Members members();
 
     /**
-     * The unique identifier for this Community.
+     * The unique identifier (URI) for this {@link Community}.
+     * @return The {@link Community} URI.
      *
      */
     public String uri();
 
     /**
-     * The storage space for this Community.
+     * The {@link JdbcResource} to use as storage space for this {@link Community}.
+     * @return The {@link JdbcResource} storage space, or null if no space is allocated.
      *
      */
     public JdbcResource space();
 
     /**
-     * The storage space for this Community.
+     * The {@link JdbcResource} to use as storage space for this {@link Community}.
+     * @param  create A flag to indicate if the storage space should be created automatically. 
+     * @return The {@link JdbcResource} storage space, or null if no space is allocated.
      *
      */
     public JdbcResource space(final boolean create);
-
-    /**
-     * The JDBC Resource for this Community.
-     *
-    public JdbcResource space(final JdbcResource space);
-     */
 
     }

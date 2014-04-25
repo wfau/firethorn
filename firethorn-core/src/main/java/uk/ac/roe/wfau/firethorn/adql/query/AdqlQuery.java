@@ -23,10 +23,8 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
@@ -182,10 +180,11 @@ extends NamedEntity, Job
         }
 
     /**
-     * Modifiable Query Limits
+     * Modifiable Query Limits.
+     * @todo Fold this back into Limits
      * 
      */
-    public interface QueryLimits
+    public interface ModifiableLimits
     extends Limits
         {
 
@@ -216,7 +215,7 @@ extends NamedEntity, Job
      * The query limits.
      * 
      */
-    public QueryLimits limits();
+    public ModifiableLimits limits();
 
     /**
      * Set the query limits using a combination of the current values and the values from another Limits object.

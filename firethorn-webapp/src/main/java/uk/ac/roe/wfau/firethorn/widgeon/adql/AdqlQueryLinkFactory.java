@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlQuery</code>.
+ * An {@link AdqlQuery.LinkFactory} implementation.
  *
  */
 @Component
@@ -31,56 +31,58 @@ public class AdqlQueryLinkFactory
 extends WebappLinkFactory<AdqlQuery>
 implements AdqlQuery.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlQueryLinkFactory()
         {
         super(
-            BASE_PATH
+            SERVICE_PATH
             );
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, [{@value}].
      *
      */
-    protected static final String BASE_PATH = "/adql/query" ;
+    protected static final String SERVICE_PATH = "/adql/query" ;
 
     /**
-     * The URI path for individual queries.
+     * The URI path for an {@link AdqlQuery}, [{@value}].
      *
      */
-    public static final String QUERY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for the VOTable representation.
+     * The URI path for the VOTable representation, [{@value}].
      *
      */
     public static final String VOTABLE_NAME = "/votable";
     
     /**
-     * The URI path for the VOTable representation.
+     * The URI path for the VOTable representation, [{@value}].
      *
      */
-    public static final String VOTABLE_PATH = BASE_PATH + "/" + IDENT_TOKEN + VOTABLE_NAME;
+    public static final String VOTABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + VOTABLE_NAME;
 
     /**
-     * The URI path for the Datatable representation.
+     * The URI path for the DataTable representation, [{@value}].
      *
      */
     public static final String DATATABLE_NAME = "/datatable";
     
-    
     /**
-     * The URI path for the Datatable representation.
+     * The URI path for the DataTable representation, [{@value}].
      *
      */
-    public static final String DATATABLE_PATH = BASE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
+    public static final String DATATABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
 
-    
     @Override
     public String link(final AdqlQuery entity)
         {
         return link(
-            QUERY_PATH,
+            ENTITY_PATH,
             entity
             );
         }

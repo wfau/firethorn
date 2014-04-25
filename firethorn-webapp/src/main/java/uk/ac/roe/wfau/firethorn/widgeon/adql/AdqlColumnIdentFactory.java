@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlColumn</code>.
+ * An {@link AdqlColumn.IdentFactory} implementation.
  *
  */
 @Component
@@ -35,7 +35,8 @@ implements AdqlColumn.IdentFactory
     {
     /**
      * The type URI for this type.
-     * TODO - Move to AdqlColumn interface.
+     * @todo Move this to the AdqlColumn interface.
+     * @todo Change to a purl URL.
      *
      */
     public static final URI TYPE_URI = URI.create(
