@@ -361,10 +361,10 @@ EOF
 
         vi /var/www/osa/firethorn.ini
 
-        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
-        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
-        ~   atlasprivate=http://coccinea:8080/firethorn/adql/schema/163890
-        ~   firethorn_base=http://coccinea:8080/firethorn
+        ~   adqlspace=http://pyratest2:8080/firethorn/adql/resource/3276802
+        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/3407921
+        ~   atlasprivate=http://pyratest2:8080/firethorn/adql/schema/3407922
+        ~   firethorn_base=http://pyratest2:8080/firethorn
 
     exit
 
@@ -526,8 +526,8 @@ EOF
                             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
                             
                             echo "--------"
-                            echo "Pause ...."                            
-                            sleep 1
+                            echo "Pause [${loopwait:?}]"                            
+                            sleep "${loopwait:?}"
                         fi
                     fi
                 done
@@ -535,5 +535,6 @@ EOF
                 exec 6>&-
                 }
 
-            looptest
+loopwait=5
+looptest
 
