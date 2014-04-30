@@ -59,6 +59,8 @@ import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.WrappedOperand;
 
+import adql.query.operand.function.CastFunction;
+import adql.query.operand.function.CastFunctionType;
 import adql.query.operand.function.DefaultUDF;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.MathFunctionType;
@@ -278,6 +280,14 @@ public class ADQLQueryFactory {
 	public MathFunction createMathFunction(MathFunctionType type, ADQLOperand param1, ADQLOperand param2) throws Exception {
 		return new MathFunction(type, param1, param2);
 	}
+
+	public CastFunction createCastFunction(Token type, ADQLOperand oper)
+		{
+		return new CastFunction(
+			type,
+			oper
+			);
+		}
 
 	/**
 	 * <p>Creates the user defined functions called as the given name and with the given parameters.</p>
