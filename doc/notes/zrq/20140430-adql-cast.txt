@@ -65,6 +65,86 @@
     yum install eclipse-pde
 
 
+
+
+
+# -----------------------------------------------------
+# Merge the branch into default.
+# https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update
+
+        #
+        # Fix any conflicts ...
+        #
+
+        hg update default
+        hg merge "${devbranch:?}"
+
+        #
+        # Fix any conflicts ...
+        #
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Close the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Increment the project version.
+#[user@desktop]
+
+    mainversion=1.10.4-dev-SNAPSHOT
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${mainversion:?}"
+
+        #
+        # Commit and tag the new version.
+        hg commit -m "Snapshot [version-${mainversion:?}]"
+        hg tag    -f "version-${mainversion:?}"
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+        # Some issues with directpry permissions.
+        # Needed to allow group write to directories on the server.
+        # find . -type d -exec chmod g+rws {} \;
+
+    popd
+
 # -----------------------------------------------------
 # Changes to the JavaCC grammar .....
 #[user@desktop]
