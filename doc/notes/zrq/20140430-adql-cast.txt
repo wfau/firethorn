@@ -64,8 +64,19 @@
 
     yum install eclipse-pde
 
+# -----------------------------------------------------
+# Changes to the JavaCC grammar .....
+#[user@desktop]
 
 
+/* *************** */
+/* CAST            */
+/* *************** */
+TOKEN : {
+    < CAST: "CAST" >
+|	< CAST_AS : "AS">
+|	< CAST_TYPE : "SHORT" | "INT" | "INTEGER" | "LONG" | "FLOAT" | "DOUBLE" >
+}
 
 
 # -----------------------------------------------------
@@ -114,7 +125,7 @@
 # Increment the project version.
 #[user@desktop]
 
-    mainversion=1.10.4-dev-SNAPSHOT
+    mainversion=1.10.6-dev-SNAPSHOT
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -139,35 +150,6 @@
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
 
-        # Some issues with directpry permissions.
-        # Needed to allow group write to directories on the server.
-        # find . -type d -exec chmod g+rws {} \;
-
     popd
 
-# -----------------------------------------------------
-# Changes to the JavaCC grammar .....
-#[user@desktop]
-
-
-/* *************** */
-/* CAST            */
-/* *************** */
-TOKEN : {
-    < CAST: "CAST" >
-|	< CAST_AS : "AS">
-|	< CAST_TYPE : "SHORT" | "INT" | "INTEGER" | "LONG" | "FLOAT" | "DOUBLE" >
-}
-
-# -----------------------------------------------------
-# Build everything  ....
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-        mvn eclipse:eclipse
-
-    popd
 
