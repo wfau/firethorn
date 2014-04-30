@@ -154,7 +154,7 @@ public class ADQLParser {
 	public ADQLParser(ADQLQueryFactory factory) {
 		this((QueryChecker)null, factory);
 	}
-	
+
 	/**
 	* Builds a parser with a stream containing the query to parse.
 	*
@@ -676,6 +676,14 @@ TOKEN : {
 |	< TAN: "TAN" >
 }
 
+/* *************** */
+/* CAST            */
+/* *************** */
+TOKEN : {
+    < CAST: "CAST" >
+|   < CAST_TYPE : "SMALLINT"| "SHORT" | "INT" | "INTEGER" | "BIGINT" | "LONG" | "FLOAT" | "DOUBLE" >
+}
+
 /* ******* */
 /* Comment */
 /* ******* */
@@ -1076,6 +1084,7 @@ ADQLOperand ValueExpressionPrimary(): {String expr; ADQLColumn column; ADQLOpera
 	| column=Column() {return column;}
 	// set_function_specification
 	| op=SqlFunction() {return op;}
+    | op=CastFunction() {return op;}
 	// LEFT_PAR value_expression RIGHT_PAR
 	| (<LEFT_PAR> op=ValueExpression() <RIGHT_PAR>) {return op;})
 }
@@ -1319,6 +1328,23 @@ SQLFunction SqlFunction(): {Token fct, all=null, distinct=null; ADQLOperand op=n
 		throw generateParseException(ex);
 	}
 	{ return funct; }}
+
+/* ************* */
+/* CAST FUNCTION */
+/* ************* */
+CastFunction CastFunction(): {Token type; ADQLOperand oper = null; CastFunction funct = null;}{
+    try {
+		(
+	        ( <CAST> <LEFT_PAR> oper = ValueExpression() <AS> type = <CAST_TYPE> <RIGHT_PAR>
+            { funct = queryFactory.createCastFunction(type, oper); } )
+		)
+	    }
+	catch(Exception ex)
+	    {
+		throw generateParseException(ex);
+	    }
+	{ return funct; }
+    }
 
 
 /* ************** */

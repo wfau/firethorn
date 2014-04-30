@@ -1,0 +1,173 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create the new branch.
+#[user@desktop]
+
+    devbranch=[version]-[who]-[description]
+    devbranch=1.10.5-zrq-cast
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check we have the most recent version.
+        hg pull
+        hg update
+
+        #
+        # Create the new branch.
+        hg update default
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Fix for loading the JavaCC plugin into Eclipse .....
+#[user@desktop]
+
+    http://davidmnoriega.wordpress.com/2013/06/18/centos-eclipse-and-pydev/
+
+    yum install eclipse-pde
+
+
+
+
+
+# -----------------------------------------------------
+# Merge the branch into default.
+# https://stackoverflow.com/questions/2237222/how-to-correctly-close-a-feature-branch-in-mercurial  
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update
+
+        #
+        # Fix any conflicts ...
+        #
+
+        hg update default
+        hg merge "${devbranch:?}"
+
+        #
+        # Fix any conflicts ...
+        #
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Close the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Increment the project version.
+#[user@desktop]
+
+    mainversion=1.10.4-dev-SNAPSHOT
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${mainversion:?}"
+
+        #
+        # Commit and tag the new version.
+        hg commit -m "Snapshot [version-${mainversion:?}]"
+        hg tag    -f "version-${mainversion:?}"
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+
+        # Some issues with directpry permissions.
+        # Needed to allow group write to directories on the server.
+        # find . -type d -exec chmod g+rws {} \;
+
+    popd
+
+# -----------------------------------------------------
+# Changes to the JavaCC grammar .....
+#[user@desktop]
+
+
+/* *************** */
+/* CAST            */
+/* *************** */
+TOKEN : {
+    < CAST: "CAST" >
+|	< CAST_AS : "AS">
+|	< CAST_TYPE : "SHORT" | "INT" | "INTEGER" | "LONG" | "FLOAT" | "DOUBLE" >
+}
+
+# -----------------------------------------------------
+# Build everything  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn eclipse:eclipse
+
+    popd
+
