@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryCheckerImpl;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
 import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
@@ -118,7 +118,7 @@ implements AdqlParser
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
-            new MyQueryCheckerImpl(
+            new MyQueryChecker(
                 new MySearchTableList(
                     schema.resource(),
                     factory,

@@ -37,7 +37,7 @@ import adql.query.from.ADQLTable;
  *
  */
 @Slf4j
-public class MyQueryCheckerImpl
+public class MyQueryChecker
     extends DBChecker
     implements QueryChecker
     {
@@ -46,7 +46,7 @@ public class MyQueryCheckerImpl
      * Public constructor.
      * 
      */
-    public MyQueryCheckerImpl()
+    public MyQueryChecker()
         {
         super();
         }
@@ -55,7 +55,7 @@ public class MyQueryCheckerImpl
      * Public constructor.
      * 
      */
-    public MyQueryCheckerImpl(final SearchTableApi list)
+    public MyQueryChecker(final SearchTableApi list)
         {
         super();
         this.lstTables = list ;
@@ -65,7 +65,7 @@ public class MyQueryCheckerImpl
      * Public constructor.
      * 
      */
-    public MyQueryCheckerImpl(final Collection<DBTable> tables)
+    public MyQueryChecker(final Collection<DBTable> tables)
         {
         super(
             tables
