@@ -34,6 +34,7 @@ public class RedmineBug495TestCase
 
     /**
      * We should reject SELECT and GROUP that don't match
+     * Known to fail.
      * http://redmine.roe.ac.uk/issues/495
      *
      */

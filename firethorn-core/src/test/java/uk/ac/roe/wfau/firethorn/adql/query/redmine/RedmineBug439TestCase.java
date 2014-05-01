@@ -39,6 +39,8 @@ public class RedmineBug439TestCase
      *
      * ** Bug is that this should be rejected by the parser, with an appropriate syntax error.
      * ** Allowing this to get through the ADQL parser causes side effects later on in OGSA-DAI and SQLServer.
+     * Known to fail.
+     * http://redmine.roe.ac.uk/issues/439
      * 
      */
     @Test

@@ -35,6 +35,8 @@ extends AtlasQueryTestBase
 
     /**
      * Not sure what the correct response should be ....
+     * Known to fail.
+     * http://redmine.roe.ac.uk/issues/454
      *
      */
     @Test

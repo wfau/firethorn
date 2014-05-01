@@ -134,8 +134,8 @@ extends AtlasQueryTestBase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra) * 6 AS INT) AS rasixth," +
-            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec  * 6 AS INT) AS decsixth" +
+            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) AS rasixth," +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec * 6  AS INT) AS decsixth" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
@@ -164,7 +164,7 @@ extends AtlasQueryTestBase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    CAST({ATLAS_VERSION}.dbo.atlassource.ra  * 6 AS INT) AS CASTED," +
+            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) AS CASTED" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 

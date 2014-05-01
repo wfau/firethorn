@@ -106,7 +106,7 @@ public class RedmineBug440TestCase
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " WHERE" +
-            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.frameSetID)" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID)" +
             " GROUP BY" +
             "    ({ATLAS_VERSION}.dbo.atlassource.l * 6.0)/ 6.0," +
             "    ({ATLAS_VERSION}.dbo.atlassource.b * 6.0)/ 6.0",
