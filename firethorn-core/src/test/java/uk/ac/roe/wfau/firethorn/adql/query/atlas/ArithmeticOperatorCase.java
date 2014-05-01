@@ -180,11 +180,11 @@ public class ArithmeticOperatorCase
             "    atlasSource AS atlas",
 
             " SELECT TOP 10" +
-            "    atlas.umgpnt AS umgpnt," +
-            "    atlas.umgpnt + atlas.umgpnterr AS SUM," +
-            "    atlas.umgpnt - atlas.umgpnterr AS SUB," +
-            "    atlas.umgpnt * atlas.umgpnterr AS MUL," +
-            "    atlas.umgpnt / atlas.umgpnterr AS DIV" +
+            "    (atlas.umgpnt) AS umgpnt," +
+            "    (atlas.umgpnt + atlas.umgpnterr) AS SUM," +
+            "    (atlas.umgpnt - atlas.umgpnterr) AS SUB," +
+            "    (atlas.umgpnt * atlas.umgpnterr) AS MUL," +
+            "    (atlas.umgpnt / atlas.umgpnterr) AS DIV" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
@@ -223,7 +223,9 @@ public class ArithmeticOperatorCase
         }
 
     /**
-     * Duplicate bracketed expressions with aliases.
+     * Multiple expressions without aliases.
+     * Known to fail, waiting for default names.
+     * http://redmine.roe.ac.uk/issues/488
      *
      */
     @Test
@@ -244,12 +246,12 @@ public class ArithmeticOperatorCase
             "    atlasSource AS atlas",
 
             " SELECT TOP 10" +
-            "    atlas.umgpnt AS umgpnt," +
-            "    atlas.umgpnt + atlas.umgpnterr AS sum," +
-            "    atlas.umgpnt - atlas.umgpnterr AS sub," +
-            "    atlas.gmrpnt AS gmrpnt," +
-            "    atlas.gmrpnt + atlas.gmrpnterr AS gmrsum," +
-            "    atlas.gmrpnt - atlas.gmrpnterr AS gmrsub" +
+            "    (atlas.umgpnt) AS umgpnt," +
+            "    (atlas.umgpnt + atlas.umgpnterr) AS sum," +
+            "    (atlas.umgpnt - atlas.umgpnterr) AS sub," +
+            "    (atlas.gmrpnt AS gmrpnt)," +
+            "    (atlas.gmrpnt + atlas.gmrpnterr) AS gmrsum," +
+            "    (atlas.gmrpnt - atlas.gmrpnterr) AS gmrsub" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 

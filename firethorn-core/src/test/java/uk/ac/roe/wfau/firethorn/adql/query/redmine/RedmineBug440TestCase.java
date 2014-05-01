@@ -57,16 +57,16 @@ public class RedmineBug440TestCase
             "    ROUND(b*6.0,0)/6.0",
 
             " SELECT" +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l*6.0,0)/6.0 AS lon," +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b*6.0,0)/6.0 AS lat," +
-            "    COUNT(*)           AS num" +
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l * 6.0,0,0)/ 6.0 AS lon," +
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b * 6.0,0,0)/ 6.0 AS lat," +
+            "    COUNT(*) AS num" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " WHERE" +
-            "    {ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = frameSetID" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID)" +
             " GROUP BY" +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l*6.0,0)/6.0," +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b*6.0,0)/6.0",
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l * 6.0,0,0)/ 6.0," +
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b * 6.0,0,0)/ 6.0",
 
             new ExpectedField[] {
                 new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
@@ -96,20 +96,20 @@ public class RedmineBug440TestCase
             " WHERE" +
             "    (priOrSec=0 OR priOrSec=frameSetID)" +
             " GROUP BY" +
-            "    (l*6.0,0)/6.0," +
-            "    (b*6.0,0)/6.0",
+            "    (l*6.0)/6.0," +
+            "    (b*6.0)/6.0",
 
             " SELECT" +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l*6.0,0)/6.0 AS lon," +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b*6.0,0)/6.0 AS lat," +
-            "    COUNT(*)           AS num" +
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.l * 6.0,0,0)/ 6.0 AS lon," +
+            "    ROUND({ATLAS_VERSION}.dbo.atlassource.b * 6.0,0,0)/ 6.0 AS lat," +
+            "    COUNT(*) AS num" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " WHERE" +
-            "    {ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = frameSetID" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.frameSetID)" +
             " GROUP BY" +
-            "    ({ATLAS_VERSION}.dbo.atlassource.l*6.0,0)/6.0," +
-            "    ({ATLAS_VERSION}.dbo.atlassource.b*6.0,0)/6.0",
+            "    ({ATLAS_VERSION}.dbo.atlassource.l * 6.0)/ 6.0," +
+            "    ({ATLAS_VERSION}.dbo.atlassource.b * 6.0)/ 6.0",
 
             new ExpectedField[] {
                 new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
@@ -149,7 +149,7 @@ public class RedmineBug440TestCase
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " WHERE" +
-            "    {ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID" +
+            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID)" +
             " GROUP BY" +
             "    {ATLAS_VERSION}.dbo.atlassource.l," +
             "    {ATLAS_VERSION}.dbo.atlassource.b",

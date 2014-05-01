@@ -829,7 +829,7 @@ public class RedmineBug465TestCase
     
     
     /**
-     * Simpler example
+     * Simpler example.
      *  
      */
     @Test

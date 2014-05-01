@@ -28,3 +28,9 @@
 
     ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses2'
 
+
+    ssh -X fenrir 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses9'
+
+    ssh -X fenrir 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses2'
+
+

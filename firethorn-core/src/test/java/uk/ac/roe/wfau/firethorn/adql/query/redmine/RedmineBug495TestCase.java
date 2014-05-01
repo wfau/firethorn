@@ -22,19 +22,19 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
  * JUnit test case for RedMine issue.
- * http://redmine.roe.ac.uk/issues/447
+ * http://redmine.roe.ac.uk/issues/489
  *
  */
-public class RedmineBug447TestCase
+public class RedmineBug495TestCase
     extends AtlasQueryTestBase
     {
 
     /**
-     * Test for CAST to INT.
+     * We should reject SELECT and GROUP that don't match
+     * http://redmine.roe.ac.uk/issues/495
      *
      */
     @Test
@@ -42,28 +42,15 @@ public class RedmineBug447TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
-            " SELECT TOP 10" +
-            "    CAST(l AS INT) AS lon," +
-            "    CAST(b AS INT) AS lat" +
+            " SELECT TOP 5" +
+            "    COUNT(ra) AS binsize," +
+            "    (CAST((ra * 6) AS INT) / 6) AS binvalue" +
             " FROM" +
-            "    ATLASDR1.atlasSource" +
-            " WHERE" +
-            "    (priOrSec=0 OR priOrSec=frameSetID)",
-
-            " SELECT TOP 10" +
-            "    CAST({ATLAS_VERSION}.dbo.atlassource.l AS INT) AS lon," +
-            "    CAST({ATLAS_VERSION}.dbo.atlassource.b AS INT) AS lat" +
-            " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource" +
-            " WHERE" +
-            "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID)",
-
-            new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.INTEGER, 0),
-                new ExpectedField("lat", AdqlColumn.Type.INTEGER, 0),
-                }
+            "    atlasSource" +
+            " GROUP BY" +
+            "    (CAST((ra * 7) AS INT) / 7)"
             );
         }
     }
