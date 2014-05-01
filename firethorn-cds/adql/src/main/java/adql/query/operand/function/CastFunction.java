@@ -5,6 +5,7 @@ package adql.query.operand.function;
 
 import adql.parser.Token;
 import adql.query.ADQLObject;
+import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
 
 /**
@@ -62,23 +63,45 @@ extends ADQLFunction
 		this.oper = (ADQLOperand) that.oper().getCopy();
 		}
 	
-	
 	@Override
 	public boolean isNumeric()
 		{
-		return false;
+		switch(this.type)
+			{
+			case SHORT:
+			case SMALLINT:
+			case INT:
+			case INTEGER:
+			case LONG:
+			case BIGINT:
+			case FLOAT:
+			case DOUBLE:
+				return true ;
+			default :
+				return false ;
+			}
 		}
 
 	@Override
 	public boolean isString()
 		{
-		return false;
+		switch(this.type)
+			{
+			default :
+				return false ;
+			}
 		}
 
 	@Override
 	public String getName()
 		{
-		return oper.getName();
+		if (oper instanceof ADQLColumn)
+			{
+			return oper.getName();
+			}
+		else {
+			return "CASTED";
+			}
 		}
 
 	@Override

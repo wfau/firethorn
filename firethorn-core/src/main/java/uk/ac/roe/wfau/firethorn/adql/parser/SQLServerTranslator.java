@@ -36,6 +36,7 @@ import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;

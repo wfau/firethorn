@@ -1086,7 +1086,10 @@ ADQLOperand ValueExpressionPrimary(): {String expr; ADQLColumn column; ADQLOpera
 	| op=SqlFunction() {return op;}
     | op=CastFunction() {return op;}
 	// LEFT_PAR value_expression RIGHT_PAR
-	| (<LEFT_PAR> op=ValueExpression() <RIGHT_PAR>) {return op;})
+	| (<LEFT_PAR> op=ValueExpression() <RIGHT_PAR>)
+	  {
+	  return queryFactory.createWrappedOperand(op);
+	  })
 }
 
 ADQLOperand ValueExpression(): {ADQLOperand valueExpr = null; } {	(valueExpr=GeometryValueFunction()	| LOOKAHEAD(<PLUS> | <MINUS>) valueExpr=NumericExpression()

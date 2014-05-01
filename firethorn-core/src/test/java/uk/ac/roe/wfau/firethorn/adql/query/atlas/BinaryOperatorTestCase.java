@@ -95,7 +95,7 @@ public class BinaryOperatorTestCase
             " AND" +
             "    {ATLAS_VERSION}.dbo.atlassource.rmiext > -9.99995e+8" +
             " AND" +
-            "    {ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits < 65536",
+            "    ({ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits) < 65536",
 
             new ExpectedField[] {
                 new ExpectedField("iPetroMag", AdqlColumn.Type.FLOAT, 0),

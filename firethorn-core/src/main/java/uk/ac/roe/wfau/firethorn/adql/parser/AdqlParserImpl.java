@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryCheckerImpl;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
 import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
@@ -64,6 +64,7 @@ import adql.query.operand.NumericConstant;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
+import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
@@ -118,7 +119,7 @@ implements AdqlParser
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
-            new MyQueryCheckerImpl(
+            new MyQueryChecker(
                 new MySearchTableList(
                     schema.resource(),
                     factory,
@@ -531,7 +532,8 @@ implements AdqlParser
                 AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
-            log.warn("Error parsing query [{}]", ouch.getMessage());
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
             }
         catch (final AdqlParserException ouch)
             {
@@ -539,7 +541,8 @@ implements AdqlParser
                 AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
-            log.warn("Error parsing query [{}]", ouch.getMessage());
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
             }
         catch (final TranslationException ouch)
             {
@@ -1366,6 +1369,12 @@ implements AdqlParser
             {
             return null;
             }
+        else if (operand instanceof WrappedOperand)
+	        {
+	        return type(
+        		((WrappedOperand) operand).getOperand()
+        		);
+	        }
         else if (operand instanceof StringConstant)
             {
             return AdqlColumn.Type.CHAR;
@@ -1410,7 +1419,16 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        if (oper instanceof StringConstant)
+        if (oper instanceof WrappedOperand)
+	        {
+            return new MySelectOperWrapper(
+                oper,
+                type(
+                    (WrappedOperand)oper
+                    )
+                );
+	        }
+        else if (oper instanceof StringConstant)
             {
             return new MySelectOperWrapper(
                 oper,
@@ -2015,15 +2033,32 @@ implements AdqlParser
         {
         log.debug("wrap(castFunction)");
         log.debug("  name   [{}]", funct.type());
-        return new MySelectFieldWrapper(
-            funct.oper().getName(),
-            type(
-        		funct
-        		),
-            wrap(
-                funct.oper()
-                )
-            );
+
+        final ADQLOperand inner = funct.oper(); 
+        if (inner instanceof ADQLColumn)
+        	{
+            return new MySelectFieldWrapper(
+                inner.getName(),
+                type(
+            		funct
+            		),
+                wrap(
+                    funct.oper()
+                    )
+                );
+        	}
+        else {
+            return new MySelectFieldWrapper(
+                "CASTED",
+                type(
+            		funct
+            		),
+                wrap(
+                    funct.oper()
+                    )
+                );
+        	}
+        
         }
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.

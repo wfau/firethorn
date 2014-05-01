@@ -36,6 +36,8 @@ public class RedmineBug465TestCase
 
 	/**
      * Fails table prefix on '*'.
+     * Known to fail.
+     * http://redmine.roe.ac.uk/issues/465
      *  
      */
     @Test
@@ -829,7 +831,9 @@ public class RedmineBug465TestCase
     
     
     /**
-     * Simpler example
+     * Simpler example.
+     * Known to fail.
+     * http://redmine.roe.ac.uk/issues/465
      *  
      */
     @Test
@@ -896,7 +900,7 @@ public class RedmineBug465TestCase
             " FROM" + 
             " {ATLAS_VERSION}.dbo.atlasSourceXtwomass_xsc" + 
             " WHERE" + 
-            " {ATLAS_VERSION}.dbo.atlasSourceXtwomass_xsc.masterObjID & 0xFF = 0xAA" + 
+            " ({ATLAS_VERSION}.dbo.atlasSourceXtwomass_xsc.masterObjID & 0xFF) = 0xAA" + 
             "",
 
             new ExpectedField[] {

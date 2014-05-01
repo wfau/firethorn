@@ -115,4 +115,96 @@ extends AtlasQueryTestBase
                 }
             );
         }
+
+    /**
+     * CAST((ra * 6) AS INT) AS rasixth
+     *
+     */
+    @Test
+    public void test003()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    CAST((ra * 6) AS INT) AS rasixth," +
+            "    CAST(dec * 6  AS INT) AS decsixth"  +
+            " FROM" +
+            "    atlasSource",
+
+            " SELECT TOP 5" +
+            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) AS rasixth," +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec * 6  AS INT) AS decsixth" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("rasixth",  AdqlColumn.Type.INTEGER, 0),
+                new ExpectedField("decsixth", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        }
+
+    /**
+     * SELECT CAST((ra * 6) AS INT) => CASTED
+     * @todo This should be replaced by a generated column name.
+     *
+     */
+    @Test
+    public void test004()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    CAST((ra * 6) AS INT)" +
+            " FROM" +
+            "    atlasSource",
+
+            " SELECT TOP 5" +
+            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) AS CASTED" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("CASTED",  AdqlColumn.Type.INTEGER, 0),
+                }
+            );
+        }
+
+    /**
+     * GROUP BY (CAST((ra * 6) AS INT) / 6)
+     *
+     */
+    @Test
+    public void test005()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    COUNT(ra) AS binsize," +
+            "    (CAST((ra * 6) AS INT) / 6) AS binvalue" +
+            " FROM" +
+            "    atlasSource" +
+            " GROUP BY" +
+            "    (CAST((ra * 6) AS INT) / 6)",
+
+            " SELECT TOP 5" +
+            "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS binsize," +
+            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6) AS binvalue" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource" +
+            " GROUP BY" +
+            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6)",
+
+            new ExpectedField[] {
+                new ExpectedField("binsize",  AdqlColumn.Type.LONG,    0),
+                new ExpectedField("binvalue", AdqlColumn.Type.INTEGER, 0),
+                }
+            );
+        }
     }

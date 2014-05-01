@@ -237,7 +237,7 @@ public class ADQLQueryFactory {
 		return new Concatenation();
 	}
 
-	public WrappedOperand createWrappedOperand(ADQLOperand opToWrap) throws Exception {
+	public WrappedOperand createWrappedOperand(ADQLOperand opToWrap) {
 		return new WrappedOperand(opToWrap);
 	}
 
