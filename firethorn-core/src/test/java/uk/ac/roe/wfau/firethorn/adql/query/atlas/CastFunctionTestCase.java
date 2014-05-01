@@ -115,4 +115,60 @@ extends AtlasQueryTestBase
                 }
             );
         }
+
+    /**
+     * CAST((ra * 6) AS INT) AS rasixth
+     *
+     */
+    @Test
+    public void test003()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    CAST((ra * 6) AS INT) AS rasixth," +
+            "    CAST(dec * 6  AS INT) AS decsixth"  +
+            " FROM" +
+            "    atlasSource",
+
+            " SELECT TOP 5" +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.ra  * 6 AS INT) AS rasixth," +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec * 6  AS INT) AS decsixth" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("rasixth",  AdqlColumn.Type.INTEGER, 0),
+                new ExpectedField("decsixth", AdqlColumn.Type.INTEGER, 0)
+                }
+            );
+        }
+    /**
+     * CAST((ra * 6) AS INT)
+     *
+     */
+    @Test
+    public void test004()
+        {
+        validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    CAST((ra * 6) AS INT)" +
+            " FROM" +
+            "    atlasSource",
+
+            " SELECT TOP 5" +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.ra  * 6 AS INT) AS CASTED," +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("CASTED",  AdqlColumn.Type.INTEGER, 0),
+                }
+            );
+        }
     }
