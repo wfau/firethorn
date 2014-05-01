@@ -28,6 +28,7 @@ import adql.db.SearchColumnList;
 import adql.db.SearchTableApi;
 import adql.db.SearchTableList;
 import adql.parser.ParseException;
+import adql.parser.QueryChecker;
 import adql.query.ADQLQuery;
 import adql.query.from.ADQLTable;
 
@@ -38,7 +39,7 @@ import adql.query.from.ADQLTable;
 @Slf4j
 public class MyQueryCheckerImpl
     extends DBChecker
-    implements MyQueryChecker
+    implements QueryChecker
     {
 
     /**
