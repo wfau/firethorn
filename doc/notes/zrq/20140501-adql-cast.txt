@@ -114,7 +114,7 @@
 # Increment the project version.
 #[user@desktop]
 
-    mainversion=1.10.6-dev-SNAPSHOT
+    mainversion=1.10.7-dev-SNAPSHOT
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -256,7 +256,7 @@ EOF
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
     source "${deploylist:?}"
-    ssh -L 9091:localhost:8080 "${ogsauser:?}@${ogsahost}" 
+    ssh -L 9091:localhost:8080 "${ogsauser:?}@${ogsahost:?}" 
 
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
@@ -269,7 +269,7 @@ EOF
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
     source "${deploylist:?}"
-    ssh "${ogsauser:?}@${ogsahost}" 
+    ssh "${ogsauser:?}@${ogsahost:?}" 
 
         webappversion=$(
             sed -n '
@@ -377,47 +377,165 @@ EOF
                 "
 
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT top 10
-                    COUNT(ra),
-                    CAST(ra AS INT) 
+                SELECT
+                   COUNT(*) AS num,
+                   CAST(ROUND(b*6.0,0) AS INT)/6.0 AS lat,
+                   CAST(ROUND(l*6.0,0) AS INT)/6.0 AS lon
                 FROM
-                    atlasSource
+                   atlasSource
                 WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    (dec > -3 AND (dec < -2 OR dec < -3))
+                   (priOrSec=0 OR priOrSec=frameSetID)
                 GROUP BY
-                    CAST(ra AS INT)
+                   CAST(ROUND(l*6.0,0) AS INT)/6.0,
+                   CAST(ROUND(b*6.0,0) AS INT)/6.0
+                ORDER BY
+                    lat, lon
                 "
 
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT top 10
-                    COUNT(ra),
-                    CAST((ra * 6) AS INT) AS rasixth 
+                SELECT
+                   COUNT(*) AS num,
+                   CAST(ROUND(b*60,0) AS INT)/60 AS lat,
+                   CAST(ROUND(l*60,0) AS INT)/60 AS lon
                 FROM
-                    atlasSource
+                   atlasSource
                 WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    (dec > -3 AND (dec < -2 OR dec < -3))
+                   (priOrSec=0 OR priOrSec=frameSetID)
                 GROUP BY
-                    CAST((ra * 6) AS INT)
+                   CAST(ROUND(l*60,0) AS INT)/60,
+                   CAST(ROUND(b*60,0) AS INT)/60
+                ORDER BY
+                    lat, lon
+                "
+
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                   COUNT(*) AS num,
+                   CAST(ROUND(b*60,0) AS INT)/60.0 AS lat,
+                   CAST(ROUND(l*60,0) AS INT)/60.0 AS lon
+                FROM
+                   atlasSource
+                WHERE
+                   (priOrSec=0 OR priOrSec=frameSetID)
+                GROUP BY
+                   CAST(ROUND(l*60,0) AS INT)/60.0,
+                   CAST(ROUND(b*60,0) AS INT)/60.0
+                ORDER BY
+                    lat, lon
                 "
 
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT top 10
-                    COUNT(ra),
-                    CAST((ra * 6) AS INT)
+                SELECT
+                   COUNT(*) AS num,
+                   ROUND(b*60.0,0)/60.0 AS lat,
+                   ROUND(l*60.0,0)/60.0 AS lon
                 FROM
-                    atlasSource
+                   atlasSource
                 WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    (dec > -3 AND (dec < -2 OR dec < -3))
+                   (priOrSec=0 OR priOrSec=frameSetID)
                 GROUP BY
-                    CAST((ra * 6) AS INT)
+                   ROUND(l*60.0,0)/60.0,
+                   ROUND(b*60.0,0)/60.0
+                ORDER BY
+                    lat, lon
                 "
+
 
         popd
     exit
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'BESTDR9'  'best'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'DENIS'    'denis'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'FIRST'    'first'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'GLIMPSE'  'glimpse'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'IRAS'     'iras'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOXMM'   'twoxmm'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'MGC'         'mgc'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'       'roast'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SEGUEDR6'    'segue'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SSA'         'ssa'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'Stripe82'    'stripe'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VHSDR1'      'vhs'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VIKINGDR3'   'viking'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'WISE'        'wise'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+            looptest()
+                {
+                local count=0
+                exec 6<> ${logged} 
+                while read <&6 adql
+                do
+                    let count++
+                    if [[ "${adql}" == '' ]]
+                    then
+                        echo "[${count:?}] SKIP [${adql}]"
+                    else                    
+                        if [[ "${adql}" =~ ^# ]]
+                        then
+                            echo "[${count:?}] SKIP [${adql}]"
+                        else
+                            echo "--------"
+                            echo "[${count:?}] ADQL [${adql}]"
+
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                            
+                            echo "--------"
+                            echo "Pause [${loopwait:?}]"                            
+                            sleep "${loopwait:?}"
+                        fi
+                    fi
+                done
+                echo "Done"
+                exec 6>&-
+                }
+
+loopwait=5
+looptest
 
