@@ -1,0 +1,73 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Close outstanding branches.
+#[user@desktop]
+
+    # 1.10.6-zrq-cast
+    # merged, closed (needs re-closing)
+
+
+    # 1.9.8-zrq-adql-brackets
+    # merged not closed
+
+    # 1.9.6-zrq-ivoa-data
+    # merged, closed (needs re-closing)
+
+
+
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+        
+    popd
+
+
+# -----------------------------------------------------
+# Merge outstanding branches.
+#[user@desktop]
+
+
+        
+    1.10.5-zrq-cast
+        merged, closed
+
+    1.10.5-zrq-interfaces
+        not merged
+
+    1.10.5-zrq-backlog
+        not merged
+
+    1.9.8-zrq-ogsadai-dqp
+        not merged
+        (working DQP)
+
+
+    1.9.6-zrq-community
+        not merged
+
+
