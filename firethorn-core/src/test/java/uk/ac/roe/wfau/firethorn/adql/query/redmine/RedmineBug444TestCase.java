@@ -37,6 +37,8 @@ public class RedmineBug444TestCase
      * Try using nested query to separate ROUND() calculation from the GROUP BY clause.
      * Should work, fails with internal parser error.
      * [AdqlParserImpl] Error parsing query [ADQLColumn with unknown DBLink class [adql.db.DefaultDBColumn]]
+     * Known to fail.
+     * http://redmine.roe.ac.uk/issues/444
      *
      */
     @Test

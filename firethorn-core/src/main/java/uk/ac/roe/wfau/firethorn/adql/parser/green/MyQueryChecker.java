@@ -17,14 +17,78 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser.green;
 
+import java.util.Collection;
+import java.util.HashMap;
+
+import lombok.extern.slf4j.Slf4j;
+
+import adql.db.DBChecker;
+import adql.db.DBTable;
+import adql.db.SearchColumnList;
+import adql.db.SearchTableApi;
+import adql.db.SearchTableList;
+import adql.parser.ParseException;
 import adql.parser.QueryChecker;
+import adql.query.ADQLQuery;
+import adql.query.from.ADQLTable;
 
 /**
  *
  *
  */
-public interface MyQueryChecker
-    extends QueryChecker
+@Slf4j
+public class MyQueryChecker
+    extends DBChecker
+    implements QueryChecker
     {
 
+    /**
+     * Public constructor.
+     * 
+     */
+    public MyQueryChecker()
+        {
+        super();
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public MyQueryChecker(final SearchTableApi list)
+        {
+        super();
+        this.lstTables = list ;
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public MyQueryChecker(final Collection<DBTable> tables)
+        {
+        super(
+            tables
+            );
+        }
+    
+    @Override
+    public void check(final ADQLQuery query) throws ParseException
+        {
+        log.debug("check(ADQLQuery)");
+        super.check(
+            query
+            );
+        }
+
+    @Override
+    public void check(ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException
+        {
+        log.debug("check(ADQLQuery, SearchColumnList, HashMap)");
+        super.check(
+            query,
+            stackColumnList,
+            _mapTables
+            );
+        }
     }

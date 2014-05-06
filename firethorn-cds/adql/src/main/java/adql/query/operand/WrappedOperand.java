@@ -70,7 +70,7 @@ public class WrappedOperand implements ADQLOperand {
 	}
 
 	public String getName() {
-		return "("+operand.getName()+")";
+		return operand.getName();
 	}
 
 	public ADQLIterator adqlIterator(){

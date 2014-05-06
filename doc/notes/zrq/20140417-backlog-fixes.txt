@@ -308,7 +308,7 @@ EOF
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
 
-        # Some issues with directpry permissions.
+        # Some issues with directory permissions.
         # Needed to allow group write to directories on the server.
         # find . -type d -exec chmod g+rws {} \;
 

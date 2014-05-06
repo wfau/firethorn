@@ -67,7 +67,7 @@ public class ArithmeticExpressionTestCase
             "    atlasMergeLog",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS SUM" +
+            "    ({ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum) AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
@@ -113,7 +113,7 @@ public class ArithmeticExpressionTestCase
             "    atlasMergeLog",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum AS mysum" +
+            "    ({ATLAS_VERSION}.dbo.atlasmergelog.genum + {ATLAS_VERSION}.dbo.atlasmergelog.renum) AS mysum" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
@@ -299,7 +299,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS SUM" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class) AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -345,7 +345,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class AS mysum" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.extnum + {ATLAS_VERSION}.dbo.atlasdetection.class) AS mysum" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -531,7 +531,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS SUM" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3) AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -577,7 +577,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3 AS mysum" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.aprof2 + {ATLAS_VERSION}.dbo.atlasdetection.aprof3) AS mysum" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -763,7 +763,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS SUM" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID) AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -809,7 +809,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID AS mysum" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.objID  + {ATLAS_VERSION}.dbo.atlasdetection.multiframeID) AS mysum" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -995,7 +995,7 @@ public class ArithmeticExpressionTestCase
             "    atlasDetection",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux AS SUM" +
+            "    ({ATLAS_VERSION}.dbo.atlasdetection.isoMag + {ATLAS_VERSION}.dbo.atlasdetection.isoFlux) AS SUM" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
@@ -1204,7 +1204,7 @@ public class ArithmeticExpressionTestCase
             "    twomass_psc",
 
             " SELECT TOP 10" +
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS SUM" +
+            "    (TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec) AS SUM" +
             " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 
@@ -1250,7 +1250,7 @@ public class ArithmeticExpressionTestCase
             "    twomass_psc",
 
             " SELECT TOP 10" +
-            "    TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec AS mysum" +
+            "    (TWOMASS.dbo.twomass_psc.ra + TWOMASS.dbo.twomass_psc.dec) AS mysum" +
             " FROM" +
             "    TWOMASS.dbo.twomass_psc",
 

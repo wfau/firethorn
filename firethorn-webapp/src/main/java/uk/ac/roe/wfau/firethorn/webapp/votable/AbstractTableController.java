@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.accessibility.internal.resources.accessibility;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -58,13 +60,26 @@ extends AbstractController
         {
         /**
          * Format the field as a String.
+         * @return The field formatted as a String
          *
          */
         public String format(final ResultSet results)
         throws SQLException;
-        
+
+        /**
+         * The field index in a JDBC ResultSet.
+         * @return The field index.
+         * @see ResultSet#getObject(String)
+         *
+         */
         public String index();
-        
+
+        /**
+         * The ADQL field name.
+         * @return The ADQL field name.
+         * @throws SQLException
+         *
+         */
         public String name()
         throws SQLException;
         }
@@ -91,28 +106,31 @@ extends AbstractController
         private String name;
         @Override
         public String name()
+            {
+            if (this.name == null)
                 {
-                if (this.name == null)
-                    {
-                    this.name = this.column.name();
-                    }
-                return this.name;
+                this.name = this.column.name();
                 }
+            return this.name;
+            }
 
         private String index;
         @Override
         public String index()
+            {
+            if (this.index == null)
                 {
-                if (this.index == null)
-                    {
-                    this.index = this.column.root().name();
-                    }
-                return this.index;
+                this.index = this.column.root().name();
                 }
+            return this.index;
+            }
         }
 
     /**
-     * A simple formatter for objects.
+     * A simple formatter for generic fields, using {@link Object#toString()}.
+     * This should work for numeric data like Integer, Long, Float and Double.
+     * This does *NOT* apply any additional formatting or escaping of the resulting String.
+     * @see Object#toString() 
      *
      */
     public static class SimpleFormatter
@@ -133,12 +151,16 @@ extends AbstractController
                index()
                 ).toString();
             }
-        
-      
         }
 
-    /*
-     * TODO refactor this to use our AdqlParser classes. 
+    /**
+     * Generate a SQL SELECT statement to get all the values from a {@link BaseTable}.  
+     * @todo Refactor this to use our AdqlParser.
+     * @todo Remove the {@link JdbcProductType} param.
+     * 
+     * @param table The {@link BaseTable} to query.
+     * @param type The {@link JdbcProductType} of the database.
+     * @return A {@link String} representation of the SQL {@link Statement}
      *
      */
     public String select(final BaseTable<?,?> table, final JdbcProductType type)
@@ -179,6 +201,16 @@ extends AbstractController
         return builder.toString();
         }
 
+    /**
+     * Add the column name for a {@link BaseColumn}.  
+     * @todo Refactor this to use our AdqlParser.
+     * @todo Remove the {@link JdbcProductType} param.
+     * 
+     * @param builder The {@link StringBuilder} to add the column name to.
+     * @param column The {@link BaseColumn} to query.
+     * @param type The {@link JdbcProductType} of the database.
+     * 
+     */
     public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
         {
     	log.debug("select(StringBuilder, AdqlColumn, JdbcProductType)");
@@ -217,20 +249,20 @@ extends AbstractController
         }
 
     /**
-     * Generate the table header.
-     * 
+     * Write the header for a {@link BaseTable} to a {@link PrintWriter}.
+     * @param writer The {@link PrintWriter} to write the data to.
+     * @param table  The {@link BaseTable}.
+     *
      */
     public abstract void head(final PrintWriter writer, final BaseTable<?,?> table);
         
     /**
-     * Generate the field metadata for a column.
-     * 
-    public abstract void field(final PrintWriter writer, final BaseColumn<?> column);
-     */
-
-    /**
-     * Generate the table rows.
-     * 
+     * Write all the rows from a {@link ResultSet} to a {@link PrintWriter} using a {@link List} of {@link FieldFormatter}s.
+     * This will call {@link ResultSet#next()} to move the {@link ResultSet} cursor to the next row.
+     * @param formatters The {@link List} of {@link FieldFormatter}s to use.
+     * @param writer     The {@link PrintWriter} to write the field to.
+     * @param results    The {@link ResultSet} to get the row from.
+     *
      */
     public void rows(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException
@@ -246,15 +278,21 @@ extends AbstractController
         }
 
     /**
-     * Generate a table row.
-     * 
+     * Write a row from a {@link ResultSet} to a {@link PrintWriter} using a {@link List} of {@link FieldFormatter}s.
+     * @param formatters The {@link List} of {@link FieldFormatter}s to use.
+     * @param writer     The {@link PrintWriter} to write the field to.
+     * @param results    The {@link ResultSet} to get the row from.
+     *
      */
     public abstract void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException;
 
     /**
-     * Generate the table cells.
-     * 
+     * Write all the fields from a {@link ResultSet} to a {@link PrintWriter} using a {@link List} of {@link FieldFormatter}s.
+     * @param formatters The {@link List} of {@link FieldFormatter}s to use.
+     * @param writer     The {@link PrintWriter} to write the field to.
+     * @param results    The {@link ResultSet} to get the fields from.
+     *
      */
     public void cells(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException
@@ -270,35 +308,44 @@ extends AbstractController
         }
 
     /**
-     * Generate a table cell.
-     * 
+     * Write a field from a {@link ResultSet} to a {@link PrintWriter} using a {@link FieldFormatter}.
+     * @param formatter The {@link FieldFormatter} to use to get the field and format it.
+     * @param writer    The {@link PrintWriter} to write the field to.
+     * @param results   The {@link ResultSet} to get the field from.
+     *
      */
     public abstract void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
     throws SQLException;
     
     /**
-     * Generate the table footer.
-     * 
+     * Write the footer for a {@link BaseTable} to a {@link PrintWriter}.
+     * @param writer The {@link PrintWriter} to write the data to.
+     * @param table  The {@link BaseTable}.
+     *
      */
     public abstract void foot(final PrintWriter writer, final BaseTable<?,?> table);
 
     /**
-     * Select a formatter for a field.
+     * Select a matching {@link FieldFormatter} for a {@link BaseColumn}.
+     * @param column The {@link BaseColumn} to check for.
+     * @return The corresponding {@link FieldFormatter}.
      * 
      */
     public abstract FieldFormatter formatter(final BaseColumn<?> column);
 
     /**
-     * Generate the table body.
-     * 
+     * Write the body for a {@link BaseTable} to a {@link PrintWriter}.
+     * @param writer The {@link PrintWriter} to write the data to.
+     * @param table  The {@link BaseTable}.
+     *
      */
-    public void body(final PrintWriter writer, final BaseTable<?,?> base)
+    public void body(final PrintWriter writer, final BaseTable<?,?> table)
         {
         //
         // If the root table is a JDBC table.
-        if (base.root() instanceof JdbcTable)
+        if (table.root() instanceof JdbcTable)
             {
-            final JdbcTable jdbc = (JdbcTable) base.root();
+            final JdbcTable jdbc = (JdbcTable) table.root();
 
             final JdbcProductType type  = jdbc.resource().connection().type();
             final Connection connection = jdbc.resource().connection().open();
@@ -326,7 +373,7 @@ extends AbstractController
                     );
                 final ResultSet results = statement.executeQuery(
                     select(
-                        base,
+                        table,
                         type
                         )
                     );
@@ -335,7 +382,7 @@ extends AbstractController
                 //final int colcount = colmeta.getColumnCount();
 
                 final List<FieldFormatter> formatters = new ArrayList<FieldFormatter>();
-                for (final BaseColumn<?> column : base.columns().select())
+                for (final BaseColumn<?> column : table.columns().select())
                     {
                     formatters.add(
                         formatter(
@@ -378,15 +425,17 @@ extends AbstractController
                 }
             }
         else {
-            log.error("Unable to process root table type [{}]", base.root().getClass().getName());
+            log.error("Unable to process root table type [{}]", table.root().getClass().getName());
             }
         }
     
     /**
-     * Generate the table.
+     * Write the contents of a {@link BaseTable} to a {@link PrintWriter}.
+     * @param writer The {@link PrintWriter} to write the data to.
+     * @param table  The {@link BaseTable}.
      *
      */
-    public void table(final PrintWriter writer, final BaseTable<?,?> table) 
+    public void write(final PrintWriter writer, final BaseTable<?,?> table) 
         {
         head(writer, table);
         body(writer, table);

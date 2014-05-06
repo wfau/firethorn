@@ -177,7 +177,7 @@ public class Operation implements ADQLOperand {
 	}
 
 	public String getName() {
-		return operation.toString();
+		return operation.name();
 	}
 
 	public ADQLIterator adqlIterator(){

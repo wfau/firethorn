@@ -32,6 +32,12 @@ public class UserFunctionTestCase
 extends AtlasQueryTestBase
     {
 
+	/**
+	 * UDF should have fully qualified JDBC name.
+	 * Known to fail.
+	 * http://redmine.roe.ac.uk/issues/496
+	 *
+	 */
     @Test
     public void test001()
     throws Exception
@@ -60,6 +66,12 @@ extends AtlasQueryTestBase
         }
 
 
+	/**
+	 * UDF should have fully qualified JDBC name.
+	 * Known to fail.
+	 * http://redmine.roe.ac.uk/issues/496
+	 *
+	 */
     @Test
     public void test002()
     throws Exception

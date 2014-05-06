@@ -170,6 +170,8 @@ extends AtlasQueryTestBase
     /**
      * TODO
      * Test query Subquery in Where - returns 32378 rows
+     * Known to fail, waiting for parser fix.
+     * http://redmine.roe.ac.uk/issues/442
      *
      *  Query:
      *  Select DistanceMins From atlassourcexDR7photoobj as CrossMatch

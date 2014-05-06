@@ -35,7 +35,7 @@ implements Community.LinkFactory
     protected CommunityLinkFactory()
         {
         super(
-            BASE_PATH
+            SERVICE_PATH
             );
         }
 
@@ -43,13 +43,13 @@ implements Community.LinkFactory
      * The URI path for the service.
      *
      */
-    protected static final String BASE_PATH = "/community" ;
+    protected static final String SERVICE_PATH = "/community" ;
 
     /**
      * The URI path for individual columns.
      *
      */
-    public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final Community entity)

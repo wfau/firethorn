@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryCheckerImpl;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
 import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
@@ -64,7 +64,9 @@ import adql.query.operand.NumericConstant;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
+import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
@@ -117,7 +119,7 @@ implements AdqlParser
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
-            new MyQueryCheckerImpl(
+            new MyQueryChecker(
                 new MySearchTableList(
                     schema.resource(),
                     factory,
@@ -530,7 +532,8 @@ implements AdqlParser
                 AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
-            log.warn("Error parsing query [{}]", ouch.getMessage());
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
             }
         catch (final AdqlParserException ouch)
             {
@@ -538,7 +541,8 @@ implements AdqlParser
                 AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
-            log.warn("Error parsing query [{}]", ouch.getMessage());
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
             }
         catch (final TranslationException ouch)
             {
@@ -1131,7 +1135,7 @@ implements AdqlParser
         }
 
     /**
-     * Inner class to wrap a SelectField with an optional change of name.
+     * Inner class to wrap a SelectField with an optional change of name and type.
      *
      */
     public static class MySelectFieldWrapper
@@ -1141,13 +1145,24 @@ implements AdqlParser
             {
             this(
                 field.name(),
+                field.type(),
                 field
                 );
             }
 
         private MySelectFieldWrapper(final String name, final MySelectField field)
+        	{
+            this(
+	            name,
+                field.type(),
+	            field
+	            );
+        	}
+
+        private MySelectFieldWrapper(final String name, final AdqlColumn.Type type, final MySelectField field)
             {
             this.name  = name  ;
+            this.type  = type  ;
             this.field = field ;
             }
 
@@ -1155,7 +1170,26 @@ implements AdqlParser
         @Override
         public String name()
             {
-            return this.name;
+        	if (this.name != null)
+        		{
+        		return this.name;
+        		}
+        	else {
+        		return field().name();
+        		}
+            }
+
+        private final AdqlColumn.Type type;
+        @Override
+        public AdqlColumn.Type type()
+            {
+        	if (this.type != null)
+        		{
+        		return this.type;
+        		}
+        	else {
+        		return field().type();
+        		}
             }
 
         private final MySelectField field;
@@ -1168,12 +1202,6 @@ implements AdqlParser
         public Integer arraysize()
             {
             return this.field.arraysize();
-            }
-
-        @Override
-        public AdqlColumn.Type type()
-            {
-            return this.field.type();
             }
         }
 
@@ -1341,6 +1369,12 @@ implements AdqlParser
             {
             return null;
             }
+        else if (operand instanceof WrappedOperand)
+	        {
+	        return type(
+        		((WrappedOperand) operand).getOperand()
+        		);
+	        }
         else if (operand instanceof StringConstant)
             {
             return AdqlColumn.Type.CHAR;
@@ -1385,7 +1419,16 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        if (oper instanceof StringConstant)
+        if (oper instanceof WrappedOperand)
+	        {
+            return new MySelectOperWrapper(
+                oper,
+                type(
+                    (WrappedOperand)oper
+                    )
+                );
+	        }
+        else if (oper instanceof StringConstant)
             {
             return new MySelectOperWrapper(
                 oper,
@@ -1681,6 +1724,10 @@ implements AdqlParser
             {
             return type((MathFunction) funct);
             }
+        else if (funct instanceof CastFunction)
+	        {
+	        return type((CastFunction) funct);
+	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return type((UserDefinedFunction) funct);
@@ -1711,6 +1758,10 @@ implements AdqlParser
             {
             return wrap((MathFunction) funct);
             }
+        else if (funct instanceof CastFunction)
+	        {
+	        return wrap((CastFunction) funct);
+	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return wrap((UserDefinedFunction) funct);
@@ -1870,6 +1921,41 @@ implements AdqlParser
         }
 
     /**
+     * Get the type of a CastFunction.
+     *
+     */
+    public static AdqlColumn.Type type(final CastFunction funct)
+    throws AdqlParserException
+        {
+        log.debug("type(CastFunction)");
+        switch(funct.type())
+        	{
+        	case SHORT:
+        	case SMALLINT:
+        		return AdqlColumn.Type.SHORT;
+        	
+        	case INT :
+        	case INTEGER :
+        		return AdqlColumn.Type.INTEGER;
+
+        	case LONG:
+        	case BIGINT:
+        		return AdqlColumn.Type.LONG;
+
+        	case FLOAT:
+        		return AdqlColumn.Type.FLOAT;
+
+        	case DOUBLE:
+        		return AdqlColumn.Type.DOUBLE;
+
+        	default :
+                throw new AdqlParserException(
+                    "Unknown CastFunction type [" + funct.type() + "]"
+                    );
+        	}
+        }
+
+    /**
      * Wrap a MathFunction.
      *
      */
@@ -1938,6 +2024,42 @@ implements AdqlParser
             }
         }
 
+    /**
+     * Wrap a CastFunction.
+     *
+     */
+    public static MySelectField wrap(final CastFunction funct)
+    throws AdqlParserException
+        {
+        log.debug("wrap(castFunction)");
+        log.debug("  name   [{}]", funct.type());
+
+        final ADQLOperand inner = funct.oper(); 
+        if (inner instanceof ADQLColumn)
+        	{
+            return new MySelectFieldWrapper(
+                inner.getName(),
+                type(
+            		funct
+            		),
+                wrap(
+                    funct.oper()
+                    )
+                );
+        	}
+        else {
+            return new MySelectFieldWrapper(
+                "CASTED",
+                type(
+            		funct
+            		),
+                wrap(
+                    funct.oper()
+                    )
+                );
+        	}
+        
+        }
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *

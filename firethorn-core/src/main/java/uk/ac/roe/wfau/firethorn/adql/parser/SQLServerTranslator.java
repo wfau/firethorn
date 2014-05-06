@@ -36,7 +36,9 @@ import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
@@ -99,10 +101,10 @@ public class SQLServerTranslator
      * Get the schema name
      *
      * @return String schemaName
-     */
     public String getSchemaName(){
     	return schemaName;
     }
+     */
 
     /**
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
@@ -252,7 +254,6 @@ public class SQLServerTranslator
 		    );
         }
 
-
 	/**
 	 * Gets the default SQL output for the given ADQL function.
 	 *
@@ -275,7 +276,7 @@ public class SQLServerTranslator
             // TODO Check the function schema.
             if (true)
                 {
-                builder.append(this.getSchemaName());
+                builder.append(this.schemaName);
                 builder.append(".");
                 }
             }
@@ -301,6 +302,44 @@ public class SQLServerTranslator
 		return builder.toString();
         }
 
+    @Override
+    public String translate(final ADQLFunction function)
+    throws TranslationException
+		{
+    	if (function instanceof CastFunction)
+    		{
+    		return translate(
+				(CastFunction) function
+				);
+    		}
+    	else {
+    		return super.translate(
+				function
+				);
+    		}
+		}
+
+    public String translate(final CastFunction function)
+    throws TranslationException
+    	{
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append("CAST");
+        builder.append("(");
+        builder.append(
+    		translate(
+				function.oper()
+				)
+    		);
+        builder.append(" AS ");
+        builder.append(
+    		function.type().name()
+    		);
+        builder.append(")");
+
+        return builder.toString();
+    	}
+    
     /**
      * Override the PostgreSQLTranslator method ...
      *

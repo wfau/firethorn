@@ -1,0 +1,788 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    echo "${sqluser:?}@${sqlhost:?}"
+    ssh  "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=SHEP010910TEST
+
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/sqlserver.properties"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${devhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${devpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                #sqlsed 'delete-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                #sqlsed 'delete-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                #sqlsed 'delete-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${devhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${devpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                #sqlsed 'delete-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                #sqlsed 'delete-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                #sqlsed 'delete-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Fetch the current test properties.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    scp "${fireuser:?}@${firehost:?}:firethorn.properties" "${deployprop:?}"
+
+# -----------------------------------------------------------------------------------
+# Update our deployment properties
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    gedit "${deployprop:?}" &
+
+    ~    firethorn.meta.url=jdbc:jtds:sqlserver://ramses2:1433/....
+    ~    firethorn.meta.user=....
+    ~    firethorn.meta.pass=....
+
+    ~    firethorn.user.url=jdbc:jtds:sqlserver://ramses2:1433/....
+    ~    firethorn.user.user=....
+    ~    firethorn.user.pass=....
+
+    ~    firethorn.atlas.url=jdbc:jtds:sqlserver://ramses2:1433/ATLASDR1
+
+# ------------------------------------------------
+# Deploy our deployment properties
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# ----------------------------------------------------
+# Tail the FireThorn Tomcat log.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L 9092:localhost:8080 "${fireuser:?}@${firehost:?}"
+
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+# ----------------------------------------------------
+# Tail the OGSADAI Tomcat log.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L 9093:localhost:8080 "${ogsauser:?}@${ogsahost}" 
+
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+# ----------------------------------------------------
+# Restart the FireThorn webapp.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        ~/shutdown.sh
+        sleep 30
+        ~/startup.sh
+
+    exit
+    
+# ----------------------------------------------------
+# Restart the FireThorn webapp.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        contextpath=$(
+            sed -n '
+                s/firethorn.ogsadai.context=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+
+        ~/shutdown.sh
+        sleep 30
+        ~/startup.sh
+
+    exit
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            datetime=$(date +%Y%m%d%H%M%S)
+            cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+jdbcspace=${jdbcspace:?}
+adqlspace=${adqlspace:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131127_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasprotected=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR8'        'dbo' "${FIRETHORN_META:?}/BESTDR8_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'        'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
+            
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SEGUEDR6'       'dbo' "${FIRETHORN_META:?}/SEGUEDR6_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'Stripe82'       'dbo' "${FIRETHORN_META:?}/Stripe82_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+          # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR3'      'dbo' "${FIRETHORN_META:?}/VIKINGDR3_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
+
+            ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+    
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Configure Python service.
+# need to be member of group 'users'
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+
+atlasschema=http://pyratest2:8080/firethorn/adql/schema/3407921
+atlasprivate=http://pyratest2:8080/firethorn/adql/schema/3407922
+firethorn_base=http://pyratest2:8080/firethorn
+
+
+        -   adqlspace=http://pyratest2:8080/firethorn/adql/resource/3276802
+        ~   adqlspace=http://pyratest2:8080/firethorn/adql/resource/32770
+        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/163889
+        ~   atlasprivate=http://pyratest2:8080/firethorn/adql/schema/163890
+        ~   firethorn_base=http://pyratest2:8080/firethorn
+
+    exit
+
+adqlspace=/adql/resource/32770
+atlaspublic=/adql/schema/163844
+
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+           #adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+            source "${HOME:?}/firethorn.spaces"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test query workspace'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000000 ra, dec FROM atlassource"
+
+            #12278
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    ((dec > -3 AND dec < -2) OR dec < -3)
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND dec < -2 OR dec < -3)
+                "
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'BESTDR9'  'best'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'DENIS'    'denis'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'FIRST'    'first'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'GLIMPSE'  'glimpse'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'IRAS'     'iras'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOXMM'   'twoxmm'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'MGC'         'mgc'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'       'roast'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SEGUEDR6'    'segue'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SSA'         'ssa'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'Stripe82'    'stripe'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VHSDR1'      'vhs'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VIKINGDR3'   'viking'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'WISE'        'wise'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+            looptest()
+                {
+                local count=0
+                exec 6<> ${logged} 
+                while read <&6 adql
+                do
+                    let count++
+                    if [[ "${adql}" == '' ]]
+                    then
+                        echo "[${count:?}] SKIP [${adql}]"
+                    else                    
+                        if [[ "${adql}" =~ ^# ]]
+                        then
+                            echo "[${count:?}] SKIP [${adql}]"
+                        else
+                            echo "--------"
+                            echo "[${count:?}] ADQL [${adql}]"
+
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                            
+                            echo "--------"
+                            echo "Pause [${loopwait:?}]"                            
+                            sleep "${loopwait:?}"
+                        fi
+                    fi
+                done
+                echo "Done"
+                exec 6>&-
+                }
+
+loopwait=5
+looptest
+
+# -----------------------------------------------------
+# Meanwhile ... checking for UKIDSS neighbours.
+#
+
+
+    The live Atlas FireThorn service is configured to use ramses 6 to access the following catalogs 
+
+        ATLASDR1
+        ATLASv20131127
+        BESTDR5
+        BESTDR7
+        BESTDR8
+        BESTDR9
+        DENIS
+        FIRST
+        GLIMPSE
+        IRAS
+        MGC
+        ROSAT
+        SEGUEDR6
+        SSA
+        STRIPE82
+        TWOMASS
+        TWOXMM
+        VHSDR1
+        VIKINGDR2
+        VIKINGDR3
+        WISE
+
+    The live Atlas FireThorn service is configured to use ramses 2 to access the following catalogs 
+
+        ATLASDR1
+        TWOMASS
+
+    If we restrict our 'stress' tests to use the local copies of ATLASDR1 and TWOMASS, can we have read only mounts on ramses 2 to the rest.
+
+
+    Based on data from the required neigbours table in UKIDSS DR9
+
+        USE [UKIDSSDR9PLUS]
+        go
+        
+        SELECT
+            neighbourTable
+        FROM
+            dbo.RequiredNeighbours
+        WHERE 
+            neighbourTable LIKE 'dxs%'
+        OR 
+            neighbourTable LIKE 'gcs%'
+        OR 
+            neighbourTable LIKE 'gcs%'
+        OR 
+            neighbourTable LIKE 'gps%'                                                                                                                             
+        OR 
+            neighbourTable LIKE 'las%'
+        OR 
+            neighbourTable LIKE 'uds%'
+        ORDER BY
+            neighbourTable
+
+
+	    dxsSourceNeighbours                                                                                                                                  
+	    dxsSourceXDetection                                                                                                                                  
+	    dxsSourceXDR7PhotoObj                                                                                                                                
+	    dxsSourceXDR8PhotoObj                                                                                                                                
+	    dxsSourceXGR6PhotoObjAll                                                                                                                             
+	    dxsSourceXSSASource                                                                                                                                  
+	    dxsSourceXStripe82PhotoObjAll                                                                                                                        
+	    dxsSourceXtwomass_psc                                                                                                                                
+	    dxsSourceXtwoxmm                                                                                                                                     
+	    dxsSourceXwise_prelimsc                                                                                                                              
+	    gcsSourceNeighbours                                                                                                                                  
+	    gcsSourceXDR5PhotoObj                                                                                                                                
+	    gcsSourceXDR7PhotoObj                                                                                                                                
+	    gcsSourceXDR8PhotoObj                                                                                                                                
+	    gcsSourceXGR6PhotoObjAll                                                                                                                             
+	    gcsSourceXSSASource                                                                                                                                  
+	    gcsSourceXtwomass_psc                                                                                                                                
+	    gcsSourceXtwoxmm                                                                                                                                     
+	    gcsSourceXwise_prelimsc                                                                                                                              
+	    gpsSourceNeighbours                                                                                                                                  
+	    gpsSourceXglimpse_hrc_inter                                                                                                                          
+	    gpsSourceXglimpse_mca_inter                                                                                                                          
+	    gpsSourceXglimpse1_hrc                                                                                                                               
+	    gpsSourceXglimpse1_mca                                                                                                                               
+	    gpsSourceXglimpse2_hrc                                                                                                                               
+	    gpsSourceXglimpse2_mca                                                                                                                               
+	    gpsSourceXGR6PhotoObjAll                                                                                                                             
+	    gpsSourceXSSASource                                                                                                                                  
+	    gpsSourceXtwomass_psc                                                                                                                                
+	    gpsSourceXtwoxmm                                                                                                                                     
+	    gpsSourceXwise_prelimsc                                                                                                                              
+	    lasSourceNeighbours                                                                                                                                  
+	    lasSourceXDR2PhotoObj                                                                                                                                
+	    lasSourceXDR3PhotoObj                                                                                                                                
+	    lasSourceXDR5PhotoObj                                                                                                                                
+	    lasSourceXDR5PhotoObjAll                                                                                                                             
+	    lasSourceXDR7PhotoObj                                                                                                                                
+	    lasSourceXDR7PhotoObjAll                                                                                                                             
+	    lasSourceXDR8PhotoObj                                                                                                                                
+	    lasSourceXDR8PhotoObjAll                                                                                                                             
+	    lasSourceXfirstSource                                                                                                                                
+	    lasSourceXGR6PhotoObjAll                                                                                                                             
+	    lasSourceXiras_psc                                                                                                                                   
+	    lasSourceXmgcDetection                                                                                                                               
+	    lasSourceXnvssSource                                                                                                                                 
+	    lasSourceXrosat_bsc                                                                                                                                  
+	    lasSourceXrosat_fsc                                                                                                                                  
+	    lasSourceXSegueDR6PhotoObj                                                                                                                           
+	    lasSourceXSegueDR6PhotoObjAll                                                                                                                        
+	    lasSourceXSSASource                                                                                                                                  
+	    lasSourceXStripe82PhotoObjAll                                                                                                                        
+	    lasSourceXtwomass_psc                                                                                                                                
+	    lasSourceXtwomass_xsc                                                                                                                                
+	    lasSourceXtwoxmm                                                                                                                                     
+	    lasSourceXwise_prelimsc                                                                                                                              
+	    udsSourceNeighbours                                                                                                                                  
+	    udsSourceXDetection                                                                                                                                  
+	    udsSourceXGR6PhotoObjAll                                                                                                                             
+	    udsSourceXSSASource                                                                                                                                  
+	    udsSourceXtwomass_psc                                                                                                                                
+	    udsSourceXtwoxmm                                                                                                                                     
+	    udsSourceXwise_prelimsc                                                                                                                              
+ 
+    The 'Database Release' options on the WSA FreeFormSQL page include the following:
+    http://surveys.roe.ac.uk:8080/wsa/SQL_form.jsp 
+ 
+        UKIDSSDR9PLUS
+        UKIDSSDR8PLUS
+        UKIDSSDR7PLUS
+        UKIDSSDR6PLUS
+        UKIDSSDR5PLUS
+        UKIDSSDR4PLUS
+        UKIDSSDR3PLUS
+        UKIDSSDR2PLUS
+        UKIDSSDR1PLUS
+        UKIDSSDR1
+        UKIDSSEDRPLUS
+        UKIDSSEDR
+        UKIDSSSV
+        WFCAMCAL08B
+
+
+
+
+        USE [UKIDSSDR9PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR8PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR7PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR6PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR5PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR4PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR3PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR2PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR1PLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSDR1]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSEDRPLUS]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSEDR]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        USE [UKIDSSSV]
+        go
+        SELECT neighbourTable FROM RequiredNeighbours ORDER BY neighbourTable
+        go  | tee -a /tmp/neighbours.txt
+
+        #WFCAMCAL08B
+
+    # Resulting list of catalogs ..
+    
+        DR2
+        DR3
+        DR5
+        DR7
+        DR8
+
+        firstSource
+
+        glimpse
+        glimpse1
+        glimpse2
+
+        GR6
+
+        iras_psc
+
+        rosat
+
+        SSASource
+        Stripe82
+        SynopticSource
+
+        twomass
+        twoxmm
+
+        ukirtFSstars
+        usnob
+        wise
+
+
+
+

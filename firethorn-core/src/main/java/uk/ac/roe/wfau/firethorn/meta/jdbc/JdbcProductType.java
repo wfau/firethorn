@@ -29,7 +29,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Known database types, indexed by the product name in DatabaseMetaData.getDatabaseProductName()
+ * Enumeration of known database types, indexed by the product name in DatabaseMetaData.getDatabaseProductName()
+ * @todo Refactor this as an interface, allowing TAP services t have a ProductType.
  *
  */
 @Slf4j
@@ -73,6 +74,12 @@ public enum JdbcProductType
         new String[]{}
         );
 
+    /**
+     * Private constructor.
+     * @param mname  The metadata name.
+     * @param schema The default schema name.
+     *
+     */
     private JdbcProductType(final String mname, final String schema)
         {
         this(
@@ -81,6 +88,14 @@ public enum JdbcProductType
             null
             );
         }
+
+    /**
+     * Private constructor.
+     * @param mname  The metadata name.
+     * @param schema The default schema name.
+     * @param ignores A list of 'system' schema to ignore.
+     *
+     */
     private JdbcProductType(final String mname, final String schema, final String[] ignores)
         {
         this.mname  = mname;
@@ -143,6 +158,10 @@ public enum JdbcProductType
         return this.ignore;
         }
 
+    /**
+     * A shared {@link Map} of {@link String} to {@link JdbcProductType}.
+     *  
+     */
     static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
     static {
         for (final JdbcProductType type : JdbcProductType.values())
@@ -154,12 +173,18 @@ public enum JdbcProductType
             }
         }
 
-    static public JdbcProductType match(final String alias)
+    /**
+     * Search the shared {@link Map} for a {@link JdbcProductType} based on its name. 
+     * @param mname The name of the {@link JdbcProductType} to look for.
+     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#UNKNOWN} if no match was found. 
+     *
+     */
+    static public JdbcProductType match(final String mname)
         {
-        if (mapping.containsKey(alias))
+        if (mapping.containsKey(mname))
             {
             return mapping.get(
-                alias
+                mname
                 );
             }
         else {
@@ -167,6 +192,12 @@ public enum JdbcProductType
             }
         }
 
+    /**
+     * Search the shared {@link Map} for a {@link JdbcProductType} based on the name given by {@link DatabaseMetaData#getDatabaseProductName}. 
+     * @param metadata The {@link DatabaseMetaData} to match the {@link JdbcProductType} name with.
+     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#UNKNOWN} if no match was found. 
+     *
+     */
     static public JdbcProductType match(final DatabaseMetaData metadata)
         {
         if (metadata != null)
@@ -188,8 +219,10 @@ public enum JdbcProductType
         }
 
     /**
-     * Get the JDBC type for an ADQL type.
-     * This defaults to calling jdbc() on the AdqlColumn.Type.
+     * Get the corresponding {@link JdbcColumn.Type} for an {@link AdqlColumn.Type}.
+     * This defaults to calling {@link AdqlColumn.Type#jdbc()} on the {@link AdqlColumn.Type}.
+     * @param type The {@link AdqlColumn.Type} to check for.
+     * @return The corresponding {@link JdbcColumn.Type}.
      *
      */
     public JdbcColumn.Type jdbctype(final AdqlColumn.Type type)
@@ -198,8 +231,10 @@ public enum JdbcProductType
         }
 
     /**
-     * Get the JDBC size/precision for an ADQL type.
-     * This defaults to finding the corresponding JdbcColumn.Type and getting the size for that..
+     * Get the JDBC size/precision for an {@link AdqlColumn.Type}.
+     * This defaults to finding the corresponding {@link JdbcColumn.Type} and calling {@link JdbcColumn.Type#sqlsize()} to get the size from it.
+     * @param type The {@link AdqlColumn.Type} to check for.
+     * @return The JDBC size/precision .
      *
      */
     public Integer jdbcsize(final AdqlColumn.Type type)
@@ -212,13 +247,14 @@ public enum JdbcProductType
         }
 
     /**
-     * Get the JDBC size/precision for a JDBC type.
-     * This defaults to calling sqlsize() on the JdbcColumn.Type.
+     * Get the JDBC size/precision for an {@link JdbcColumn.Type}.
+     * This defaults calling {@link JdbcColumn.Type#sqlsize()}.
+     * @param type The {@link JdbcColumn.Type} to get the size from.
+     * @return The JDBC size/precision .
      *
      */
     public Integer jdbcsize(final JdbcColumn.Type type)
         {
         return type.sqlsize();
         }
-
     }
