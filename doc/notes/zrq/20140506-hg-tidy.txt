@@ -49,13 +49,15 @@
     popd
 
 # -----------------------------------------------------
+# Create a deployable release.
+#[user@desktop]
+
+    ....
+
+# -----------------------------------------------------
 # Merge outstanding branches.
 #[user@desktop]
 
-
-        
-    1.10.5-zrq-cast
-        merged, closed
 
     1.10.5-zrq-interfaces
         not merged
@@ -65,10 +67,11 @@
 
     1.9.8-zrq-ogsadai-dqp
         not merged
-        (working DQP)
-
 
     1.9.6-zrq-community
         not merged
+
+
+
 
 

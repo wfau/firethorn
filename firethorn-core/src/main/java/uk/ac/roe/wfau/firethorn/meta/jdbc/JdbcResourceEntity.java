@@ -344,6 +344,8 @@ public class JdbcResourceEntity
                 return result ;
                 }
 
+            /*          
+             * removed 20140507
             @Override
             public Iterable<JdbcSchema> select(final Identity identity)
                 {
@@ -352,7 +354,8 @@ public class JdbcResourceEntity
                     identity
                     );
                 }
-
+             */
+            
             @Override
             public JdbcSchema search(final String name)
                 {

@@ -121,9 +121,10 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Select the schemas owned by an Identity.
+         * removed 20140507
          *
-         */
         public Iterable<JdbcSchema> select(final Identity identity);
+         */
 
         /**
          * Scan the JDBC metadata.
