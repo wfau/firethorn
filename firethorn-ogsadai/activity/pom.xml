@@ -61,6 +61,11 @@
     </modules>
     
     <properties>
+        <!--+
+            | Compile for 1.6 because live server is TC6 in Jdk 1.6
+            +-->
+        <project.javaversion>1.6</project.javaversion>
+
     </properties>
 
 </project>

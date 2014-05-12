@@ -1,0 +1,669 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Using latest release branch.
+#[user@desktop]
+
+    newrelease=1.10.9-release
+    newversion=1.10.9-alpha
+
+# -------------------------------------------------------------------------------------------
+# Check the location of the metadata and userdata databases.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+        source "${HOME:?}/firethorn.settings"
+
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}"
+
+
+            USE master
+            go
+
+            SELECT
+                name,
+                physical_name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadata%'
+            ORDER BY 
+                name
+            go
+
+            +----------------------------------------+------------------------------------------------------------------------------------------------------------------
+                FirethornMetadataDave0109DEV            J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDave0109DEV.mdf
+                FirethornMetadataDave0109DEV_log        J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDave0109DEV_log.ldf
+                FirethornMetadataDjer0108Beta04         J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDjer0108Beta04.mdf
+                FirethornMetadataDjer0108Beta04_log     J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDjer0108Beta04_log.ldf
+                FirethornMetadataDjer0108LIVE           J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDjer0108LIVE.mdf
+                FirethornMetadataDjer0108LIVE_log       J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataDjer0108LIVE_log.ldf
+                FirethornMetadataDJER010910LIVE         C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataDJER010910LIVE.mdf
+                FirethornMetadataDJER010910LIVE_log     C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataDJER010910LIVE_log.ldf
+                FirethornMetadataShep0108Beta04         J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0108Beta04.mdf
+                FirethornMetadataShep0108Beta04_log     J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0108Beta04_log.ldf
+                FirethornMetadataShep0108TEST           J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0108TEST.mdf
+                FirethornMetadataShep0108TEST_log       J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0108TEST_log.ldf
+                FirethornMetadataSHEP010910TEST         C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataSHEP010910TEST.mdf
+                FirethornMetadataSHEP010910TEST_log     C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataSHEP010910TEST_log.ldf
+                FirethornMetadataShep0109TEST           J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0109TEST.mdf
+                FirethornMetadataShep0109TEST_log       J:\Dave\SQLServer\firethorn\metadata\FirethornMetadataShep0109TEST_log.ldf
+                FirethornMetadataSTV0109DEV             C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataSTV0109DEV.mdf
+                FirethornMetadataSTV0109DEV_log         C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataSTV0109DEV_log.ldf
+                FirethornMetadataZRQ0109DEV             C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataZRQ0109DEV.mdf
+                FirethornMetadataZRQ0109DEV_log         C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadataZRQ0109DEV_log.ldf            
+            +----------------------------------------+------------------------------------------------------------------------------------------------------------------
+
+        quit
+
+        #
+        # Create sqsh properties to assign the correct paths for test and live.
+        vi "${HOME:?}/sqshlive.properties"
+
+            sqshtype=live
+            sqshhost=ramses9
+            sqshuser=####
+            sqshpass=####
+            sqshpath='J:\\Dave\\SQLServer\\firethorn'
+
+        vi "${HOME:?}/sqshtest.properties"
+
+            sqshtype=test
+            sqshhost=ramses2
+            sqshuser=####
+            sqshpass=####
+            sqshpath='G:\\Dave\\SQLServer\\firethorn'
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=DJER011009LIVE
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Set the master properties
+        sqshtype=live
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------------------------------------
+# Fetch a copy of the current deployment properties
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    scp "${fireuser:?}@${firehost:?}:firethorn.properties" "${deployprop:?}"
+
+# -----------------------------------------------------------------------------------
+# Update our deployment properties
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    newversion=1.10.9-alpha
+
+    sed -i '
+        s/^firethorn.version=.*$/firethorn.version='${newversion:?}'/
+        ' "${deployprop:?}"
+
+    gedit "${deployprop:?}" &
+
+        firethorn.meta.url=xxxxx
+        firethorn.meta.user=xxxx
+        firethorn.meta.pass=xxxx
+
+        firethorn.user.url=xxxxx
+        firethorn.user.user=xxxx
+        firethorn.user.pass=xxxx
+
+# ------------------------------------------------
+# Deploy our deployment properties
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    for vmname in "${vmlist[@]:?}"
+    do
+        echo "---------"
+        read -p "Update   [${vmname:?}] (Y/n)" confirm
+        case ${confirm:-'y'} in
+            y|Y)
+                echo "Updating [${vmname:?}]"
+                ssh "${vmuser:?}@${vmname:?}" 'cp -f "firethorn.properties" "firethorn.properties-$(date +%Y%m%d%H%M%S)"'
+                scp "${deployprop:?}" "${vmuser:?}@${vmname:?}:firethorn.properties"
+                ;;
+            *)
+                echo "Skipping [${vmname:?}]"
+                ;;
+        esac        
+    done
+
+# ----------------------------------------------------
+# Tail the FireThorn Tomcat log.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L 9092:localhost:8080 "${fireuser:?}@${firehost:?}"
+
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+# ----------------------------------------------------
+# Deploy FireThorn webapp.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+        
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+    exit
+
+# ----------------------------------------------------
+# Tail the OGSADAI Tomcat log.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -L 9093:localhost:8080 "${ogsauser:?}@${ogsahost}" 
+
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+#----------------------------------------------------
+# Deploy the OGSADAI webapp.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost}" 
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-ogsadai-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+        echo "Version [${webappversion:?}]"
+
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+            wget "${downloadurl:?}"
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=$(
+            sed -n '
+                s/firethorn.ogsadai.context=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Configure the webapp
+        source "${HOME:?}/bin/jdbc-functions.sh"
+        pushd "${HOME:?}/tomcat/webapps/${contextpath:?}/WEB-INF/etc/dai"
+
+            jdbcconfig atlas    firethorn.atlas
+            jdbcconfig wfau     firethorn.wfau
+            jdbcconfig userdata firethorn.user
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            datetime=$(date +%Y%m%d%H%M%S)
+            cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+jdbcspace=${jdbcspace:?}
+adqlspace=${adqlspace:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131127_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasprotected=${adqlschema:?}
+EOF
+
+            ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+            cat "${HOME:?}/firethorn.spaces"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR8'        'dbo' "${FIRETHORN_META:?}/BESTDR8_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'        'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
+            
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SEGUEDR6'       'dbo' "${FIRETHORN_META:?}/SEGUEDR6_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'Stripe82'       'dbo' "${FIRETHORN_META:?}/Stripe82_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+
+          # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR3'      'dbo' "${FIRETHORN_META:?}/VIKINGDR3_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
+
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Configure Python service.
+# (need to be member of group 'users')
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
+        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/163890
+        ~   atlasprivate=http://coccinea:8080/firethorn/adql/schema/163891
+        ~   firethorn_base=http://coccinea:8080/firethorn
+
+    exit
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'BESTDR9'  'best'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'DENIS'    'denis'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'FIRST'    'first'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'GLIMPSE'  'glimpse'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'IRAS'     'iras'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOXMM'   'twoxmm'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'MGC'         'mgc'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'       'roast'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SEGUEDR6'    'segue'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'SSA'         'ssa'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'Stripe82'    'stripe'
+##          source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VHSDR1'      'vhs'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'VIKINGDR3'   'viking'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'WISE'        'wise'
+
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    twomass_psc
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT top 10
+                    CAST(ra AS INT) 
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                "
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT top 10
+                    COUNT(ra),
+                    CAST(ra AS INT) 
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                GROUP BY
+                    CAST(ra AS INT)
+                "
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT top 10
+                    COUNT(ra),
+                    CAST((ra * 6) AS INT) AS rasixth 
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                GROUP BY
+                    CAST((ra * 6) AS INT)
+                "
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT top 10
+                    COUNT(ra),
+                    CAST((ra * 6) AS INT)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                GROUP BY
+                    CAST((ra * 6) AS INT)
+                "
+
+            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+            looptest()
+                {
+                local count=0
+                exec 6<> ${logged} 
+                while read <&6 adql
+                do
+                    let count++
+                    if [[ "${adql}" == '' ]]
+                    then
+                        echo "[${count:?}] SKIP [${adql}]"
+                    else                    
+                        if [[ "${adql}" =~ ^# ]]
+                        then
+                            echo "[${count:?}] SKIP [${adql}]"
+                        else
+                            echo "--------"
+                            echo "[${count:?}] ADQL [${adql}]"
+
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                            
+                            echo "--------"
+                            echo "Pause [${loopwait:?}]"                            
+                            sleep "${loopwait:?}"
+                        fi
+                    fi
+                done
+                echo "Done"
+                exec 6>&-
+                }
+
+    loopwait=0
+    looptest
+
+    exit
+
