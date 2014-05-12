@@ -27,6 +27,17 @@
     newrelease=1.10.9-release
     newversion=1.10.9-alpha
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${newrelease:?}"
+
+        mvn -P all clean install
+
+        ./bin/rsync-repo.sh
+
+    popd
+
 # -------------------------------------------------------------------------------------------
 # Check the location of the metadata and userdata databases.
 #[user@desktop]
@@ -662,8 +673,26 @@ EOF
                 exec 6>&-
                 }
 
-    loopwait=0
+    loopwait=5
     looptest
 
     exit
+
+# -------------------------------------------------------------------------------------------
+# Merge the release branch into main
+#[user@desktop]
+
+    newrelease=1.10.9-release
+    newversion=1.10.9-alpha
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+        hg merge "${newrelease:?}"
+
+        hg commit -m "Merging [branch-${newrelease:?}] into [default]"
+        hg push
+
+    popd
 
