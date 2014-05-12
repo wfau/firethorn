@@ -1,17 +1,37 @@
-Version 1.10.??
+
+Version 1.10.9 (2014-05-10)
 -------------------------
 
+    Branch 1.10.9-release
+        This version
+
+    Branch 1.10.8-release
+        Not used
+
+    Branch 1.10.7-release
+        Not used
+
+    Branch 1.10.6-zrq-cast
+        Issue #489
+        http://redmine.roe.ac.uk/issues/489
+        Brackets missing in arithmetic expressions.
+
+    Branch 1.10.5-zrq-cast
+        Issue #447
+        http://redmine.roe.ac.uk/issues/447
+        Add support for CAST(x AS INT).
+
     Branch 1.10.4-zrq-adql-parser
-    Issue #461
+        Issue #461
         http://redmine.roe.ac.uk/issues/461
         Refactor the table lists in the ADQL parser to avoid loading an in memory ArrayList.
 
     Branch 1.10.3-zrq-backlog
-    Issue #285
+        Issue #285
         http://redmine.roe.ac.uk/issues/285
         Inherited equals() for Hibernate entities.
 
-    Issue #360 
+        Issue #360 
         http://redmine.roe.ac.uk/issues/360
         Implement a proxy self() method for Hibernate entities.
 
