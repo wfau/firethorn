@@ -684,12 +684,15 @@ EOF
 
     newrelease=1.10.9-release
     newversion=1.10.9-alpha
+    devversion=1.11.1-SNAPSHOT
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         hg update default
         hg merge "${newrelease:?}"
+
+        ./bin/version.sh "${devversion:?}"
 
         hg commit -m "Merging [branch-${newrelease:?}] into [default]"
         hg push
