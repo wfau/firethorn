@@ -47,10 +47,9 @@
             | http://learningviacode.blogspot.co.uk/2012/08/pooled-data-sources-and-spring-2.html
             | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
-
-        <property name="minPoolSize"   value="${firethorn.meta.c3po.min.size}" />
-        <property name="maxPoolSize"   value="${firethorn.meta.c3po.max.size}" />
-        <property name="maxIdleTime"   value="${firethorn.meta.c3po.max.idle}" />
+        <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size}" />
+        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size}" />
+        <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle}" />
 
     </bean>
 
@@ -71,9 +70,9 @@
         <!--+
             | C3P0 connection pool.
             +-->
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
+        <property name="minPoolSize"   value="${firethorn.user.c3p0.min.size}" />
+        <property name="maxPoolSize"   value="${firethorn.user.c3p0.max.size}" />
+        <property name="maxIdleTime"   value="${firethorn.user.c3p0.max.idle}" />
 
     </bean>
 

@@ -1,0 +1,75 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Purpose
+This document defines the public webservice interfaces of the FireThorn system.
+
+Scope
+This document describes the following interfaces
+
+    * JDBC metadata
+    * IVOA metadata
+    * ADQL metadata
+
+    * User metadata
+
+Applicable documentation
+Reference documentation
+
+    * IVOA
+    * ADQL
+    * TAP
+    * VOTable
+    * HTTP
+    * JSON
+
+Domain objects
+
+    JDBC resource
+    JDBC schema
+    JDBC table
+    JDBC column
+
+    IVOA resource
+    IVOA schema
+    IVOA table
+    IVOA column
+
+    ADQL resource
+    ADQL schema
+    ADQL table
+    ADQL column
+    ADQL query
+
+    Community
+    Member
+
+Messages
+
+
+
+
+
+    
+
+

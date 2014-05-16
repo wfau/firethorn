@@ -255,10 +255,8 @@ EOF
 #            s|^SAXONJAR=.*$|SAXONJAR='${HOME}'/saxonb8/saxon8.jar|
 #            ' Makefile
 
-        #
-        # Set saxon home in the Makefile
         sed -i '
-            s|SAXONHOME|'${HOME}/saxon'|
+            s|SAXONHOME|'${HOME:?}'|
             ' Makefile
 
         make

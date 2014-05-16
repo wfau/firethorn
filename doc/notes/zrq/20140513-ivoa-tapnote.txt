@@ -1,0 +1,192 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check-out a new copy
+#[user@testvm]
+
+    svn co 'https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes' 'TAPNotes'
+
+# -----------------------------------------------------
+# patch the makefile.
+#[user@testvm]
+
+    pushd TAPNotes
+
+        cat > patch-001.txt << 'EOF'
+*** Makefile	2014-04-22 15:00:03.977196394 +0100
+--- Makefile	2014-04-23 18:11:18.000000000 +0100
+***************
+*** 55,62 ****
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-resolver.jar
+! SAXONJAR=$(JARROOT)/saxonb.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+--- 55,62 ----
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar
+! SAXONJAR=SAXONHOME/saxonb8/saxon8.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+***************
+*** 95,101 ****
+  
+  # this is for BibTex
+  %.aux: %.html
+! 	$(SAXON) -o:$@ -xsl:$(CITEEXSTYLE) -s:$< 
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+--- 95,101 ----
+  
+  # this is for BibTex
+  %.aux: %.html
+! 	$(SAXON) -o $@  $< $(CITEEXSTYLE)
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+EOF
+
+        patch < patch-001.txt 
+
+    popd
+
+# -----------------------------------------------------
+# Build the documents.
+#[user@testvm]
+
+    pushd TAPNotes
+
+#        sed -i '
+#            s|^RESOLVERJAR=.*$|RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar|
+#            ' Makefile
+
+#        sed -i '
+#            s|^SAXONJAR=.*$|SAXONJAR='${HOME}'/saxonb8/saxon8.jar|
+#            ' Makefile
+
+        #
+        # Set saxon home in the Makefile
+        sed -i '
+            s|SAXONHOME|'${HOME}/saxon'|
+            ' Makefile
+
+        make
+
+    popd
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Build the documents.
+#[user@testvm]
+
+
+
+    pushd TAPNotes
+
+#        sed -i '
+#            s|^RESOLVERJAR=.*$|RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar|
+#            ' Makefile
+
+#        sed -i '
+#            s|^SAXONJAR=.*$|SAXONJAR='${HOME}'/saxonb8/saxon8.jar|
+#            ' Makefile
+
+        #
+        # Set saxon home in the Makefile
+        sed -i '
+            s|SAXONHOME|'${HOME}/saxon'|
+            ' Makefile
+
+        make
+
+    popd
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Unused text ...
+
+    <div class="section">
+    <h3><a id="ac-catalog">Catalog</a></h3>
+    <p>
+    The ADQL language specification inherits a three level hierarchy of
+    <code>[[catalog.]schema.]table</code> from the original <cite>std:SQL1992</cite> specification.
+    </p>
+    <p>
+    The BNF grammar <cite>std:ADQL-2.0-BNF</cite> for <cite>std:ADQL-20081030</cite>
+    has two makes two references to <code>catalog_name</code>.
+    <pre><![CDATA[
+        <catalog_name> ::= <identifier>
+
+        <schema_name> ::= [ <catalog_name> <period> ] <unqualified_schema name>
+    ]]></pre>
+    </p>
+    <p>
+    The definition of a fully qualified table name in <cite>std:TAP-20100327</cite>
+    includes the (optional) catalog name.
+    <blockquote>
+        A fully qualified table name has the form
+    <pre><![CDATA[
+        [[catalog_name”.”]schema_name”.”]table_name
+    ]]></pre>
+    </blockquote>
+    </p>
+    <p>
+    On the other hand, the schema for <code>TAP_SCHEMA</code> defined in
+    <cite>std:TAP-20100327</cite> does not treat <code>catalog</code>
+    as a separate object class, and does not define a table for catalogs.
+    </p>
+    <p>
+    The definition of the <code>TAP_SCHEMA</code> table for schema does
+    not include a separate column for catalog name, but the definition
+    for <code>schema_name</code> implies that it may include the
+    catalog name.
+    <blockquote>
+    The schema_name values must be unique and may be qualified by the catalog
+    name or not depending on the implementation requirements. The fully qualified
+    schema name is defined by the ADQL language and follows the pattern
+    [catalog.]schema.
+    </blockquote>
+    </p>
+

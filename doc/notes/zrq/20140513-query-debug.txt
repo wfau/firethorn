@@ -1,0 +1,423 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Check the queries logged in the metadata database. 
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=live
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+            USE master
+            go
+
+            /*
+             * Get the list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadata%'
+            ORDER BY 
+                name
+            go
+
+        ....
+        FirethornMetadataDJER011009LIVE
+
+
+            USE FirethornMetadataDJER011009LIVE
+            go
+
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT
+                table_name
+            FROM
+                information_schema.tables
+            ORDER BY
+                table_name
+            go
+                
+                                                                                                                                                                                                                                    
+        FT0110AdqlColumnEntity
+        FT0110AdqlQueryEntity
+        FT0110AdqlQueryJoinToBaseResource
+        FT0110AdqlResourceEntity
+        FT0110AdqlSchemaEntity
+        FT0110AdqlTableEntity
+        FT0110AuthenticationEntity
+        FT0110CommunityEntity
+        FT0110ConfigProperty
+        FT0110IdentityEntity
+        FT0110IvoaColumnEntity
+        FT0110IvoaResourceEntity
+        FT0110IvoaSchemaEntity
+        FT0110IvoaTableEntity
+        FT0110JdbcColumnEntity
+        FT0110JdbcResourceEntity
+        FT0110JdbcSchemaEntity
+        FT0110JdbcTableEntity
+        FT0110JobEntity
+        FT0110OperationEntity
+        FT0110TestJobEntity
+        hibernate_unique_key
+
+
+            /*
+             * Get a list of columns.
+             *
+             */
+            SELECT
+                column_name
+            FROM
+                information_schema.columns
+            WHERE
+                table_name = 'FT0110AdqlQueryEntity'
+            ORDER BY
+                column_name
+            go
+
+
+        adql
+        adqlschema
+        adqltable
+        ident
+        input
+        jdbctable
+        mode
+        ogsadaidqp
+        ogsadaiendpoint
+        ogsadaistore
+        ogsadelayevery
+        ogsadelayfirst
+        ogsadelaylast
+        ogsalimitcell
+        ogsalimitrows
+        ogsalimittime
+        osql
+        rowid
+        syntaxlevel
+        syntaxmessage
+        syntaxstate
+        timingadql
+        timingjdbc
+        timingogsa
+        timingstart
+        timingtotal
+
+
+            /*
+             * Get a list of columns.
+             *
+             */
+            SELECT
+                column_name
+            FROM
+                information_schema.columns
+            WHERE
+                table_name = 'FT0110JobEntity'
+            ORDER BY
+                column_name
+            go
+
+        completed
+        created
+        ident
+        jobstatus
+        modified
+        name
+        owner
+        queued
+        started
+        text
+        uidhi
+        uidlo
+
+            /*
+             * Get a list of columns.
+             *
+             */
+            SELECT
+                column_name
+            FROM
+                information_schema.columns
+            WHERE
+                table_name = 'FT0110IdentityEntity'
+            ORDER BY
+                column_name
+            go
+
+        community                                                                                                                                                                                                                                                      
+        created                                                                                                                                                                                                                                                        
+        currentschema                                                                                                                                                                                                                                                  
+        ident                                                                                                                                                                                                                                                          
+        modified                                                                                                                                                                                                                                                       
+        name                                                                                                                                                                                                                                                           
+        owner                                                                                                                                                                                                                                                          
+        text                                                                                                                                                                                                                                                           
+        uidhi                                                                                                                                                                                                                                                          
+        uidlo  
+
+            /*
+             * Get the most recent jobs.
+             *
+             */
+            SELECT
+                ident,
+                owner,
+                created,
+                jobstatus
+            FROM
+                FT0110JobEntity
+            WHERE
+                created BETWEEN CONVERT(datetime, '2014-05-13 08:00') AND CONVERT(datetime, '2014-05-13 09:00')
+            ORDER BY
+                ident
+            go
+
+        427559     557056       2014-05-13 08:21:15.1570000      EDITING
+        427560     557056       2014-05-13 08:21:51.5200000      EDITING
+        427561     557056       2014-05-13 08:22:13.0500000      EDITING
+        427562     557056       2014-05-13 08:27:04.8700000      EDITING
+
+            /*
+             * Get the owner name.
+             *
+             */
+            SELECT
+                job.ident,
+                job.owner,
+                job.created,
+                job.jobstatus,
+                who.name
+            FROM
+                FT0110JobEntity AS job
+            JOIN
+                FT0110IdentityEntity AS who
+            ON
+                job.owner = who.ident
+            WHERE
+                job.created BETWEEN CONVERT(datetime, '2014-05-13 08:00') AND CONVERT(datetime, '2014-05-13 09:00')
+            ORDER BY
+                ident
+            go
+
+        427559      557056      2014-05-13 08:21:15.1570000     EDITING     unknown user
+        427560      557056      2014-05-13 08:21:51.5200000     EDITING     unknown user
+        427561      557056      2014-05-13 08:22:13.0500000     EDITING     unknown user                                                                                                                                                                                                                                                   
+        427562      557056      2014-05-13 08:27:04.8700000     EDITING     unknown user
+
+            /*
+             * Get the most recent queries.
+             *
+             */
+            SELECT
+                job.ident,
+                job.created,
+                job.jobstatus,
+                query.input
+            FROM
+                FT0110JobEntity AS job
+            JOIN
+                FT0110AdqlQueryEntity AS query
+            ON
+                job.ident = query.ident
+            WHERE
+                job.created BETWEEN CONVERT(datetime, '2014-05-13 08:00') AND CONVERT(datetime, '2014-05-13 09:00')
+            ORDER BY
+                job.ident
+            go
+
+
+    427559
+        2014-05-13 08:21:15.1570000
+        EDITING                                                                                                                                                                                                                                                        
+        SELECT 
+            S1.mergedClassStat,
+            S2.mergedCLassStat
+        FROM
+            atlasSource AS S1, atlasSource AS S2, atlasSourceNeighbours AS X
+        WHERE 
+            S1.gAperMag3 > 0 AND S2.gAperMag3 > 0
+        AND 
+            S1.iAperMag3 > 0 AND S2.iAperMag3 > 0
+        AND
+            masterObjID = 1.sourceID
+        AND
+            slaveObjID = S2.sourceID
+        AND
+            S1.priOrSec = S1.frameSetID
+        AND
+            distanceMins < 0.01
+        AND
+            distanceMins IN (
+                SELECT
+                    MIN(distanceMins)
+                FROM
+                    atlasSourceNeighbours
+                WHERE
+                    masterObjID = x.masterObjID
+                    )
+
+
+    427560
+        2014-05-13 08:21:51.5200000
+        EDITING                                                                                                                                                                                                                                                        
+        SELECT 
+            S1.mergedClassStat,
+            S2.mergedCLassStat
+        FROM
+            atlasSource AS S1,
+            atlasSource AS S2,
+            atlasSourceNeighbours AS X
+        WHERE
+            S1.gAperMag3 > 0 AND S2.gAperMag3 > 0
+        AND 
+            S1.iAperMag3 > 0 AND S2.iAperMag3 > 0
+        AND
+            masterObjID = S1.sourceID
+        AND
+            slaveObjID = S2.sourceID
+        AND
+            S1.priOrSec = S1.frameSetID
+        AND
+            distanceMins < 0.01
+        AND
+            distanceMins IN (
+                SELECT
+                    MIN(distanceMins)
+                FROM
+                    atlasSourceNeighbours
+                WHERE
+                    masterObjID = x.masterObjID
+                    )
+
+    427561
+        2014-05-13 08:22:13.0500000                           
+	    EDITING                                                                                                                                                                                                                                                        
+	    SELECT 
+            S1.mergedClassStat,
+            S2.mergedClassStat
+        FROM
+            atlasSource AS S1,
+            atlasSource AS S2,
+            atlasSourceNeighbours AS X
+        WHERE
+            S1.gAperMag3 > 0 AND S2.gAperMag3 > 0
+        AND 
+            S1.iAperMag3 > 0 AND S2.iAperMag3 > 0
+        AND
+            masterObjID = S1.sourceID
+        AND
+            slaveObjID = S2.sourceID
+        AND
+            S1.priOrSec = S1.frameSetID
+        AND
+            distanceMins < 0.01
+        AND
+            distanceMins IN (
+                SELECT
+                    MIN(distanceMins)
+                FROM
+                    atlasSourceNeighbours
+                WHERE
+                    masterObjID = x.masterObjID
+                    )
+
+    427562
+        2014-05-13 08:27:04.8700000                           
+	    EDITING                                                                                                                                                                                                                                                        
+	    SELECT
+	        top 10
+            S1.mergedClassStat,
+            S2.mergedClassStat
+        FROM
+            atlasSource AS S1,
+            atlasSource AS S2,
+            atlasSourceNeighbours AS X
+        WHERE
+            S1.gAperMag3 > 0 AND S2.gAperMag3 > 0
+        AND 
+            S1.iAperMag3 > 0 AND S2.iAperMag3 > 0
+        AND
+            masterObjID = S1.sourceID
+        AND
+            slaveObjID = S2.sourceID
+        AND
+            S1.priOrSec = S1.frameSetID
+        AND
+            distanceMins < 0.01
+        AND
+            distanceMins IN (
+                SELECT
+                    MIN(distanceMins)
+                FROM
+                    atlasSourceNeighbours
+                WHERE
+                    masterObjID = x.masterObjID
+                    )
+
+# -------------------------------------------------------------------------------------------
+# Not a bug
+#
+
+    Query fails because there are two fields with the same name. 
+
+	    SELECT
+            S1.mergedClassStat,
+            S2.mergedClassStat
+        FROM
+
+    Page displays good error message
+    "Query error: PARSE_ERROR - Duplicate SELECT field [mergedClassStat]"
+    Might be nice to add a hint ?
+
+    Add at least one aliase and the query works fine. 
+
+	    SELECT
+            S1.mergedClassStat AS a,
+            S2.mergedClassStat AS b
+        FROM
+
+
+
+
+
+

@@ -49,11 +49,12 @@
     source "${deploylist:?}"
     ssh "${sqluser:?}@${sqlhost:?}"
 
-        source "${HOME:?}/sqlserver.properties"
-        source "${HOME:?}/firethorn.settings"
+        #
+        # Load the SQLServer properties
+        sqshtype=live
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
 
-        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}"
-
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
             USE master
             go
@@ -133,7 +134,7 @@
         userdataname="FirethornUserdata${dbversion:?}"
 
         #
-        # Set the master properties
+        # Load the SQLServer properties
         sqshtype=live
         source "${HOME:?}/sqsh${sqshtype:?}.properties"
 
@@ -585,7 +586,6 @@ EOF
                 AND
                     dec BETWEEN '24.0' AND '24.2'
                 "
-
 
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
                 SELECT top 10
