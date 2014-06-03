@@ -15,14 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
+package uk.ac.roe.wfau.firethorn.adql.query.dqp ;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Ignore;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
@@ -32,44 +32,50 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  */
 @Slf4j
 @Ignore
-public abstract class AtlasQueryTestBase
-extends AbstractQueryTestBase
+public class DistributedQueryTestBase
+extends AtlasQueryTestBase
     {
-
-    protected static final String ATLAS_VERSION = "ATLASDR1" ;
 
     /**
      * Load our resources.
      *
      */
     @Before
-    public void loadAtlasResources()
+    public void loadLocalTwomass()
     throws Exception
         {
-        log.debug("loadAtlasResources()");
-
-        replace(
-            "{ATLAS_VERSION}",
-            ATLAS_VERSION
-            );
-
-        JdbcResource jdbcspace = jdbcResource(
-            "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
-            "*",
-            "spring:RoeATLAS"
-            );
-
+        log.debug("loadLocalTwomass()");
         AdqlResource adqlspace = adqlResource(
-            "atlas.adql.resource",
             "atlas.adql.resource"
             );
+        JdbcResource jdbcspace = jdbcResource(
+            "atlas.jdbc.resource"
+            );
+        testSchema(adqlspace, jdbcspace, "local_twomass", "TWOMASS");
+        }
 
-        testSchema(adqlspace, jdbcspace, ATLAS_VERSION);
-        testSchema(adqlspace, jdbcspace, "ROSAT");
-        testSchema(adqlspace, jdbcspace, "BestDR8");
-        testSchema(adqlspace, jdbcspace, "BestDR9");
-        testSchema(adqlspace, jdbcspace, "TWOMASS");
+    /**
+     * Load our TWOMASS resources.
+     *
+     */
+    @Before
+    public void loadRemoteTwomass()
+    throws Exception
+        {
+        log.debug("loadRemoteTwomass()");
+        JdbcResource jdbcspace = jdbcResource(
+            "twomass.jdbc.resource",
+            "twomass.jdbc.resource",
+            "*",
+            "spring:RoeTWOMASS"
+            );
+        AdqlResource adqlspace = adqlResource(
+            "twomass.adql.resource",
+            "twomass.adql.resource"
+            );
+
+        testSchema(adqlspace, jdbcspace, "remote_twomass", "TWOMASS");
 
         }
     }
+

@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
+
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -59,7 +60,7 @@ public abstract class TestPropertiesBase
             }
         catch (final FileNotFoundException ouch)
             {
-            //log.debug("FileNotFoundException loading test properties [{}]", PROPERTIES_FILE);
+            log.debug("FileNotFoundException loading test properties [{}]", PROPERTIES_FILE);
             }
         catch (final IOException ouch)
             {

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.adql.parser ;
 
 import java.util.Iterator;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -34,6 +36,7 @@ import adql.db.DBTable;
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
+@Slf4j
 public class AdqlParserTableImpl
 implements AdqlParserTable
     {
@@ -106,6 +109,9 @@ implements AdqlParserTable
      */
     private AdqlParserTableImpl(final AdqlQuery.Mode mode, final AdqlTable table, final String jdbcName, final String adqlName)
         {
+        log.debug("AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)");
+        log.debug("JDBC name [{}]", jdbcName);
+        log.debug("ADQL name [{}]", adqlName);
         this.mode  = mode  ;
         this.table = table ;
         //
@@ -143,6 +149,9 @@ implements AdqlParserTable
     @Override
     public AdqlParserTable copy(final String jdbcName, final String adqlName)
         {
+        log.debug("copy(String, String)");
+        log.debug("JDBC name [{}]", jdbcName);
+        log.debug("ADQL name [{}]", adqlName);
         if ((adqlName == null) || (adqlName.length() == 0))
             {
             throw new IllegalArgumentException(
@@ -300,7 +309,6 @@ implements AdqlParserTable
                     )
                 );
  */
-
         }
 
         if (adqlColumn != null)
@@ -470,6 +478,9 @@ implements AdqlParserTable
          */
         private AdqlColumnImpl(final AdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
             {
+            log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
+            log.debug("JDBC name [{}]", jdbcName);
+            log.debug("ADQL name [{}]", adqlName);
             this.parent = parent ;
             this.column = adqlColumn ;
             this.jdbcName = jdbcName;
@@ -479,6 +490,10 @@ implements AdqlParserTable
         @Override
         public AdqlColumnImpl copy(final String dbName, final String adqlName, final DBTable parent)
             {
+            log.debug("copy(String, String, DBTable)");
+            log.debug("DB   name [{}]", dbName);
+            log.debug("JDBC name [{}]", jdbcName);
+            log.debug("ADQL name [{}]", adqlName);
             return AdqlParserTableImpl.this.wrap(
                 this.column,
                 this.jdbcName,
@@ -502,6 +517,9 @@ implements AdqlParserTable
         @Override
         public String getDBName()
             {
+            log.debug("getDBName() [{}][{}]", this.jdbcName, this.column.root().name());
+            String result = this.jdbcName ;
+/*
             if (this.jdbcName != null)
                 {
                 return this.jdbcName ;
@@ -510,6 +528,13 @@ implements AdqlParserTable
                 return this.column.root().name();
                 //return this.column.root().alias();
                 }
+*/
+            if (result == null)
+                {
+                result = this.column.root().name();
+                }
+            log.debug("getDBName() [{}]", result);
+            return result ;
             }
 
         @Override

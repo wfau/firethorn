@@ -85,6 +85,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
@@ -92,6 +93,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+-->        
 
         <!--+
             | Our metadata service client.

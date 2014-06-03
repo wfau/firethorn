@@ -363,11 +363,9 @@ public class SQLServerTranslator
             {
             final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
             log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
-
-            return super.translate(
-                column
+            return translate(
+                adql
                 );
-
             }
         else {
             log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());
@@ -377,20 +375,18 @@ public class SQLServerTranslator
             }
         }
 
-    /*
-     *
     public String translate(AdqlColumn column)
     throws TranslationException
         {
         log.debug("translate(AdqlColumn)");
         log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
-        log.debug("  fullname [{}]", column.fullname());
-        log.debug("  basename [{}]", column.base().fullname());
-        log.debug("  rootname [{}]", column.root().fullname());
-        return "";
+        log.debug("  fullname [{}]", column.namebuilder().toString());
+        log.debug("  basename [{}]", column.base().namebuilder().toString());
+        log.debug("  rootname [{}]", column.root().namebuilder().toString());
+
+        return column.root().namebuilder().toString();
+
         }
-     *
-     */
 
     /**
      * Copy of the PostgreSQLTranslator method ...
