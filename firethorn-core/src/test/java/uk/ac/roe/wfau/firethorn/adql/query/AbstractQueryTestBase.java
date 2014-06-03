@@ -425,6 +425,7 @@ extends TestPropertiesBase
                 field.type()
                 ) ;
             }
+/*
         @Override
         public AdqlColumn adql()
             {
@@ -435,6 +436,7 @@ extends TestPropertiesBase
             {
             return null;
             }
+ */        
         }
 
     public void validate(final AdqlQuery query, final ExpectedField[] fields)
