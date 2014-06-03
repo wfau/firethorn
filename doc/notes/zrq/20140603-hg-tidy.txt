@@ -1,0 +1,154 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+# -----------------------------------------------------
+# Merge outstanding branches.
+#[user@desktop]
+
+    1.9.8-zrq-ogsadai-dqp
+        not merged
+        (working DQP)
+
+    1.9.6-zrq-community
+        not merged
+
+# -----------------------------------------------------
+# Get the current version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the project version.
+        source "bin/util.sh"
+        getversion
+
+    popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    newbranch=1.11.2-zrq-merge-test
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        source "bin/util.sh"
+        setversion "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Merge an old development branch.
+#[user@desktop]
+
+    oldbranch=1.9.8-zrq-ogsadai-dqp
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Close the old branch.
+        hg update "${oldbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg push
+
+        #
+        # Merge the old branch.
+        hg update "${newbranch:?}"
+        hg merge  "${oldbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${oldbranch:?}] into [branch-${newbranch:?}]"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Test ......
+
+    popd
+
+# -----------------------------------------------------
+# Merge the new branch into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Close the dev branch.
+        hg update "${newbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${newbranch:?}]"
+        hg push
+
+        #
+        # Pull the latest changes.
+        hg pull
+        hg update 'default'
+
+        #
+        # Update the project version.
+        snapshot=1.11.3-SNAPSHOT
+        ./bin/version.sh "${snapshot:?}"
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${newbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${newbranch:?}] into [default]"
+        hg tag    -f "version-${snapshot:?}"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
+
+
+
