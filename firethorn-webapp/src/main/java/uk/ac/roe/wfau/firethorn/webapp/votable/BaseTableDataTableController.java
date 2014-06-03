@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryDatatablesController.Fie
 import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryDatatablesController.StringFieldHandler;
 
 /**
- * Spring Controller to generate a Datatable response for a table.
+ * Spring MVC Controller to generate a Datatable response for a table.
  * 
  * Based on the VOTable-1.3 specification.
  * http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html

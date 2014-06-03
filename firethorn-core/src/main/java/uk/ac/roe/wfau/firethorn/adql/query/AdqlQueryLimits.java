@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
     )
 public class AdqlQueryLimits
 extends BaseQueryLimits
-implements AdqlQuery.QueryLimits
+implements AdqlQuery.ModifiableLimits
     {
     
     /**

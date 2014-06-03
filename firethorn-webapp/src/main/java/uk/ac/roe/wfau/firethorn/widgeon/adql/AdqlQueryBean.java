@@ -24,20 +24,29 @@ import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 
 /**
- * Bean wrapper for <code>AdqlQuery</code>.
+ * An {@link EntityBean} wrapper for an {@link AdqlQuery}.
  *
  */
 public class AdqlQueryBean
 extends NamedEntityBeanImpl<AdqlQuery>
     {
-
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlQuery} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlQuery, AdqlQueryBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlQuery} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlQuery> iterable)
             {
             super(
@@ -53,6 +62,11 @@ extends NamedEntityBeanImpl<AdqlQuery>
             }
         }
 
+    /**
+     * Public constructor.
+     * @param entity The {@link AdqlQuery} to wrap.
+     *
+     */
     protected AdqlQueryBean(final AdqlQuery entity)
         {
         super(
@@ -250,39 +264,43 @@ extends NamedEntityBeanImpl<AdqlQuery>
         }
 
     /**
-     * The query results.
+     * The {@link AdqlQuery} results.
+     * @todo Simplify this to just the {@link AdqlTable} results.
      *
      */
     public interface Results
         {
         /**
-         * The abstract (ADQL) table
+         * A URL to access the {@link AdqlTable} results
          *
          */
         public String getAdql();
         
         /**
-         * Access to a Datatable representation of the results.
-         *
-         */
-        public String getDatatable();
-		
-        /**
-         * The physical (JDBC) table
+         * A URL to access the {@link JdbcTable} results
+         * @deprecated Use the {@link AdqlTable#base()}
          *
          */
         public String getJdbc();
 
         /**
-         * Access to a VOTable representation of the results.
+         * A URL to access a VOTable representation of the results.
+         * @deprecated Use the VOTable view of the {@link AdqlTable}
          *
          */
         public String getVotable();
 
+        /**
+         * A URL to access a DataTable representation of the results.
+         * @deprecated Use the DataTable view of the {@link AdqlTable}
+         *
+         */
+        public String getDatatable();
+
         }
 
     /**
-     * The query results.
+     * The {@link AdqlQuery} results.
      *
      */
     public Results getResults()

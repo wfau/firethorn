@@ -126,7 +126,7 @@ public class JdbcTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public JdbcTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
@@ -142,7 +142,7 @@ public class JdbcTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
     public JdbcTableBean update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
@@ -169,7 +169,7 @@ public class JdbcTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public JdbcTableBean update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,

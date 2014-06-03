@@ -152,7 +152,7 @@ public class JdbcResourceController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public JdbcResourceBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
@@ -168,7 +168,7 @@ public class JdbcResourceController
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public EntityBean<JdbcResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,

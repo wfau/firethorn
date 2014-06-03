@@ -19,12 +19,14 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlTable</code>.
- * TODO
+ * An {@link AdqlTable.LinkFactory} implementation.
  *
  */
 @Component
@@ -32,6 +34,10 @@ public class AdqlTableLinkFactory
 extends WebappLinkFactory<AdqlTable>
 implements AdqlTable.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlTableLinkFactory()
         {
         super(
@@ -40,43 +46,43 @@ implements AdqlTable.LinkFactory
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, [{@value}].
      *
      */
     public static final String SERVICE_PATH = "/adql/table";
 
     /**
-     * The URI path for individual tables.
+     * The URI path for an {@link AdqlTable}, [{@value}].
      *
      */
     public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for table columns.
+     * The URI path for the {@link AdqlTable} columns, [{@value}].
      *
      */
     public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
     /**
-     * The URI path for the VOTable representation.
+     * The URI path for the {@link AdqlTable} VOTable representation, [{@value}].
      *
      */
     public static final String VOTABLE_NAME = "/votable";
 
     /**
-     * The URI path for the VOTable representation.
+     * The URI path for the {@link AdqlTable} VOTable representation, [{@value}].
      *
      */
     public static final String VOTABLE_PATH = TABLE_PATH + "/" + VOTABLE_NAME;
 
     /**
-     * The URI path for the DataTable representation.
+     * The URI path for the {@link AdqlTable} DataTable representation, [{@value}].
      *
      */
     public static final String DATATABLE_NAME = "/datatable";
 
     /**
-     * The URI path for the DataTable representation.
+     * The URI path for the {@link AdqlTable} DataTable representation, [{@value}].
      *
      */
     public static final String DATATABLE_PATH = TABLE_PATH + "/" + DATATABLE_NAME;

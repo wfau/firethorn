@@ -137,7 +137,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=METADOC_IMPORT_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=METADOC_IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public Iterable<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,

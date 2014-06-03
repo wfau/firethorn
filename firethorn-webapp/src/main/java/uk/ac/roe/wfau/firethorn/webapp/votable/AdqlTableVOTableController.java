@@ -28,12 +28,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableLinkFactory;
 
 /**
- * Spring Controller to generate VOTable response for an AdqlTable.
+ * Spring MVC controller to format an {@link AdqlTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
+ * <br/>Controller path : [{@value AdqlTableLinkFactory#VOTABLE_PATH}]
  * 
  */
 @Controller
@@ -59,7 +61,12 @@ extends BaseTableVOTableController
         }
 
     /**
-     * VOTable GET request.
+     * HTTP GET request for a VOTable representation of an {@link AdqlTable}.
+     * <br/>Request path : [{@value AdqlTableLinkFactory#VOTABLE_PATH}]
+     * @param ident The {@link AdqlTable} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @param response The {@link HttpServletResponse} to write the VOTable to.
+     * @throws EntityNotFoundException If the {@link AdqlTable} could not be found.
+     * @throws IOException If there is an error writing to the {@link HttpServletResponse}.
      *
      */
     @ResponseBody

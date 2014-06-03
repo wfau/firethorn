@@ -29,12 +29,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlSchema</code>.
+ * Spring MVC controller to handle {@link AdqlSchema} entities.
+ * <br/>Controller path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
  *
  */
 @Slf4j
@@ -62,13 +67,14 @@ public class AdqlSchemaController
         }
 
     /**
-     * MVC property for the target entity.
+     * MVC property for the {@link AdqlSchema}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.schema.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link AdqlSchema} name, [{@value}].
+     * @todo Merge create, select and update.
      *
      */
     public static final String UPDATE_NAME = "adql.schema.update.name" ;
@@ -90,8 +96,10 @@ public class AdqlSchemaController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
-     * @throws IdentifierNotFoundException
+     * Get the target {@link AdqlSchema} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlSchema} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The target {@link AdqlSchema}.
+     * @throws IdentifierNotFoundException If the {@link AdqlSchema} could not be found.
      *
      */
     @ModelAttribute(TARGET_ENTITY)
@@ -99,7 +107,7 @@ public class AdqlSchemaController
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -108,35 +116,45 @@ public class AdqlSchemaController
         }
 
     /**
-     * JSON GET request.
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlSchema}.
+     * <br/>Request path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param entity The {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * @return The selected {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public AdqlSchemaBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity
         ){
-        log.debug("select()");
+        log.debug("select(AdqlSchema)");
         return bean(
             entity
             );
         }
 
     /**
-     * JSON POST update.
-     *
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlSchema}.
+     * <br/>Request path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param entity The {@link AdqlSchema} selected using the {@Identifier} in the request path.
+     * <br/>Optional {@link AdqlSchema} params :
+     * @param name   The {@link AdqlSchema} name, [{@value #UPDATE_NAME}].
+     * @return The updated {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
+     * 
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlSchemaBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity,
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name
         ){
-        log.debug("update()");
+        log.debug("update(AdqlSchema, String)");
         if (name != null)
             {
             if (name.length() > 0)

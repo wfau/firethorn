@@ -97,7 +97,7 @@ public class AttribServiceController
      *
      */
     @ResponseBody
-    @RequestMapping(value=COLUMN_NAME_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=COLUMN_NAME_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ColumnBean jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String table,
@@ -119,7 +119,7 @@ public class AttribServiceController
      *
      */
     @ResponseBody
-    @RequestMapping(value=COLUMN_LIST_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=COLUMN_LIST_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ColumnBean.Iter jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias

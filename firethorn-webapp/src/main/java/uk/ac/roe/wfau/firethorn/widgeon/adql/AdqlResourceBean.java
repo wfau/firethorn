@@ -17,20 +17,33 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
 
 /**
- * Bean wrapper for <code>AdqlResource</code>.
+ * An {@link EntityBean} wrapper for an {@link AdqlResource}.
  *
  */
 public class AdqlResourceBean
 extends BaseResourceBean<AdqlResource>
     {
+    /**
+     * An {@link EntityBean.Iter} wrapper for an {@link AdqlResource} {@link Iterable}.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlResource, AdqlResourceBean>
         {
+        /**
+         * Public constructor.
+         * @param iterable The {@link AdqlResource} {@link Iterable} to wrap.
+         *
+         */
         public Iter(final Iterable<AdqlResource> iterable)
             {
             super(
@@ -48,6 +61,7 @@ extends BaseResourceBean<AdqlResource>
 
     /**
      * Public constructor.
+     * @param entity The {@link AdqlResource} to wrap.
      *
      */
     public AdqlResourceBean(final AdqlResource entity)
@@ -58,10 +72,17 @@ extends BaseResourceBean<AdqlResource>
             );
         }
 
+    /**
+     * Access to the VOSI view of this {@link AdqlResource}.
+     * @return A URL for the VOSI view.
+     * @see AdqlResourceController#VOSI_PATH
+     * @see AdqlResourceController#vosi(AdqlResource)
+     *
+     */
     public String getVosi()
         {
         return entity().link().concat(
-            "/vosi"
+            "/" + AdqlResourceController.VOSI_PATH
             );
         }
     }

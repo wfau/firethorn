@@ -1,0 +1,234 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create the new branch.
+#[user@desktop]
+
+    devbranch=[version]-[who]-[description]
+    devbranch=1.10.5-zrq-interfaces
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check we have the most recent version.
+        hg pull
+        hg update
+
+        #
+        # Create the new branch.
+        hg update default
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+
+# -----------------------------------------------------
+# Web service API
+
+    AuthenticationController
+
+        GET authentication/{ident}
+             => JSON/404
+
+    CommunityController
+
+        **
+        GET communities/
+             => JSON[]
+
+        GET community/{ident}
+             => JSON/404
+
+        **
+        POST community/{ident}
+            urn:community.name
+             => JSON/404
+
+        **
+        GET community/{ident}/members/select
+             => 404/JSON[]
+
+        **
+        POST community/{ident}/members/select
+            urn:identity.name
+             => 404/JSON/404
+
+        **
+        POST community/{ident}/members/search
+            urn:identity.name
+             => 404/JSON[]
+
+    IdentityController
+
+        GET identity/{ident}
+             => JSON/404
+
+        **
+        POST identity/{ident}
+            urn:identity.name
+             => JSON/404
+
+    AdqlQueryController
+
+        GET adql/query/{ident}
+             => JSON/404
+
+        POST adql/query/{ident}
+            adql.query.update.name
+            adql.query.update.query
+            adql.query.update.status
+            adql.query.update.timeout
+            adql.query.update.delay.first
+            adql.query.update.delay.every
+            adql.query.update.delay.last
+            adql.query.update.limit.rows
+            adql.query.update.limit.cells
+            adql.query.update.limit.time
+             => JSON/404
+
+        GET adql/query/{ident}/votable
+             => VOTable/404
+
+        GET adql/query/{ident}/datatable
+            => DataTable/404
+
+    AdqlResourceController
+
+        POST adql/resource/select
+            => JSON[]
+
+        POST adql/resource/create
+            adql.resource.create.name
+            => JSON
+
+        GET adql/resource/{ident}
+            => JSON/404
+
+        POST adql/resource/{ident}
+            adql.resource.update.name
+            adql.resource.update.status
+            => JSON/404
+
+        GET adql/resource/{ident}/schemas/select
+            => 404/JSON[]
+
+        POST adql/resource/{ident}/schemas/select
+            adql.resource.schema.select.name
+            => 404/JSON/404
+
+        POST adql/resource/{ident}/schemas/create
+            adql.resource.schema.create.name
+            => 404/JSON/dup
+
+        POST adql/resource/{ident}/schemas/import
+            urn:adql.copy.depth
+            adql.resource.schema.import.base
+            => 404/JSON/dup
+
+        POST adql/resource/{ident}/schemas/import
+            urn:adql.copy.depth
+            adql.resource.schema.import.base
+            adql.resource.schema.import.name
+            => 404/JSON/dup
+
+    AdqlSchemaController
+
+        GET adql/schema/{ident}
+            => JSON/404
+
+        POST adql/schema/{ident}
+            adql.schema.update.name
+            => JSON/404
+
+        GET adql/schema/{ident}/queries/select
+            => 404/JSON[]
+
+        GET adql/schema/{ident}/queries/create
+            adql.query.create.name
+            => 404/JSON
+
+        GET adql/schema/{ident}/tables/select
+            => 404/JSON[]
+
+        GET adql/schema/{ident}/tables/select
+            adql.schema.table.select.name
+            => 404/JSON
+
+        POST adql/schema/{ident}/tables/import
+            urn:adql.copy.depth
+            adql.schema.table.import.base
+            => 404/JSON/dup
+
+        POST adql/schema/{ident}/tables/import
+            urn:adql.copy.depth
+            adql.schema.table.import.base
+            adql.schema.table.import.name
+            => 404/JSON/dup
+
+        **
+        POST adql/schema/{ident}/tables/upload
+
+
+    AdqlTableController
+
+        GET adql/table/{ident}
+            => JSON/404
+
+        POST adql/table/{ident}
+            adql.table.update.name
+            => JSON/404
+
+        GET adql/table/{ident}/columns/select
+            => 404/JSON[]
+
+        POST adql/table/{ident}/columns/select
+            adql.table.select.name
+            => 404/JSON
+
+    AdqlColumnController
+
+        GET adql/column/{ident}
+             => JSON/404
+
+        POST adql/column/{ident}
+            adql.column.update.name
+            => JSON/404
+
+
+
+

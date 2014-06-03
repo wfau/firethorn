@@ -23,8 +23,7 @@ import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlColumn</code>.
- * TODO
+ * {@link Community.LinkFactory} implementation.
  *
  */
 @Component
@@ -32,6 +31,10 @@ public class CommunityLinkFactory
 extends WebappLinkFactory<Community>
 implements Community.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected CommunityLinkFactory()
         {
         super(
@@ -40,13 +43,13 @@ implements Community.LinkFactory
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, ({@value}).
      *
      */
     protected static final String SERVICE_PATH = "/community" ;
 
     /**
-     * The URI path for individual columns.
+     * The URI path for individual entities, ({@value}).
      *
      */
     public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;

@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +43,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -54,8 +51,10 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
 
 /**
- * Spring MVC controller for <code>AdqlTable</code>.
- *
+ * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://datatables.net/index'>DataTable</a>.
+ * @see <a href='http://datatables.net/index'>DataTables</a>
+ * @deprecated Use the formatter on the query results themselves.
+ * 
  */
 @Slf4j
 @Controller

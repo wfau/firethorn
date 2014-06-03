@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -34,12 +35,13 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlColumn</code>.
+ * Spring MVC controller to handle {@link AdqlColumn} entities.
+ * <br/>Controller path : [{@value AdqlColumnLinkFactory#ENTITY_PATH}]
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlColumnLinkFactory.COLUMN_PATH)
+@RequestMapping(AdqlColumnLinkFactory.ENTITY_PATH)
 public class AdqlColumnController
 extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     {
@@ -48,7 +50,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     public Path path()
         {
         return path(
-            AdqlColumnLinkFactory.COLUMN_PATH
+            AdqlColumnLinkFactory.ENTITY_PATH
             );
         }
 
@@ -62,13 +64,13 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * MVC property for the target entity.
+     * MVC property for the {@link AdqlQuery}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.column.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link AdqlColumn} name, [{@value}].
      *
      */
     public static final String UPDATE_NAME = "adql.column.update.name" ;
@@ -90,7 +92,10 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Get the target {@link AdqlColumn} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlColumn} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The target {@link AdqlColumn}.
+     * @throws IdentifierNotFoundException If the {@link AdqlColumn} could not be found.
      *
      */
     @ModelAttribute(TARGET_ENTITY)
@@ -98,7 +103,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().columns().select(
             factories().adql().columns().idents().ident(
                 ident
@@ -107,11 +112,15 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * JSON GET request.
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlColumn}.
+     * <br/>Request path : [{@value AdqlColumnLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param column The {@link AdqlColumn} selected using the {@Identifier} in the request path.
+     * @return The selected {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public AdqlColumnBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column
@@ -122,12 +131,18 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * JSON POST update.
-     *
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlColumn}.
+     * <br/>Request path : [{@value AdqlColumnLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param column The {@link AdqlColumn} selected using the {@Identifier} in the request path.
+     * <br/>Optional {@link AdqlColumn} params :
+     * @param name  The {@link AdqlColumn} name, [{@value #UPDATE_NAME}].
+     * @return The updated {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
+     * 
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlColumnBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,

@@ -29,13 +29,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlTable</code>.
+ * Spring MVC controller to handle {@link AdqlTable} entities.
+ * <br/>Controller path : [{@value AdqlTableLinkFactory#ENTITY_PATH}]
  *
  */
 @Slf4j
@@ -63,13 +65,14 @@ public class AdqlTableController
         }
 
     /**
-     * MVC property for the target entity.
+     * MVC property for the {@link AdqlTable}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.table.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link AdqlTable} name, [{@value}].
+     * @todo Merge create, select and update.
      *
      */
     public static final String UPDATE_NAME = "adql.table.update.name" ;
@@ -91,8 +94,10 @@ public class AdqlTableController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
-     * @throws IdentifierNotFoundException
+     * Get the target {@link AdqlTable} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlTable} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The target {@link AdqlTable}.
+     * @throws IdentifierNotFoundException If the {@link AdqlTable} could not be found.
      *
      */
     @ModelAttribute(TARGET_ENTITY)
@@ -100,7 +105,7 @@ public class AdqlTableController
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("table() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -109,11 +114,15 @@ public class AdqlTableController
         }
 
     /**
-     * JSON GET request.
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlTable}.
+     * <br/>Request path : [{@value AdqlTableLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param entity The {@link AdqlTable} selected using the {@Identifier} in the request path.
+     * @return The selected {@link AdqlTable} wrapped in a {@link AdqlTableBean}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public AdqlTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
@@ -125,12 +134,18 @@ public class AdqlTableController
         }
 
     /**
-     * JSON POST update.
-     *
+     * {@link RequestMethod#POST} request to update a specific {@link AdqlTable}.
+     * <br/>Request path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param entity The {@link AdqlTable} selected using the {@Identifier} in the request path.
+     * <br/>Optional {@link AdqlTable} params :
+     * @param name   The {@link AdqlTable} name, [{@value #UPDATE_NAME}].
+     * @return The updated {@link AdqlTable} wrapped in a {@link AdqlTableBean}.
+     * 
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlTableBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table,

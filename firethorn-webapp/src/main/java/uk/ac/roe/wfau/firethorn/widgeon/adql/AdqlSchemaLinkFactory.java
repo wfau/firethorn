@@ -19,18 +19,23 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlSchema</code>.
- * TODO
+ * An {@link AdqlSchema.LinkFactory} implementation.
+ *
  */
 @Component
 public class AdqlSchemaLinkFactory
 extends WebappLinkFactory<AdqlSchema>
 implements AdqlSchema.LinkFactory
     {
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaLinkFactory()
         {
         super(
@@ -39,25 +44,25 @@ implements AdqlSchema.LinkFactory
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the service, [{@value}].
      *
      */
     public static final String SERVICE_PATH = "/adql/schema";
 
     /**
-     * The URI path for individual schema.
+     * The URI path for an {@link AdqlSchema}, [{@value}].
      *
      */
     public static final String SCHEMA_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for tables.
+     * The URI path for the {@link AdqlSchema} tables, [{@value}].
      *
      */
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     /**
-     * The URI path for queries.
+     * The URI path for the {@link AdqlSchema} queries, [{@value}].
      *
      */
     public static final String SCHEMA_QUERY_PATH = SCHEMA_PATH + "/queries" ;

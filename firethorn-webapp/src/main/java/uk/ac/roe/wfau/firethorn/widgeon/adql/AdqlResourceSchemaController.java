@@ -31,13 +31,15 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- *
+ * Spring MVC controller to handle the {@link AdqlSchema} in an {@link AdqlResource}.
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMA_PATH}]
  *
  */
 @Slf4j
@@ -64,59 +66,31 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * MVC property for the select name.
+     * MVC property for the {@link AdqlSchema} name, [{@value}].
+     * @todo Merge create, select and import.
      *
      */
     public static final String SELECT_NAME = "adql.resource.schema.select.name" ;
 
     /**
-     * MVC property for the create name.
+     * MVC property for the {@link AdqlSchema} name, [{@value}].
+     * @todo Merge create, select and import.
      *
      */
     public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
 
     /**
-     * MVC property for the import table base.
-     *
-     */
-    public static final String IMPORT_TABLE_BASE = "adql.resource.table.import.base" ;
-
-    /**
-     * MVC property for the import table name.
-     *
-     */
-    public static final String IMPORT_TABLE_NAME = "adql.resource.table.import.name" ;
-
-    /**
-     * MVC property for the import schema base.
-     *
+     * MVC property for the {@Identifier} of the {@link BaseSchema} to copy, [{@value}].
+     * 
      */
     public static final String IMPORT_SCHEMA_BASE = "adql.resource.schema.import.base" ;
 
     /**
-     * MVC property for the import schema name.
+     * MVC property for the {@link AdqlSchema} name, [{@value}].
+     * @todo Merge create, select and import.
      *
      */
     public static final String IMPORT_SCHEMA_NAME = "adql.resource.schema.import.name" ;
-
-
-    /**
-     * URL path for the metadoc import method.
-     *
-     */
-    public static final String METADOC_IMPORT_PATH = "metadoc/import" ;
-
-    /**
-     * MVC property for the import metadoc file.
-     *
-     */
-    public static final String METADOC_IMPORT_FILE = "urn:adql.schema.metadoc.import.file" ;
-
-    /**
-     * MVC property for the import metadoc base.
-     *
-     */
-    public static final String METADOC_IMPORT_BASE = "urn:adql.schema.metadoc.import.base" ;
 
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)
@@ -135,16 +109,18 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * Get the parent entity based on the request ident.
-     * @throws IdentifierNotFoundException
+     * Get the parent {@link AdqlResource} based on the {@Identifier} in the request path.
+     * @param ident The {@link AdqlResource} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The parent {@link AdqlResource}.
+     * @throws IdentifierNotFoundException If the {@link AdqlResource} could not be found.
      *
      */
     @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-    public AdqlResource parent(
+    public AdqlResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws IdentifierNotFoundException {
-        log.debug("parent() [{}]", ident);
+        log.debug("entity() [{}]", ident);
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -153,11 +129,15 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * JSON GET request to select all.
-     *
+     * {@link RequestMethod#GET} request to select all the {@link AdqlSchema} in this {@link AdqlResource}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @return An {@Iterable} set of {@link AdqlSchemaBean}.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<AdqlSchemaBean> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
@@ -169,11 +149,17 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * JSON request to select by name.
-     *
+     * {@link RequestMethod#GET} request to select a specific {@link AdqlSchema} by name.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @param name The {@link AdqlSchema} name to look for, [{@value #SELECT_NAME}].
+     * @return The matching {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @throws NameNotFoundException If a matching {@link AdqlSchema} could not be found.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
     public AdqlSchemaBean select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -189,20 +175,24 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * JSON POST request to create a new schema.
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlSchema}.
+     * <br/>Request path : [{@value #CREATE_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @param name The {@link AdqlSchema} name, [{@value #CREATE_NAME}].
+     * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @todo Rejects duplicate names.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth depth,
         @RequestParam(value=CREATE_NAME, required=true)
         final String name
         ){
-        log.debug("create(EntityType, String) [{}][{}]", depth, name);
+        log.debug("create(String) [{}][{}]", name);
         return created(
             resource.schemas().create(
                 name
@@ -211,11 +201,20 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * JSON POST request to import all the tables from another schema.
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlSchema} copying the name and tables from a {@link BaseSchema}.
+     * <br/>Request path : [{@value #IMPORT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
+     * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @throws IdentifierNotFoundException If the {@link BaseSchema} could not be found.
+     * @todo Rejects duplicate names.
+     * @todo Merge with next method.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -238,11 +237,21 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * JSON POST request to import all the tables from another schema.
-     *
+     * {@link RequestMethod#POST} request to create a new {@link AdqlSchema} copying the tables from a {@link BaseSchema}.
+     * <br/>Request path : [{@value #IMPORT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
+     * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param name     The name of the new {@link AdqlSchema}, [{@value #IMPORT_SCHEMA_NAME}].
+     * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @throws IdentifierNotFoundException If the {@link BaseSchema} could not be found.
+     * @todo Rejects duplicate names.
+     * @todo Make name optional, default to the base name.
+     * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,

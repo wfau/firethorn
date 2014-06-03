@@ -22,8 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -32,15 +30,15 @@ import org.joda.time.format.ISODateTimeFormat;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.FieldFormatter;
 
 /**
- * Spring Controller to generate VOTable response for a table.
- * 
+ * Spring MVC controller to format a {@link BaseTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
  * Based on the VOTable-1.3 specification.
- * http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
+ * @see <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>
+ * @see <a href='http://www.ivoa.net/documents/VOTable/20130920/index.html'></a>
  *
  */
-@Slf4j
 public abstract class BaseTableVOTableController
 extends AbstractTableController
     {
@@ -54,26 +52,31 @@ extends AbstractTableController
         }
 
     /**
-     * VOTable MIME type.
+     * VOTable MIME type, {@value}.
      *
      */
     public static final String VOTABLE_MIME = "application/x-votable+xml" ;
 
     /**
-     * TextXml MIME type.
+     * TextXml MIME type, {@value}.
      *
      */
     public static final String TEXT_XML_MIME = "text/xml" ;
 
     /**
-     * Escape string values for XML.
-     * http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/StringEscapeUtils.html
-     * http://commons.apache.org/proper/commons-lang/javadocs/api-2.6/org/apache/commons/lang/StringEscapeUtils.html#escapeXml%28java.lang.String%29
+     * A {@link FieldFormatter} to escape {@link String} values using XML entities.
+     * @see StringEscapeUtils
+     * @see StringEscapeUtils#escapeXml(String)
      *
      */
     public static class XmlStringFormatter
     extends AbstractFormatter
         {
+        /**
+         * Public constructor.
+         * @param column The {@link BaseColumn} this {@link FieldFormatter} will handle.
+         *
+         */
         public XmlStringFormatter(final BaseColumn<?> column)
             {
             super(
@@ -94,12 +97,18 @@ extends AbstractTableController
         }
 
     /**
-     * ISO8601 format for dates.
+     * A {@link FieldFormatter} to format {@link DateTime} values using ISO8601.
+     * @see ISODateTimeFormat#dateTime()
      *
      */
     public static class XmlDateTimeFormatter
     extends AbstractFormatter
         {
+        /**
+         * Public constructor.
+         * @param column The {@link BaseColumn} this {@link FieldFormatter} will handle.
+         *
+         */
         public XmlDateTimeFormatter(final BaseColumn<?> column)
             {
             super(
@@ -107,8 +116,11 @@ extends AbstractTableController
                 );
             }
 
-        protected static final DateTimeFormatter iso = ISODateTimeFormat.dateTime();
-
+        /**
+         * Our {@link DateTimeFormatter}.
+         * 
+         */
+        private static final DateTimeFormatter iso = ISODateTimeFormat.dateTime();
         @Override
         public String format(final ResultSet results)
         throws SQLException
@@ -123,10 +135,6 @@ extends AbstractTableController
             }
         }
 
-    /**
-     * Generate the table header.
-     * 
-     */
     @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
         {
@@ -155,7 +163,7 @@ extends AbstractTableController
 
         writer.append("<LINK");
         writer.append(" content-type='");
-        writer.append(JSON_CONTENT);
+        writer.append(JSON_MIME);
         writer.append("'");
         writer.append(" content-role='metadata'");
         writer.append(" href='");
@@ -194,12 +202,14 @@ extends AbstractTableController
         writer.append("<DATA>");
         writer.append("<TABLEDATA>");
         }            
-        
+
     /**
-     * Generate the metadata for a field.
-     * 
+     * Write a the VOTable FIELD metadata for {@link BaseColumn} to a {@link PrintWriter}
+     * @param writer  The {@link PrintWriter} to write the field to.
+     * @param columnn The {@link BaseColumn} to write the FIELD metadata for.
+     *
      */
-    public void field(final PrintWriter writer, final BaseColumn<?> column)
+    protected void field(final PrintWriter writer, final BaseColumn<?> column)
         {
         writer.append("<FIELD ID='column.");
             writer.append(column.ident().toString());
@@ -280,7 +290,7 @@ extends AbstractTableController
         writer.append(">");
 
         writer.append("<LINK");
-        writer.append(" content-type='" + JSON_CONTENT + "'");
+        writer.append(" content-type='" + JSON_MIME + "'");
         writer.append(" content-role='metadata'");
         writer.append(" href='" + column.link() + "'");
         writer.append("/>");
@@ -297,10 +307,6 @@ extends AbstractTableController
         writer.append("</FIELD>");
         }
 
-    /**
-     * Generate a table row.
-     * 
-     */
     @Override
     public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException
@@ -314,10 +320,6 @@ extends AbstractTableController
         writer.append("</TR>");
         }
 
-    /**
-     * Generate a table cell.
-     * 
-     */
     @Override
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
     throws SQLException
@@ -331,10 +333,6 @@ extends AbstractTableController
         writer.append("</TD>");
         }
     
-    /**
-     * Generate the table footer.
-     * 
-     */
     @Override
     public void foot(final PrintWriter writer, final BaseTable<?,?> table)
         {
@@ -345,10 +343,6 @@ extends AbstractTableController
         writer.append("</vot:VOTABLE>");
         }
 
-    /**
-     * Select a formatter for a field.
-     * 
-     */
     @Override
     public FieldFormatter formatter(final BaseColumn<?> column)
         {

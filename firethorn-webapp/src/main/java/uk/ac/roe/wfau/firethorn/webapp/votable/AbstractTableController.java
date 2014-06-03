@@ -25,8 +25,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.accessibility.internal.resources.accessibility;
-
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -35,8 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 
 /**
- * Spring Controller to generate response for a table.
- * 
+ * Abstract base class for a Spring MVC Controller to format table data.
  *
  */
 @Slf4j

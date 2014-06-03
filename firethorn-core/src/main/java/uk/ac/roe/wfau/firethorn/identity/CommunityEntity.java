@@ -215,9 +215,9 @@ implements Community
         }
 
     @Override
-    public Identities identities()
+    public Members members()
         {
-        return new Identities()
+        return new Members()
             {
             @Override
             public Identity create(final String name)

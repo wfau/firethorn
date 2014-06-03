@@ -110,7 +110,7 @@ public class JdbcColumnController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public JdbcColumnBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
