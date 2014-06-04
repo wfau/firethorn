@@ -1,11 +1,11 @@
-id=twomass
+id=twomasswfau
 type=uk.org.ogsadai.DATA_RESOURCE
 creationTime=null
 terminationTime=null
 PROPERTIES
 END
 CONFIG
-dai.astro.tapurl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+dai.astro.tapurl=http://wfaudata.roe.ac.uk/twomass-dsa/TAP/
 END
 ACTIVITIES
 uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery

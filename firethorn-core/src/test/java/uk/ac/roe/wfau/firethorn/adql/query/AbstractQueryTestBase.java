@@ -504,6 +504,10 @@ extends TestPropertiesBase
     
     public void validate(final AdqlQuery query, final String input)
         {
+        log.debug("---- SQL ----");
+        log.debug(query.osql());
+        log.debug("---- SQL ----");
+
         assertEquals(
             clean(
                 expand(

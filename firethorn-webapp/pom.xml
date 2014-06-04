@@ -283,21 +283,6 @@
     </reporting>
 
     <profiles>
-
-        <profile>
-            <id>tomcat-6-run</id>
-            <build>
-                <defaultGoal>tomcat6:run</defaultGoal>
-            </build>
-        </profile>
-
-        <profile>
-            <id>tomcat-7-run</id>
-            <build>
-                <defaultGoal>tomcat7:run</defaultGoal>
-            </build>
-        </profile>
-
         <profile>
             <id>tomcat-alpha</id>
             <build>

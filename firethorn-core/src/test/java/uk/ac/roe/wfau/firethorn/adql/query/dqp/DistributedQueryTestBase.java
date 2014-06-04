@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  */
 @Slf4j
 @Ignore
-public class DistributedQueryTestBase
+public abstract class DistributedQueryTestBase
 extends AtlasQueryTestBase
     {
 

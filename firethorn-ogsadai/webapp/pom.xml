@@ -142,6 +142,30 @@
                 +-->
         </dependency>
 
+        <!--+
+            | Starlink Tables library.
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-fits</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-tamfits</artifactId>
+        </dependency>
+            +-->
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-table</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-votable</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
