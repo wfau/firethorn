@@ -802,4 +802,7 @@ EOF
                 twomass_psc.dec BETWEEN -3 AND -2
             "
 
+        #
+        # Using the full table names works, using AS aliases for the table names fails ... 
+
 
