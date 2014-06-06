@@ -177,10 +177,30 @@ implements XMLReader
     public StartElement start(final XMLEventReader reader)
     throws XMLParserException
         {
-        log.debug("start(StartElement)");
+        log.debug("start(XMLEventReader)");
         log.debug("  QName [{}]", this.qname());
         return parser.start(
             reader
             );
         }
+
+    /**
+     * Validate our end element.
+     *
+     * @param reader The XMLEventReader to read from.
+     * @return Our start element.
+     * @throws XMLReaderException If we didn't find what we expected.
+     *
+     */
+    public void done(final XMLEventReader reader)
+    throws XMLParserException
+        {
+        log.debug("done(XMLEventReader)");
+        log.debug("  QName [{}]", this.qname());
+        parser.done(
+            reader
+            );
+        }
+
+    
     }

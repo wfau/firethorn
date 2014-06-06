@@ -29,7 +29,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
@@ -70,7 +71,6 @@ public class IvoaResourceEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
 
     protected static final String DB_URI_COL  = "uri";
-    protected static final String DB_ENDPOINT_URL_COL  = "url";
 
     /**
      * Our Entity Factory implementation.
@@ -166,7 +166,8 @@ public class IvoaResourceEntity
             name
             );
         endpoints.add(
-            new Endpoint(
+            new IvoaEndpointEntity(
+                this,
                 endpoint
                 )
             );
@@ -261,46 +262,11 @@ public class IvoaResourceEntity
         // TODO Auto-generated method stub
         }
 
-    /**
-     * Embeddable implementation of the Endpoint interface. 
-     *
-     */
-    @Embeddable
-    public class Endpoint 
-    implements IvoaResource.Endpoint
-        {
-        /**
-         * Protected constructor.
-         *
-         */
-        protected Endpoint(String url)
-            {
-            this.url = url ;
-            }
-        
-        @Basic(fetch = FetchType.EAGER)
-        @Column(
-            name = DB_ENDPOINT_URL_COL,
-            unique = false,
-            nullable = true,
-            updatable = true
-            )
-        private String url;
-        @Override
-        public String url()
-            {
-            return this.url;
-            }
-        }
-
-    @ElementCollection
-    @CollectionTable(
-         name="Endpoints",
-         joinColumns=@JoinColumn(
-             name="service"
-             )
-         )
-    @Column(name="nickname")
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "resource",
+        targetEntity = IvoaEndpointEntity.class
+        )
     private Set<Endpoint> endpoints = new HashSet<Endpoint>();
     
     @Override

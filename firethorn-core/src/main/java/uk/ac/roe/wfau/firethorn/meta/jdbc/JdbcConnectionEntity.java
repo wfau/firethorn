@@ -494,7 +494,7 @@ public class JdbcConnectionEntity
         return null ;
         }
 
-    /*
+    /**
      * ThreadLocal database Connection.
      *
      */

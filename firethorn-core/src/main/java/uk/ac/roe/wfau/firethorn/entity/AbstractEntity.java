@@ -80,11 +80,11 @@ implements Entity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_PKEY_COL = "ident" ;
+    protected static final String DB_PKEY_COL   = "ident" ;
     protected static final String DB_UID_LO_COL = "uidlo" ;
     protected static final String DB_UID_HI_COL = "uidhi" ;
 
-    protected static final String DB_OWNER_COL = "owner" ;
+    protected static final String DB_OWNER_COL  = "owner" ;
 
     protected static final String DB_CREATED_COL  = "created"  ;
     protected static final String DB_MODIFIED_COL = "modified" ;
@@ -376,17 +376,35 @@ implements Entity
             }
         }
 
+    /**
+     * A non-zero, odd number used as the initial hash code value.  
+     * @see HashCodeBuilder#HashCodeBuilder(int, int) 
+     * 
+     */
+    protected static final int HASHCODE_INITIAL = 51 ; 
+
+    /**
+     * A non-zero, odd number used as the hash code multiplier.  
+     * @see HashCodeBuilder#HashCodeBuilder(int, int) 
+     * 
+     */
+    protected static final int HASHCODE_MULTIPLIER = 97 ; 
+
     @Override
     public int hashCode()
         {
-        return this.hashCode(51, 97);
+        return this.hashCode(
+            HASHCODE_INITIAL,
+            HASHCODE_MULTIPLIER
+            );
         }
 
     /**
-     * Two randomly chosen, non-zero, odd numbers must be passed in. Ideally these should be different for each class, however this is not vital.
+     * Two randomly chosen, non-zero, odd numbers must be passed in.
+     * Ideally these should be different for each class, however this is not vital.
      * Prime numbers are preferred, especially for the multiplier. 
      * 
-     * @param initial A non-zero, odd number used as the initial value
+     * @param initial A non-zero, odd number used as the initial value 
      * @param multiplier A a non-zero, odd number used as the multiplier 
      * @return The computed hashCode.
      * @see HashCodeBuilder#HashCodeBuilder(int, int) 
