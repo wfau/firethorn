@@ -124,8 +124,14 @@ implements BaseSchema<SchemaType, TableType>
     @Override
     public StringBuilder namebuilder()
         {
-        return new StringBuilder(
-            this.name()
-            );
+        if (this.name() != null)
+            {
+            return new StringBuilder(
+                this.name()
+                );
+            }
+        else {
+            return new StringBuilder();
+            }
         }
     }

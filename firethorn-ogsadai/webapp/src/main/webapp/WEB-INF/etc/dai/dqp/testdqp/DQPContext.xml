@@ -36,15 +36,37 @@
     </bean>
 
     <!--+
-        | TWOMASS data node.
-    <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="twomass"/>
+        | WFAU TWOMASS data node.
+        +-->
+    <bean id="twomassjdbc" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="twomassjdbc"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+
+    <!--+
+        | WFAU TWOMASS data node.
         +-->
+    <bean id="twomasswfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="twomasswfau"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
+        | Gavo TWOMASS data node.
+        +-->
+    <bean id="twomassgavo" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="twomassgavo"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
 
     <!--+
         | UKIDSS data node.
@@ -58,7 +80,7 @@
         +-->
 
     <!--+
-        | ATLAS spanning data node.
+        | ATLAS data node.
         +-->
     <bean id="atlas" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="atlas"/>
@@ -69,7 +91,7 @@
     </bean>
 
     <!--+
-        | WFAU spanning data node.
+        | WFAU data node.
         +-->
     <bean id="wfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="wfau"/>
@@ -105,13 +127,19 @@
         <property name="dataNodesMap">
             <map>
                 <!--+
-                <entry key="twomass">
-                    <ref bean="twomass"/>
-                </entry>
                 <entry key="ukidss">
                     <ref bean="ukidss"/>
                 </entry>
                     +-->
+                <entry key="twomassjdbc">
+                    <ref bean="twomassjdbc"/>
+                </entry>
+                <entry key="twomasswfau">
+                    <ref bean="twomasswfau"/>
+                </entry>
+                <entry key="twomassgavo">
+                    <ref bean="twomassgavo"/>
+                </entry>
                 <entry key="atlas">
                     <ref bean="atlas"/>
                 </entry>

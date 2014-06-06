@@ -81,6 +81,7 @@
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
+        +-->
     <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
         <property name="jdbcUrl"     value="${firethorn.twomass.url}"/>
@@ -93,7 +94,6 @@
         <property name="maxIdleTime" value="60" />
 
     </bean>
-        +-->
 
     <!--+
         | SSH tunnel to ROE database server.

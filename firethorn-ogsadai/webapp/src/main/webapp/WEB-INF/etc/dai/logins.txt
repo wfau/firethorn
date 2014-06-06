@@ -1,4 +1,4 @@
-id=twomass
+id=twomassjdbc
 userID=*
 username={SQL-USER}
 password={SQL-PASS}

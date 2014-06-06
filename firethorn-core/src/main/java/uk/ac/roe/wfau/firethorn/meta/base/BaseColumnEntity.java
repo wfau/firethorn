@@ -73,7 +73,16 @@ extends BaseComponentEntity<ColumnType>
     @Override
     public StringBuilder namebuilder()
         {
-        return this.table().namebuilder().append(".").append(this.name());
+        StringBuilder builder = this.table().namebuilder();
+        if (this.name() != null)
+            {
+            if (builder.length() > 0)
+                {
+                builder.append(".");
+                }
+            builder.append(this.name());
+            }
+        return builder;
         }
 
     /*

@@ -1,0 +1,607 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+
+    Testing DQP distributed queries.
+
+    Create a 'local' resource for TwoMass.
+    Using separate tunneled JDBC connection. 
+
+    Import metadata for the TwoMass resource.
+    Distributed query spanning the Atlas and TwoMass.
+
+
+    atlasSourceXtwomass_psc
+    atlasSourceXtwomass_xsc
+
+# -----------------------------------------------------
+# Update our firethorn properties
+#[user@desktop]
+
+    gedit ${HOME:?}/firethorn.properties
+
+        firethorn.twomass.url=jdbc:jtds:sqlserver://localhost:1435/TWOMASS
+        firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.twomass.type=mssql
+        firethorn.twomass.user=xxxxxxxx
+        firethorn.twomass.pass=xxxxxxxx
+
+# -----------------------------------------------------
+# Update the test configuration
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-core/src/test/conf/database-config.xml"
+
+        <!--+
+            | SSH tunnel to ROE database server.
+            | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+            +-->
+        <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+            <!--+
+                | DataSource properties.
+                +-->
+            <property name="jdbcUrl"     value="${firethorn.twomass.url}"/>
+            <property name="user"        value="${firethorn.twomass.user}"/>
+            <property name="password"    value="${firethorn.twomass.pass}"/>
+            <property name="driverClass" value="${firethorn.twomass.driver}"/>
+            <!--+
+                | C3P0 connection pool.
+                +-->
+            <property name="minPoolSize" value="5" />
+            <property name="maxPoolSize" value="10" />
+            <property name="maxIdleTime" value="60" />
+        </bean>
+
+# -----------------------------------------------------
+# Add the TWOMASS metadata. 
+#[user@desktop]
+
+    ......
+
+    public class DistributedTestCase
+    extends DistributedQueryTestBase
+        {
+        // ....
+        }
+
+    public class DistributedQueryTestBase
+    extends AtlasQueryTestBase
+        {
+        // ....
+        }
+
+    public class AtlasQueryTestBase
+    extends AbstractQueryTestBase
+        {
+        // ....
+        }
+
+    public class AbstractQueryTestBase
+    extends TestPropertiesBase
+        {
+        // ....
+        }
+
+    public class TestPropertiesBase
+    extends TestBase
+        {
+        // ....
+        }
+
+    public abstract class TestBase
+    extends TestRoot
+        {
+        // ....
+        }
+
+# -----------------------------------------------------
+# Build everything  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run the firethorn service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'Atlas ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        cat > "${HOME:?}/firethorn.testing" << EOF
+atlasspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'TWOMASS JDBC conection' 'spring:RoeTWOMASS'  'TWOMASS' 'twomass'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'TWOMASS ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        cat >> "${HOME:?}/firethorn.testing" << EOF
+twomassspace=${adqlspace:?}
+twomassschema=${adqlschema:?}
+EOF
+
+    popd
+
+
+adqlspace=/adql/resource/9240577
+atlasschema=/adql/schema/9273393
+twomassspace=/adql/resource/9240581
+twomassschema=/adql/schema/9273447
+
+
+# -----------------------------------------------------
+# Run some tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"   'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassspace:?}" 'TWOMASS'  'twomass'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlas.atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            "
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 1.0 AND 2.0
+            AND
+                atlasSource.dec BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 1.0 AND 2.0
+            "
+
+        java.lang.NullPointerException
+	        at uk.org.ogsadai.dqp.lqp.optimiser.partitioner.PartitioningOptimiser.fillEvaluationNodeScanCount(PartitioningOptimiser.java:147)
+	        at uk.org.ogsadai.dqp.lqp.optimiser.partitioner.PartitioningOptimiser.annotateWithEvalNodes(PartitioningOptimiser.java:90)
+	        at uk.org.ogsadai.dqp.lqp.optimiser.join.InnerThetaJoinPossibleJoin.getRank(InnerThetaJoinPossibleJoin.java:56)
+	        at uk.org.ogsadai.dqp.lqp.optimiser.join.JoinOrderingOptimiser.processJoinGroup(JoinOrderingOptimiser.java:151)
+	        at uk.org.ogsadai.dqp.lqp.optimiser.join.JoinOrderingOptimiser.optimise(JoinOrderingOptimiser.java:131)
+
+        private void fillEvaluationNodeScanCount(Operator root)
+        {
+            // Find a resource with most scans
+            List<Operator> scans = OptimiserUtils.getLeafs(Branch.LEFT, root);
+            mEvaluationNodeScanCountMap = new HashMap<EvaluationNode, Integer>();
+            for (Operator o : scans)
+            {
+                EvaluationNode en = ((ScanOperator) o).getDataNode().getEvaluationNode();
+                Integer cnt = mEvaluationNodeScanCountMap.get(en);
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource,
+                atlasSourceXtwomass_psc,
+                twomass.twomass_psc
+            WHERE
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            AND
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            AND
+                atlasSource.ra  BETWEEN 1.0 AND 2.0
+            AND
+                atlasSource.dec BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 1.0 AND 2.0
+            "
+
+        java.lang.NullPointerException
+	        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:817)
+	        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+	        at uk.org.ogsadai.dqp.lqp.QueryGraph.getNextPredicate(QueryGraph.java:741)
+	        at uk.org.ogsadai.dqp.lqp.QueryGraph.getQueryPlan(QueryGraph.java:302)
+	        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildQuery(LQPBuilder.java:387)
+	        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildStatement(LQPBuilder.java:211)
+	        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildLQP(LQPBuilder.java:133)
+	        at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:129)
+	        at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+	        at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+
+        private EvaluationNode getEvaluationNode(Operator op)
+        {
+            // If we have a evaluation node then return it
+            EvaluationNode evalNode = null;
+            if (op instanceof ScanOperator)
+            {
+                evalNode = ((ScanOperator) op).getDataNode().getEvaluationNode();
+
+
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource,
+                atlasSourceXtwomass_psc,
+                twomass.twomass_psc
+            WHERE
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            AND
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            AND
+                atlasSource.ra  BETWEEN 1.0 AND 2.0
+            AND
+                atlasSource.dec BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.ra BETWEEN 1.0 AND 2.0
+            AND
+                twomass.twomass_psc.dec BETWEEN 1.0 AND 2.0
+            "
+
+    Caused by: java.lang.NullPointerException
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:817)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getNextPredicate(QueryGraph.java:741)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getQueryPlan(QueryGraph.java:302)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildQuery(LQPBuilder.java:387)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildStatement(LQPBuilder.java:211)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildLQP(LQPBuilder.java:133)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:129)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+	    at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource,
+                atlasSourceXtwomass_psc,
+                twomass.twomass_psc
+            WHERE
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            AND
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            AND
+                atlasSource.ra  > 1.0
+            AND
+                atlasSource.ra  < 2.0
+            AND
+                atlasSource.dec > 1.0
+            AND
+                atlasSource.dec < 2.0
+            AND
+                twomass.twomass_psc.ra > 1.0
+            AND
+                twomass.twomass_psc.ra < 2.0
+            AND
+                twomass.twomass_psc.dec > 1.0
+            AND
+                twomass.twomass_psc.dec < 2.0
+            "
+
+    Caused by: java.lang.NullPointerException
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:817)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getNextPredicate(QueryGraph.java:741)
+        at uk.org.ogsadai.dqp.lqp.QueryGraph.getQueryPlan(QueryGraph.java:302)
+        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildQuery(LQPBuilder.java:387)
+        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildStatement(LQPBuilder.java:211)
+        at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildLQP(LQPBuilder.java:133)
+        at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:129)
+        at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+        at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+        ... 10 more
+
+
+# -----------------------------------------------------
+# Add 'twomass' node to the DQP federation.
+#[user@desktop]
+
+    gedit "${FIRETHORN_CODE:?}/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/dqp/testdqp/DQPContext.xml"
+
+        <!--+
+            | TWOMASS data node.
+            +-->
+    +   <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    +       <constructor-arg name="resourceID"     value="twomass"/>
+    +       <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+    +       <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+    +       <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+    +       <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    +   </bean>
+
+        .....
+
+        <!--+
+            | DQP federation.
+            +-->
+        <bean id="federation" 
+            class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
+
+            <property name="metadataServiceFactory">
+                <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.MetadataServiceFactoryImpl">
+                    <constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/>
+                </bean>
+            </property>
+
+            <property name="dataNodesMap">
+                <map>
+                    .....
+                +   <entry key="twomass">
+                +       <ref bean="twomass"/>
+                +   </entry>
+                    <entry key="atlas">
+                        <ref bean="atlas"/>
+                    </entry>
+                    .....
+                </map>
+                .....
+            </property>
+            .....
+        </bean>
+
+# -----------------------------------------------------
+# Re-run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource,
+                atlasSourceXtwomass_psc,
+                twomass.twomass_psc
+            WHERE
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            AND
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            AND
+                atlasSource.ra  > 1.0
+            AND
+                atlasSource.ra  < 2.0
+            AND
+                atlasSource.dec > 1.0
+            AND
+                atlasSource.dec < 2.0
+            AND
+                twomass.twomass_psc.ra > 1.0
+            AND
+                twomass.twomass_psc.ra < 2.0
+            AND
+                twomass.twomass_psc.dec > 1.0
+            AND
+                twomass.twomass_psc.dec < 2.0
+            "
+
+    RUNNING
+    RUNNING
+    RUNNING
+    COMPLETED
+
+# -----------------------------------------------------
+# Try a distributed query.
+#[user@desktop]
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass.twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 0 AND 30
+            AND
+                atlasSource.dec BETWEEN 0 AND 30
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 0 AND 30
+            AND
+                twomass.twomass_psc.pts_key BETWEEN 0 AND 30
+            "
+
+    RUNNING
+    RUNNING
+    RUNNING
+    COMPLETED
+
+# -----------------------------------------------------
+# WARNING - BUG
+# -----------------------------------------------------
+
+    A missing data node in the DQP federation causes a NullPointer Exception deep in the QueryGraph evaluation.
+    
+    Major TODO is to implement dymanic creation and configuration of DQP federation data resources.
+
+    Still TODO is to wire this up to a TAP service.
+

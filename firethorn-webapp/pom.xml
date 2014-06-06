@@ -33,7 +33,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.2-SNAPSHOT</version>
+        <version project='firethorn'>1.11.2-zrq-merge-test</version>
     </parent>
 
     <artifactId>firethorn-webapp</artifactId>
@@ -283,21 +283,6 @@
     </reporting>
 
     <profiles>
-
-        <profile>
-            <id>tomcat-6-run</id>
-            <build>
-                <defaultGoal>tomcat6:run</defaultGoal>
-            </build>
-        </profile>
-
-        <profile>
-            <id>tomcat-7-run</id>
-            <build>
-                <defaultGoal>tomcat7:run</defaultGoal>
-            </build>
-        </profile>
-
         <profile>
             <id>tomcat-alpha</id>
             <build>

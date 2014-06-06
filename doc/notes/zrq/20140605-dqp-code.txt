@@ -1,0 +1,136 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    # Load Ivoa resources from VOSI tables document.
+    # Speed up loading of Jdbc resources.
+
+
+    #
+    # Download VOSI tables for testing.
+
+Start with a URL, get the VOSI document.
+Process the VOSI document to fill in our IvoaResource.
+
+
+
+# -----------------------------------------------------
+# ....
+#[user@desktop]
+
+    curl 'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata' | xmllint --format - > gavo-tabledata.xml
+
+    curl 'http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities' | xmllint --format - > gavo-capabilities.xml
+
+    <cap:capabilities
+        xmlns:cap="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+        xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.1"
+        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.ivoa.net/xml/VOSICapabilities/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VOSICapabilities-v1.0.xsd
+            http://www.ivoa.net/xml/TAPRegExt/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v1.1.xsd
+            http://www.ivoa.net/xml/VORegistry/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VORegistry-v1.0.xsd
+            http://www.ivoa.net/xml/VOResource/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VOResource-v1.0.xsd
+            http://www.ivoa.net/xml/VODataService/v1.1 
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd
+            ">
+        <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/availability</accessURL>
+            </interface>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities</accessURL>
+            </interface>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/VOSI#tables">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata</accessURL>
+            </interface>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+            <interface role="std" xsi:type="vs:ParamHTTP">
+                <accessURL use="base">http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap</accessURL>
+            </interface>
+            <dataModel ivo-id="ivo://ivoa.net/std/RegTAP#1.0">Registry 1.0</dataModel>
+            <dataModel ivo-id="ivo://ivoa.net/std/RegTAP/stc">Registry STC 1.0</dataModel>
+            <dataModel ivo-id="ivo://ivoa.net/std/ObsCore/v1.0">Obscore-1.0</dataModel>
+            ....
+            ....
+            <retentionPeriod>
+                <default>172800</default>
+            </retentionPeriod>
+            <executionDuration>
+                <default>3600</default>
+            </executionDuration>
+            <outputLimit>
+                <default unit="row">2000</default>
+                <hard unit="row">1000000000</hard>
+            </outputLimit>
+            <uploadLimit>
+                <hard unit="byte">20000000</hard>
+            </uploadLimit>
+        </capability>
+    </cap:capabilities>
+
+
+
+
+
+    IvoaResource
+
+        // List of capabilities
+        Iterable<Capability> capabilities()
+
+    IvoaResourceCapability
+
+        // The capability type URI.
+        String type();
+
+        // List of interfaces
+        Iterable<Interface> interfaces()
+
+    IvoaResourceInterface
+
+        // List of endpoint URLs
+        Iterable<Endpoint> endpoints()
+
+        // Stuff about this interface.
+
+    IvoaResourceEndpoint
+
+        // The endpoint URL.
+        String url();
+
+        // Stuff about this endpoint.
+
+
+
+
+
+
+
+

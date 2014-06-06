@@ -479,8 +479,7 @@ public class XMLParserImpl
                 return element ;
                 }
             else {
-                throw new XMLParserException(
-                    "Unexpected XML element",
+                throw new UnexpectedXMLElementException(
                     this.qname(),
                     element
                     );

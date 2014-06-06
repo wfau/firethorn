@@ -168,7 +168,16 @@ implements BaseTable<TableType, ColumnType>
     @Override
     public StringBuilder namebuilder()
         {
-        return this.schema().namebuilder().append(".").append(this.name());
+        StringBuilder builder = this.schema().namebuilder();
+        if (this.name() != null)
+            {
+            if (builder.length() > 0)
+                {
+                builder.append(".");
+                }
+            builder.append(this.name());
+            }
+        return builder;
         }
 
     @Override

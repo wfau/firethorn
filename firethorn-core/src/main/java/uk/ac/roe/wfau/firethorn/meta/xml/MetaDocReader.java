@@ -51,7 +51,7 @@ extends XMLReaderImpl
 implements XMLReader
     {
 
-    public static final String NAMESPACE_OLD = "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1";
+    //public static final String NAMESPACE_OLD = "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1";
     public static final String NAMESPACE_URI = "urn:astrogrid:schema:TableMetaDoc:v1.1";
 
     public MetaDocReader()

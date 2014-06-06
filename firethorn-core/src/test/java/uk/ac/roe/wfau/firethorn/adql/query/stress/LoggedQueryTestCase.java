@@ -67,7 +67,7 @@ public class LoggedQueryTestCase
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        final AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = testschema().queries().create(
             linestr
             );
 

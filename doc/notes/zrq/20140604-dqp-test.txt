@@ -1,0 +1,808 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=ZRQ011103DEV
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Update our local properties.
+#[user@desktop]
+
+    gedit "${HOME}/firethorn.properties" &
+
+        firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ011103DEV
+        firethorn.meta.user=xxxxxxxx
+        firethorn.meta.pass=xxxxxxxx
+
+        firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataZRQ011103DEV
+        firethorn.user.user=xxxxxxxx
+        firethorn.user.pass=xxxxxxxx
+
+# -----------------------------------------------------
+# Run the FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig twomassjdbc  firethorn.twomass
+                jdbcconfig ukidss       firethorn.ukidss
+                jdbcconfig atlas        firethorn.atlas
+                jdbcconfig wfau         firethorn.wfau
+                jdbcconfig userdata     firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Import the JDBC table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'Atlas ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        cat > "${HOME:?}/firethorn.testing" << EOF
+atlasspace=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'TWOMASS JDBC conection' 'spring:RoeTWOMASS'  'TWOMASS' 'twomassjdbc'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'TWOMASS ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        cat >> "${HOME:?}/firethorn.testing" << EOF
+twomassjdbc=${adqlspace:?}
+EOF
+
+    popd
+
+# -----------------------------------------------------
+# Check the test settings.
+#[user@desktop]
+
+    cat "${HOME:?}/firethorn.testing"
+
+        atlasspace=/adql/resource/....
+        twomassjdbc=/adql/resource/....
+
+# -----------------------------------------------------
+# Run some local tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"  'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassjdbc:?}" 'TWOMASS'  'twomassjdbc'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlas.atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomassjdbc.twomass_psc
+            "
+    popd
+
+# -----------------------------------------------------
+# Import another two sets of TWOMASS metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'TWOMASS JDBC conection' 'spring:RoeTWOMASS'  'TWOMASS' 'twomassgavo'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'TWOMASS ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        cat >> "${HOME:?}/firethorn.testing" << EOF
+twomassgavo=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'TWOMASS JDBC conection' 'spring:RoeTWOMASS'  'TWOMASS' 'twomasswfau'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'TWOMASS ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        cat >> "${HOME:?}/firethorn.testing" << EOF
+twomasswfau=${adqlspace:?}
+EOF
+
+    popd
+
+# -----------------------------------------------------
+# Check the test settings.
+#[user@desktop]
+
+    cat "${HOME:?}/firethorn.testing"
+
+        atlasspace=/adql/resource/....
+        twomassjdbc=/adql/resource/....
+        twomassgavo=/adql/resource/....
+        twomasswfau=/adql/resource/....
+
+# -----------------------------------------------------
+# Modify the TWOMASS metadata.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqshtest.properties"
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+            use [FirethornMetadataZRQ011103DEV]
+            go
+
+            SELECT * FROM FT0110JdbcResourceEntity WHERE jdbcogsaid = 'twomassgavo'
+            go
+
+                +---------+--------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+------------+--------------+---------------+---------------------+------------+---------------+
+                |  ident  |  created                       |  modified                     |  uidhi          |  uidlo                |  name         |  text            |  copydepth  |  scantime       |  status   |  owner  |  jdbccatalog  |  jdbcdriver  |  jdbcpass  |  jdbcstatus  |  jdbcproduct  |  jdbcurl            |  jdbcuser  |  jdbcogsaid   |
+                +---------+--------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+------------+--------------+---------------+---------------------+------------+---------------+
+                |  32774  |  2014-06-04 01:39:12.9500000   |  2014-06-04 01:39:12.9500000  |  1401845952949  |  1251553449213722880  |  TWOMASS      |  JDBC conection  |  FULL       |  0.000000       |  CREATED  |  98306  |  TWOMASS      |  NULL        |  NULL      |  CREATED     |  NULL         |  spring:RoeTWOMASS  |  NULL      |  twomassgavo  |
+                +---------+--------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+------------+--------------+---------------+---------------------+------------+---------------+
+
+            SELECT
+                myschema.*
+            FROM
+                FT0110JdbcSchemaEntity AS myschema
+            JOIN
+                FT0110JdbcResourceEntity AS resource
+            ON
+                myschema.parent = resource.ident
+            WHERE
+                resource.jdbcogsaid = 'twomassgavo'
+            AND
+                myschema.jdbccatalog = 'TWOMASS'
+            AND
+                myschema.jdbcschema = 'dbo'
+            go
+
+                +----------+-------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+----------+
+                |  ident   |  created                      |  modified                     |  uidhi          |  uidlo                |  name         |  text            |  copydepth  |  scantime       |  status   |  owner  |  jdbccatalog  |  jdbcschema  |  parent  |
+                +----------+-------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+----------+
+                |  163892  |  2014-06-04 01:39:14.5370000  |  2014-06-04 01:39:14.5370000  |  1401845954535  |  6898351033774496768  |  TWOMASS.dbo  |  NULL            |  FULL       |  1401845957841  |  CREATED  |  98306  |  TWOMASS      |  dbo         |  32774   |
+                +----------+-------------------------------+-------------------------------+-----------------+-----------------------+---------------+------------------+-------------+-----------------+-----------+---------+---------------+--------------+----------+
+
+            SELECT
+                mytable.*
+            FROM
+                FT0110JdbcTableEntity AS mytable
+            JOIN
+                FT0110JdbcSchemaEntity AS myschema
+            ON
+                mytable.parent = myschema.ident
+            JOIN
+                FT0110JdbcResourceEntity AS resource
+            ON
+                myschema.parent = resource.ident
+            WHERE
+                resource.jdbcogsaid = 'twomassgavo'
+            AND
+                myschema.jdbccatalog = 'TWOMASS'
+            AND
+                myschema.jdbcschema = 'dbo'
+            AND
+                mytable.name = 'twomass_psc'
+            go
+
+                +----------+-------------------------------+-------------------------------+-----------------+------------------------+----------------------------------+--------+-------------+-----------------+-----------+---------+--------------+-------------+--------------+------------+-------------+----------+
+                |  ident   |  created                      |  modified                     |  uidhi          |  uidlo                 |  name                            |  text  |  copydepth  |  scantime       |  status   |  owner  |  adqlstatus  |  jdbccount  |  jdbcstatus  |  jdbctype  |  adqlquery  |  parent  |
+                +----------+-------------------------------+-------------------------------+-----------------+------------------------+----------------------------------+--------+-------------+-----------------+-----------+---------+--------------+-------------+--------------+------------+-------------+----------+
+                |  196766  |  2014-06-04 01:39:16.6800000  |  2014-06-04 01:39:16.6800000  |  1401845956678  |  -509939228436554944   |  twomass_psc                     |  NULL  |  FULL       |  1401846216026  |  CREATED  |  98306  |  CREATED     |  0          |  CREATED     |  0         |  NULL       |  163892  |
+                +----------+-------------------------------+-------------------------------+-----------------+------------------------+----------------------------------+--------+-------------+-----------------+-----------+---------+--------------+-------------+--------------+------------+-------------+----------+
+
+            SELECT
+                mycolumn.*
+            FROM
+                FT0110JdbcColumnEntity AS mycolumn
+            JOIN
+                FT0110JdbcTableEntity AS mytable
+            ON
+                mycolumn.parent = mytable.ident
+            JOIN
+                FT0110JdbcSchemaEntity AS myschema
+            ON
+                mytable.parent = myschema.ident
+            JOIN
+                FT0110JdbcResourceEntity AS resource
+            ON
+                myschema.parent = resource.ident
+            WHERE
+                resource.jdbcogsaid = 'twomassgavo'
+            AND
+                myschema.jdbccatalog = 'TWOMASS'
+            AND
+                myschema.jdbcschema = 'dbo'
+            AND
+                mytable.name = 'twomass_psc'
+            AND
+                mycolumn.name IN ('ra', 'dec')
+            go
+
+                +----------+-----------------------+-----------------------+-----------------+------------------------+---------+--------+-------------+------------+-----------+------------+------------+-------------+-------------+---------------+----------------+---------+------------+------------+----------+
+                |  ident   |  created              |  modified             |  uidhi          |  uidlo                 |  name   |  text  |  copydepth  |  scantime  |  status   |  adqlsize  |  adqltype  |  adqlunits  |  adqlutype  |  adqlucdtype  |  adqlucdvalue  |  owner  |  jdbcsize  |  jdbctype  |  parent  |
+                +----------+-----------------------+-----------------------+-----------------+------------------------+---------+--------+-------------+------------+-----------+------------+------------+-------------+-------------+---------------+----------------+---------+------------+------------+----------+
+                |  234010  |  2014-06-04 01:43:25  |  2014-06-04 01:43:25  |  1401846205179  |  4986889186536876032   |  ra     |  NULL  |  FULL       |  0         |  CREATED  |  NULL      |  NULL      |  NULL       |  NULL       |  NULL         |  NULL          |  98306  |  53        |  DOUBLE    |  196766  |
+                |  234011  |  2014-06-04 01:43:25  |  2014-06-04 01:43:25  |  1401846205364  |  -8392030085454687232  |  dec    |  NULL  |  FULL       |  0         |  CREATED  |  NULL      |  NULL      |  NULL       |  NULL       |  NULL         |  NULL          |  98306  |  53        |  DOUBLE    |  196766  |
+                +----------+-----------------------+-----------------------+-----------------+------------------------+---------+--------+-------------+------------+-----------+------------+------------+-------------+-------------+---------------+----------------+---------+------------+------------+----------+
+
+            #
+            # Update the metadata to match the Gavo TAP service.
+
+            UPDATE
+                FT0110JdbcColumnEntity
+            SET
+                name = 'RAJ2000'
+            WHERE
+                name = 'ra'
+            AND
+                ident IN (
+                    SELECT
+                        mycolumn.ident
+                    FROM
+                        FT0110JdbcColumnEntity AS mycolumn
+                    JOIN
+                        FT0110JdbcTableEntity AS mytable
+                    ON
+                        mycolumn.parent = mytable.ident
+                    JOIN
+                        FT0110JdbcSchemaEntity AS myschema
+                    ON
+                        mytable.parent = myschema.ident
+                    JOIN
+                        FT0110JdbcResourceEntity AS resource
+                    ON
+                        myschema.parent = resource.ident
+                    WHERE
+                        resource.jdbcogsaid = 'twomassgavo'
+                    AND
+                        myschema.jdbccatalog = 'TWOMASS'
+                    AND
+                        myschema.jdbcschema = 'dbo'
+                    AND
+                        mytable.name = 'twomass_psc'
+                    )
+            go
+
+            UPDATE
+                FT0110JdbcColumnEntity
+            SET
+                name = 'DEJ2000'
+            WHERE
+                name = 'dec'
+            AND
+                ident IN (
+                    SELECT
+                        mycolumn.ident
+                    FROM
+                        FT0110JdbcColumnEntity AS mycolumn
+                    JOIN
+                        FT0110JdbcTableEntity AS mytable
+                    ON
+                        mycolumn.parent = mytable.ident
+                    JOIN
+                        FT0110JdbcSchemaEntity AS myschema
+                    ON
+                        mytable.parent = myschema.ident
+                    JOIN
+                        FT0110JdbcResourceEntity AS resource
+                    ON
+                        myschema.parent = resource.ident
+                    WHERE
+                        resource.jdbcogsaid = 'twomassgavo'
+                    AND
+                        myschema.jdbccatalog = 'TWOMASS'
+                    AND
+                        myschema.jdbcschema = 'dbo'
+                    AND
+                        mytable.name = 'twomass_psc'
+                    )
+            go
+
+
+            UPDATE
+                FT0110JdbcTableEntity
+            SET
+                name = 'data'
+            WHERE
+                name = 'twomass_psc'
+            AND                
+                ident IN (
+                    SELECT
+                        mytable.ident
+                    FROM
+                        FT0110JdbcTableEntity AS mytable
+                    JOIN
+                        FT0110JdbcSchemaEntity AS myschema
+                    ON
+                        mytable.parent = myschema.ident
+                    JOIN
+                        FT0110JdbcResourceEntity AS resource
+                    ON
+                        myschema.parent = resource.ident
+                    WHERE
+                        resource.jdbcogsaid = 'twomassgavo'
+                    AND
+                        myschema.jdbccatalog = 'TWOMASS'
+                    AND
+                        myschema.jdbcschema = 'dbo'
+                    )
+            go
+
+            UPDATE
+                FT0110JdbcSchemaEntity
+            SET
+                name = 'twomass'
+            WHERE
+                ident = (
+                    SELECT
+                        myschema.ident
+                    FROM
+                        FT0110JdbcSchemaEntity AS myschema
+                    JOIN
+                        FT0110JdbcResourceEntity AS resource
+                    ON
+                        myschema.parent = resource.ident
+                    WHERE
+                        resource.jdbcogsaid = 'twomassgavo'
+                    AND
+                        myschema.jdbccatalog = 'TWOMASS'
+                    AND
+                        myschema.jdbcschema = 'dbo'
+                    )
+            go
+
+            #
+            # Update the metadata to match the WFAU TAP service.
+            UPDATE
+                FT0110JdbcSchemaEntity
+            SET
+                name = NULL
+            WHERE
+                ident = (
+                    SELECT
+                        myschema.ident
+                    FROM
+                        FT0110JdbcSchemaEntity AS myschema
+                    JOIN
+                        FT0110JdbcResourceEntity AS resource
+                    ON
+                        myschema.parent = resource.ident
+                    WHERE
+                        resource.jdbcogsaid = 'twomasswfau'
+                    AND
+                        myschema.jdbccatalog = 'TWOMASS'
+                    AND
+                        myschema.jdbcschema = 'dbo'
+                    )
+            go
+
+        quit
+    exit
+
+# -----------------------------------------------------
+# Run some remote tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"  'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassjdbc:?}" 'TWOMASS'  'twomassjdbc'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassgavo:?}" 'TWOMASS'  'twomassgavo'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomasswfau:?}" 'TWOMASS'  'twomasswfau'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomassgavo.twomass_psc
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomasswfau.twomass_psc
+            "
+
+    popd
+
+# -----------------------------------------------------
+# Run a distributed query.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"  'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassjdbc:?}" 'TWOMASS'  'twomassjdbc'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomasswfau:?}" 'TWOMASS'  'twomasswfau'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassgavo:?}" 'TWOMASS'  'twomassgavo'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        #
+        # Finding likely candidates ..
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                COUNT(atlasSource.ra),
+                MAX(atlasSource.ra) AS minatra,
+                MIN(atlasSource.ra) AS maxatra,
+                MAX(atlasSource.dec) AS minatdec,
+                MIN(atlasSource.dec) AS maxatdec
+            FROM
+                atlas.atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                atlasSourceXtwomass_psc.masterObjID IS NOT NULL
+            AND
+                atlasSourceXtwomass_psc.slaveObjID IS NOT NULL
+            "
+
+        <TABLEDATA>
+            <TR>
+                <TD>2666</TD>
+                <TD>180.99925950746623</TD>
+                <TD>180.00002584422873</TD>
+                <TD>-2.0887356562119153</TD>
+                <TD>-2.9995998484434456</TD>
+            </TR>
+        </TABLEDATA>
+
+        #
+        # Finding likely candidates ..
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                COUNT(twomass_psc.ra) AS countra,
+                MAX(twomass_psc.ra) AS minatra,
+                MIN(twomass_psc.ra) AS maxatra,
+                MAX(twomass_psc.dec) AS minatdec,
+                MIN(twomass_psc.dec) AS maxatdec
+            FROM
+                twomassjdbc.twomass_psc
+            WHERE
+                twomass_psc.ra  BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+        <TABLEDATA>
+            <TR>
+                <TD>1863</TD>
+                <TD>180.999257</TD>
+                <TD>180.000256</TD>
+                <TD>-2.000478</TD>
+                <TD>-2.999654</TD>
+            </TR>
+        </TABLEDATA>
+
+        #
+        # Try a JOIN with the JDBC data.
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomassjdbc.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+        #
+        # Try a JOIN with the WFAU TAP service.
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomasswfau.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+        #
+        # Try a JOIN with the Gavo TAP service.
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomassgavo.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+        #
+        # Using the full table names works, using AS aliases for the table names fails ... 
+
+
