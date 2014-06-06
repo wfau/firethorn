@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.identity;
+package uk.ac.roe.wfau.firethorn.community;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -172,6 +172,14 @@ implements Community
             {
             return this.links;
             }
+
+        @Autowired
+        protected CommunityMember.EntityFactory members;
+        @Override
+        public CommunityMember.EntityFactory members()
+            {
+            return this.members;
+            }
         }
 
     /**
@@ -220,18 +228,18 @@ implements Community
         return new Members()
             {
             @Override
-            public Identity create(final String name)
+            public CommunityMember create(final String name)
                 {
-                return factories().identities().create(
+                return factories().communities().members().create(
                     CommunityEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Identity select(final String name)
+            public CommunityMember select(final String name)
                 {
-                return factories().identities().select(
+                return factories().communities().members().select(
                     CommunityEntity.this,
                     name
                     );

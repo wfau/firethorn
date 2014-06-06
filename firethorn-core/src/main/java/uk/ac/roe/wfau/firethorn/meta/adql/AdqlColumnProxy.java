@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -294,5 +295,13 @@ implements AdqlColumn
     public AdqlResource resource()
         {
         return table().resource();
+        }
+
+    @Override
+    public EntityProtector protector()
+        {
+        // TODO Auto-generated method stub
+        // A combination of protection from base and parent ? 
+        return null ;
         }
     }

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -37,6 +38,7 @@ public class MathFunctionTestCase
      *
      */
     public void test000SA()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -58,6 +60,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test000SB()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -86,6 +89,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test001S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -113,6 +117,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test002S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -140,6 +145,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test003S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -167,6 +173,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test004SA()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -186,6 +193,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test004SB()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -213,6 +221,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test005SA()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -231,6 +240,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test005SB()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -258,6 +268,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test06SA()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -276,6 +287,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test06SB()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -303,6 +315,7 @@ public class MathFunctionTestCase
      *
      */
     public void test007S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -321,6 +334,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test007L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -348,6 +362,7 @@ public class MathFunctionTestCase
      *
      */
     public void test008S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -366,6 +381,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test008L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,

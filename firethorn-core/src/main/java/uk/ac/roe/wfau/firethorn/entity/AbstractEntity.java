@@ -39,6 +39,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+import uk.ac.roe.wfau.firethorn.community.CommunityMemberEntity;
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -158,7 +160,7 @@ implements Entity
             this.uidlo = random.nextLong();
             this.uidhi = System.currentTimeMillis();
             
-            this.owner = factories().identities().current();
+            this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
 
@@ -256,7 +258,7 @@ implements Entity
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = IdentityEntity.class
+        targetEntity = CommunityMemberEntity.class
         )
     @JoinColumn(
         name = DB_OWNER_COL,
@@ -451,6 +453,5 @@ implements Entity
             );
         }
      */
-    
     }
 

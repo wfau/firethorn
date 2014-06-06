@@ -1,0 +1,180 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Migrating changes from old dev branch
+#
+
+    1070:f78e64ff0ba2
+    Created branch 01.09-20140106-zrq-community
+    http://wfau.metagrid.co.uk/code/firethorn/rev/f78e64ff0ba2
+
+
+    1088:1b6a972907ac
+    Latest on branch 01.09-20140106-zrq-community
+    http://wfau.metagrid.co.uk/code/firethorn/rev/1b6a972907ac
+
+
+# -----------------------------------------------------
+# Create the new branch.
+#[user@desktop]
+
+    newbranch=[version]-[who]-[description]
+    newbranch=1.9.6-zrq-community
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check we have the most recent version.
+        hg pull
+        hg update
+
+        #
+        # Create the new branch.
+        hg update default
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        ./bin/version.sh "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Identify the changes we want to include.
+#[user@desktop]
+
+    # 
+    # Branch 'root'
+    # 1070:f78e64ff0ba2
+    # Created branch 01.09-20140106-zrq-community
+    # http://wfau.metagrid.co.uk/code/firethorn/rev/f78e64ff0ba2
+    # 
+    # Branch 'tip'
+    # 1088:1b6a972907ac
+    # Latest on branch 01.09-20140106-zrq-community
+    # http://wfau.metagrid.co.uk/code/firethorn/rev/1b6a972907ac
+    # 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Step up one to create our temp clones.
+        pushd ..
+        ls -al
+
+            devel -> main-20140109
+            main-20140109
+
+            #
+            # Create a clone for the branch root.
+            hg clone main-20140109 clone-20140206-A
+            pushd clone-20140206-A
+                hg update '1070:f78e64ff0ba2'
+            popd
+
+            #
+            # Create a clone for the branch tip.
+            hg clone main-20140109 clone-20140206-B
+            pushd clone-20140206-B
+                hg update '1088:1b6a972907ac'
+            popd
+
+            #
+            # Create a clone for the new branch.
+            hg clone main-20140109 clone-20140206-C
+            pushd clone-20140206-C
+                hg update "${newbranch:?}"
+            popd
+
+            #
+            # Update to a common version number.
+            pushd clone-20140206-A
+                ./bin/version.sh "${newbranch:?}"
+            popd
+            pushd clone-20140206-B
+                ./bin/version.sh "${newbranch:?}"
+            popd
+            pushd clone-20140206-C
+                ./bin/version.sh "${newbranch:?}"
+            popd
+
+            #
+            # Resolve the differences between the three clones.
+            meld clone-20140206-A clone-20140206-B clone-20140206-C &
+
+            #
+            # Create a clone for the new branch.
+            hg clone main-20140109 clone-20140206-D
+            pushd clone-20140206-D
+                hg update "${newbranch:?}"
+            popd
+            #
+            # Review and accept the new changes.
+            meld clone-20140206-C clone-20140206-D &
+
+            #
+            # Re-build everything on the D clone.
+            pushd clone-20140206-D
+                mvn -P all clean install
+            popd
+
+            #
+            # Push the changes from our D clone to our main clone.
+            pushd clone-20140206-D
+                hg addremove
+                username=$(cat ../devel/.hg/hgrc | sed -n '/^username/ {s/username *= *\(.*\)/\1/p}')
+                hg commit -m "Imported changes from [branch-01.09-20140106-zrq-community]" --user "${username:?}"
+                hg push
+            popd
+
+        #
+        # Step back into our main clone.
+        popd
+        
+        #
+        # Re-build everything in our main clone.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Test stuff ....
+
+
+
+
+
+
+
+

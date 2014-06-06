@@ -15,25 +15,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.community;
+package uk.ac.roe.wfau.firethorn.entity.access;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.community.Community;
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
- *
+ * Public interface for an Entity Protector.
  *
  */
-@Component
-public class CommunityIdentFactory
-extends WebappIdentFactory
-implements Community.IdentFactory
+public interface EntityProtector
+extends Protector
     {
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/community-1.0.json"
-        );
+
+    /**
+     * The protected Entity.
+     * 
+     */
+    public Entity entity();
+    
     }

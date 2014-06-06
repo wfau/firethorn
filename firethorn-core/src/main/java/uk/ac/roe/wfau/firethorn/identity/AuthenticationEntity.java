@@ -33,6 +33,7 @@ import javax.persistence.Table;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.community.CommunityMemberEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -171,7 +172,7 @@ implements Authentication
 
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = IdentityEntity.class
+        targetEntity = CommunityMemberEntity.class
         )
     @JoinColumn(
         name = DB_IDENTITY_COL,

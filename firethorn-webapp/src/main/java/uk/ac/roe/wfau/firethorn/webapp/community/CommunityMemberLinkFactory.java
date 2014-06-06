@@ -15,26 +15,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.identity;
+package uk.ac.roe.wfau.firethorn.webapp.community;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>Identity</code>.
+ * Link factory for <code>AdqlColumn</code>.
+ * TODO
  *
  */
 @Component
-public class IdentityLinkFactory
-extends WebappLinkFactory<Identity>
-implements Identity.LinkFactory
+public class CommunityMemberLinkFactory
+extends WebappLinkFactory<CommunityMember>
+implements CommunityMember.LinkFactory
     {
-    protected IdentityLinkFactory()
+    protected CommunityMemberLinkFactory()
         {
         super(
-            SERVICE_PATH
+            BASE_PATH
             );
         }
 
@@ -42,19 +43,19 @@ implements Identity.LinkFactory
      * The URI path for the service.
      *
      */
-    public static final String SERVICE_PATH = "/auth/identity";
+    protected static final String BASE_PATH = "/community-member" ;
 
     /**
-     * The URI path for individual identities.
+     * The URI path for individual columns.
      *
      */
-    public static final String IDENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Identity entity)
+    public String link(final CommunityMember entity)
         {
-        return this.link(
-            IDENTITY_PATH,
+        return link(
+            ENTITY_PATH,
             entity
             );
         }

@@ -18,10 +18,9 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
-import uk.ac.roe.wfau.firethorn.identity.Community;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -29,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -76,8 +76,8 @@ public interface ComponentFactories
     /**
      * Our local Identity factory.
      *
-     */
     public Identity.EntityFactory identities();
+     */
 
     /**
      * Our local Community factory.
@@ -120,5 +120,11 @@ public interface ComponentFactories
      *
      */
     public AdqlQuery.Services queries();
+
+    /**
+     * Access to the current Context factory.
+     *
+     */
+    public Context.Factory contexts();
 
     }

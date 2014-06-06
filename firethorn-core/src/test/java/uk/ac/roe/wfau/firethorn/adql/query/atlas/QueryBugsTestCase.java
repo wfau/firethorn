@@ -24,6 +24,7 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -41,6 +42,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test002S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -60,6 +62,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test002L()
+    throws QueryProcessingException
         {
         final AdqlQuery query = validate(
             Level.LEGACY,
@@ -93,6 +96,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test003S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -117,6 +121,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test003L()
+    throws QueryProcessingException
         {
         final AdqlQuery query = validate(
             Level.LEGACY,
@@ -153,6 +158,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test004S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -181,6 +187,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test004L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -209,6 +216,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test005S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -232,6 +240,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test005L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -268,6 +277,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test006L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -329,6 +339,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test006a()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -390,6 +401,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test007L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -426,6 +438,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test008L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -469,6 +482,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test009a()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -500,6 +514,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test009b()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -520,6 +535,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test010()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,

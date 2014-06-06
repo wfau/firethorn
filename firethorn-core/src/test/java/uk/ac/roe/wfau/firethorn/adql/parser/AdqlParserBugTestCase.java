@@ -45,7 +45,7 @@ extends TestBase
      * ADQL query using column names (adql_ra, adql_dec) in the WHERE clause.
      *
      */
-    private static final String PASS_ADQL =
+    private static final String TEST_ADQL =
           "SELECT"
         + "    adql_ra  as ra,"
         + "    adql_dec as dec,"
@@ -57,29 +57,6 @@ extends TestBase
         + " AND"
         + "    adql_dec Between '24.0' AND '24.2'"
         ;
-
-    /**
-     * ADQL query using column aliases (ra, dec) in the WHERE clause.
-     *
-     */
-    private static final String FAIL_ADQL =
-          "SELECT"
-        + "    adql_ra  as ra,"
-        + "    adql_dec as dec,"
-        + "    adql_pts as pts"
-        + " FROM"
-        + "    adql_table as psc"
-        + " WHERE"
-        + "    ra  Between '56.0' AND '57.9'"
-        + " AND"
-        + "    dec Between '24.0' AND '24.2'"
-        ;
-
-    /**
-     * Select the ADQL query to use for the tests.
-     *
-     */
-    private static final String TEST_ADQL = PASS_ADQL ;
 
     /**
      * This test always passes, producing valid generic SQL.

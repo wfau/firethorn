@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.identity;
+package uk.ac.roe.wfau.firethorn.community;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -107,7 +107,7 @@ extends Entity, NamedEntity
          * @return The new {@link Identity}.
          *
          */
-        public Identity create(final String name);
+        public CommunityMember create(final String name);
 
         /**
          * Select an existing {@link Identity} by name.
@@ -116,7 +116,7 @@ extends Entity, NamedEntity
          * @throws NameNotFoundException If no matching {@link Identity} was found.
          *
          */
-        public Identity select(final String name)
+        public CommunityMember select(final String name)
         throws NameNotFoundException;
 
         }

@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,11 +29,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  *
  */
 @Component
-public class CommunityIdentFactory
+public class CommunityMemberIdentFactory
 extends WebappIdentFactory
-implements Community.IdentFactory
+implements CommunityMember.IdentFactory
     {
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/community-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/community-member-1.0.json"
         );
     }
