@@ -381,7 +381,7 @@ public class VosiTablesetReader
             true
             );
 
-        private static final VosiForeignPairReader columnreader = new VosiForeignPairReader();
+        private static final VosiForeignKeyPairReader columnreader = new VosiForeignKeyPairReader();
 
         private static final XMLStringValueReader textreader = new XMLStringValueReader(
             NAMESPACE_URI,
@@ -424,12 +424,12 @@ public class VosiTablesetReader
             }
         }
 
-    public static class VosiForeignPairReader
+    public static class VosiForeignKeyPairReader
     extends XMLReaderImpl
     implements XMLReader
         {
 
-        public VosiForeignPairReader()
+        public VosiForeignKeyPairReader()
             {
             super(
                 NAMESPACE_URI,
