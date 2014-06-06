@@ -19,12 +19,11 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
@@ -171,7 +170,7 @@ public class TestFactories
             @Component
             public static class IdentFactory
             extends AbstractIdentFactory
-            implements CommunityMember.IdentFactory
+            implements Identity.IdentFactory
                 {
                 public IdentFactory()
                     {
@@ -180,8 +179,8 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<CommunityMember>
-            implements CommunityMember.LinkFactory
+            extends AbstractLinkFactory<Identity>
+            implements Identity.LinkFactory
                 {
                 public LinkFactory()
                     {

@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.community.Community;
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -52,7 +51,7 @@ public class IdentitySpaceTestCase
             community.space()
             );
 
-        final CommunityMember member = community.members().create(
+        final Identity member = community.members().create(
             unique(
                 "test-identity"
                 )
@@ -75,7 +74,7 @@ public class IdentitySpaceTestCase
         log.debug("Test community [{}][{}]", community.ident(), community.name());
         log.debug("Community space [{}][{}]", community.space().ident(), community.space().name());
 
-        final CommunityMember member = community.members().create(
+        final Identity member = community.members().create(
             unique(
                 "test-identity"
                 )
@@ -89,4 +88,4 @@ public class IdentitySpaceTestCase
                 )
             );
         }
-}
+    }

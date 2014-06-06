@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -94,10 +95,10 @@ extends Entity, NamedEntity
         throws EntityNotFoundException;
 
         /**
-         * Our local CommunityMember member factory.
+         * Our local Identity member factory.
          * 
          */
-        public CommunityMember.EntityFactory members();
+        public Identity.EntityFactory members();
         
         }
 
@@ -113,7 +114,7 @@ extends Entity, NamedEntity
          * @return The new {@link Identity}.
          *
          */
-        public CommunityMember create(final String name);
+        public Identity create(final String name);
 
         /**
          * Select an existing {@link Identity} by name.
@@ -122,7 +123,7 @@ extends Entity, NamedEntity
          * @throws NameNotFoundException If no matching {@link Identity} was found.
          *
          */
-        public CommunityMember select(final String name)
+        public Identity select(final String name)
         throws NameNotFoundException;
 
         }

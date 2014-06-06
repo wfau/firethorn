@@ -16,14 +16,14 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
- * Public interface for an Identity.
- * Two ways to go with this .. 
- * 1) More abstract, remove the extends and leave just the identifier.
- * 2) More concrete, become a base class for all the identity types.
+ * Public interface for a Member of a Community.
  *
  */
 public interface Identity
@@ -54,12 +54,38 @@ extends Entity, NamedEntity
     public static interface EntityFactory
     extends Entity.EntityFactory<Identity>
         {
+
         /**
-         * Get the current active Identity.
+         * Create a new Identity.
          *
-        public Identity current();
          */
+        public Identity create(final Community community, final String name);
+
+        /**
+         * Select a Identity.
+         *
+         */
+        public Identity select(final Community community, final String name);
 
         }
+
+    /**
+     * The parent Community.
+     *
+     */
+    public Community community();
+
+    /**
+     *  The storage space for this Identity.
+     *
+     */
+    public JdbcSchema space();
+
+    /**
+     *  The storage space for this Identity.
+     *
+     */
+    public JdbcSchema space(final boolean create);
+
     }
 

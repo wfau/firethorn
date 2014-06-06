@@ -53,8 +53,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -62,12 +62,11 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -83,13 +82,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
 
 /**
  *
@@ -1398,28 +1396,20 @@ implements AdqlQuery, AdqlParserQuery
 
 // TODO
 // Global shared 'default' space.
-            if (identity instanceof CommunityMember)
-                {
-                JdbcSchema space = ((CommunityMember)identity).space();
-                //
-                // Create our tables.
+            JdbcSchema space = identity.space();
+            //
+            // Create our tables.
 //TODO
 //Why does the query need to know where the JdbcTable is ?
-                log.debug(" Identity space [{}][{}]", space.ident(), space.name());
-                this.jdbctable = space.tables().create(
-                    this
-                    );
+            log.debug(" Identity space [{}][{}]", space.ident(), space.name());
+            this.jdbctable = space.tables().create(
+                this
+                );
 //TODO
 // Should this be FULL or THIN ?
-                this.adqltable = this.schema().tables().create(
-                    this
-                    );
-                }
-            else {
-                throw new QueryProcessingException(
-                    "Unable to allocate space for results"
-                    );
-                }
+            this.adqltable = this.schema().tables().create(
+                this
+                );
             //
             // Log the end time.
             this.timings().jdbcdone();

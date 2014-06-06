@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.spring;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -27,7 +26,6 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.DataSpace;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  *
@@ -78,21 +76,13 @@ implements Context.Factory
                 {
                 return new DataSpace()
                     {
+                    //TODO .... remove this
                     @Override
                     public JdbcSchema jdbc()
                         {
-                        Identity identity = identity();
-                        if (identity != null)
-                            {
-                            if (identity instanceof CommunityMember)
-                                {
-                                return ((CommunityMember)identity).space(
-                                    true
-                                    ); 
-                                }
-                            }
-                        return null;
+                        return identity().space();
                         }
+                    //TODO .... fix this
                     @Override
                     public AdqlSchema adql()
                         {

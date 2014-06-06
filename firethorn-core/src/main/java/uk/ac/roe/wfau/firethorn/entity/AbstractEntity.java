@@ -38,10 +38,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.community.CommunityMemberEntity;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -257,7 +257,7 @@ implements Entity
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = CommunityMemberEntity.class
+        targetEntity = IdentityEntity.class
         )
     @JoinColumn(
         name = DB_OWNER_COL,

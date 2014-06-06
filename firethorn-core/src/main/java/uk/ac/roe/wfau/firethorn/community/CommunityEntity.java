@@ -38,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 
@@ -175,9 +176,9 @@ implements Community
             }
 
         @Autowired
-        protected CommunityMember.EntityFactory members;
+        protected Identity.EntityFactory members;
         @Override
-        public CommunityMember.EntityFactory members()
+        public Identity.EntityFactory members()
             {
             return members;
             }
@@ -229,7 +230,7 @@ implements Community
         return new Members()
             {
             @Override
-            public CommunityMember create(final String name)
+            public Identity create(final String name)
                 {
                 return factories().communities().members().create(
                     CommunityEntity.this,
@@ -238,7 +239,7 @@ implements Community
                 }
 
             @Override
-            public CommunityMember select(final String name)
+            public Identity select(final String name)
                 {
                 return factories().communities().members().select(
                     CommunityEntity.this,
