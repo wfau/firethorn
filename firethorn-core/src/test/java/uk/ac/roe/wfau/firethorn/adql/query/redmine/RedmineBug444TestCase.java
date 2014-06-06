@@ -43,6 +43,7 @@ public class RedmineBug444TestCase
      */
     @Test
     public void test001()
+    throws Exception
         {
         validate(
             Level.LEGACY,

@@ -54,7 +54,7 @@ public interface AdqlFactories
      * Our query factory.
      *
      */
-    public AdqlQuery.Factory queries();
+    public AdqlQuery.EntityFactory queries();
 
     /**
      * The local ADQL parser factory.

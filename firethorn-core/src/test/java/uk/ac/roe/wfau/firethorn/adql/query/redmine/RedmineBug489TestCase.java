@@ -39,6 +39,7 @@ public class RedmineBug489TestCase
      */
     @Test
     public void test001()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -69,6 +70,7 @@ public class RedmineBug489TestCase
      */
     @Test
     public void test002()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -107,6 +109,7 @@ public class RedmineBug489TestCase
      */
     @Test
     public void test003()
+    throws Exception
         {
         validate(
             Level.LEGACY,

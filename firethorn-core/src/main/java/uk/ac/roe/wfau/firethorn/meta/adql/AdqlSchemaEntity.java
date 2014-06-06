@@ -772,6 +772,8 @@ implements AdqlSchema
         {
         return new Queries()
             {
+            /*
+             *
             @Override
             public AdqlQuery create(final String query)
             throws QueryProcessingException
@@ -792,6 +794,8 @@ implements AdqlSchema
                     name
                     );
                 }
+             *
+             */
 
             @Override
             public AdqlQuery create(final QueryParam param, final String query)

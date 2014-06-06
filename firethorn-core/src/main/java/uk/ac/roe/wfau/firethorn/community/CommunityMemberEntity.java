@@ -72,7 +72,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     )
 public class CommunityMemberEntity
 extends AbstractNamedEntity
-implements CommunityMember
+implements CommunityMember, Identity
     {
 
     /**

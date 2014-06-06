@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -33,10 +34,12 @@ extends AtlasQueryTestBase
 
     /**
      * CAST(ra AS INT)
+     * @throws Exception 
      *
      */
     @Test
     public void test001()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -74,6 +77,7 @@ extends AtlasQueryTestBase
      */
     @Test
     public void test002()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -122,6 +126,7 @@ extends AtlasQueryTestBase
      */
     @Test
     public void test003()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -153,6 +158,7 @@ extends AtlasQueryTestBase
      */
     @Test
     public void test004()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -180,6 +186,7 @@ extends AtlasQueryTestBase
      */
     @Test
     public void test005()
+    throws Exception
         {
         validate(
             Level.LEGACY,

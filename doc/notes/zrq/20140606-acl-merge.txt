@@ -24,9 +24,8 @@
 # Merge outstanding branches.
 #[user@desktop]
 
-    1.9.8-zrq-ogsadai-dqp
+    1.9.6-zrq-community
         not merged
-        (working DQP)
 
 # -----------------------------------------------------
 # Get the current version.
@@ -46,7 +45,7 @@
 # Create a new development branch.
 #[user@desktop]
 
-    newbranch=1.11.2-zrq-merge-test
+    newbranch=1.11.3-zrq-community
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -72,7 +71,7 @@
 # Merge the old branch into the new one.
 #[user@desktop]
 
-    oldbranch=1.9.8-zrq-ogsadai-dqp
+    oldbranch=1.9.6-zrq-community
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -120,11 +119,8 @@
         hg push
 
         #
-        # Swap to the main branch.
-        hg update 'default'
-
-        #
         # Merge the dev branch.
+        hg update 'default'
         hg merge "${newbranch:?}"
 
         #
@@ -134,7 +130,7 @@
 
         #
         # Update the project version.
-        setversion "1.11.3-SNAPSHOT"
+        setversion '1.11.4-SNAPSHOT'
         hg commit -m "Snapshot [version-$(getversion)]"
         hg tag    -f "version-$(getversion)"
         hg push

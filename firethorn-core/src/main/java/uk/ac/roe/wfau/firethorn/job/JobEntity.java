@@ -66,9 +66,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 @Table(
     name = JobEntity.DB_TABLE_NAME
     )
-@Inheritance(
-    strategy = InheritanceType.JOINED
-    )
 @NamedQueries(
         {
         }
@@ -633,5 +630,20 @@ else {
     public DateTime finished()
         {
         return this.finished ;
+        }
+
+    /**
+     * Refresh (fetch) this Entity from the database.
+     * @todo Remove this if possible.
+     *
+     */
+    public void refresh()
+        {
+        log.debug("---- ---- ---- ----");
+        log.debug("refresh()");
+        factories().hibernate().refresh(
+            this
+            );
+        log.debug("---- ----");
         }
     }

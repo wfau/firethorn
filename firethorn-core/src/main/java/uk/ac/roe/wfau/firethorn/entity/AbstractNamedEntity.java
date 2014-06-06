@@ -26,6 +26,7 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.Type;
 
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 
 /**

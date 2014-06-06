@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2014 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,47 +18,59 @@
 package uk.ac.roe.wfau.firethorn.entity.access;
 
 import uk.ac.roe.wfau.firethorn.access.Action;
-import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.access.ProtectorException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
- * An abstract base class for Protector implementations.
+ * Simple implementation of the EntityProtector interface.
+ * The Entity owner is allowed to do anything.
+ * Anyone else is not allowed to do anything.
  *
  */
-public abstract class AbstractEntityProtector
+public class SimpleEntityProtector
+    extends AbstractEntityProtector
     implements EntityProtector
     {
-
-    @Override
-    public Protector accept(Identity identity, Action action)
-    throws ProtectorException
+    /**
+     * Public constructor.
+     * 
+     */
+    public SimpleEntityProtector(final Entity entity)
         {
-        if (this.allow(identity, action))
-            {
-            return this;
-            }
-        else {
-            throw new EntityProtectorException(
-                identity,
-                action,
-                entity
-                );
-            }
+        this.entity = entity ;
         }
 
-    private Entity entity;
-    @Override
+    /**
+     * The entity being protected. 
+     * 
+     */
+    protected Entity entity ;
+
+    /**
+     * The entity being protected. 
+     * 
+     */
     public Entity entity()
         {
         return this.entity;
         }
+    
+    @Override
+    public Iterable<Action> actions()
+        {
+        return new EmptyIterable<Action>();
+        }
 
-    /**
-     * Resolve an Identity with the entity.
-     * - probably better to make this part of entity itself ?
-     *  
-     */
-
+    @Override
+    public boolean allow(Identity identity, Action action)
+        {
+        if (identity.equals(entity.owner()))
+            {
+            return true ;
+            }
+        else {
+            return false ;
+            }
+        }
     }

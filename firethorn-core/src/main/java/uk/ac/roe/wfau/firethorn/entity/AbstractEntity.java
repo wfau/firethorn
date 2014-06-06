@@ -38,11 +38,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.community.CommunityMemberEntity;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
+import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -427,31 +426,11 @@ implements Entity
         return builder.toHashCode();
         }
 
-    /**
-     * Refresh (fetch) this Entity from the database.
-     * @todo Remove this if possible.
-     *
-     */
-    public void refresh()
-        {
-        log.debug("---- ---- ---- ----");
-        log.debug("refresh()");
-        factories().hibernate().refresh(
-            this
-            );
-        log.debug("---- ----");
-        }
-
-    /**
-     * Delete this Entity from the database.
-     *
     @Override
-    public void delete()
+    public EntityProtector protector()
         {
-        factories().hibernate().delete(
+        return new SimpleEntityProtector(
             this
             );
         }
-     */
     }
-

@@ -67,21 +67,21 @@ extends Entity, NamedEntity
         public Community create(final String uri);
 
         /**
-         * Create a new {@link Community}.
-         * @param name The {@link Community} name.
+         * Select or create a {@link Community}.
          * @param uri  The {@link Community} URI.
+         * @param name The {@link Community} name.
          *
          */
-        public Community create(final String name, final String uri);
+        public Community create(final String uri, final String name);
 
         /**
-         * Create a new {@link Community}.
+         * Select or create a {@link Community}.
+         * @param uri   The {@link Community} URI.
          * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
          * @param name  The {@link Community} name.
-         * @param uri   The {@link Community} URI.
          *
          */
-        public Community create(final JdbcResource space, final String name, final String uri);
+        public Community create(final String uri, final String name, final JdbcResource space);
 
         /**
          * Select a Community based on URI.
@@ -93,6 +93,12 @@ extends Entity, NamedEntity
         public Community select(final String uri)
         throws EntityNotFoundException;
 
+        /**
+         * Our local CommunityMember member factory.
+         * 
+         */
+        public CommunityMember.EntityFactory members();
+        
         }
 
     /**

@@ -358,7 +358,7 @@ extends NamedEntity, Job
          * Our Query Factory.
          *
          */
-        public Factory factory();
+        public EntityFactory factory();
 
         /**
          * Our Query executor.
@@ -425,38 +425,37 @@ extends NamedEntity, Job
      * Factory interface.
      *
      */
-    public static interface Factory
-    extends Job.Factory<AdqlQuery>
+    public static interface EntityFactory
+    extends Job.EntityFactory<AdqlQuery>
         {
         /**
          * Create a new query.
          *
+        public AdqlQuery create(final AdqlSchema schema, final String input)
+        throws QueryProcessingException;
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input);
+
+        /**
+         * Create a new query.
+         *
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
+        throws QueryProcessingException;
+         */
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        throws QueryProcessingException;
 
         /**
          * Create a new query.
+         * @throws QueryProcessingException 
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid);
-
-        /**
-         * Create a new query.
-         *
-         */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name);
-
-        /**
-         * Create a new query.
-         *
-         */
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        throws QueryProcessingException;
 
         /**
          * Select all the queries from a resource.
@@ -669,12 +668,6 @@ extends NamedEntity, Job
      *
      */
     public String osql();
-
-    /**
-     * The row id column name.
-     *
-     */
-    public String rowid();
 
     /**
      * A list of the AdqlColumns used by the query.

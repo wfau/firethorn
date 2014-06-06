@@ -57,8 +57,8 @@ extends Entity, NamedEntity
         /**
          * Get the current active Identity.
          *
-         */
         public Identity current();
+         */
 
         }
     }

@@ -137,6 +137,7 @@ implements Operation
 
         private Operation current(final Operation oper)
             {
+// Error if one replaces another ?            
             local.set(
                 oper
                 );

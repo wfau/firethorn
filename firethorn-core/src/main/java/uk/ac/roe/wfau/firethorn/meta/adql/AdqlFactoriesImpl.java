@@ -65,9 +65,9 @@ public class AdqlFactoriesImpl
         }
 
     @Autowired
-    private AdqlQuery.Factory queries;
+    private AdqlQuery.EntityFactory queries;
     @Override
-    public AdqlQuery.Factory queries()
+    public AdqlQuery.EntityFactory queries()
         {
         return this.queries;
         }

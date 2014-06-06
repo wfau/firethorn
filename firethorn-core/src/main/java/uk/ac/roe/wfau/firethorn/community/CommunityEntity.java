@@ -101,6 +101,7 @@ implements Community
         @CreateMethod
         public Community create(final String uri)
             {
+            log.debug("create(String) [{}][{}]", uri);
             return create(
                 uri,
                 uri
@@ -109,21 +110,21 @@ implements Community
 
         @Override
         @CreateMethod
-        public Community create(final String name, final String uri)
+        public Community create(final String uri, final String name)
             {
             log.debug("create(String, String) [{}][{}]", name, uri);
             return create(
-                factories().jdbc().resources().userdata(),
+                uri,
                 name,
-                uri
+                factories().jdbc().resources().userdata()
                 );
             }
 
         @Override
         @CreateMethod
-        public Community create(final JdbcResource space, final String name, final String uri)
+        public Community create(final String uri, final String name, final JdbcResource space)
             {
-            log.debug("create(JdbcResource, String, String) [{}][{}][{}]", space, name, uri);
+            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", space, name, uri);
             final Community community = this.select(
                 uri
                 );
@@ -178,7 +179,7 @@ implements Community
         @Override
         public CommunityMember.EntityFactory members()
             {
-            return this.members;
+            return members;
             }
         }
 
