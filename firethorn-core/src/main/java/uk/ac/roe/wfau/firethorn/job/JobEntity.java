@@ -66,6 +66,9 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 @Table(
     name = JobEntity.DB_TABLE_NAME
     )
+@Inheritance(
+    strategy = InheritanceType.JOINED
+    )
 @NamedQueries(
         {
         }

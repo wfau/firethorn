@@ -111,9 +111,9 @@ implements AdqlSchema
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<AdqlSchema>
-    implements AdqlSchema.Factory
+    implements AdqlSchema.EntityFactory
         {
 
         @Override
@@ -295,9 +295,9 @@ implements AdqlSchema
             }
 
         @Autowired
-        protected AdqlTable.Factory tables;
+        protected AdqlTable.EntityFactory tables;
         @Override
-        public AdqlTable.Factory tables()
+        public AdqlTable.EntityFactory tables()
             {
             return this.tables;
             }

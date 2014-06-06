@@ -203,15 +203,15 @@ implements Entity
         name="ident-generator",
         strategy="hilo"
         )
-    private Long pkey ;
+    private Long ident ;
 
     @Override
     public Identifier ident()
         {
-        if (this.pkey != null)
+        if (this.ident != null)
             {
             return new LongIdentifier(
-                this.pkey
+                this.ident
                 );
             }
         else {

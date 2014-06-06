@@ -61,7 +61,7 @@ extends BaseResource<AdqlSchema>
      * Resource factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseResource.EntityFactory<AdqlResource>
         {
         /**
@@ -74,7 +74,7 @@ extends BaseResource<AdqlSchema>
          * The resource schema factory.
          *
          */
-        public AdqlSchema.Factory schemas();
+        public AdqlSchema.EntityFactory schemas();
 
         }
 

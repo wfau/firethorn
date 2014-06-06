@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package uk.ac.roe.wfau.firethorn.community;
+package uk.ac.roe.wfau.firethorn.identity;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -32,6 +32,8 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -51,10 +53,10 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     AccessType.FIELD
     )
 @Table(
-    name = CommunityMemberEntity.DB_TABLE_NAME,
+    name = IdentityEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList=CommunityMemberEntity.DB_COMMUNITY_COL
+            columnList=IdentityEntity.DB_COMMUNITY_COL
             )
         }
     )
@@ -62,24 +64,24 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
         {
         @NamedQuery(
             name = "Identity-select-all",
-            query = "FROM CommunityMemberEntity ORDER BY ident desc"
+            query = "FROM IdentityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name = "Identity-select-community.name",
-            query = "FROM CommunityMemberEntity WHERE community = :community AND name = :name ORDER BY ident desc"
+            query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class CommunityMemberEntity
+public class IdentityEntity
 extends AbstractNamedEntity
-implements CommunityMember
+implements Identity
     {
 
     /**
      * Hibernate table mapping.
      *
      */
-    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "CommunityMemberEntity";
+    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IdentityEntity";
 
     /**
      * Hibernate column mapping.
@@ -94,21 +96,21 @@ implements CommunityMember
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<CommunityMember>
-    implements CommunityMember.EntityFactory
+    extends AbstractEntityFactory<Identity>
+    implements Identity.EntityFactory
         {
         @Override
         public Class<?> etype()
             {
-            return CommunityMemberEntity.class;
+            return IdentityEntity.class;
             }
 
         @Override
         @CreateMethod
-        public CommunityMember create(final Community community, final String name)
+        public Identity create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
-            final CommunityMember member = this.select(
+            final Identity member = this.select(
                 community,
                 name
                 );
@@ -118,7 +120,7 @@ implements CommunityMember
                 }
             else {
                 return super.insert(
-                    new CommunityMemberEntity(
+                    new IdentityEntity(
                         community,
                         name
                         )
@@ -128,7 +130,7 @@ implements CommunityMember
 
         @Override
         @SelectMethod
-        public CommunityMember select(final Community community, final String name)
+        public Identity select(final Community community, final String name)
             {
             return super.first(
                 super.query(
@@ -144,17 +146,17 @@ implements CommunityMember
             }
 
         @Autowired
-        protected CommunityMember.IdentFactory idents;
+        protected Identity.IdentFactory idents;
         @Override
-        public CommunityMember.IdentFactory idents()
+        public Identity.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        protected CommunityMember.LinkFactory links;
+        protected Identity.LinkFactory links;
         @Override
-        public CommunityMember.LinkFactory links()
+        public Identity.LinkFactory links()
             {
             return this.links;
             }
@@ -165,7 +167,7 @@ implements CommunityMember
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected CommunityMemberEntity()
+    protected IdentityEntity()
         {
         super();
         }
@@ -174,7 +176,7 @@ implements CommunityMember
      * Create a new IdentityEntity, setting the owner to null.
      *
      */
-    protected CommunityMemberEntity(final Community community, final String name)
+    protected IdentityEntity(final Community community, final String name)
         {
         super(name);
         this.community = community;

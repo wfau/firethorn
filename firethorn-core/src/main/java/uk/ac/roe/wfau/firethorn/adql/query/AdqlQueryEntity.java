@@ -112,9 +112,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
             )
         }
     )
-@Inheritance(
-    strategy = InheritanceType.JOINED
-    )
 @NamedQueries(
         {
         @NamedQuery(
@@ -143,7 +140,7 @@ implements AdqlQuery, AdqlParserQuery
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlQueryEntity";
+    protected static final String DB_TABLE_NAME   = DB_TABLE_PREFIX + "AdqlQueryEntity";
     protected static final String DB_JOIN_PREFIX  = DB_TABLE_PREFIX + "AdqlQueryJoinTo";
 
     /**
@@ -1396,7 +1393,7 @@ implements AdqlQuery, AdqlParserQuery
 
 // TODO
 // Global shared 'default' space.
-            JdbcSchema space = identity.space();
+            JdbcSchema space = identity.space(true);
             //
             // Create our tables.
 //TODO

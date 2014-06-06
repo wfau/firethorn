@@ -165,33 +165,6 @@ public class TestFactories
             }
 
         @Component
-        public static class CommunityMemberFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory
-            implements Identity.IdentFactory
-                {
-                public IdentFactory()
-                    {
-                    }
-                }
-
-            @Component
-            public static class LinkFactory
-            extends AbstractLinkFactory<Identity>
-            implements Identity.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/auth/community"
-                        );
-                    }
-                }
-            }
-
-        @Component
         public static class OperationFactories
             {
             @Component

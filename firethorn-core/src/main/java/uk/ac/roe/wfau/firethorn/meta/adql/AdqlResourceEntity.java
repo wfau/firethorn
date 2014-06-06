@@ -72,9 +72,9 @@ implements AdqlResource
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<AdqlResource>
-    implements AdqlResource.Factory
+    implements AdqlResource.EntityFactory
         {
 
         @Override
@@ -106,9 +106,9 @@ implements AdqlResource
             }
 
         @Autowired
-        protected AdqlSchema.Factory schemas;
+        protected AdqlSchema.EntityFactory schemas;
         @Override
-        public AdqlSchema.Factory schemas()
+        public AdqlSchema.EntityFactory schemas()
             {
             return this.schemas;
             }

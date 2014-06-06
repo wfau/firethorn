@@ -63,14 +63,14 @@ extends BaseSchema<AdqlSchema, AdqlTable>
      * Schema factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseSchema.EntityFactory<AdqlResource, AdqlSchema>
         {
         /**
          * The schema table factory.
          *
          */
-        public AdqlTable.Factory tables();
+        public AdqlTable.EntityFactory tables();
 
         /**
          * Create an empty schema.

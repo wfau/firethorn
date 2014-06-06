@@ -30,19 +30,19 @@ public interface AdqlFactories
      * Our resource factory.
      *
      */
-    public AdqlResource.Factory resources();
+    public AdqlResource.EntityFactory resources();
 
     /**
      * Our schema factory.
      *
      */
-    public AdqlSchema.Factory schemas();
+    public AdqlSchema.EntityFactory schemas();
 
     /**
      * Our table factory.
      *
      */
-    public AdqlTable.Factory tables();
+    public AdqlTable.EntityFactory tables();
 
     /**
      * Our column factory.
