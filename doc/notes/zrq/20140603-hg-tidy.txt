@@ -71,7 +71,7 @@
     popd
 
 # -----------------------------------------------------
-# Merge an old development branch.
+# Merge the old branch into the new one.
 #[user@desktop]
 
     oldbranch=1.9.8-zrq-ogsadai-dqp
@@ -102,12 +102,11 @@
 
         #
         # Test ......
+        # Code ......
+        # Test ......
+        #
 
     popd
-
-
-
-
 
 # -----------------------------------------------------
 # Merge the new branch into main.
