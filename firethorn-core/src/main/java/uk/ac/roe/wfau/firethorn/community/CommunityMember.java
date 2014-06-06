@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
  *
  */
 public interface CommunityMember
-extends Identity, Entity, NamedEntity
+extends Entity, NamedEntity
     {
     /**
      * Link factory interface.
