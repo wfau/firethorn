@@ -23,10 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
-import uk.ac.roe.wfau.firethorn.identity.Community;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -152,18 +151,6 @@ public class ComponentFactoriesImpl
         }
 
     /**
-     * Our Autowired Identity factory.
-     *
-     */
-    @Autowired
-    protected Identity.EntityFactory identities ;
-    @Override
-    public Identity.EntityFactory identities()
-        {
-        return this.identities;
-        }
-
-    /**
      * Our Autowired Identity context factory.
      *
      */
@@ -245,5 +232,13 @@ public class ComponentFactoriesImpl
 	public Authentication.EntityFactory authentications()
         {
         return this.authentications;
+        }
+
+    @Autowired
+    protected Context.Factory contexts;
+    @Override
+    public Context.Factory contexts()
+        {
+        return this.contexts;
         }
     }

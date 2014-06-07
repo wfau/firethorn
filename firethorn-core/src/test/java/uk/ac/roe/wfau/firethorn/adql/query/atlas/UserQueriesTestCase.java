@@ -38,6 +38,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0101()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -169,6 +170,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0201()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -213,6 +215,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0301()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -265,6 +268,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0401()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -450,6 +454,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0501()
+    throws Exception
         {
         validate(
             Level.LEGACY,
@@ -549,6 +554,7 @@ public class UserQueriesTestCase
      */
     @Test
     public void test0601()
+    throws Exception
         {
         validate(
             Level.LEGACY,

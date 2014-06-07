@@ -38,6 +38,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -51,8 +53,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -63,8 +65,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -76,16 +78,16 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
 
 /**
  *
@@ -138,7 +140,7 @@ implements AdqlQuery, AdqlParserQuery
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlQueryEntity";
+    protected static final String DB_TABLE_NAME   = DB_TABLE_PREFIX + "AdqlQueryEntity";
     protected static final String DB_JOIN_PREFIX  = DB_TABLE_PREFIX + "AdqlQueryJoinTo";
 
     /**
@@ -290,9 +292,9 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.Factory factory;
+        private AdqlQuery.EntityFactory factory;
         @Override
-        public AdqlQuery.Factory factory()
+        public AdqlQuery.EntityFactory factory()
             {
             return this.factory;
             }
@@ -358,7 +360,7 @@ implements AdqlQuery, AdqlParserQuery
     @Repository
     public static class Factory
     extends AbstractEntityFactory<AdqlQuery>
-    implements AdqlQuery.Factory
+    implements AdqlQuery.EntityFactory
         {
         @Override
         public Class<?> etype()
@@ -366,9 +368,11 @@ implements AdqlQuery, AdqlParserQuery
             return AdqlQueryEntity.class ;
             }
 
+        /*        
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -377,23 +381,26 @@ implements AdqlQuery, AdqlParserQuery
                 names().name()
                 );
             }
+         */
 
         @Override
         @CreateMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        throws QueryProcessingException
             {
             return create(
-                params,
                 schema,
+                params,
                 input,
-                null,
                 names().name()
                 );
             }
 
+        /*
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
+        throws QueryProcessingException
             {
             return create(
                 schema,
@@ -402,27 +409,29 @@ implements AdqlQuery, AdqlParserQuery
                 names().name()
                 );
             }
-
+        
         @Override
         @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        throws QueryProcessingException
             {
             return create(
-                params.param(),
                 schema,
+                params,
                 input,
-                rowid,
                 name
                 );
             }
+         *
+         */
 
         @Override
         @CreateMethod
-        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        throws QueryProcessingException
             {
-            log.debug("AdqlQuery create(AdqlSchema, String, String)");
+            log.debug("AdqlQuery create(AdqlSchema, QueryParam, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-            log.debug("  Rowid  [{}]", rowid);
             log.debug("  Name   [{}]", name);
             //
             // Create the query entity.
@@ -430,7 +439,6 @@ implements AdqlQuery, AdqlParserQuery
                 params,
                 schema,
                 input,
-                rowid,
                 names().name(
                     name
                     )
@@ -547,13 +555,12 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
+    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String input, final String name)
     throws NameFormatException
         {
         super(
             name
             );
-        this.rowid  = rowid ;
         this.schema = schema;
         this.delays = new AdqlQueryDelays();
         this.limits = new AdqlQueryLimits();
@@ -696,19 +703,6 @@ implements AdqlQuery, AdqlParserQuery
     public void osql(final String ogsa)
         {
         this.osql = ogsa;
-        }
-
-    @Column(
-        name = DB_ROWID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String rowid;
-    @Override
-    public String rowid()
-        {
-        return this.rowid;
         }
 
     @Column(
@@ -1377,10 +1371,12 @@ implements AdqlQuery, AdqlParserQuery
     private AdqlTable adqltable;
 
     /**
-     *  Create our result tables.
+     * Create our result tables.
+     * @throws QueryProcessingException 
      *
      */
     protected void build()
+    throws QueryProcessingException
         {
         log.debug("build()");
 
@@ -1395,30 +1391,25 @@ implements AdqlQuery, AdqlParserQuery
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
+// TODO
+// Global shared 'default' space.
+            JdbcSchema space = identity.space(true);
             //
             // Create our tables.
-            if (identity.space(true) != null)
-                {
-                log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
-                this.jdbctable = identity.space().tables().create(
-                    this
-                    );
-                // Should this be FULL or THIN ?
-                this.adqltable = this.schema().tables().create(
-                    this
-                    );
-                }
-// no-owner fallback.
-            else {
-                log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
-                // Config exception.
-                }
 //TODO
 //Why does the query need to know where the JdbcTable is ?
+            log.debug(" Identity space [{}][{}]", space.ident(), space.name());
+            this.jdbctable = space.tables().create(
+                this
+                );
+//TODO
+// Should this be FULL or THIN ?
+            this.adqltable = this.schema().tables().create(
+                this
+                );
             //
             // Log the end time.
             this.timings().jdbcdone();
-
             }
 
         else {

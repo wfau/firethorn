@@ -478,9 +478,9 @@ implements AdqlParserTable
          */
         private AdqlColumnImpl(final AdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
             {
-            log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
-            log.debug("JDBC name [{}]", jdbcName);
-            log.debug("ADQL name [{}]", adqlName);
+            //log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
+            //log.debug("JDBC name [{}]", jdbcName);
+            //log.debug("ADQL name [{}]", adqlName);
             this.parent = parent ;
             this.column = adqlColumn ;
             this.jdbcName = jdbcName;
@@ -490,10 +490,10 @@ implements AdqlParserTable
         @Override
         public AdqlColumnImpl copy(final String dbName, final String adqlName, final DBTable parent)
             {
-            log.debug("copy(String, String, DBTable)");
-            log.debug("DB   name [{}]", dbName);
-            log.debug("JDBC name [{}]", jdbcName);
-            log.debug("ADQL name [{}]", adqlName);
+            //log.debug("copy(String, String, DBTable)");
+            //log.debug("DB   name [{}]", dbName);
+            //log.debug("JDBC name [{}]", jdbcName);
+            //log.debug("ADQL name [{}]", adqlName);
             return AdqlParserTableImpl.this.wrap(
                 this.column,
                 this.jdbcName,

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -62,14 +63,14 @@ extends BaseSchema<AdqlSchema, AdqlTable>
      * Schema factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseSchema.EntityFactory<AdqlResource, AdqlSchema>
         {
         /**
          * The schema table factory.
          *
          */
-        public AdqlTable.Factory tables();
+        public AdqlTable.EntityFactory tables();
 
         /**
          * Create an empty schema.
@@ -172,28 +173,32 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public interface Queries
         {
         /**
-         * Create a new query.
+         * Create a new query, using the default parameters.
          *
+        public AdqlQuery create(final String query)
+        throws QueryProcessingException;
          */
-        public AdqlQuery create(final String query);
 
         /**
-         * Create a new query.
+         * Create a new query, with a specific name.
          *
+        public AdqlQuery create(final String query, final String name)
+        throws QueryProcessingException;
          */
-        public AdqlQuery create(final String query, final String rowid);
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam.
          *
          */
-        public AdqlQuery create(final QueryParam params, final String query);
+        public AdqlQuery create(final QueryParam param, final String query)
+        throws QueryProcessingException;
 
         /**
-         * Create a new query.
+         * Create a new query, using a specific set of QueryParam and name.
          *
          */
-        public AdqlQuery create(final String query, final String rowid, final String name);
+        public AdqlQuery create(final QueryParam param, final String query, final String name)
+        throws QueryProcessingException;
 
         /**
          * Select all the queries for this schema.

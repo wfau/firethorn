@@ -19,6 +19,7 @@
 # </meta:header>
 #
 #
+
 # -----------------------------------------------------
 # Merge outstanding branches.
 #[user@desktop]
@@ -26,9 +27,6 @@
     1.9.8-zrq-ogsadai-dqp
         not merged
         (working DQP)
-
-    1.9.6-zrq-community
-        not merged
 
 # -----------------------------------------------------
 # Get the current version.

@@ -1,0 +1,278 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Merge outstanding branches.
+#[user@desktop]
+
+    1.9.6-zrq-community
+        not merged
+
+# -----------------------------------------------------
+# Get the current version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the project version.
+        source "bin/util.sh"
+        getversion
+
+    popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    newbranch=1.11.3-zrq-community
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        source "bin/util.sh"
+        setversion "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Merge the old branch into the new one.
+#[user@desktop]
+
+    oldbranch=1.9.6-zrq-community
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Close the old branch.
+        hg update "${oldbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg push
+
+        #
+        # Merge the old branch.
+        hg update "${newbranch:?}"
+        hg merge  "${oldbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${oldbranch:?}] into [branch-${newbranch:?}]"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Test ......
+        # Code ......
+        # Test ......
+        #
+
+    popd
+
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=ZRQ011103DEV
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Update our local properties.
+#[user@desktop]
+
+    gedit "${HOME}/firethorn.properties" &
+
+        firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ011103DEV
+        firethorn.meta.user=xxxxxxxx
+        firethorn.meta.pass=xxxxxxxx
+
+        firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataZRQ011103DEV
+        firethorn.user.user=xxxxxxxx
+        firethorn.user.pass=xxxxxxxx
+
+# -----------------------------------------------------
+# Merge the new branch into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Close the dev branch.
+        hg update "${newbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${newbranch:?}]"
+        hg push
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${newbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${newbranch:?}] into [default]"
+        hg push
+
+        #
+        # Update the project version.
+        setversion '1.11.4-SNAPSHOT'
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
+
+
+

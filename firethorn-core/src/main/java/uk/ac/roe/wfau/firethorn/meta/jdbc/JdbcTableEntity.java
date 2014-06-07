@@ -1193,6 +1193,9 @@ implements JdbcTable
 
                         // TODO Remove the try/catch
                         // Use search() and (column != null)
+
+                        // Might be faster to load all the existing columns into a HashMap indexed by name ?
+                        // One JDBC call rather than many.
                         try {
                             final JdbcColumn column = columnsimpl().select(
                                 colname

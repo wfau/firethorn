@@ -104,7 +104,7 @@ extends Job, NamedEntity
      *
      */
     public static interface Factory
-    extends Job.Factory<TestJob>
+    extends Job.EntityFactory<TestJob>
         {
         /**
          * Create a test Job.

@@ -521,6 +521,7 @@ extends TestPropertiesBase
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
         final AdqlQuery query = testschema().queries().create(
             factories().queries().params().param(
@@ -544,28 +545,63 @@ extends TestPropertiesBase
         }
 
     public AdqlQuery validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
-        return validate(Level.STRICT, status, adql, sql, fields);
+        return validate(
+            Level.STRICT,
+            status,
+            adql,
+            sql,
+            fields
+            );
         }
 
     public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException
         {
-        return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, fields);
+        return validate(
+            Level.STRICT,
+            AdqlQuery.Syntax.State.VALID,
+            adql,
+            sql,
+            fields
+            );
         }
 
     public AdqlQuery validate(final String adql, final String sql)
+    throws QueryProcessingException
         {
-        return validate(Level.STRICT, AdqlQuery.Syntax.State.VALID, adql, sql, null);
+        return validate(
+            Level.STRICT,
+            AdqlQuery.Syntax.State.VALID,
+            adql,
+            sql,
+            null
+            );
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
+    throws QueryProcessingException
         {
-        return validate(level, status, adql, sql, null);
+        return validate(
+            level,
+            status,
+            adql,
+            sql,
+            null
+            );
         }
 
     public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+    throws QueryProcessingException
         {
-        return validate(level, status, adql, null, null);
+        return validate(
+            level,
+            status,
+            adql,
+            null,
+            null
+            );
         }
 
     /**

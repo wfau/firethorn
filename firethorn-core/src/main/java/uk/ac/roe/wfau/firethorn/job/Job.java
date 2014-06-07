@@ -100,7 +100,7 @@ extends Entity
      * Job factory interface.
      *
      */
-    public static interface Factory<JobType extends Job>
+    public static interface EntityFactory<JobType extends Job>
     extends Entity.EntityFactory<JobType>
         {
         /**

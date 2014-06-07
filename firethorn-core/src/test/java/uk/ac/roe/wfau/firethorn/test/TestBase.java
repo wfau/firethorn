@@ -72,23 +72,20 @@ extends TestRoot
 
         log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-        operation.authentications().resolve();
-        if (operation.authentications().primary() == null)
+        Authentication primary = operation.auth().primary();
+        if (primary == null)
             {
-            operation.authentications().create(
-                factories().identities().create(
-                    factories().communities().create(
-                        TEST_COMMUNITY_NAME,
-                        TEST_COMMUNITY_URI
+            primary = operation.auth().create(
+                factories().communities().create(
+                    TEST_COMMUNITY_URI,
+                    TEST_COMMUNITY_NAME
+                    ).members().create(
+                        TEST_IDENTITY_NAME
                         ),
-                    TEST_IDENTITY_NAME
-                    ),
                 TEST_AUTH_METHOD
                 );
             }
 
-        operation.authentications().resolve();
-        final Authentication primary = operation.authentications().primary();
         log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
 
         }

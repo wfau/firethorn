@@ -17,8 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
@@ -30,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
@@ -45,9 +44,6 @@ extends TestBase
 
     private JdbcResource twomass ;
     private JdbcResource wfau    ;
-
-    private JdbcResource resource ;
-    private JdbcSchema   schema   ;
 
     /**
      * Create our resources.
@@ -69,19 +65,6 @@ extends TestBase
             "test:wfau",
             "spring:RoeWFAU"
             );
-
-        this.resource = factories().jdbc().resources().create(
-            "userdata",
-            "userdata",
-            "spring:FireThornUserData"
-            );
-// TODO do we need this ?
-/*
-        this.schema = this.resource.schemas().create(
-            null,
-            "PUBLIC"
-            );
-*/
         }
 
     /**
@@ -157,6 +140,7 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
+            factories().adql().queries().params().param(),
             IMPORTED_000
             );
         //query.prepare();
@@ -230,6 +214,7 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
+            factories().adql().queries().params().param(),
             IMPORTED_001
             );
         //query.prepare();
@@ -330,6 +315,7 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
+            factories().adql().queries().params().param(),
             IMPORTED_002
             );
         //query.prepare();
@@ -412,6 +398,7 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
+            factories().adql().queries().params().param(),
             IMPORTED_002
             );
         //query.prepare();

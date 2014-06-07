@@ -37,6 +37,7 @@ public class RedmineBug450TestCase
      */
     @Test
     public void test001()
+    throws Exception
         {
         validate(
             Level.STRICT,
@@ -87,6 +88,7 @@ public class RedmineBug450TestCase
      */
     @Test
     public void test002()
+    throws Exception
         {
         validate(
             Level.STRICT,
@@ -137,6 +139,7 @@ public class RedmineBug450TestCase
      */
     @Test
     public void test003()
+    throws Exception
         {
         validate(
             Level.STRICT,
@@ -187,6 +190,7 @@ public class RedmineBug450TestCase
      */
     @Test
     public void test004()
+    throws Exception
         {
         validate(
             Level.STRICT,

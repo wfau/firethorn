@@ -634,4 +634,19 @@ else {
         {
         return this.finished ;
         }
+
+    /**
+     * Refresh (fetch) this Entity from the database.
+     * @todo Remove this if possible.
+     *
+     */
+    public void refresh()
+        {
+        log.debug("---- ---- ---- ----");
+        log.debug("refresh()");
+        factories().hibernate().refresh(
+            this
+            );
+        log.debug("---- ----");
+        }
     }

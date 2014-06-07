@@ -30,31 +30,22 @@ public class SelectTopTestCase
 extends TwomassQueryTestBase
     {
 
-    /**
-     * Test query "SELECT TOP 5 ra, dec"
-     *
-     */
-    private static final String QUERY_000 =
-
-          "SELECT"
-        + "    TOP 5"
-        + "    ra,"
-        + "    dec"
-        + " FROM"
-        + "    adql_twomass.twomass_psc as twomass"
-        + " WHERE"
-        + "    ra  BETWEEN '56.0' AND '57.9'"
-        + " AND"
-        + "    dec BETWEEN '24.0' AND '24.2'"
-        + ""
-        ;
-
 	@Test
     public void test000()
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            QUERY_000
+            factories().adql().queries().params().param(),
+            "SELECT"
+            + "    TOP 5"
+            + "    ra,"
+            + "    dec"
+            + " FROM"
+            + "    adql_twomass.twomass_psc as twomass"
+            + " WHERE"
+            + "    ra  BETWEEN '56.0' AND '57.9'"
+            + " AND"
+            + "    dec BETWEEN '24.0' AND '24.2'"
             );
         debug(query);
         assertEquals(
@@ -63,30 +54,21 @@ extends TwomassQueryTestBase
             );
         }
 
-    /**
-     * Test query "SELECT TOP 5 *"
-     *
-     */
-    private static final String QUERY_001 =
-
-        "SELECT"
-        + "    TOP 5"
-        + "    *"
-        + " FROM"
-        + "    adql_twomass.twomass_psc as twomass"
-        + " WHERE"
-        + "    ra  BETWEEN '56.0' AND '57.9'"
-        + " AND"
-        + "    dec BETWEEN '24.0' AND '24.2'"
-        + ""
-        ;
-
     @Test
     public void test001()
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            QUERY_001
+            factories().adql().queries().params().param(),
+            "SELECT"
+            + "    TOP 5"
+            + "    *"
+            + " FROM"
+            + "    adql_twomass.twomass_psc as twomass"
+            + " WHERE"
+            + "    ra  BETWEEN '56.0' AND '57.9'"
+            + " AND"
+            + "    dec BETWEEN '24.0' AND '24.2'"
             );
         debug(query);
         assertEquals(
@@ -95,30 +77,21 @@ extends TwomassQueryTestBase
             );
         }
 
-    /**
-     * Test query "SELECT TOP 5 twomass.*"
-     *
-     */
-    private static final String QUERY_002 =
-
-        "SELECT"
-        + "    TOP 5"
-        + "    twomass.*"
-        + " FROM"
-        + "    adql_twomass.twomass_psc as twomass"
-        + " WHERE"
-        + "    ra  BETWEEN '56.0' AND '57.9'"
-        + " AND"
-        + "    dec BETWEEN '24.0' AND '24.2'"
-        + ""
-        ;
-
     @Test
     public void test002()
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            QUERY_002
+            factories().adql().queries().params().param(),
+            "SELECT"
+            + "    TOP 5"
+            + "    twomass.*"
+            + " FROM"
+            + "    adql_twomass.twomass_psc as twomass"
+            + " WHERE"
+            + "    ra  BETWEEN '56.0' AND '57.9'"
+            + " AND"
+            + "    dec BETWEEN '24.0' AND '24.2'"
             );
         debug(query);
         assertEquals(

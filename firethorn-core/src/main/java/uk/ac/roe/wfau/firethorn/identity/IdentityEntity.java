@@ -16,11 +16,11 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -32,11 +32,14 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -53,7 +56,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
     name = IdentityEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList = IdentityEntity.DB_COMMUNITY_COL
+            columnList=IdentityEntity.DB_COMMUNITY_COL
             )
         }
     )
@@ -103,31 +106,17 @@ implements Identity
             }
 
         @Override
-        public Identity current()
-            {
-            final Operation oper = factories().operations().current() ;
-            if (oper != null)
-                {
-                if (oper.authentications().primary() != null)
-                    {
-                    return oper.authentications().primary().identity();
-                    }
-                }
-            return null ;
-            }
-
-        @Override
         @CreateMethod
         public Identity create(final Community community, final String name)
             {
             log.debug("create(Community, String) [{}][{}]", community.uri(), name);
-            final Identity identity = this.select(
+            final Identity member = this.select(
                 community,
                 name
                 );
-            if (identity != null)
+            if (member != null)
                 {
-                return identity ;
+                return member ;
                 }
             else {
                 return super.insert(
@@ -200,13 +189,13 @@ implements Identity
     @Override
     public Identity owner()
         {
-        if (super.owner() == null)
+        if (super.owner() != null)
             {
-            return this;
+            return super.owner();
             }
         else
             {
-            return super.owner();
+            return this;
             }
         }
 
@@ -230,7 +219,7 @@ implements Identity
     @Override
     public String link()
         {
-        return factories().identities().links().link(
+        return factories().communities().members().links().link(
             this
             );
         }
@@ -261,6 +250,9 @@ implements Identity
                 if (community().space(true) != null)
                     {
 /*
+ * Create a separate schema for this member.
+ * Requires CREATE SCHEMA
+ * Depends on replacing Liquibase
                     this.jdbcschema = community().space().schemas().create(
                         this
                         );

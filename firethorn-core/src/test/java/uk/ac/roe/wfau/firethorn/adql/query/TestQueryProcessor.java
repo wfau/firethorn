@@ -373,6 +373,7 @@ extends AtlasQueryTestBase
         }
 
     public void fredric(final int servernum)
+    throws Exception
         {
         final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
@@ -410,6 +411,7 @@ extends AtlasQueryTestBase
                 log.debug("[{}][{}]", catalog, adql);
 
                 final AdqlQuery query = testschema().queries().create(
+                    factories().adql().queries().params().param(),
                     adql
                     );
 
@@ -435,6 +437,7 @@ extends AtlasQueryTestBase
 
     //@Test
     public void test002()
+    throws Exception
         {
         fredric(5);
         }

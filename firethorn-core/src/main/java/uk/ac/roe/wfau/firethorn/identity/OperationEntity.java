@@ -137,6 +137,7 @@ implements Operation
 
         private Operation current(final Operation oper)
             {
+// Error if one replaces another ?            
             local.set(
                 oper
                 );
@@ -281,15 +282,10 @@ implements Operation
         }
 
     @Override
-    public Authentications authentications()
+    public Authentications auth()
         {
         return new Authentications()
             {
-            @Override
-            public void resolve()
-                {
-                }
-
             @Override
             public Authentication primary()
                 {

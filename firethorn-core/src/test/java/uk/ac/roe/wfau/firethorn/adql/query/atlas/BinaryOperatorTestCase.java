@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -36,6 +37,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test001S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -64,6 +66,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test001L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -110,6 +113,7 @@ public class BinaryOperatorTestCase
      *
      */
     public void test002S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -131,6 +135,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test002L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -163,6 +168,7 @@ public class BinaryOperatorTestCase
      *
      */
     public void test003S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -184,6 +190,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test003L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -215,6 +222,7 @@ public class BinaryOperatorTestCase
      *
      */
     public void test004S()
+    throws QueryProcessingException
         {
         validate(
             Level.STRICT,
@@ -237,6 +245,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test004L()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -268,6 +277,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test005D()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,
@@ -295,6 +305,7 @@ public class BinaryOperatorTestCase
      */
     @Test
     public void test005H()
+    throws QueryProcessingException
         {
         validate(
             Level.LEGACY,

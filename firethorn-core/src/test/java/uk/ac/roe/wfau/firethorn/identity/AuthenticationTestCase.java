@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -46,14 +48,14 @@ extends TestBase
             "community-name"
             );
 
-        operation.authentications().create(
+        operation.auth().create(
             community.members().create(
                 "identity-name"
                 ),
             "urn:authentication"
             );
 
-        for (final Authentication auth : operation.authentications().select())
+        for (final Authentication auth : operation.auth().select())
             {
             log.debug("Auth [{}]", auth.ident());
             }

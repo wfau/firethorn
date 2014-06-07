@@ -38,7 +38,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
+import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -158,7 +159,7 @@ implements Entity
             this.uidlo = random.nextLong();
             this.uidhi = System.currentTimeMillis();
             
-            this.owner = factories().identities().current();
+            this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
 
@@ -202,15 +203,15 @@ implements Entity
         name="ident-generator",
         strategy="hilo"
         )
-    private Long pkey ;
+    private Long ident ;
 
     @Override
     public Identifier ident()
         {
-        if (this.pkey != null)
+        if (this.ident != null)
             {
             return new LongIdentifier(
-                this.pkey
+                this.ident
                 );
             }
         else {
@@ -425,32 +426,11 @@ implements Entity
         return builder.toHashCode();
         }
 
-    /**
-     * Refresh (fetch) this Entity from the database.
-     * @todo Remove this if possible.
-     *
-     */
-    public void refresh()
-        {
-        log.debug("---- ---- ---- ----");
-        log.debug("refresh()");
-        factories().hibernate().refresh(
-            this
-            );
-        log.debug("---- ----");
-        }
-
-    /**
-     * Delete this Entity from the database.
-     *
     @Override
-    public void delete()
+    public EntityProtector protector()
         {
-        factories().hibernate().delete(
+        return new SimpleEntityProtector(
             this
             );
         }
-     */
-    
     }
-

@@ -35,6 +35,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
+                factories().adql().queries().params().param(),
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -57,6 +58,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
+                factories().adql().queries().params().param(),
                 "SELECT"
                 + "    date"
                 + " FROM"
@@ -79,6 +81,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
+                factories().adql().queries().params().param(),
                 "SELECT"
                 + "    MAX(ra)"
                 + " FROM"
@@ -101,6 +104,7 @@ extends QuerySelectFieldTestBase
       {
       validate(
           this.schema.queries().create(
+              factories().adql().queries().params().param(),
               "SELECT"
               + "    *"
               + " FROM"
@@ -188,6 +192,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
+                factories().adql().queries().params().param(),
                 "SELECT"
                 + "    ra +  dec as radec"
                 + " FROM"
@@ -210,6 +215,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
+                factories().adql().queries().params().param(),
                 "SELECT"
                 + "    ra +  dec"
                 + " FROM"
@@ -225,6 +231,5 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-
     }
 

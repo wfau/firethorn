@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.entity ;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -156,6 +157,12 @@ public interface Entity
      * 
     public Entity self();
      */
+
+    /**
+     * The Entity Protector.
+     * 
+     */
+    public EntityProtector protector();
 
     }
 

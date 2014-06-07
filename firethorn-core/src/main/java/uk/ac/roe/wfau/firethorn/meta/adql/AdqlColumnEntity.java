@@ -145,7 +145,7 @@ public class AdqlColumnEntity
             }
 
         @Autowired
-        private AdqlTable.Factory tables ;
+        private AdqlTable.EntityFactory tables ;
 
         @Override
         @SelectMethod

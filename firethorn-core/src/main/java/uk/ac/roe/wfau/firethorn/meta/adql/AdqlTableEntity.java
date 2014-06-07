@@ -148,9 +148,9 @@ public class AdqlTableEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends BaseTableEntity.EntityFactory<AdqlSchema, AdqlTable>
-    implements AdqlTable.Factory
+    implements AdqlTable.EntityFactory
         {
 
         @Override
@@ -160,7 +160,7 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        private AdqlSchema.Factory schemas;
+        private AdqlSchema.EntityFactory schemas;
 
         @Override
         @SelectMethod

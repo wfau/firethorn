@@ -40,6 +40,7 @@ extends AtlasQueryTestBase
      */
     @Test
     public void test001()
+    throws Exception
         {
         validate(
             Level.STRICT,
