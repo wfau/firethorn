@@ -27,7 +27,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.3-zrq-community</version>
+        <version project='firethorn'>1.11.4-SNAPSHOT</version>
     </parent>
 
     <!--groupId>uk.ac.roe.wfau</groupId-->
