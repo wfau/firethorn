@@ -233,15 +233,6 @@ cat  "${databasefile:?}"
         firethorn.user.user=xxxxxxxx
         firethorn.user.pass=xxxxxxxx
 
-
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Merge the new branch into main.
 #[user@desktop]

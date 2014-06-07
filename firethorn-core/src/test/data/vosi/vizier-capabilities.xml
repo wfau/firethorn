@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vosi:capabilities xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0" xmlns:tr="http://www.ivoa.net/xml/TAP/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/TAP/v0.1 http://www.ivoa.net/xml/TAP/v0.1">
+  <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+    <interface role="std" xsi:type="vs:ParamHTTP">
+      <accessURL use="base">http://tapvizier.u-strasbg.fr/TAPVizieR/tap</accessURL>
+    </interface>
+    <language>
+      <name>ADQL</name>
+      <version>2.0</version>
+      <description>ADQL 2.0</description>
+    </language>
+    <outputFormat>
+      <mime>text/xml</mime>
+      <alias>votable</alias>
+    </outputFormat>
+    <outputFormat>
+      <mime>application/json</mime>
+      <alias>json</alias>
+    </outputFormat>
+    <outputFormat>
+      <mime>text/csv</mime>
+      <alias>csv</alias>
+    </outputFormat>
+    <outputFormat>
+      <mime>text/plain</mime>
+      <alias>text</alias>
+    </outputFormat>
+    <retentionPeriod>
+      <default>432000</default>
+      <hard>604800</hard>
+    </retentionPeriod>
+    <executionDuration>
+      <default>7200</default>
+      <hard>86400</hard>
+    </executionDuration>
+    <outputLimit>
+      <default unit="rows">1000000000</default>
+      <hard unit="rows">1000000000</hard>
+    </outputLimit>
+  </capability>
+  <capability standardID="ivo://ivoa.net/std/VOSI#tables">
+    <interface xsi:type="vs:ParamHTTP" role="std">
+      <accessURL use="full"> http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables </accessURL>
+    </interface>
+  </capability>
+  <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+    <interface xsi:type="vs:ParamHTTP" role="std">
+      <accessURL use="full"> http://tapvizier.u-strasbg.fr/TAPVizieR/tap/capabilities </accessURL>
+    </interface>
+  </capability>
+  <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+    <interface xsi:type="vs:ParamHTTP" role="std">
+      <accessURL use="full"> http://tapvizier.u-strasbg.fr/TAPVizieR/tap/availability </accessURL>
+    </interface>
+  </capability>
+</vosi:capabilities>

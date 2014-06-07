@@ -1,0 +1,91 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Email from Nigel
+#
+
+    From: Nigel C. Hambly
+    Sent: 06 June 2014 17:00
+    To: wsa-support
+    Cc: vsa-support; osa-support
+    Subject: Fwd: allwise catalogue for Hyades brown dwarfs
+
+    Request from one of our most valued customers, but my feeling is that unless we get more requests for this particular catalogue, we should wait for the general DQP solution to the general problem... what does everybody else think?
+
+    N
+
+    Begin forwarded message:
+
+    > From: Nicolas Lodieu <nlodieu@iac.es>
+    > Subject: allwise catalogue for Hyades brown dwarfs
+    > Date: 4 June 2014 17:37:51 BST
+    > To: Nigel Hambly <nch@roe.ac.uk>
+    >
+    > Hi Nigel,
+    >
+    > I have tried to select L and T dwarfs in the Hyades from the WISE vs GCS DR10 cross-match but it turns out to be disappointing for the moment. I know that there is an allwise catalogue where WISE data have been stacked (see link below).
+    >
+    > http://www.nasa.gov/mission_pages/WISE/news/jpl/wise20131114.html#.U49KfGfR4sQ
+    >
+    > It would be useful to cross-match this updated version of WISE with the GCS. Any possibility to upload it on WSA?
+    >
+    > Thanks a lot.
+    >
+    > Nicolas
+    > ---------------------------------------------------------------------------------------------
+    > ADVERTENCIA: Sobre la privacidad y cumplimiento de la Ley de Protección de Datos, acceda a http://www.iac.es/disclaimer.php
+    > WARNING: For more information on privacy and fulfilment of the Law concerning the Protection of Data, consult http://www.iac.es/disclaimer.php?lang=en
+
+# -----------------------------------------------------
+# Useful links
+#
+
+    AllWISE Data Release, November 13, 2013
+    http://wise2.ipac.caltech.edu/docs/release/allwise/
+
+    WISE Catalog Just Got Wiser, November 14, 2013
+    http://www.nasa.gov/mission_pages/WISE/news/jpl/wise20131114.html#.U49KfGfR4sQ
+
+    Wide-field Infrared Survey Explorer
+    http://www.nasa.gov/mission_pages/WISE/main/index.html
+
+    IRSA
+    NASA/IPAC InfraRed Science Archive
+    http://irsa.ipac.caltech.edu/voapi.html
+
+
+    ....
+
+
+    II/328/allwise AllWISE data Release (747634026 rows)
+    http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=II/328
+
+    http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=II/328/allwise
+
+
+    Note on allwise.sam : the catalog described here is a subset of the full AllWISE catalog
+    available from IRSA (http://irsa.ipac.caltech.edu/) with a selection of the columns of
+    the full catalog. 
+
+
+
