@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -57,13 +59,13 @@ extends BaseResource<IvoaSchema>
          * Create a new Resource.
          *
          */
-        public IvoaResource create(final String endpoint);
+        public IvoaResource create(final String ivoaid);
 
         /**
          * Create a new Resource.
          *
          */
-        public IvoaResource create(final String endpoint, final String name);
+        public IvoaResource create(final String ivoaid, final String name);
 
         /**
          * The resource schema factory.
@@ -79,7 +81,15 @@ extends BaseResource<IvoaSchema>
      */
     public interface Schemas extends BaseResource.Schemas<IvoaSchema>
         {
+
+        /**
+         * Create a tracker for the resource schema.
+         *
+         */
+        public IvoaSchema.Tracker tracker();  
+
         }
+
     @Override
     public Schemas schemas();
 
@@ -87,13 +97,13 @@ extends BaseResource<IvoaSchema>
      * The resource registry URI.
      *
      */
-    public String uri();
+    public String ivoaid();
 
     /**
      * The resource registry URI.
      *
      */
-    public void uri(final String uri);
+    public void ivoaid(final String ivoaid);
 
     /**
      * Public interface for a service Endpoint.
@@ -121,11 +131,17 @@ extends BaseResource<IvoaSchema>
     public interface Endpoints
         {
         /**
+         * Add a new service Endpoint.
+         * 
+         */
+        public Endpoint create(final String url);
+
+        /**
          * Select a list of the service Endpoint(s).
          * 
          */
         public Iterable<Endpoint> select();
-        
+
         }
     
     /**

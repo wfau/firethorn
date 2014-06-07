@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -46,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity;
 
 /**
  *
@@ -58,6 +61,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
     )
 @Table(
     name = IvoaColumnEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = IvoaColumnEntity.DB_PARENT_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -99,6 +107,22 @@ public class IvoaColumnEntity
      */
     protected static final String DB_IVOA_TYPE_COL = "ivoatype" ;
     protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
+
+    /**
+     * Entity tracker.
+     *
+     */
+    public static abstract class Tracker
+    extends AbstractEntityTracker<IvoaColumn>
+    implements IvoaColumn.Tracker
+        {
+        public Tracker(final Iterable<IvoaColumn> source)
+            {
+            this.init(
+                source
+                );
+            }
+        }
 
     /**
      * Alias factory implementation.

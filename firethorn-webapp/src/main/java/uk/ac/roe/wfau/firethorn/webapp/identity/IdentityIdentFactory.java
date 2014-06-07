@@ -15,13 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.community;
+package uk.ac.roe.wfau.firethorn.webapp.identity;
 
 import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,9 +29,9 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  *
  */
 @Component
-public class CommunityMemberIdentFactory
+public class IdentityIdentFactory
 extends WebappIdentFactory
-implements CommunityMember.IdentFactory
+implements Identity.IdentFactory
     {
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/community-member-1.0.json"

@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  *
  */
 @Controller
-@RequestMapping(IdentityLinkFactory.IDENTITY_PATH)
+@RequestMapping(IdentityLinkFactory.ENTITY_PATH)
 public class IdentityController
 extends AbstractController
     {
@@ -49,7 +49,7 @@ extends AbstractController
     public Path path()
         {
         return path(
-            IdentityLinkFactory.IDENTITY_PATH
+            IdentityLinkFactory.ENTITY_PATH
             );
         }
 

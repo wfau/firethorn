@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
 /**
@@ -27,6 +28,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface IvoaSchema
 extends BaseSchema<IvoaSchema, IvoaTable>
     {
+    /**
+     * Entity tracker interface.
+     * 
+     */
+    public static interface Tracker
+    extends EntityTracker<IvoaSchema>
+        {
+        }
+
     /**
      * Link factory interface.
      *
@@ -53,7 +63,7 @@ extends BaseSchema<IvoaSchema, IvoaTable>
     extends BaseSchema.EntityFactory<IvoaResource, IvoaSchema>
         {
         /**
-         * Create a new schema ...
+         * Create a new IvoaSchema.
          *
          */
         public IvoaSchema create(final IvoaResource parent, final String name);
@@ -74,6 +84,11 @@ extends BaseSchema<IvoaSchema, IvoaTable>
      */
     public interface Tables extends BaseSchema.Tables<IvoaTable>
         {
+        /**
+         * Create a tracker for the schema tables.
+         *
+         */
+        public IvoaTable.Tracker tracker();  
         }
     @Override
     public Tables tables();

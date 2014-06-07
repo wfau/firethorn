@@ -121,11 +121,6 @@ extends NamedEntityBeanImpl<AdqlQuery>
         return entity().osql();
         }
 
-    public String getRowid()
-    	{
-    	return entity().rowid();
-    	}
-
     public Iterable<String> getResources()
         {
         return new Iterable<String>()

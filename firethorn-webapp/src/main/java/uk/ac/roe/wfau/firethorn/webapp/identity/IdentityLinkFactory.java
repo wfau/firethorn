@@ -15,11 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.community;
+package uk.ac.roe.wfau.firethorn.webapp.identity;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.community.CommunityMember;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,11 +28,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  *
  */
 @Component
-public class CommunityMemberLinkFactory
-extends WebappLinkFactory<CommunityMember>
-implements CommunityMember.LinkFactory
+public class IdentityLinkFactory
+extends WebappLinkFactory<Identity>
+implements Identity.LinkFactory
     {
-    protected CommunityMemberLinkFactory()
+    protected IdentityLinkFactory()
         {
         super(
             BASE_PATH
@@ -52,7 +52,7 @@ implements CommunityMember.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final CommunityMember entity)
+    public String link(final Identity entity)
         {
         return link(
             ENTITY_PATH,

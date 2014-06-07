@@ -15,13 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.ivoa.vosi.tables;
+package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.FileReader;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -36,31 +37,35 @@ public class VosiTableSetReaderTestCase
     public void test001()
     throws Exception
         {
-        IvoaResource resource = null ;
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test"
+            );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
         reader.inport(
+            resource,
             new FileReader(
                 "src/test/data/vosi/gavo-tableset.xml"
-                ),
-            resource
+                )
             );
         }
 
-    @Test
+    //@Test
     public void test002()
     throws Exception
         {
-        IvoaResource resource = null ;
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test"
+            );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
         reader.inport(
+            resource,
             new FileReader(
                 "src/test/data/vosi/vizier-tableset.xml"
-                ),
-            resource
+                )
             );
         }
     }

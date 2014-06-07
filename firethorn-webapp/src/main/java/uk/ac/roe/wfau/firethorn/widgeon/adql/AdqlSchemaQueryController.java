@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -159,6 +160,9 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         ) throws QueryProcessingException {
         return created(
             schema.queries().create(
+                factories().adql().queries().params().param(
+                    Level.LEGACY
+                    ),
                 query,
                 name
                 )

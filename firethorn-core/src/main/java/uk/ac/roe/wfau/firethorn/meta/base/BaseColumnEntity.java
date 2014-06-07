@@ -434,9 +434,27 @@ extends BaseComponentEntity<ColumnType>
                 }
 
             @Override
+            public String dtype()
+                {
+                return null ;
+                }
+            @Override
+            public void dtype(final String dtype)
+                {
+                }
+
+            @Override
             public UCD ucd()
                 {
                 return ucdentity();
+                }
+            @Override
+            public void ucd(final String value)
+                {
+                ucdentity(
+                    UCD.Type.ONEPLUS,
+                    value
+                    );
                 }
             @Override
             public void ucd(final UCD.Type type, final String value)

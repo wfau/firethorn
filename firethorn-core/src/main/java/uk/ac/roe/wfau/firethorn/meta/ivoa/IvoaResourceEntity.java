@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -32,14 +34,19 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
@@ -49,6 +56,7 @@ import uk.ac.roe.wfau.firethorn.util.GenericIterable;
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -61,6 +69,10 @@ import uk.ac.roe.wfau.firethorn.util.GenericIterable;
         @NamedQuery(
             name  = "IvoaResource-select-all",
             query = "FROM IvoaResourceEntity ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "IvoaResource-select-ivoaid",
+            query = "FROM IvoaResourceEntity WHERE ivoaid = :ivoaid ORDER BY name asc, ident desc"
             )
         }
     )
@@ -70,7 +82,8 @@ public class IvoaResourceEntity
     {
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
 
-    protected static final String DB_URI_COL  = "uri";
+    protected static final String DB_IVOAID_COL = "ivoaid";
+    protected static final String DB_OGSAID_COL = "ogsaid";
 
     /**
      * Our Entity Factory implementation.
@@ -101,22 +114,22 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String endpoint)
+        public IvoaResource create(final String ivoid)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    endpoint
+                    ivoid
                     )
                 );
             }
         
         @Override
         @CreateMethod
-        public IvoaResource create(final String endpoint, final String name)
+        public IvoaResource create(final String ivoid, final String name)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    endpoint,
+                    ivoid,
                     name
                     )
                 );
@@ -152,44 +165,50 @@ public class IvoaResourceEntity
         super();
         }
 
-    protected IvoaResourceEntity(final String endpoint)
+    protected IvoaResourceEntity(final String ivoaid)
         {
         this(
-            endpoint,
-            endpoint
+            ivoaid,
+            ivoaid
             );
         }
 
-    protected IvoaResourceEntity(final String endpoint, final String name)
+    protected IvoaResourceEntity(final String ivoaid, final String name)
         {
         super(
             name
             );
+        this.ivoaid = ivoaid;
+
+        /*
+         * 
         endpoints.add(
             new IvoaEndpointEntity(
                 this,
-                endpoint
+                ivoaid
                 )
             );
+         *
+         */
         }
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_URI_COL,
+        name = DB_IVOAID_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String uri;
+    private String ivoaid;
     @Override
-    public String uri()
+    public String ivoaid()
         {
-        return this.uri;
+        return this.ivoaid;
         }
     @Override
-    public void uri(final String uri)
+    public void ivoaid(final String ivoaid)
         {
-        this.uri = uri;
+        this.ivoaid = ivoaid ;
         }
 
     @Override
@@ -204,15 +223,16 @@ public class IvoaResourceEntity
                     IvoaResourceEntity.this
                     );
                 }
+
             @Override
-            public IvoaSchema select(final String name)
-            throws NameNotFoundException
+            public IvoaSchema select(String name) throws NameNotFoundException
                 {
                 return factories().ivoa().schemas().select(
                     IvoaResourceEntity.this,
                     name
                     );
                 }
+
             @Override
             public IvoaSchema search(final String name)
                 {
@@ -220,6 +240,30 @@ public class IvoaResourceEntity
                     IvoaResourceEntity.this,
                     name
                     );
+                }
+
+            @Override
+            public IvoaSchema.Tracker tracker()
+                {
+                return new IvoaSchemaEntity.Tracker(this.select())
+                    {
+                    @Override
+                    protected void finish(final IvoaSchema schema)
+                        {
+                        log.debug("Archive inactive schema [{}]", schema.name());
+                        }
+
+                    @Override
+                    protected IvoaSchema create(String name)
+                        throws DuplicateEntityException
+                        {
+                        log.debug("Create a new schema [{}]", name);
+                        return factories().ivoa().schemas().create(
+                            IvoaResourceEntity.this,
+                            name
+                            );
+                        }
+                    };
                 }
             };
         }
@@ -229,12 +273,11 @@ public class IvoaResourceEntity
 	 * @todo Move to a common base class.
 	 *
 	 */
-    protected static final String DB_OGSA_ID_COL = "ogsa_id";
     @Column(
-        name = DB_OGSA_ID_COL,
+        name = DB_OGSAID_COL,
         unique = false,
-        nullable = false,
-        updatable = false
+        nullable = true,
+        updatable = true
         )
 	private String ogsaid;
 	@Override
@@ -274,6 +317,18 @@ public class IvoaResourceEntity
         {
         return new Endpoints()
             {
+            @Override
+            public Endpoint create(String url)
+                {
+                Endpoint endpoint = new IvoaEndpointEntity(
+                    IvoaResourceEntity.this,
+                    url
+                    );
+                 endpoints.add(
+                     endpoint
+                    );
+                return endpoint;
+                }
             @Override
             public Iterable<IvoaResource.Endpoint> select()
                 {

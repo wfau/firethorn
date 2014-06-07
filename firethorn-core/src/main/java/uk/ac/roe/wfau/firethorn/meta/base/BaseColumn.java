@@ -226,6 +226,18 @@ extends BaseComponent
             public void utype(final String utype);
 
             /**
+             * The ADQL dtype.
+             *
+             */
+            public String dtype();
+
+            /**
+             * Set the ADQL dtype.
+             *
+             */
+            public void dtype(final String dtype);
+
+            /**
              * The column UCD.
              *
              */
@@ -235,8 +247,16 @@ extends BaseComponent
              * Set the column UCD.
              *
              */
+            public void ucd(final String value);
+
+            /**
+             * Set the column UCD.
+             *
+             */
+            @Deprecated
             public void ucd(final UCD.Type type, final String value);
 
+            
             }
 
         /**

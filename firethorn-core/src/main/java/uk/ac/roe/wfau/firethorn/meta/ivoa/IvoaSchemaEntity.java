@@ -21,6 +21,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -34,9 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -55,6 +58,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
     )
 @Table(
     name = IvoaSchemaEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = IvoaSchemaEntity.DB_PARENT_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -84,7 +92,27 @@ public class IvoaSchemaEntity
     extends BaseSchemaEntity<IvoaSchema, IvoaTable>
     implements IvoaSchema
     {
+    /**
+     * Hibernate table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaSchemaEntity";
+
+    /**
+     * Entity tracker.
+     *
+     */
+    public static abstract class Tracker
+    extends AbstractEntityTracker<IvoaSchema>
+    implements IvoaSchema.Tracker
+        {
+        public Tracker(final Iterable<IvoaSchema> source)
+            {
+            this.init(
+                source
+                );
+            }
+        }
 
     /**
      * Entity factory.
@@ -133,8 +161,7 @@ public class IvoaSchemaEntity
         public IvoaSchema select(final IvoaResource parent, final String name)
         throws NameNotFoundException
             {
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "IvoaSchema-select-parent.name"
@@ -274,6 +301,30 @@ public class IvoaSchemaEntity
                 return factories().ivoa().tables().select(
                     ident
                     );
+                }
+
+            @Override
+            public IvoaTable.Tracker tracker()
+                {
+                return new IvoaTableEntity.Tracker(this.select())
+                    {
+                    @Override
+                    protected void finish(final IvoaTable table)
+                        {
+                        log.debug("Archive inactive table [{}]", table.name());
+                        }
+
+                    @Override
+                    protected IvoaTable create(String name)
+                        throws DuplicateEntityException
+                        {
+                        log.debug("Create a new table [{}]", name);
+                        return factories().ivoa().tables().create(
+                            IvoaSchemaEntity.this,
+                            name
+                            );
+                        }
+                    };
                 }
             };
         }

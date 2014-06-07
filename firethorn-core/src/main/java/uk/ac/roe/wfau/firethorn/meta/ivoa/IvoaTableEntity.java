@@ -21,6 +21,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -33,14 +34,17 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 
 /**
  *
@@ -53,6 +57,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
     )
 @Table(
     name = IvoaTableEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = IvoaTableEntity.DB_PARENT_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -88,6 +97,22 @@ public class IvoaTableEntity
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaTableEntity";
 
+    /**
+     * Entity tracker.
+     *
+     */
+    public static abstract class Tracker
+    extends AbstractEntityTracker<IvoaTable>
+    implements IvoaTable.Tracker
+        {
+        public Tracker(final Iterable<IvoaTable> source)
+            {
+            this.init(
+                source
+                );
+            }
+        }
+    
     /**
      * Alias factory implementation.
      *
@@ -321,6 +346,30 @@ public class IvoaTableEntity
                 return factories().ivoa().columns().select(
                     ident
                     );
+                }
+
+            @Override
+            public IvoaColumn.Tracker tracker()
+                {
+                return new IvoaColumnEntity.Tracker(this.select())
+                    {
+                    @Override
+                    protected void finish(final IvoaColumn column)
+                        {
+                        log.debug("Archive inactive column [{}]", column.name());
+                        }
+
+                    @Override
+                    protected IvoaColumn create(String name)
+                        throws DuplicateEntityException
+                        {
+                        log.debug("Create a new column [{}]", name);
+                        return factories().ivoa().columns().create(
+                            IvoaTableEntity.this,
+                            name
+                            );
+                        }
+                    };
                 }
             };
         }

@@ -45,6 +45,17 @@ Process the VOSI document to fill in our IvoaResource.
     curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/capabilities' | xmllint --format - > vizier-capabilities.xml
     curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables'       | xmllint --format - > vizier-tabledata.xml
 
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/columns?query=vbig.J/A+A/542/A98/ref0_33'
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/vbig.J/A+A/542/A98/ref0_33'
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/table/vbig.J/A+A/542/A98/ref0_33'
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/columns/vbig.J/A+A/542/A98/ref0_33'
+
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/II/246/out' | xmllint --format - 
+
+    vizls.I/320/spm4
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/I/320/spm4' | xmllint --format - 
+
+
 
 
 

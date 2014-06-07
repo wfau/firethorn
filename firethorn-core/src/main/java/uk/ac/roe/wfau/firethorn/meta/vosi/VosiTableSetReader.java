@@ -15,11 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.ivoa.vosi.tables;
+package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -27,6 +29,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -61,32 +64,36 @@ public class VosiTableSetReader
 
     private static final VosiSchemaReader schemareader = new VosiSchemaReader();  
     
-    public void inport(final Reader reader, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException, NameNotFoundException
+    public void inport(final IvoaResource resource, final Reader reader)
+    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException
         {
-        log.debug("inport(Reader, IvoaResource)");
         this.inport(
+            resource,
             wrap(
                 reader
-                ),
-            resource
+                )
             );
         }
 
-    public void inport(final XMLEventReader events, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException
+    public void inport(final IvoaResource resource, final XMLEventReader events)
+    throws XMLParserException, XMLReaderException, DuplicateEntityException
         {
-        log.debug("inport(XMLEventReader, IvoaResource)");
         this.start(
             events
             );
+
+        IvoaSchema.Tracker schemas = resource.schemas().tracker(); 
+
         while (schemareader.match(events))
             {
             schemareader.inport(
-                events,
-                resource
+                schemas,
+                events
                 );
             }
+        
+        schemas.finish();
+
         this.done(
             events
             );
@@ -127,10 +134,9 @@ public class VosiTableSetReader
 
         private static final VosiTableReader tablereader = new VosiTableReader();
 
-        public void inport(final XMLEventReader events, final IvoaResource resource)
-        throws XMLParserException, XMLReaderException
+        public void inport(final IvoaSchema.Tracker schemas, final XMLEventReader events)
+        throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
-            log.debug("inport(XMLEventReader, IvoaResource)");
             this.start(
                 events
                 );
@@ -145,22 +151,22 @@ public class VosiTableSetReader
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
 
-            /*
-             * 
-            IvoaSchema schema = resource.schemas().search(
+            IvoaSchema schema = schemas.select(
                 name
                 );
-             * 
-             */
-            IvoaSchema schema = null;
-            
+
+            IvoaTable.Tracker tables = schema.tables().tracker();
+
             while (tablereader.match(events))
                 {
                 tablereader.inport(
-                    events,
-                    schema
+                    schema,
+                    tables,
+                    events
                     );
                 }
+
+            tables.finish();
 
             this.done(
                 events
@@ -201,13 +207,12 @@ public class VosiTableSetReader
             false
             );
 
-        private static final VosiColumnReader columns = new VosiColumnReader();
+        private static final VosiColumnReader columnreader = new VosiColumnReader();
         private static final VosiForeignKeyReader keys = new VosiForeignKeyReader();
         
-        public void inport(final XMLEventReader events, final IvoaSchema schema)
-        throws XMLParserException, XMLReaderException
+        public void inport(final IvoaSchema schema, final IvoaTable.Tracker tables, final XMLEventReader events)
+        throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
-            log.debug("inport(XMLEventReader, IvoaResource)");
             this.start(
                 events
                 );
@@ -222,22 +227,30 @@ public class VosiTableSetReader
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
 
-            /*
-             * 
-            IvoaTable table = schema.tables().search(
-                name
-                );
-             * 
-             */
-            IvoaTable table = null ;
-
-            while (columns.match(events))
+            String prefix =  schema.name() + "." ;
+            if (name.startsWith(prefix))
                 {
-                columns.inport(
-                    events,
-                    table
+                name = name.substring(
+                    prefix.length()
                     );
                 }
+            
+            IvoaTable table = tables.select(
+                name
+                );
+            table.text(text);
+
+            IvoaColumn.Tracker columns = table.columns().tracker();
+
+            while (columnreader.match(events))
+                {
+                columnreader.inport(
+                    columns,
+                    events
+                    );
+                }
+
+            columns.finish();
 
             while (keys.match(events))
                 {
@@ -306,10 +319,9 @@ public class VosiTableSetReader
             false
             );
         
-        public void inport(final XMLEventReader events, final IvoaTable table)
-        throws XMLParserException, XMLReaderException
+        public void inport(final IvoaColumn.Tracker columns, final XMLEventReader events)
+        throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
-            log.debug("inport(XMLEventReader, IvoaResource)");
             StartElement start = this.start(
                 events
                 );
@@ -350,12 +362,15 @@ public class VosiTableSetReader
                 log.debug("    flag  [{}]", flag);
                 }
 
-            /*
-             * 
-            IvoaColumn column = table.columns().search(name);
-             * 
-             */
-            IvoaColumn column = null;
+            IvoaColumn column = columns.select(
+                name
+                );
+
+            column.text(text);
+            column.meta().adql().ucd(ucd);
+            column.meta().adql().units(unit);
+            column.meta().adql().utype(utype);
+            column.meta().adql().dtype(dtype);
             
             this.done(
                 events
