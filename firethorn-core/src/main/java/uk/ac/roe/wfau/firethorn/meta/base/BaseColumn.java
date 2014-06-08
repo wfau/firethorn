@@ -207,6 +207,7 @@ extends BaseComponent
              *
              */
             public String units();
+
             /**
              * Set the ADQL units.
              *
@@ -255,7 +256,6 @@ extends BaseComponent
              */
             @Deprecated
             public void ucd(final UCD.Type type, final String value);
-
             
             }
 

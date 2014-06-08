@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
@@ -82,11 +83,12 @@ public class VosiTableSetReader
             events
             );
 
-        IvoaSchema.Tracker schemas = resource.schemas().tracker(); 
+        IvoaSchema.Builder schemas = resource.schemas().builder(); 
 
         while (schemareader.match(events))
             {
             schemareader.inport(
+                resource,
                 schemas,
                 events
                 );
@@ -134,17 +136,17 @@ public class VosiTableSetReader
 
         private static final VosiTableReader tablereader = new VosiTableReader();
 
-        public void inport(final IvoaSchema.Tracker schemas, final XMLEventReader events)
+        public void inport(final IvoaResource resource, final IvoaSchema.Builder schemas, final XMLEventReader events)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             this.start(
                 events
                 );
 
-            String name  = namereader.read(events); 
-            String title = titlereader.read(events);
-            String text  = textreader.read(events); 
-            String utype = utypereader.read(events); 
+            final String name  = namereader.read(events); 
+            final String title = titlereader.read(events);
+            final String text  = textreader.read(events); 
+            final String utype = utypereader.read(events); 
 
             log.debug("Schema [{}]", name);
             log.debug("    title [{}]", title);
@@ -152,11 +154,28 @@ public class VosiTableSetReader
             log.debug("    utype [{}]", utype);
 
             IvoaSchema schema = schemas.select(
-                name
+                name,
+                new IvoaSchema.Builder.Worker()
+                    {
+                    @Override
+                    public IvoaSchema create(final String name)
+                    throws DuplicateEntityException
+                        {
+                        final IvoaSchema schema = resource.schemas().create(
+                            name
+                            );
+                        update(schema);
+                        return schema ;
+                        }
+                    @Override
+                    public void update(final IvoaSchema schema)
+                        {
+                        schema.text(text);
+                        }
+                    }
                 );
 
-            IvoaTable.Tracker tables = schema.tables().tracker();
-
+            IvoaTable.Builder tables = schema.tables().builder();            
             while (tablereader.match(events))
                 {
                 tablereader.inport(
@@ -166,7 +185,7 @@ public class VosiTableSetReader
                     );
                 }
 
-            tables.finish();
+            schemas.finish();
 
             this.done(
                 events
@@ -210,7 +229,7 @@ public class VosiTableSetReader
         private static final VosiColumnReader columnreader = new VosiColumnReader();
         private static final VosiForeignKeyReader keys = new VosiForeignKeyReader();
         
-        public void inport(final IvoaSchema schema, final IvoaTable.Tracker tables, final XMLEventReader events)
+        public void inport(final IvoaSchema schema, final IvoaTable.Builder tables, final XMLEventReader events)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             this.start(
@@ -218,9 +237,9 @@ public class VosiTableSetReader
                 );
 
             String name  = namereader.read(events); 
-            String title = titlereader.read(events);
-            String text  = textreader.read(events); 
-            String utype = utypereader.read(events); 
+            final String title = titlereader.read(events);
+            final String text  = textreader.read(events); 
+            final String utype = utypereader.read(events); 
 
             log.debug("Table [{}]", name);
             log.debug("    title [{}]", title);
@@ -234,17 +253,36 @@ public class VosiTableSetReader
                     prefix.length()
                     );
                 }
-            
-            IvoaTable table = tables.select(
-                name
-                );
-            table.text(text);
 
-            IvoaColumn.Tracker columns = table.columns().tracker();
+            IvoaTable table = tables.select(
+                name,
+                new IvoaTable.Builder.Worker()
+                    {
+                    @Override
+                    public IvoaTable create(String name)
+                        throws DuplicateEntityException
+                        {
+                        final IvoaTable table = schema.tables().create(
+                            name
+                            );
+                        update(table);
+                        return table;
+                        }
+
+                    @Override
+                    public void update(IvoaTable table)
+                        {
+                        table.text(text);
+                        }
+                    }
+                );
+
+            IvoaColumn.Builder columns = table.columns().builder();
 
             while (columnreader.match(events))
                 {
                 columnreader.inport(
+                    table,
                     columns,
                     events
                     );
@@ -319,7 +357,7 @@ public class VosiTableSetReader
             false
             );
         
-        public void inport(final IvoaColumn.Tracker columns, final XMLEventReader events)
+        public void inport(final IvoaTable table, final IvoaColumn.Builder columns, final XMLEventReader events)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             StartElement start = this.start(
@@ -333,13 +371,13 @@ public class VosiTableSetReader
                     )
                 );
                 
-            String name  = namereader.read(events); 
-            String title = titlereader.read(events);
-            String text  = textreader.read(events); 
-            String unit  = unitreader.read(events); 
-            String ucd   = ucdreader.read(events); 
-            String utype = utypereader.read(events); 
-            String dtype = dtypereader.read(events); 
+            final String name  = namereader.read(events); 
+            final String title = titlereader.read(events);
+            final String text  = textreader.read(events); 
+            final String unit  = unitreader.read(events); 
+            final String ucd   = ucdreader.read(events); 
+            final String utype = utypereader.read(events); 
+            final String dtype = dtypereader.read(events); 
             
             List<String> flags = new ArrayList<String>();
             while(flagreader.match(events))
@@ -362,16 +400,32 @@ public class VosiTableSetReader
                 log.debug("    flag  [{}]", flag);
                 }
 
-            IvoaColumn column = columns.select(
-                name
-                );
+            columns.select(
+                name,
+                new IvoaColumn.Builder.Worker()
+                    {
+                    @Override
+                    public IvoaColumn create(String name)
+                        throws DuplicateEntityException
+                        {
+                        final IvoaColumn column = table.columns().create(
+                            name
+                            );
+                        update(column);
+                        return column;
+                        }
 
-            column.text(text);
-            column.meta().adql().ucd(ucd);
-            column.meta().adql().units(unit);
-            column.meta().adql().utype(utype);
-            column.meta().adql().dtype(dtype);
-            
+                    @Override
+                    public void update(final IvoaColumn column)
+                        {
+                        column.text(text);
+                        column.meta().adql().ucd(ucd);
+                        column.meta().adql().units(unit);
+                        column.meta().adql().utype(utype);
+                        column.meta().adql().dtype(dtype);
+                        }
+                    }
+                );
             this.done(
                 events
                 );

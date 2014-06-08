@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
@@ -28,13 +28,22 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface IvoaColumn
 extends BaseColumn<IvoaColumn>
     {
+
     /**
-     * Entity tracker interface.
+     * EntityBuilder interface.
      * 
      */
-    public static interface Tracker
-    extends EntityTracker<IvoaColumn>
+    public static interface Builder
+    extends EntityBuilder<IvoaColumn>
         {
+        /**
+         * Worker interface.
+         * 
+         */
+        public static interface Worker
+        extends EntityBuilder.Worker<IvoaColumn>
+            {
+            }
         }
     
     /**

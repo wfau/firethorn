@@ -99,14 +99,14 @@ public class IvoaSchemaEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaSchemaEntity";
 
     /**
-     * Entity tracker.
+     * Entity builder.
      *
      */
-    public static abstract class Tracker
+    public static abstract class Builder
     extends AbstractEntityTracker<IvoaSchema>
-    implements IvoaSchema.Tracker
+    implements IvoaSchema.Builder
         {
-        public Tracker(final Iterable<IvoaSchema> source)
+        public Builder(final Iterable<IvoaSchema> source)
             {
             this.init(
                 source
@@ -304,25 +304,25 @@ public class IvoaSchemaEntity
                 }
 
             @Override
-            public IvoaTable.Tracker tracker()
+            public IvoaTable create(String name)
+                throws DuplicateEntityException
                 {
-                return new IvoaTableEntity.Tracker(this.select())
+                log.debug("Create a new table [{}]", name);
+                return factories().ivoa().tables().create(
+                    IvoaSchemaEntity.this,
+                    name
+                    );
+                }
+            
+            @Override
+            public IvoaTable.Builder builder()
+                {
+                return new IvoaTableEntity.Builder(this.select())
                     {
                     @Override
                     protected void finish(final IvoaTable table)
                         {
                         log.debug("Archive inactive table [{}]", table.name());
-                        }
-
-                    @Override
-                    protected IvoaTable create(String name)
-                        throws DuplicateEntityException
-                        {
-                        log.debug("Create a new table [{}]", name);
-                        return factories().ivoa().tables().create(
-                            IvoaSchemaEntity.this,
-                            name
-                            );
                         }
                     };
                 }

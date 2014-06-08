@@ -33,6 +33,15 @@ public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, C
 extends BaseComponent
     {
     /**
+     * EntityBuilder parameters.
+     * 
+    public interface BuilderParam
+        {
+        public String name();
+        }
+     */
+    
+    /**
      * Link factory interface.
      *
      */

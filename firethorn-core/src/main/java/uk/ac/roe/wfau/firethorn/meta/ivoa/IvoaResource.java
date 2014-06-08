@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
@@ -81,12 +81,18 @@ extends BaseResource<IvoaSchema>
      */
     public interface Schemas extends BaseResource.Schemas<IvoaSchema>
         {
+        /**
+         * Create a new schema.
+         * 
+         */
+        public IvoaSchema create(final String name)
+        throws DuplicateEntityException;
 
         /**
-         * Create a tracker for the resource schema.
+         * Create a schema builder.
          *
          */
-        public IvoaSchema.Tracker tracker();  
+        public IvoaSchema.Builder builder();  
 
         }
 

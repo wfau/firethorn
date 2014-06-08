@@ -18,7 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
@@ -29,12 +30,20 @@ public interface IvoaTable
 extends BaseTable<IvoaTable, IvoaColumn>
     {
     /**
-     * Entity tracker interface.
+     * EntityBuilder interface.
      * 
      */
-    public static interface Tracker
-    extends EntityTracker<IvoaTable>
+    public static interface Builder
+    extends EntityBuilder<IvoaTable>
         {
+        /**
+         * Worker interface.
+         * 
+         */
+        public static interface Worker
+        extends EntityBuilder.Worker<IvoaTable>
+            {
+            }
         }
     
     /**
@@ -96,10 +105,17 @@ extends BaseTable<IvoaTable, IvoaColumn>
     public interface Columns extends BaseTable.Columns<IvoaColumn>
         {
         /**
-         * Create a tracker for the table columns.
+         * Create a new column.
+         * 
+         */
+        public IvoaColumn create(final String name)
+        throws DuplicateEntityException;
+        
+        /**
+         * Create a builder.
          *
          */
-        public IvoaColumn.Tracker tracker();  
+        public IvoaColumn.Builder builder();  
         }
     @Override
     public Columns columns();

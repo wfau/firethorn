@@ -20,15 +20,15 @@ package uk.ac.roe.wfau.firethorn.entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 
 /**
- * Public interface for keeping track of of Entity(s).
- * The EntityTracker maintains two lists of Entity(s),
+ * Public interface for building lists of Entity(s).
+ * The builder maintains two lists of Entity(s),
  * A todo list that contains the Entity(s) that have yet to be processed.
  * A done list that contains the Entity(s) that have been processed.
  * 
  * As each Entity is selected, it is moved from the todo list to the done list.  
  *
  */
-public interface EntityTracker<EntityType extends NamedEntity>
+public interface EntityBuilder<EntityType extends NamedEntity>
     {
     /**
      * A list of Entity(s) that have yet to be processed.
@@ -43,10 +43,32 @@ public interface EntityTracker<EntityType extends NamedEntity>
     public Iterable<EntityType> done();
 
     /**
+     * The worker that creates or updates the Entity(s).
+     * 
+     */
+    public interface Worker<EntityType>
+        {
+        /**
+         * Create a new Entity.  
+         * @return A new Entity.
+         *
+         */
+        public EntityType create(final String name)
+        throws DuplicateEntityException;
+        
+        /**
+         * Update an existing Entity.  
+         * @param The Entity to update.
+         *
+         */
+        public void update(final EntityType entity);
+        }
+
+    /**
      * Select an Entity for processing.
      * 
      */
-    public EntityType select(final String name)
+    public EntityType select(final String name, final Worker<EntityType> handler)
     throws DuplicateEntityException;
 
     /**

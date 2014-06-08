@@ -43,7 +43,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
-import uk.ac.roe.wfau.firethorn.entity.EntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -225,7 +225,8 @@ public class IvoaResourceEntity
                 }
 
             @Override
-            public IvoaSchema select(String name) throws NameNotFoundException
+            public IvoaSchema select(String name)
+            throws NameNotFoundException
                 {
                 return factories().ivoa().schemas().select(
                     IvoaResourceEntity.this,
@@ -243,25 +244,23 @@ public class IvoaResourceEntity
                 }
 
             @Override
-            public IvoaSchema.Tracker tracker()
+            public IvoaSchema create(final String name)
                 {
-                return new IvoaSchemaEntity.Tracker(this.select())
+                return factories().ivoa().schemas().create(
+                    IvoaResourceEntity.this,
+                    name
+                    );
+                }
+
+            @Override
+            public IvoaSchema.Builder builder()
+                {
+                return new IvoaSchemaEntity.Builder(this.select())
                     {
                     @Override
                     protected void finish(final IvoaSchema schema)
                         {
                         log.debug("Archive inactive schema [{}]", schema.name());
-                        }
-
-                    @Override
-                    protected IvoaSchema create(String name)
-                        throws DuplicateEntityException
-                        {
-                        log.debug("Create a new schema [{}]", name);
-                        return factories().ivoa().schemas().create(
-                            IvoaResourceEntity.this,
-                            name
-                            );
                         }
                     };
                 }

@@ -30,6 +30,15 @@ public interface BaseSchema<SchemaType extends BaseSchema<SchemaType, TableType>
 extends BaseComponent
     {
     /**
+     * EntityBuilder parameters.
+     * 
+    public interface BuilderParam
+        {
+        public String name();
+        }
+     */
+    
+    /**
      * Link factory interface.
      *
      */

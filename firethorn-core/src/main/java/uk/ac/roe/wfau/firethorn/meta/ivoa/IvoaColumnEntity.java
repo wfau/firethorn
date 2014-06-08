@@ -43,12 +43,11 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity;
 
 /**
  *
@@ -112,11 +111,11 @@ public class IvoaColumnEntity
      * Entity tracker.
      *
      */
-    public static abstract class Tracker
+    public static abstract class Builder
     extends AbstractEntityTracker<IvoaColumn>
-    implements IvoaColumn.Tracker
+    implements IvoaColumn.Builder
         {
-        public Tracker(final Iterable<IvoaColumn> source)
+        public Builder(final Iterable<IvoaColumn> source)
             {
             this.init(
                 source

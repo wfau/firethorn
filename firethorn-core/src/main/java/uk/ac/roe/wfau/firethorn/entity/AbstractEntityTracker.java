@@ -20,16 +20,17 @@ package uk.ac.roe.wfau.firethorn.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder.Worker;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 
 /**
- * base class implementation of the EntityListTracker interface. 
+ * Abstract base class for EntityListTracker implementations. 
  *
  */
+@Slf4j
 public abstract class AbstractEntityTracker<EntityType extends NamedEntity>
-implements EntityTracker<EntityType>
+implements EntityBuilder<EntityType>
     {
     /**
      * Our map of Entity(s) to process.
@@ -63,8 +64,10 @@ implements EntityTracker<EntityType>
      */
     public AbstractEntityTracker<EntityType> init(final Iterable<EntityType> source)
         {
+        log.debug("init(Iterable<EntityType>)");
         for (EntityType entity : source)
             {
+            log.debug("  entity [{}]", entity.name());
             todo.put(
                 entity.name(),
                 entity
@@ -74,9 +77,13 @@ implements EntityTracker<EntityType>
         }
     
     @Override
-    public EntityType select(String name)
+    public EntityType select(final String name, final Worker<EntityType> handler)
     throws DuplicateEntityException
         {
+        log.debug("select(String, Handler<EntityType>)");
+        log.debug("  name [{}]", name);
+        log.debug("  todo [{}]", todo.size());
+        log.debug("  done [{}]", done.size());
         //
         // Check for a duplicate in the done list.
         EntityType entity = done.get(name);
@@ -91,14 +98,21 @@ implements EntityTracker<EntityType>
         entity = todo.get(name);
         if (entity != null)
             {
+            //
+            // Remove from the todo list.
             todo.remove(
                 name
+                );
+            //
+            // Apply the updates.
+            handler.update(
+                entity
                 );
             }
         //
         // Create a new Entity.
         else {
-            entity = create(
+            entity = handler.create(
                 name
                 );
             }
@@ -133,8 +147,15 @@ implements EntityTracker<EntityType>
     /**
      * Create a new Entity.
      * 
-     */
-    protected abstract EntityType create(final String name)
+    protected abstract EntityType create(final String name, final ParamType param)
     throws DuplicateEntityException;
+     */
+
+    /**
+     * Update an existing Entity.
+     * 
+    protected abstract void update(final EntityType entity, final ParamType param)
+    throws DuplicateEntityException;
+     */
 
     }
