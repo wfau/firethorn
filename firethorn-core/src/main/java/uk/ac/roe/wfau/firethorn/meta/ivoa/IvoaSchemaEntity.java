@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -93,17 +93,17 @@ public class IvoaSchemaEntity
     implements IvoaSchema
     {
     /**
-     * Hibernate table name.
+     * Hibernate table mapping, {@value}.
      * 
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaSchemaEntity";
 
     /**
-     * Entity builder.
+     * {@link EntityBuilder} implementation.
      *
      */
     public static abstract class Builder
-    extends AbstractEntityTracker<IvoaSchema>
+    extends AbstractEntityBuilder<IvoaSchema, IvoaSchema.Metadata>
     implements IvoaSchema.Builder
         {
         public Builder(final Iterable<IvoaSchema> source)
@@ -115,7 +115,7 @@ public class IvoaSchemaEntity
         }
 
     /**
-     * Entity factory.
+     * {@link Entity.EntityFactory} implementation.
      *
      */
     @Repository
@@ -142,6 +142,19 @@ public class IvoaSchemaEntity
                 );
             }
 
+        @Override
+        @CreateMethod
+        public IvoaSchema create(final IvoaResource parent, final String name, final IvoaSchema.Metadata param)
+            {
+            //TODO Add the param
+            return this.insert(
+                new IvoaSchemaEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+        
         @Override
         @SelectMethod
         public Iterable<IvoaSchema> select(final IvoaResource parent)
@@ -304,25 +317,34 @@ public class IvoaSchemaEntity
                 }
 
             @Override
-            public IvoaTable create(String name)
-                throws DuplicateEntityException
-                {
-                log.debug("Create a new table [{}]", name);
-                return factories().ivoa().tables().create(
-                    IvoaSchemaEntity.this,
-                    name
-                    );
-                }
-            
-            @Override
             public IvoaTable.Builder builder()
                 {
                 return new IvoaTableEntity.Builder(this.select())
                     {
                     @Override
-                    protected void finish(final IvoaTable table)
+                    protected IvoaTable create(final String name,final IvoaTable.Metadata param)
+                    throws DuplicateEntityException
+                        {
+                        return update(
+                            factories().ivoa().tables().create(
+                                IvoaSchemaEntity.this,
+                                name
+                                ),
+                            param
+                            );
+                        }
+
+                    @Override
+                    protected IvoaTable update(final IvoaTable table, final IvoaTable.Metadata param)
+                        {
+                        return table;
+                        }
+
+                    @Override
+                    protected IvoaTable finish(final IvoaTable table)
                         {
                         log.debug("Archive inactive table [{}]", table.name());
+                        return table;
                         }
                     };
                 }
@@ -342,5 +364,24 @@ public class IvoaSchemaEntity
         {
         // TODO Auto-generated method stub
 
+        }
+
+    @Override
+    public IvoaSchema.Metadata meta()
+        {
+        return new IvoaSchema.Metadata()
+            {
+            @Override
+            public Adql adql()
+                {
+                return new Adql(){};
+                }
+
+            @Override
+            public Ivoa ivoa()
+                {
+                return new Ivoa(){};
+                }
+            };
         }
     }

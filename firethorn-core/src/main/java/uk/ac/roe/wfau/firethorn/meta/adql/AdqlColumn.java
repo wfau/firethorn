@@ -20,7 +20,10 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
@@ -31,60 +34,92 @@ public interface AdqlColumn
 extends BaseColumn<AdqlColumn>
     {
     /**
-     * Name factory interface.
-     *
+     * {@link EntityBuilder} interface.
+     * 
      */
-    public static interface NameFactory
-    extends Entity.NameFactory<AdqlColumn>
+    public static interface Builder
+    extends EntityBuilder<IvoaColumn, IvoaColumn.Metadata>
         {
+        /**
+         * Create or update a column.
+         *
+         */
+        public IvoaColumn select(final String name, final IvoaColumn.Metadata param)
+        throws DuplicateEntityException;
         }
 
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlColumn>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseColumn.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseColumn.IdentFactory
         {
         }
 
     /**
-     * Alias factory interface.
+     * {@link BaseColumn.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseColumn.NameFactory<AdqlColumn>
+        {
+        }
+   
+    /**
+     * {@link BaseColumn.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
     extends BaseColumn.AliasFactory<AdqlColumn>
         {
         }
+    
+    /**
+     * {@link BaseColumn.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseColumn.LinkFactory<AdqlColumn>
+        {
+        }
 
     /**
-     * Column factory interface.
+     * {@link BaseColumn.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseColumn.EntityFactory<AdqlTable, AdqlColumn>
         {
         /**
-         * Create a new column.
+         * Create a new {@link AdqlColumn}.
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base);
 
         /**
-         * Create a new column.
+         * Create a new {@link AdqlColumn}.
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
 
+        
+        //TODO - move to services
+        @Override
+        public AdqlColumn.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public AdqlColumn.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlColumn.AliasFactory aliases();
+        
+        //TODO - move to services
+        @Override
+        public AdqlColumn.LinkFactory links();
+        
         }
 
     @Override
@@ -250,7 +285,7 @@ extends BaseColumn<AdqlColumn>
         }
 
     /**
-     * The column metadata.
+     * The {@link AdqlColumn} metadata.
      *
      */
     public interface Metadata

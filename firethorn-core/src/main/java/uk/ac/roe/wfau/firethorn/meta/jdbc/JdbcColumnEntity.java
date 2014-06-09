@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -26,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -40,11 +40,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
@@ -100,38 +102,64 @@ public class JdbcColumnEntity
     implements JdbcColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcColumnEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_TYPE_COL = "jdbctype" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
     /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link EntityBuilder} implementation.
+     *
+     */
+    public static abstract class Builder
+    extends AbstractEntityBuilder<JdbcColumn, JdbcColumn.Metadata>
+    implements JdbcColumn.Builder
+        {
+        public Builder(final Iterable<JdbcColumn> source)
+            {
+            this.init(
+                source
+                );
+            }
+        }
+    
+    /**
+     * {@link JdbcColumn.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements JdbcColumn.AliasFactory
         {
+        /**
+         * The alias prefix for this type.
+         *
+         */
+        protected static final String PREFIX = "IVOA_" ;
+
         @Override
         public String alias(final JdbcColumn column)
             {
-            return "JDBC_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
         }
 
     /**
-     * Column factory implementation.
+     * {@link JdbcColumn.EntityFactory} implementation.
      *
      */
     @Repository
@@ -254,34 +282,6 @@ public class JdbcColumnEntity
                 );
             }
 
-/*
- * 
-        private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().jdbc().type(),
-                    column.meta().jdbc().size()
-                    )
-                );
-            }
-
-
-        private JdbcColumn create(final JdbcTable parent, final String name, final AdqlColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().adql().type().jdbc(),
-                    column.meta().adql().arraysize()
-                    )
-                );
-            }
- *
- */
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)

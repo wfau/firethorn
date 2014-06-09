@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -31,7 +30,16 @@ public interface AdqlTable
 extends BaseTable<AdqlTable, AdqlColumn>
     {
     /**
-     * Name factory interface.
+     * {@link BaseTable.IdentFactory} interface.
+     *
+     */
+    public static interface IdentFactory
+    extends BaseTable.IdentFactory
+        {
+        }
+
+    /**
+     * {@link BaseTable.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -40,7 +48,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * Alias factory interface.
+     * {@link BaseTable.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -49,25 +57,16 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * Link factory interface.
+     * {@link BaseTable.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlTable>
+    extends BaseTable.LinkFactory<AdqlTable>
         {
         }
 
     /**
-     * Identifier factory interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
-        {
-        }
-
-    /**
-     * Entity factory interface.
+     * {@link BaseTable.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -75,50 +74,61 @@ extends BaseTable<AdqlTable, AdqlColumn>
         {
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
 
         /**
-         * The table column factory.
+         * Our local {@link AdqlColumn.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public AdqlColumn.EntityFactory columns();
 
+        //TODO - move to services
         @Override
         public AdqlTable.IdentFactory idents();
 
+        //TODO - move to services
+        @Override
+        public AdqlTable.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlTable.AliasFactory aliases();
+        
+        //TODO - move to services
         @Override
         public AdqlTable.LinkFactory links();
 
@@ -126,29 +136,37 @@ extends BaseTable<AdqlTable, AdqlColumn>
 
     @Override
     public AdqlResource resource();
+
     @Override
     public AdqlSchema schema();
 
     /**
-     * The table columns.
+     * Our table {@link AdqlColumn columns}.
      *
      */
     public interface Columns extends BaseTable.Columns<AdqlColumn>
         {
-
         /**
-         * Create a new column.
+         * Create a {@link AdqlColumn}.
+         * @todo Add name change
          *
          */
         public AdqlColumn create(final BaseColumn<?> base);
 
         /**
-         * Import a named column from our base table.
+         * Import a {@link AdqlColumn} from our base table.
+         * @todo Add name change
          *
          */
         public AdqlColumn inport(final String name)
         throws NameNotFoundException;
 
+        /**
+         * Create a new {@link IvoaColumn.Builder}.
+         *
+        public IvoaColumn.Builder builder();  
+         */
+        
         }
 
     @Override
@@ -171,7 +189,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * The table metadata.
+     * The {@link AdqlTable} metadata.
      *
      */
     public interface Metadata
@@ -184,7 +202,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public interface Adql
             {
             /**
-             * get the table row count.
+             * Get the table row count.
              *
              */
             public Long count();

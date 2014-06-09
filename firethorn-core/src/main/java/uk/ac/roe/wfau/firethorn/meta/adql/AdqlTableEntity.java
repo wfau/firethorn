@@ -17,11 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -42,18 +42,14 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.Metadata.Jdbc;
 
 /**
  *
@@ -107,37 +103,19 @@ public class AdqlTableEntity
     implements AdqlTable
     {
     /**
-     * Hibernate database table name.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlTableEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
 
     /**
-     * Alias factory implementation.
-     * @todo move to a common implementation
-     *
-     */
-    @Component
-    public static class AliasFactory
-    implements AdqlTable.AliasFactory
-        {
-        @Override
-        public String alias(final AdqlTable table)
-            {
-            return "ADQL_".concat(
-                table.ident().toString()
-                );
-            }
-        }
-
-    /**
-     * Name factory implementation.
+     * {@link AdqlTable.NameFactory} implementation.
      *
      */
     @Component
@@ -148,7 +126,30 @@ public class AdqlTableEntity
         }
 
     /**
-     * Table factory implementation.
+     * {@link AdqlTable.AliasFactory} implementation.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements AdqlTable.AliasFactory
+        {
+        /**
+         * The alias prefix for this type.
+         *
+         */
+        protected static final String PREFIX = "ADQL_" ;
+        
+        @Override
+        public String alias(final AdqlTable table)
+            {
+            return PREFIX.concat(
+                table.ident().toString()
+                );
+            }
+        }
+
+    /**
+     * {@link AdqlTable.EntityFactory} implementation.
      *
      */
     @Repository
@@ -372,11 +373,11 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        protected AdqlTable.LinkFactory links;
+        protected AdqlTable.NameFactory names;
         @Override
-        public AdqlTable.LinkFactory links()
+        public AdqlTable.NameFactory names()
             {
-            return this.links;
+            return this.names;
             }
 
         @Autowired
@@ -388,19 +389,28 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        protected AdqlTable.NameFactory names;
+        protected AdqlTable.LinkFactory links;
         @Override
-        public AdqlTable.NameFactory names()
+        public AdqlTable.LinkFactory links()
             {
-            return this.names;
+            return this.links;
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlTableEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -412,6 +422,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -423,6 +438,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -434,6 +454,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final CopyDepth type, final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(
@@ -458,14 +483,6 @@ public class AdqlTableEntity
             AdqlTableEntity.this,
             base
             );
-        /*
-         * HibernateCollections
-        children.put(
-            column.name(),
-            column
-            );
-         *
-         */
         }
 
     /**
@@ -546,23 +563,6 @@ public class AdqlTableEntity
         {
         return this.base.root();
         }
-
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "table",
-        targetEntity = AdqlColumnEntity.class
-        )
-    private Map<String, AdqlColumn> children = new LinkedHashMap<String, AdqlColumn>();
-     *
-     */
 
     @Override
     public AdqlTable.Columns columns()

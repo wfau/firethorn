@@ -27,6 +27,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
@@ -67,13 +68,13 @@ implements BaseTable<TableType, ColumnType>
     protected static final String DB_ADQL_STATUS_COL = "adqlstatus" ;
 
     /**
-     * Table resolver implementation.
+     * {@link BaseTable.Resolver} implementation.
      *
      */
     @Repository
-    public static class Resolver
-    extends AbstractEntityFactory<BaseTable<?,?>>
-    implements BaseTable.Resolver
+    public static class Resolver<TableType extends BaseTable<TableType, ?>>
+    extends AbstractEntityFactory<TableType>
+    implements BaseTable.Resolver<TableType>
         {
         @Override
         public Class<?> etype()
@@ -81,9 +82,10 @@ implements BaseTable<TableType, ColumnType>
             return BaseTableEntity.class;
             }
 
+        //TODO do we need this in the base class ? 
         @Override
         @SelectMethod
-        public BaseTable<?,?> select(final Identifier ident)
+        public TableType select(final Identifier ident)
         throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
@@ -101,7 +103,9 @@ implements BaseTable<TableType, ColumnType>
                 final AdqlTable table = schema.tables().select(
                     proxy.base()
                     );
-                return table;
+
+                // TODO nasty class cast :-(
+                return (TableType) table;
                 }
             else {
                 return super.select(
@@ -119,9 +123,9 @@ implements BaseTable<TableType, ColumnType>
             }
 
         @Autowired
-        protected BaseTable.LinkFactory links ;
+        protected BaseTable.LinkFactory<TableType> links ;
         @Override
-        public BaseTable.LinkFactory links()
+        public BaseTable.LinkFactory<TableType> links()
             {
             return this.links;
             }
@@ -130,8 +134,9 @@ implements BaseTable<TableType, ColumnType>
         // TODO Change this to use a regex to match the alias.
         protected static final String PREFIX = "BASE_" ;
 
+        // TODO Move the parsing to the AliasFactory. 
         @Override
-        public BaseTable<?,?> resolve(final String alias)
+        public TableType resolve(final String alias)
         throws EntityNotFoundException
             {
             return this.select(
@@ -145,7 +150,7 @@ implements BaseTable<TableType, ColumnType>
         }
 
     /**
-     * Table factory implementation.
+     * {@link BaseTable.EntityFactory} implementation.
      *
      */
     @Repository
@@ -155,11 +160,21 @@ implements BaseTable<TableType, ColumnType>
         {
         }
 
+    /**
+     * Protected constructor.
+     *
+     *
+     */
     protected BaseTableEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference.
+     *
+     */
     protected BaseTableEntity(final BaseSchema<?,TableType> parent, final String name)
         {
         this(
@@ -169,13 +184,17 @@ implements BaseTable<TableType, ColumnType>
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference.
+     *
+     */
     protected BaseTableEntity(final CopyDepth type, final BaseSchema<?,TableType> parent, final String name)
         {
         super(
             type,
             name
             );
-        //this.parent = parent;
         }
 
     @Override
@@ -239,7 +258,11 @@ implements BaseTable<TableType, ColumnType>
             }
         this.adqlstatus = next;
         }
-    
+
+    /**
+     * Generate the {@link AdqlTable.Metadata.Adql adql} metadata.
+     *
+     */
     protected AdqlTable.Metadata.Adql adqlmeta()
         {
         return new AdqlTable.Metadata.Adql()
@@ -257,9 +280,11 @@ implements BaseTable<TableType, ColumnType>
                 return adqlstatus();
                 }
             @Override
-            public void status(TableStatus status)
+            public void status(AdqlTable.TableStatus status)
                 {
-                // TODO Auto-generated method stub
+                adqlstatus(
+                    status
+                    );
                 }
             };
         }

@@ -21,6 +21,8 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 
 /**
  *
@@ -30,29 +32,29 @@ public interface BaseSchema<SchemaType extends BaseSchema<SchemaType, TableType>
 extends BaseComponent
     {
     /**
-     * EntityBuilder parameters.
-     * 
-    public interface BuilderParam
-        {
-        public String name();
-        }
-     */
-    
-    /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<BaseSchema<?,?>>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
     extends Entity.IdentFactory
+        {
+        }
+    
+    /**
+     * {@link Entity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory<SchemaType extends BaseSchema<?,?>>
+    extends Entity.NameFactory<SchemaType>
+        {
+        }
+
+    /**
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory<SchemaType extends BaseSchema<?,?>>
+    extends Entity.LinkFactory<SchemaType>
         {
         }
 
@@ -60,14 +62,14 @@ extends BaseComponent
      * Schema resolver interface.
      *
      */
-    public static interface Resolver
-    extends Entity.EntityFactory<BaseSchema<?,?>>
+    public static interface Resolver<SchemaType extends BaseSchema<?,?>>
+    extends Entity.EntityFactory<SchemaType>
         {
 
         }
 
     /**
-     * Schema factory interface.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
@@ -95,7 +97,7 @@ extends BaseComponent
         }
 
     /**
-     * The base schema that this schema is derived from.
+     * The {@link BaseSchema} this schema is derived from.
      *
      */
     public BaseSchema<?, ?> base();
@@ -107,38 +109,38 @@ extends BaseComponent
     public BaseSchema<?, ?> root();
 
     /**
-     * Access to our parent resource.
+     * Our parent {@linkBaseResource resource}.
      *
      */
     public BaseResource<?> resource();
 
     /**
-     * Access to the schema tables.
+     * Our schema {@link BaseTable tables}.
      *
      */
     public interface Tables<TableType>
         {
         /**
-         * Select all of the tables in this schema.
+         * Select all of the {@link BaseTable tables} in this schema.
          *
          */
         public Iterable<TableType> select();
 
         /**
-         * Search for a table by name.
+         * Search for a {@link BaseTable table} by name.
          *
          */
         public TableType search(final String name);
 
         /**
-         * Select a table by name.
+         * Select a {@link BaseTable table} by name.
          *
          */
         public TableType select(final String name)
         throws NameNotFoundException;
 
         /**
-         * Select a table by ident.
+         * Select a {@link BaseTable table} by ident.
          *
          */
         public TableType select(final Identifier ident)
@@ -147,15 +149,40 @@ extends BaseComponent
         }
 
     /**
-     * Access to the schema tables.
+     * Our table {@link BaseTable tables}.
      *
      */
     public Tables<TableType> tables();
 
     /**
-     * The fully qualified name.
+     * The fully qualified schema name.
      *
      */
     public StringBuilder namebuilder();
+
+    /**
+     * The {@link BaseSchema} metadata.
+     *
+     */
+    public interface Metadata
+        {
+        /**
+         * The table name.
+         * 
+        public String name();
+         */
+
+        /**
+         * The table description.
+         * 
+        public String text();
+         */
+        }
+
+    /**
+     * The {@link BaseSchema} metadata.
+     *
+     */
+    public AdqlSchema.Metadata meta();
 
     }

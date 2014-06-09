@@ -147,18 +147,6 @@ public interface Entity
     public DateTime modified();
 
     /**
-     * Refresh (fetch) this Entity from the database.
-     *
-    public void refresh();
-     */
-
-    /**
-     * Load a persistent reference to this Entity.
-     * 
-    public Entity self();
-     */
-
-    /**
      * The Entity Protector.
      * 
      */

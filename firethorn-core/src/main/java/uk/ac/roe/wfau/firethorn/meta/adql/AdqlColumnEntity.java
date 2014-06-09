@@ -98,21 +98,23 @@ public class AdqlColumnEntity
     implements AdqlColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}..
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlColumnEntity";
+    /**
+     * Hibernate column mapping, {@value}..
+     *
+     */
     protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlColumnJoinTo";
+    /**
+     * Hibernate column mapping, {@value}..
+     *
+     */
     protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlColumnIndexBy";
 
     /**
-     * Hibernate column mapping.
-     *
-     */
-
-    /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link AdqlColumn.AliasFactory} implementation.
      *
      */
     @Component
@@ -129,7 +131,7 @@ public class AdqlColumnEntity
         }
 
     /**
-     * Column factory implementation.
+     * {@link AdqlColumn.EntityFactory} implementation.
      *
      */
     @Repository

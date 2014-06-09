@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -39,11 +40,25 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
     implements BaseResource<SchemaType>
     {
 
+    /**
+     * Hibernate column mapping, {@value}.
+     * 
+     */
+    protected static final String DB_OGSAID_COL = "ogsaid";
+    
+    /**
+     * Protected constructor.
+     *
+     */
     protected BaseResourceEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected BaseResourceEntity(final String name)
         {
         super(
@@ -59,17 +74,25 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
             );
         }
 
+    /**
+     * The OGSA-DAI resource ID.
+     *
+     */
+    @Column(
+        name = DB_OGSAID_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String ogsaid;
     @Override
     public String ogsaid()
         {
-        return null ;
+        return this.ogsaid;
         }
     @Override
     public void ogsaid(final String ogsaid)
         {
-        // TODO Move this to Jdbc and Ivoa classes ?
-        throw new UnsupportedOperationException(
-            "ogsaid not available for BaseResource"
-            );
+        this.ogsaid = ogsaid;
         }
     }

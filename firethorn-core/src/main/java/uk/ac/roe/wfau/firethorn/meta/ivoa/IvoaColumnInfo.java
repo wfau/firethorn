@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
  *
  *
  */
+@Deprecated
 public interface IvoaColumnInfo
     {
 

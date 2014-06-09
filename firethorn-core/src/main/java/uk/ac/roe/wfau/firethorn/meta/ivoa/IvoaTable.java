@@ -17,12 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -32,24 +30,40 @@ public interface IvoaTable
 extends BaseTable<IvoaTable, IvoaColumn>
     {
     /**
-     * EntityBuilder interface.
+     * {@link EntityBuilder} interface.
      * 
      */
     public static interface Builder
-    extends EntityBuilder<IvoaTable>
+    extends EntityBuilder<IvoaTable, IvoaTable.Metadata>
         {
         /**
-         * Worker interface.
-         * 
+         * Create or update a table.
+         *
          */
-        public static interface Worker
-        extends EntityBuilder.Worker<IvoaTable>
-            {
-            }
+        public IvoaTable select(final String name, final IvoaTable.Metadata meta)
+        throws DuplicateEntityException;
+        }
+
+    /**
+     * {@link BaseTable.IdentFactory} interface.
+     *
+     */
+    public static interface IdentFactory
+    extends BaseTable.IdentFactory
+        {
+        }
+
+    /**
+     * {@link BaseTable.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseTable.NameFactory<IvoaTable>
+        {
         }
     
     /**
-     * Alias factory interface.
+     * {@link BaseTable.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -58,77 +72,109 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
 
     /**
-     * Link factory interface.
+     * {@link BaseTable.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<IvoaTable>
+    extends BaseTable.LinkFactory<IvoaTable>
         {
         }
 
     /**
-     * Identifier factory interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
-        {
-        }
-
-    /**
-     * Table factory interface.
+     * {@link BaseTable.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseTable.EntityFactory<IvoaSchema, IvoaTable>
         {
         /**
-         * Create a new IvoaTable.
+         * Create a new {@link IvoaTable}.
          *
          */
         public IvoaTable create(final IvoaSchema parent, final String name);
 
         /**
-         * The table column factory.
+         * Create a new {@link IvoaTable}.
+         *
+         */
+        public IvoaTable create(final IvoaSchema parent, final String name, final IvoaTable.Metadata param);
+        
+        /**
+         * Our local {@link IvoaColumn} implementation.
+         * @todo - move to services
          *
          */
         public IvoaColumn.EntityFactory columns();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.IdentFactory idents();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.AliasFactory aliases();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.LinkFactory links();
+        
         }
 
     @Override
     public IvoaResource resource();
+
     @Override
     public IvoaSchema schema();
 
     /**
-     * The table columns.
+     * Our table {@link IvoaColumn columns}.
      *
      */
     public interface Columns extends BaseTable.Columns<IvoaColumn>
         {
         /**
-         * Create a new column.
+         * Create a {@link IvoaColumn}.
          * 
-         */
         public IvoaColumn create(final String name)
         throws DuplicateEntityException;
+         */
         
         /**
-         * Create a builder.
+         * Create a new {@link IvoaColumn.Builder}.
          *
          */
         public IvoaColumn.Builder builder();  
+
         }
     @Override
     public Columns columns();
 
     /**
      * The table metadata.
+     * TODO Does this really extend the AdqlTable.Metadata ?
+     * TODO Does the AdqlTable.TableStatus make sense for this ?
      *
      */
     public interface Metadata
     extends AdqlTable.Metadata
         {
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public interface Ivoa
+            {
+            }
+        
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public Ivoa ivoa();
         }
 
     @Override

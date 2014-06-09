@@ -20,15 +20,14 @@ package uk.ac.roe.wfau.firethorn.entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 
 /**
- * Public interface for building lists of Entity(s).
- * The builder maintains two lists of Entity(s),
- * A todo list that contains the Entity(s) that have yet to be processed.
- * A done list that contains the Entity(s) that have been processed.
- * 
- * As each Entity is selected, it is moved from the todo list to the done list.  
+ * Common interface for building lists of {@link Entity}(s).
+ * The builder maintains two lists of {@link Entity}(s),
+ * A {@link todo} list that contains the {@link Entity}(s) that have yet to be processed.
+ * A {@link done} list that contains the {@link Entity}(s) that have been processed.
+ * As each {@link Entity} is processed, it is moved from the todo list to the done list.  
  *
  */
-public interface EntityBuilder<EntityType extends NamedEntity>
+public interface EntityBuilder<EntityType extends NamedEntity, EntityMeta>
     {
     /**
      * A list of Entity(s) that have yet to be processed.
@@ -43,36 +42,14 @@ public interface EntityBuilder<EntityType extends NamedEntity>
     public Iterable<EntityType> done();
 
     /**
-     * The worker that creates or updates the Entity(s).
-     * 
-     */
-    public interface Worker<EntityType>
-        {
-        /**
-         * Create a new Entity.  
-         * @return A new Entity.
-         *
-         */
-        public EntityType create(final String name)
-        throws DuplicateEntityException;
-        
-        /**
-         * Update an existing Entity.  
-         * @param The Entity to update.
-         *
-         */
-        public void update(final EntityType entity);
-        }
-
-    /**
      * Select an Entity for processing.
      * 
      */
-    public EntityType select(final String name, final Worker<EntityType> handler)
+    public EntityType select(final String name, final EntityMeta meta)
     throws DuplicateEntityException;
 
     /**
-     * Finish the processing.   
+     * Finish processing the list.   
      *   
      */
     public void finish();

@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -153,22 +154,21 @@ public class VosiTableSetReader
 
             IvoaSchema schema = schemas.select(
                 name,
-                new IvoaSchema.Builder.Worker()
+                new IvoaSchema.Metadata()
                     {
                     @Override
-                    public IvoaSchema create(final String name)
-                    throws DuplicateEntityException
+                    public Adql adql()
                         {
-                        final IvoaSchema schema = resource.schemas().create(
-                            name
-                            );
-                        update(schema);
-                        return schema ;
+                        return new Adql()
+                            {
+                            };
                         }
                     @Override
-                    public void update(final IvoaSchema schema)
+                    public Ivoa ivoa()
                         {
-                        schema.text(text);
+                        return new Ivoa()
+                            {
+                            };
                         }
                     }
                 );
@@ -254,23 +254,34 @@ public class VosiTableSetReader
 
             IvoaTable table = tables.select(
                 name,
-                new IvoaTable.Builder.Worker()
+                new IvoaTable.Metadata()
                     {
                     @Override
-                    public IvoaTable create(String name)
-                        throws DuplicateEntityException
+                    public Adql adql()
                         {
-                        final IvoaTable table = schema.tables().create(
-                            name
-                            );
-                        update(table);
-                        return table;
+                        return new Adql()
+                            {
+                            @Override
+                            public Long count()
+                                {
+                                return null;
+                                }
+                            @Override
+                            public TableStatus status()
+                                {
+                                return null;
+                                }
+                            @Override
+                            public void status(TableStatus value)
+                                {
+                                }
+                            };
                         }
 
                     @Override
-                    public void update(IvoaTable table)
+                    public Ivoa ivoa()
                         {
-                        table.text(text);
+                        return new Ivoa(){};
                         }
                     }
                 );
@@ -400,81 +411,76 @@ public class VosiTableSetReader
 
             columns.select(
                 name,
-                new IvoaColumn.Metadata.Adql()
+                new IvoaColumn.Metadata()
                     {
-                    @Override
-                    public Integer arraysize()
+                    public Adql adql()
                         {
-                        return 0;
-                        }
-
-                    @Override
-                    public void arraysize(Integer size)
-                        {
-                        }
-
-                    @Override
-                    public Type type()
-                        {
-                        return null;
-                        }
-
-                    @Override
-                    public void type(Type type)
-                        {
-                        }
-
-                    @Override
-                    public String units()
-                        {
-                        return units;
-                        }
-
-                    @Override
-                    public void units(String unit)
-                        {
-                        }
-
-                    @Override
-                    public String utype()
-                        {
-                        return utype;
-                        }
-
-                    @Override
-                    public void utype(String utype)
-                        {
-                        }
-
-                    @Override
-                    public String dtype()
-                        {
-                        return dtype;
-                        }
-
-                    @Override
-                    public void dtype(String dtype)
-                        {
-                        }
-
-                    @Override
-                    public String ucd()
-                        {
-                        return null;
-                        }
-
-                    @Override
-                    public void ucd(String value)
-                        {
-                        }
-
-                    @Override
-                    public void ucd(String type, String value)
-                        {
-                        // TODO Auto-generated method stub
+                        return new Adql()
+                            {
+                            @Override
+                            public Integer arraysize()
+                                {
+                                return 0;
+                                }
+                            @Override
+                            public void arraysize(Integer size)
+                                {
+                                }
+                            @Override
+                            public Type type()
+                                {
+                                return null;
+                                }
+                            @Override
+                            public void type(Type type)
+                                {
+                                }
+                            @Override
+                            public String units()
+                                {
+                                return units;
+                                }
+                            @Override
+                            public void units(String unit)
+                                {
+                                }
+                            @Override
+                            public String utype()
+                                {
+                                return utype;
+                                }
+                            @Override
+                            public void utype(String utype)
+                                {
+                                }
+                            @Override
+                            public String dtype()
+                                {
+                                return dtype;
+                                }
+                            @Override
+                            public void dtype(String dtype)
+                                {
+                                }
+                            @Override
+                            public String ucd()
+                                {
+                                return null;
+                                }
+                            @Override
+                            public void ucd(String value)
+                                {
+                                }
+                            @Override
+                            public void ucd(String type, String value)
+                                {
+                                // TODO Auto-generated method stub
+                                }
+                            };
                         }
                     }
                 );
+
             this.done(
                 events
                 );

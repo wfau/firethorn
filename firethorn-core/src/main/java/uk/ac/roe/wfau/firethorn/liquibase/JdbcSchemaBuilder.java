@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 @Component
 public class JdbcSchemaBuilder
 extends JdbcBuilderBase
-implements JdbcSchema.Builder
+implements JdbcSchema.OldBuilder
     {
 
     @Override

@@ -20,7 +20,11 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
  *
@@ -30,55 +34,69 @@ public interface IvoaSchema
 extends BaseSchema<IvoaSchema, IvoaTable>
     {
     /**
-     * Builder interface.
+     * {@link EntityBuilder} interface.
      * 
      */
     public static interface Builder
-    extends EntityBuilder<IvoaSchema>
+    extends EntityBuilder<IvoaSchema, IvoaSchema.Metadata>
         {
         /**
-         * Worker interface.
-         * 
+         * Create or update a {@link IvoaSchema}.
+         *
          */
-        public static interface Worker
-        extends EntityBuilder.Worker<IvoaSchema>
-            {
-            }
+        public IvoaSchema select(final String name, final IvoaSchema.Metadata meta)
+        throws DuplicateEntityException;
         }
 
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<IvoaSchema>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseSchema.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseSchema.IdentFactory
         {
         }
 
     /**
-     * Schema factory interface.
+     * {@link BaseSchema.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseSchema.NameFactory<AdqlSchema>
+        {
+        }
+    
+    /**
+     * {@link BaseSchema.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseSchema.LinkFactory<IvoaSchema>
+        {
+        }
+
+    /**
+     * {@link BaseSchema.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseSchema.EntityFactory<IvoaResource, IvoaSchema>
         {
         /**
-         * Create a new IvoaSchema.
+         * Create a new {@link IvoaSchema}.
          *
          */
         public IvoaSchema create(final IvoaResource parent, final String name);
 
         /**
-         * The schema table factory.
+         * Create a new {@link IvoaSchema}.
+         *
+         */
+        public IvoaSchema create(final IvoaResource parent, final String name, final IvoaSchema.Metadata param);
+        
+        /**
+         * Our local {@link IvoaTable.EntityFactory} implementation.
+         * @todo Move to services
          *
          */
         public IvoaTable.EntityFactory tables();
@@ -88,25 +106,44 @@ extends BaseSchema<IvoaSchema, IvoaTable>
     public IvoaResource resource();
 
     /**
-     * Access to the schema tables.
+     * The schema {@link IvoaTable tables}.
      *
      */
     public interface Tables extends BaseSchema.Tables<IvoaTable>
         {
         /**
-         * Create a new table.
-         * 
-         */
-        public IvoaTable create(final String name)
-        throws DuplicateEntityException;
-        
-        /**
-         * Create a table Builder.
+         * Create a {@link IvoaTable.Builder}.
          *
          */
         public IvoaTable.Builder builder();  
         }
     @Override
     public Tables tables();
+
+    /**
+     * The schema metadata.
+     * TODO Does this really extend the AdqlSchema.Metadata?
+     *
+     */
+    public interface Metadata
+    extends AdqlSchema.Metadata
+        {
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public interface Ivoa
+            {
+            }
+
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public Ivoa ivoa();
+        }
+
+    @Override
+    public IvoaSchema.Metadata meta();
 
     }

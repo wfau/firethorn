@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 
 /**
  * Public interface for a table column.
@@ -41,7 +42,7 @@ extends BaseComponent
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -50,7 +51,16 @@ extends BaseComponent
         }
 
     /**
-     * Alias factory interface.
+     * {@link Entity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory<ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.NameFactory<ColumnType>
+        {
+        }
+
+    /**
+     * {@link Entity.AliasFactory} interface.
      *
      */
     public static interface AliasFactory<ColumnType extends BaseColumn<ColumnType>>
@@ -59,7 +69,16 @@ extends BaseComponent
         }
 
     /**
-     * Entity factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory<ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.LinkFactory<ColumnType>
+        {
+        }
+    
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
@@ -85,7 +104,8 @@ extends BaseComponent
         public ColumnType search(final TableType parent, final String name);
 
         /**
-         * AliasFactory implementation.
+         * Our local {@link BaseColumn.AliasFactory} implementation.
+         * @todo Move to services.
          *
          */
         public AliasFactory<ColumnType> aliases();
@@ -93,31 +113,31 @@ extends BaseComponent
         }
 
     /**
-     * The base column this is derived from.
+     * The {@link BaseColumn} this column is derived from.
      *
      */
     public BaseColumn<?>   base();
 
     /**
-     * The root column this is derived from.
+     * The root of the chain this column is derived from.
      *
      */
     public BaseColumn<?>   root();
 
     /**
-     * The parent table.
+     * Our parent {@link BaseTable table}.
      *
      */
     public BaseTable<?,?>  table();
 
     /**
-     * The parent schema.
+     * Our parent {@link BaseSchema schema}.
      *
      */
     public BaseSchema<?,?> schema();
 
     /**
-     * The parent resource.
+     * Our parent {@link BaseResource resource}.
      *
      */
     public BaseResource<?> resource();
@@ -129,21 +149,32 @@ extends BaseComponent
     public String alias();
 
     /**
-     * The full name, including parent table, schema and catalog.
+     * The full name, including parent table and schema.
      *
      */
     public StringBuilder namebuilder();
 
     /**
-     * The column metadata.
+     * The {@link BaseColumn} metadata.
      *
      */
     public interface Metadata
         {
+        /**
+         * The column name.
+         * 
+        public String name();
+         */
+
+        /**
+         * The column description.
+         * 
+        public String text();
+         */
         }
 
     /**
-     * The column metadata.
+     * The {@link BaseColumn} metadata.
      *
      */
     public AdqlColumn.Metadata meta();

@@ -40,7 +40,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -79,14 +80,18 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
         {
         @NamedQuery(
             name  = "IvoaColumn-select-parent",
-            query = "FROM IvoaColumnEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaColumn-parent.name",
+            name  = "IvoaColumn-select-parent.ident",
+            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "IvoaColumn-select-parent.name",
             query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaColumn-search-parent.text",
+            name  = "IvoaColumn-search-parent.name",
             query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
@@ -96,24 +101,29 @@ public class IvoaColumnEntity
     implements IvoaColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaColumnEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_IVOA_TYPE_COL = "ivoatype" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
 
     /**
-     * Entity tracker.
+     * {@link EntityBuilder} implementation.
      *
      */
     public static abstract class Builder
-    extends AbstractEntityTracker<IvoaColumn>
+    extends AbstractEntityBuilder<IvoaColumn, IvoaColumn.Metadata>
     implements IvoaColumn.Builder
         {
         public Builder(final Iterable<IvoaColumn> source)
@@ -125,25 +135,30 @@ public class IvoaColumnEntity
         }
 
     /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link Entity.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements IvoaColumn.AliasFactory
         {
+        /**
+         * The alias prefix for this type.
+         *
+         */
+        protected static final String PREFIX = "IVOA_" ;
+
         @Override
         public String alias(final IvoaColumn column)
             {
-            return "IVOA_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
         }
 
     /**
-     * Column factory implementation.
+     * {@link Entity.EntityFactory} implementation.
      *
      */
     @Repository
@@ -171,8 +186,10 @@ public class IvoaColumnEntity
             }
 
         @Override
-        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata meta)
+        @CreateMethod
+        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata param)
             {
+            //TODO Add the param
             return this.insert(
                 new IvoaColumnEntity(
                     parent,
@@ -194,7 +211,7 @@ public class IvoaColumnEntity
                         )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)

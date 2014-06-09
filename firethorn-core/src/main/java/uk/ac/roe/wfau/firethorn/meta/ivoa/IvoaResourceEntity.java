@@ -17,18 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -42,14 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityTracker;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
@@ -80,13 +72,20 @@ public class IvoaResourceEntity
     extends BaseResourceEntity<IvoaResource, IvoaSchema>
     implements IvoaResource
     {
+    /**
+     * Hibernate table mapping, {@value}.
+     * 
+     */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
 
+    /**
+     * Hibernate column mapping, {@value}.
+     * 
+     */
     protected static final String DB_IVOAID_COL = "ivoaid";
-    protected static final String DB_OGSAID_COL = "ogsaid";
 
     /**
-     * Our Entity Factory implementation.
+     * {@link Entity.EntityFactory} implementation.
      *
      */
     @Repository
@@ -160,11 +159,19 @@ public class IvoaResourceEntity
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected IvoaResourceEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected IvoaResourceEntity(final String ivoaid)
         {
         this(
@@ -173,23 +180,16 @@ public class IvoaResourceEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected IvoaResourceEntity(final String ivoaid, final String name)
         {
         super(
             name
             );
         this.ivoaid = ivoaid;
-
-        /*
-         * 
-        endpoints.add(
-            new IvoaEndpointEntity(
-                this,
-                ivoaid
-                )
-            );
-         *
-         */
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -244,51 +244,40 @@ public class IvoaResourceEntity
                 }
 
             @Override
-            public IvoaSchema create(final String name)
-                {
-                return factories().ivoa().schemas().create(
-                    IvoaResourceEntity.this,
-                    name
-                    );
-                }
-
-            @Override
             public IvoaSchema.Builder builder()
                 {
                 return new IvoaSchemaEntity.Builder(this.select())
                     {
                     @Override
-                    protected void finish(final IvoaSchema schema)
+                    protected IvoaSchema create(final String name, final IvoaSchema.Metadata param)
+                        throws DuplicateEntityException
+                        {
+                        return update(
+                            factories().ivoa().schemas().create(
+                                IvoaResourceEntity.this,
+                                name,
+                                param
+                                ),
+                            param
+                            );
+                        }
+
+                    @Override
+                    protected IvoaSchema update(final IvoaSchema schema, final IvoaSchema.Metadata param)
+                        {
+                        return schema;
+                        }
+
+                    @Override
+                    protected IvoaSchema finish(final IvoaSchema schema)
                         {
                         log.debug("Archive inactive schema [{}]", schema.name());
+                        return schema ;
                         }
                     };
                 }
             };
         }
-
-	/**
-	 * The the OGSA-DAI resource ID.
-	 * @todo Move to a common base class.
-	 *
-	 */
-    @Column(
-        name = DB_OGSAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-	private String ogsaid;
-	@Override
-	public String ogsaid()
-		{
-		return this.ogsaid;
-		}
-	@Override
-	public void ogsaid(final String ogsaid)
-		{
-		this.ogsaid = ogsaid;
-		}
 
     @Override
     public String link()
@@ -334,6 +323,21 @@ public class IvoaResourceEntity
                 return new GenericIterable<IvoaResource.Endpoint, Endpoint>(
                     endpoints
                     ); 
+                }
+            };
+        }
+
+    @Override
+    public IvoaResource.Metadata meta()
+        {
+        return new IvoaResource.Metadata()
+            {
+            @Override
+            public Ivoa ivoa()
+                {
+                return new Ivoa()
+                    {
+                    };
                 }
             };
         }

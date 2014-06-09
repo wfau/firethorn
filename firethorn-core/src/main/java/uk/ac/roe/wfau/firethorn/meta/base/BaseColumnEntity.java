@@ -49,26 +49,58 @@ extends BaseComponentEntity<ColumnType>
     implements BaseColumn<ColumnType>
     {
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_TYPE_COL  = "adqltype"  ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_SIZE_COL  = "adqlsize"  ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_DTYPE_COL = "adqldtype" ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UCD_TYPE_COL  = "adqlucdtype"  ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UCD_VALUE_COL = "adqlucdvalue" ;
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected BaseColumnEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference.
+     *
+     */
     protected BaseColumnEntity(final BaseTable<?,ColumnType> parent, final String name)
         {
         super(name);
-        //this.parent = parent;
         }
 
     @Override
@@ -241,6 +273,10 @@ extends BaseComponentEntity<ColumnType>
             };
         }
 
+    /**
+     * Generate the {@link AdqlColumn.Metadata.Adql adql} metadata.
+     *
+     */
     protected AdqlColumn.Metadata.Adql adqlmeta()
         {
         return new AdqlColumn.Metadata.Adql()

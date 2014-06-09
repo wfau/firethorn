@@ -45,13 +45,13 @@ implements BaseSchema<SchemaType, TableType>
     {
 
     /**
-     * Table resolver implementation.
+     * Schema resolver implementation.
      *
      */
     @Repository
-    public static class Resolver
-    extends AbstractEntityFactory<BaseSchema<?,?>>
-    implements BaseSchema.Resolver
+    public static class Resolver<SchemaType extends BaseSchema<SchemaType, ?>>
+    extends AbstractEntityFactory<SchemaType>
+    implements BaseSchema.Resolver<SchemaType>
         {
         @Override
         public Class<?> etype()
@@ -68,19 +68,28 @@ implements BaseSchema<SchemaType, TableType>
             }
 
         @Autowired
-        protected BaseSchema.LinkFactory links;
+        protected BaseSchema.LinkFactory<SchemaType> links;
         @Override
-        public BaseSchema.LinkFactory links()
+        public BaseSchema.LinkFactory<SchemaType> links()
             {
             return this.links;
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected BaseSchemaEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference. 
+     *
+     */
     protected BaseSchemaEntity(final BaseResource<SchemaType> resource, final String name)
         {
         this(
@@ -90,36 +99,18 @@ implements BaseSchema<SchemaType, TableType>
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference. 
+     *
+     */
     protected BaseSchemaEntity(final CopyDepth type, final BaseResource<SchemaType> resource, final String name)
         {
         super(
             type,
             name
             );
-        //this.parent = resource;
         }
-
-    /*
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = BaseResourceEntity.class
-        )
-    @JoinColumn(
-        name = DB_PARENT_COL,
-        unique = false,
-        nullable = false,
-        updatable = true // TODO - false
-        )
-    private BaseResource<SchemaType> parent;
-    @Override
-    public BaseResource<SchemaType> resource()
-        {
-        return this.parent;
-        }
-     */
 
     @Override
     public StringBuilder namebuilder()

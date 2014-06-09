@@ -22,7 +22,6 @@ import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -33,31 +32,22 @@ extends BaseColumn<IvoaColumn>
     {
 
     /**
-     * EntityBuilder interface.
+     * {@link EntityBuilder} interface.
      * 
      */
     public static interface Builder
-    extends EntityBuilder<IvoaColumn>
+    extends EntityBuilder<IvoaColumn, IvoaColumn.Metadata>
         {
         /**
          * Create or update a column.
          *
          */
-        public IvoaColumn select(final String name, final IvoaColumn.Metadata.Adql param)
+        public IvoaColumn select(final String name, final IvoaColumn.Metadata param)
         throws DuplicateEntityException;
-        }
-    
-    /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<IvoaColumn>
-        {
         }
 
     /**
-     * Identifier factory interface.
+     * {@link BaseColumn.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -66,7 +56,16 @@ extends BaseColumn<IvoaColumn>
         }
 
     /**
-     * Alias factory interface.
+     * {@link BaseColumn.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseColumn.NameFactory<IvoaColumn>
+        {
+        }
+    
+    /**
+     * {@link BaseColumn.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -75,24 +74,49 @@ extends BaseColumn<IvoaColumn>
         }
 
     /**
-     * Column factory interface.
+     * {@link BaseColumn.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseColumn.LinkFactory<IvoaColumn>
+        {
+        }
+
+    /**
+     * {@link BaseColumn.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseColumn.EntityFactory<IvoaTable, IvoaColumn>
         {
         /**
-         * Create a new column.
+         * Create a new {@link IvoaColumn}.
          *
          */
         public IvoaColumn create(final IvoaTable parent, final String name);
 
         /**
-         * Create a new column.
+         * Create a new {@link IvoaColumn}.
          *
          */
-        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata meta);
+        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata param);
+
+        //TODO - move to services
+        @Override
+        public IvoaColumn.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public IvoaColumn.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public IvoaColumn.AliasFactory aliases();
         
+        //TODO - move to services
+        @Override
+        public IvoaColumn.LinkFactory links();
+
         }
 
     @Override

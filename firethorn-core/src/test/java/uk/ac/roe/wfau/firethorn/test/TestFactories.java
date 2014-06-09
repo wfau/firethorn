@@ -267,7 +267,7 @@ public class TestFactories
                     {
                     }
                 }
-
+/*
             @Component
             public static class LinkFactory
             extends AbstractLinkFactory<BaseTable<?,?>>
@@ -280,6 +280,7 @@ public class TestFactories
                         );
                     }
                 }
+ */            
             }
 
         @Component
@@ -294,7 +295,7 @@ public class TestFactories
                     {
                     }
                 }
-
+/*
             @Component
             public static class LinkFactory
             extends AbstractLinkFactory<BaseSchema<?,?>>
@@ -307,8 +308,8 @@ public class TestFactories
                         );
                     }
                 }
+*/
             }
-
         }
 
     @Component

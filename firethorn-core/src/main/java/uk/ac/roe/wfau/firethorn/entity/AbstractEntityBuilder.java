@@ -21,16 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder.Worker;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 
 /**
- * Abstract base class for EntityListTracker implementations. 
+ * Abstract base class for {@link EntityBuilder} implementations. 
  *
  */
 @Slf4j
-public abstract class AbstractEntityTracker<EntityType extends NamedEntity>
-implements EntityBuilder<EntityType>
+public abstract class AbstractEntityBuilder<EntityType extends NamedEntity, EntityParam>
+implements EntityBuilder<EntityType, EntityParam>
     {
     /**
      * Our map of Entity(s) to process.
@@ -62,9 +61,9 @@ implements EntityBuilder<EntityType>
      * @param source The initial list of Entity(s) to process.
      * 
      */
-    public AbstractEntityTracker<EntityType> init(final Iterable<EntityType> source)
+    public AbstractEntityBuilder<EntityType, EntityParam> init(final Iterable<EntityType> source)
         {
-        log.debug("init(Iterable<EntityType>)");
+        log.debug("init(Iterable<EntityType, EntityParam>)");
         for (EntityType entity : source)
             {
             log.debug("  entity [{}]", entity.name());
@@ -77,7 +76,7 @@ implements EntityBuilder<EntityType>
         }
     
     @Override
-    public EntityType select(final String name, final Worker<EntityType> handler)
+    public EntityType select(final String name, final EntityParam param)
     throws DuplicateEntityException
         {
         log.debug("select(String, Handler<EntityType>)");
@@ -105,15 +104,17 @@ implements EntityBuilder<EntityType>
                 );
             //
             // Apply the updates.
-            handler.update(
-                entity
+            update(
+                entity,
+                param
                 );
             }
         //
         // Create a new Entity.
         else {
-            entity = handler.create(
-                name
+            entity = create(
+                name,
+                param
                 );
             }
         //
@@ -142,20 +143,19 @@ implements EntityBuilder<EntityType>
      * Finish an un-processed Entity.
      *
      */
-    protected abstract void finish(final EntityType entity);
+    protected abstract EntityType finish(final EntityType entity);
 
     /**
      * Create a new Entity.
      * 
-    protected abstract EntityType create(final String name, final ParamType param)
-    throws DuplicateEntityException;
      */
+    protected abstract EntityType create(final String name, final EntityParam param)
+    throws DuplicateEntityException;
 
     /**
      * Update an existing Entity.
      * 
-    protected abstract void update(final EntityType entity, final ParamType param)
-    throws DuplicateEntityException;
      */
+    protected abstract EntityType update(final EntityType entity, final EntityParam param);
 
     }

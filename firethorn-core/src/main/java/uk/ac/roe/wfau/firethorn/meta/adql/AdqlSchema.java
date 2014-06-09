@@ -22,6 +22,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -33,45 +34,39 @@ public interface AdqlSchema
 extends BaseSchema<AdqlSchema, AdqlTable>
     {
     /**
-     * Name factory interface.
-     *
-     */
-    public static interface NameFactory
-    extends Entity.NameFactory<AdqlSchema>
-        {
-        }
-
-    /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlSchema>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseSchema.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseSchema.IdentFactory
         {
         }
 
     /**
-     * Schema factory interface.
+     * {@link BaseSchema.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseSchema.NameFactory<AdqlSchema>
+        {
+        }
+
+    /**
+     * {@link BaseSchema.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseSchema.LinkFactory<AdqlSchema>
+        {
+        }
+
+    /**
+     * {@link BaseSchema.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseSchema.EntityFactory<AdqlResource, AdqlSchema>
         {
-        /**
-         * The schema table factory.
-         *
-         */
-        public AdqlTable.EntityFactory tables();
-
         /**
          * Create an empty schema.
          *
@@ -95,6 +90,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base);
+
         /**
          * Create a new schema, importing the tables from a base schema.
          *
@@ -113,50 +109,68 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          */
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base);
 
+        /**
+         * Our local {@link AdqlTable.EntityFactory} implementation.
+         * @todo - move to services
+         *
+         */
+        public AdqlTable.EntityFactory tables();
+
+        //TODO - move to services
+        @Override
+        public AdqlSchema.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public AdqlSchema.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlSchema.LinkFactory links();
+        
         }
 
     @Override
     public AdqlResource resource();
 
     /**
-     * Access to the schema tables.
+     * Our table {@link AdqlTable tables}.
      *
      */
     public interface Tables extends BaseSchema.Tables<AdqlTable>
         {
-
         /**
-         * Create a new table, importing the columns from a base table.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base);
 
         /**
-         * Create a new table, importing the columns from a base table.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
         public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
 
         /**
-         * Create a new table, importing the columns from a base table.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
 
         /**
-         * Create a new table, importing the columns from a base table.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
         public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
 
         /**
-         * Create a new results table, importing the details from the query.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link AdqlQuery query}.
          *
          */
         public AdqlTable create(final AdqlQuery query);
 
         /**
-         * Import a named table from our base schema.
+         * Import a {@link AdqlTable table} from our base schema..
          *
          */
         public AdqlTable inport(final String name)
@@ -167,41 +181,30 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public Tables tables();
 
     /**
-     * Access to the schema queries.
+     * Access to the schema {@link AdqlQuery queries}.
+     * @todo Does this make sense ?
+     * @todo Does this depend on who is asking ?
      *
      */
     public interface Queries
         {
         /**
-         * Create a new query, using the default parameters.
-         *
-        public AdqlQuery create(final String query)
-        throws QueryProcessingException;
-         */
-
-        /**
-         * Create a new query, with a specific name.
-         *
-        public AdqlQuery create(final String query, final String name)
-        throws QueryProcessingException;
-         */
-
-        /**
-         * Create a new query, using a specific set of QueryParam.
+         * Create a new {@link AdqlQuery}.
          *
          */
         public AdqlQuery create(final QueryParam param, final String query)
         throws QueryProcessingException;
 
         /**
-         * Create a new query, using a specific set of QueryParam and name.
+         * Create a new {@link AdqlQuery}.
          *
          */
         public AdqlQuery create(final QueryParam param, final String query, final String name)
         throws QueryProcessingException;
 
         /**
-         * Select all the queries for this schema.
+         * Select all the {@link AdqlQuery} for this schema.
+         * @todo Does this make sense ?
          *
          */
         public Iterable<AdqlQuery> select();
@@ -209,9 +212,36 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         }
 
     /**
-     * Access to the schema queries.
+     * Access to the schema {@link AdqlQuery queries}.
+     * @todo Does this make sense ?
+     * @todo Does this depend on who is asking ?
      *
      */
     public Queries queries();
+
+    /**
+     * The {@link AdqlSchema} metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseSchema.Metadata
+        {
+        /**
+         * The ADQL metadata.
+         * 
+         */
+        public interface Adql
+            {
+            }
+
+        /**
+         * The ADQL metadata.
+         * 
+         */
+        public Adql adql();
+        }
+
+    @Override
+    public AdqlSchema.Metadata meta();
 
     }

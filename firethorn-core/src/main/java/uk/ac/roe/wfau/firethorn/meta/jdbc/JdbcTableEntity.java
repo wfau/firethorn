@@ -21,7 +21,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -30,6 +29,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -47,16 +47,18 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -101,7 +103,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcTable-search-parent.text",
+            name  = "JdbcTable-search-parent.name",
             query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
             ),
         @NamedQuery(
@@ -124,47 +126,56 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
 implements JdbcTable
     {
     /**
-     * Hibernate table mapping.
-     *
-     */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcTableEntity";
-
-    /**
-     * Empty count value.
+     * Empty count value, {@value}.
      *
      */
     protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
-     * Hibernate column mapping.
+     * Hibernate table mapping, {@value}.
+     *
+     */
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcTableEntity";
+
+    /**
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_TYPE_COL   = "jdbctype"   ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_COUNT_COL  = "jdbccount"  ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_STATUS_COL = "jdbcstatus" ;
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
 
     /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link EntityBuilder} implementation.
      *
      */
-    @Component
-    public static class AliasFactory
-    implements JdbcTable.AliasFactory
+    public static abstract class Builder
+    extends AbstractEntityBuilder<JdbcTable, JdbcTable.Metadata>
+    implements JdbcTable.Builder
         {
-        @Override
-        public String alias(final JdbcTable table)
+        public Builder(final Iterable<JdbcTable> source)
             {
-            return "JDBC_".concat(
-                table.ident().toString()
+            this.init(
+                source
                 );
             }
         }
-
+    
     /**
-     * Name factory implementation.
-     * @todo Move to a separate package.
+     * {@link JdbcTable.NameFactory} implementation.
      * @todo Count of tables per query, or per owner
      *
      */
@@ -185,7 +196,24 @@ implements JdbcTable
         }
 
     /**
-     * Table factory implementation.
+     * {@link JdbcTable.AliasFactory} implementation.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements JdbcTable.AliasFactory
+        {
+        @Override
+        public String alias(final JdbcTable table)
+            {
+            return "JDBC_".concat(
+                table.ident().toString()
+                );
+            }
+        }
+
+    /**
+     * {@link JdbcTable.EntityFactory} implementation.
      *
      */
     @Repository
@@ -334,13 +362,13 @@ implements JdbcTable
             }
 
         @Autowired
-        protected JdbcTable.LinkFactory links;
+        protected JdbcTable.NameFactory names;
         @Override
-        public JdbcTable.LinkFactory links()
+        public JdbcTable.NameFactory names()
             {
-            return this.links;
+            return this.names;
             }
-
+        
         @Autowired
         protected JdbcTable.AliasFactory aliases;
         @Override
@@ -350,17 +378,17 @@ implements JdbcTable
             }
 
         @Autowired
-        protected JdbcTable.NameFactory names;
+        protected JdbcTable.LinkFactory links;
         @Override
-        public JdbcTable.NameFactory names()
+        public JdbcTable.LinkFactory links()
             {
-            return this.names;
+            return this.links;
             }
 
         @Autowired
-        protected JdbcTable.Builder builder;
+        protected JdbcTable.OldBuilder builder;
         @Override
-        public JdbcTable.Builder builder()
+        public JdbcTable.OldBuilder builder()
             {
             return this.builder;
             }
@@ -398,11 +426,19 @@ implements JdbcTable
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcTableEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcTableEntity(final JdbcSchema schema, final String name)
         {
         this(
@@ -413,6 +449,10 @@ implements JdbcTable
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcType type)
         {
         this(
@@ -423,6 +463,10 @@ implements JdbcTable
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name)
         {
         this(
@@ -433,6 +477,10 @@ implements JdbcTable
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
         {
         super(schema, name);
@@ -517,6 +565,7 @@ implements JdbcTable
                     name
                     );
                 }
+            
             @Override
             public JdbcColumn create(final AdqlQuery.SelectField field)
                 {
@@ -526,6 +575,7 @@ implements JdbcTable
                     );
                 return result ;
                 }
+            
             @Override
             public JdbcColumn create(final String name, final int type, final int size)
                 {
@@ -564,6 +614,34 @@ implements JdbcTable
                 return factories().jdbc().columns().select(
                     ident
                     );
+                }
+
+            @Override
+            public JdbcColumn.Builder builder()
+                {
+                return new JdbcColumnEntity.Builder(this.select())
+                    {
+                    @Override
+                    protected JdbcColumn create(final String name, final JdbcColumn.Metadata param)
+                        throws DuplicateEntityException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
+
+                    @Override
+                    protected JdbcColumn update(final JdbcColumn column, final JdbcColumn.Metadata param)
+                        {
+                        // TODO Auto-generated method stub
+                        return column;
+                        }
+                    @Override
+                    protected JdbcColumn finish(final JdbcColumn column)
+                        {
+                        log.debug("Archive inactive column [{}]", column.name());
+                        return column;
+                        }
+                    };
                 }
             };
         }

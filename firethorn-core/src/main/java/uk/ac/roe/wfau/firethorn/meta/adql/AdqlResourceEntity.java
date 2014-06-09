@@ -62,13 +62,13 @@ extends BaseResourceEntity<AdqlResource,AdqlSchema>
 implements AdqlResource
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}}.
      * 
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlResourceEntity";
 
     /**
-     * Our Entity Factory implementation.
+     * {@link AdqlResource.EntityFactory}} implementation.
      *
      */
     @Repository
@@ -140,23 +140,6 @@ implements AdqlResource
         super(name);
         }
 
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "resource",
-        targetEntity = AdqlSchemaEntity.class
-        )
-    private Map<String, AdqlSchema> children = new LinkedHashMap<String, AdqlSchema>();
-     *
-     */
-
     @Override
     public AdqlResource.Schemas schemas()
         {
@@ -168,21 +151,11 @@ implements AdqlResource
                 return factories().adql().schemas().select(
                     AdqlResourceEntity.this
                     );
-                /*
-                 * HibernateCollections
-                return children.values();
-                 *
-                 */
                 }
 
             @Override
             public AdqlSchema search(final String name)
                 {
-                /*
-                 * HibernateCollections
-                return children.get(name);
-                 *
-                 */
                 return factories().adql().schemas().search(
                     AdqlResourceEntity.this,
                     name
@@ -197,134 +170,66 @@ implements AdqlResource
                     AdqlResourceEntity.this,
                     name
                     );
-                /*
-                 * HibernateCollections
-                AdqlSchema schema = children.get(name);
-                if (schema != null)
-                    {
-                    return schema ;
-                    }
-                else {
-                    throw new NotFoundException(
-                        name
-                        );
-                    }
-                 *
-                 */
                 }
 
             @Override
             public AdqlSchema create(final String name)
                 {
-                final AdqlSchema schema = factories().adql().schemas().create(
+                return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
                 }
 
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
-                final AdqlSchema schema = factories().adql().schemas().create(
+                return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
                 }
 
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
-			    final AdqlSchema schema = factories().adql().schemas().create(
+			    return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     base.name(),
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
 				}
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
-                final AdqlSchema schema = factories().adql().schemas().create(
+                return factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     base.name(),
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
                 }
 
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
-                final AdqlSchema schema = factories().adql().schemas().create(
+                return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
                 }
 
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
-                final AdqlSchema schema = factories().adql().schemas().create(
+                return factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    schema.name(),
-                    schema
-                    );
-                 *
-                 */
-                return schema ;
                 }
 
             @Override
@@ -365,6 +270,13 @@ implements AdqlResource
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
 
+    @Override
+    public AdqlResource.Metadata meta()
+        {
+        return new AdqlResource.Metadata()
+            {
+            };
         }
     }
