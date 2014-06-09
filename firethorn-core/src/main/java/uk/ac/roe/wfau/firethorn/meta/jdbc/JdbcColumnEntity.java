@@ -461,7 +461,11 @@ public class JdbcColumnEntity
     @Override
     protected AdqlColumn.Type adqltype()
         {
-        if (this.jdbctype != null)
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else if (this.jdbctype != null)
             {
             if (this.jdbctype == JdbcColumn.Type.ARRAY)
                 {
@@ -494,71 +498,67 @@ public class JdbcColumnEntity
         {
         this.jdbcsize = size;
         }
+
     @Override
     protected Integer adqlsize()
         {
-        switch (this.jdbctype)
+        if (this.adqlsize != null)
             {
-            //
-            // Array type.
-            case ARRAY :
-                return BaseColumn.VAR_ARRAY_SIZE;
-
-            // TODO unlimited TEXT size
-
-            //
-            // Character types.
-            case LONGNVARCHAR :
-            case LONGVARCHAR :
-            case NVARCHAR :
-            case VARCHAR :
-            case NCHAR :
-            case CHAR :
-                return this.jdbcsize ;
-
-            //
-            // Date time values
-//TODO Are these fixed formats and sizes ?
-            case DATE:
-            case TIME:
-            case TIMESTAMP:
-                return this.jdbcsize ;
-
-            //
-            // Blob types.
-            case BLOB:
-            case CLOB:
-            case NCLOB:
-                return this.jdbcsize ;
-
-            //
-            // Binary types.
-            case BINARY:
-            case VARBINARY:
-                return this.jdbcsize ;
-
-            //
-            // Single value types.
-            default :
-                return BaseColumn.NON_ARRAY_SIZE;
+            return this.adqlsize ;
+            }
+        else {
+            // TODO Move the calculation into the JdbcColumn.Type enum.
+            switch (this.jdbctype)
+                {
+                //
+                // Array type.
+                case ARRAY :
+                    return BaseColumn.VAR_ARRAY_SIZE;
+    
+                // TODO unlimited TEXT size
+    
+                //
+                // Character types.
+                case LONGNVARCHAR :
+                case LONGVARCHAR :
+                case NVARCHAR :
+                case VARCHAR :
+                case NCHAR :
+                case CHAR :
+                    return this.jdbcsize ;
+    
+                //
+                // Date time values
+    //TODO Are these fixed formats and sizes ?
+                case DATE:
+                case TIME:
+                case TIMESTAMP:
+                    return this.jdbcsize ;
+    
+                //
+                // Blob types.
+                case BLOB:
+                case CLOB:
+                case NCLOB:
+                    return this.jdbcsize ;
+    
+                //
+                // Binary types.
+                case BINARY:
+                case VARBINARY:
+                    return this.jdbcsize ;
+    
+                //
+                // Single value types.
+                default :
+                    return BaseColumn.NON_ARRAY_SIZE;
+                }
             }
         }
 
-    @Override
-    protected String adqlunits()
+    protected JdbcColumn.Metadata.Jdbc jdbcmeta()
         {
-        return this.adqlunits ;
-        }
-
-    @Override
-    protected String adqlutype()
-        {
-        return this.adqlutype ;
-        }
-
-    protected JdbcColumn.Metadata.JdbcMeta jdbcmeta()
-        {
-        return new JdbcColumn.Metadata.JdbcMeta()
+        return new JdbcColumn.Metadata.Jdbc()
             {
             @Override
             public Integer size()
@@ -664,13 +664,13 @@ public class JdbcColumnEntity
         return new JdbcColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Metadata.AdqlMetadata adql()
+            public AdqlColumn.Metadata.Adql adql()
                 {
                 return adqlmeta();
                 }
 
             @Override
-            public JdbcColumn.Metadata .JdbcMeta jdbc()
+            public JdbcColumn.Metadata .Jdbc jdbc()
                 {
                 return jdbcmeta();
                 }

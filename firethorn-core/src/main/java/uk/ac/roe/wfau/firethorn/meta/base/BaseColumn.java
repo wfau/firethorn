@@ -135,142 +135,17 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
-     * A class to represent a column UCD.
+     * The column metadata.
      *
      */
-    public interface UCD
+    public interface Metadata
         {
-        /**
-         * The UCD version.
-         *
-         */
-        public enum Type
-            {
-            ONE(),
-            ONEPLUS();
-            }
-
-        /**
-         * The UCD type.
-         *
-         */
-        public Type type();
-
-        /**
-         * The UCD value.
-         *
-         */
-        public String value();
-
         }
 
     /**
      * The column metadata.
      *
      */
-    public interface Metadata
-        {
-
-        /**
-         * The ADQL metadata.
-         *
-         */
-        public interface AdqlMetadata
-            {
-
-            /**
-             * The array size, or null if this is not an array.
-             *
-             */
-            public Integer arraysize();
-
-            /**
-             * Set the array size.
-             *
-             */
-            public void arraysize(final Integer size);
-
-            /**
-             * The ADQL type.
-             *
-             */
-            public AdqlColumn.Type type();
-
-            /**
-             * Set the ADQL type.
-             *
-             */
-            public void type(final AdqlColumn.Type type);
-
-            /**
-             * The ADQL units.
-             *
-             */
-            public String units();
-
-            /**
-             * Set the ADQL units.
-             *
-             */
-            public void units(final String unit);
-
-            /**
-             * The ADQL utype.
-             *
-             */
-            public String utype();
-
-            /**
-             * Set the ADQL utype.
-             *
-             */
-            public void utype(final String utype);
-
-            /**
-             * The ADQL dtype.
-             *
-             */
-            public String dtype();
-
-            /**
-             * Set the ADQL dtype.
-             *
-             */
-            public void dtype(final String dtype);
-
-            /**
-             * The column UCD.
-             *
-             */
-            public UCD ucd();
-
-            /**
-             * Set the column UCD.
-             *
-             */
-            public void ucd(final String value);
-
-            /**
-             * Set the column UCD.
-             *
-             */
-            @Deprecated
-            public void ucd(final UCD.Type type, final String value);
-            
-            }
-
-        /**
-         * The ADQL metadata.
-         *
-         */
-        public AdqlMetadata adql();
-
-        }
-
-    /**
-     * Access to the column metadata.
-     *
-     */
-    public Metadata meta();
+    public AdqlColumn.Metadata meta();
 
     }

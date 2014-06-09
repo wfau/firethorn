@@ -158,10 +158,10 @@ extends BaseTable<AdqlTable, AdqlColumn>
     public BaseTable<?,?> base();
 
     /**
-     * Enum for the ADQL table status.
+     * Enum for the table status.
      *
      */
-    public static enum AdqlStatus
+    public static enum TableStatus
         {
         CREATED(),
         COMPLETED(),
@@ -171,44 +171,43 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * ADQL table metadata.
-     * @todo make this consistent with BaseColum.Metadata
+     * The table metadata.
      *
      */
     public interface Metadata
     extends BaseTable.Metadata
         {
         /**
-         * The ADQL table metadata.
+         * The ADQL metadata.
          *
          */
-        public interface AdqlMetadata
+        public interface Adql
             {
             /**
-             * The table row count.
+             * get the table row count.
              *
              */
             public Long count();
 
             /**
-             * The ADQL table status.
+             * Get the table status.
              *
              */
-            public AdqlStatus status();
+            public TableStatus status();
 
             /**
-             * Set the ADQL table status.
+             * Set the table status.
              *
              */
-            public void status(final AdqlStatus status);
+            public void status(final TableStatus value);
 
             }
 
         /**
-         * The ADQL table metadata.
+         * The ADQL metadata.
          *
          */
-        public AdqlMetadata adql();
+        public Adql adql();
         }
 
     @Override

@@ -387,4 +387,71 @@ public class AdqlColumnEntity
         {
         // TODO Auto-generated method stub
         }
+
+    protected AdqlColumn.Type adqltype()
+        {
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else {
+            return base().meta().adql().type();
+            }
+        }
+
+    protected Integer adqlsize()
+        {
+        if (this.adqlsize != null)
+            {
+            return this.adqlsize ;
+            }
+        else {
+            return base().meta().adql().arraysize();
+            }
+        }
+
+    protected String adqlunits()
+        {
+        if (this.adqlunits != null)
+            {
+            return this.adqlunits ;
+            }
+        else {
+            return base().meta().adql().units();
+            }
+        }
+
+    protected String adqlutype()
+        {
+        if (this.adqlutype != null)
+            {
+            return this.adqlutype ;
+            }
+        else {
+            return base().meta().adql().utype();
+            }
+        }
+
+    protected String adqldtype()
+        {
+        if (this.adqldtype != null)
+            {
+            return this.adqldtype ;
+            }
+        else {
+            return base().meta().adql().dtype();
+            }
+        }
+
+    protected String ucdvalue()
+        {
+        if (this.ucdvalue != null)
+            {
+            return this.ucdvalue ;
+            }
+        else {
+            return base().meta().adql().ucd();
+            }
+        }
+    
     }

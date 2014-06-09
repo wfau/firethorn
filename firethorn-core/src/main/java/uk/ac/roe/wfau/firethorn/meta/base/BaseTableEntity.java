@@ -19,7 +19,12 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 
 /**
  *
@@ -53,6 +59,13 @@ public abstract class BaseTableEntity<TableType extends BaseTable<TableType, Col
 extends BaseComponentEntity<TableType>
 implements BaseTable<TableType, ColumnType>
     {
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_ADQL_STATUS_COL = "adqlstatus" ;
+
     /**
      * Table resolver implementation.
      *
@@ -197,36 +210,56 @@ implements BaseTable<TableType, ColumnType>
         return root().query();
         }
 
-
-    // TODO make this abstract and implement in the entity classes.
-    @Override
-    public AdqlTable.Metadata meta()
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_ADQL_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    protected AdqlTable.TableStatus adqlstatus ;
+    protected AdqlTable.TableStatus adqlstatus()
         {
-        return new AdqlTable.Metadata()
+        if (this.adqlstatus != null)
+            {
+            return this.adqlstatus ;
+            }
+        else {
+            return AdqlTable.TableStatus.UNKNOWN;
+            }
+        }
+    protected void adqlstatus(final AdqlTable.TableStatus next)
+        {
+        if (next == AdqlTable.TableStatus.UNKNOWN)
+            {
+            log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
+            }
+        this.adqlstatus = next;
+        }
+    
+    protected AdqlTable.Metadata.Adql adqlmeta()
+        {
+        return new AdqlTable.Metadata.Adql()
             {
             @Override
-            public AdqlTable.Metadata.AdqlMetadata adql()
+            public Long count()
                 {
-                return new AdqlTable.Metadata.AdqlMetadata()
-                    {
-                    @Override
-                    public Long count()
-                        {
-                        return base().meta().adql().count();
-                        }
+                // TODO Auto-generated method stub
+                return 0L;
+                }
 
-                    @Override
-                    public AdqlTable.AdqlStatus status()
-                        {
-                        return base().meta().adql().status();
-                        }
-
-                    @Override
-                    public void status(final AdqlTable.AdqlStatus status)
-                        {
-                        // TODO Auto-generated method stub
-                        }
-                    };
+            @Override
+            public TableStatus status()
+                {
+                return adqlstatus();
+                }
+            @Override
+            public void status(TableStatus status)
+                {
+                // TODO Auto-generated method stub
                 }
             };
         }

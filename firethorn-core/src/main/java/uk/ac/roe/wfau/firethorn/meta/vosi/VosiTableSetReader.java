@@ -19,9 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -31,15 +29,15 @@ import javax.xml.stream.events.StartElement;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
-import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderImpl;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderImpl;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
 
 /**
@@ -374,7 +372,7 @@ public class VosiTableSetReader
             final String name  = namereader.read(events); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
-            final String unit  = unitreader.read(events); 
+            final String units = unitreader.read(events); 
             final String ucd   = ucdreader.read(events); 
             final String utype = utypereader.read(events); 
             final String dtype = dtypereader.read(events); 
@@ -391,7 +389,7 @@ public class VosiTableSetReader
             log.debug("    std   [{}]", std);
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
-            log.debug("    unit  [{}]", unit);
+            log.debug("    units [{}]", units);
             log.debug("    ucd   [{}]", ucd);
             log.debug("    utype [{}]", utype);
             log.debug("    dtype [{}]", dtype);
@@ -402,27 +400,78 @@ public class VosiTableSetReader
 
             columns.select(
                 name,
-                new IvoaColumn.Builder.Worker()
+                new IvoaColumn.Metadata.Adql()
                     {
                     @Override
-                    public IvoaColumn create(String name)
-                        throws DuplicateEntityException
+                    public Integer arraysize()
                         {
-                        final IvoaColumn column = table.columns().create(
-                            name
-                            );
-                        update(column);
-                        return column;
+                        return 0;
                         }
 
                     @Override
-                    public void update(final IvoaColumn column)
+                    public void arraysize(Integer size)
                         {
-                        column.text(text);
-                        column.meta().adql().ucd(ucd);
-                        column.meta().adql().units(unit);
-                        column.meta().adql().utype(utype);
-                        column.meta().adql().dtype(dtype);
+                        }
+
+                    @Override
+                    public Type type()
+                        {
+                        return null;
+                        }
+
+                    @Override
+                    public void type(Type type)
+                        {
+                        }
+
+                    @Override
+                    public String units()
+                        {
+                        return units;
+                        }
+
+                    @Override
+                    public void units(String unit)
+                        {
+                        }
+
+                    @Override
+                    public String utype()
+                        {
+                        return utype;
+                        }
+
+                    @Override
+                    public void utype(String utype)
+                        {
+                        }
+
+                    @Override
+                    public String dtype()
+                        {
+                        return dtype;
+                        }
+
+                    @Override
+                    public void dtype(String dtype)
+                        {
+                        }
+
+                    @Override
+                    public String ucd()
+                        {
+                        return null;
+                        }
+
+                    @Override
+                    public void ucd(String value)
+                        {
+                        }
+
+                    @Override
+                    public void ucd(String type, String value)
+                        {
+                        // TODO Auto-generated method stub
                         }
                     }
                 );

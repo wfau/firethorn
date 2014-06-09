@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
@@ -106,7 +106,7 @@ extends BaseTableBean<JdbcTable>
                         }
 
                     @Override
-                    public AdqlStatus getStatus()
+                    public TableStatus getStatus()
                         {
                         return entity().meta().adql().status();
                         }

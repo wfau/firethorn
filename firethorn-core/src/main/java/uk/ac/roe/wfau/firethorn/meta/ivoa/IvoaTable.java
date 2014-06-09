@@ -20,7 +20,9 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -119,5 +121,17 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
     @Override
     public Columns columns();
+
+    /**
+     * The table metadata.
+     *
+     */
+    public interface Metadata
+    extends AdqlTable.Metadata
+        {
+        }
+
+    @Override
+    public IvoaTable.Metadata meta();
 
     }

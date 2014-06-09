@@ -296,17 +296,17 @@ extends BaseColumn<JdbcColumn>
         }
 
     /**
-     * Access to the column metadata.
+     * The column metadata.
      *
      */
     public interface Metadata
     extends AdqlColumn.Metadata
         {
         /**
-         * The JDBC column metadata.
+         * The JDBC metadata.
          *
          */
-        public interface JdbcMeta
+        public interface Jdbc
             {
 
             /**
@@ -351,20 +351,14 @@ extends BaseColumn<JdbcColumn>
 
             }
         /**
-         * The JDBC column metadata.
+         * The JDBC metadata.
          *
          */
-        public JdbcMeta jdbc();
+        public Jdbc jdbc();
 
         }
 
     @Override
     public JdbcColumn.Metadata meta();
-
-    /**
-     * Update the column metadata.
-     *
-    public void scan();
-     */
 
     }

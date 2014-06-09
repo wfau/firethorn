@@ -248,4 +248,107 @@ extends BaseColumn<AdqlColumn>
                 }
             }
         }
+
+    /**
+     * The column metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseColumn.Metadata
+        {
+        /**
+         * The ADQL metadata.
+         *
+         */
+        public interface Adql
+            {
+            /**
+             * The array size, or null if this is not an array.
+             *
+             */
+            public Integer arraysize();
+
+            /**
+             * Set the array size.
+             *
+             */
+            public void arraysize(final Integer size);
+
+            /**
+             * The ADQL type.
+             *
+             */
+            public AdqlColumn.Type type();
+
+            /**
+             * Set the ADQL type.
+             *
+             */
+            public void type(final AdqlColumn.Type type);
+
+            /**
+             * The ADQL units.
+             *
+             */
+            public String units();
+
+            /**
+             * Set the ADQL units.
+             *
+             */
+            public void units(final String unit);
+
+            /**
+             * The ADQL utype.
+             *
+             */
+            public String utype();
+
+            /**
+             * Set the ADQL utype.
+             *
+             */
+            public void utype(final String utype);
+
+            /**
+             * The ADQL dtype.
+             *
+             */
+            public String dtype();
+
+            /**
+             * Set the ADQL dtype.
+             *
+             */
+            public void dtype(final String dtype);
+
+            /**
+             * The column UCD.
+             *
+             */
+            public String ucd();
+
+            /**
+             * Set the column UCD.
+             *
+             */
+            public void ucd(final String value);
+
+            /**
+             * Set the column UCD.
+             *
+             */
+            @Deprecated
+            public void ucd(final String type, final String value);
+            
+            }
+        /**
+         * The ADQL metadata.
+         *
+         */
+        public Adql adql();
+        }
+
+    @Override
+    public AdqlColumn.Metadata meta();
     }

@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
@@ -88,7 +88,7 @@ extends BaseTableBean<AdqlTable>
         public interface AdqlMetadataBean
             {
             public Long getCount();
-            public AdqlTable.AdqlStatus getStatus();
+            public AdqlTable.TableStatus getStatus();
             }
         public AdqlMetadataBean getAdql();
         }
@@ -107,7 +107,7 @@ extends BaseTableBean<AdqlTable>
                         return entity().meta().adql().count();
                         }
                     @Override
-                    public AdqlStatus getStatus()
+                    public TableStatus getStatus()
                         {
                         return entity().meta().adql().status();
                         }

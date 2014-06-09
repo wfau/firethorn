@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -169,6 +170,17 @@ public class IvoaColumnEntity
                 );
             }
 
+        @Override
+        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata meta)
+            {
+            return this.insert(
+                new IvoaColumnEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+        
         @Override
         @SelectMethod
         public Iterable<IvoaColumn> select(final IvoaTable parent)
@@ -364,6 +376,7 @@ public class IvoaColumnEntity
             return this.ivoasize ;
             }
         }
+
     @Override
     public String alias()
         {
@@ -384,5 +397,18 @@ public class IvoaColumnEntity
         {
         // TODO Auto-generated method stub
 
+        }
+
+    @Override
+    public IvoaColumn.Metadata meta()
+        {
+        return new IvoaColumn.Metadata()
+            {
+            @Override
+            public AdqlColumn.Metadata.Adql adql()
+                {
+                return adqlmeta();
+                }
+            };
         }
     }

@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
@@ -367,6 +368,14 @@ public class IvoaTableEntity
                         {
                         
                         }
+
+                    @Override
+                    public IvoaColumn select(String name, IvoaColumn.Metadata.Adql param)
+                    throws DuplicateEntityException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
                     };
                 }
             };
@@ -392,6 +401,12 @@ public class IvoaTableEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
 
+    @Override
+    public IvoaTable.Metadata meta()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

@@ -17,12 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
@@ -32,15 +32,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponent
     {
-    /**
-     * EntityBuilder parameters.
-     * 
-    public interface BuilderParam
-        {
-        public String name();
-        }
-     */
-    
     /**
      * Link factory interface.
      *
@@ -208,30 +199,13 @@ extends BaseComponent
     public Columns<ColumnType> columns();
 
     /**
-     * The AdqlTables linked to this table.
-     *
-     */
-    @Deprecated
-    interface Linked
-        {
-        public Iterable<AdqlTable> select();
-        }
-
-    /**
-     * The AdqlTables linked to this table.
-     *
-    @Deprecated
-    public Linked linked();
-     */
-
-    /**
      * The AdqlQuery that generated this table.
      *
      */
     public AdqlQuery query();
 
     /**
-     * Base table metadata.
+     * The table metadata.
      *
      */
     public interface Metadata
@@ -239,7 +213,7 @@ extends BaseComponent
         }
 
     /**
-     * Access to the table metadata.
+     * The table metadata.
      *
      */
     public AdqlTable.Metadata meta();

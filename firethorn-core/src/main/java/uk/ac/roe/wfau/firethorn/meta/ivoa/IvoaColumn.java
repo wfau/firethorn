@@ -19,7 +19,10 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -37,13 +40,11 @@ extends BaseColumn<IvoaColumn>
     extends EntityBuilder<IvoaColumn>
         {
         /**
-         * Worker interface.
-         * 
+         * Create or update a column.
+         *
          */
-        public static interface Worker
-        extends EntityBuilder.Worker<IvoaColumn>
-            {
-            }
+        public IvoaColumn select(final String name, final IvoaColumn.Metadata.Adql param)
+        throws DuplicateEntityException;
         }
     
     /**
@@ -86,6 +87,12 @@ extends BaseColumn<IvoaColumn>
          */
         public IvoaColumn create(final IvoaTable parent, final String name);
 
+        /**
+         * Create a new column.
+         *
+         */
+        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata meta);
+        
         }
 
     @Override
@@ -94,4 +101,17 @@ extends BaseColumn<IvoaColumn>
     public IvoaSchema schema();
     @Override
     public IvoaResource resource();
+
+    /**
+     * The column metadata.
+     *
+     */
+    public interface Metadata
+    extends AdqlColumn.Metadata
+        {
+        }
+
+    @Override
+    public IvoaColumn.Metadata meta();
+
     }

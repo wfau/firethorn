@@ -45,11 +45,15 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.Metadata.Jdbc;
 
 /**
  *
@@ -577,11 +581,6 @@ public class AdqlTableEntity
                         );
                     }
                 else {
-                    /*
-                     * HibernateCollections
-                    return children.values();
-                     *
-                     */
                     return factories().adql().columns().select(
                         AdqlTableEntity.this
                         );
@@ -620,20 +619,6 @@ public class AdqlTableEntity
                         AdqlTableEntity.this,
                         name
                         );
-                    /*
-                     * HibernateCollections
-                    AdqlColumn column = children.get(name);
-                    if (column != null)
-                        {
-                        return column;
-                        }
-                    else {
-                        throw new NameNotFoundException(
-                            name
-                            );
-                        }
-                     *
-                     */
                     }
                 }
 
@@ -645,14 +630,6 @@ public class AdqlTableEntity
                     AdqlTableEntity.this,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    column.name(),
-                    column
-                    );
-                 *
-                 */
                 return column ;
                 }
 
@@ -787,5 +764,37 @@ public class AdqlTableEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
+
+    @Override
+    public AdqlTable.Metadata meta()
+        {
+        return new AdqlTable.Metadata()
+            {
+            @Override
+            public Adql adql()
+                {
+                return new Adql()
+                    {
+                    @Override
+                    public Long count()
+                        {
+                        return 0L;
+                        }
+
+                    @Override
+                    public AdqlTable.TableStatus status()
+                        {
+                        return adqlstatus();
+                        }
+
+                    @Override
+                    public void status(final AdqlTable.TableStatus next)
+                        {
+                        adqlstatus(next);
+                        }
+                    };
+                }
+            };
         }
     }

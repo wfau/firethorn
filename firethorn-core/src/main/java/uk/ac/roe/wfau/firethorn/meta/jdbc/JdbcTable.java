@@ -267,7 +267,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * @todo Move up to resource ?
      *
      */
-    public static enum JdbcStatus
+    public static enum TableStatus
         {
         CREATED(),
         UPDATED(),
@@ -278,7 +278,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
-     * JDBC table metadata.
+     * The table metadata.
      *
      */
     public interface Metadata
@@ -288,7 +288,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public interface JdbcMetadata {
+        public interface Jdbc {
 
             /**
              * The table row count.
@@ -309,16 +309,16 @@ extends BaseTable<JdbcTable, JdbcColumn>
             public void type(final JdbcType type);
 
             /**
-             * The JDBC table status.
+             * Get the JDBC table status.
              *
              */
-            public JdbcTable.JdbcStatus status() ;
+            public JdbcTable.TableStatus status() ;
 
             /**
              * Set the JDBC table status.
              *
              */
-            public void status(final JdbcTable.JdbcStatus status) ;
+            public void status(final JdbcTable.TableStatus status) ;
 
             }
 
@@ -326,7 +326,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public JdbcMetadata jdbc();
+        public Jdbc jdbc();
 
         }
 

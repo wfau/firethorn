@@ -84,7 +84,7 @@ extends TestBase
                     log.debug("      Type  [{}]", column.meta().adql().type());
                     log.debug("      Units [{}]", column.meta().adql().units());
                     log.debug("      Utype [{}]", column.meta().adql().utype());
-                    log.debug("      UCD   [{}][{}]", column.meta().adql().ucd().type(), column.meta().adql().ucd().value());
+                    log.debug("      UCD   [{}]", column.meta().adql().ucd());
                     }
                 }
             }

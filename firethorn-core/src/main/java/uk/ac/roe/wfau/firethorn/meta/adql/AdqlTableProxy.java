@@ -298,6 +298,7 @@ public class AdqlTableProxy
     @Override
     public Metadata meta()
         {
+        // TODO Need to make this read only.
         return base.meta();
         }
 

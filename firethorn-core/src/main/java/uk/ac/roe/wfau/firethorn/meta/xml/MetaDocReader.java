@@ -27,19 +27,18 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.UCD;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderImpl;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
+import uk.ac.starlink.table.UCD;
 
 /**
  *
@@ -364,10 +363,10 @@ implements XMLReader
 
                 if (match(reader))
                     {
-                    final StartElement element = start(
+                    start(
                         reader
                         );
-
+/*                    
                     UCD.Type type = UCD.Type.ONE;
                     final Attribute attrib = element.getAttributeByName(
                         new QName(
@@ -381,9 +380,14 @@ implements XMLReader
                             type = UCD.Type.ONEPLUS;
                             }
                         }
-
                     column.meta().adql().ucd(
                         type,
+                        content(
+                            reader
+                            )
+                        );
+ */
+                    column.meta().adql().ucd(
                         content(
                             reader
                             )
