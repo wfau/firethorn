@@ -39,10 +39,10 @@ extends BaseColumn<IvoaColumn>
     extends EntityBuilder<IvoaColumn, IvoaColumn.Metadata>
         {
         /**
-         * Create or update a column.
+         * Create or update an {@link IvoaColumn}.
          *
          */
-        public IvoaColumn select(final String name, final IvoaColumn.Metadata param)
+        public IvoaColumn build(final IvoaColumn.Metadata meta)
         throws DuplicateEntityException;
         }
 
@@ -101,14 +101,14 @@ extends BaseColumn<IvoaColumn>
         /**
          * Create a new {@link IvoaColumn}.
          *
-         */
         public IvoaColumn create(final IvoaTable parent, final String name);
+         */
 
         /**
          * Create a new {@link IvoaColumn}.
          *
          */
-        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata param);
+        public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta);
 
         //TODO - move to services
         @Override
@@ -142,9 +142,27 @@ extends BaseColumn<IvoaColumn>
     public interface Metadata
     extends AdqlColumn.Metadata
         {
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public interface Ivoa
+            {
+            }
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public Ivoa ivoa();
         }
 
     @Override
     public IvoaColumn.Metadata meta();
 
+    /**
+     * Update the column properties.
+     * 
+     */
+    public void update(final IvoaColumn.Metadata meta);
+    
     }

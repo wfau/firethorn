@@ -42,10 +42,10 @@ public interface EntityBuilder<EntityType extends NamedEntity, EntityMeta>
     public Iterable<EntityType> done();
 
     /**
-     * Select an Entity for processing.
+     * Create or update an Entity.
      * 
      */
-    public EntityType select(final String name, final EntityMeta meta)
+    public EntityType build(final EntityMeta meta)
     throws DuplicateEntityException;
 
     /**

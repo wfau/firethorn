@@ -125,11 +125,6 @@ public class JdbcTableEntity
 extends BaseTableEntity<JdbcTable, JdbcColumn>
 implements JdbcTable
     {
-    /**
-     * Empty count value, {@value}.
-     *
-     */
-    protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
      * Hibernate table mapping, {@value}.
@@ -142,16 +137,19 @@ implements JdbcTable
      *
      */
     protected static final String DB_JDBC_TYPE_COL   = "jdbctype"   ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
-     */
     protected static final String DB_JDBC_COUNT_COL  = "jdbccount"  ;
+     */
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_STATUS_COL = "jdbcstatus" ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
@@ -172,11 +170,24 @@ implements JdbcTable
                 source
                 );
             }
+
+        @Override
+        protected String name(JdbcTable.Metadata meta)
+            {
+            return meta.jdbc().name();
+            }
+
+        @Override
+        protected void update(final JdbcTable table, final JdbcTable.Metadata meta)
+            {
+            table.update(
+                meta
+                );
+            }
         }
     
     /**
      * {@link JdbcTable.NameFactory} implementation.
-     * @todo Count of tables per query, or per owner
      * @todo base64 hash of the ident ?
      *
      */
@@ -269,6 +280,19 @@ implements JdbcTable
 
         @Override
         @CreateMethod
+        public JdbcTable create(final JdbcSchema schema, final JdbcTable.Metadata meta)
+            {
+            return this.insert(
+                new JdbcTableEntity(
+                    schema,
+                    meta
+                    )
+                );
+            }
+
+        @Override
+        @Deprecated
+        @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name)
             {
             return this.insert(
@@ -280,6 +304,7 @@ implements JdbcTable
             }
 
         @Override
+        @Deprecated
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
             {
@@ -473,11 +498,29 @@ implements JdbcTable
         {
         super();
         }
+         
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcTableEntity(final JdbcSchema schema, final JdbcTable.Metadata meta)
+        {
+        this(
+            schema,
+            null,
+            meta.jdbc().name(),
+            meta.jdbc().type()
+            );
+        this.update(
+            meta
+            );
+        }
 
     /**
      * Protected constructor.
      *
      */
+    @Deprecated
     protected JdbcTableEntity(final JdbcSchema schema, final String name)
         {
         this(
@@ -492,6 +535,7 @@ implements JdbcTable
      * Protected constructor.
      *
      */
+    @Deprecated
     public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcType type)
         {
         this(
@@ -526,8 +570,7 @@ implements JdbcTable
         this.query  = query;
         this.schema = schema;
 
-        this.jdbctype   = type;
-        this.jdbccount  = EMPTY_COUNT_VALUE;
+        this.jdbctype   = type ;
         this.jdbcstatus = JdbcTable.TableStatus.CREATED;
         this.adqlstatus = AdqlTable.TableStatus.CREATED;
 
@@ -608,34 +651,42 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final AdqlQuery.SelectField field)
                 {
-                final JdbcColumn result = factories().jdbc().columns().create(
+                return factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     field
                     );
-                return result ;
+                }
+
+            @Override
+            public JdbcColumn create(final JdbcColumn.Metadata meta)
+                {
+                return factories().jdbc().columns().create(
+                    JdbcTableEntity.this,
+                    meta
+                    );
                 }
             
             @Override
+            @Deprecated
             public JdbcColumn create(final String name, final int type, final int size)
                 {
-                final JdbcColumn result = factories().jdbc().columns().create(
+                return factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     name,
                     type,
                     size
                     );
-                return result ;
                 }
 
             @Override
+            @Deprecated
             public JdbcColumn create(final String name, final JdbcColumn.Type type)
                 {
-                final JdbcColumn result = factories().jdbc().columns().create(
+                return factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     name,
                     type
                     );
-                return result ;
                 }
 
             @Override
@@ -661,24 +712,13 @@ implements JdbcTable
                 return new JdbcColumnEntity.Builder(this.select())
                     {
                     @Override
-                    protected JdbcColumn create(final String name, final JdbcColumn.Metadata param)
+                    protected JdbcColumn create(final JdbcColumn.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
-
-                    @Override
-                    protected JdbcColumn update(final JdbcColumn column, final JdbcColumn.Metadata param)
-                        {
-                        // TODO Auto-generated method stub
-                        return column;
-                        }
-                    @Override
-                    protected JdbcColumn finish(final JdbcColumn column)
-                        {
-                        log.debug("Archive inactive column [{}]", column.name());
-                        return column;
+                        return factories().jdbc().columns().create(
+                            JdbcTableEntity.this,
+                            meta
+                            );
                         }
                     };
                 }
@@ -983,43 +1023,20 @@ implements JdbcTable
                 break ;
             }
         }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_JDBC_COUNT_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Long jdbccount ;
-    protected Long jdbccount()
-        {
-        if (this.jdbccount != null)
-            {
-            return this.jdbccount;
-            }
-        else {
-            return EMPTY_COUNT_VALUE;
-            }
-        }
-    protected void jdbccount(final Long count)
-        {
-        this.jdbccount = count;
-        }
     
     protected void jdbcdelete()
         {
         factories().jdbc().tables().driver().delete(
             JdbcTableEntity.this
             );
+        adqlcount(
+            EMPTY_COUNT_VALUE
+            );
         adqlstatus(
             AdqlTable.TableStatus.DELETED
             );
         jdbcstatus(
             JdbcTable.TableStatus.DELETED
-            );
-        jdbccount(
-            EMPTY_COUNT_VALUE
             );
         }
 
@@ -1028,15 +1045,61 @@ implements JdbcTable
         factories().jdbc().tables().driver().drop(
             JdbcTableEntity.this
             );
+        adqlcount(
+            EMPTY_COUNT_VALUE
+            );
         adqlstatus(
             AdqlTable.TableStatus.DELETED
             );
         jdbcstatus(
             JdbcTable.TableStatus.DROPPED
             );
-        jdbccount(
-            EMPTY_COUNT_VALUE
-            );
+        }
+
+    protected JdbcTable.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcTable.Metadata.Jdbc()
+            {
+            @Override
+            public String name()
+                {
+                return JdbcTableEntity.this.name();
+                }
+
+            @Override
+            public Long count()
+                {
+                return adqlcount();
+                }
+            
+            @Override
+            public JdbcType type()
+                {
+                return jdbctype() ;
+                }
+
+            @Override
+            public void type(final JdbcType type)
+                {
+                jdbctype(
+                    type
+                    );
+                }
+
+            @Override
+            public JdbcTable.TableStatus status()
+                {
+                return jdbcstatus();
+                }
+
+            @Override
+            public void status(final JdbcTable.TableStatus next)
+                {
+                jdbcstatus(
+                    next
+                    );
+                }
+            };
         }
 
     @Override
@@ -1047,67 +1110,13 @@ implements JdbcTable
             @Override
             public Jdbc jdbc()
                 {
-                return new Jdbc()
-                    {
-                    @Override
-                    public Long count()
-                        {
-                        return jdbccount();
-                        }
-                    
-                    @Override
-                    public JdbcType type()
-                        {
-                        return jdbctype() ;
-                        }
-
-                    @Override
-                    public void type(final JdbcType type)
-                        {
-                        jdbctype(
-                            type
-                            );
-                        }
-
-                    @Override
-                    public JdbcTable.TableStatus status()
-                        {
-                        return jdbcstatus();
-                        }
-
-                    @Override
-                    public void status(final JdbcTable.TableStatus next)
-                        {
-                        jdbcstatus(
-                            next
-                            );
-                        }
-                    };
+                return jdbcmeta();
                 }
 
             @Override
             public Adql adql()
                 {
-                return new Adql()
-                    {
-                    @Override
-                    public Long count()
-                        {
-                        return jdbccount();
-                        }
-
-                    @Override
-                    public AdqlTable.TableStatus status()
-                        {
-                        return adqlstatus();
-                        }
-
-                    @Override
-                    public void status(final AdqlTable.TableStatus next)
-                        {
-                        adqlstatus(next);
-                        }
-                    };
+                return adqlmeta();
                 }
             };
         }
@@ -1267,5 +1276,13 @@ implements JdbcTable
     public AdqlQuery query()
         {
         return this.query;
+        }
+
+    @Override
+    public void update(
+        uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.Metadata meta)
+        {
+        // TODO Auto-generated method stub
+        
         }
     }

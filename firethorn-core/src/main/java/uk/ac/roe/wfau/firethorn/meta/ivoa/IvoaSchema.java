@@ -41,10 +41,10 @@ extends BaseSchema<IvoaSchema, IvoaTable>
     extends EntityBuilder<IvoaSchema, IvoaSchema.Metadata>
         {
         /**
-         * Create or update a {@link IvoaSchema}.
+         * Create or update an {@link IvoaSchema}.
          *
          */
-        public IvoaSchema select(final String name, final IvoaSchema.Metadata meta)
+        public IvoaSchema build(final IvoaSchema.Metadata param)
         throws DuplicateEntityException;
         }
 
@@ -95,13 +95,7 @@ extends BaseSchema<IvoaSchema, IvoaTable>
          * Create a new {@link IvoaSchema}.
          *
          */
-        public IvoaSchema create(final IvoaResource parent, final String name);
-
-        /**
-         * Create a new {@link IvoaSchema}.
-         *
-         */
-        public IvoaSchema create(final IvoaResource parent, final String name, final IvoaSchema.Metadata param);
+        public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata param);
         
         /**
          * Our local {@link IvoaTable.EntityFactory} implementation.
@@ -154,5 +148,11 @@ extends BaseSchema<IvoaSchema, IvoaTable>
 
     @Override
     public IvoaSchema.Metadata meta();
+
+    /**
+     * Update the schema properties.
+     * 
+     */
+    public void update(final IvoaSchema.Metadata meta);
 
     }

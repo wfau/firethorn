@@ -37,10 +37,10 @@ extends BaseTable<IvoaTable, IvoaColumn>
     extends EntityBuilder<IvoaTable, IvoaTable.Metadata>
         {
         /**
-         * Create or update a table.
+         * Create or update an {@link IvoaTable}.
          *
          */
-        public IvoaTable select(final String name, final IvoaTable.Metadata meta)
+        public IvoaTable build(final IvoaTable.Metadata meta)
         throws DuplicateEntityException;
         }
 
@@ -99,14 +99,14 @@ extends BaseTable<IvoaTable, IvoaColumn>
         /**
          * Create a new {@link IvoaTable}.
          *
-         */
         public IvoaTable create(final IvoaSchema parent, final String name);
+         */
 
         /**
          * Create a new {@link IvoaTable}.
          *
          */
-        public IvoaTable create(final IvoaSchema parent, final String name, final IvoaTable.Metadata param);
+        public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta);
         
         /**
          * Our local {@link IvoaColumn} implementation.
@@ -189,4 +189,10 @@ extends BaseTable<IvoaTable, IvoaColumn>
     @Override
     public IvoaTable.Metadata meta();
 
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final IvoaTable.Metadata meta);
+    
     }

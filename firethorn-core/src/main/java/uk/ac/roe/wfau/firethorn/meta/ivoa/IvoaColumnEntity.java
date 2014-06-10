@@ -132,6 +132,20 @@ public class IvoaColumnEntity
                 source
                 );
             }
+        
+        @Override
+        protected String name(IvoaColumn.Metadata meta)
+            {
+            return meta.adql().name();
+            }
+
+        @Override
+        protected void update(final IvoaColumn column, final IvoaColumn.Metadata meta)
+            {
+            column.update(
+                meta
+                );
+            }
         }
 
     /**
@@ -207,25 +221,12 @@ public class IvoaColumnEntity
 
         @Override
         @CreateMethod
-        public IvoaColumn create(final IvoaTable parent, final String name)
+        public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta)
             {
             return this.insert(
                 new IvoaColumnEntity(
                     parent,
-                    name
-                    )
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public IvoaColumn create(final IvoaTable parent, final String name, final IvoaColumn.Metadata param)
-            {
-            //TODO Add the param
-            return this.insert(
-                new IvoaColumnEntity(
-                    parent,
-                    name
+                    meta
                     )
                 );
             }
@@ -315,16 +316,30 @@ public class IvoaColumnEntity
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected IvoaColumnEntity()
         {
         }
 
-    protected IvoaColumnEntity(final IvoaTable table, final String name)
+    /**
+     * Protected constructor.
+     *
+     */
+    protected IvoaColumnEntity(final IvoaTable table, final IvoaColumn.Metadata meta)
         {
-        super(table, name);
+        super(
+            table,
+            meta.adql().name()
+            );
         this.table = table;
+        this.update(
+            meta
+            );
         }
-
+    
     @Override
     public IvoaColumn base()
         {
@@ -445,19 +460,70 @@ public class IvoaColumnEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
 
+    /**
+     * Generate the IVOA metadata.
+     * 
+     */
+    protected IvoaColumn.Metadata.Ivoa ivoameta()
+        {
+        return new IvoaColumn.Metadata.Ivoa()
+            {
+            };
+        }
+    
     @Override
     public IvoaColumn.Metadata meta()
         {
         return new IvoaColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Metadata.Adql adql()
+            public IvoaColumn.Metadata.Ivoa ivoa()
+                {
+                return ivoameta();
+                }
+            @Override
+            public IvoaColumn.Metadata.Adql adql()
                 {
                 return adqlmeta();
                 }
             };
+        }
+
+    @Override
+    public void update(IvoaColumn.Metadata meta)
+        {
+        if (meta.ivoa() != null)
+            {
+            
+            }
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(meta.adql().text());
+                }
+            if (meta.adql().ucd() != null)
+                {
+                this.adqlucd(meta.adql().ucd());
+                }
+            if (meta.adql().units() != null)
+                {
+                this.adqlunits(meta.adql().units());
+                }
+            if (meta.adql().utype() != null)
+                {
+                this.adqlutype(meta.adql().utype());
+                }
+            if (meta.adql().dtype() != null)
+                {
+                this.adqldtype(meta.adql().dtype());
+                }
+            if (meta.adql().arraysize() != null)
+                {
+                this.adqlsize(meta.adql().arraysize());
+                }
+            }
         }
     }

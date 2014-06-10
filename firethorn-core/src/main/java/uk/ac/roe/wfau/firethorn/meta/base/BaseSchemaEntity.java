@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
  *
@@ -124,5 +126,27 @@ implements BaseSchema<SchemaType, TableType>
         else {
             return new StringBuilder();
             }
+        }
+
+    /**
+     * Generate the {@link AdqlSchema.Metadata.Adql adql} metadata.
+     *
+     */
+    protected AdqlSchema.Metadata.Adql adqlmeta()
+        {
+        return new AdqlSchema.Metadata.Adql()
+            {
+            @Override
+            public String name()
+                {
+                return BaseSchemaEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return BaseSchemaEntity.this.text();
+                }
+            };
         }
     }

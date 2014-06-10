@@ -43,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity;
 
 /**
  *
@@ -60,6 +61,11 @@ public abstract class BaseTableEntity<TableType extends BaseTable<TableType, Col
 extends BaseComponentEntity<TableType>
 implements BaseTable<TableType, ColumnType>
     {
+    /**
+     * Empty count value, {@value}.
+     *
+     */
+    protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
      * Hibernate column mapping.
@@ -67,6 +73,12 @@ implements BaseTable<TableType, ColumnType>
      */
     protected static final String DB_ADQL_STATUS_COL = "adqlstatus" ;
 
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_ADQL_COUNT_COL = "adqlcount" ;
+    
     /**
      * {@link BaseTable.EntityResolver} implementation.
      *
@@ -262,6 +274,29 @@ implements BaseTable<TableType, ColumnType>
         this.adqlstatus = next;
         }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_ADQL_COUNT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Long adqlcount ;
+    protected Long adqlcount()
+        {
+        if (this.adqlcount != null)
+            {
+            return this.adqlcount;
+            }
+        else {
+            return EMPTY_COUNT_VALUE;
+            }
+        }
+    protected void adqlcount(final Long count)
+        {
+        this.adqlcount = count;
+        }
+    
     /**
      * Generate the {@link AdqlTable.Metadata.Adql adql} metadata.
      *
@@ -271,10 +306,21 @@ implements BaseTable<TableType, ColumnType>
         return new AdqlTable.Metadata.Adql()
             {
             @Override
+            public String name()
+                {
+                return BaseTableEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return BaseTableEntity.this.text();
+                }
+
+            @Override
             public Long count()
                 {
-                // TODO Auto-generated method stub
-                return 0L;
+                return adqlcount();
                 }
 
             @Override

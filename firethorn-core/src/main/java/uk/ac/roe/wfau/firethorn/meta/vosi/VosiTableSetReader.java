@@ -152,8 +152,7 @@ public class VosiTableSetReader
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
 
-            IvoaSchema schema = schemas.select(
-                name,
+            IvoaSchema schema = schemas.build(
                 new IvoaSchema.Metadata()
                     {
                     @Override
@@ -161,14 +160,23 @@ public class VosiTableSetReader
                         {
                         return new Adql()
                             {
+                            @Override
+                            public String name()
+                                {
+                                return name ;
+                                }
+
+                            @Override
+                            public String text()
+                                {
+                                return text;
+                                }
                             };
                         }
                     @Override
                     public Ivoa ivoa()
                         {
-                        return new Ivoa()
-                            {
-                            };
+                        return null ;
                         }
                     }
                 );
@@ -227,6 +235,26 @@ public class VosiTableSetReader
         private static final VosiColumnReader columnreader = new VosiColumnReader();
         private static final VosiForeignKeyReader keys = new VosiForeignKeyReader();
         
+        /**
+         * Remove the schema prefix from the name.
+         * IVOA spec says _may_ so some do some don't.
+         * @todo Better pattern matching ?
+         *
+         */
+        private String clean(final IvoaSchema schema, final String name)
+            {
+            String prefix =  schema.name() + "." ;
+            if (name.startsWith(prefix))
+                {
+                return name.substring(
+                    prefix.length()
+                    );
+                }
+            else {
+                return name ;
+                }
+            }
+
         public void inport(final IvoaSchema schema, final IvoaTable.Builder tables, final XMLEventReader events)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
@@ -234,7 +262,7 @@ public class VosiTableSetReader
                 events
                 );
 
-            String name  = namereader.read(events); 
+            final String name  = clean(schema, namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
@@ -244,16 +272,7 @@ public class VosiTableSetReader
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
 
-            String prefix =  schema.name() + "." ;
-            if (name.startsWith(prefix))
-                {
-                name = name.substring(
-                    prefix.length()
-                    );
-                }
-
-            IvoaTable table = tables.select(
-                name,
+            IvoaTable table = tables.build(
                 new IvoaTable.Metadata()
                     {
                     @Override
@@ -261,6 +280,16 @@ public class VosiTableSetReader
                         {
                         return new Adql()
                             {
+                            @Override
+                            public String name()
+                                {
+                                return name ;
+                                }
+                            @Override
+                            public String text()
+                                {
+                                return text;
+                                }
                             @Override
                             public Long count()
                                 {
@@ -281,7 +310,7 @@ public class VosiTableSetReader
                     @Override
                     public Ivoa ivoa()
                         {
-                        return new Ivoa(){};
+                        return null ;
                         }
                     }
                 );
@@ -408,14 +437,23 @@ public class VosiTableSetReader
                 log.debug("    flag  [{}]", flag);
                 }
 
-            columns.select(
-                name,
+            columns.build(
                 new IvoaColumn.Metadata()
                     {
                     public Adql adql()
                         {
                         return new Adql()
                             {
+                            @Override
+                            public String name()
+                                {
+                                return name ;
+                                }
+                            @Override
+                            public String text()
+                                {
+                                return text ;
+                                }
                             @Override
                             public Integer arraysize()
                                 {
@@ -473,9 +511,14 @@ public class VosiTableSetReader
                             @Override
                             public void ucd(String type, String value)
                                 {
-                                // TODO Auto-generated method stub
                                 }
                             };
+                        }
+
+                    @Override
+                    public Ivoa ivoa()
+                        {
+                        return null;
                         }
                     }
                 );

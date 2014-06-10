@@ -314,6 +314,16 @@ public class JdbcResourceEntity
                 }
 
             @Override
+            public JdbcSchema create(final JdbcSchema.Metadata meta)
+                {
+                return factories().jdbc().schemas().create(
+                    JdbcResourceEntity.this,
+                    meta
+                    );
+                }
+            
+            @Override
+            @Deprecated
             public JdbcSchema create(final String catalog, final String schema)
                 {
                 return factories().jdbc().schemas().create(
@@ -406,25 +416,13 @@ public class JdbcResourceEntity
                 return new JdbcSchemaEntity.Builder(this.select())
                     {
                     @Override
-                    protected JdbcSchema create(final String name, final JdbcSchema.Metadata param)
+                    protected JdbcSchema create(final JdbcSchema.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
-
-                    @Override
-                    protected JdbcSchema update(final JdbcSchema entity, final JdbcSchema.Metadata param)
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
-                    
-                    @Override
-                    protected JdbcSchema finish(final JdbcSchema entity)
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
+                        return factories().jdbc().schemas().create(
+                            JdbcResourceEntity.this,
+                            meta
+                            );
                         }
                     };
                 }
@@ -718,6 +716,17 @@ public class JdbcResourceEntity
         return connection().type().jdbcsize(type);
         }
 
+    /**
+     * Generate the JDBC metadata.
+     * 
+     */
+    protected JdbcResource.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcResource.Metadata.Jdbc()
+            {
+            };
+        }
+    
     @Override
     public JdbcResource.Metadata meta()
         {
@@ -726,9 +735,7 @@ public class JdbcResourceEntity
             @Override
             public Jdbc jdbc()
                 {
-                return new Jdbc()
-                    {
-                    };
+                return jdbcmeta();
                 }
             };
         }

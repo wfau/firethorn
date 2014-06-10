@@ -32,6 +32,14 @@ public abstract class AbstractEntityBuilder<EntityType extends NamedEntity, Enti
 implements EntityBuilder<EntityType, EntityParam>
     {
     /**
+     * Resolve an entity name.
+     * @param param The {@link EntityParam} containing the name.
+     * @return The entity name.
+     * 
+     */
+    protected abstract String name(final EntityParam param);
+
+    /**
      * Our map of Entity(s) to process.
      * 
      */
@@ -74,15 +82,18 @@ implements EntityBuilder<EntityType, EntityParam>
             }
         return this;
         }
-    
+        
     @Override
-    public EntityType select(final String name, final EntityParam param)
+    public EntityType build(final EntityParam param)
     throws DuplicateEntityException
         {
-        log.debug("select(String, Handler<EntityType>)");
-        log.debug("  name [{}]", name);
+        log.debug("build(EntityParam)");
         log.debug("  todo [{}]", todo.size());
         log.debug("  done [{}]", done.size());
+
+        final String name = this.name(param);
+        log.debug("  name [{}]", name);
+        
         //
         // Check for a duplicate in the done list.
         EntityType entity = done.get(name);
@@ -113,7 +124,6 @@ implements EntityBuilder<EntityType, EntityParam>
         // Create a new Entity.
         else {
             entity = create(
-                name,
                 param
                 );
             }
@@ -140,22 +150,23 @@ implements EntityBuilder<EntityType, EntityParam>
         }
 
     /**
-     * Finish an un-processed Entity.
-     *
-     */
-    protected abstract EntityType finish(final EntityType entity);
-
-    /**
      * Create a new Entity.
      * 
      */
-    protected abstract EntityType create(final String name, final EntityParam param)
+    protected abstract EntityType create(final EntityParam param)
     throws DuplicateEntityException;
 
     /**
      * Update an existing Entity.
      * 
      */
-    protected abstract EntityType update(final EntityType entity, final EntityParam param);
+    protected abstract void update(final EntityType entity, final EntityParam param);
 
+    /**
+     * Finish an un-processed Entity.
+     *
+     */
+    protected void finish(final EntityType entity)
+        {
+        }
     }

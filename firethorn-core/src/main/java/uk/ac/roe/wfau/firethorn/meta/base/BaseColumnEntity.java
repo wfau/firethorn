@@ -248,14 +248,14 @@ extends BaseComponentEntity<ColumnType>
         nullable = true,
         updatable = true
         )
-    protected String ucdvalue ;
-    protected String ucdvalue()
+    protected String adqlucd ;
+    protected String adqlucd()
         {
-        return this.ucdvalue ;
+        return this.adqlucd ;
         }
-    protected void ucdvalue(final String value)
+    protected void adqlucd(final String value)
         {
-        this.ucdvalue = emptystr(
+        this.adqlucd = emptystr(
             value
             );
         }
@@ -348,21 +348,31 @@ extends BaseComponentEntity<ColumnType>
             @Override
             public String ucd()
                 {
-                return ucdvalue();
+                return adqlucd();
                 }
             @Override
             public void ucd(final String value)
                 {
-                ucdvalue(
+                adqlucd(
                     value
                     );
                 }
             @Override
             public void ucd(final String type, final String value)
                 {
-                ucdvalue(
+                adqlucd(
                     value
                     );
+                }
+            @Override
+            public String name()
+                {
+                return BaseColumnEntity.this.name();
+                }
+            @Override
+            public String text()
+                {
+                return BaseColumnEntity.this.text();
                 }
             };
         }

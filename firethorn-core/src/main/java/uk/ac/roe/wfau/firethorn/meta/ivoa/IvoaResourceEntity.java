@@ -249,30 +249,13 @@ public class IvoaResourceEntity
                 return new IvoaSchemaEntity.Builder(this.select())
                     {
                     @Override
-                    protected IvoaSchema create(final String name, final IvoaSchema.Metadata param)
+                    protected IvoaSchema create(final IvoaSchema.Metadata param)
                         throws DuplicateEntityException
                         {
-                        return update(
-                            factories().ivoa().schemas().create(
-                                IvoaResourceEntity.this,
-                                name,
-                                param
-                                ),
+                        return factories().ivoa().schemas().create(
+                            IvoaResourceEntity.this,
                             param
                             );
-                        }
-
-                    @Override
-                    protected IvoaSchema update(final IvoaSchema schema, final IvoaSchema.Metadata param)
-                        {
-                        return schema;
-                        }
-
-                    @Override
-                    protected IvoaSchema finish(final IvoaSchema schema)
-                        {
-                        log.debug("Archive inactive schema [{}]", schema.name());
-                        return schema ;
                         }
                     };
                 }

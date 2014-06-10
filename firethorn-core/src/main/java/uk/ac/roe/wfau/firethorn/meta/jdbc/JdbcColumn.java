@@ -45,7 +45,7 @@ extends BaseColumn<JdbcColumn>
          * Create or update a column.
          *
          */
-        public JdbcColumn select(final String name, final JdbcColumn.Metadata param)
+        public JdbcColumn build(final JdbcColumn.Metadata param)
         throws DuplicateEntityException;
         }
 
@@ -105,18 +105,26 @@ extends BaseColumn<JdbcColumn>
          * Create a new {@link JdbcColumn}.
          *
          */
+        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcColumn}.
+         *
+         */
         public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field);
 
         /**
          * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size);
 
         /**
          * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type);
 
         //TODO - move to services
@@ -359,9 +367,14 @@ extends BaseColumn<JdbcColumn>
          */
         public interface Jdbc
             {
-
             /**
-             * Get the column size.
+             * The column name.
+             *
+             */
+            public String name();
+            
+            /**
+             * The column size.
              *
              */
             public Integer size();
@@ -411,5 +424,11 @@ extends BaseColumn<JdbcColumn>
 
     @Override
     public JdbcColumn.Metadata meta();
+
+    /**
+     * Update the column properties.
+     * 
+     */
+    public void update(final JdbcColumn.Metadata meta);
 
     }

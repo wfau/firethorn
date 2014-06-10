@@ -240,6 +240,17 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          */
         public interface Adql
             {
+            /**
+             * The schema name.
+             *
+             */
+            public String name();
+
+            /**
+             * The schema description.
+             * 
+             */
+            public String text();
             }
 
         /**

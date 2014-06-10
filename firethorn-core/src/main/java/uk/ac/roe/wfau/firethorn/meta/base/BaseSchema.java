@@ -165,17 +165,6 @@ extends BaseComponent
      */
     public interface Metadata
         {
-        /**
-         * The table name.
-         * 
-        public String name();
-         */
-
-        /**
-         * The table description.
-         * 
-        public String text();
-         */
         }
 
     /**

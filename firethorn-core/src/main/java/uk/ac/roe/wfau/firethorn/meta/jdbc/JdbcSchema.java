@@ -49,7 +49,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Create or update a {@link JdbcSchema}.
          *
          */
-        public JdbcSchema select(final String name, final JdbcSchema.Metadata meta)
+        public JdbcSchema build(final JdbcSchema.Metadata meta)
         throws DuplicateEntityException;
         }
 
@@ -121,8 +121,21 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     extends BaseSchema.EntityFactory<JdbcResource, JdbcSchema>
         {
         /**
+         * Create a new {@link JdbcSchema}.
+         *
+         */
+        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcSchema}.
+         *
+         */
+        @Deprecated
+        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema);
+
+        /**
          * Create a new {@link JdbcSchema} for an identity.
-         * This _should_ create a new schema in the user data database.
+         * This should create a new schema in the user data database.
          * @todo Move this to data space interface.
          *
          */
@@ -142,12 +155,6 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          */
         public JdbcSchema.OldBuilder oldbuilder();
         
-        /**
-         * Create a new {@link JdbcSchema}.
-         *
-         */
-        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema);
-
         /**
          * Select a {@link JdbcSchema} based on catalog and schema name.
          *
@@ -211,13 +218,21 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new {@link JdbcTable table}.
          *
          */
+        @Deprecated
         public JdbcTable create(final String name);
 
         /**
          *  Create a new {@link JdbcTable table}.
          *
          */
+        @Deprecated
         public JdbcTable create(final String name, final JdbcTable.JdbcType type);
+
+        /**
+         *  Create a new {@link JdbcTable table}.
+         *
+         */
+        public JdbcTable create(final JdbcTable.Metadata meta);
 
         /**
          *  Create a new {@link JdbcTable table}.
@@ -273,6 +288,24 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          */
         public interface Jdbc
             {
+            /**
+             * The fully qualified schema name.
+             * 
+             */
+            public String fullname() ;
+
+            /**
+             * The schema name.
+             * 
+             */
+            public String schema() ;
+
+            /**
+             * The catalog name.
+             * 
+             */
+            public String catalog() ;
+
             }
 
         /**
@@ -285,5 +318,11 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
     @Override
     public JdbcSchema.Metadata meta();
+
+    /**
+     * Update the schema properties.
+     * 
+     */
+    public void update(final JdbcSchema.Metadata meta);
     
     }

@@ -658,11 +658,10 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base)
                 {
                 realize();
-                final AdqlColumn column = factories().adql().columns().create(
+                return factories().adql().columns().create(
                     AdqlTableEntity.this,
                     base
                     );
-                return column ;
                 }
 
             @Override
@@ -705,7 +704,7 @@ public class AdqlTableEntity
                         }
                     }
                 else {
-                    // TODO pass reference to this table too.
+                    // TODO pass parent reference.
                     return factories().adql().columns().select(
                         ident
                         );
@@ -806,26 +805,7 @@ public class AdqlTableEntity
             @Override
             public Adql adql()
                 {
-                return new Adql()
-                    {
-                    @Override
-                    public Long count()
-                        {
-                        return 0L;
-                        }
-
-                    @Override
-                    public AdqlTable.TableStatus status()
-                        {
-                        return adqlstatus();
-                        }
-
-                    @Override
-                    public void status(final AdqlTable.TableStatus next)
-                        {
-                        adqlstatus(next);
-                        }
-                    };
+                return adqlmeta();
                 }
             };
         }

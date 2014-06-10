@@ -555,56 +555,50 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base
                     );
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
                     );
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base,
                     name
                     );
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,
                     name
                     );
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
-                //realize();
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     query
                     );
-                return table ;
                 }
 
             @Override
@@ -646,7 +640,7 @@ implements AdqlSchema
                         }
                     }
                 else {
-                    // TODO pass reference to this schema too.
+                    // TODO pass parent reference too.
                     return factories().adql().tables().select(
                         ident
                         );
@@ -748,9 +742,7 @@ implements AdqlSchema
             @Override
             public Adql adql()
                 {
-                return new Adql()
-                    {
-                    };
+                return adqlmeta();
                 }
             };
         }

@@ -36,17 +36,17 @@ extends BaseColumn<AdqlColumn>
     /**
      * {@link EntityBuilder} interface.
      * 
-     */
     public static interface Builder
     extends EntityBuilder<IvoaColumn, IvoaColumn.Metadata>
         {
         /**
          * Create or update a column.
          *
-         */
-        public IvoaColumn select(final String name, final IvoaColumn.Metadata param)
+         * /
+        public IvoaColumn build(final IvoaColumn.Metadata param)
         throws DuplicateEntityException;
         }
+     */
 
     /**
      * {@link BaseColumn.IdentFactory} interface.
@@ -306,6 +306,18 @@ extends BaseColumn<AdqlColumn>
          */
         public interface Adql
             {
+            /**
+             * The column name.
+             *
+             */
+            public String name();
+
+            /**
+             * The column description.
+             * 
+             */
+            public String text();
+            
             /**
              * The array size, or null if this is not an array.
              *

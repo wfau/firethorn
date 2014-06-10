@@ -121,7 +121,21 @@ extends BaseResource<JdbcSchema>
          * Create a new {@link JdbcSchema}.
          *
          */
+        public JdbcSchema create(final JdbcSchema.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcSchema}.
+         *
+         */
+        @Deprecated
         public JdbcSchema create(final String catalog, final String schema);
+
+        /**
+         * Create a new {@link JdbcSchema} owned by an Identity.
+         * @todo Move this to a data space interface.
+         *
+         */
+        public JdbcSchema create(final Identity identity);
 
         /**
          * Select a {@link JdbcSchema} by catalog name and schema name.
@@ -135,13 +149,6 @@ extends BaseResource<JdbcSchema>
          *
          */
         public JdbcSchema search(final String catalog, final String schema);
-
-        /**
-         * Create a new {@link JdbcSchema} owned by an Identity.
-         * @todo Move this to a data space interface.
-         *
-         */
-        public JdbcSchema create(final Identity identity);
 
         /**
          * Select the {@link JdbcSchema} owned by an Identity.
@@ -169,7 +176,6 @@ extends BaseResource<JdbcSchema>
          *
          */
         public JdbcSchema.Builder builder();  
-        
         
         }
 

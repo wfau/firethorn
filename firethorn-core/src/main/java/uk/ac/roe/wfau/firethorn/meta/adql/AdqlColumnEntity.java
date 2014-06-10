@@ -483,15 +483,14 @@ public class AdqlColumnEntity
             }
         }
 
-    protected String ucdvalue()
+    protected String adqlucd()
         {
-        if (this.ucdvalue != null)
+        if (this.adqlucd != null)
             {
-            return this.ucdvalue ;
+            return this.adqlucd ;
             }
         else {
             return base().meta().adql().ucd();
             }
         }
-    
     }

@@ -160,6 +160,20 @@ public class JdbcSchemaEntity
                 source
                 );
             }
+
+        @Override
+        protected String name(JdbcSchema.Metadata meta)
+            {
+            return meta.jdbc().fullname();
+            }
+
+        @Override
+        protected void update(final JdbcSchema schema, final JdbcSchema.Metadata meta)
+            {
+            schema.update(
+                meta
+                );
+            }
         }
     
     /**
@@ -246,6 +260,18 @@ public class JdbcSchemaEntity
             return JdbcSchemaEntity.class ;
             }
 
+        //TODO Resolve the full name problem
+        @Override
+        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta)
+            {
+            return this.create(
+                parent,
+                meta.jdbc().catalog(),
+                meta.jdbc().schema()
+                );
+            }
+
+        
         @Override
         @CreateMethod
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
@@ -634,35 +660,44 @@ public class JdbcSchemaEntity
                 }
 
             @Override
+            @Deprecated
             public JdbcTable create(final String name)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name
                     );
-                return result ;
                 }
 
             @Override
+            @Deprecated
             public JdbcTable create(final String name, final JdbcTable.JdbcType type)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name,
                     type
                     );
-                return result ;
                 }
+
+            @Override
+            public JdbcTable create(final JdbcTable.Metadata meta)
+                {
+                return factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this,
+                    meta
+                    );
+                }
+
             @Override
             public JdbcTable create(final AdqlQuery query)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     query
                     );
-                return result ;
                 }
-
+            
             @Override
             public void scan()
                 {
@@ -695,25 +730,13 @@ public class JdbcSchemaEntity
                 return new JdbcTableEntity.Builder(this.select())
                     {
                     @Override
-                    protected JdbcTable create(final String name, final JdbcTable.Metadata param)
+                    protected JdbcTable create(final JdbcTable.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
-
-                    @Override
-                    protected JdbcTable update(final JdbcTable entity, final JdbcTable.Metadata param)
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
-
-                    @Override
-                    protected JdbcTable finish(final JdbcTable entity)
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
+                        return factories().jdbc().tables().create(
+                            JdbcSchemaEntity.this,
+                            meta
+                            );
                         }
                     };
                 }
@@ -811,6 +834,34 @@ public class JdbcSchemaEntity
             }
         }
 
+    /**
+     * Generate the JDBC metadata.
+     * 
+     */
+    public JdbcSchema.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcSchema.Metadata.Jdbc()
+            {
+            @Override
+            public String fullname()
+                {
+                return JdbcSchemaEntity.this.name();
+                }
+
+            @Override
+            public String schema()
+                {
+                return JdbcSchemaEntity.this.schema();
+                }
+
+            @Override
+            public String catalog()
+                {
+                return JdbcSchemaEntity.this.catalog();
+                }
+            };
+        }
+
     @Override
     public JdbcSchema.Metadata meta()
         {
@@ -819,18 +870,28 @@ public class JdbcSchemaEntity
             @Override
             public Adql adql()
                 {
-                return new Adql()
-                    {
-                    };
+                return adqlmeta();
                 }
 
             @Override
             public Jdbc jdbc()
                 {
-                return new Jdbc()
-                    {
-                    };
+                return jdbcmeta();
                 }
             };
+        }
+
+    @Override
+    public void update(final JdbcSchema.Metadata meta)
+        {
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(
+                    meta.adql().text()
+                    );
+                }
+            }
         }
     }

@@ -133,6 +133,20 @@ public class JdbcColumnEntity
                 source
                 );
             }
+
+        @Override
+        protected String name(JdbcColumn.Metadata meta)
+            {
+            return meta.jdbc().name();
+            }
+
+        @Override
+        protected void update(final JdbcColumn column, final JdbcColumn.Metadata meta)
+            {
+            column.update(
+                meta
+                );
+            }
         }
     
     /**
@@ -208,6 +222,19 @@ public class JdbcColumnEntity
 
         @Override
         @CreateMethod
+        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta)
+            {
+            return this.insert(
+                new JdbcColumnEntity(
+                    parent,
+                    meta
+                    )
+                );
+            }
+        
+        @Override
+        @Deprecated
+        @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type)
             {
             return this.insert(
@@ -221,6 +248,7 @@ public class JdbcColumnEntity
             }
 
         @Override
+        @Deprecated
         @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
             {
@@ -234,6 +262,7 @@ public class JdbcColumnEntity
                 );
             }
 
+        @Deprecated
         @CreateMethod
         private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type, final Integer size)
             {
@@ -398,11 +427,37 @@ public class JdbcColumnEntity
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcColumnEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcColumnEntity(final JdbcTable table, final JdbcColumn.Metadata meta)
+        {
+        this(
+            table,
+            meta.jdbc().name(),
+            meta.jdbc().type(),
+            meta.jdbc().size()
+            );
+        this.update(
+            meta
+            );
+        }
+    
+    /**
+     * Protected constructor.
+     *
+     */
+    @Deprecated
     protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
         {
         this(
@@ -417,6 +472,10 @@ public class JdbcColumnEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.Type type, final Integer size)
         {
         super(table, name);
@@ -593,6 +652,11 @@ public class JdbcColumnEntity
         return new JdbcColumn.Metadata.Jdbc()
             {
             @Override
+            public String name()
+                {
+                return JdbcColumnEntity.this.name();
+                }
+            @Override
             public Integer size()
                 {
                 return jdbcsize();
@@ -728,6 +792,21 @@ public class JdbcColumnEntity
     @Override
     public void scanimpl()
         {
-        log.debug("scanimpl()");
+        // TODO Auto-generated method stub
+        }
+
+    @Override
+    public void update(final JdbcColumn.Metadata meta)
+        {
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(meta.adql().text());
+                }
+            //
+            //TODO Check the type and size - warn/fail if they have changed ?
+            //
+            }
         }
     }

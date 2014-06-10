@@ -112,6 +112,20 @@ public class IvoaSchemaEntity
                 source
                 );
             }
+
+        @Override
+        protected String name(IvoaSchema.Metadata meta)
+            {
+            return meta.adql().name();
+            }
+
+        @Override
+        protected void update(final IvoaSchema schema, final IvoaSchema.Metadata meta)
+            {
+            schema.update(
+                meta
+                );
+            }
         }
 
     /**
@@ -132,25 +146,12 @@ public class IvoaSchemaEntity
 
         @Override
         @CreateMethod
-        public IvoaSchema create(final IvoaResource parent, final String name)
+        public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata meta)
             {
             return this.insert(
                 new IvoaSchemaEntity(
                     parent,
-                    name
-                    )
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public IvoaSchema create(final IvoaResource parent, final String name, final IvoaSchema.Metadata param)
-            {
-            //TODO Add the param
-            return this.insert(
-                new IvoaSchemaEntity(
-                    parent,
-                    name
+                    meta
                     )
                 );
             }
@@ -244,10 +245,16 @@ public class IvoaSchemaEntity
         super();
         }
 
-    protected IvoaSchemaEntity(final IvoaResource resource, final String name)
+    protected IvoaSchemaEntity(final IvoaResource resource, IvoaSchema.Metadata meta)
         {
-        super(resource, name);
+        super(
+            resource,
+            meta.adql().name()
+            );
         this.resource = resource;
+        this.update(
+            meta
+            );
         }
 
     @ManyToOne(
@@ -322,29 +329,13 @@ public class IvoaSchemaEntity
                 return new IvoaTableEntity.Builder(this.select())
                     {
                     @Override
-                    protected IvoaTable create(final String name,final IvoaTable.Metadata param)
+                    public IvoaTable create(final IvoaTable.Metadata meta)
                     throws DuplicateEntityException
                         {
-                        return update(
-                            factories().ivoa().tables().create(
-                                IvoaSchemaEntity.this,
-                                name
-                                ),
-                            param
+                        return factories().ivoa().tables().create(
+                            IvoaSchemaEntity.this,
+                            meta
                             );
-                        }
-
-                    @Override
-                    protected IvoaTable update(final IvoaTable table, final IvoaTable.Metadata param)
-                        {
-                        return table;
-                        }
-
-                    @Override
-                    protected IvoaTable finish(final IvoaTable table)
-                        {
-                        log.debug("Archive inactive table [{}]", table.name());
-                        return table;
                         }
                     };
                 }
@@ -363,9 +354,19 @@ public class IvoaSchemaEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
 
+    /**
+     * Generate the IVOA metadata.
+     * 
+     */
+    protected IvoaSchema.Metadata.Ivoa ivoameta()
+        {
+        return new IvoaSchema.Metadata.Ivoa()
+            {
+            };
+        }
+    
     @Override
     public IvoaSchema.Metadata meta()
         {
@@ -374,14 +375,29 @@ public class IvoaSchemaEntity
             @Override
             public Adql adql()
                 {
-                return new Adql(){};
+                return adqlmeta();
                 }
 
             @Override
             public Ivoa ivoa()
                 {
-                return new Ivoa(){};
+                return ivoameta();
                 }
             };
+        }
+
+    @Override
+    public void update(final IvoaSchema.Metadata meta)
+        {
+        if (meta.ivoa() != null)
+            {
+            }
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(meta.adql().text());
+                }
+            }
         }
     }

@@ -47,7 +47,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create or update a table.
          *
          */
-        public JdbcTable select(final String name, final JdbcTable.Metadata meta)
+        public JdbcTable build(final JdbcTable.Metadata meta)
         throws DuplicateEntityException;
         }
     
@@ -164,12 +164,20 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new {@link JdbcTable}.
          *
          */
+        public JdbcTable create(final JdbcSchema parent, final JdbcTable.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcTable}.
+         *
+         */
+        @Deprecated
         public JdbcTable create(final JdbcSchema parent, final String name);
 
         /**
          * Create a new {@link JdbcTable}.
          *
          */
+        @Deprecated
         public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
 
         /**
@@ -203,7 +211,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
-
         
         //TODO - move to services
         @Override
@@ -239,18 +246,26 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new {@link JdbcColumn}.
          *
          */
+        public JdbcColumn create(final JdbcColumn.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcColumn}.
+         *
+         */
         public JdbcColumn create(final AdqlQuery.SelectField field);
 
         /**
          * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final String name, final int type, final int size);
 
         /**
          * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final String name, final JdbcColumn.Type type);
 
         /**
@@ -341,6 +356,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public interface Jdbc {
 
             /**
+             * The table name.
+             * 
+             */
+            public String name();
+            
+            /**
              * The table row count.
              *
              */
@@ -383,4 +404,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
     @Override
     public JdbcTable.Metadata meta();
 
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final JdbcTable.Metadata meta);
+    
     }

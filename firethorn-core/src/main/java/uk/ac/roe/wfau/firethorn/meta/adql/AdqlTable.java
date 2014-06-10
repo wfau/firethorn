@@ -211,6 +211,18 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public interface Adql
             {
             /**
+             * The table name.
+             *
+             */
+            public String name();
+
+            /**
+             * The table description.
+             * 
+             */
+            public String text();
+            
+            /**
              * Get the table row count.
              *
              */
