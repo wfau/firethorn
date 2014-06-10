@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -46,7 +47,9 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 
 /**
@@ -114,6 +117,17 @@ public class IvoaTableEntity
                 source
                 );
             }
+        }
+
+    /**
+     * {@link IvoaTable.NameFactory} implementation.
+     *
+     */
+    @Component
+    public static class NameFactory
+    extends BaseNameFactory<IvoaTable>
+    implements IvoaTable.NameFactory
+        {
         }
     
     /**
@@ -420,6 +434,8 @@ public class IvoaTableEntity
                     @Override
                     protected IvoaColumn update(final IvoaColumn column, final IvoaColumn.Metadata param)
                         {
+/*                        
+*/                            
                         column.meta().adql().ucd(
                             param.adql().ucd()
                             );

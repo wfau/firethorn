@@ -70,13 +70,12 @@ implements BaseTable<TableType, ColumnType>
     /**
      * {@link BaseTable.EntityResolver} implementation.
      *
-     */
     @Repository
     public static abstract class Resolver<TableType extends BaseTable<TableType, ?>>
     extends AbstractEntityFactory<TableType>
     implements BaseTable.EntityResolver<TableType>
         {
-/*
+ *
  * Do we ever have proxies that aren't Adql ?
  * 
         @Override
@@ -150,8 +149,8 @@ implements BaseTable<TableType, ColumnType>
                     )
                 );
             }
-*/
         }
+*/
 
     /**
      * {@link BaseTable.EntityFactory} implementation.

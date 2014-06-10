@@ -291,7 +291,6 @@ public class VosiTableSetReader
             while (columnreader.match(events))
                 {
                 columnreader.inport(
-                    table,
                     columns,
                     events
                     );
@@ -366,7 +365,7 @@ public class VosiTableSetReader
             false
             );
         
-        public void inport(final IvoaTable table, final IvoaColumn.Builder columns, final XMLEventReader events)
+        public void inport(final IvoaColumn.Builder columns, final XMLEventReader events)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             StartElement start = this.start(

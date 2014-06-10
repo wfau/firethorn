@@ -177,6 +177,7 @@ implements JdbcTable
     /**
      * {@link JdbcTable.NameFactory} implementation.
      * @todo Count of tables per query, or per owner
+     * @todo base64 hash of the ident ?
      *
      */
     @Component

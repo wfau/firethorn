@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 /**
  * A generic JDBC, ADQL, SQL safe NameFactory
  * @todo Move to a separate package.
+ * @todo SQL safe base64 hash of the ident ?
  *
  */
 public class BaseNameFactory<EntityType extends Entity>

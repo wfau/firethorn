@@ -250,66 +250,6 @@ public class TestFactories
                 }
             }
         }
-    /*
-
-    @Component
-    public static class BaseFactories
-        {
-
-        @Component
-        public static class TableFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory
-            implements BaseTable.IdentFactory
-                {
-                public IdentFactory()
-                    {
-                    }
-                }
-            @Component
-            public static class LinkFactory
-            extends AbstractLinkFactory<BaseTable<?,?>>
-            implements BaseTable.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/base/table"
-                        );
-                    }
-                }
-            }
-
-        @Component
-        public static class SchemaFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory
-            implements BaseSchema.IdentFactory
-                {
-                public IdentFactory()
-                    {
-                    }
-                }
-
-            @Component
-            public static class LinkFactory
-            extends AbstractLinkFactory<BaseSchema<?,?>>
-            implements BaseSchema.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/base/schema"
-                        );
-                    }
-                }
-            }
-        }
-*/            
 
     @Component
     public static class AdqlFactories
