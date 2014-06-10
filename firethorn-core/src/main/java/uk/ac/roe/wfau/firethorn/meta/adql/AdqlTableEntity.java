@@ -133,21 +133,53 @@ public class AdqlTableEntity
     public static class AliasFactory
     implements AdqlTable.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "ADQL_" ;
-        
+        private static final String PREFIX = "JDBC_";
+
         @Override
-        public String alias(final AdqlTable table)
+        public String alias(final AdqlTable column)
             {
             return PREFIX.concat(
-                table.ident().toString()
+                column.ident().toString()
                 );
             }
-        }
 
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public AdqlTable resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link AdqlTable.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlTable.IdentFactory idents ;
+
+        /**
+         * Our {@link AdqlTable.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlTable.EntityFactory entities;
+
+        }
+    
     /**
      * {@link AdqlTable.EntityFactory} implementation.
      *

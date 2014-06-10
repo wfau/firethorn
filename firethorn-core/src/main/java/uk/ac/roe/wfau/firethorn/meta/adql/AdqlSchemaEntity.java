@@ -501,11 +501,6 @@ implements AdqlSchema
                     return factories().adql().tables().select(
                         AdqlSchemaEntity.this
                         );
-                    /*
-                     * HibernateCollections
-                    return children.values();
-                     *
-                     */
                     }
                 }
 

@@ -85,6 +85,15 @@ extends BaseColumn<AdqlColumn>
         }
 
     /**
+     * {@link BaseColumn.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver
+    extends BaseColumn.EntityResolver<AdqlTable, AdqlColumn>
+        {
+        }
+
+    /**
      * {@link BaseColumn.EntityFactory} interface.
      *
      */

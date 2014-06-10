@@ -203,13 +203,51 @@ implements JdbcTable
     public static class AliasFactory
     implements JdbcTable.AliasFactory
         {
+        private static final String PREFIX = "JDBC_";
+
         @Override
-        public String alias(final JdbcTable table)
+        public String alias(final JdbcTable column)
             {
-            return "JDBC_".concat(
-                table.ident().toString()
+            return PREFIX.concat(
+                column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+
+        @Override
+        public JdbcTable resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link JdbcTable.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcTable.IdentFactory idents ;
+
+        /**
+         * Our {@link JdbcTable.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcTable.EntityFactory entities;
+        
         }
 
     /**

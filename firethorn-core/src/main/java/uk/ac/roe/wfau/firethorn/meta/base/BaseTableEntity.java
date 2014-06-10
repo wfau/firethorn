@@ -68,14 +68,17 @@ implements BaseTable<TableType, ColumnType>
     protected static final String DB_ADQL_STATUS_COL = "adqlstatus" ;
 
     /**
-     * {@link BaseTable.Resolver} implementation.
+     * {@link BaseTable.EntityResolver} implementation.
      *
      */
     @Repository
-    public static class Resolver<TableType extends BaseTable<TableType, ?>>
+    public static abstract class Resolver<TableType extends BaseTable<TableType, ?>>
     extends AbstractEntityFactory<TableType>
-    implements BaseTable.Resolver<TableType>
+    implements BaseTable.EntityResolver<TableType>
         {
+/*
+ * Do we ever have proxies that aren't Adql ?
+ * 
         @Override
         public Class<?> etype()
             {
@@ -134,7 +137,7 @@ implements BaseTable<TableType, ColumnType>
         // TODO Change this to use a regex to match the alias.
         protected static final String PREFIX = "BASE_" ;
 
-        // TODO Move the parsing to the AliasFactory. 
+        // TODO Move the parsing to the AliasFactory.   
         @Override
         public TableType resolve(final String alias)
         throws EntityNotFoundException
@@ -147,6 +150,7 @@ implements BaseTable<TableType, ColumnType>
                     )
                 );
             }
+*/
         }
 
     /**

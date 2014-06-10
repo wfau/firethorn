@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.entity ;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -54,6 +55,20 @@ public interface Entity
          *
          */
         public String alias(final EntityType entity);
+
+        /**
+         * Check if an alias matches our syntax.
+         *
+         */
+        public boolean matches(final String alias);
+        
+        /**
+         * Resolve an alias.
+         *
+         */
+        public EntityType resolve(final String alias)
+        throws EntityNotFoundException;
+        
         }
 
     /**

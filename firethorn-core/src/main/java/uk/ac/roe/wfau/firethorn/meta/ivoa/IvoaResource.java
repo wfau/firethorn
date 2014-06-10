@@ -59,6 +59,15 @@ extends BaseResource<IvoaSchema>
         }
 
     /**
+     * {@link BaseResource.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver
+    extends BaseResource.EntityResolver<IvoaResource>
+        {
+        }
+    
+    /**
      * {@link BaseResource.EntityFactory} interface.
      *
      */

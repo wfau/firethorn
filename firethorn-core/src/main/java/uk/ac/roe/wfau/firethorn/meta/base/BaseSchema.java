@@ -59,13 +59,12 @@ extends BaseComponent
         }
 
     /**
-     * Schema resolver interface.
+     * {@link Entity.EntityResolver} interface.
      *
      */
-    public static interface Resolver<SchemaType extends BaseSchema<?,?>>
+    public static interface EntityResolver<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
     extends Entity.EntityFactory<SchemaType>
         {
-
         }
 
     /**

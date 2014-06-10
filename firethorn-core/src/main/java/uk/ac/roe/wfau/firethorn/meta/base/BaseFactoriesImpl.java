@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 public class BaseFactoriesImpl
     implements BaseFactories
     {
+    /*
     @Autowired
     protected BaseTable.Resolver tables;
     @Override
@@ -35,7 +36,9 @@ public class BaseFactoriesImpl
         {
         return this.tables;
         }
+    */
 
+    /*
     @Autowired
     protected BaseSchema.Resolver schema;
     @Override
@@ -43,4 +46,5 @@ public class BaseFactoriesImpl
         {
         return this.schema;
         }
+    */
     }

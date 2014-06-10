@@ -105,6 +105,15 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         }
 
     /**
+     * {@link BaseSchema.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver
+    extends BaseSchema.EntityResolver<JdbcResource, JdbcSchema>
+        {
+        }
+    
+    /**
      * {@link BaseSchema.EntityFactory} interface.
      *
      */

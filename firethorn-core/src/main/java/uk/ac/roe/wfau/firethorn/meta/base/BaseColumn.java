@@ -76,6 +76,15 @@ extends BaseComponent
     extends Entity.LinkFactory<ColumnType>
         {
         }
+
+    /**
+     * {@link Entity.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.EntityFactory<ColumnType>
+        {
+        }
     
     /**
      * {@link Entity.EntityFactory} interface.

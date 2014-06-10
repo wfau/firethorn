@@ -81,6 +81,15 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
 
     /**
+     * {@link BaseTable.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver
+    extends BaseTable.EntityResolver<IvoaSchema, IvoaTable>
+        {
+        }
+    
+    /**
      * {@link BaseTable.EntityFactory} interface.
      *
      */

@@ -121,13 +121,51 @@ public class AdqlColumnEntity
     public static class AliasFactory
     implements AdqlColumn.AliasFactory
         {
+        private static final String PREFIX = "ADQL_";
+
         @Override
         public String alias(final AdqlColumn column)
             {
-            return "ADQL_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public AdqlColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link AdqlColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link AdqlColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlColumn.EntityFactory entities;
+        
         }
 
     /**

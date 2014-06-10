@@ -143,11 +143,7 @@ public class JdbcColumnEntity
     public static class AliasFactory
     implements JdbcColumn.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "IVOA_" ;
+        private static final String PREFIX = "JDBC_";
 
         @Override
         public String alias(final JdbcColumn column)
@@ -156,6 +152,42 @@ public class JdbcColumnEntity
                 column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public JdbcColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link JdbcColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link JdbcColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcColumn.EntityFactory entities;
+        
         }
 
     /**

@@ -70,19 +70,12 @@ extends BaseComponent
         }
 
     /**
-     * Table resolver interface.
+     * {@link Entity.EntityResolver} interface.
      *
      */
-    public static interface Resolver<TableType extends BaseTable<TableType,?>>
+    public static interface EntityResolver<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
     extends Entity.EntityFactory<TableType>
         {
-        /**
-         * Resolve an alias into a table.
-         *
-         */
-        public TableType resolve(final String alias)
-        throws EntityNotFoundException;
-
         }
 
     /**

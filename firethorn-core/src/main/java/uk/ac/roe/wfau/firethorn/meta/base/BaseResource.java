@@ -55,7 +55,16 @@ extends BaseComponent
     extends Entity.LinkFactory<ResourceType>
         {
         }
-    
+
+    /**
+     * {@link Entity.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver<ResourceType extends BaseResource<?>>
+    extends Entity.EntityFactory<ResourceType>
+        {
+        }
+
     /**
      * {@link Entity.EntityFactory} interface.
      *

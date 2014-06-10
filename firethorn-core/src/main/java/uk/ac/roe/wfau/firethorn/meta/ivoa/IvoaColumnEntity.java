@@ -135,18 +135,14 @@ public class IvoaColumnEntity
         }
 
     /**
-     * {@link Entity.AliasFactory} implementation.
+     * {@link IvoaColumn.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements IvoaColumn.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "IVOA_" ;
+        private static final String PREFIX = "IVOA_";
 
         @Override
         public String alias(final IvoaColumn column)
@@ -155,8 +151,44 @@ public class IvoaColumnEntity
                 column.ident().toString()
                 );
             }
-        }
 
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public IvoaColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link IvoaColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link IvoaColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaColumn.EntityFactory entities;
+        
+        }
+    
     /**
      * {@link Entity.EntityFactory} implementation.
      *

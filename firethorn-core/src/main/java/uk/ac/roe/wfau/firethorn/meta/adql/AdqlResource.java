@@ -58,6 +58,15 @@ extends BaseResource<AdqlSchema>
         }
 
     /**
+     * {@link BaseResource.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver
+    extends BaseResource.EntityResolver<AdqlResource>
+        {
+        }
+
+    /**
      * {@link BaseResource.EntityFactory} interface.
      *
      */

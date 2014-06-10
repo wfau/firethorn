@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
@@ -116,26 +117,58 @@ public class IvoaTableEntity
         }
     
     /**
-     * {@link Entity.AliasFactory} implementation.
+     * {@link IvoaTable.AliasFactory} implementation.
      *
      */
-    @Repository
+    @Component
     public static class AliasFactory
     implements IvoaTable.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "IVOA_" ;
+        private static final String PREFIX = "IVOA_";
 
         @Override
-        public String alias(final IvoaTable table)
+        public String alias(final IvoaTable column)
             {
             return PREFIX.concat(
-                table.ident().toString()
+                column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public IvoaTable resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link IvoaTable.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaTable.IdentFactory idents ;
+
+        /**
+         * Our {@link IvoaTable.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaTable.EntityFactory entities;
+        
         }
 
     /**

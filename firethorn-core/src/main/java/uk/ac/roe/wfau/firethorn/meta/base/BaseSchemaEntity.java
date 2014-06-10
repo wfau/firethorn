@@ -45,9 +45,8 @@ implements BaseSchema<SchemaType, TableType>
     {
 
     /**
-     * Schema resolver implementation.
+     * {@link BaseSchema.Resolver} implementation.
      *
-     */
     @Repository
     public static class Resolver<SchemaType extends BaseSchema<SchemaType, ?>>
     extends AbstractEntityFactory<SchemaType>
@@ -75,6 +74,7 @@ implements BaseSchema<SchemaType, TableType>
             return this.links;
             }
         }
+     */
 
     /**
      * Protected constructor.

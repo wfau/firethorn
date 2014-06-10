@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2014 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,25 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.base;
+package uk.ac.roe.wfau.firethorn.meta.ogsa;
+
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- * Our JDBC component factories
+ *
  *
  */
-public interface BaseFactories
+public interface OgsaTableResolver
     {
-
     /**
-     * Our table resolver.
-     *
-    public BaseTable.Resolver tables();
+     * Resolve a table based on its alias.
+     * @throws EntityNotFoundException 
+     * 
      */
-
-    /**
-     * Our schema resolver.
-     *
-    public BaseSchema.Resolver schema();
-     */
-
+    public BaseTable<?,?> resolve(String alias) throws EntityNotFoundException;
+    
     }
