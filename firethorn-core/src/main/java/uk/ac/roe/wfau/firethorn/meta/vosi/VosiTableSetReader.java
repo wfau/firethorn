@@ -450,6 +450,7 @@ public class VosiTableSetReader
                 {
                 tablereader.inport(
                     events,
+                    schema,
                     tables
                     );
                 }
@@ -585,14 +586,14 @@ public class VosiTableSetReader
          * Read data from an {@link XMLEventReader} and update an {@link IvoaTable.Builder}. 
          *
          */
-        public void inport(final XMLEventReader events, final IvoaTable.Builder tables)
+        public void inport(final XMLEventReader events, final IvoaSchema schema, final IvoaTable.Builder tables)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             this.start(
                 events
                 );
 
-            final String name  = simplify(tables.schema().name(), namereader.read(events)); 
+            final String name  = simplify(schema.name(), namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
