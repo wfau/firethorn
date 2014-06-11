@@ -19,7 +19,10 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
@@ -45,6 +48,11 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
 extends BaseComponentEntity<SchemaType>
 implements BaseSchema<SchemaType, TableType>
     {
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
 
     /**
      * {@link BaseSchema.Resolver} implementation.
@@ -114,6 +122,27 @@ implements BaseSchema<SchemaType, TableType>
             );
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UTYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlutype ;
+    protected String adqlutype()
+        {
+        return this.adqlutype ;
+        }
+    protected void adqlutype(final String value)
+        {
+        this.adqlutype = emptystr(
+            value
+            );
+        }
+    
     @Override
     public StringBuilder namebuilder()
         {
@@ -149,4 +178,6 @@ implements BaseSchema<SchemaType, TableType>
                 }
             };
         }
+
+    
     }

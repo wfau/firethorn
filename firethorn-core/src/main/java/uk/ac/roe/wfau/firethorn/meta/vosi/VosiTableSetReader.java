@@ -50,92 +50,296 @@ public class VosiTableSetReader
     extends XMLReaderImpl
     implements XMLReader
     {
-    public static final String NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
 
-    public VosiTableSetReader()
-        {
-        super(
-            new QName(
-                NAMESPACE_URI,
-                "tableset"
-                )
-            );
-        }
+    /**
+     * The VODataService namespace URI, [{@value}].
+     * 
+     */
+    protected static final String NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
 
-    private static final VosiSchemaReader schemareader = new VosiSchemaReader();  
-    
-    public void inport(final IvoaResource resource, final Reader reader)
+    /**
+     * Read data from a {@link Reader} to update an {@link IvoaResource}. 
+     *
+     */
+    public void inport(final Reader reader, final IvoaResource resource)
     throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException
         {
         this.inport(
-            resource,
             wrap(
                 reader
-                )
+                ),
+            resource
             );
         }
 
-    public void inport(final IvoaResource resource, final XMLEventReader events)
+    /**
+     * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+     *
+     */
+    public void inport(final XMLEventReader events, final IvoaResource resource)
     throws XMLParserException, XMLReaderException, DuplicateEntityException
         {
-        this.start(
-            events
-            );
-
-        IvoaSchema.Builder schemas = resource.schemas().builder(); 
-
-        while (schemareader.match(events))
+        if (left.match(events))
             {
-            schemareader.inport(
-                resource,
-                schemas,
+            left.inport(
+                events,
+                resource
+                );
+            }
+        if (right.match(events))
+            {
+            right.inport(
+                events,
+                resource
+                );
+            }
+        else {
+            throw new XMLParserException(
+                "Expected [" + TableSetReader.ELEMENT_NAME + "] element"
+                );
+            }
+        }
+
+    /**
+     * A {@link TableSetReader} with no namespace URI.
+     * 
+     */
+    private TableSetReader left  = new TableSetReader(
+        null
+        );
+
+    /**
+     * A {@link TableSetReader} with the default namespace.
+     * 
+     */
+    private TableSetReader right = new TableSetReader(
+        NAMESPACE_URI
+        );
+
+    /**
+     * Remove any prefixes from a name.
+     *
+     */
+    private String clean(final String name)
+        {
+        if (name.contains("."))
+            {
+            return name.substring(
+                name.lastIndexOf('.')
+                );
+            }
+        else {
+            return name ;
+            }
+        }
+
+    /**
+     * An {@link XMLReader} for [{@value TableSetReader#ELEMENT_NAME}] elements.
+     *
+     */
+    public class TableSetReader
+        extends XMLReaderImpl
+        implements XMLReader
+        {
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "tableset" ;
+
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public TableSetReader()
+            {
+            this(
+                NAMESPACE_URI,
+                ELEMENT_NAME
+                );
+            }
+        
+        /**
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
+         *
+         */
+        public TableSetReader(final String namespace)
+            {
+            this(
+                namespace,
+                ELEMENT_NAME
+                );
+            }
+        
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public TableSetReader(final String namespace, final String name)
+            {
+            super(
+                new QName(
+                    namespace,
+                    name
+                    )
+                );
+            this.schemareader = new SchemaReader(
+                namespace
+                );
+            }
+
+        /**
+         * Our inner {@link SchemaReader}.
+         * 
+         */
+        private SchemaReader schemareader ;  
+
+        /**
+         * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+         *
+         */
+        public void inport(final XMLEventReader events, final IvoaResource resource)
+        throws XMLParserException, XMLReaderException, DuplicateEntityException
+            {
+            this.start(
+                events
+                );
+    
+            IvoaSchema.Builder schemas = resource.schemas().builder(); 
+    
+            while (schemareader.match(events))
+                {
+                schemareader.inport(
+                    events,
+                    schemas
+                    );
+                }
+            
+            schemas.finish();
+    
+            this.done(
                 events
                 );
             }
-        
-        schemas.finish();
-
-        this.done(
-            events
-            );
         }
 
-    public static class VosiSchemaReader
+    /**
+     * An {@link XMLReader} for [{@value SchemaReader#ELEMENT_NAME}] elements.
+     *
+     *
+     */
+    public class SchemaReader
     extends XMLReaderImpl
     implements XMLReader
         {
-        public VosiSchemaReader()
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "schema" ;
+        
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public SchemaReader()
             {
-            super(
+            this(
                 NAMESPACE_URI,
-                "schema"
+                ELEMENT_NAME
+                );
+            }
+
+        /**
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
+         *
+         */
+        public SchemaReader(final String namespace)
+            {
+            this(
+                namespace,
+                ELEMENT_NAME
                 );
             }
         
-        private static final XMLStringValueReader namereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "name",
-            true
-            );
-        private static final XMLStringValueReader titlereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "title",
-            false
-            );
-        private static final XMLStringValueReader textreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "description",
-            false
-            );
-        private static final XMLStringValueReader utypereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "utype",
-            false
-            );
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public SchemaReader(final String namespace, final String name)
+            {
+            super(
+                new QName(
+                    namespace,
+                    name
+                    )
+                );
+            namereader = new XMLStringValueReader(
+                namespace,
+                "name",
+                true
+                );
+            titlereader = new XMLStringValueReader(
+                namespace,
+                "title",
+                false
+                );
+            textreader = new XMLStringValueReader(
+                namespace,
+                "description",
+                false
+                );
+            utypereader = new XMLStringValueReader(
+                namespace,
+                "utype",
+                false
+                );
+            tablereader = new TableReader(
+                namespace
+                );
+            }
 
-        private static final VosiTableReader tablereader = new VosiTableReader();
+        /**
+         * An {@link XMLStringValueReader} to read the schema name.
+         * 
+         */
+        private final XMLStringValueReader namereader ;
 
-        public void inport(final IvoaResource resource, final IvoaSchema.Builder schemas, final XMLEventReader events)
+        /**
+         * An {@link XMLStringValueReader} to read the schema title.
+         * 
+         */
+        private final XMLStringValueReader titlereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the schema description.
+         * 
+         */
+        private final XMLStringValueReader textreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the schema uType.
+         * 
+         */
+        private final XMLStringValueReader utypereader ;
+
+        /**
+         * An {@link TableReader} to read the schema tables.
+         * 
+         */
+        private final TableReader tablereader ;
+
+        /**
+         * Read data from an {@link XMLEventReader} and update an {@link IvoaSchema.Builder}. 
+         *
+         */
+        public void inport(final XMLEventReader events, final IvoaSchema.Builder schemas)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             this.start(
@@ -156,9 +360,9 @@ public class VosiTableSetReader
                 new IvoaSchema.Metadata()
                     {
                     @Override
-                    public Adql adql()
+                    public Ivoa ivoa()
                         {
-                        return new Adql()
+                        return new Ivoa()
                             {
                             @Override
                             public String name()
@@ -167,14 +371,26 @@ public class VosiTableSetReader
                                 }
 
                             @Override
+                            public String title()
+                                {
+                                return title;
+                                }
+
+                            @Override
                             public String text()
                                 {
                                 return text;
                                 }
+
+                            @Override
+                            public String utype()
+                                {
+                                return utype;
+                                }
                             };
                         }
                     @Override
-                    public Ivoa ivoa()
+                    public Adql adql()
                         {
                         return null ;
                         }
@@ -185,9 +401,8 @@ public class VosiTableSetReader
             while (tablereader.match(events))
                 {
                 tablereader.inport(
-                    schema,
-                    tables,
-                    events
+                    events,
+                    tables
                     );
                 }
 
@@ -199,70 +414,137 @@ public class VosiTableSetReader
             }
         }
     
-    public static class VosiTableReader
+    /**
+     * An {@link XMLReader} for [{@value TableReader#ELEMENT_NAME}] elements.
+     *
+     *
+     */
+    public class TableReader
     extends XMLReaderImpl
     implements XMLReader
         {
-        public VosiTableReader()
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "table" ;
+
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public TableReader()
             {
-            super(
+            this(
                 NAMESPACE_URI,
-                "table"
+                ELEMENT_NAME
                 );
             }
 
-        private static final XMLStringValueReader namereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "name",
-            true
-            );
-        private static final XMLStringValueReader titlereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "title",
-            false
-            );
-        private static final XMLStringValueReader textreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "description",
-            false
-            );
-        private static final XMLStringValueReader utypereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "utype",
-            false
-            );
-
-        private static final VosiColumnReader columnreader = new VosiColumnReader();
-        private static final VosiForeignKeyReader keys = new VosiForeignKeyReader();
-        
         /**
-         * Remove the schema prefix from the name.
-         * IVOA spec says _may_ so some do some don't.
-         * @todo Better pattern matching ?
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
          *
          */
-        private String clean(final IvoaSchema schema, final String name)
+        public TableReader(final String namespace)
             {
-            String prefix =  schema.name() + "." ;
-            if (name.startsWith(prefix))
-                {
-                return name.substring(
-                    prefix.length()
-                    );
-                }
-            else {
-                return name ;
-                }
+            this(
+                namespace,
+                ELEMENT_NAME
+                );
             }
 
-        public void inport(final IvoaSchema schema, final IvoaTable.Builder tables, final XMLEventReader events)
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public TableReader(final String namespace, String name)
+            {
+            super(
+                new QName(
+                    namespace,
+                    name
+                    )
+                );
+            namereader = new XMLStringValueReader(
+                namespace,
+                "name",
+                true
+                );
+            titlereader = new XMLStringValueReader(
+                namespace,
+                "title",
+                false
+                );
+            textreader = new XMLStringValueReader(
+                namespace,
+                "description",
+                false
+                );
+            utypereader = new XMLStringValueReader(
+                namespace,
+                "utype",
+                false
+                );
+            columnreader = new ColumnReader(
+                namespace
+                );
+            keyreader = new ForeignKeyReader(
+                namespace
+                );
+            }
+        
+
+        /**
+         * An {@link XMLStringValueReader} to read the table name.
+         * 
+         */
+        private final XMLStringValueReader namereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the table title.
+         * 
+         */
+        private final XMLStringValueReader titlereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the table description.
+         * 
+         */
+        private final XMLStringValueReader textreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the table uType.
+         * 
+         */
+        private final XMLStringValueReader utypereader ;
+
+        /**
+         * An {@link XMLReader} to read the table columns.
+         * 
+         */
+        private final ColumnReader columnreader ;
+
+        /**
+         * An {@link XMLReader} to read the table keys.
+         * 
+         */
+        private final ForeignKeyReader keyreader;
+
+        /**
+         * Read data from an {@link XMLEventReader} and update an {@link IvoaTable.Builder}. 
+         *
+         */
+        public void inport(final XMLEventReader events, final IvoaTable.Builder tables)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             this.start(
                 events
                 );
 
-            final String name  = clean(schema, namereader.read(events)); 
+            final String name  = clean(namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
@@ -278,7 +560,12 @@ public class VosiTableSetReader
                     @Override
                     public Adql adql()
                         {
-                        return new Adql()
+                        return null ;
+                        }
+                    @Override
+                    public Ivoa ivoa()
+                        {
+                        return new Ivoa()
                             {
                             @Override
                             public String name()
@@ -286,31 +573,21 @@ public class VosiTableSetReader
                                 return name ;
                                 }
                             @Override
+                            public String title()
+                                {
+                                return title;
+                                }
+                            @Override
                             public String text()
                                 {
                                 return text;
                                 }
                             @Override
-                            public Long count()
+                            public String utype()
                                 {
-                                return null;
-                                }
-                            @Override
-                            public TableStatus status()
-                                {
-                                return null;
-                                }
-                            @Override
-                            public void status(TableStatus value)
-                                {
+                                return utype;
                                 }
                             };
-                        }
-
-                    @Override
-                    public Ivoa ivoa()
-                        {
-                        return null ;
                         }
                     }
                 );
@@ -320,16 +597,16 @@ public class VosiTableSetReader
             while (columnreader.match(events))
                 {
                 columnreader.inport(
-                    columns,
-                    events
+                    events,
+                    columns
                     );
                 }
 
             columns.finish();
 
-            while (keys.match(events))
+            while (keyreader.match(events))
                 {
-                keys.inport(
+                keyreader.inport(
                     events
                     );
                 }
@@ -339,62 +616,155 @@ public class VosiTableSetReader
                 );
             }
         }
-
-    public static class VosiColumnReader
+    
+    /**
+     * An {@link XMLReader} for [{@value ColumnReader#ELEMENT_NAME}] elements.
+     *
+     *
+     */
+    public class ColumnReader
     extends XMLReaderImpl
     implements XMLReader
         {
-        public VosiColumnReader()
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "column" ;
+
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public ColumnReader()
             {
-            super(
+            this(
                 NAMESPACE_URI,
-                "column"
+                ELEMENT_NAME
                 );
             }
 
-        private static final XMLStringValueReader namereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "name",
-            true
-            );
-        private static final XMLStringValueReader titlereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "title",
-            false
-            );
-        private static final XMLStringValueReader textreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "description",
-            false
-            );
-        private static final XMLStringValueReader unitreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "unit",
-            false
-            );
-        private static final XMLStringValueReader ucdreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "ucd",
-            false
-            );
-        private static final XMLStringValueReader utypereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "utype",
-            false
-            );
+        /**
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
+         *
+         */
+        public ColumnReader(final String namespace)
+            {
+            this(
+                namespace,
+                ELEMENT_NAME
+                );
+            }
 
-        private static final XMLStringValueReader dtypereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "dataType",
-            false
-            );
-        private static final XMLStringValueReader flagreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "flag",
-            false
-            );
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public ColumnReader(final String namespace, final String name)
+            {
+            super(
+                namespace,
+                "column"
+                );
+
+            namereader = new XMLStringValueReader(
+                namespace,
+                "name",
+                true
+                );
+            titlereader = new XMLStringValueReader(
+                namespace,
+                "title",
+                false
+                );
+            textreader = new XMLStringValueReader(
+                namespace,
+                "description",
+                false
+                );
+            unitreader = new XMLStringValueReader(
+                namespace,
+                "unit",
+                false
+                );
+            ucdreader = new XMLStringValueReader(
+                namespace,
+                "ucd",
+                false
+                );
+            utypereader = new XMLStringValueReader(
+                namespace,
+                "utype",
+                false
+                );
+            dtypereader = new XMLStringValueReader(
+                namespace,
+                "dataType",
+                false
+                );
+            flagreader = new XMLStringValueReader(
+                namespace,
+                "flag",
+                false
+                );
+            }
+
+        /**
+         * An {@link XMLStringValueReader} to read the column name.
+         * 
+         */
+        private final XMLStringValueReader namereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column title.
+         * 
+         */
+        private final XMLStringValueReader titlereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column description.
+         * 
+         */
+        private final XMLStringValueReader textreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column units.
+         * 
+         */
+        private final XMLStringValueReader unitreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column UCD.
+         * 
+         */
+        private final XMLStringValueReader ucdreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column uType.
+         * 
+         */
+        private final XMLStringValueReader utypereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column dType.
+         * 
+         */
+        private final XMLStringValueReader dtypereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the column flags.
+         * 
+         */
+        private final XMLStringValueReader flagreader ;
         
-        public void inport(final IvoaColumn.Builder columns, final XMLEventReader events)
+        /**
+         * Read data from an {@link XMLEventReader} and update an {@link IvoaColumn.Builder}. 
+         *
+         */
+        public void inport(final XMLEventReader events, final IvoaColumn.Builder columns)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
             StartElement start = this.start(
@@ -408,10 +778,10 @@ public class VosiTableSetReader
                     )
                 );
                 
-            final String name  = namereader.read(events); 
+            final String name  = clean(namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
-            final String units = unitreader.read(events); 
+            final String unit  = unitreader.read(events); 
             final String ucd   = ucdreader.read(events); 
             final String utype = utypereader.read(events); 
             final String dtype = dtypereader.read(events); 
@@ -428,7 +798,7 @@ public class VosiTableSetReader
             log.debug("    std   [{}]", std);
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
-            log.debug("    units [{}]", units);
+            log.debug("    unit  [{}]", unit);
             log.debug("    ucd   [{}]", ucd);
             log.debug("    utype [{}]", utype);
             log.debug("    dtype [{}]", dtype);
@@ -440,85 +810,64 @@ public class VosiTableSetReader
             columns.build(
                 new IvoaColumn.Metadata()
                     {
+                    @Override
                     public Adql adql()
                         {
-                        return new Adql()
+                        return null;
+                        }
+                    @Override
+                    public Ivoa ivoa()
+                        {
+                        return new Ivoa()
                             {
                             @Override
                             public String name()
                                 {
-                                return name ;
+                                return name;
                                 }
+
+                            @Override
+                            public String title()
+                                {
+                                return title;
+                                }
+
                             @Override
                             public String text()
                                 {
-                                return text ;
+                                return text;
                                 }
-                            @Override
-                            public Integer arraysize()
-                                {
-                                return 0;
-                                }
-                            @Override
-                            public void arraysize(Integer size)
-                                {
-                                }
-                            @Override
-                            public Type type()
-                                {
-                                return null;
-                                }
-                            @Override
-                            public void type(Type type)
-                                {
-                                }
-                            @Override
-                            public String units()
-                                {
-                                return units;
-                                }
-                            @Override
-                            public void units(String unit)
-                                {
-                                }
+
                             @Override
                             public String utype()
                                 {
                                 return utype;
                                 }
-                            @Override
-                            public void utype(String utype)
-                                {
-                                }
+
                             @Override
                             public String dtype()
                                 {
                                 return dtype;
                                 }
+
                             @Override
-                            public void dtype(String dtype)
+                            public String unit()
                                 {
+                                return unit;
                                 }
+
                             @Override
-                            public String ucd()
+                            public Integer arraysize()
                                 {
                                 return null;
                                 }
+
                             @Override
-                            public void ucd(String value)
+                            public String ucd()
                                 {
-                                }
-                            @Override
-                            public void ucd(String type, String value)
-                                {
+                                return ucd;
                                 }
                             };
-                        }
-
-                    @Override
-                    public Ivoa ivoa()
-                        {
-                        return null;
                         }
                     }
                 );
@@ -529,41 +878,109 @@ public class VosiTableSetReader
             }
         }
 
-    public static class VosiForeignKeyReader
+    /**
+     * An {@link XMLReader} for [{@value ForeignKeyReader#ELEMENT_NAME}] elements.
+     *
+     *
+     */
+    public static class ForeignKeyReader
     extends XMLReaderImpl
     implements XMLReader
         {
-        public VosiForeignKeyReader()
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "foreignKey" ;
+
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public ForeignKeyReader()
             {
-            super(
+            this(
                 NAMESPACE_URI,
-                "foreignKey"
+                ELEMENT_NAME
                 );
             }
 
-        private static final XMLStringValueReader targetreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "targetTable",
-            true
-            );
+        /**
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
+         *
+         */
+        public ForeignKeyReader(final String namespace)
+            {
+            this(
+                namespace,
+                ELEMENT_NAME
+                );
+            }
 
-        private static final VosiForeignKeyPairReader columnreader = new VosiForeignKeyPairReader();
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public ForeignKeyReader(final String namespace, final String name)
+            {
+            super(
+                new QName(
+                    namespace,
+                    name
+                    )
+                );
+            targetreader = new XMLStringValueReader(
+                NAMESPACE_URI,
+                "targetTable",
+                true
+                );
+            textreader = new XMLStringValueReader(
+                NAMESPACE_URI,
+                "description",
+                false
+                );
+            utypereader = new XMLStringValueReader(
+                NAMESPACE_URI,
+                "utype",
+                false
+                );
+            columnreader = new ForeignPairReader();
+            }
 
-        private static final XMLStringValueReader textreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "description",
-            false
-            );
-        private static final XMLStringValueReader utypereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "utype",
-            false
-            );
-        
+        /**
+         * An {@link XMLStringValueReader} to read the key target.
+         * 
+         */
+        private final XMLStringValueReader targetreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the key description.
+         * 
+         */
+        private final XMLStringValueReader textreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the key uType.
+         * 
+         */
+        private final XMLStringValueReader utypereader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the foreign columns.
+         * 
+         */
+        private final ForeignPairReader columnreader ;
+
+        /**
+         * Read data from an {@link XMLEventReader} and .... 
+         *
+         */
         public void inport(final XMLEventReader events)
         throws XMLParserException, XMLReaderException
             {
-            log.debug("inport(XMLEventReader)");
             this.start(
                 events
                 );
@@ -590,35 +1007,93 @@ public class VosiTableSetReader
             }
         }
 
-    public static class VosiForeignKeyPairReader
+    /**
+     * An {@link XMLReader} for [{@value ForeignPairReader#ELEMENT_NAME}] elements.
+     *
+     *
+     */
+    public static class ForeignPairReader
     extends XMLReaderImpl
     implements XMLReader
         {
+        /**
+         * The standard element name, [{@value}].
+         *
+         */
+        protected static final String ELEMENT_NAME = "fkColumn" ;
 
-        public VosiForeignKeyPairReader()
+
+        /**
+         * Public constructor, using standard element name and namespace.
+         *
+         */
+        public ForeignPairReader()
             {
-            super(
+            this(
                 NAMESPACE_URI,
-                "fkColumn"
+                ELEMENT_NAME
                 );
             }
 
-        private static final XMLStringValueReader localreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "fromColumn",
-            true
-            );
+        /**
+         * Public constructor, using standard element name and a specific namespace.
+         * @param space The XML namespace.
+         *
+         */
+        public ForeignPairReader(final String namespace)
+            {
+            this(
+                namespace,
+                ELEMENT_NAME
+                );
+            }
 
-        private static final XMLStringValueReader remotereader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "targetColumn",
-            true
-            );
+        /**
+         * Public constructor, using specific element name and namespace.
+         * @param space The XML namespace.
+         * @param nam   The XML element name.
+         *
+         */
+        public ForeignPairReader(final String namespace, final String name)
+            {
+            super(
+                new QName(
+                    namespace,
+                    name
+                    )
+                );
+            localreader = new XMLStringValueReader(
+                namespace,
+                "fromColumn",
+                true
+                );
 
+            remotereader = new XMLStringValueReader(
+                namespace,
+                "targetColumn",
+                true
+                );
+            }
+
+        /**
+         * An {@link XMLStringValueReader} to read the local column name.
+         * 
+         */
+        private final XMLStringValueReader localreader ;
+
+        /**
+         * An {@link XMLStringValueReader} to read the remote column name.
+         * 
+         */
+        private final XMLStringValueReader remotereader ;
+
+        /**
+         * Read data from an {@link XMLEventReader} and .... 
+         *
+         */
         public void inport(final XMLEventReader events)
         throws XMLParserException, XMLReaderException
             {
-            log.debug("inport(XMLEventReader, IvoaResource)");
             this.start(
                 events
                 );
@@ -645,7 +1120,9 @@ public class VosiTableSetReader
         {
         return attrib(
             element,
-            new QName(name)
+            new QName(
+                name
+                )
             );
         }
 

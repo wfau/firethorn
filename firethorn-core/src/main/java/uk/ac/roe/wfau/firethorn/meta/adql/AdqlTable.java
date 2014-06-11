@@ -240,6 +240,18 @@ extends BaseTable<AdqlTable, AdqlColumn>
              */
             public void status(final TableStatus value);
 
+            /**
+             * Get the table uType.
+             *
+             */
+            public String utype();
+
+            /**
+             * Set the table uType.
+             *
+             */
+            public void utype(String utype);
+
             }
 
         /**

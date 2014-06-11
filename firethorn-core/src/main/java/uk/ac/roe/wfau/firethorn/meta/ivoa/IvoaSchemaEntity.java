@@ -116,7 +116,7 @@ public class IvoaSchemaEntity
         @Override
         protected String name(IvoaSchema.Metadata meta)
             {
-            return meta.adql().name();
+            return meta.ivoa().name();
             }
 
         @Override
@@ -364,6 +364,29 @@ public class IvoaSchemaEntity
         {
         return new IvoaSchema.Metadata.Ivoa()
             {
+            @Override
+            public String name()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
+            public String title()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return IvoaSchemaEntity.this.text();
+                }
+
+            @Override
+            public String utype()
+                {
+                return IvoaSchemaEntity.this.adqlutype();
+                }
             };
         }
     
@@ -391,12 +414,13 @@ public class IvoaSchemaEntity
         {
         if (meta.ivoa() != null)
             {
-            }
-        if (meta.adql() != null)
-            {
-            if (meta.adql().text() != null)
+            if (meta.ivoa().text() != null)
                 {
-                this.text(meta.adql().text());
+                this.text(meta.ivoa().text());
+                }
+            if (meta.ivoa().utype() != null)
+                {
+                this.adqlutype(meta.ivoa().utype());
                 }
             }
         }

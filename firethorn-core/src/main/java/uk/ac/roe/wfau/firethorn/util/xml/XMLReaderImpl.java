@@ -201,6 +201,4 @@ implements XMLReader
             reader
             );
         }
-
-    
     }

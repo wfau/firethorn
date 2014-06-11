@@ -136,7 +136,7 @@ public class IvoaColumnEntity
         @Override
         protected String name(IvoaColumn.Metadata meta)
             {
-            return meta.adql().name();
+            return meta.ivoa().name();
             }
 
         @Override
@@ -470,6 +470,53 @@ public class IvoaColumnEntity
         {
         return new IvoaColumn.Metadata.Ivoa()
             {
+            @Override
+            public String name()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
+            public String title()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return IvoaColumnEntity.this.text();
+                }
+
+            @Override
+            public String utype()
+                {
+                return IvoaColumnEntity.this.adqlutype();
+                }
+
+            @Override
+            public String dtype()
+                {
+                return IvoaColumnEntity.this.adqldtype();
+                }
+
+            @Override
+            public String unit()
+                {
+                return IvoaColumnEntity.this.adqlunit();
+                }
+
+            @Override
+            public Integer arraysize()
+                {
+                return IvoaColumnEntity.this.adqlsize();
+                }
+
+            @Override
+            public String ucd()
+                {
+                return IvoaColumnEntity.this.adqlucd();
+                }
             };
         }
     
@@ -496,33 +543,29 @@ public class IvoaColumnEntity
         {
         if (meta.ivoa() != null)
             {
-            
-            }
-        if (meta.adql() != null)
-            {
-            if (meta.adql().text() != null)
+            if (meta.ivoa().text() != null)
                 {
-                this.text(meta.adql().text());
+                this.text(meta.ivoa().text());
                 }
-            if (meta.adql().ucd() != null)
+            if (meta.ivoa().ucd() != null)
                 {
-                this.adqlucd(meta.adql().ucd());
+                this.adqlucd(meta.ivoa().ucd());
                 }
-            if (meta.adql().units() != null)
+            if (meta.ivoa().unit() != null)
                 {
-                this.adqlunits(meta.adql().units());
+                this.adqlunit(meta.ivoa().unit());
                 }
-            if (meta.adql().utype() != null)
+            if (meta.ivoa().utype() != null)
                 {
-                this.adqlutype(meta.adql().utype());
+                this.adqlutype(meta.ivoa().utype());
                 }
-            if (meta.adql().dtype() != null)
+            if (meta.ivoa().dtype() != null)
                 {
-                this.adqldtype(meta.adql().dtype());
+                this.adqldtype(meta.ivoa().dtype());
                 }
-            if (meta.adql().arraysize() != null)
+            if (meta.ivoa().arraysize() != null)
                 {
-                this.adqlsize(meta.adql().arraysize());
+                this.adqlsize(meta.ivoa().arraysize());
                 }
             }
         }

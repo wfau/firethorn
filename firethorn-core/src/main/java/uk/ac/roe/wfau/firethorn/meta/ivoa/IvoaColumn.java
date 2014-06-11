@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
@@ -148,7 +149,56 @@ extends BaseColumn<IvoaColumn>
          */
         public interface Ivoa
             {
+            /**
+             * The column name.
+             *
+             */
+            public String name();
+
+            /**
+             * The column title.
+             * 
+             */
+            public String title();
+
+            /**
+             * The column description.
+             * 
+             */
+            public String text();
+
+            /**
+             * The column uType.
+             * 
+             */
+            public String utype();
+
+            /**
+             * The column dType.
+             * 
+             */
+            public String dtype();
+
+            /**
+             * The column units.
+             * 
+             */
+            public String unit();
+
+            /**
+             * The column arraysize.
+             * 
+             */
+            public Integer arraysize();
+
+            /**
+             * The column UCD.
+             * 
+             */
+            public String ucd();
+
             }
+
         /**
          * The IVOA metadata.
          * 

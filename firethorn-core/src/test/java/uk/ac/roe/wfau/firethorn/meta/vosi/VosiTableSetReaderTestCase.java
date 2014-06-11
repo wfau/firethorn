@@ -44,10 +44,10 @@ public class VosiTableSetReaderTestCase
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
         reader.inport(
-            resource,
             new FileReader(
                 "src/test/data/vosi/gavo-tableset.xml"
-                )
+                ),
+            resource
             );
         }
 
@@ -62,10 +62,10 @@ public class VosiTableSetReaderTestCase
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
         reader.inport(
-            resource,
             new FileReader(
                 "src/test/data/vosi/vizier-tableset.xml"
-                )
+                ),
+            resource
             );
         }
     }

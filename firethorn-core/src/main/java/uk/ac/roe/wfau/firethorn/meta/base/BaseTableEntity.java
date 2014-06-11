@@ -78,6 +78,12 @@ implements BaseTable<TableType, ColumnType>
      *
      */
     protected static final String DB_ADQL_COUNT_COL = "adqlcount" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
     
     /**
      * {@link BaseTable.EntityResolver} implementation.
@@ -296,6 +302,27 @@ implements BaseTable<TableType, ColumnType>
         {
         this.adqlcount = count;
         }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UTYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlutype ;
+    protected String adqlutype()
+        {
+        return this.adqlutype ;
+        }
+    protected void adqlutype(final String value)
+        {
+        this.adqlutype = emptystr(
+            value
+            );
+        }
     
     /**
      * Generate the {@link AdqlTable.Metadata.Adql adql} metadata.
@@ -333,6 +360,19 @@ implements BaseTable<TableType, ColumnType>
                 {
                 adqlstatus(
                     status
+                    );
+                }
+
+            @Override
+            public String utype()
+                {
+                return adqlutype();
+                }
+            @Override
+            public void utype(final String utype)
+                {
+                adqlutype(
+                    utype
                     );
                 }
             };

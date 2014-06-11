@@ -450,11 +450,11 @@ public class AdqlColumnEntity
             }
         }
 
-    protected String adqlunits()
+    protected String adqlunit()
         {
-        if (this.adqlunits != null)
+        if (this.adqlunit != null)
             {
-            return this.adqlunits ;
+            return this.adqlunit ;
             }
         else {
             return base().meta().adql().units();

@@ -53,31 +53,37 @@ extends BaseComponentEntity<ColumnType>
      *
      */
     protected static final String DB_ADQL_TYPE_COL  = "adqltype"  ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_SIZE_COL  = "adqlsize"  ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_DTYPE_COL = "adqldtype" ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
+    protected static final String DB_ADQL_UNIT_COL = "adqlunit" ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_UCD_TYPE_COL  = "adqlucdtype"  ;
+
     /**
      * Hibernate column mapping, {@value}.
      *
@@ -180,19 +186,19 @@ extends BaseComponentEntity<ColumnType>
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_ADQL_UNITS_COL,
+        name = DB_ADQL_UNIT_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    protected String adqlunits ;
-    protected String adqlunits()
+    protected String adqlunit ;
+    protected String adqlunit()
         {
-        return this.adqlunits ;
+        return this.adqlunit ;
         }
-    protected void adqlunits(final String value)
+    protected void adqlunit(final String value)
         {
-        this.adqlunits = emptystr(
+        this.adqlunit = emptystr(
             value
             );
         }
@@ -309,12 +315,12 @@ extends BaseComponentEntity<ColumnType>
             @Override
             public String units()
                 {
-                return adqlunits();
+                return adqlunit();
                 }
             @Override
             public void units(final String units)
                 {
-                adqlunits(
+                adqlunit(
                     units
                     );
                 }

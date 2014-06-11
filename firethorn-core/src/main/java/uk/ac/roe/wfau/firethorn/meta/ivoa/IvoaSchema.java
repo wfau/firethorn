@@ -125,7 +125,7 @@ extends BaseSchema<IvoaSchema, IvoaTable>
 
     /**
      * The schema metadata.
-     * TODO Does this really extend the AdqlSchema.Metadata?
+     * TODO Does this need to extend the AdqlSchema.Metadata?
      *
      */
     public interface Metadata
@@ -137,6 +137,29 @@ extends BaseSchema<IvoaSchema, IvoaTable>
          */
         public interface Ivoa
             {
+            /**
+             * The schema name.
+             *
+             */
+            public String name();
+
+            /**
+             * The schema title.
+             * 
+             */
+            public String title();
+
+            /**
+             * The schema description.
+             * 
+             */
+            public String text();
+
+            /**
+             * The schema uType.
+             * 
+             */
+            public String utype();
             }
 
         /**

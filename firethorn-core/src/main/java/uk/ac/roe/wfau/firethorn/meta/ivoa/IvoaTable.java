@@ -164,8 +164,8 @@ extends BaseTable<IvoaTable, IvoaColumn>
 
     /**
      * The table metadata.
-     * TODO Does this really extend the AdqlTable.Metadata ?
-     * TODO Does the AdqlTable.TableStatus make sense for this ?
+     * TODO Does this need to extend the AdqlTable.Metadata ?
+     * TODO Does AdqlTable.TableStatus make sense for this ?
      *
      */
     public interface Metadata
@@ -177,6 +177,30 @@ extends BaseTable<IvoaTable, IvoaColumn>
          */
         public interface Ivoa
             {
+            /**
+             * The table name.
+             *
+             */
+            public String name();
+
+            /**
+             * The table title.
+             * 
+             */
+            public String title();
+
+            /**
+             * The table description.
+             * 
+             */
+            public String text();
+
+            /**
+             * The table uType.
+             * 
+             */
+            public String utype();
+            
             }
         
         /**
