@@ -266,19 +266,6 @@ extends BaseComponentEntity<ColumnType>
             );
         }
 
-    @Override
-    public AdqlColumn.Metadata meta()
-        {
-        return new AdqlColumn.Metadata()
-            {
-            @Override
-            public AdqlColumn.Metadata.Adql adql()
-                {
-                return adqlmeta();
-                }
-            };
-        }
-
     /**
      * Generate the {@link AdqlColumn.Metadata.Adql adql} metadata.
      *
@@ -379,6 +366,24 @@ extends BaseComponentEntity<ColumnType>
             public String text()
                 {
                 return BaseColumnEntity.this.text();
+                }
+            };
+        }
+
+    @Override
+    public AdqlColumn.Metadata meta()
+        {
+        return new AdqlColumn.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return BaseColumnEntity.this.name();
+                }
+            @Override
+            public AdqlColumn.Metadata.Adql adql()
+                {
+                return adqlmeta();
                 }
             };
         }

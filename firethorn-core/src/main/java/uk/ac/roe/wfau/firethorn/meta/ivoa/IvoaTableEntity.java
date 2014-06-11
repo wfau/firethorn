@@ -121,7 +121,7 @@ public class IvoaTableEntity
         @Override
         protected String name(IvoaTable.Metadata meta)
             {
-            return meta.ivoa().name();
+            return meta.name();
             }
 
         @Override
@@ -345,7 +345,7 @@ public class IvoaTableEntity
         {
         super(
             schema, 
-            meta.adql().name()
+            meta.name()
             );
         this.schema = schema;
         this.update(
@@ -510,6 +510,12 @@ public class IvoaTableEntity
         return new IvoaTable.Metadata()
             {
             @Override
+            public String name()
+                {
+                return IvoaTableEntity.this.name();
+                }
+
+            @Override
             public Adql adql()
                 {
                 return adqlmeta();
@@ -528,14 +534,22 @@ public class IvoaTableEntity
         {
         if (meta.ivoa() != null)
             {
-            if (meta.ivoa().text() != null)
-                {
-                this.text(meta.adql().text());
-                }
-            if (meta.ivoa().utype() != null)
-                {
-                this.adqlutype(meta.adql().utype());
-                }
+            this.update(
+                meta.ivoa()
+                );
+            }
+        }
+
+    @Override
+    public  void update(final IvoaTable.Metadata.Ivoa ivoa)
+        {
+        if (ivoa.text() != null)
+            {
+            this.text(ivoa.text());
+            }
+        if (ivoa.utype() != null)
+            {
+            this.adqlutype(ivoa.utype());
             }
         }
     }

@@ -51,7 +51,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test002()
     throws Exception
         {

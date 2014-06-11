@@ -165,6 +165,12 @@ extends BaseComponent
      */
     public interface Metadata
         {
+        /**
+         * The schema name.
+         * 
+         */
+        public String name();
+
         }
 
     /**

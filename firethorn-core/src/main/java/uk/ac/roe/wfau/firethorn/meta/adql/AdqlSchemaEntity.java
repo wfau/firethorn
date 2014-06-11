@@ -733,17 +733,4 @@ implements AdqlSchema
         {
         // TODO Auto-generated method stub
         }
-
-    @Override
-    public AdqlSchema.Metadata meta()
-        {
-        return new AdqlSchema.Metadata()
-            {
-            @Override
-            public Adql adql()
-                {
-                return adqlmeta();
-                }
-            };
-        }
     }

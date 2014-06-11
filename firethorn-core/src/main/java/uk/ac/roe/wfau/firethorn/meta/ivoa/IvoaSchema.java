@@ -178,4 +178,10 @@ extends BaseSchema<IvoaSchema, IvoaTable>
      */
     public void update(final IvoaSchema.Metadata meta);
 
+    /**
+     * Update the schema properties.
+     * 
+     */
+    public void update(final IvoaSchema.Metadata.Ivoa ivoa);
+
     }

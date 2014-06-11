@@ -218,5 +218,11 @@ extends BaseTable<IvoaTable, IvoaColumn>
      * 
      */
     public void update(final IvoaTable.Metadata meta);
+
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final IvoaTable.Metadata.Ivoa ivoa);
     
     }

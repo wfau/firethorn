@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.vosi;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -86,7 +88,7 @@ public class VosiTableSetReader
                 resource
                 );
             }
-        if (right.match(events))
+        else if (right.match(events))
             {
             right.inport(
                 events,
@@ -117,16 +119,21 @@ public class VosiTableSetReader
         );
 
     /**
+     * Our name regex {@link Pattern pattern}.
+     * 
+     */
+    private static final Pattern NAME_PATTERN = Pattern.compile("^.*\\.([^.]+)$") ;
+    
+    /**
      * Remove any prefixes from a name.
      *
      */
-    private String clean(final String name)
+    private String simplify(final String name)
         {
-        if (name.contains("."))
+        final Matcher matcher = NAME_PATTERN.matcher(name);
+        if (matcher.matches())
             {
-            return name.substring(
-                name.lastIndexOf('.')
-                );
+            return matcher.group(1);
             }
         else {
             return name ;
@@ -346,7 +353,7 @@ public class VosiTableSetReader
                 events
                 );
 
-            final String name  = namereader.read(events); 
+            final String name  = simplify(namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
@@ -359,6 +366,12 @@ public class VosiTableSetReader
             IvoaSchema schema = schemas.build(
                 new IvoaSchema.Metadata()
                     {
+                    @Override
+                    public String name()
+                        {
+                        return name ;
+                        }
+                    
                     @Override
                     public Ivoa ivoa()
                         {
@@ -544,7 +557,7 @@ public class VosiTableSetReader
                 events
                 );
 
-            final String name  = clean(namereader.read(events)); 
+            final String name  = simplify(namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
@@ -558,10 +571,17 @@ public class VosiTableSetReader
                 new IvoaTable.Metadata()
                     {
                     @Override
+                    public String name()
+                        {
+                        return name ;
+                        }
+
+                    @Override
                     public Adql adql()
                         {
                         return null ;
                         }
+
                     @Override
                     public Ivoa ivoa()
                         {
@@ -778,7 +798,7 @@ public class VosiTableSetReader
                     )
                 );
                 
-            final String name  = clean(namereader.read(events)); 
+            final String name  = simplify(namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String unit  = unitreader.read(events); 
@@ -811,10 +831,17 @@ public class VosiTableSetReader
                 new IvoaColumn.Metadata()
                     {
                     @Override
+                    public String name()
+                        {
+                        return name ;
+                        }
+
+                    @Override
                     public Adql adql()
                         {
                         return null;
                         }
+
                     @Override
                     public Ivoa ivoa()
                         {
@@ -933,21 +960,23 @@ public class VosiTableSetReader
                     )
                 );
             targetreader = new XMLStringValueReader(
-                NAMESPACE_URI,
+                namespace,
                 "targetTable",
                 true
                 );
             textreader = new XMLStringValueReader(
-                NAMESPACE_URI,
+                namespace,
                 "description",
                 false
                 );
             utypereader = new XMLStringValueReader(
-                NAMESPACE_URI,
+                namespace,
                 "utype",
                 false
                 );
-            columnreader = new ForeignPairReader();
+            columnreader = new ForeignPairReader(
+                namespace
+                );
             }
 
         /**

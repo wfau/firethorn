@@ -215,4 +215,9 @@ extends BaseColumn<IvoaColumn>
      */
     public void update(final IvoaColumn.Metadata meta);
     
+    /**
+     * Update the column properties.
+     * 
+     */
+    public void update(final IvoaColumn.Metadata.Ivoa ivoa);
     }

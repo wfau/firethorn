@@ -211,15 +211,9 @@ extends BaseComponent
         /**
          * The table name.
          * 
+         */
         public String name();
-         */
 
-        /**
-         * The table description.
-         * 
-        public String text();
-         */
-        
         }
 
     /**

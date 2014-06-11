@@ -1056,71 +1056,6 @@ implements JdbcTable
             );
         }
 
-    protected JdbcTable.Metadata.Jdbc jdbcmeta()
-        {
-        return new JdbcTable.Metadata.Jdbc()
-            {
-            @Override
-            public String name()
-                {
-                return JdbcTableEntity.this.name();
-                }
-
-            @Override
-            public Long count()
-                {
-                return adqlcount();
-                }
-            
-            @Override
-            public JdbcType type()
-                {
-                return jdbctype() ;
-                }
-
-            @Override
-            public void type(final JdbcType type)
-                {
-                jdbctype(
-                    type
-                    );
-                }
-
-            @Override
-            public JdbcTable.TableStatus status()
-                {
-                return jdbcstatus();
-                }
-
-            @Override
-            public void status(final JdbcTable.TableStatus next)
-                {
-                jdbcstatus(
-                    next
-                    );
-                }
-            };
-        }
-
-    @Override
-    public JdbcTable.Metadata meta()
-        {
-        return new JdbcTable.Metadata()
-            {
-            @Override
-            public Jdbc jdbc()
-                {
-                return jdbcmeta();
-                }
-
-            @Override
-            public Adql adql()
-                {
-                return adqlmeta();
-                }
-            };
-        }
-
     @Override
     public String link()
         {
@@ -1278,11 +1213,80 @@ implements JdbcTable
         return this.query;
         }
 
+    protected JdbcTable.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcTable.Metadata.Jdbc()
+            {
+            @Override
+            public String name()
+                {
+                return JdbcTableEntity.this.name();
+                }
+
+            @Override
+            public Long count()
+                {
+                return adqlcount();
+                }
+            
+            @Override
+            public JdbcType type()
+                {
+                return jdbctype() ;
+                }
+
+            @Override
+            public void type(final JdbcType type)
+                {
+                jdbctype(
+                    type
+                    );
+                }
+
+            @Override
+            public JdbcTable.TableStatus status()
+                {
+                return jdbcstatus();
+                }
+
+            @Override
+            public void status(final JdbcTable.TableStatus next)
+                {
+                jdbcstatus(
+                    next
+                    );
+                }
+            };
+        }
+
     @Override
-    public void update(
-        uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.Metadata meta)
+    public JdbcTable.Metadata meta()
+        {
+        return new JdbcTable.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return JdbcTableEntity.this.name();
+                }
+
+            @Override
+            public Jdbc jdbc()
+                {
+                return jdbcmeta();
+                }
+
+            @Override
+            public Adql adql()
+                {
+                return adqlmeta();
+                }
+            };
+        }
+    
+    @Override
+    public void update(final JdbcTable.Metadata meta)
         {
         // TODO Auto-generated method stub
-        
         }
     }

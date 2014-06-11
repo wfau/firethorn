@@ -796,17 +796,4 @@ public class AdqlTableEntity
         {
         // TODO Auto-generated method stub
         }
-
-    @Override
-    public AdqlTable.Metadata meta()
-        {
-        return new AdqlTable.Metadata()
-            {
-            @Override
-            public Adql adql()
-                {
-                return adqlmeta();
-                }
-            };
-        }
     }

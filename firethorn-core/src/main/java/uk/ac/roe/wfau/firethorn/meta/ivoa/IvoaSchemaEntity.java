@@ -116,7 +116,7 @@ public class IvoaSchemaEntity
         @Override
         protected String name(IvoaSchema.Metadata meta)
             {
-            return meta.ivoa().name();
+            return meta.name();
             }
 
         @Override
@@ -249,7 +249,7 @@ public class IvoaSchemaEntity
         {
         super(
             resource,
-            meta.adql().name()
+            meta.name()
             );
         this.resource = resource;
         this.update(
@@ -396,6 +396,12 @@ public class IvoaSchemaEntity
         return new IvoaSchema.Metadata()
             {
             @Override
+            public String name()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
             public Adql adql()
                 {
                 return adqlmeta();
@@ -414,14 +420,22 @@ public class IvoaSchemaEntity
         {
         if (meta.ivoa() != null)
             {
-            if (meta.ivoa().text() != null)
-                {
-                this.text(meta.ivoa().text());
-                }
-            if (meta.ivoa().utype() != null)
-                {
-                this.adqlutype(meta.ivoa().utype());
-                }
+            this.update(
+                meta.ivoa()
+                );
+            }
+        }
+
+    @Override
+    public void update(final IvoaSchema.Metadata.Ivoa ivoa)
+        {
+        if (ivoa.text() != null)
+            {
+            this.text(ivoa.text());
+            }
+        if (ivoa.utype() != null)
+            {
+            this.adqlutype(ivoa.utype());
             }
         }
     }

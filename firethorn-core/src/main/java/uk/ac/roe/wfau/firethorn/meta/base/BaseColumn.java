@@ -172,14 +172,9 @@ extends BaseComponent
         /**
          * The column name.
          * 
+         */
         public String name();
-         */
 
-        /**
-         * The column description.
-         * 
-        public String text();
-         */
         }
 
     /**

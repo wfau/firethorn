@@ -868,6 +868,12 @@ public class JdbcSchemaEntity
         return new JdbcSchema.Metadata()
             {
             @Override
+            public String name()
+                {
+                return JdbcSchemaEntity.this.name();
+                }
+
+            @Override
             public Adql adql()
                 {
                 return adqlmeta();

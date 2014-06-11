@@ -647,6 +647,28 @@ public class JdbcColumnEntity
             }
         }
 
+    @Override
+    public String link()
+        {
+        return factories().jdbc().columns().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return factories().jdbc().columns().aliases().alias(
+            this
+            );
+        }
+
+    @Override
+    public void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        }
+    
     protected JdbcColumn.Metadata.Jdbc jdbcmeta()
         {
         return new JdbcColumn.Metadata.Jdbc()
@@ -760,6 +782,12 @@ public class JdbcColumnEntity
         return new JdbcColumn.Metadata()
             {
             @Override
+            public String name()
+                {
+                return JdbcColumnEntity.this.name();
+                }
+
+            @Override
             public AdqlColumn.Metadata.Adql adql()
                 {
                 return adqlmeta();
@@ -771,28 +799,6 @@ public class JdbcColumnEntity
                 return jdbcmeta();
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().columns().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().jdbc().columns().aliases().alias(
-            this
-            );
-        }
-
-    @Override
-    public void scanimpl()
-        {
-        // TODO Auto-generated method stub
         }
 
     @Override

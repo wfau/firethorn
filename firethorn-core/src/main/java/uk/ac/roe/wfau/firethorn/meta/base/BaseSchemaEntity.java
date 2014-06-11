@@ -179,5 +179,21 @@ implements BaseSchema<SchemaType, TableType>
             };
         }
 
-    
+    @Override
+    public AdqlSchema.Metadata meta()
+        {
+        return new AdqlSchema.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return BaseSchemaEntity.this.name();
+                }
+            @Override
+            public AdqlSchema.Metadata.Adql adql()
+                {
+                return adqlmeta();
+                }
+            };
+        }
     }

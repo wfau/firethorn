@@ -136,7 +136,7 @@ public class IvoaColumnEntity
         @Override
         protected String name(IvoaColumn.Metadata meta)
             {
-            return meta.ivoa().name();
+            return meta.name();
             }
 
         @Override
@@ -332,7 +332,7 @@ public class IvoaColumnEntity
         {
         super(
             table,
-            meta.adql().name()
+            meta.name()
             );
         this.table = table;
         this.update(
@@ -526,10 +526,17 @@ public class IvoaColumnEntity
         return new IvoaColumn.Metadata()
             {
             @Override
+            public String name()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
             public IvoaColumn.Metadata.Ivoa ivoa()
                 {
                 return ivoameta();
                 }
+
             @Override
             public IvoaColumn.Metadata.Adql adql()
                 {
@@ -537,36 +544,43 @@ public class IvoaColumnEntity
                 }
             };
         }
-
     @Override
     public void update(IvoaColumn.Metadata meta)
         {
         if (meta.ivoa() != null)
             {
-            if (meta.ivoa().text() != null)
-                {
-                this.text(meta.ivoa().text());
-                }
-            if (meta.ivoa().ucd() != null)
-                {
-                this.adqlucd(meta.ivoa().ucd());
-                }
-            if (meta.ivoa().unit() != null)
-                {
-                this.adqlunit(meta.ivoa().unit());
-                }
-            if (meta.ivoa().utype() != null)
-                {
-                this.adqlutype(meta.ivoa().utype());
-                }
-            if (meta.ivoa().dtype() != null)
-                {
-                this.adqldtype(meta.ivoa().dtype());
-                }
-            if (meta.ivoa().arraysize() != null)
-                {
-                this.adqlsize(meta.ivoa().arraysize());
-                }
+            this.update(
+                meta.ivoa()
+                );
+            }
+        }
+
+    @Override
+    public void update(IvoaColumn.Metadata.Ivoa ivoa)
+        {
+        if (ivoa.text() != null)
+            {
+            this.text(ivoa.text());
+            }
+        if (ivoa.ucd() != null)
+            {
+            this.adqlucd(ivoa.ucd());
+            }
+        if (ivoa.unit() != null)
+            {
+            this.adqlunit(ivoa.unit());
+            }
+        if (ivoa.utype() != null)
+            {
+            this.adqlutype(ivoa.utype());
+            }
+        if (ivoa.dtype() != null)
+            {
+            this.adqldtype(ivoa.dtype());
+            }
+        if (ivoa.arraysize() != null)
+            {
+            this.adqlsize(ivoa.arraysize());
             }
         }
     }
