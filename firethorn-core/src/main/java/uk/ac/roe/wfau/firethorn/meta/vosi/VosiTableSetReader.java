@@ -31,8 +31,6 @@ import javax.xml.stream.events.StartElement;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
