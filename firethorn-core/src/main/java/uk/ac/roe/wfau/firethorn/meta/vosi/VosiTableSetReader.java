@@ -123,6 +123,16 @@ public class VosiTableSetReader
      * 
      */
     private static final Pattern NAME_PATTERN = Pattern.compile("^.*\\.([^.]+)$") ;
+
+/*
+ * Bad table name, looks like the table itself contains the dot.
+ *  
+ *  <table type="base_table">
+ *    <name>viz7.J/other/ApSS/345.365/table1</name>
+ *    <description>Parameters of 56 SNe, their hosts and neighbors</description>
+ *  </table>
+ *     
+ */
     
     /**
      * Remove any prefixes from a name.
