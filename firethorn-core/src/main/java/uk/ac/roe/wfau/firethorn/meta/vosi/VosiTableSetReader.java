@@ -123,19 +123,22 @@ public class VosiTableSetReader
      * 
      */
     private static final Pattern NAME_PATTERN = Pattern.compile("^.*\\.([^.]+)$") ;
-
-/*
- * Bad table name, looks like the table itself contains the dot.
- *  
- *  <table type="base_table">
- *    <name>viz7.J/other/ApSS/345.365/table1</name>
- *    <description>Parameters of 56 SNe, their hosts and neighbors</description>
- *  </table>
- *     
- */
     
     /**
      * Remove any prefixes from a name.
+     * 
+     * It looks like the table themselves contain a '.' dot.
+     * Not good :-(
+     *  
+     *  <table type="base_table">
+     *    <name>viz7.J/other/ApSS/345.365/table1</name>
+     *    <description>Parameters of 56 SNe, their hosts and neighbors</description>
+     *  </table>
+     *  
+     *  <table type="base_table">
+     *    <name>viz7.J/other/Ap/42.1/table1</name>
+     *    <description>Accurate positions for 195 FBS objects</description>
+     *  </table>
      *
      */
     private String simplify(final String name)
@@ -150,6 +153,28 @@ public class VosiTableSetReader
             }
         }
 
+    /**
+     * Remove a specific prefix from a name.
+     *
+     */
+    private String simplify(final String prefix, final String name)
+        {
+        String match = prefix ;
+        if (!match.endsWith("."))
+            {
+            match = match + "." ;
+            }
+        if (name.startsWith(match))
+            {
+            return name.substring(
+                match.length()
+                );
+            }
+        else {
+            return name ;
+            }
+        }
+    
     /**
      * An {@link XMLReader} for [{@value TableSetReader#ELEMENT_NAME}] elements.
      *
@@ -567,7 +592,7 @@ public class VosiTableSetReader
                 events
                 );
 
-            final String name  = simplify(namereader.read(events)); 
+            final String name  = simplify(tables.schema().name(), namereader.read(events)); 
             final String title = titlereader.read(events);
             final String text  = textreader.read(events); 
             final String utype = utypereader.read(events); 
@@ -1060,7 +1085,6 @@ public class VosiTableSetReader
          *
          */
         protected static final String ELEMENT_NAME = "fkColumn" ;
-
 
         /**
          * Public constructor, using standard element name and namespace.

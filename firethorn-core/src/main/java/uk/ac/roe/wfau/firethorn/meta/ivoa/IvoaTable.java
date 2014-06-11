@@ -37,6 +37,12 @@ extends BaseTable<IvoaTable, IvoaColumn>
     extends EntityBuilder<IvoaTable, IvoaTable.Metadata>
         {
         /**
+         * A reference to our parent {@link IvoaSchema schema}.
+         * 
+         */
+        public IvoaSchema schema();
+        
+        /**
          * Create or update an {@link IvoaTable}.
          *
          */

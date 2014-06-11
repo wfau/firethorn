@@ -329,6 +329,12 @@ public class IvoaSchemaEntity
                 return new IvoaTableEntity.Builder(this.select())
                     {
                     @Override
+                    public IvoaSchema schema()
+                        {
+                        return IvoaSchemaEntity.this;
+                        }
+                    
+                    @Override
                     public IvoaTable create(final IvoaTable.Metadata meta)
                     throws DuplicateEntityException
                         {
