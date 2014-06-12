@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+  <schema>
+    <name>vizls</name>
+    <table type="base_table">
+      <name>vizls.II/246/out</name>
+      <description>The Point Source catalogue of 470,992,970 sources. \inputViz{2mass.intro.htx}</description>
+      <column std="true">
+        <name>RAJ2000</name>
+        <description>(ra) Right ascension (J2000)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.eq.ra;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+        <flag>indexed</flag>
+        <flag>primary</flag>
+      </column>
+      <column std="true">
+        <name>DEJ2000</name>
+        <description>(dec) Declination (J2000) (dec)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.eq.dec;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+        <flag>indexed</flag>
+        <flag>primary</flag>
+      </column>
+      <column std="true">
+        <name>errMaj</name>
+        <description>(err_maj) Major axis of position error ellipse</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>errMin</name>
+        <description>(err_min) Minor axis of position error ellipse</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>errPA</name>
+        <description>[0,180] (err_ang) Position angle of error ellipse major axis (E of N)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>2MASS</name>
+        <description>(designation) Source designation (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType" size="21">CHAR</dataType>
+        <flag>indexed</flag>
+      </column>
+      <column std="true">
+        <name>Jmag</name>
+        <description>?(j_m) J selected default magnitude (2)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.J</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+        <flag>indexed</flag>
+      </column>
+      <column std="true">
+        <name>Jcmsig</name>
+        <description>?(j_cmsig) J default magnitude uncertainty (3)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Jmag</name>
+        <description>?(j_msigcom) J total magnitude uncertainty (4)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag;em.IR.J</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Jsnr</name>
+        <description>?(j_snr) J Signal-to-noise ratio</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Hmag</name>
+        <description>?(h_m) H selected default magnitude (2)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.H</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+        <flag>indexed</flag>
+      </column>
+      <column std="true">
+        <name>Hcmsig</name>
+        <description>?(h_cmsig) H default magnitude uncertainty (3)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Hmag</name>
+        <description>?(h_msigcom) H total magnitude uncertainty (4)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag;em.IR.H</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Hsnr</name>
+        <description>?(h_snr) H Signal-to-noise ratio</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Kmag</name>
+        <description>?(k_m) K selected default magnitude (2)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.K</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+        <flag>indexed</flag>
+      </column>
+      <column std="true">
+        <name>Kcmsig</name>
+        <description>?(k_cmsig) K default magnitude uncertainty (3)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Kmag</name>
+        <description>?(k_msigcom) K total magnitude uncertainty (4)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error;phot.mag;em.IR.K</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Ksnr</name>
+        <description>?(k_snr) K Signal-to-noise ratio</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Qflg</name>
+        <description>(ph_qual) JHK Photometric quality flag (5)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code.qual;phot</ucd>
+        <dataType xsi:type="vod:TAPType" size="7">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Rflg</name>
+        <description>(rd_flg) Source of JHK default mag (6)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.ref</ucd>
+        <dataType xsi:type="vod:TAPType" size="7">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Bflg</name>
+        <description>(bl_flg) JHK components fit to source (7)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType" size="7">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Cflg</name>
+        <description>(cc_flg) Artifact contamination, confusion (8)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType" size="7">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Ndet</name>
+        <description>[0-9] (ndet) Number of aperture measurements (jjhhkk) (9)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.number</ucd>
+        <dataType xsi:type="vod:TAPType" size="10">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>prox</name>
+        <description>Distance between source and nearest neighbour</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>pos.angDistance</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>pxPA</name>
+        <description>? (pxpa) Position angle of vector from source to nearest neighbour (E of N)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.posAng</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>pxCntr</name>
+        <description>(pxcntr) Sequence number of nearest neighbour</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.number</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>Xflg</name>
+        <description>[0,2] (gal_contam) Extended source contamination (10)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>Aflg</name>
+        <description>[0,1] (mp_flg) Association with asteroid or comet (11)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>Cntr</name>
+        <description>(pts_key) Unique source identifier in catalogue</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id;meta.table</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>Hemis</name>
+        <description>[ns] (hemis) Hemisphere of observation</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>obs.param;obs</ucd>
+        <dataType xsi:type="vod:TAPType" size="5">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Date</name>
+        <description>(date) Observation date</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>time.epoch;obs</ucd>
+        <dataType xsi:type="vod:TAPType" size="14">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Scan</name>
+        <description>(scan) Scan number (within date)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>obs.field</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>GLON</name>
+        <description>(glon) Galactic longitude (12)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.galactic.lon</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>GLAT</name>
+        <description>(glat) Galactic latitude (12)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.galactic.lat</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Xscan</name>
+        <description>(x_scan) Distance of source from focal plane centerline</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>pos.cartesian;instr.det</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>JD</name>
+        <description>(jdate) Julian date of source measurement (13)</description>
+        <unit>d</unit>
+        <utype>          </utype>
+        <ucd>time.epoch</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Jpsfchi</name>
+        <description>?(j_psfchi) J band reduced chi2 value of fit</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.fit.chi2;stat.value</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Hpsfchi</name>
+        <description>?(h_psfchi) H band reduced chi2 value of fit</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.fit.chi2;stat.value</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Kpsfchi</name>
+        <description>?(k_psfchi) K band reduced chi2 value of fit</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.fit.chi2;stat.value</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Jstdap</name>
+        <description>?(j_m_stdap) J standard aperture magnitude (18)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.J</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Jstdap</name>
+        <description>?(j_msig_stdap) error on Jstdap</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Hstdap</name>
+        <description>?(h_m_stdap) H standard aperture magnitude (18)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.H</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Hstdap</name>
+        <description>?(h_msig_stdap) error on Hstdap</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Kstdap</name>
+        <description>?(k_m_stdap) K standard aperture magnitude (18)</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.IR.K</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_Kstdap</name>
+        <description>?(k_msig_stdap) error on Kstdap</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>edgeNS</name>
+        <description>(dist_edge_ns) Distance from the source to the nearest North or South scan edge</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>pos;arith.diff</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>edgeEW</name>
+        <description>(dist_edge_ew) Distance from the source to the nearest East or West scan edge</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>pos;arith.diff</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>edge</name>
+        <description>[nsew] (dist_edge_flg) flag indicating to which edges the edgeNS and edgeEW values refer</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>pos.cartesian;instr.det</ucd>
+        <dataType xsi:type="vod:TAPType" size="6">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>dup</name>
+        <description>(dup_src) Flag indicating duplicate source (14)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>use</name>
+        <description>(use_src) Use source flag (15)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.code</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>opt</name>
+        <description>[0UT] (a) Associated optical source (16)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id;meta.dataset</ucd>
+        <dataType xsi:type="vod:TAPType" size="5">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>Dopt</name>
+        <description>?(dist_opt) Distance to associated optical source</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>pos.angDistance</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>PAopt</name>
+        <description>[0,360]? (phi_opt) position angle from optical source to the 2MASS source position</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.posAng</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>Bmag</name>
+        <description>?(b_m_opt) Blue magnitude of associated optical source</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.opt.B</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Rmag</name>
+        <description>?(vr_m_opt) Visual or red mag of associated optical source</description>
+        <unit>mag</unit>
+        <utype>          </utype>
+        <ucd>phot.mag;em.opt.R</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>Nopt</name>
+        <description>(nopt_mchs) Number of optical sources within 5arcsec (17)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.number</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>extKey</name>
+        <description>?(ext_key) Record Identifier in XSC</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id.cross</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>scanKey</name>
+        <description>(scan_key) Record Identifier in the Scan Information Table</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>coaddKey</name>
+        <description>(coadd_key) Record Identifier in the Atlas Image Data Table</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id;meta.dataset</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>coadd</name>
+        <description>(coadd) Sequence number of the Atlas Image</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.number</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+    </table>
+  </schema>
+</tableset>

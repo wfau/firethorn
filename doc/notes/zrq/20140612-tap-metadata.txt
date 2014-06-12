@@ -1,0 +1,216 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Download the originals
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core/src/test/data/vosi
+
+            pushd original
+
+                curl 'http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities'  | xmllint --format - > gavo-capabilities.xml
+                curl 'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata' | xmllint --format - > gavo-tableset.xml
+
+                curl 'http://www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/tap/capabilities'    | xmllint --format - > cadc-capabilities.xml
+                curl 'http://www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/tap/tables'          | xmllint --format - > cadc-tableset.xml
+
+                curl 'http://geadev.esac.esa.int/tap-dev/tap/capabilities'              | xmllint --format - > gaia-capabilities.xml
+                curl 'http://geadev.esac.esa.int/tap-dev/tap/tables'                    | xmllint --format - > gaia-tableset.xml
+
+                curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/capabilities'         | xmllint --format - > vizier-capabilities.xml
+                curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables'               | xmllint --format - > vizier-tableset.xml
+                curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/II/246/out'    | xmllint --format - > vizier-twomass-tableset.xml
+
+
+# -----------------------------------------------------
+# Compare the namespaces
+#[user@desktop]
+
+
+    for file in *-capabilities.xml
+    do
+        echo "---------------  -----------"    
+        echo "File [${file:?}]"    
+        head -n 4 "${file:?}"
+    done
+
+
+        ---------------  -----------
+        File [cadc-capabilities.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vosi:capabilities
+            xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            >
+            <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+                <interface xsi:type="vod:ParamHTTP" version="1.0">
+
+        ---------------  -----------
+        File [gaia-capabilities.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vosi:capabilities
+            xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:tr="http://www.ivoa.net/xml/TAP/v0.1"
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/TAP/v0.1 http://www.ivoa.net/xml/TAP/v0.1
+                "
+            >
+            <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+                <interface role="std" xsi:type="vs:ParamHTTP">
+
+        ---------------  -----------
+        File [gavo-capabilities.xml]
+        <?xml version="1.0"?>
+        <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+        <cap:capabilities
+            xmlns:cap="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.1"
+            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VOSICapabilities/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VOSICapabilities-v1.0.xsd
+                http://www.ivoa.net/xml/TAPRegExt/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v1.1.xsd
+                http://www.ivoa.net/xml/VORegistry/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VORegistry-v1.0.xsd
+                http://www.ivoa.net/xml/VOResource/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VOResource-v1.0.xsd
+                http://www.ivoa.net/xml/VODataService/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd
+                "
+            >
+            <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+
+        ---------------  -----------
+        File [vizier-capabilities.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vosi:capabilities
+            xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:tr="http://www.ivoa.net/xml/TAP/v0.1"
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/TAP/v0.1 http://www.ivoa.net/xml/TAP/v0.1
+                "
+            >
+            <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+                <interface role="std" xsi:type="vs:ParamHTTP">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    for file in *-tableset.xml
+    do
+        echo "---------------  -----------"    
+        echo "File [${file:?}]"    
+        head -n 4 "${file:?}"
+    done
+
+        ---------------  -----------
+        File [cadc-tableset.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vosi:tableset
+            xmlns:vosi="http://www.ivoa.net/xml/VOSITables/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            >
+            <schema>
+                <name>caom</name>
+
+
+        ---------------  -----------
+        File [gaia-tableset.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vod:tableset
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            xmlns:gaiatap="http://esa.int/xml/GaiaTap"
+            xsi:type="vod:TableSet"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VODataService/v1.1 http://www.ivoa.net/xml/VODataService/v1.1
+                http://esa.int/xml/GaiaTap http://geadev.esac.esa.int/tap-dev/xml/esaGaiaAttributes.xsd
+                "
+            >
+            <schema>
+                <name>public</name>
+
+        ---------------  -----------
+        File [gavo-tableset.xml]
+        <?xml version="1.0"?>
+        <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+        <tableset
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VODataService/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd
+                "
+            xsi:type="vs:TableSet"
+            >
+            <schema>
+
+
+        ---------------  -----------
+        File [vizier-tableset.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <tableset
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            xsi:type="vod:TableSet"
+            >
+            <schema>
+                <name>vbig</name>
+
+        ---------------  -----------
+        File [vizier-twomass-tableset.xml]
+        <?xml version="1.0" encoding="UTF-8"?>
+        <tableset
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            xsi:type="vod:TableSet"
+            >
+            <schema>
+                <name>vizls</name>
+
+
+
+
+

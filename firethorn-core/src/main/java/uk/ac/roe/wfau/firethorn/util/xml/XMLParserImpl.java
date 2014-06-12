@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.util.xml;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -65,19 +66,42 @@ public class XMLParserImpl
      */
     public XMLParserImpl(final QName qname)
         {
-        log.debug("XMLReaderImpl(QName)");
-        log.debug("  QName [{}]", qname);
-        this.qname = qname;
+        this(
+            false,
+            qname
+            );
         }
 
     /**
-     * The XML element QName this reader handles.
+     * Public constructor.
+     *
+     */
+    public XMLParserImpl(boolean strict, final QName qname)
+        {
+        log.debug("XMLReaderImpl(QName)");
+        log.debug("  QName [{}]", qname);
+        this.qname  = qname;
+        this.strict = strict;
+        }
+
+    /**
+     * The XML {@link QName} this reader matches.
      *
      */
     private final QName qname;
 
     /**
-     * The XML element QName this reader handles.
+     * A flag to control if we are strict on namespaces.
+     * By default this is set to false.
+     * If this <em>false</em>, then we will match elements with an {@link XMLConstants#NULL_NS_URI empty} namespace.
+     * If this <em>true</em>, then we will not match an element with an {@link XMLConstants#NULL_NS_URI empty} namespace.
+     * @see XMLConstants#NULL_NS_URI
+     * 
+     */
+    private boolean strict ;
+
+    /**
+     * The XML {@link QName} this reader matches.
      *
      */
     @Override
@@ -87,10 +111,9 @@ public class XMLParserImpl
         }
 
     /**
-     * Peek at the next event from an XMLEventReader to see if it matches this reader.
+     * Peek at the next event from an {@link XMLEventReader} to see if it matches this reader.
      * This may skip processing instructions, comments and whitespace to find the next element.
-     *
-     * @returns true if the next event matches.
+     * @returns true if the next {@link XMLEvent} matches.
      *
      */
     @Override
@@ -107,9 +130,9 @@ public class XMLParserImpl
         }
 
     /**
-     * Check if an XMLEvent matches this reader.
-     *
-     * @returns true if the event matches this reader.
+     * Check if an {@link XMLEvent} matches this reader.
+     * @param event The {@link XMLEvent} to check.
+     * @returns true if the {@link XMLEvent} matches.
      *
      */
     @Override
@@ -132,9 +155,9 @@ public class XMLParserImpl
         }
 
     /**
-     * Check if a StartElement matches this reader.
-     *
-     * @returns true if the element matches this reader.
+     * Check if a {@link StartElement} matches this reader.
+     * @param event The {@link StartElement} to check.
+     * @returns true if the {@link StartElement} matches.
      *
      */
     @Override
@@ -144,42 +167,15 @@ public class XMLParserImpl
         log.debug("match(StartElement)");
         log.debug("  QName [{}]", this.qname());
         log.debug("  Event [{}]", event);
-        //
-        // If we have a parser QName.
-        if (null != this.qname())
-            {
-            log.debug("  Parser QName not null");
-            //
-            // If the element QName matches ours.
-            if (this.qname().equals(event.getName()))
-                {
-                log.debug("  Element QName matches");
-                return true;
-                }
-            //
-            // If the element QName does not match ours.
-            else
-                {
-                log.debug("  Element QName does not match");
-                return false;
-                }
-            }
-        //
-        // If we don't have a parser QName.
-        else
-            {
-            // if (log.isDebugEnabled())
-            // log.debug("XMLReaderImpl.match() Parser  QName is null");
-            // Assume we accept any QName.
-            return true;
-            }
+        return this.match(
+            event.getName()
+            );
         }
 
     /**
-     * Check if the next event is an END_ELEMENT that matches our QName and remove it from the stream.
+     * Check if the next event is a {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName} and remove it from the stream.
      * This method will skip processing instructions, comments and whitespace to locate the next END_ELEMENT.
-     *
-     * @throws XMLReaderException if the event is an not an END_ELEMENT event or does not match our QName.
+     * @throws {@link XMLReaderException} if the event does not match.
      *
      */
     @Override
@@ -193,7 +189,9 @@ public class XMLParserImpl
         final XMLEvent event = this.peek(reader);
         if (this.done(event))
             {
-            this.next(reader);
+            this.next(
+                reader
+                );
             }
         else
             {
@@ -207,10 +205,9 @@ public class XMLParserImpl
         }
 
     /**
-     * Check if an event is an END_ELEMENT event that matches our QName.
-     *
-     * @returns true if the event is a END_ELEMENT and it matches our QName, false if it is not an END_ELEMENT.
-     * @throws XMLReaderException if the event is and END_ELEMENT event but it does not match our QName.
+     * Check if an event is a {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName}.
+     * @returns true if the event matches.
+     * @throws {@link XMLReaderException} if the event does not match.
      *
      */
     @Override
@@ -233,9 +230,8 @@ public class XMLParserImpl
         }
 
     /**
-     * Check if an END_ELEMENT event matches our QName.
-     *
-     * @throws XMLReaderException if the END_ELEMENT Qname does not match.
+     * Check if an event is an {@link EndElement} that matches our {@link QName}.
+     * @returns true if the event matches.
      *
      */
     public boolean done(final EndElement event)
@@ -244,22 +240,70 @@ public class XMLParserImpl
         log.debug("done(EndElement)");
         log.debug("  QName [{}]", this.qname());
         log.debug("  Event [{}]", event);
-
-        if (this.qname().equals(event.getName()))
-            {
-            return true;
-            }
-        else
-            {
-            log.debug("EndElement QName does not match [{}][{}]", this.qname(), event.getName());
-            throw new XMLParserException(
-                "EndElement QName does not match",
-                this.qname(),
-                event
-                );
-            }
+        return match(
+            event.getName()
+            );
         }
 
+    /**
+     * Check if a {@link QName} matches ours.
+     * @param theirs The {@link QName} to check.
+     * @return true if the {@link QName} matches.
+     * 
+     */
+    public boolean match(final QName theirs)
+    throws XMLParserException
+        {
+        log.debug("match(QName)");
+        log.debug("  Ours   [{}]", this.qname());
+        log.debug("  Theirs [{}]", theirs);
+        //
+        // If we have a QName.
+        if (null != this.qname())
+            {
+            //
+            // Check if the QName matches ours.
+            if (this.qname().equals(theirs))
+                {
+                log.debug("QName matches");
+                return true;
+                }
+            //
+            // If the element QName does not match ours.
+            else
+                {
+                //
+                // If we are not strict, and their qname doesn't have a namespace. 
+                if ((strict == false) && (XMLConstants.NULL_NS_URI.equals(theirs.getNamespaceURI())))
+                    {
+                    log.debug("QName has a null namespace");
+                    //
+                    // Check if the local name matches.
+                    if (this.qname().getLocalPart().equals(theirs.getLocalPart()))
+                        {
+                        log.debug("QName local name matches");
+                        return true;
+                        }
+                    else {
+                        log.debug("QName local name does not match");
+                        return false;
+                        }
+                    }
+                else {
+                    log.debug("QName does not match");
+                    return false;
+                    }
+                }
+            }
+        //
+        // If we don't have a QName, assume we accept any.
+        else
+            {
+            log.debug("QName is null");
+            return true;
+            }
+        }
+    
     /**
      * Read the next event from an XMLEventReader.
      *
@@ -474,7 +518,7 @@ public class XMLParserImpl
             return element ;
             }
         else {
-            if (element.getName().equals(this.qname()))
+            if (match(element))
                 {
                 return element ;
                 }

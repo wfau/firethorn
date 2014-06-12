@@ -33,7 +33,6 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class VosiTableSetReaderTestCase
     extends TestBase
     {
-
     @Test
     public void test001()
     throws Exception
@@ -46,7 +45,7 @@ public class VosiTableSetReaderTestCase
 
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/gavo-tableset.xml"
+                "src/test/data/vosi/original/cadc-tableset.xml"
                 ),
             resource
             );
@@ -64,7 +63,7 @@ public class VosiTableSetReaderTestCase
 
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/vizier-tableset.xml"
+                "src/test/data/vosi/original/gaia-tableset.xml"
                 ),
             resource
             );
@@ -82,12 +81,12 @@ public class VosiTableSetReaderTestCase
 
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/gaia-tableset.xml"
+                "src/test/data/vosi/original/gavo-tableset.xml"
                 ),
             resource
             );
         }
-    
+
     @Test
     public void test004()
     throws Exception
@@ -100,7 +99,13 @@ public class VosiTableSetReaderTestCase
 
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/cadc-tableset.xml"
+                "src/test/data/vosi/original/vizier-tableset.xml"
+                ),
+            resource
+            );
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/vizier-twomass-tableset.xml"
                 ),
             resource
             );

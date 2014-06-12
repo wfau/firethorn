@@ -97,42 +97,17 @@ public class VosiTableSetReader
     public void inport(final XMLEventReader events, final IvoaResource resource)
     throws XMLParserException, XMLReaderException, DuplicateEntityException
         {
-        if (left.match(events))
-            {
-            left.inport(
-                events,
-                resource
-                );
-            }
-        else if (right.match(events))
-            {
-            right.inport(
-                events,
-                resource
-                );
-            }
-        else {
-            throw new XMLParserException(
-                "Expected [" + TableSetReader.ELEMENT_NAME + "] element"
-                );
-            }
+        reader.inport(
+            events,
+            resource
+            );
         }
 
     /**
-     * A {@link TableSetReader} with no namespace URI.
+     * Our {@link TableSetReader}.
      * 
      */
-    private TableSetReader left  = new TableSetReader(
-        null
-        );
-
-    /**
-     * A {@link TableSetReader} with the default namespace.
-     * 
-     */
-    private TableSetReader right = new TableSetReader(
-        NAMESPACE_URI
-        );
+    private TableSetReader reader = new TableSetReader();
 
     /**
      * Our name regex {@link Pattern pattern}.
