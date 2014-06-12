@@ -48,7 +48,7 @@
 		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.util.xml">
-		<level value="WARN"/>
+		<level value="DEBUG"/>
 	</logger>
 
 	<!--+

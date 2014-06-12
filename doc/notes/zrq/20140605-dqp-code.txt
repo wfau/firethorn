@@ -35,7 +35,6 @@ Process the VOSI document to fill in our IvoaResource.
 
 # -----------------------------------------------------
 # ....
-#[user@desktop]
 
 
     curl 'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata' | xmllint --format - > gavo-tabledata.xml
@@ -54,6 +53,9 @@ Process the VOSI document to fill in our IvoaResource.
 
     vizls.I/320/spm4
     curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/I/320/spm4' | xmllint --format - 
+
+
+
 
 
 
@@ -146,7 +148,64 @@ Process the VOSI document to fill in our IvoaResource.
         // Stuff about this endpoint.
 
 
+# -----------------------------------------------------
+# ....
 
+
+    vizls.I/320/spm4
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/I/320/spm4' | xmllint --format - 
+
+    vbig.J/A+A/542/A98/ref0_33
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/A+A/542/A98/ref0_33' | xmllint --format - 
+
+
+    IF the tables element is empty
+
+        <schema>
+            <name>vbig</name>
+            <table type="base_table">
+                <name>vbig.J/A+A/542/A98/ref0_33</name>
+                <description>Refractive index data of Hydrocarbon (real \&amp; imaginary parts) for particle radius = 0.33nm \vizContent{spectrum} (\wGraph{J/A+A/542/A98/./ref0_33}{-l\&amp;x}{plot})</description>
+            </table>
+        </schema>
+
+    IF we have a tables endpoint URL
+
+        'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables'
+
+    Add the table name (minus the schema name) to the tables endpoint.
+
+        'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables' 'vbig.J/A+A/542/A98/ref0_33'
+        'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/vbig.J/A+A/542/A98/ref0_33'
+
+        curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/A+A/542/A98/ref0_33' | xmllint --format - 
+
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+            <schema>
+                <name>vbig</name>
+                <table type="base_table">
+                    <name>vbig.J/A+A/542/A98/ref0_33</name>
+                    <description>Refractive index data of Hydrocarbon (real \&amp; imaginary parts) for particle radius = 0.33nm \vizContent{spectrum} (\wGraph{J/A+A/542/A98/./ref0_33}{-l\&amp;x}{plot})</description>
+                    <column std="true">
+                        <name>recno</name>
+                        <description>Record number assigned by the VizieR team. Should Not be used for identification.</description>
+                        <unit/>
+                        <utype>          </utype>
+                        <ucd>meta.record</ucd>
+                        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+                    </column>
+
+    Why minus the schema name ..
+    What if someone has tables with the same name in different schema. 
+    WTF
+
+    This is absolutely backwards from what it should be.
+
+
+
+    
 
 
 

@@ -170,7 +170,7 @@ implements XMLObjectReader<String>
                     );
                 }
             }
-        if (trim)
+        if ((result != null) & trim)
             {
             return result.trim();
             }

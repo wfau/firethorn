@@ -1,0 +1,414 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#
+# TAPVizieR presentation at Sao Paulo 2012
+# G. Landais, F. Ochsenbein
+#
+
+    http://wiki.ivoa.net/internal/IVOA/InterOpOct2012DAL/TAPVizieR_DAL.pdf
+    http://wiki.ivoa.net/internal/IVOA/InterOpOct2012ImplemFeedback/TAPVizieR_INTEROP.pdf
+
+    -----------
+
+         20 000 tables
+        300 000 columns
+
+        86Mb VOSI tables document
+
+        Alternative tables/columns endpoint
+        http:/tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/<tablename>
+
+    -----------
+    
+    User-friendly (logical) names : II/259/tyc2, VII/248, RA(ICRS), DE(ICRS)
+    Internal (physical) DB names  : tyc2, c7248vv06, ra_icrs_, de_icrs_
+
+        <table type="base_table">
+          <name>viz1.I/239/hip_main</name>
+          <description>The Hipparcos Main Catalogue\vizContent{timeSerie}</description>
+        </table>
+
+    From the presentation :
+
+        "Cut the name by separating the catalog name of the table name example : I_239.hip_main (M.Demleitner)
+        Problem : the '.' supposes the existence of a schema 'I_239'"
+
+        Implies that 'I/239' is a 'catalog' and 'hip_main' is the table
+
+    -----------
+
+#
+# ADQL Standard allows anything in a "<delimited_identifier>".
+#
+
+    VOA Astronomical Data Query Language
+    Version 2.0
+    IVOA Recommendation 30 Oct 2008
+    http://www.ivoa.net/Documents/REC/ADQL/ADQL-20081030.pdf
+
+    -----------
+
+    2.1.2 Keywords and Identifiers
+
+    Besides the character set, the language provides a list of reserved keywords plus
+    the syntax description for regular identifiers.
+
+    ....
+
+    The identifiers are used to express, for example, a table or a column reference
+    name.
+
+    Both the identifiers and the keywords are case insensitive. They SHALL begin
+    with a letter {aA-zZ}. Subsequent characters shall be letters, underscores or
+    digits {0-9} as follows:
+
+        <Latin_letter> [{ <underscore> | {<Latin_letter> | <digit>} }]
+
+    -----------
+
+    Appendix A: BNF Grammar
+    An easier to navigate version of the BNF grammar can be found at
+    http://www.ivoa.net/internal/IVOA/IvoaVOQL/adql-bnf-v2.0.html
+
+        <digit> ::= 0|1|2|3|4|5|6|7|8|9
+
+        <simple_Latin_lower_case_letter> ::= a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
+        <simple_Latin_upper_case_letter> ::= A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z
+
+        <simple_Latin_letter> ::= <simple_Latin_upper_case_letter> | <simple_Latin_lower_case_letter>
+
+        <regular_identifier> ::= <simple_Latin_letter>... [ { <digit> | <simple_Latin_letter> | <underscore> }... ]
+
+        <double_quote> ::= "
+        <double_quote_symbol> ::= <double_quote><double_quote>
+
+        <nondoublequote_character> ::= !! See SQL92 syntax rules. But basically what it says.
+
+        <delimited_identifier_part> ::= <nondoublequote_character> | <double_quote_symbol>
+        <delimited_identifier_body> ::= <delimited_identifier_part>...
+        <delimited_identifier> ::= <double_quote><delimited_identifier_body><double_quote>
+
+        <identifier> ::= <regular_identifier> | <delimited_identifier>
+
+    -----------
+
+#
+# Specification for schema, table and column is driven by the database metadata.
+# The TAP spec (2.6.2) says 'table name must be unique', but it doesn't specify that it _has_ to be fully qualified.
+#
+
+    #
+    # Fully qualified table name.
+    <schema>
+        <name>amanda</name>
+        ....
+        <table>
+            <name>amanda.nucand</name>
+            ....
+            <column>
+                <name>nualpha</name>
+                ....
+            </column>
+
+    #
+    # Short table name.
+    <schema>
+        <name>amanda</name>
+        ....
+        <table>
+            <name>nucand</name>
+            ....
+            <column>
+                <name>nualpha</name>
+                ....
+            </column>
+
+#
+# Is fully qualified column name allowed ?
+# The TAP spec (2.6.3) says 'table_name,column_name (pair) values must be unique',
+# but it doesn't specify that the column name should not be fully qualified.
+
+    <schema>
+        <name>amanda</name>
+        ....
+        <table>
+            <name>amanda.nucand</name>
+            ....
+            <column>
+                <name>amanda.nucand.nualpha</name>
+                ....
+            </column>
+
+    -----------
+
+#
+# TAPVizieR have non-alpha characters in their table names.
+# http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables
+  
+    <table type="base_table">
+      <name>viz1.I/239/hip_main</name>
+      <description>The Hipparcos Main Catalogue\vizContent{timeSerie}</description>
+    </table>
+
+#
+# Including '.' as part of the table name.
+# http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables
+
+    <table type="base_table">
+        <name>viz7.J/other/ApSS/203.53/table1</name>
+        <description>A catalogue of spectral classification and photometric data of B-type stars</description>
+    </table>
+
+    <table type="base_table">
+        <name>viz7.J/other/ApSS/345.365/table1</name>
+        <description>Parameters of 56 SNe, their hosts and neighbors</description>
+    </table>
+
+    <table type="base_table">
+        <name>viz7.J/other/Ap/42.1/table1</name>
+        <description>Accurate positions for 195 FBS objects</description>
+    </table>
+
+#
+# This makes detecting the schema part of a FQTN (Fully Qualified Table Name) impossible.
+
+    Consider :
+    
+        "alpha"."beta"
+
+            <schema>
+                <name>alpha</name>
+                <table>
+                    <name>beta</name>
+                    OR
+                    <name>alpha.beta</name>
+                </table>
+            </schema>
+
+        ---------
+                
+        "alpha"."alpha.beta"
+
+            <schema>
+                <name>alpha</name>
+                <table>
+                    <name>alpha.beta</name>
+                    OR
+                    <name>alpha.alpha.beta</name>
+                </table>
+            </schema>
+        
+        ---------
+                
+        "alpha.beta"."beta"
+
+            <schema>
+                <name>alpha.beta</name>
+                <table>
+                    <name>beta</name>
+                    OR
+                    <name>alpha.beta.beta</name>
+                </table>
+            </schema>
+
+        ---------
+
+        "alpha"."alpha"
+        AND
+        "alpha"."alpha.alpha"
+
+            <schema>
+                <name>alpha</name>
+
+                <table>
+                    <name>alpha</name>
+                    OR
+      /-----------> <name>alpha.alpha</name>
+      |         </table>
+      |
+      |  These are identical.
+      |
+      |         <table>
+      \-----------> <name>alpha.alpha</name>
+                    OR
+                    <name>alpha.alpha.alpha</name>
+                </table>
+
+            </schema>
+
+        ---------
+
+        Silly ..
+        A fully qualified schema name _may_ include a catalog name, delimited by a '.'.
+        A schema name _may_ include a '.' character.
+
+        "alpha"."alpha"."alpha.alpha"
+        OR
+        "alpha.alpha"."alpha.alpha"
+        OR
+        "alpha.alpha"."alpha.alpha"."alpha.alpha"
+        
+        and ..
+        A catalog, schema, table or column name may include a double quote '"',
+        escaped as a double double quote '""'.
+
+        "alpha"".""alpha"."alpha"".""alpha"."alpha"".""alpha"
+
+        ---------
+
+        Yes, this is a silly example.
+        But it should not be this easy to break the standard.
+
+        ---------
+
+    #
+    # FIX - explicitly specify the *unqualified* schema, table and column names in both VOSI tables and TAP_SCHEMA.
+    # Yes - this will mean correcting a large number of existing records.
+    # But not correctng it means we leave a large number of broken recods.
+    #
+
+    #
+    # FIX the TAP_SCHEMA rules.
+
+    # Either
+    # a) Add a 'schema_name' column to the TAP_SCHEMA.columns table.
+    #    and require the tripple schema_name, table_name and column_name to be unique.
+    
+    # Or
+    # b) Require TAP_SCHEMA.tables.table_name and TAP_SCHEMA.columns.table_name to *always*
+    #    contain a fully qualified name (making TAP_SCHEMA.tables.schema_name redundant).
+
+    #
+    # BUT ..
+    # If we require FQTN in TAP_SCHEMA.tables.table_name and TAP_SCHEMA.columns.table_name.
+    # How do we know where the schema.table delimiter is ?
+    # 
+
+    If table_name is "viz7.J/other/Ap/42.1/table1", does this mean
+
+        "viz7"."J/other/Ap/42.1/table1"
+        OR
+        "viz7.J/other/Ap/42"."1/table1"
+
+        This is a real example.
+        It should not be this easy to break the standard.
+
+     -----------
+
+
+    #
+    # The proposed scaleable /tables endpoint adds the name to the end of the URL.
+
+    # /tables    
+    # http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables
+   
+    #
+    # Why only separate the columns - for tapvizier we get 26,751 tables in one document.
+    # Better to separate all three levels, schema, tables and columns.
+
+    #
+    # FIX A new endpoint that separates schema, tables and columns.
+
+    # http://tapvizier.u-strasbg.fr/TAPVizieR/tap/schema-list
+    # List of just the schema.
+    
+    # http://tapvizier.u-strasbg.fr/TAPVizieR/tap/schema-info/xxx
+    # List of the tables for schema FQN 'xxx'
+
+    # http://tapvizier.u-strasbg.fr/TAPVizieR/tap/table-info/xxx
+    # List of the columns for table FQN 'xxx'
+
+    # Different XML syntax to the existing tables endpoint.
+    # Adds an explicit href URL to get the next level.
+
+
+    #
+    # An 'empty' tables record is meant to indicate that the columns are elsewhere.
+   
+         <table type="base_table">
+            <name>viz7.J/other/Ap/42.1/table1</name>
+            <description>Accurate positions for 195 FBS objects</description>
+        </table>
+   
+    #
+    # But how is that different from a table with no columns ?
+    # Yes - I know this isn't very useful, but it can happen.
+   
+         <table type="base_table">
+            <name>empty</name>
+            <description>An empty table</description>
+        </table>
+
+    #
+    # Not distinguishing between the truncated 'stub' and and empty table
+    # means the client has to cope with an error as a normal part of the
+    # discovery process.
+
+
+    #
+    # The current tapvizier implementaiton requires the *unqualified* name.
+
+    #
+    # Using the fully qualified table name (FQTN) returns an empty tableset (not a 404).
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/viz7.J/other/Ap/42.1/table1' | xmllint --format - 
+
+        <tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+        </tableset>
+
+    #
+    # Using the un-qualified table name (UQTN) returns the table tableset.
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/other/Ap/42.1/table1' | xmllint --format - 
+
+        <tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+            <schema>
+            <name>viz7</name>
+            <table type="base_table">
+                <name>viz7.J/other/Ap/42.1/table1</name>
+                <description>Accurate positions for 195 FBS objects</description>
+                <column std="true">
+                    <name>recno</name>
+                    <description>Record number assigned by the VizieR team. Should Not be used for identification.</description>
+                    <unit/>
+                    <utype>          </utype>
+                    <ucd>meta.record</ucd>
+                    <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+                </column>
+                <column std="true">
+                    <name>FBS</name>
+                    <description>FBS designation, HHMM+DDdA (B1950)</description>
+                    <unit/>
+                    <utype>          </utype>
+                    <ucd>meta.id;meta.main</ucd>
+                    <dataType xsi:type="vod:TAPType" size="13">CHAR</dataType>
+                </column>
+    
+    #
+    # Adding the *unqualified* name to the /tables URL means we can't
+    # distinguish between the tables with the same name in different schemas.
+
+    #
+    # FIX The implementation should require the fully qualified name.
+    # FIX The implementation should return a 404 error for an unknown table.
+    #
+

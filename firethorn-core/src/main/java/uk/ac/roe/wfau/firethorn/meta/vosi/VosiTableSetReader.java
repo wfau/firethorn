@@ -645,7 +645,7 @@ public class VosiTableSetReader
                         }
                     }
                 );
-
+            
             IvoaColumn.Builder columns = table.columns().builder();
 
             while (columnreader.match(events))
