@@ -665,7 +665,7 @@ public class VizierTableSetReader
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
-            log.debug("    couht [{}]", tablecount++);
+            log.debug("    count [{}]", tablecount++);
 
             IvoaTable table = tables.build(
                 new IvoaTable.Metadata()
@@ -946,12 +946,11 @@ public class VizierTableSetReader
             log.debug("    ucd   [{}]", ucd);
             log.debug("    utype [{}]", utype);
             log.debug("    dtype [{}]", dtype);
-            log.debug("    count [{}]", columncount++);
-
             for (String flag : flags)
                 {
                 log.debug("    flag  [{}]", flag);
                 }
+            log.debug("    count [{}]", columncount++);
 
             columns.build(
                 new IvoaColumn.Metadata()

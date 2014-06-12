@@ -261,4 +261,120 @@
 
         uniqueConstraints={}
 
+# -------------------------------------------------------------------------------------------
+
+    #
+    # The extended TAPVizieR tables/xxxx endpoint is seems to be broken (for some tables).
+    # TAP tables/xxxx
+
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/AJ/139/1338/table11'
+    -- HANGS
+
+    #
+    # Standard Vizier seems to be working ok.
+    firefox 'http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=J/AJ/139/1338/table11'
+    -- WORKS
+
+
+    #
+    # Basic TAP page.
+    firefox 'http://tapvizier.u-strasbg.fr/TAPVizieR/'
+    
+        SELECT
+            TOP 5 *
+        FROM        
+            "J/AJ/139/1338/table11"
+        -- long pause (>5min), but works    
+
+
+        SELECT
+            round(("J/AJ/139/1338/table11".e_pm/9.999999999999998)::numeric,1) AS e_pm,
+            "J/AJ/139/1338/table11".recno AS recno,
+            "J/AJ/139/1338/table11".Ind AS Ind,
+            "J/AJ/139/1338/table11".Zone_1 AS Zone,
+            "J/AJ/139/1338/table11".Mmb AS Mmb,
+            "J/AJ/139/1338/table11"._MASS AS "2MASS",
+            round(("J/AJ/139/1338/table11".pmDE/9.999999999999998)::numeric,1) AS pmDE,
+            round(("J/AJ/139/1338/table11".pmRA/9.999999999999998)::numeric,1) AS pmRA,
+            "J/AJ/139/1338/table11".SpType AS SpType
+        FROM
+            vbig.c51391338t11 AS "J/AJ/139/1338/table11"
+        Limit 5
+
+    #
+    # User friendly TAP/metadata pages
+    firefox 'http://tapvizier.u-strasbg.fr/adql/'
+
+        SELECT
+            TOP 5 *
+        FROM        
+            "J/AJ/139/1338/table11"
+        -- long pause (>5min), but works    
+
+# -------------------------------------------------------------------------------------------
+
+    DAL Sessions for IVOA Interop October 2012 
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpOct2012DAL
+
+     	"VizieR implementation and TAP improvements"
+        http://wiki.ivoa.net/internal/IVOA/InterOpOct2012DAL/TAPVizieR_DAL.pdf
+
+        presented by "Sebastien Derriere" <sebastien.derriere@astro.unistra.fr>
+        written by "François Ochsenbein" <francois.ochsenbein@astro.unistra.fr>
+
+
+    ADASS 2012 – Urbana
+    "TAPVizieR, a new way to acess the VizieR database"
+    http://cdsweb.u-strasbg.fr/~landais/presentations/posterADASSTAPVizieR.pdf
+        written by "Gilles Landais" <gilles.landais@astro.unistra.fr>
+
+    --------------------
+
+    To : "Gilles Landais" <gilles.landais@astro.unistra.fr>
+
+    I'm experimenting with using data from your TAPVizieR service.
+
+    I'm looking at your extension of the /tables endpoint to
+    provide the metadata for each table as a separate call.
+
+    I'm using the TAP /tables endpoint listed in your presentation
+    at the 2012 interop at Sao Paulo.
+
+     	"VizieR implementation and TAP improvements"
+        http://wiki.ivoa.net/internal/IVOA/InterOpOct2012DAL/TAPVizieR_DAL.pdf
+
+    and ADASS 2012
+
+        "TAPVizieR, a new way to acess the VizieR database"
+        http://cdsweb.u-strasbg.fr/~landais/presentations/posterADASSTAPVizieR.pdf
+
+
+    The initial query to list all the tables works fine.
+
+        http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables
+
+    Howerer, at the moment your TAP service seems to be having some problems
+    with some of the tables.
+
+    A query to get the metadata for a table like "J/AJ/139/1338/table11"
+    may take over 5 min to execute.
+
+        http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/AJ/139/1338/table11
+
+    The TAP service itself seems to have simlar problems
+           
+        http://tapvizier.u-strasbg.fr/TAPVizieR/
+        
+            SELECT
+                COUNT(*)
+            FROM        
+                "J/AJ/139/1338/table11"
+
+        
+
+
+
+
+
+
 

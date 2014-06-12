@@ -1,0 +1,142 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# TAP services in the VO
+# http://registry.euro-vo.org/result.jsp?searchMethod=XPathQLSearch&select=%23ServiceType%23%3D%27TableAccess%27
+
+
+#
+# GAIA prototype TAP service 
+# http://geadev.esac.esa.int/tap-dev/tap
+
+# VOSI capabilities
+#
+    curl 'http://geadev.esac.esa.int/tap-dev/tap/capabilities' | xmllint --format - > gaia-capabilities.xml
+
+
+    The /tables endpoint isn't listed in the capabilities - should it be ?
+
+    The outer element has the right namespace (from the prefix), but none of the others do.
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vosi:capabilities
+            xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:tr="http://www.ivoa.net/xml/TAP/v0.1"
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/TAP/v0.1 http://www.ivoa.net/xml/TAP/v0.1
+                ">
+
+                <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+                ....
+                </capability>
+            ....
+
+        </vosi:capabilities>
+
+    Either - prefix all of them, or set the global namespace for the document.
+
+# VOSI tables
+#
+
+    curl 'http://geadev.esac.esa.int/tap-dev/tap/tables'       | xmllint --format - > gaia-tabledata.xml
+
+    The outer element has the right namespace (from the prefix), but none of the others do.
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vod:tableset
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1"
+            xmlns:gaiatap="http://esa.int/xml/GaiaTap"
+            xsi:type="vod:TableSet"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VODataService/v1.1 http://www.ivoa.net/xml/VODataService/v1.1
+                http://esa.int/xml/GaiaTap http://geadev.esac.esa.int/tap-dev/xml/esaGaiaAttributes.xsd
+                ">
+            <schema>
+            <name>public</name>
+                <table type="base_table" gaiatap:size="1000">
+
+        </vod:tableset>
+
+    Either - prefix all of them, or set the global namespace for the document.
+
+    ------
+    
+    We have a TWOMASS table we can experiment with.
+
+    <table type="base_table" gaiatap:size="941986000">
+        <name>public.twomass_psc</name>
+        <description>2 MASS PSC</description>
+        <column std="false">
+            <name>decl</name>
+            <description/>
+            <unit/>
+            <ucd>pos.eq.dec;meta.main</ucd>
+            <utype>Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C2</utype>
+            <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+            <flag>indexed</flag>
+        </column>
+        <column std="false">
+            <name>id_tmass</name>
+            <description/>
+            <unit/>
+            <ucd/>
+            <utype/>
+            <dataType xsi:type="vod:TAPType">BIGINT</dataType>
+            <flag>indexed</flag>
+        </column>
+        <column std="false">
+            <name>ra</name>
+            <description/>
+            <unit/>
+            <ucd>pos.eq.ra;meta.main</ucd>
+            <utype>Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1</utype>
+            <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+            <flag>indexed</flag>
+        </column>
+        <column std="false">
+            <name>twomass_psc_oid</name>
+            <description/>
+            <unit/>
+            <ucd/>
+            <utype/>
+            <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+            <flag>indexed</flag>
+        </column>
+
+    ------
+
+    Load the metadata for the gaia TAP service.
+    Create an OGSA-DAI TAPResource. 
+    Set the IvoaResource ogsa-id.
+    
+    Inport the IvoaTable into our AdqlSchema
+    Run a query.
+    
+
+
+
+    

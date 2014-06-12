@@ -17,7 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.vosi;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,6 +59,21 @@ public class VosiTableSetReader
      * 
      */
     protected static final String NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
+
+    /**
+     * Read data from a {@link URL} to update an {@link IvoaResource}. 
+     *
+     */
+    public void inport(final URL endpoint, final IvoaResource resource)
+    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, IOException
+        {
+        this.inport(
+            new InputStreamReader(
+                endpoint.openConnection().getInputStream()
+                ),
+            resource
+            );
+        }
 
     /**
      * Read data from a {@link Reader} to update an {@link IvoaResource}. 

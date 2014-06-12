@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.FileReader;
+import java.net.URL;
 
 import org.junit.Test;
 
@@ -64,6 +65,42 @@ public class VosiTableSetReaderTestCase
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/vizier-tableset.xml"
+                ),
+            resource
+            );
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-3"
+            );
+        
+        VosiTableSetReader reader = new VosiTableSetReader(); 
+
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/gaia-tableset.xml"
+                ),
+            resource
+            );
+        }
+    
+    @Test
+    public void test004()
+    throws Exception
+        {
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-4"
+            );
+        
+        VosiTableSetReader reader = new VosiTableSetReader(); 
+
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/cadc-tableset.xml"
                 ),
             resource
             );
