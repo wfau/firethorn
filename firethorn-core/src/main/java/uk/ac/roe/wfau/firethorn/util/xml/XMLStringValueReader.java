@@ -122,9 +122,8 @@ implements XMLObjectReader<String>
     /**
      * Process our element content.
      *
-     *
      */
-    public String content(final XMLEventReader reader)
+    protected String content(final XMLEventReader reader)
     throws XMLParserException, XMLReaderException
         {
         log.debug("content(XMLEventReader)");

@@ -53,6 +53,14 @@ public class VizierTableSetReader
     extends XMLReaderImpl
     implements XMLReader
     {
+
+    /**
+     * Debug count of objects.
+     * 
+     */
+    private static int schemacount = 0 ;
+    private static int tablecount  = 0 ;
+    private static int columncount = 0 ;
     
     /**
      * The VODataService namespace URI, [{@value}].
@@ -455,7 +463,8 @@ public class VizierTableSetReader
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
-
+            log.debug("    count [{}]", schemacount++);
+            
             IvoaSchema schema = schemas.build(
                 new IvoaSchema.Metadata()
                     {
@@ -656,6 +665,7 @@ public class VizierTableSetReader
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
+            log.debug("    couht [{}]", tablecount++);
 
             IvoaTable table = tables.build(
                 new IvoaTable.Metadata()
@@ -890,7 +900,7 @@ public class VizierTableSetReader
          * 
          */
         private final XMLStringValueReader flagreader ;
-        
+
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaColumn.Builder}. 
          *
@@ -910,13 +920,16 @@ public class VizierTableSetReader
                 );
                 
             final String name  = simplify(namereader.read(params.events())); 
+// TODO XMLReaderMap.
+// Can the elements be out of order ?            
+            
             final String title = titlereader.read(params.events());
             final String text  = textreader.read(params.events()); 
             final String unit  = unitreader.read(params.events()); 
-            final String ucd   = ucdreader.read(params.events()); 
             final String utype = utypereader.read(params.events()); 
+            final String ucd   = ucdreader.read(params.events()); 
             final String dtype = dtypereader.read(params.events()); 
-            
+
             List<String> flags = new ArrayList<String>();
             while(flagreader.match(params.events()))
                 {
@@ -933,6 +946,8 @@ public class VizierTableSetReader
             log.debug("    ucd   [{}]", ucd);
             log.debug("    utype [{}]", utype);
             log.debug("    dtype [{}]", dtype);
+            log.debug("    count [{}]", columncount++);
+
             for (String flag : flags)
                 {
                 log.debug("    flag  [{}]", flag);
