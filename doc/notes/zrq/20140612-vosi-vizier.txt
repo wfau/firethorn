@@ -20,3 +20,43 @@
 #
 #
 
+# -------------------------------------------------------------------------------------------
+# Push an updated properties file to our test VM.
+#[user@desktop]
+
+    scp "${HOME}/firethorn.properties" "user@testvm:firethorn.properties"
+
+# -------------------------------------------------------------------------------------------
+# Login to test VM and run the tests.
+#[user@desktop]
+
+    ssh "user@testvm"
+
+# -------------------------------------------------------------------------------------------
+# Fix the JDBC URL hostname and port.
+#[user@testvm]
+
+    vi "${HOME}/firethorn.properties"
+
+    -   firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ011103DEV
+    +   firethorn.meta.url=jdbc:jtds:sqlserver://ramses2:1433/FirethornMetadataZRQ011103DEV
+
+    ....
+    
+
+# -------------------------------------------------------------------------------------------
+# Fix the JDBC URL hostname and port.
+#[user@testvm]
+
+    pushd firethorn/clone/
+
+        hg pull
+        hg update '1.11.4-zrq-tableset'
+    
+            mvn -P clean install
+
+
+mvn -D skipTests=false -D test=VizierTableSetReaderTestCase clean test
+
+
+

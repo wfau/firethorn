@@ -38,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
+import uk.ac.roe.wfau.firethorn.meta.vosi.VizierTableSetReader.TableSetReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
@@ -55,13 +56,27 @@ public class VosiTableSetReader
     {
 
     /**
+     * Debug count of objects.
+     * 
+     */
+    private static int schemacount = 0 ;
+    private static int tablecount  = 0 ;
+    private static int columncount = 0 ;
+    
+    /**
      * The VODataService namespace URI, [{@value}].
      * 
      */
-    protected static final String NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
+    protected static final String VOD_NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
 
     /**
-     * Read data from a {@link URL} to update an {@link IvoaResource}. 
+     * The VOSITables namespace URI, [{@value}].
+     * 
+     */
+    protected static final String VOS_NAMESPACE_URI = "http://www.ivoa.net/xml/VOSITables/v1.0";
+
+    /**
+     * Read data from a {@link URL} and update an {@link IvoaResource}. 
      *
      */
     public void inport(final URL endpoint, final IvoaResource resource)
@@ -76,7 +91,7 @@ public class VosiTableSetReader
         }
 
     /**
-     * Read data from a {@link Reader} to update an {@link IvoaResource}. 
+     * Read data from a {@link Reader} and update an {@link IvoaResource}. 
      *
      */
     public void inport(final Reader reader, final IvoaResource resource)
@@ -91,23 +106,48 @@ public class VosiTableSetReader
         }
 
     /**
+     * A {@link TableSetReader} for the {@link #VOS_NAMESPACE_URI} namespace.
+     * 
+     */
+    private TableSetReader vosreader  = new TableSetReader(
+        VOS_NAMESPACE_URI
+        );
+
+    /**
+     * A {@link TableSetReader} for the {@link #VOD_NAMESPACE_URI} namespace.
+     * 
+     */
+    private TableSetReader vodreader = new TableSetReader(
+        VOD_NAMESPACE_URI
+        );
+
+    /**
      * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
      *
      */
     public void inport(final XMLEventReader events, final IvoaResource resource)
     throws XMLParserException, XMLReaderException, DuplicateEntityException
         {
-        reader.inport(
-            events,
-            resource
-            );
+        if (vosreader.match(events))
+            {
+            vosreader.inport(
+                events,
+                resource
+                );
+            }
+        else if (vodreader.match(events))
+            {
+            vodreader.inport(
+                events,
+                resource
+                );
+            }
+        else {
+            throw new XMLParserException(
+                "Expected [" + TableSetReader.ELEMENT_NAME + "] element"
+                );
+            }
         }
-
-    /**
-     * Our {@link TableSetReader}.
-     * 
-     */
-    private TableSetReader reader = new TableSetReader();
 
     /**
      * Our name regex {@link Pattern pattern}.
@@ -117,8 +157,7 @@ public class VosiTableSetReader
     
     /**
      * Remove any prefixes from a name.
-     * 
-     * It looks like the table themselves contain a '.' dot.
+     * It looks like the table themselves can contain a '.' dot.
      * Not good :-(
      *  
      *  <table type="base_table">
@@ -187,7 +226,7 @@ public class VosiTableSetReader
         public TableSetReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -281,7 +320,7 @@ public class VosiTableSetReader
         public SchemaReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -388,6 +427,7 @@ public class VosiTableSetReader
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
+            log.debug("    count [{}]", schemacount++);
 
             IvoaSchema schema = schemas.build(
                 new IvoaSchema.Metadata()
@@ -476,7 +516,7 @@ public class VosiTableSetReader
         public TableReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -593,6 +633,7 @@ public class VosiTableSetReader
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    utype [{}]", utype);
+            log.debug("    count [{}]", tablecount++);
 
             IvoaTable table = tables.build(
                 new IvoaTable.Metadata()
@@ -686,7 +727,7 @@ public class VosiTableSetReader
         public ColumnReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -853,6 +894,7 @@ public class VosiTableSetReader
                 {
                 log.debug("    flag  [{}]", flag);
                 }
+            log.debug("    count [{}]", columncount++);
 
             columns.build(
                 new IvoaColumn.Metadata()
@@ -954,7 +996,7 @@ public class VosiTableSetReader
         public ForeignKeyReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -1066,7 +1108,6 @@ public class VosiTableSetReader
     /**
      * An {@link XMLReader} for [{@value ForeignPairReader#ELEMENT_NAME}] elements.
      *
-     *
      */
     public static class ForeignPairReader
     extends XMLReaderImpl
@@ -1085,7 +1126,7 @@ public class VosiTableSetReader
         public ForeignPairReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }

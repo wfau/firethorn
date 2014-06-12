@@ -66,7 +66,13 @@ public class VizierTableSetReader
      * The VODataService namespace URI, [{@value}].
      * 
      */
-    protected static final String NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
+    protected static final String VOD_NAMESPACE_URI = "http://www.ivoa.net/xml/VODataService/v1.1";
+
+    /**
+     * The VOSITables namespace URI, [{@value}].
+     * 
+     */
+    protected static final String VOS_NAMESPACE_URI = "http://www.ivoa.net/xml/VOSITables/v1.0";
 
     /**
      * Inner class to hold our processing state.
@@ -142,6 +148,22 @@ public class VizierTableSetReader
         }
 
     /**
+     * A {@link TableSetReader} for the VODataService namespace.
+     * 
+     */
+    private TableSetReader vosreader  = new TableSetReader(
+        VOS_NAMESPACE_URI
+        );
+
+    /**
+     * A {@link TableSetReader} for the VOSITables namespace.
+     * 
+     */
+    private TableSetReader vodreader = new TableSetReader(
+        VOD_NAMESPACE_URI
+        );
+
+    /**
      * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
      *
      */
@@ -149,15 +171,15 @@ public class VizierTableSetReader
     throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
         {
         log.debug("Inport [{}]", params.endpoint());
-        if (left.match(params.events()))
+        if (vosreader.match(params.events()))
             {
-            left.inport(
+            vosreader.inport(
                 params
                 );
             }
-        else if (right.match(params.events()))
+        else if (vodreader.match(params.events()))
             {
-            right.inport(
+            vodreader.inport(
                 params
                 );
             }
@@ -167,23 +189,7 @@ public class VizierTableSetReader
                 );
             }
         }
-
-    /**
-     * A {@link TableSetReader} with no namespace URI.
-     * 
-     */
-    private TableSetReader left  = new TableSetReader(
-        null
-        );
-
-    /**
-     * A {@link TableSetReader} with the default namespace.
-     * 
-     */
-    private TableSetReader right = new TableSetReader(
-        NAMESPACE_URI
-        );
-
+    
     /**
      * Our name regex {@link Pattern pattern}.
      * 
@@ -262,7 +268,7 @@ public class VizierTableSetReader
         public TableSetReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -356,7 +362,7 @@ public class VizierTableSetReader
         public SchemaReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -548,7 +554,7 @@ public class VizierTableSetReader
         public TableReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -780,7 +786,7 @@ public class VizierTableSetReader
         public ColumnReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -1043,7 +1049,7 @@ public class VizierTableSetReader
         public ForeignKeyReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
@@ -1176,7 +1182,7 @@ public class VizierTableSetReader
         public ForeignPairReader()
             {
             this(
-                NAMESPACE_URI,
+                VOD_NAMESPACE_URI,
                 ELEMENT_NAME
                 );
             }
