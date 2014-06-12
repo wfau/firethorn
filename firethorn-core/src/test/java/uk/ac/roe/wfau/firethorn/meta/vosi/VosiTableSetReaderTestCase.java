@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.vosi;
 import java.io.FileReader;
 import java.net.URL;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -30,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  *
  *
  */
+@Slf4j
 public class VosiTableSetReaderTestCase
     extends TestBase
     {
@@ -43,6 +46,7 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
+        log.debug("-- Reading [cadc-tableset.xml] --");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/cadc-tableset.xml"
@@ -61,6 +65,7 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
+        log.debug("-- Reading [gaia-tableset.xml] --");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/gaia-tableset.xml"
@@ -79,6 +84,7 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
+        log.debug("-- Reading [gavo-tableset.xml] --");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/gavo-tableset.xml"
@@ -97,15 +103,17 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
+        log.debug("-- Reading [vizier-tableset.xml] --");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/vizier-tableset.xml"
                 ),
             resource
             );
+        log.debug("-- Reading [vizier-twomass.xml] --");
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/original/vizier-twomass-tableset.xml"
+                "src/test/data/vosi/original/vizier-twomass.xml"
                 ),
             resource
             );
