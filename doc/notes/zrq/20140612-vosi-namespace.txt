@@ -213,4 +213,18 @@
 
 
 
+# -------------------------------------------------------------------------------------------
+# Login to SQLServer and examine the metadata database.
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+
+
 
