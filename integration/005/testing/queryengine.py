@@ -142,7 +142,7 @@ class QueryEngine(object):
         query_json = {'syntax' : {'friendly' : 'A problem occurred while running your query', 'status' : 'Error' }}
         
         try:
-            logging.log(30, "Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+            logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
     
             data = urllib.urlencode({ query_status_update : "RUNNING"})
             
@@ -152,8 +152,8 @@ class QueryEngine(object):
             query_json =  json.loads(f_update.read())
             query_status = query_json["status"]
             
-            logging.log(30, "Query started on Firethorn:")
-            logging.log(30, url)
+            logging.info("Query started on Firethorn:")
+            logging.info( url)
        
             while query_status=="PENDING" or query_status=="RUNNING" and elapsed_time<MAX_ELAPSED_TIME:
                 query_json = json.loads(get_status(url))

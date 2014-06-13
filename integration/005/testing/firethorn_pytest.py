@@ -24,9 +24,8 @@ class firethorn_pytest(unittest.TestCase):
         self.expected_rows=10
         
         try:
-            self.atlasprivate =  dict(line.strip().split('=') for line in open(firethorn_config.firethorn_ini ))['atlasprivate']
-            self.atlasworkspace = dict(line.strip().split('=') for line in open(firethorn_config.firethorn_ini ))['adqlspace']
-            self.atlasschema = dict(line.strip().split('=') for line in open(firethorn_config.firethorn_ini ))['atlasschema']
+            fEng = firethorn_helpers.FirethornEngine()
+            self.atlasschema = fEng.adqlschema
             self.schema_name = ""
             self.schema_alias = ""
             try :
@@ -38,8 +37,8 @@ class firethorn_pytest(unittest.TestCase):
                 response_exc.close()
             except Exception as e:
                 logging.exception(e)
-            self.starting_catalogue_id = firethorn_helpers.create_initial_workspace(self.schema_name, self.schema_alias, self.atlasschema)
-            logging.log(30, self.starting_catalogue_id)
+            self.starting_catalogue_id = fEng.create_initial_workspace(self.schema_name, self.schema_alias, self.atlasschema)
+            logging.info(self.starting_catalogue_id)
         except Exception as e:
        
             logging.exception("Error during firethorn initialization")
