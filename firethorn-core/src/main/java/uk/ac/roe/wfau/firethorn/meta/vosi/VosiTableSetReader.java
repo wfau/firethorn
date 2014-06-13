@@ -38,11 +38,12 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
-import uk.ac.roe.wfau.firethorn.meta.vosi.VizierTableSetReader.TableSetReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderImpl;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderSet;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderSetImpl;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
 
 /**
@@ -98,7 +99,7 @@ public class VosiTableSetReader
     throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException
         {
         this.inport(
-            wrap(
+            xmlreader(
                 reader
                 ),
             resource
@@ -757,97 +758,8 @@ public class VosiTableSetReader
                 namespace,
                 "column"
                 );
-
-            namereader = new XMLStringValueReader(
-                namespace,
-                "name",
-                true
-                );
-            titlereader = new XMLStringValueReader(
-                namespace,
-                "title",
-                false
-                );
-            textreader = new XMLStringValueReader(
-                namespace,
-                "description",
-                false
-                );
-            unitreader = new XMLStringValueReader(
-                namespace,
-                "unit",
-                false
-                );
-            ucdreader = new XMLStringValueReader(
-                namespace,
-                "ucd",
-                false
-                );
-            utypereader = new XMLStringValueReader(
-                namespace,
-                "utype",
-                false
-                );
-            dtypereader = new XMLStringValueReader(
-                namespace,
-                "dataType",
-                false
-                );
-            flagreader = new XMLStringValueReader(
-                namespace,
-                "flag",
-                false
-                );
             }
 
-        /**
-         * An {@link XMLStringValueReader} to read the column name.
-         * 
-         */
-        private final XMLStringValueReader namereader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column title.
-         * 
-         */
-        private final XMLStringValueReader titlereader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column description.
-         * 
-         */
-        private final XMLStringValueReader textreader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column units.
-         * 
-         */
-        private final XMLStringValueReader unitreader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column UCD.
-         * 
-         */
-        private final XMLStringValueReader ucdreader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column uType.
-         * 
-         */
-        private final XMLStringValueReader utypereader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column dType.
-         * 
-         */
-        private final XMLStringValueReader dtypereader ;
-
-        /**
-         * An {@link XMLStringValueReader} to read the column flags.
-         * 
-         */
-        private final XMLStringValueReader flagreader ;
-        
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaColumn.Builder}. 
          *
@@ -855,121 +767,283 @@ public class VosiTableSetReader
         public void inport(final XMLEventReader events, final IvoaColumn.Builder columns)
         throws XMLParserException, XMLReaderException, DuplicateEntityException
             {
-            StartElement start = this.start(
-                events
-                );
 
-            Boolean std = new Boolean(
-                attrib(
-                    start,
-                    "std"
-                    )
-                );
-                
-            final String name  = simplify(namereader.read(events)); 
-            final String title = titlereader.read(events);
-            final String text  = textreader.read(events); 
-            final String unit  = unitreader.read(events); 
-            final String ucd   = ucdreader.read(events); 
-            final String utype = utypereader.read(events); 
-            final String dtype = dtypereader.read(events); 
-            
-            List<String> flags = new ArrayList<String>();
-            while(flagreader.match(events))
+            /**
+             * Inner class to implement a non-static reader.
+             *
+             */
+            class ColumnReaderInner
+            implements IvoaColumn.Metadata
                 {
-                flags.add(
-                    flagreader.read(events)
-                    );
-                }
 
-            log.debug("Column [{}]", name);
-            log.debug("    std   [{}]", std);
-            log.debug("    title [{}]", title);
-            log.debug("    text  [{}]", text);
-            log.debug("    unit  [{}]", unit);
-            log.debug("    ucd   [{}]", ucd);
-            log.debug("    utype [{}]", utype);
-            log.debug("    dtype [{}]", dtype);
-            for (String flag : flags)
-                {
-                log.debug("    flag  [{}]", flag);
-                }
-            log.debug("    count [{}]", columncount++);
+                Boolean std  ;
 
-            columns.build(
-                new IvoaColumn.Metadata()
+                String name  ; 
+                String title ;
+                String text  ; 
+                String unit  ; 
+                String utype ; 
+                String ucd   ; 
+                String dtype ; 
+
+                private List<String> flags = new ArrayList<String>();
+                private XMLReaderSet<String> readers = new XMLReaderSetImpl<String>();
+
+
+                @Override
+                public Adql adql()
                     {
-                    @Override
-                    public String name()
-                        {
-                        return name ;
-                        }
+                    return null;
+                    }
 
-                    @Override
-                    public Adql adql()
-                        {
-                        return null;
-                        }
+                @Override
+                public String name()
+                    {
+                    return this.name;
+                    }
 
-                    @Override
-                    public Ivoa ivoa()
+                @Override
+                public Ivoa ivoa()
+                    {
+                    return new Ivoa()
                         {
-                        return new Ivoa()
+                        @Override
+                        public String name()
                             {
-                            @Override
-                            public String name()
-                                {
-                                return name;
-                                }
+                            return name;
+                            }
+                        @Override
+                        public String title()
+                            {
+                            return title;
+                            }
+                        @Override
+                        public String text()
+                            {
+                            return text;
+                            }
+                        @Override
+                        public String utype()
+                            {
+                            return utype;
+                            }
+                        @Override
+                        public String dtype()
+                            {
+                            return dtype;
+                            }
+                        @Override
+                        public String unit()
+                            {
+                            return unit;
+                            }
+                        @Override
+                        public Integer arraysize()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public String ucd()
+                            {
+                            return ucd;
+                            }
+                        };
+                    }
 
+                public ColumnReaderInner(final XMLEventReader events)
+                throws XMLParserException, XMLReaderException
+                    {
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "name"
+                            ){
                             @Override
-                            public String title()
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
                                 {
+                                name = super.read(
+                                    events
+                                    );
+                                return name ;
+                                }
+                            }
+                        );
+
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "title"
+                            ){
+                            @Override
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
+                                {
+                                title = super.read(
+                                    events
+                                    );
                                 return title;
                                 }
+                            }
+                        );
 
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "description"
+                            ){
                             @Override
-                            public String text()
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
                                 {
+                                text = super.read(
+                                    events
+                                    );
                                 return text;
                                 }
-
+                            }
+                        );
+                    
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "unit"
+                            ){
                             @Override
-                            public String utype()
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
                                 {
-                                return utype;
-                                }
-
-                            @Override
-                            public String dtype()
-                                {
-                                return dtype;
-                                }
-
-                            @Override
-                            public String unit()
-                                {
+                                unit = super.read(
+                                    events
+                                    );
                                 return unit;
                                 }
+                            }
+                        );
 
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "ucd"
+                            ){
                             @Override
-                            public Integer arraysize()
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
                                 {
-                                return null;
-                                }
-
-                            @Override
-                            public String ucd()
-                                {
+                                ucd = super.read(
+                                    events
+                                    );
                                 return ucd;
                                 }
-                            };
-                        }
-                    }
-                );
+                            }
+                        );
 
-            this.done(
-                events
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "utype"
+                            ){
+                            @Override
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
+                                {
+                                utype = super.read(
+                                    events
+                                    );
+                                return utype;
+                                }
+                            }
+                        );
+
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "dataType"
+                            ){
+                            @Override
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
+                                {
+                                dtype = super.read(
+                                    events
+                                    );
+                                return dtype;
+                                }
+                            }
+                        );
+
+                    readers.add(
+                        new XMLStringValueReader(
+                            qname().getNamespaceURI(),
+                            "flag"
+                            ){
+                            @Override
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
+                                {
+                                String flag = super.read(
+                                    events
+                                    );
+                                flags.add(
+                                    flag
+                                    );
+                                return flag;
+                                }
+                            }
+                        );
+
+                    //
+                    // Process our start element.
+                    StartElement start = start(
+                        events
+                        );
+                    this.std = new Boolean(
+                        attrib(
+                            start,
+                            "std"
+                            )
+                        );
+                    //
+                    // Process our inner elements. 
+                    while(readers.match(events))
+                        {
+                        readers.read(
+                            events
+                            );
+                        }
+                    log.debug("Column [{}]", name);
+                    log.debug("    std   [{}]", std);
+                    log.debug("    title [{}]", title);
+                    log.debug("    text  [{}]", text);
+                    log.debug("    unit  [{}]", unit);
+                    log.debug("    ucd   [{}]", ucd);
+                    log.debug("    utype [{}]", utype);
+                    log.debug("    dtype [{}]", dtype);
+                    for (String flag : flags)
+                        {
+                        log.debug("    flag  [{}]", flag);
+                        }
+                    log.debug("    count [{}]", columncount++);
+                    //
+                    // Check name != null.
+                    if (name == null)
+                        {
+                        throw new XMLReaderException(
+                            "Column name required"
+                            );
+                        }
+                    //
+                    // Process our end element.
+                    done(
+                        events
+                        );
+                    }
+                }
+            
+            columns.build(
+                new ColumnReaderInner(
+                    events
+                    )
                 );
             }
         }

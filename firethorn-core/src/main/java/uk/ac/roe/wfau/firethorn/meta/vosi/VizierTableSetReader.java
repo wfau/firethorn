@@ -122,7 +122,7 @@ public class VizierTableSetReader
             if (events == null)
                 {
                 log.debug("Openning [{}]", endpoint);
-                events = wrap(
+                events = xmlreader(
                     new InputStreamReader(
                         endpoint.openConnection().getInputStream()
                         )

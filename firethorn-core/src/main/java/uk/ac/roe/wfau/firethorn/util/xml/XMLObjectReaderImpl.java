@@ -70,7 +70,7 @@ implements XMLObjectReader<ObjectType>
     throws XMLReaderException, XMLParserException
         {
         return this.read(
-            wrap(
+            xmlreader(
                 reader
                 )
             );

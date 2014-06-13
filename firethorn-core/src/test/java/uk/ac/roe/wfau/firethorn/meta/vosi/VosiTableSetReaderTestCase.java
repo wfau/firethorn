@@ -100,9 +100,7 @@ public class VosiTableSetReaderTestCase
         IvoaResource resource = factories().ivoa().resources().create(
             "urn:test-4"
             );
-        
         VosiTableSetReader reader = new VosiTableSetReader(); 
-
         log.debug("-- Reading [vizier-tableset.xml] --");
         reader.inport(
             new FileReader(
@@ -110,6 +108,89 @@ public class VosiTableSetReaderTestCase
                 ),
             resource
             );
+        }
+
+    @Test
+    public void test005()
+    throws Exception
+        {
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-5"
+            );
+        VosiTableSetReader reader = new VosiTableSetReader(); 
+        log.debug("-- Reading [vizier-twomass.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/vizier-twomass.xml"
+                ),
+            resource
+            );
+        }
+    
+    //@Test
+    public void test006()
+    throws Exception
+        {
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-6"
+            );
+        VosiTableSetReader reader = new VosiTableSetReader(); 
+        log.debug("-- Reading [vizier-tableset.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/vizier-tableset.xml"
+                ),
+            resource
+            );
+        log.debug("-- Reading [vizier-twomass.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/vizier-twomass.xml"
+                ),
+            resource
+            );
+        }
+
+    //@Test
+    public void test007()
+    throws Exception
+        {
+        IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-7"
+            );
+        VosiTableSetReader reader = new VosiTableSetReader(); 
+        log.debug("-- Reading [cadc-tableset.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/cadc-tableset.xml"
+                ),
+            resource
+            );
+ 
+        log.debug("-- Reading [gaia-tableset.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/gaia-tableset.xml"
+                ),
+            resource
+            );
+       
+        log.debug("-- Reading [gavo-tableset.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/gavo-tableset.xml"
+                ),
+            resource
+            );
+        
+        log.debug("-- Reading [vizier-tableset.xml] --");
+        reader.inport(
+            new FileReader(
+                "src/test/data/vosi/original/vizier-tableset.xml"
+                ),
+            resource
+            );
+
         log.debug("-- Reading [vizier-twomass.xml] --");
         reader.inport(
             new FileReader(

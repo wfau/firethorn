@@ -110,12 +110,6 @@ public class XMLParserImpl
         return this.qname;
         }
 
-    /**
-     * Peek at the next event from an {@link XMLEventReader} to see if it matches this reader.
-     * This may skip processing instructions, comments and whitespace to find the next element.
-     * @returns true if the next {@link XMLEvent} matches.
-     *
-     */
     @Override
     public boolean match(final XMLEventReader reader)
     throws XMLParserException
@@ -129,12 +123,6 @@ public class XMLParserImpl
             );
         }
 
-    /**
-     * Check if an {@link XMLEvent} matches this reader.
-     * @param event The {@link XMLEvent} to check.
-     * @returns true if the {@link XMLEvent} matches.
-     *
-     */
     @Override
     public boolean match(final XMLEvent event)
     throws XMLParserException
@@ -154,12 +142,6 @@ public class XMLParserImpl
         return false;
         }
 
-    /**
-     * Check if a {@link StartElement} matches this reader.
-     * @param event The {@link StartElement} to check.
-     * @returns true if the {@link StartElement} matches.
-     *
-     */
     @Override
     public boolean match(final StartElement event)
     throws XMLParserException
@@ -172,12 +154,6 @@ public class XMLParserImpl
             );
         }
 
-    /**
-     * Check if the next event is a {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName} and remove it from the stream.
-     * This method will skip processing instructions, comments and whitespace to locate the next END_ELEMENT.
-     * @throws {@link XMLReaderException} if the event does not match.
-     *
-     */
     @Override
     public void done(final XMLEventReader reader)
     throws XMLParserException
@@ -204,12 +180,6 @@ public class XMLParserImpl
             }
         }
 
-    /**
-     * Check if an event is a {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName}.
-     * @returns true if the event matches.
-     * @throws {@link XMLReaderException} if the event does not match.
-     *
-     */
     @Override
     public boolean done(final XMLEvent event)
     throws XMLParserException
@@ -230,11 +200,11 @@ public class XMLParserImpl
         }
 
     /**
-     * Check if an event is an {@link EndElement} that matches our {@link QName}.
-     * @returns true if the event matches.
+     * Check if an {@link EndElement} matches our {@link QName}.
+     * @returns true if the {@link EndElement} matches.
      *
      */
-    public boolean done(final EndElement event)
+    protected boolean done(final EndElement event)
     throws XMLParserException
         {
         log.debug("done(EndElement)");
@@ -251,7 +221,7 @@ public class XMLParserImpl
      * @return true if the {@link QName} matches.
      * 
      */
-    public boolean match(final QName theirs)
+    protected boolean match(final QName theirs)
     throws XMLParserException
         {
         log.debug("match(QName)");
@@ -304,10 +274,6 @@ public class XMLParserImpl
             }
         }
     
-    /**
-     * Read the next event from an XMLEventReader.
-     *
-     */
     @Override
     public XMLEvent next(final XMLEventReader reader)
     throws XMLParserException
@@ -327,16 +293,6 @@ public class XMLParserImpl
             }
         }
 
-    /**
-     * Skip processing instructions, comments and whitespace to peek at the next
-     * element event. This method will step the XMLEventReader forwards,
-     * skipping DTD, PROCESSING_INSTRUCTION, START_DOCUMENT, COMMENT and
-     * whitespace events.
-     *
-     * @return The next element event in the stream or null if the next event is
-     *         not an element.
-     *
-     */
     @Override
     public XMLEvent peek(final XMLEventReader reader)
     throws XMLParserException
@@ -430,16 +386,6 @@ public class XMLParserImpl
             }
         }
 
-    /**
-     * Get the start of next XML element. In order to find the next XML element
-     * this method will skip DTD, PROCESSING_INSTRUCTION, START_DOCUMENT COMMENT
-     * and whitespace events.
-     *
-     * @return The start of the next XML element, or null if a END_ELEMENT event is encountered.
-     * @throws XMLReaderException
-     *             If an unexpected event is encountered, or the stream is empty.
-     *
-     */
     @Override
     public StartElement start(final XMLEventReader reader)
     throws XMLParserException
@@ -472,7 +418,7 @@ public class XMLParserImpl
                 //
                 // Start element is what we are looking for.
                 case XMLStreamConstants.START_ELEMENT:
-                    return validate(
+                    return verify(
                         event.asStartElement()
                         );
                 //
@@ -500,14 +446,13 @@ public class XMLParserImpl
         }
 
     /**
-     * Validate a start element is the one we expected.
-     *
-     * @param element The element to check.
-     * @return The element.
-     * @throws XMLParserException If the element is not what we expect.
+     * Verify a {@link StartElement} matches our {@link QName}.
+     * @param element The {@link StartElement} to check.
+     * @return The {@link StartElement}.
+     * @throws XMLParserException If the {@link StartElement} is not what we expect.
      *
      */
-    public StartElement validate(final StartElement  element)
+    public StartElement verify(final StartElement  element)
     throws XMLParserException
         {
         log.debug("start(StartElement)");
@@ -532,7 +477,7 @@ public class XMLParserImpl
         }
 
     /**
-     * Decode an XML event type into a human readable name.
+     * Decode a {@link XMLEvent} type into a human readable name.
      *
      */
     public static String typename(final XMLEvent event)
@@ -541,7 +486,7 @@ public class XMLParserImpl
         }
 
     /**
-     * Decode an XML event type into a human readable name.
+     * Decode a {@link XMLEvent} type into a human readable name.
      *
      */
     public static String typename(final int type)

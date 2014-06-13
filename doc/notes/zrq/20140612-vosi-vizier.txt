@@ -55,8 +55,10 @@
     
             mvn -P clean install
 
+            pushd firethorn-core
+            
+                mvn -D skipTests=false -D test=VizierTableSetReaderTestCase test
 
-mvn -D skipTests=false -D test=VizierTableSetReaderTestCase clean test
 
 
 

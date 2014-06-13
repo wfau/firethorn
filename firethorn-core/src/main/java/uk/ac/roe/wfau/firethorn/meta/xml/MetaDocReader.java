@@ -69,7 +69,7 @@ implements XMLReader
     throws XMLParserException, XMLReaderException, NameNotFoundException
         {
         return inport(
-            wrap(
+            xmlreader(
                 source
                 ),
             base,

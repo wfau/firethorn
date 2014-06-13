@@ -43,7 +43,7 @@ implements XMLObjectReader<String>
         {
         this(
             qname,
-            true
+            false
             );
         }
 
