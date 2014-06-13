@@ -29,18 +29,19 @@ public class BaseFactoriesImpl
     implements BaseFactories
     {
     @Autowired
-    protected BaseTable.EntityResolver<?,?> tables;
+    protected BaseTable.EntityResolver tables;
     @Override
-    public BaseTable.EntityResolver<?,?> tables()
+    public BaseTable.EntityResolver tables()
         {
         return this.tables;
         }
 
     @Autowired
-    protected BaseSchema.EntityResolver<?,?> schema;
+    protected BaseSchema.EntityResolver schema;
     @Override
-    public BaseSchema.EntityResolver<?,?> schema()
+    public BaseSchema.EntityResolver schema()
         {
         return this.schema;
         }
+
     }

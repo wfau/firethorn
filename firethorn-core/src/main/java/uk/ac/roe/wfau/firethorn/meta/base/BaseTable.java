@@ -73,8 +73,8 @@ extends BaseComponent
      * {@link Entity.EntityResolver} interface.
      *
      */
-    public static interface EntityResolver<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
-    extends Entity.EntityFactory<TableType>
+    public static interface EntityResolver
+    extends Entity.EntityFactory<BaseTable<?,?>>
         {
         }
 

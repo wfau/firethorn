@@ -55,7 +55,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test002()
     throws Exception
         {
@@ -74,7 +74,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test003()
     throws Exception
         {
@@ -93,7 +93,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test004()
     throws Exception
         {
@@ -110,7 +110,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test005()
     throws Exception
         {

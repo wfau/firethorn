@@ -28,12 +28,12 @@ public interface BaseFactories
      * Our table resolver.
      *
      */
-    public BaseTable.EntityResolver<?,?> tables();
+    public BaseTable.EntityResolver tables();
 
     /**
      * Our schema resolver.
      *
      */
-    public BaseSchema.EntityResolver<?,?> schema();
+    public BaseSchema.EntityResolver schema();
 
     }

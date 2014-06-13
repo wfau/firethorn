@@ -85,28 +85,25 @@ implements BaseTable<TableType, ColumnType>
      *
      */
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
-    
+
     /**
      * {@link BaseTable.EntityResolver} implementation.
      *
+     */
     @Repository
-    public static abstract class Resolver<TableType extends BaseTable<TableType, ?>>
-    extends AbstractEntityFactory<TableType>
-    implements BaseTable.EntityResolver<TableType>
+    public static abstract class EntityResolver
+    extends AbstractEntityFactory<BaseTable<?,?>>
+    implements BaseTable.EntityResolver
         {
- *
- * Do we ever have proxies that aren't Adql ?
- * 
         @Override
         public Class<?> etype()
             {
             return BaseTableEntity.class;
             }
 
-        //TODO do we need this in the base class ? 
         @Override
         @SelectMethod
-        public TableType select(final Identifier ident)
+        public BaseTable<?,?> select(final Identifier ident)
         throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
@@ -124,9 +121,7 @@ implements BaseTable<TableType, ColumnType>
                 final AdqlTable table = schema.tables().select(
                     proxy.base()
                     );
-
-                // TODO nasty class cast :-(
-                return (TableType) table;
+                return table;
                 }
             else {
                 return super.select(
@@ -134,52 +129,6 @@ implements BaseTable<TableType, ColumnType>
                     );
                 }
             }
-
-        @Autowired
-        protected BaseTable.IdentFactory idents ;
-        @Override
-        public BaseTable.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        protected BaseTable.LinkFactory<TableType> links ;
-        @Override
-        public BaseTable.LinkFactory<TableType> links()
-            {
-            return this.links;
-            }
-
-        //
-        // TODO Change this to use a regex to match the alias.
-        protected static final String PREFIX = "BASE_" ;
-
-        // TODO Move the parsing to the AliasFactory.   
-        @Override
-        public TableType resolve(final String alias)
-        throws EntityNotFoundException
-            {
-            return this.select(
-                this.idents.ident(
-                    alias.substring(
-                        PREFIX.length()
-                        )
-                    )
-                );
-            }
-        }
-*/
-    
-    /**
-     * {@link BaseTable.EntityResolver} implementation.
-     *
-     */
-    @Repository
-    public static abstract class EntityResolver<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-    extends AbstractEntityFactory<TableType>
-    implements BaseTable.EntityResolver<SchemaType, TableType>
-        {
         }
     
     /**

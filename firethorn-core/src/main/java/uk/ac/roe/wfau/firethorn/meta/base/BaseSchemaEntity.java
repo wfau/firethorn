@@ -26,10 +26,17 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -37,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -55,47 +63,20 @@ implements BaseSchema<SchemaType, TableType>
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
 
     /**
-     * {@link BaseSchema.Resolver} implementation.
+     * {@link BaseSchema.EntityResolver} implementation.
      *
-    @Repository
-    public static class EntityResolver<SchemaType extends BaseSchema<SchemaType, ?>>
-    extends AbstractEntityFactory<SchemaType>
-    implements BaseSchema.EntityResolver<SchemaType>
-        {
-        }
      */
-
-    /**
-     * {@link BaseSchema.Resolver} implementation.
-     *
     @Repository
-    public static class Resolver<SchemaType extends BaseSchema<SchemaType, ?>>
-    extends AbstractEntityFactory<SchemaType>
-    implements BaseSchema.Resolver<SchemaType>
+    public static abstract class EntityResolver
+    extends AbstractEntityFactory<BaseSchema<?,?>>
+    implements BaseSchema.EntityResolver
         {
         @Override
         public Class<?> etype()
             {
             return BaseSchemaEntity.class;
             }
-
-        @Autowired
-        protected BaseSchema.IdentFactory idents ;
-        @Override
-        public BaseSchema.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        protected BaseSchema.LinkFactory<SchemaType> links;
-        @Override
-        public BaseSchema.LinkFactory<SchemaType> links()
-            {
-            return this.links;
-            }
         }
-     */
 
     /**
      * Protected constructor.
