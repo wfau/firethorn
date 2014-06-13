@@ -36,7 +36,6 @@ import uk.org.ogsadai.tuple.TupleTypes;
 
 /**
  * Spring MVC controller for our Attribute mapping service.
- * @todo Move to firethorn-ogsadai-metadata-server
  *
  */
 @Slf4j

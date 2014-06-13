@@ -737,6 +737,11 @@ public class JdbcResourceEntity
                 {
                 return jdbcmeta();
                 }
+            @Override
+            public Ogsa ogsa()
+                {
+                return ogsameta();
+                }
             };
         }
     }

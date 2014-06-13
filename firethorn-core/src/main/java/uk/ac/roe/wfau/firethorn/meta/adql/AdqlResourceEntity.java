@@ -277,6 +277,11 @@ implements AdqlResource
         {
         return new AdqlResource.Metadata()
             {
+            @Override
+            public Ogsa ogsa()
+                {
+                return ogsameta();
+                }
             };
         }
     }

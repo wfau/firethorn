@@ -29,10 +29,10 @@ public class OgsaColumResolverImpl
     {
 
     @Override
-    public BaseColumn<?> resolve(String alias) throws EntityNotFoundException
+    public BaseColumn<?> resolve(String alias)
+    throws EntityNotFoundException
         {
         // TODO Auto-generated method stub
         return null;
         }
-
     }

@@ -322,6 +322,11 @@ public class IvoaResourceEntity
                     {
                     };
                 }
+            @Override
+            public Ogsa ogsa()
+                {
+                return ogsameta();
+                }
             };
         }
     }

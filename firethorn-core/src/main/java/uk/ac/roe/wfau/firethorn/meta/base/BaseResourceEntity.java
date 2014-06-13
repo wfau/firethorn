@@ -24,6 +24,8 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
 /**
  *
  *
@@ -94,5 +96,21 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
     public void ogsaid(final String ogsaid)
         {
         this.ogsaid = ogsaid;
+        }
+
+    /**
+     * Generate the {@link BaseResource.Metadata.Ogsa ogsa} metadata.
+     *
+     */
+    protected BaseResource.Metadata.Ogsa ogsameta()
+        {
+        return new BaseResource.Metadata.Ogsa()
+            {
+            @Override
+            public String id()
+                {
+                return BaseResourceEntity.this.ogsaid;
+                }
+            };
         }
     }

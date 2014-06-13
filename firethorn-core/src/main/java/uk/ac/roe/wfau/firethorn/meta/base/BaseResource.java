@@ -165,14 +165,12 @@ extends BaseComponent
              *
              */
             public String id();
-
-            /**
-             * Set the OGSA-DAI resource ID.
-             *
-             */
-            public void id(final String id);
-            
             }
+        /**
+         * The OGSA-DAI metadata.
+         * 
+         */
+        public Ogsa ogsa();
         }
 
     /**
