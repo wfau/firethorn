@@ -17,25 +17,30 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
  *
  *
  */
 @Component
-public class OgsaColumResolverImpl
-    implements OgsaColumnResolver
+public class OgsaResolversImpl
+implements OgsaResolvers
     {
-
+    @Autowired
+    private OgsaTableResolver tables;
     @Override
-    public BaseColumn<?> resolve(String alias)
-    throws EntityNotFoundException
+    public OgsaTableResolver tables()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return this.tables;
+        }
+
+    @Autowired
+    private OgsaColumnResolver columns;
+    @Override
+    public OgsaColumnResolver columns()
+        {
+        return this.columns;
         }
     }

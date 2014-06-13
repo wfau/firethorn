@@ -76,15 +76,6 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         }
 
     /**
-     * {@link BaseSchema.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseSchema.EntityResolver<IvoaResource, IvoaSchema>
-        {
-        }
-
-    /**
      * {@link BaseSchema.EntityFactory} interface.
      *
      */

@@ -41,8 +41,8 @@ extends AbstractComponent
 implements Entity.EntityFactory<EntityType>
     {
 
-    @Override
-    public abstract Entity.IdentFactory idents();
+    //@Override
+    //public abstract Entity.IdentFactory idents();
 
     /**
      * Get the class of Entity we manage.
@@ -53,34 +53,6 @@ implements Entity.EntityFactory<EntityType>
      */
     public abstract Class<?> etype();
 
-    /**
-     * Get a named query.
-     *
-     */
-    public Query query(final String name)
-        {
-        return factories().hibernate().query(
-            name
-            );
-        }
-
-    /**
-     * Insert a new Entity into the database.
-     *
-     */
-    @SuppressWarnings("unchecked")
-    protected EntityType insert(final EntityType entity)
-        {
-        log.debug("insert [{}]", entity);
-        return (EntityType) factories().hibernate().insert(
-            entity
-            );
-        }
-
-    /**
-     * Select a specific Entity by Identifier.
-     *
-     */
     @Override
     @SelectMethod
     public EntityType select(final Identifier ident)
@@ -104,28 +76,28 @@ implements Entity.EntityFactory<EntityType>
         }
 
     /**
-     * Delete an Entity.
+     * Get a named query.
      *
-    @DeleteMethod
-    public void delete(final EntityType entity)
-        {
-        //log.debug("delete [{}]", entity);
-        if (etype().isInstance(entity))
-            {
-            factories().hibernate().delete(
-                entity
-                );
-            }
-        else {
-            log.error(
-                "Delete not supported for [" + entity.getClass().getName() + "]"
-                );
-            throw new IllegalArgumentException(
-                "Delete not supported for [" + entity.getClass().getName() + "]"
-                );
-            }
-        }
      */
+    protected Query query(final String name)
+        {
+        return factories().hibernate().query(
+            name
+            );
+        }
+
+    /**
+     * Insert a new Entity into the database.
+     *
+     */
+    @SuppressWarnings("unchecked")
+    protected EntityType insert(final EntityType entity)
+        {
+        log.debug("insert [{}]", entity);
+        return (EntityType) factories().hibernate().insert(
+            entity
+            );
+        }
 
     /**
      * Flush changes to the database.
@@ -150,7 +122,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @SelectMethod
-    public EntityType single(final Query query)
+    protected EntityType single(final Query query)
     throws EntityNotFoundException
         {
         @SuppressWarnings("unchecked")
@@ -172,7 +144,7 @@ implements Entity.EntityFactory<EntityType>
      */
     @SelectMethod
     @SuppressWarnings("unchecked")
-    public EntityType first(final Query query)
+    protected EntityType first(final Query query)
         {
         return (EntityType) factories().hibernate().first(
             query
@@ -184,7 +156,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @SelectMethod
-    public Iterable<EntityType> iterable(final Query query)
+    protected Iterable<EntityType> iterable(final Query query)
         {
         return new Iterable<EntityType>()
             {
@@ -211,7 +183,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @SelectMethod
-    public Iterable<EntityType> iterable(final int limit, final Query query)
+    protected Iterable<EntityType> iterable(final int limit, final Query query)
         {
         return new Iterable<EntityType>()
             {
@@ -239,7 +211,7 @@ implements Entity.EntityFactory<EntityType>
      *
      */
     @SelectMethod
-    public Iterable<EntityType> iterable(final int first, final int limit, final Query query)
+    protected Iterable<EntityType> iterable(final int first, final int limit, final Query query)
         {
         return new Iterable<EntityType>()
             {
@@ -269,7 +241,7 @@ implements Entity.EntityFactory<EntityType>
      */
     @SelectMethod
     @SuppressWarnings("unchecked")
-    public List<EntityType> list(final Query query)
+    protected List<EntityType> list(final Query query)
         {
         try {
             return query.list();
@@ -288,7 +260,7 @@ implements Entity.EntityFactory<EntityType>
      */
     @SelectMethod
     @SuppressWarnings("unchecked")
-    public List<EntityType> list(final int limit, final Query query)
+    protected List<EntityType> list(final int limit, final Query query)
         {
         try {
             query.setMaxResults(limit);
@@ -308,7 +280,7 @@ implements Entity.EntityFactory<EntityType>
      */
     @SelectMethod
     @SuppressWarnings("unchecked")
-    public List<EntityType> list(final int first, final int limit, final Query query)
+    protected List<EntityType> list(final int first, final int limit, final Query query)
         {
         try {
             query.setFirstResult(first);
@@ -328,7 +300,7 @@ implements Entity.EntityFactory<EntityType>
      * TODO .. lots !!
      *
      */
-    public String searchParam(final String text)
+    protected String searchParam(final String text)
         {
         //
         // Using wildcards in a HQL query with named parameters.

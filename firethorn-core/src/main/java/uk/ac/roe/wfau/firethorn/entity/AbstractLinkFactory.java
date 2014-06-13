@@ -71,29 +71,47 @@ implements Entity.LinkFactory<EntityType>
         return builder.toString();
         }
 
+    protected Matcher matcher(String link)
+        {
+        log.debug("matcher(String)");
+        log.debug("  link    [{}]", link);
+        log.debug("  pattern [{}]", this.pattern.pattern());
+        return this.pattern.matcher(
+            link
+            );
+        }
+
     @Override
-    public Identifier ident(final String string)
+    public boolean matches(String link)
+        {
+        log.debug("matchs(String)");
+        log.debug("  link    [{}]", link);
+        log.debug("  pattern [{}]", this.pattern.pattern());
+        final Matcher matcher = this.matcher(
+            link
+            );
+        return matcher.matches();
+        }
+
+    @Override
+    public Identifier ident(final String link)
         {
         log.debug("parse(String)");
-        log.debug("  string  [{}]", string);
+        log.debug("  link    [{}]", link);
         log.debug("  pattern [{}]", this.pattern.pattern());
 
-        final Matcher matcher = this.pattern.matcher(
-            string
+        final Matcher matcher = matcher(
+            link
             );
         if (matcher.matches())
             {
-            log.debug("PASS");
-            final String temp = matcher.group(1);
-            log.debug("  temp [{}]", temp);
             return this.idents.ident(
-                temp
+                matcher.group(1)
                 );
             }
         else {
-            log.debug("FAIL");
             throw new IdentifierFormatException(
-                string
+                link
                 );
             }
         }

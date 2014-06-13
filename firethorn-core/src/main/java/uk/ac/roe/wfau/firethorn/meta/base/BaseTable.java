@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -70,12 +71,20 @@ extends BaseComponent
         }
 
     /**
-     * {@link Entity.EntityResolver} interface.
+     * A resolver to resolve links. 
      *
      */
     public static interface EntityResolver
-    extends Entity.EntityFactory<BaseTable<?,?>>
         {
+        /**
+         * Resolve a link into a {@link BaseTable}.
+         * @throws IdentifierFormatException
+         * @throws IdentifierNotFoundException 
+         * @throws EntityNotFoundException 
+         *  
+         */
+        public BaseTable<?,?> resolve(String link)
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
         }
 
     /**

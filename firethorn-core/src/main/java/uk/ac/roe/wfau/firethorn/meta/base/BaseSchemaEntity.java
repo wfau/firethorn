@@ -35,10 +35,14 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -67,15 +71,45 @@ implements BaseSchema<SchemaType, TableType>
      *
      */
     @Repository
-    public static abstract class EntityResolver
-    extends AbstractEntityFactory<BaseSchema<?,?>>
+    public static class EntityResolver
     implements BaseSchema.EntityResolver
         {
         @Override
-        public Class<?> etype()
+        public BaseSchema<?,?> resolve(String link)
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
             {
-            return BaseSchemaEntity.class;
+            if (adql.matches(link))
+                {
+                return adql.resolve(
+                    link
+                    );
+                }
+            else if (jdbc.matches(link))
+                {
+                return jdbc.resolve(
+                    link
+                    );
+                }
+            if (ivoa.matches(link))
+                {
+                return ivoa.resolve(
+                    link
+                    );
+                }
+            else {
+                throw new EntityNotFoundException(
+                    "Unable to find match for [" + link + "]"
+                    );
+                }
             }
+
+        @Autowired
+        private AdqlSchema.LinkFactory adql;
+        @Autowired
+        private JdbcSchema.LinkFactory jdbc;
+        @Autowired
+        private IvoaSchema.LinkFactory ivoa;
+        
         }
 
     /**

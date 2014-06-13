@@ -59,15 +59,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     extends BaseSchema.LinkFactory<AdqlSchema>
         {
         }
-    /**
-     * {@link BaseSchema.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseSchema.EntityResolver<AdqlResource, AdqlSchema>
-        {
-        }
-
+    
     /**
      * {@link BaseSchema.EntityFactory} interface.
      *

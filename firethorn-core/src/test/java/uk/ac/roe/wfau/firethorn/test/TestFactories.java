@@ -24,6 +24,8 @@ import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
@@ -34,8 +36,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -53,7 +53,7 @@ public class TestFactories
     public static class JobFactories
         {
         @Component
-        public static class BaseFactories
+        public static class BaseJobFactories
             {
             @Component
             public static class IdentFactory
@@ -64,7 +64,6 @@ public class TestFactories
                     {
                     }
                 }
-
             @Component
             public static class LinkFactory
             extends AbstractLinkFactory<Job>
@@ -76,9 +75,15 @@ public class TestFactories
                         "/job/base"
                         );
                     }
+                @Override
+                public Job resolve(String link)
+                throws IdentifierFormatException,IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
-
         @Component
         public static class TestJobFactories
             {
@@ -102,6 +107,14 @@ public class TestFactories
                     super(
                         "/job/test"
                         );
+                    }
+
+                @Override
+                public TestJob resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -134,6 +147,14 @@ public class TestFactories
                         "/auth/identity"
                         );
                     }
+
+                @Override
+                public Identity resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -160,6 +181,14 @@ public class TestFactories
                     super(
                         "/auth/community"
                         );
+                    }
+
+                @Override
+                public Community resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -188,6 +217,14 @@ public class TestFactories
                         "/operation"
                         );
                     }
+
+                @Override
+                public Operation resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -214,6 +251,14 @@ public class TestFactories
                     super(
                         "/authentication"
                         );
+                    }
+
+                @Override
+                public Authentication resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -246,6 +291,14 @@ public class TestFactories
                     super(
                         "/config/property"
                         );
+                    }
+
+                @Override
+                public ConfigProperty resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -296,6 +349,14 @@ public class TestFactories
                         "/adql/query"
                         );
                     }
+
+                @Override
+                public AdqlQuery resolve(String link)
+                    throws IdentifierFormatException,  IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -322,6 +383,14 @@ public class TestFactories
                     super(
                         "/adql/column"
                         );
+                    }
+
+                @Override
+                public AdqlColumn resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -350,6 +419,14 @@ public class TestFactories
                         "/adql/table"
                         );
                     }
+
+                @Override
+                public AdqlTable resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -377,6 +454,14 @@ public class TestFactories
                         "/adql/schema"
                         );
                     }
+
+                @Override
+                public AdqlSchema resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -403,6 +488,14 @@ public class TestFactories
                     super(
                         "/adql/resource"
                         );
+                    }
+
+                @Override
+                public AdqlResource resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -436,6 +529,14 @@ public class TestFactories
                         "/jdbc/column"
                         );
                     }
+
+                @Override
+                public JdbcColumn resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -462,6 +563,14 @@ public class TestFactories
                     super(
                         "/jdbc/table"
                         );
+                    }
+
+                @Override
+                public JdbcTable resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -490,6 +599,14 @@ public class TestFactories
                         "/jdbc/schema"
                         );
                     }
+
+                @Override
+                public JdbcSchema resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -516,6 +633,14 @@ public class TestFactories
                     super(
                         "/jdbc/resource"
                         );
+                    }
+
+                @Override
+                public JdbcResource resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -549,6 +674,14 @@ public class TestFactories
                         "/ivoa/column"
                         );
                     }
+
+                @Override
+                public IvoaColumn resolve(String link)
+                    throws IdentifierFormatException,IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -575,6 +708,14 @@ public class TestFactories
                     super(
                         "/ivoa/table"
                         );
+                    }
+
+                @Override
+                public IvoaTable resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }
@@ -603,6 +744,14 @@ public class TestFactories
                         "/ivoa/schema"
                         );
                     }
+
+                @Override
+                public IvoaSchema resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
                 }
             }
 
@@ -629,6 +778,14 @@ public class TestFactories
                     super(
                         "/ivoa/resource"
                         );
+                    }
+
+                @Override
+                public IvoaResource resolve(String link)
+                    throws IdentifierFormatException, IdentifierNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
                     }
                 }
             }

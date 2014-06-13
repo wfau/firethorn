@@ -81,15 +81,6 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
 
     /**
-     * {@link BaseTable.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseTable.EntityResolver<IvoaSchema, IvoaTable>
-        {
-        }
-    
-    /**
      * {@link BaseTable.EntityFactory} interface.
      *
      */
@@ -99,17 +90,11 @@ extends BaseTable<IvoaTable, IvoaColumn>
         /**
          * Create a new {@link IvoaTable}.
          *
-        public IvoaTable create(final IvoaSchema parent, final String name);
-         */
-
-        /**
-         * Create a new {@link IvoaTable}.
-         *
          */
         public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta);
         
         /**
-         * Our local {@link IvoaColumn} implementation.
+         * Our local {@link IvoaColumn.EntityFactory} implementation.
          * @todo - move to services
          *
          */

@@ -115,6 +115,7 @@ public interface ComponentFactories
      * Our generic Job<?> factories.
      *
      */
+    @Deprecated
     public Job.Services jobs();
 
     /**

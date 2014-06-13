@@ -22,6 +22,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -35,16 +36,12 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -91,46 +88,47 @@ implements BaseTable<TableType, ColumnType>
      *
      */
     @Repository
-    public static abstract class EntityResolver
-    extends AbstractEntityFactory<BaseTable<?,?>>
+    public static class EntityResolver
     implements BaseTable.EntityResolver
         {
         @Override
-        public Class<?> etype()
+        public BaseTable<?,?> resolve(String link)
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
             {
-            return BaseTableEntity.class;
-            }
-
-        @Override
-        @SelectMethod
-        public BaseTable<?,?> select(final Identifier ident)
-        throws IdentifierNotFoundException
-            {
-            log.debug("select(Identifier) [{}]", ident);
-            if (ident instanceof ProxyIdentifier)
+            if (adql.matches(link))
                 {
-                log.debug("-- proxy identifier");
-                final ProxyIdentifier proxy = (ProxyIdentifier) ident;
-
-                log.debug("-- parent schema");
-                final AdqlSchema schema = factories().adql().schemas().select(
-                    proxy.parent()
+                return adql.resolve(
+                    link
                     );
-
-                log.debug("-- proxy table");
-                final AdqlTable table = schema.tables().select(
-                    proxy.base()
+                }
+            else if (jdbc.matches(link))
+                {
+                return jdbc.resolve(
+                    link
                     );
-                return table;
+                }
+            if (ivoa.matches(link))
+                {
+                return ivoa.resolve(
+                    link
+                    );
                 }
             else {
-                return super.select(
-                    ident
+                throw new EntityNotFoundException(
+                    "Unable to find match for [" + link + "]"
                     );
                 }
             }
+
+        @Autowired
+        private AdqlTable.LinkFactory adql;
+        @Autowired
+        private JdbcTable.LinkFactory jdbc;
+        @Autowired
+        private IvoaTable.LinkFactory ivoa;
+        
         }
-    
+
     /**
      * {@link BaseTable.EntityFactory} implementation.
      *

@@ -95,11 +95,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * {@link BaseTable.EntityResolver} interface.
      *
-     */
     public static interface EntityResolver
-    extends BaseTable.EntityResolver<JdbcSchema, JdbcTable>
+    extends BaseTable.EntityResolver<JdbcTable>
         {
         }
+     */
     
     /**
      * Builder interface that manipulates the 'real' JDBC tables.

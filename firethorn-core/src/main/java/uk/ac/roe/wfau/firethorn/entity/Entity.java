@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -57,13 +58,13 @@ public interface Entity
         public String alias(final EntityType entity);
 
         /**
-         * Check if an alias matches our syntax.
+         * Check if this {@link AliasFactory} can parse a {@link String}.
          *
          */
         public boolean matches(final String alias);
         
         /**
-         * Resolve an alias.
+         * Resolve an alias into an entity.
          *
          */
         public EntityType resolve(final String alias)
@@ -78,16 +79,30 @@ public interface Entity
     public interface LinkFactory<EntityType extends Entity>
         {
         /**
-         * Create an Entity URI (as a string).
+         * Create an link (as a string).
          *
          */
         public String link(final EntityType entity);
 
         /**
-         * Parse a link into an Identifier.
+         * Check if this {@link LinkFactory} can parse a {@link String}.
+         * 
+         */
+        public boolean matches(final String link);
+
+        /**
+         * Resolve a link into an {@link Identifier}.
          *
          */
-        public Identifier ident(final String string);
+        public Identifier ident(final String link);
+
+        /**
+         * Resolve a link into an entity.
+         *
+         */
+        public EntityType resolve(final String link)
+        throws IdentifierFormatException, IdentifierNotFoundException;
+
         }
 
     /**
@@ -100,12 +115,12 @@ public interface Entity
          * Create an Identifier from a String.
          *
          */
-        public Identifier ident(final String string);
+        public Identifier ident(final String string)
+        throws IdentifierFormatException;
         }
 
     /**
      * Common interface for an Entity factory.
-     * @todo Separate Entity Resolver and Factory interfaces.
      *
      */
     public interface EntityFactory<EntityType extends Entity>
