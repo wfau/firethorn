@@ -86,15 +86,6 @@ extends BaseColumn<JdbcColumn>
         }
 
     /**
-     * {@link BaseColumn.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseColumn.EntityResolver<JdbcTable, JdbcColumn>
-        {
-        }
-    
-    /**
      * {@link BaseColumn.EntityFactory} interface.
      *
      */

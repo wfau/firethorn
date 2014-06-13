@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -176,7 +177,8 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
      * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
-     * @throws IdentifierNotFoundException If the {@link BaseTable} could not be found.
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
      * @todo Rejects duplicate names.
      * 
      */
@@ -189,15 +191,13 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
         return created(
             schema.tables().create(
                 ((type != null) ? type : CopyDepth.FULL),
-                factories().base().tables().select(
-                    factories().base().tables().links().ident(
-                        base
-                        )
+                factories().base().tables().resolve(
+                    base
                     )
                 )
             );
@@ -212,7 +212,8 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @param name   The name of the new {@link AdqlTable}, [{@value #IMPORT_TABLE_NAME}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
-     * @throws IdentifierNotFoundException If the {@link BaseTable} could not be found.
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
      * @todo Rejects duplicate names.
      * @todo Make name optional, default to the base name.
      * 
@@ -228,15 +229,13 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final String base,
         @RequestParam(value=IMPORT_NAME, required=true)
         final String name
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", type, base, name);
         return created(
             schema.tables().create(
                 type,
-                factories().base().tables().select(
-                    factories().base().tables().links().ident(
-                        base
-                        )
+                factories().base().tables().resolve(
+                    base
                     ),
                 name
                 )

@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -96,6 +98,15 @@ public class TestJobController
 	            entity
 	            );
 	        }
+
+        @Override
+        public TestJob resolve(String link)
+            throws IdentifierFormatException, IdentifierNotFoundException,
+            EntityNotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
 	    }
 
     @Override

@@ -101,7 +101,7 @@ public interface Entity
          *
          */
         public EntityType resolve(final String link)
-        throws IdentifierFormatException, IdentifierNotFoundException;
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
 
         }
 

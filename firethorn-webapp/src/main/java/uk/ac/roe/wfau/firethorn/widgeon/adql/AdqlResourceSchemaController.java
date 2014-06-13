@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -208,7 +211,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
      * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
-     * @throws IdentifierNotFoundException If the {@link BaseSchema} could not be found.
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
      * @todo Rejects duplicate names.
      * @todo Merge with next method.
      * 
@@ -222,15 +226,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final CopyDepth depth,
         @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
         return created(
             resource.schemas().create(
                 ((depth != null) ? depth : CopyDepth.FULL),
-                factories().base().schema().select(
-                    factories().base().schema().links().ident(
-                        base
-                        )
+                factories().base().schema().resolve(
+                    base
                     )
                 )
             );
@@ -245,7 +247,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @param name     The name of the new {@link AdqlSchema}, [{@value #IMPORT_SCHEMA_NAME}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
-     * @throws IdentifierNotFoundException If the {@link BaseSchema} could not be found.
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
      * @todo Rejects duplicate names.
      * @todo Make name optional, default to the base name.
      * 
@@ -261,16 +264,14 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestParam(value=IMPORT_SCHEMA_NAME, required=true)
         final String name
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(
                 ((depth != null) ? depth : CopyDepth.FULL),
                 name,
-                factories().base().schema().select(
-                    factories().base().schema().links().ident(
-                        base
-                        )
+                factories().base().schema().resolve(
+                    base
                     )
                 )
             );

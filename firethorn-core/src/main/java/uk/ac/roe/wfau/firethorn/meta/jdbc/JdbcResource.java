@@ -61,15 +61,6 @@ extends BaseResource<JdbcSchema>
         }
 
     /**
-     * {@link BaseResource.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseResource.EntityResolver<JdbcResource>
-        {
-        }
-
-    /**
      * {@link BaseResource.EntityFactory} interface.
      *
      */

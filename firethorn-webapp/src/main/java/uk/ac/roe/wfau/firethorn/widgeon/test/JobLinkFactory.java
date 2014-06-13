@@ -19,6 +19,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -56,5 +59,13 @@ implements Job.LinkFactory
             ENTITY_PATH,
             entity
             );
+        }
+
+    @Override
+    public Job resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

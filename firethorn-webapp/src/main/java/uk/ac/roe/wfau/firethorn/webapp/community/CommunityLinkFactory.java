@@ -17,9 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.community;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -61,5 +65,26 @@ implements Community.LinkFactory
             ENTITY_PATH,
             entity
             );
+        }
+
+    @Autowired
+    private Community.EntityFactory factory ;
+    @Override
+    public Community resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+        {
+        if (this.matches(link))
+            {
+            return factory.select(
+                factory.idents().ident(
+                    link
+                    )
+                );
+            }
+        else {
+            throw new EntityNotFoundException(
+                "Unable to resolve [" + link + "]"
+                );
+            }
         }
     }

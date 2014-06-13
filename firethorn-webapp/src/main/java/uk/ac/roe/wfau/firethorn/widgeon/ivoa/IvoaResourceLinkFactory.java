@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -63,5 +67,26 @@ implements IvoaResource.LinkFactory
             RESOURCE_PATH,
             entity
             );
+        }
+
+    @Autowired
+    private IvoaResource.EntityFactory factory ;
+    @Override
+    public IvoaResource resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException,EntityNotFoundException
+        {
+        if (this.matches(link))
+            {
+            return factory.select(
+                factory.idents().ident(
+                    link
+                    )
+                );
+            }
+        else {
+            throw new EntityNotFoundException(
+                "Unable to resolve [" + link + "]"
+                );
+            }
         }
     }
