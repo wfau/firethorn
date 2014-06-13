@@ -106,14 +106,6 @@ implements TestJob
             }
 
         @Autowired
-        private TestJob.Resolver resolver;
-        @Override
-        public TestJob.Resolver resolver()
-            {
-            return this.resolver;
-            }
-
-        @Autowired
         private TestJob.Factory factory;
         @Override
         public TestJob.Factory factory()
@@ -134,39 +126,6 @@ implements TestJob
     public TestJob.Services services()
         {
         return factories().tests();
-        }
-
-    /**
-     * Resolver implementation.
-     * @todo Fix this so that it can extend JobEntity.Resolver<TestJob>
-     *
-     */
-    @Repository
-    public static class Resolver
-    extends AbstractEntityFactory<TestJob>
-    implements TestJob.Resolver
-        {
-        @Override
-        public Class<?> etype()
-            {
-            return TestJobEntity.class ;
-            }
-
-        @Autowired
-        protected TestJob.LinkFactory links;
-        @Override
-        public TestJob.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        protected TestJob.IdentFactory idents;
-        @Override
-        public TestJob.IdentFactory idents()
-            {
-            return this.idents;
-            }
         }
 
     /**

@@ -34,21 +34,6 @@ public interface AdqlColumn
 extends BaseColumn<AdqlColumn>
     {
     /**
-     * {@link EntityBuilder} interface.
-     * 
-    public static interface Builder
-    extends EntityBuilder<IvoaColumn, IvoaColumn.Metadata>
-        {
-        /**
-         * Create or update a column.
-         *
-         * /
-        public IvoaColumn build(final IvoaColumn.Metadata param)
-        throws DuplicateEntityException;
-        }
-     */
-
-    /**
      * {@link BaseColumn.IdentFactory} interface.
      *
      */
@@ -81,15 +66,6 @@ extends BaseColumn<AdqlColumn>
      */
     public static interface LinkFactory
     extends BaseColumn.LinkFactory<AdqlColumn>
-        {
-        }
-
-    /**
-     * {@link BaseColumn.EntityResolver} interface.
-     *
-     */
-    public static interface EntityResolver
-    extends BaseColumn.EntityResolver<AdqlTable, AdqlColumn>
         {
         }
 

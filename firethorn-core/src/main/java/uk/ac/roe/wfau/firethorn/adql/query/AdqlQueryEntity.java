@@ -284,14 +284,6 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.Resolver resolver;
-        @Override
-        public AdqlQuery.Resolver resolver()
-            {
-            return this.resolver;
-            }
-
-        @Autowired
         private AdqlQuery.EntityFactory factory;
         @Override
         public AdqlQuery.EntityFactory factory()
@@ -325,7 +317,6 @@ implements AdqlQuery, AdqlParserQuery
     /**
      * Resolver implementation.
      *
-     */
     @Repository
     public static class Resolver
     extends AbstractEntityFactory<AdqlQuery>
@@ -352,6 +343,7 @@ implements AdqlQuery, AdqlParserQuery
             return this.links;
             }
         }
+     */
 
     /**
      * Factory implementation.
@@ -1160,7 +1152,7 @@ implements AdqlQuery, AdqlParserQuery
                 try {
                 
                     log.debug("-- AdqlQuery resolving [{}]", ident());
-                    final AdqlQuery query = services().resolver().select(
+                    final AdqlQuery query = services().factory().select(
                             ident()
                             );
                     //
@@ -1180,7 +1172,7 @@ implements AdqlQuery, AdqlParserQuery
     
     
                     // TODO - Check for valid resource ident in prepare().
-                    final String source = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
+                    final String source = ((mode() == Mode.DIRECT) ? primary().meta().ogsa().id() : params().dqp());
                     log.debug("-- Source   [{}]", source);
                     final String tablename = query.results().jdbc().namebuilder().toString() ;
                     log.debug("-- Table    [{}]", tablename);
