@@ -429,7 +429,7 @@ public class AdqlQueryVOTableController
                     if (column.meta().adql().ucd() != null)
                         {
                         writer.append(" ucd='");
-                        writer.append(column.meta().adql().ucd().value());
+                        writer.append(column.meta().adql().ucd());
                         writer.append("'");
                         }
 

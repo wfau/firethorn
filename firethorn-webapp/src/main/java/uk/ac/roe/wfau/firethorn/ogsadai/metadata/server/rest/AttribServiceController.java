@@ -106,7 +106,7 @@ public class AttribServiceController
         ) throws EntityNotFoundException {
         log.debug("json get [{}][{}]", table, column);
         return new ColumnBean(
-            factories().base().tables().resolve(
+            factories().ogsa().tables().resolve(
                 table
                 ).columns().select(
                     column
@@ -124,16 +124,16 @@ public class AttribServiceController
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias
         ) throws EntityNotFoundException {
-        // I HATE GENERICS
+        // GENERICS :-(
         return new ColumnBean.Iter(
-            (Iterable<BaseColumn<?>>) factories().base().tables().resolve(
+            (Iterable<BaseColumn<?>>) factories().ogsa().tables().resolve(
                 alias
                 ).root().columns().select()
             );
         }
 
     /**
-     * Bean classe used by the JSON handler.
+     * Bean class used by the JSON handler.
      *
      */
     public static class ColumnBean
@@ -280,4 +280,3 @@ public class AttribServiceController
             }
         }
     }
-

@@ -79,7 +79,7 @@ public class TableMappingController
         final String alias
         ) throws EntityNotFoundException {
         return new TableMappingBean(
-            factories().base().tables().resolve(
+            factories().ogsa().tables().resolve(
                 alias
                 ).root()
             );

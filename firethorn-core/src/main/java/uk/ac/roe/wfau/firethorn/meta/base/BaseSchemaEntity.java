@@ -58,6 +58,17 @@ implements BaseSchema<SchemaType, TableType>
      * {@link BaseSchema.Resolver} implementation.
      *
     @Repository
+    public static class EntityResolver<SchemaType extends BaseSchema<SchemaType, ?>>
+    extends AbstractEntityFactory<SchemaType>
+    implements BaseSchema.EntityResolver<SchemaType>
+        {
+        }
+     */
+
+    /**
+     * {@link BaseSchema.Resolver} implementation.
+     *
+    @Repository
     public static class Resolver<SchemaType extends BaseSchema<SchemaType, ?>>
     extends AbstractEntityFactory<SchemaType>
     implements BaseSchema.Resolver<SchemaType>

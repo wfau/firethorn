@@ -170,7 +170,18 @@ implements BaseTable<TableType, ColumnType>
             }
         }
 */
-
+    
+    /**
+     * {@link BaseTable.EntityResolver} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityResolver<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
+    extends AbstractEntityFactory<TableType>
+    implements BaseTable.EntityResolver<SchemaType, TableType>
+        {
+        }
+    
     /**
      * {@link BaseTable.EntityFactory} implementation.
      *

@@ -34,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResolvers;
 
 /**
  * Our component factories.
@@ -149,6 +150,14 @@ public class ComponentFactoriesImpl
     public JdbcFactories jdbc()
         {
         return this.jdbc;
+        }
+
+    @Autowired
+    protected OgsaResolvers ogsa;
+    @Override
+    public OgsaResolvers ogsa()
+        {
+        return this.ogsa;
         }
 
     @Autowired

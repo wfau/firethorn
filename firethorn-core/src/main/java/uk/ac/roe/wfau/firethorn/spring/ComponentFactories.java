@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResolvers;
 
 
 /**
@@ -74,6 +75,12 @@ public interface ComponentFactories
      */
     public JdbcFactories jdbc();
 
+    /**
+     * Our OGSA-DAI component factories.
+     *
+     */
+    public OgsaResolvers ogsa();
+    
     /**
      * Our local Identity factory.
      *

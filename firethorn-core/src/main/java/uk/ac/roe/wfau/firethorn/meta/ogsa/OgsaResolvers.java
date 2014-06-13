@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2014 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,25 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.base;
+package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 /**
- * Our JDBC component factories
+ *
  *
  */
-public interface BaseFactories
+public interface OgsaResolvers
     {
+    /**
+     * Our {@link OgsaTableResolver}.
+     * 
+     */
+    public OgsaTableResolver tables();
 
     /**
-     * Our table resolver.
-     *
+     * Our {@link OgsaColumnResolver}.
+     * 
      */
-    public BaseTable.EntityResolver<?,?> tables();
-
-    /**
-     * Our schema resolver.
-     *
-     */
-    public BaseSchema.EntityResolver<?,?> schema();
+    public OgsaColumnResolver columns();
 
     }
