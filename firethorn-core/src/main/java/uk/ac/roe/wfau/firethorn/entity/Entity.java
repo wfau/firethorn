@@ -109,7 +109,7 @@ public interface Entity
      * Common interface for an Identifier factory.
      *
      */
-    public interface IdentFactory
+    public interface IdentFactory<EntityType extends Entity>
         {
         /**
          * Create an Identifier from a String.
@@ -117,6 +117,20 @@ public interface Entity
          */
         public Identifier ident(final String string)
         throws IdentifierFormatException;
+
+        /**
+         * Resolve an {@link Identifier} into an entity.
+         *
+        public EntityType resolve(final Identifier  ident)
+        throws IdentifierFormatException, IdentifierNotFoundException;
+         */
+
+        /**
+         * Resolve a {@link String} into an entity.
+         *
+        public EntityType resolve(final String ident)
+        throws IdentifierFormatException, IdentifierNotFoundException;
+         */
         }
 
     /**

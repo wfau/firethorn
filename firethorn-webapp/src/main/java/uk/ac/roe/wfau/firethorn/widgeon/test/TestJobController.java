@@ -331,7 +331,7 @@ public class TestJobController
         final String ident
         ) throws EntityNotFoundException {
         return bean(
-            factories().tests().resolver().select(
+            factories().tests().factory().select(
                 factories().tests().idents().ident(
                     ident
                     )
@@ -363,7 +363,8 @@ public class TestJobController
         log.debug("---- ---- ---- ----");
         log.debug("JSON update(String, Integer, Status, Integer)");
 
-        final TestJob job = factories().tests().resolver().select(
+        //TODO idents().resolve(String)
+        final TestJob job = factories().tests().factory().select(
             factories().tests().idents().ident(
                 ident
                 )
