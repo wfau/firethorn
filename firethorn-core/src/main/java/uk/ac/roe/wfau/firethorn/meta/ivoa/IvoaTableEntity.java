@@ -465,6 +465,12 @@ public class IvoaTableEntity
         }
 
     @Override
+    public AdqlQuery query()
+        {
+        return null;
+        }
+
+    @Override
     protected void scanimpl()
         {
         // TODO Auto-generated method stub

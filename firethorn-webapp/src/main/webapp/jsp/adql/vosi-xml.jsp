@@ -72,15 +72,6 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 AdqlColumn.Metadata meta = column.meta();
                 if ((meta != null) && (meta.adql() != null))
                     {
-                    if (meta.adql().ucd() != null)
-                        {
-                        %>
-                        <ucd><%= meta.adql().ucd().value() %></ucd>
-                        <%
-                        }
-                    else {
-                        %><ucd/><%
-                        }
                     if (meta.adql().units() != null)
                         {
                         %>
@@ -92,6 +83,17 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <unit/>
                         <%
                         }
+
+                    if (meta.adql().ucd() != null)
+                        {
+                        %>
+                        <ucd><%= meta.adql().ucd() %></ucd>
+                        <%
+                        }
+                    else {
+                        %><ucd/><%
+                        }
+
                     if (meta.adql().utype() != null)
                         {
                         %>
@@ -103,6 +105,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <utype/>
                         <%
                         }
+
                     if (meta.adql().type() != null)
                         {
                         if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0))

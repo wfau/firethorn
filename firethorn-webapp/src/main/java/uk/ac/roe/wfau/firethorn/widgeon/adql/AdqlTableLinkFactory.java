@@ -109,7 +109,7 @@ implements AdqlTable.LinkFactory
         if (this.matches(link))
             {
             return factory.select(
-                factory.idents().ident(
+                this.ident(
                     link
                     )
                 );

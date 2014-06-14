@@ -20,8 +20,9 @@ package uk.ac.roe.wfau.firethorn.entity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -54,6 +55,7 @@ implements Entity.LinkFactory<EntityType>
     protected final String path  ;
     protected final String delim ;
     protected final Pattern pattern ;
+    //TODO
     protected final Entity.IdentFactory idents = new AbstractIdentFactory();
 
     @Override
@@ -84,7 +86,7 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public boolean matches(String link)
         {
-        log.debug("matchs(String)");
+        log.debug("matches(String)");
         log.debug("  link    [{}]", link);
         log.debug("  pattern [{}]", this.pattern.pattern());
         final Matcher matcher = this.matcher(
@@ -96,7 +98,7 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public Identifier ident(final String link)
         {
-        log.debug("parse(String)");
+        log.debug("ident(String)");
         log.debug("  link    [{}]", link);
         log.debug("  pattern [{}]", this.pattern.pattern());
 
@@ -105,6 +107,8 @@ implements Entity.LinkFactory<EntityType>
             );
         if (matcher.matches())
             {
+            log.debug("  group[0][{}]", matcher.group(0));
+            log.debug("  group[1][{}]", matcher.group(1));
             return this.idents.ident(
                 matcher.group(1)
                 );

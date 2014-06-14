@@ -41,7 +41,7 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:test-1"
+            "urn:cadc-tableset"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -55,12 +55,12 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test002()
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:test-2"
+            "urn:gaia-tableset"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -74,12 +74,12 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test003()
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:test-3"
+            "urn:gavo-tableset"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -93,7 +93,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test004()
     throws Exception
         {
@@ -110,7 +110,7 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test005()
     throws Exception
         {
@@ -127,7 +127,7 @@ public class VosiTableSetReaderTestCase
             );
         }
     
-    //@Test
+    @Test
     public void test006()
     throws Exception
         {
@@ -151,7 +151,9 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    //@Test
+    /*
+     * 
+    @Test
     public void test007()
     throws Exception
         {
@@ -199,4 +201,6 @@ public class VosiTableSetReaderTestCase
             resource
             );
         }
+     * 
+     */
     }

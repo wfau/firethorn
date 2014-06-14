@@ -17,27 +17,45 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchemaBean;
 
 /**
- * Ident factory for <code>IvoaSchema</code>.
- * TODO
+ * Bean wrapper for <code>IvoaSchema</code>.
+ *
  */
-@Component
-public class IvoaSchemaIdentFactory
-extends WebappIdentFactory
-implements IvoaSchema.IdentFactory
+public class IvoaSchemaBean
+extends BaseSchemaBean<IvoaSchema>
     {
+    public static class Iter
+    extends AbstractEntityBeanIter<IvoaSchema, IvoaSchemaBean>
+        {
+        public Iter(final Iterable<IvoaSchema> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+
+        @Override
+        public IvoaSchemaBean bean(final IvoaSchema entity)
+            {
+            return new IvoaSchemaBean(
+                entity
+                );
+            }
+        }
+
     /**
-     * The type URI for this type.
+     * Public constructor.
      *
      */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/ivoa-schema-1.0.json"
-        );
+    public IvoaSchemaBean(final IvoaSchema entity)
+        {
+        super(
+            IvoaSchemaIdentFactory.TYPE_URI,
+            entity
+            );
+        }
     }
