@@ -245,7 +245,7 @@ implements BaseTable<TableType, ColumnType>
         nullable = true,
         updatable = true
         )
-    private Long adqlcount ;
+    protected Long adqlcount ;
     protected Long adqlcount()
         {
         if (this.adqlcount != null)

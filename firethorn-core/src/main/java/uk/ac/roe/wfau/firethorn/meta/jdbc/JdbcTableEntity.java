@@ -919,7 +919,7 @@ implements JdbcTable
                     case UNKNOWN:
                         this.adqlstatus = next ;
                         break ;
-
+//ZRQ
                     case DELETED:
                         jdbcdelete();
                         break ;
@@ -1029,15 +1029,9 @@ implements JdbcTable
         factories().jdbc().tables().driver().delete(
             JdbcTableEntity.this
             );
-        adqlcount(
-            EMPTY_COUNT_VALUE
-            );
-        adqlstatus(
-            AdqlTable.TableStatus.DELETED
-            );
-        jdbcstatus(
-            JdbcTable.TableStatus.DELETED
-            );
+        this.adqlcount  = EMPTY_COUNT_VALUE;
+        this.adqlstatus = AdqlTable.TableStatus.DELETED;
+        this.jdbcstatus = JdbcTable.TableStatus.DELETED;
         }
 
     protected void jdbcdrop()
@@ -1045,15 +1039,9 @@ implements JdbcTable
         factories().jdbc().tables().driver().drop(
             JdbcTableEntity.this
             );
-        adqlcount(
-            EMPTY_COUNT_VALUE
-            );
-        adqlstatus(
-            AdqlTable.TableStatus.DELETED
-            );
-        jdbcstatus(
-            JdbcTable.TableStatus.DROPPED
-            );
+        this.adqlcount  = EMPTY_COUNT_VALUE;
+        this.adqlstatus = AdqlTable.TableStatus.DELETED;
+        this.jdbcstatus = JdbcTable.TableStatus.DROPPED;
         }
 
     @Override

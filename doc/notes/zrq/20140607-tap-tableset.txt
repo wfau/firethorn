@@ -388,8 +388,6 @@ EOF
                 twomassjdbc.twomass_psc
             "
 
-
-
         source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
             SELECT
                 TOP 123
@@ -407,4 +405,27 @@ EOF
 The IvoaColumn type is not being populated - so fails to create matching JdbcColumn.
 Need to have a unit test for this.
  
+The data is in the vosi XML document
+
+      <column std="false">
+        <name>ra</name>
+        <description/>
+        <unit/>
+        <ucd>pos.eq.ra;meta.main</ucd>
+        <utype>Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1</utype>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+        <flag>indexed</flag>
+      </column>
+
+But it doesn't make it into the database
+
+    "meta": {
+        "adql": {
+            "arraySize": null,
+            "units": null,
+            "utype": "Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1",
+            "ucd": "pos.eq.ra;meta.main",
+            "type": null
+            }
+        }
 
