@@ -974,6 +974,23 @@ public class VosiTableSetReader
 
                     readers.add(
                         new XMLStringValueReader(
+                            VOD_NAMESPACE_URI,
+                            "dataType"
+                            ){
+                            @Override
+                            public String read(final XMLEventReader events)
+                            throws XMLParserException, XMLReaderException
+                                {
+                                dtype = super.read(
+                                    events
+                                    );
+                                return dtype;
+                                }
+                            }
+                        );
+                    
+                    readers.add(
+                        new XMLStringValueReader(
                             qname().getNamespaceURI(),
                             "flag"
                             ){
