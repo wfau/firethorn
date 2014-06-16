@@ -47,6 +47,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
@@ -577,10 +578,37 @@ public class IvoaColumnEntity
         if (ivoa.dtype() != null)
             {
             this.adqldtype(ivoa.dtype());
+            
+            if (this.adqltype == null)
+            	{
+//TODO Needs proper parser for the known type strings.
+            	try {
+	            	this.adqltype = AdqlColumn.Type.type(
+	            		ivoa.dtype()
+	        			);
+            		}
+            	catch (Exception ouch)
+            		{
+            		this.adqltype = null;
+            		log.warn("Failed to parse ADQL dtype [{}]", ivoa.dtype());
+            		}
+            	}
             }
+        else {
+//TODO        	
+// Unknown data type - useless unless we cast to char ?
+// We could find out from the results ...
+        	}
         if (ivoa.arraysize() != null)
             {
-            this.adqlsize(ivoa.arraysize());
+            this.adqlsize(
+        		ivoa.arraysize()
+            	);
             }
+        else {
+            this.adqlsize(
+        		BaseColumn.NON_ARRAY_SIZE
+            	);
+        	}
         }
     }

@@ -446,12 +446,27 @@ public class JdbcColumnEntity
             table,
             meta.jdbc().name(),
             meta.jdbc().type(),
-            meta.jdbc().size()
+            safeint(meta.jdbc().size())
             );
         this.update(
             meta
             );
         }
+
+    /**
+     * Convert a JdbcColumn.Metadata array size into an int value.
+     * 
+     */
+    public static int safeint(final Integer size)
+    	{
+    	if (size != null)
+    		{
+    		return size ;
+    		}
+    	else {
+    		return 0 ;
+    		}
+    	}
     
     /**
      * Protected constructor.
@@ -481,13 +496,10 @@ public class JdbcColumnEntity
         super(table, name);
         this.table    = table;
         this.jdbctype = type ;
-        this.jdbcsize = size ;
-        if (this.jdbcsize <= 0)
-            {
-            this.jdbcsize = resource().jdbcsize(
-                type
-                );
-            }
+        //TODO use size for arrays
+		this.jdbcsize = resource().jdbcsize(
+				type
+	    	);
         }
 
     @Override

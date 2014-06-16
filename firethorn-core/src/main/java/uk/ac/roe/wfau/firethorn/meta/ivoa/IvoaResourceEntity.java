@@ -113,22 +113,25 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String ivoid)
+        public IvoaResource create(final String ogsaid, final String ivoaid)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ivoid
+                    ogsaid,
+                    ivoaid,
+                    ivoaid
                     )
                 );
             }
-        
+
         @Override
         @CreateMethod
-        public IvoaResource create(final String ivoid, final String name)
+        public IvoaResource create(final String ogsaid, final String ivoaid, final String name)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ivoid,
+                    ogsaid,
+                    ivoaid,
                     name
                     )
                 );
@@ -172,23 +175,12 @@ public class IvoaResourceEntity
      * Protected constructor.
      *
      */
-    protected IvoaResourceEntity(final String ivoaid)
-        {
-        this(
-            ivoaid,
-            ivoaid
-            );
-        }
-
-    /**
-     * Protected constructor.
-     *
-     */
-    protected IvoaResourceEntity(final String ivoaid, final String name)
+    protected IvoaResourceEntity(final String ogsaid, final String ivoaid, final String name)
         {
         super(
             name
             );
+        this.ogsaid = ogsaid;
         this.ivoaid = ivoaid;
         }
 

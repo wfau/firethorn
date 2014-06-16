@@ -41,7 +41,8 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:cadc-tableset"
+            "cadc-tap",
+            "cadc-tap"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -60,7 +61,8 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:gaia-tableset"
+            "gaia-tap",
+            "gaia-tap"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -79,7 +81,8 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:gavo-tableset"
+            "gavo-tap",
+            "gavo-tap"
             );
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -93,11 +96,12 @@ public class VosiTableSetReaderTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test004()
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-4",
             "urn:test-4"
             );
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -115,7 +119,8 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
-            "urn:test-5"
+            "vizier-tap",
+            "vizier-tap"
             );
         VosiTableSetReader reader = new VosiTableSetReader(); 
         log.debug("-- Reading [vizier-twomass.xml] --");
@@ -127,11 +132,12 @@ public class VosiTableSetReaderTestCase
             );
         }
     
-    @Test
+    //@Test
     public void test006()
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-6",
             "urn:test-6"
             );
         VosiTableSetReader reader = new VosiTableSetReader(); 
@@ -158,6 +164,7 @@ public class VosiTableSetReaderTestCase
     throws Exception
         {
         IvoaResource resource = factories().ivoa().resources().create(
+            "urn:test-7",
             "urn:test-7"
             );
         VosiTableSetReader reader = new VosiTableSetReader(); 
