@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 @Component
 public class JdbcTableBuilder
 extends JdbcBuilderBase
-implements JdbcTable.Builder
+implements JdbcTable.OldBuilder
     {
 
     @Override

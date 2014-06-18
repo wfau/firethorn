@@ -23,6 +23,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 
 /**
  *
@@ -32,25 +34,34 @@ public interface JdbcResource
 extends BaseResource<JdbcSchema>
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<JdbcResource>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseResource.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseResource.IdentFactory
         {
         }
 
     /**
-     * Resource factory interface.
+     * {@link BaseResource.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseResource.NameFactory<JdbcResource>
+        {
+        }
+
+    /**
+     * {@link BaseResource.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseResource.LinkFactory<JdbcResource>
+        {
+        }
+
+    /**
+     * {@link BaseResource.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -58,31 +69,33 @@ extends BaseResource<JdbcSchema>
         {
 
         /**
-         * Create a new resource.
+         * Create a new {@link JdbcResource}.
          *
          */
         public JdbcResource create(final String ogsaid, final String name, final String url);
 
         /**
-         * Create a new resource.
+         * Create a new {@link JdbcResource}.
          *
          */
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url);
 
         /**
-         * Create a new resource.
+         * Create a new {@link JdbcResource}.
          *
          */
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass);
 
         /**
-         * Our schema factory.
+         * Our local {@link JdbcSchema.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public JdbcSchema.EntityFactory schemas();
 
         /**
          * Select the default 'userdata' Resource.
+         * @todo Move this to a data space interface.
          *
          */
         public JdbcResource userdata();
@@ -90,44 +103,54 @@ extends BaseResource<JdbcSchema>
         }
 
     /**
-     * Access to the resource schemas.
+     * Our resource {@link JdbcSchema schema}.
      *
      */
     public interface Schemas extends BaseResource.Schemas<JdbcSchema>
         {
         /**
-         * Create a new schema.
+         * Create a new {@link JdbcSchema}.
          *
          */
+        public JdbcSchema create(final JdbcSchema.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcSchema}.
+         *
+         */
+        @Deprecated
         public JdbcSchema create(final String catalog, final String schema);
 
         /**
-         * Select a schema by catalog and schema name.
+         * Create a new {@link JdbcSchema} owned by an Identity.
+         * @todo Move this to a data space interface.
+         *
+         */
+        public JdbcSchema create(final Identity identity);
+
+        /**
+         * Select a {@link JdbcSchema} by catalog name and schema name.
          *
          */
         public JdbcSchema select(final String catalog, final String schema)
         throws NameNotFoundException;
 
         /**
-         * Search for a schema by catalog and schema name.
+         * Search for a {@link JdbcSchema} by catalog name and schema name.
          *
          */
         public JdbcSchema search(final String catalog, final String schema);
 
         /**
-         * Create a new schema owned by an Identity.
-         *
-         */
-        public JdbcSchema create(final Identity identity);
-
-        /**
-         * Select the schemas owned by an Identity.
+         * Select the {@link JdbcSchema} owned by an Identity.
+         * @todo Move this to a data space interface.
          *
          */
         public Iterable<JdbcSchema> select(final Identity identity);
 
         /**
          * Scan the JDBC metadata.
+         * @todo Move this out of the interface.
          *
          */
         public void scan();
@@ -139,6 +162,12 @@ extends BaseResource<JdbcSchema>
         public JdbcSchema simple()
         throws EntityNotFoundException;
 
+        /**
+         * Create a {@link JdbcSchema.Builder}.
+         *
+         */
+        public JdbcSchema.Builder builder();  
+        
         }
 
     @Override
@@ -189,4 +218,28 @@ extends BaseResource<JdbcSchema>
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
 
+    /**
+     * The {@link JdbcResource} metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseResource.Metadata
+        {
+        /**
+         * The JDBC metadata.
+         * 
+         */
+        public interface Jdbc
+            {
+            }
+        /**
+         * The JDBC metadata.
+         * 
+         */
+        public Jdbc jdbc();
+        }
+
+    @Override
+    public JdbcResource.Metadata meta();
+    
     }

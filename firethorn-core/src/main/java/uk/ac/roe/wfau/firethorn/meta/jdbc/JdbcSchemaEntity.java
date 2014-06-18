@@ -43,10 +43,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -127,21 +130,56 @@ public class JdbcSchemaEntity
     implements JdbcSchema
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcSchemaEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_SCHEMA_COL  = "jdbcschema";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
-     * Name factory implementation.
-     * @todo Move to a separate package.
+     * {@link EntityBuilder} implementation.
+     *
+     */
+    public static abstract class Builder
+    extends AbstractEntityBuilder<JdbcSchema, JdbcSchema.Metadata>
+    implements JdbcSchema.Builder
+        {
+        public Builder(final Iterable<JdbcSchema> source)
+            {
+            this.init(
+                source
+                );
+            }
+
+        @Override
+        protected String name(JdbcSchema.Metadata meta)
+            {
+            return meta.jdbc().fullname();
+            }
+
+        @Override
+        protected void update(final JdbcSchema schema, final JdbcSchema.Metadata meta)
+            {
+            schema.update(
+                meta
+                );
+            }
+        }
+    
+    /**
+     * {@link JdbcSchema.NameFactory} implementation.
+     * @todo Does this depend on the database type ?
+     * @todo Is this part of the parent resource ? 
      *
      */
     @Component
@@ -207,7 +245,7 @@ public class JdbcSchemaEntity
         }
 
     /**
-     * Entity factory implementation.
+     * {@link JdbcSchema.EntityFactory} implementation.
      *
      */
     @Repository
@@ -222,6 +260,18 @@ public class JdbcSchemaEntity
             return JdbcSchemaEntity.class ;
             }
 
+        //TODO Resolve the full name problem
+        @Override
+        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta)
+            {
+            return this.create(
+                parent,
+                meta.jdbc().catalog(),
+                meta.jdbc().schema()
+                );
+            }
+
+        
         @Override
         @CreateMethod
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
@@ -231,8 +281,8 @@ public class JdbcSchemaEntity
 // TODO Liquibase SchemaBuilder ?
             log.debug("JdbcSchema build(JdbcResource ,Identity)");
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
-
-            return builder().create(
+           
+            return oldbuilder().create(
                 this.create(
                     parent,
                     parent.catalog(),
@@ -481,19 +531,27 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcSchema.Builder builder;
+        protected JdbcSchema.OldBuilder builder;
         @Override
-        public JdbcSchema.Builder builder()
+        public JdbcSchema.OldBuilder oldbuilder()
             {
             return this.builder;
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcSchemaEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
         super(resource, name);
@@ -562,23 +620,6 @@ public class JdbcSchemaEntity
         return self();
         }
 
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "schema",
-        targetEntity = JdbcTableEntity.class
-        )
-    private Map<String, JdbcTable> children = new LinkedHashMap<String, JdbcTable>();
-     *
-     */
-
     @Override
     public JdbcSchema.Tables tables()
         {
@@ -597,21 +638,11 @@ public class JdbcSchemaEntity
                 return factories().jdbc().tables().select(
                     JdbcSchemaEntity.this
                     );
-                /*
-                 * HibernateCollections
-                return children.values();
-                 *
-                 */
                 }
 
             @Override
             public JdbcTable search(final String name)
                 {
-                /*
-                 * HibernateCollections
-                return children.get(name);
-                 *
-                 */
                 return factories().jdbc().tables().search(
                     JdbcSchemaEntity.this,
                     name
@@ -626,76 +657,47 @@ public class JdbcSchemaEntity
                     JdbcSchemaEntity.this,
                     name
                     );
-                /*
-                 * HibernateCollections
-                JdbcTable result = children.get(name);
-                if (result != null)
-                    {
-                    return result ;
-                    }
-                else {
-                    throw new NotFoundException(
-                        name
-                        );
-                    }
-                 *
-                 */
                 }
 
             @Override
+            @Deprecated
             public JdbcTable create(final String name)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    result .name(),
-                    result
-                    );
-                 *
-                 */
-                return result ;
                 }
 
             @Override
+            @Deprecated
             public JdbcTable create(final String name, final JdbcTable.JdbcType type)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name,
                     type
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    result .name(),
-                    result
-                    );
-                 *
-                 */
-                return result ;
                 }
+
+            @Override
+            public JdbcTable create(final JdbcTable.Metadata meta)
+                {
+                return factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this,
+                    meta
+                    );
+                }
+
             @Override
             public JdbcTable create(final AdqlQuery query)
                 {
-                final JdbcTable result = factories().jdbc().tables().create(
+                return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     query
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    result .name(),
-                    result
-                    );
-                 *
-                 */
-                return result ;
                 }
-
+            
             @Override
             public void scan()
                 {
@@ -720,6 +722,23 @@ public class JdbcSchemaEntity
                     date,
                     page
                     );
+                }
+
+            @Override
+            public JdbcTable.Builder builder()
+                {
+                return new JdbcTableEntity.Builder(this.select())
+                    {
+                    @Override
+                    protected JdbcTable create(final JdbcTable.Metadata meta)
+                        throws DuplicateEntityException
+                        {
+                        return factories().jdbc().tables().create(
+                            JdbcSchemaEntity.this,
+                            meta
+                            );
+                        }
+                    };
                 }
             };
         }
@@ -812,6 +831,73 @@ public class JdbcSchemaEntity
             }
         finally {
             resource().connection().close();
+            }
+        }
+
+    /**
+     * Generate the JDBC metadata.
+     * 
+     */
+    public JdbcSchema.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcSchema.Metadata.Jdbc()
+            {
+            @Override
+            public String fullname()
+                {
+                return JdbcSchemaEntity.this.name();
+                }
+
+            @Override
+            public String schema()
+                {
+                return JdbcSchemaEntity.this.schema();
+                }
+
+            @Override
+            public String catalog()
+                {
+                return JdbcSchemaEntity.this.catalog();
+                }
+            };
+        }
+
+    @Override
+    public JdbcSchema.Metadata meta()
+        {
+        return new JdbcSchema.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return JdbcSchemaEntity.this.name();
+                }
+
+            @Override
+            public Adql adql()
+                {
+                return adqlmeta();
+                }
+
+            @Override
+            public Jdbc jdbc()
+                {
+                return jdbcmeta();
+                }
+            };
+        }
+
+    @Override
+    public void update(final JdbcSchema.Metadata meta)
+        {
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(
+                    meta.adql().text()
+                    );
+                }
             }
         }
     }

@@ -47,37 +47,55 @@
     </bean>
 
     <!--+
-        | WFAU TWOMASS data node.
+        | CADC TAP data node.
         +-->
-    <bean id="twomasswfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    <bean id="cadc-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="cadc-tap"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+    <!--+
+        | Gavo TAP data node.
+        +-->
+    <bean id="gavo-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="gavo-tap"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+    <!--+
+        | Gaia TAP data node.
+        +-->
+    <bean id="gaia-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="gaia-tap"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+    <!--+
+        | Vizier TAP data node.
+        +-->
+    <bean id="vizier-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="vizier-tap"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+    <!--+
+        | WFAU TAP TWOMASS data node.
+        +-->
+    <bean id="wfau-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="twomasswfau"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
-
-    <!--+
-        | Gavo TWOMASS data node.
-        +-->
-    <bean id="twomassgavo" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="twomassgavo"/>
-        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
-        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
-        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
-        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-    </bean>
-
-    <!--+
-        | UKIDSS data node.
-    <bean id="ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="ukidss"/>
-        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
-        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
-        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
-        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-    </bean>
-        +-->
 
     <!--+
         | ATLAS data node.
@@ -146,6 +164,23 @@
                 <entry key="wfau">
                     <ref bean="wfau"/>
                 </entry>
+
+                <entry key="cadc-tap">
+                    <ref bean="cadc-tap"/>
+                </entry>
+                <entry key="gaia-tap">
+                    <ref bean="gaia-tap"/>
+                </entry>
+                <entry key="gavo-tap">
+                    <ref bean="gav-tap"/>
+                </entry>
+                <entry key="vizier-tap">
+                    <ref bean="vizier-tap"/>
+                </entry>
+                <entry key="wfau-tap">
+                    <ref bean="wfau-tap"/>
+                </entry>
+
                 <entry key="userdata">
                     <ref bean="userdata"/>
                 </entry>

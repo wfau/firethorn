@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -39,16 +40,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
  *
  */
 @Slf4j
@@ -58,27 +69,30 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
     )
 @Table(
     name = IvoaColumnEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
+    indexes={
+        @Index(
+            columnList = IvoaColumnEntity.DB_PARENT_COL
             )
+        },
+    uniqueConstraints={
         }
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "IvoaColumn-select-parent",
-            query = "FROM IvoaColumnEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaColumn-parent.name",
+            name  = "IvoaColumn-select-parent.ident",
+            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "IvoaColumn-select-parent.name",
             query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaColumn-search-parent.text",
+            name  = "IvoaColumn-search-parent.name",
             query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
@@ -88,38 +102,110 @@ public class IvoaColumnEntity
     implements IvoaColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaColumnEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_IVOA_TYPE_COL = "ivoatype" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
 
     /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link EntityBuilder} implementation.
+     *
+     */
+    public static abstract class Builder
+    extends AbstractEntityBuilder<IvoaColumn, IvoaColumn.Metadata>
+    implements IvoaColumn.Builder
+        {
+        public Builder(final Iterable<IvoaColumn> source)
+            {
+            this.init(
+                source
+                );
+            }
+        
+        @Override
+        protected String name(IvoaColumn.Metadata meta)
+            {
+            return meta.name();
+            }
+
+        @Override
+        protected void update(final IvoaColumn column, final IvoaColumn.Metadata meta)
+            {
+            column.update(
+                meta
+                );
+            }
+        }
+
+    /**
+     * {@link IvoaColumn.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements IvoaColumn.AliasFactory
         {
+        private static final String PREFIX = "IVOA_";
+
         @Override
         public String alias(final IvoaColumn column)
             {
-            return "IVOA_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
-        }
 
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public IvoaColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link IvoaColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link IvoaColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private IvoaColumn.EntityFactory entities;
+        
+        }
+    
     /**
-     * Column factory implementation.
+     * {@link Entity.EntityFactory} implementation.
      *
      */
     @Repository
@@ -136,16 +222,16 @@ public class IvoaColumnEntity
 
         @Override
         @CreateMethod
-        public IvoaColumn create(final IvoaTable parent, final String name)
+        public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta)
             {
             return this.insert(
                 new IvoaColumnEntity(
                     parent,
-                    name
+                    meta
                     )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public Iterable<IvoaColumn> select(final IvoaTable parent)
@@ -159,7 +245,7 @@ public class IvoaColumnEntity
                         )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)
@@ -231,16 +317,30 @@ public class IvoaColumnEntity
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected IvoaColumnEntity()
         {
         }
 
-    protected IvoaColumnEntity(final IvoaTable table, final String name)
+    /**
+     * Protected constructor.
+     *
+     */
+    protected IvoaColumnEntity(final IvoaTable table, final IvoaColumn.Metadata meta)
         {
-        super(table, name);
+        super(
+            table,
+            meta.name()
+            );
         this.table = table;
+        this.update(
+            meta
+            );
         }
-
+    
     @Override
     public IvoaColumn base()
         {
@@ -341,6 +441,7 @@ public class IvoaColumnEntity
             return this.ivoasize ;
             }
         }
+
     @Override
     public String alias()
         {
@@ -360,6 +461,154 @@ public class IvoaColumnEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
 
+    /**
+     * Generate the IVOA metadata.
+     * 
+     */
+    protected IvoaColumn.Metadata.Ivoa ivoameta()
+        {
+        return new IvoaColumn.Metadata.Ivoa()
+            {
+            @Override
+            public String name()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
+            public String title()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return IvoaColumnEntity.this.text();
+                }
+
+            @Override
+            public String utype()
+                {
+                return IvoaColumnEntity.this.adqlutype();
+                }
+
+            @Override
+            public String dtype()
+                {
+                return IvoaColumnEntity.this.adqldtype();
+                }
+
+            @Override
+            public String unit()
+                {
+                return IvoaColumnEntity.this.adqlunit();
+                }
+
+            @Override
+            public Integer arraysize()
+                {
+                return IvoaColumnEntity.this.adqlsize();
+                }
+
+            @Override
+            public String ucd()
+                {
+                return IvoaColumnEntity.this.adqlucd();
+                }
+            };
+        }
+    
+    @Override
+    public IvoaColumn.Metadata meta()
+        {
+        return new IvoaColumn.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return IvoaColumnEntity.this.name();
+                }
+
+            @Override
+            public IvoaColumn.Metadata.Ivoa ivoa()
+                {
+                return ivoameta();
+                }
+
+            @Override
+            public IvoaColumn.Metadata.Adql adql()
+                {
+                return adqlmeta();
+                }
+            };
+        }
+    @Override
+    public void update(IvoaColumn.Metadata meta)
+        {
+        if (meta.ivoa() != null)
+            {
+            this.update(
+                meta.ivoa()
+                );
+            }
+        }
+
+    @Override
+    public void update(IvoaColumn.Metadata.Ivoa ivoa)
+        {
+        if (ivoa.text() != null)
+            {
+            this.text(ivoa.text());
+            }
+        if (ivoa.ucd() != null)
+            {
+            this.adqlucd(ivoa.ucd());
+            }
+        if (ivoa.unit() != null)
+            {
+            this.adqlunit(ivoa.unit());
+            }
+        if (ivoa.utype() != null)
+            {
+            this.adqlutype(ivoa.utype());
+            }
+        if (ivoa.dtype() != null)
+            {
+            this.adqldtype(ivoa.dtype());
+            
+            if (this.adqltype == null)
+            	{
+//TODO Needs proper parser for the known type strings.
+            	try {
+	            	this.adqltype = AdqlColumn.Type.type(
+	            		ivoa.dtype()
+	        			);
+            		}
+            	catch (Exception ouch)
+            		{
+            		this.adqltype = null;
+            		log.warn("Failed to parse ADQL dtype [{}]", ivoa.dtype());
+            		}
+            	}
+            }
+        else {
+//TODO        	
+// Unknown data type - useless unless we cast to char ?
+// We could find out from the results ...
+        	}
+        if (ivoa.arraysize() != null)
+            {
+            this.adqlsize(
+        		ivoa.arraysize()
+            	);
+            }
+        else {
+            this.adqlsize(
+        		BaseColumn.NON_ARRAY_SIZE
+            	);
+        	}
         }
     }

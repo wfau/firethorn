@@ -349,12 +349,6 @@ extends NamedEntity, Job
         public IdentFactory idents();
 
         /**
-         * Our Query resolver.
-         *
-         */
-        public Resolver resolver();
-
-        /**
          * Our Query Factory.
          *
          */
@@ -413,35 +407,12 @@ extends NamedEntity, Job
         }
 
     /**
-     * Resolver interface.
-     *
-     */
-    public static interface Resolver
-    extends Entity.EntityFactory<AdqlQuery>
-        {
-        }
-
-    /**
      * Factory interface.
      *
      */
     public static interface EntityFactory
     extends Job.EntityFactory<AdqlQuery>
         {
-        /**
-         * Create a new query.
-         *
-        public AdqlQuery create(final AdqlSchema schema, final String input)
-        throws QueryProcessingException;
-         */
-
-        /**
-         * Create a new query.
-         *
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
-        throws QueryProcessingException;
-         */
-
         /**
          * Create a new query.
          *

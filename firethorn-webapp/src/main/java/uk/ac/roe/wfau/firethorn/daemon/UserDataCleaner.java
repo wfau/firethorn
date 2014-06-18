@@ -187,7 +187,7 @@ extends AbstractComponent
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
                                 //table.drop();
                                 table.meta().jdbc().status(
-                                    JdbcTable.JdbcStatus.DROPPED
+                                    JdbcTable.TableStatus.DROPPED
                                     );
                                 }
                             }

@@ -1,0 +1,64 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Push an updated properties file to our test VM.
+#[user@desktop]
+
+    scp "${HOME}/firethorn.properties" "user@testvm:firethorn.properties"
+
+# -------------------------------------------------------------------------------------------
+# Login to test VM and run the tests.
+#[user@desktop]
+
+    ssh "user@testvm"
+
+# -------------------------------------------------------------------------------------------
+# Fix the JDBC URL hostname and port.
+#[user@testvm]
+
+    vi "${HOME}/firethorn.properties"
+
+    -   firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ011103DEV
+    +   firethorn.meta.url=jdbc:jtds:sqlserver://ramses2:1433/FirethornMetadataZRQ011103DEV
+
+    ....
+    
+
+# -------------------------------------------------------------------------------------------
+# Fix the JDBC URL hostname and port.
+#[user@testvm]
+
+    pushd firethorn/clone/
+
+        hg pull
+        hg update '1.11.4-zrq-tableset'
+    
+            mvn -P clean install
+
+            pushd firethorn-core
+            
+                mvn -D skipTests=false -D test=VizierTableSetReaderTestCase test
+
+
+
+

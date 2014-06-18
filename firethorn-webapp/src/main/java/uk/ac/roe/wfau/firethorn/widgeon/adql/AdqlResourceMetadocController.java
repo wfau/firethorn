@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -132,8 +134,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @throws IOException
      * @throws XMLReaderException
      * @throws XMLParserException
-     * @throws NameNotFoundException
-     * @throws IdentifierNotFoundException
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
      *
      */
     @ResponseBody
@@ -145,17 +147,15 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestPart(value=METADOC_IMPORT_FILE, required=true)
         final MultipartFile metadoc
-        ) throws XMLParserException, XMLReaderException, IOException, IdentifierNotFoundException, NameNotFoundException {
+        ) throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(BaseSchema, File) [{}]", base);
         return bean(
             reader.inport(
                 new InputStreamReader(
                     metadoc.getInputStream()
                     ),
-                factories().base().schema().select(
-                    factories().base().schema().links().ident(
-                        base
-                        )
+                factories().base().schema().resolve(
+                    base
                     ),
                 resource
                 )

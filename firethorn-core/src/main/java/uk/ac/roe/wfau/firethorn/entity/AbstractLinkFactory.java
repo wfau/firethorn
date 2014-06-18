@@ -20,8 +20,9 @@ package uk.ac.roe.wfau.firethorn.entity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -54,6 +55,7 @@ implements Entity.LinkFactory<EntityType>
     protected final String path  ;
     protected final String delim ;
     protected final Pattern pattern ;
+    //TODO
     protected final Entity.IdentFactory idents = new AbstractIdentFactory();
 
     @Override
@@ -71,29 +73,49 @@ implements Entity.LinkFactory<EntityType>
         return builder.toString();
         }
 
-    @Override
-    public Identifier ident(final String string)
+    protected Matcher matcher(String link)
         {
-        log.debug("parse(String)");
-        log.debug("  string  [{}]", string);
+        log.debug("matcher(String)");
+        log.debug("  link    [{}]", link);
+        log.debug("  pattern [{}]", this.pattern.pattern());
+        return this.pattern.matcher(
+            link
+            );
+        }
+
+    @Override
+    public boolean matches(String link)
+        {
+        log.debug("matches(String)");
+        log.debug("  link    [{}]", link);
+        log.debug("  pattern [{}]", this.pattern.pattern());
+        final Matcher matcher = this.matcher(
+            link
+            );
+        return matcher.matches();
+        }
+
+    @Override
+    public Identifier ident(final String link)
+        {
+        log.debug("ident(String)");
+        log.debug("  link    [{}]", link);
         log.debug("  pattern [{}]", this.pattern.pattern());
 
-        final Matcher matcher = this.pattern.matcher(
-            string
+        final Matcher matcher = matcher(
+            link
             );
         if (matcher.matches())
             {
-            log.debug("PASS");
-            final String temp = matcher.group(1);
-            log.debug("  temp [{}]", temp);
+            log.debug("  group[0][{}]", matcher.group(0));
+            log.debug("  group[1][{}]", matcher.group(1));
             return this.idents.ident(
-                temp
+                matcher.group(1)
                 );
             }
         else {
-            log.debug("FAIL");
             throw new IdentifierFormatException(
-                string
+                link
                 );
             }
         }

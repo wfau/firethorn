@@ -21,7 +21,6 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.UCD;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**
@@ -94,35 +93,9 @@ extends NamedEntityBeanImpl<ColumnType>
             {
             return entity().meta().adql().utype();
             }
-
-        public class UCDMetadataBean
+        public String getUCD()
             {
-            public String getType()
-                {
-                final UCD ucd = entity().meta().adql().ucd();
-                if (ucd != null)
-                    {
-                    return ucd.type().toString();
-                    }
-                else {
-                    return null ;
-                    }
-                }
-            public String getValue()
-                {
-                final UCD ucd = entity().meta().adql().ucd();
-                if (ucd != null)
-                    {
-                    return ucd.value();
-                    }
-                else {
-                    return null ;
-                    }
-                }
-            }
-        public UCDMetadataBean getUCD()
-            {
-            return new UCDMetadataBean();
+            return entity().meta().adql().ucd();
             }
         }
 

@@ -19,6 +19,9 @@ package uk.ac.roe.wfau.firethorn.webapp.oper;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -57,5 +60,13 @@ implements Operation.LinkFactory
             ENTITY_PATH,
             entity
             );
+        }
+
+    @Override
+    public Operation resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

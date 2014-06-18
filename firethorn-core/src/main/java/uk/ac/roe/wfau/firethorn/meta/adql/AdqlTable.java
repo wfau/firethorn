@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -31,7 +30,16 @@ public interface AdqlTable
 extends BaseTable<AdqlTable, AdqlColumn>
     {
     /**
-     * Name factory interface.
+     * {@link BaseTable.IdentFactory} interface.
+     *
+     */
+    public static interface IdentFactory
+    extends BaseTable.IdentFactory
+        {
+        }
+
+    /**
+     * {@link BaseTable.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -40,7 +48,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * Alias factory interface.
+     * {@link BaseTable.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -49,25 +57,16 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * Link factory interface.
+     * {@link BaseTable.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlTable>
+    extends BaseTable.LinkFactory<AdqlTable>
         {
         }
 
     /**
-     * Identifier factory interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
-        {
-        }
-
-    /**
-     * Entity factory interface.
+     * {@link BaseTable.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -75,50 +74,61 @@ extends BaseTable<AdqlTable, AdqlColumn>
         {
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**
-         * Create a new table.
+         * Create a new {@link AdqlTable}.
          *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
 
         /**
-         * The table column factory.
+         * Our local {@link AdqlColumn.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public AdqlColumn.EntityFactory columns();
 
+        //TODO - move to services
         @Override
         public AdqlTable.IdentFactory idents();
 
+        //TODO - move to services
+        @Override
+        public AdqlTable.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlTable.AliasFactory aliases();
+        
+        //TODO - move to services
         @Override
         public AdqlTable.LinkFactory links();
 
@@ -126,29 +136,37 @@ extends BaseTable<AdqlTable, AdqlColumn>
 
     @Override
     public AdqlResource resource();
+
     @Override
     public AdqlSchema schema();
 
     /**
-     * The table columns.
+     * Our table {@link AdqlColumn columns}.
      *
      */
     public interface Columns extends BaseTable.Columns<AdqlColumn>
         {
-
         /**
-         * Create a new column.
+         * Create a {@link AdqlColumn}.
+         * @todo Add name change
          *
          */
         public AdqlColumn create(final BaseColumn<?> base);
 
         /**
-         * Import a named column from our base table.
+         * Import a {@link AdqlColumn} from our base table.
+         * @todo Add name change
          *
          */
         public AdqlColumn inport(final String name)
         throws NameNotFoundException;
 
+        /**
+         * Create a new {@link IvoaColumn.Builder}.
+         *
+        public IvoaColumn.Builder builder();  
+         */
+        
         }
 
     @Override
@@ -158,10 +176,10 @@ extends BaseTable<AdqlTable, AdqlColumn>
     public BaseTable<?,?> base();
 
     /**
-     * Enum for the ADQL table status.
+     * Enum for the table status.
      *
      */
-    public static enum AdqlStatus
+    public static enum TableStatus
         {
         CREATED(),
         COMPLETED(),
@@ -171,44 +189,67 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * ADQL table metadata.
-     * @todo make this consistent with BaseColum.Metadata
+     * The {@link AdqlTable} metadata.
      *
      */
     public interface Metadata
     extends BaseTable.Metadata
         {
         /**
-         * The ADQL table metadata.
+         * The ADQL metadata.
          *
          */
-        public interface AdqlMetadata
+        public interface Adql
             {
             /**
-             * The table row count.
+             * The table name.
+             *
+             */
+            public String name();
+
+            /**
+             * The table description.
+             * 
+             */
+            public String text();
+            
+            /**
+             * Get the table row count.
              *
              */
             public Long count();
 
             /**
-             * The ADQL table status.
+             * Get the table status.
              *
              */
-            public AdqlStatus status();
+            public TableStatus status();
 
             /**
-             * Set the ADQL table status.
+             * Set the table status.
              *
              */
-            public void status(final AdqlStatus status);
+            public void status(final TableStatus value);
+
+            /**
+             * Get the table uType.
+             *
+             */
+            public String utype();
+
+            /**
+             * Set the table uType.
+             *
+             */
+            public void utype(String utype);
 
             }
 
         /**
-         * The ADQL table metadata.
+         * The ADQL metadata.
          *
          */
-        public AdqlMetadata adql();
+        public Adql adql();
         }
 
     @Override

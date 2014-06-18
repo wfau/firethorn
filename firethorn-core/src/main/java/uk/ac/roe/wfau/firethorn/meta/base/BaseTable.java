@@ -17,13 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.AliasFactory;
 
 /**
  *
@@ -33,16 +35,7 @@ public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, C
 extends BaseComponent
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<BaseTable<?,?>>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -51,7 +44,7 @@ extends BaseComponent
         }
 
     /**
-     * Name factory interface.
+     * {@link Entity.NameFactory} interface.
      *
      */
     public static interface NameFactory<TableType extends BaseTable<?,?>>
@@ -60,38 +53,42 @@ extends BaseComponent
         }
 
     /**
-     * Alias factory interface.
+     * {@link Entity.AliasFactory} interface.
      *
      */
     public static interface AliasFactory<TableType extends BaseTable<?,?>>
     extends Entity.AliasFactory<TableType>
         {
-        /**
-         * Create a Table alias.
-         *
-         */
-        @Override
-		public String alias(final TableType table);
         }
 
     /**
-     * Table resolver interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
-    public static interface Resolver
-    extends Entity.EntityFactory<BaseTable<?,?>>
+    public static interface LinkFactory<TableType extends BaseTable<?,?>>
+    extends Entity.LinkFactory<TableType>
         {
-        /**
-         * Resolve an alias into a table.
-         *
-         */
-        public BaseTable<?,?> resolve(final String alias)
-        throws EntityNotFoundException;
-
         }
 
     /**
-     * Table factory interface.
+     * A resolver to resolve links. 
+     *
+     */
+    public static interface EntityResolver
+        {
+        /**
+         * Resolve a link into a {@link BaseTable}.
+         * @throws IdentifierFormatException
+         * @throws IdentifierNotFoundException 
+         * @throws EntityNotFoundException 
+         *  
+         */
+        public BaseTable<?,?> resolve(String link)
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
+        }
+
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
@@ -117,13 +114,15 @@ extends BaseComponent
         throws NameNotFoundException;
 
         /**
-         * AliasFactory implementation.
+         * Our local {@link BaseTable.AliasFactory} implementation.
+         * @todo Move to services.
          *
          */
         public AliasFactory<TableType> aliases();
 
         /**
-         * NameFactory implementation.
+         * Our local {@link BaseTable.NameFactory} implementation.
+         * @todo Move to services.
          *
          */
         public NameFactory<TableType> names();
@@ -131,19 +130,7 @@ extends BaseComponent
         }
 
     /**
-     * The OGSA-DAI DQP table alias.
-     *
-     */
-    public String alias();
-
-    /**
-     * The fully qualified name.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
-     * The base table that this table is derived from.
+     * The {@link BaseTable} this table is derived from.
      *
      */
     public BaseTable<?, ?> base();
@@ -154,37 +141,45 @@ extends BaseComponent
      */
     public BaseTable<?, ?> root();
 
+    /**
+     * Our parent {@link BaseSchema schema}. 
+     *
+     */
     public BaseSchema<?,TableType> schema();
 
+    /**
+     * Our parent {@link BaseResource resource}. 
+     *
+     */
     public BaseResource<?> resource();
 
     /**
-     * The table columns.
+     * Our table {@link BaseColumn columns}.
      *
      */
     public interface Columns<ColumnType>
         {
         /**
-         * Select all of the columns in this table.
+         * Select all of the {@link BaseColumn columns} in this table.
          *
          */
         public Iterable<ColumnType> select();
 
         /**
-         * Search for a column by name.
+         * Search for a {@link BaseColumn column} by name.
          *
          */
         public ColumnType search(final String name);
 
         /**
-         * Select a column by name.
+         * Select a {@link BaseColumn column} by name.
          *
          */
         public ColumnType select(final String name)
         throws NameNotFoundException;
 
         /**
-         * Select a column by ident.
+         * Select a {@link BaseColumn column} by ident.
          *
          */
         public ColumnType select(final Identifier ident)
@@ -193,44 +188,45 @@ extends BaseComponent
         }
 
     /**
-     * The table columns.
+     * Our table {@link BaseColumn columns}.
      *
      */
     public Columns<ColumnType> columns();
 
     /**
-     * The AdqlTables linked to this table.
-     *
-     */
-    @Deprecated
-    interface Linked
-        {
-        public Iterable<AdqlTable> select();
-        }
-
-    /**
-     * The AdqlTables linked to this table.
-     *
-    @Deprecated
-    public Linked linked();
-     */
-
-    /**
-     * The AdqlQuery that generated this table.
+     * The {@link AdqlQuery} that generated this table.
      *
      */
     public AdqlQuery query();
 
     /**
-     * Base table metadata.
+     * The OGSA-DAI DQP table alias.
+     *
+     */
+    public String alias();
+
+    /**
+     * The fully qualified table name.
+     *
+     */
+    public StringBuilder namebuilder();
+
+    /**
+     * The {@link BaseTable} metadata.
      *
      */
     public interface Metadata
         {
+        /**
+         * The table name.
+         * 
+         */
+        public String name();
+
         }
 
     /**
-     * Access to the table metadata.
+     * The {@link BaseTable} metadata.
      *
      */
     public AdqlTable.Metadata meta();

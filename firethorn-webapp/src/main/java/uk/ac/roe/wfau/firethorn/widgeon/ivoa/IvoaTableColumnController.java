@@ -1,0 +1,138 @@
+/*
+ *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
+import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+
+/**
+ * Spring MVC controller for <code>IvoaTable</code> columns.
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping(IvoaTableLinkFactory.TABLE_COLUMN_PATH)
+public class IvoaTableColumnController
+extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
+    {
+    @Override
+    public Path path()
+        {
+        return path(
+            IvoaTableLinkFactory.TABLE_COLUMN_PATH
+            );
+        }
+
+    /**
+     * Public constructor.
+     *
+     */
+    public IvoaTableColumnController()
+        {
+        super();
+        }
+
+    /**
+     * MVC property for the Resource name.
+     *
+     */
+    public static final String SELECT_NAME = "urn:ivoa.column.name" ;
+
+    @Override
+    public IvoaColumnBean bean(final IvoaColumn entity)
+        {
+        return new IvoaColumnBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<IvoaColumnBean> bean(final Iterable<IvoaColumn> iter)
+        {
+        return new IvoaColumnBean.Iter(
+            iter
+            );
+        }
+
+    /**
+     * Get the parent table based on the identifier in the request.
+     * @throws EntityNotFoundException
+     *
+     */
+    @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+    public IvoaTable parent(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident
+        ) throws EntityNotFoundException {
+        log.debug("parent() [{}]", ident);
+        return factories().ivoa().tables().select(
+            factories().ivoa().tables().idents().ident(
+                ident
+                )
+            );
+        }
+
+    /**
+     * JSON GET request to select all.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
+    public Iterable<IvoaColumnBean> select(
+        @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+        final IvoaTable table
+        ){
+        log.debug("select()");
+        return bean(
+            table.columns().select()
+            );
+        }
+
+    /**
+     * JSON request to select by name.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    public IvoaColumnBean select(
+        @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+        final IvoaTable table,
+        @RequestParam(SELECT_NAME)
+        final String name
+        ) throws EntityNotFoundException {
+        log.debug("select(String) [{}]", name);
+        return bean(
+            table.columns().select(
+                name
+                )
+            );
+        }
+    }

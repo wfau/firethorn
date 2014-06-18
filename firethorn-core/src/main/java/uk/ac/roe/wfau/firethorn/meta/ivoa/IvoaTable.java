@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
@@ -28,7 +30,40 @@ public interface IvoaTable
 extends BaseTable<IvoaTable, IvoaColumn>
     {
     /**
-     * Alias factory interface.
+     * {@link EntityBuilder} interface.
+     * 
+     */
+    public static interface Builder
+    extends EntityBuilder<IvoaTable, IvoaTable.Metadata>
+        {
+        /**
+         * Create or update an {@link IvoaTable}.
+         *
+         */
+        public IvoaTable build(final IvoaTable.Metadata meta)
+        throws DuplicateEntityException;
+        }
+
+    /**
+     * {@link BaseTable.IdentFactory} interface.
+     *
+     */
+    public static interface IdentFactory
+    extends BaseTable.IdentFactory
+        {
+        }
+
+    /**
+     * {@link BaseTable.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseTable.NameFactory<IvoaTable>
+        {
+        }
+    
+    /**
+     * {@link BaseTable.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -37,56 +72,142 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
 
     /**
-     * Link factory interface.
+     * {@link BaseTable.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<IvoaTable>
+    extends BaseTable.LinkFactory<IvoaTable>
         {
         }
 
     /**
-     * Identifier factory interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
-        {
-        }
-
-    /**
-     * Table factory interface.
+     * {@link BaseTable.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseTable.EntityFactory<IvoaSchema, IvoaTable>
         {
         /**
-         * Create a new table.
+         * Create a new {@link IvoaTable}.
          *
          */
-        public IvoaTable create(final IvoaSchema parent, final String name);
-
+        public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta);
+        
         /**
-         * The table column factory.
+         * Our local {@link IvoaColumn.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public IvoaColumn.EntityFactory columns();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.IdentFactory idents();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.AliasFactory aliases();
+
+        //TODO - move to services
+        @Override
+        public IvoaTable.LinkFactory links();
+        
         }
 
     @Override
     public IvoaResource resource();
+
     @Override
     public IvoaSchema schema();
 
     /**
-     * The table columns.
+     * Our table {@link IvoaColumn columns}.
      *
      */
     public interface Columns extends BaseTable.Columns<IvoaColumn>
         {
+        /**
+         * Create a {@link IvoaColumn}.
+         * 
+        public IvoaColumn create(final String name)
+        throws DuplicateEntityException;
+         */
+        
+        /**
+         * Create a new {@link IvoaColumn.Builder}.
+         *
+         */
+        public IvoaColumn.Builder builder();  
+
         }
     @Override
     public Columns columns();
 
+    /**
+     * The table metadata.
+     * TODO Does this need to extend the AdqlTable.Metadata ?
+     * TODO Does AdqlTable.TableStatus make sense for this ?
+     *
+     */
+    public interface Metadata
+    extends AdqlTable.Metadata
+        {
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public interface Ivoa
+            {
+            /**
+             * The table name.
+             *
+             */
+            public String name();
+
+            /**
+             * The table title.
+             * 
+             */
+            public String title();
+
+            /**
+             * The table description.
+             * 
+             */
+            public String text();
+
+            /**
+             * The table uType.
+             * 
+             */
+            public String utype();
+            
+            }
+        
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public Ivoa ivoa();
+        }
+
+    @Override
+    public IvoaTable.Metadata meta();
+
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final IvoaTable.Metadata meta);
+
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final IvoaTable.Metadata.Ivoa ivoa);
+    
     }

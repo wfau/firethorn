@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -26,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -40,11 +40,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
@@ -100,38 +102,110 @@ public class JdbcColumnEntity
     implements JdbcColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcColumnEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_TYPE_COL = "jdbctype" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
     /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link EntityBuilder} implementation.
+     *
+     */
+    public static abstract class Builder
+    extends AbstractEntityBuilder<JdbcColumn, JdbcColumn.Metadata>
+    implements JdbcColumn.Builder
+        {
+        public Builder(final Iterable<JdbcColumn> source)
+            {
+            this.init(
+                source
+                );
+            }
+
+        @Override
+        protected String name(JdbcColumn.Metadata meta)
+            {
+            return meta.jdbc().name();
+            }
+
+        @Override
+        protected void update(final JdbcColumn column, final JdbcColumn.Metadata meta)
+            {
+            column.update(
+                meta
+                );
+            }
+        }
+    
+    /**
+     * {@link JdbcColumn.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements JdbcColumn.AliasFactory
         {
+        private static final String PREFIX = "JDBC_";
+
         @Override
         public String alias(final JdbcColumn column)
             {
-            return "JDBC_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public JdbcColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link JdbcColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link JdbcColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private JdbcColumn.EntityFactory entities;
+        
         }
 
     /**
-     * Column factory implementation.
+     * {@link JdbcColumn.EntityFactory} implementation.
      *
      */
     @Repository
@@ -148,6 +222,19 @@ public class JdbcColumnEntity
 
         @Override
         @CreateMethod
+        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta)
+            {
+            return this.insert(
+                new JdbcColumnEntity(
+                    parent,
+                    meta
+                    )
+                );
+            }
+        
+        @Override
+        @Deprecated
+        @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type)
             {
             return this.insert(
@@ -161,6 +248,7 @@ public class JdbcColumnEntity
             }
 
         @Override
+        @Deprecated
         @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
             {
@@ -174,6 +262,7 @@ public class JdbcColumnEntity
                 );
             }
 
+        @Deprecated
         @CreateMethod
         private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type, final Integer size)
             {
@@ -254,34 +343,6 @@ public class JdbcColumnEntity
                 );
             }
 
-/*
- * 
-        private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().jdbc().type(),
-                    column.meta().jdbc().size()
-                    )
-                );
-            }
-
-
-        private JdbcColumn create(final JdbcTable parent, final String name, final AdqlColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().adql().type().jdbc(),
-                    column.meta().adql().arraysize()
-                    )
-                );
-            }
- *
- */
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
@@ -366,11 +427,52 @@ public class JdbcColumnEntity
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcColumnEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcColumnEntity(final JdbcTable table, final JdbcColumn.Metadata meta)
+        {
+        this(
+            table,
+            meta.jdbc().name(),
+            meta.jdbc().type(),
+            safeint(meta.jdbc().size())
+            );
+        this.update(
+            meta
+            );
+        }
+
+    /**
+     * Convert a JdbcColumn.Metadata array size into an int value.
+     * 
+     */
+    public static int safeint(final Integer size)
+    	{
+    	if (size != null)
+    		{
+    		return size ;
+    		}
+    	else {
+    		return 0 ;
+    		}
+    	}
+    
+    /**
+     * Protected constructor.
+     *
+     */
+    @Deprecated
     protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
         {
         this(
@@ -385,18 +487,19 @@ public class JdbcColumnEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.Type type, final Integer size)
         {
         super(table, name);
         this.table    = table;
         this.jdbctype = type ;
-        this.jdbcsize = size ;
-        if (this.jdbcsize <= 0)
-            {
-            this.jdbcsize = resource().jdbcsize(
-                type
-                );
-            }
+        //TODO use size for arrays
+		this.jdbcsize = resource().jdbcsize(
+				type
+	    	);
         }
 
     @Override
@@ -461,7 +564,11 @@ public class JdbcColumnEntity
     @Override
     protected AdqlColumn.Type adqltype()
         {
-        if (this.jdbctype != null)
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else if (this.jdbctype != null)
             {
             if (this.jdbctype == JdbcColumn.Type.ARRAY)
                 {
@@ -494,72 +601,95 @@ public class JdbcColumnEntity
         {
         this.jdbcsize = size;
         }
+
     @Override
     protected Integer adqlsize()
         {
-        switch (this.jdbctype)
+        if (this.adqlsize != null)
             {
-            //
-            // Array type.
-            case ARRAY :
-                return BaseColumn.VAR_ARRAY_SIZE;
-
-            // TODO unlimited TEXT size
-
-            //
-            // Character types.
-            case LONGNVARCHAR :
-            case LONGVARCHAR :
-            case NVARCHAR :
-            case VARCHAR :
-            case NCHAR :
-            case CHAR :
-                return this.jdbcsize ;
-
-            //
-            // Date time values
-//TODO Are these fixed formats and sizes ?
-            case DATE:
-            case TIME:
-            case TIMESTAMP:
-                return this.jdbcsize ;
-
-            //
-            // Blob types.
-            case BLOB:
-            case CLOB:
-            case NCLOB:
-                return this.jdbcsize ;
-
-            //
-            // Binary types.
-            case BINARY:
-            case VARBINARY:
-                return this.jdbcsize ;
-
-            //
-            // Single value types.
-            default :
-                return BaseColumn.NON_ARRAY_SIZE;
+            return this.adqlsize ;
+            }
+        else {
+            // TODO Move the calculation into the JdbcColumn.Type enum.
+            switch (this.jdbctype)
+                {
+                //
+                // Array type.
+                case ARRAY :
+                    return BaseColumn.VAR_ARRAY_SIZE;
+    
+                // TODO unlimited TEXT size
+    
+                //
+                // Character types.
+                case LONGNVARCHAR :
+                case LONGVARCHAR :
+                case NVARCHAR :
+                case VARCHAR :
+                case NCHAR :
+                case CHAR :
+                    return this.jdbcsize ;
+    
+                //
+                // Date time values
+    //TODO Are these fixed formats and sizes ?
+                case DATE:
+                case TIME:
+                case TIMESTAMP:
+                    return this.jdbcsize ;
+    
+                //
+                // Blob types.
+                case BLOB:
+                case CLOB:
+                case NCLOB:
+                    return this.jdbcsize ;
+    
+                //
+                // Binary types.
+                case BINARY:
+                case VARBINARY:
+                    return this.jdbcsize ;
+    
+                //
+                // Single value types.
+                default :
+                    return BaseColumn.NON_ARRAY_SIZE;
+                }
             }
         }
 
     @Override
-    protected String adqlunits()
+    public String link()
         {
-        return this.adqlunits ;
+        return factories().jdbc().columns().links().link(
+            this
+            );
         }
 
     @Override
-    protected String adqlutype()
+    public String alias()
         {
-        return this.adqlutype ;
+        return factories().jdbc().columns().aliases().alias(
+            this
+            );
         }
 
-    protected JdbcColumn.Metadata.JdbcMeta jdbcmeta()
+    @Override
+    public void scanimpl()
         {
-        return new JdbcColumn.Metadata.JdbcMeta()
+        // TODO Auto-generated method stub
+        }
+    
+    protected JdbcColumn.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcColumn.Metadata.Jdbc()
             {
+            @Override
+            public String name()
+                {
+                return JdbcColumnEntity.this.name();
+                }
             @Override
             public Integer size()
                 {
@@ -664,13 +794,19 @@ public class JdbcColumnEntity
         return new JdbcColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Metadata.AdqlMetadata adql()
+            public String name()
+                {
+                return JdbcColumnEntity.this.name();
+                }
+
+            @Override
+            public AdqlColumn.Metadata.Adql adql()
                 {
                 return adqlmeta();
                 }
 
             @Override
-            public JdbcColumn.Metadata .JdbcMeta jdbc()
+            public JdbcColumn.Metadata .Jdbc jdbc()
                 {
                 return jdbcmeta();
                 }
@@ -678,24 +814,17 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public String link()
+    public void update(final JdbcColumn.Metadata meta)
         {
-        return factories().jdbc().columns().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().jdbc().columns().aliases().alias(
-            this
-            );
-        }
-
-    @Override
-    public void scanimpl()
-        {
-        log.debug("scanimpl()");
+        if (meta.adql() != null)
+            {
+            if (meta.adql().text() != null)
+                {
+                this.text(meta.adql().text());
+                }
+            //
+            //TODO Check the type and size - warn/fail if they have changed ?
+            //
+            }
         }
     }

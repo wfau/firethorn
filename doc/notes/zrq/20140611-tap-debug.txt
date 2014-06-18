@@ -1,0 +1,380 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    -----------
+
+
+2014-06-12 03:24:25,515 TRACE [main] [TransactionInterceptor] Getting transaction for [uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity$EntityFactory.select] 
+2014-06-12 03:24:26,351 WARN  [main] [SqlExceptionHelper] SQL Error: 2627, SQLState: 23000 
+2014-06-12 03:24:26,351 ERROR [main] [SqlExceptionHelper] Violation of UNIQUE KEY constraint 'UK_fhgm94w6sp2r5jlsg7ryvasg6'. Cannot insert duplicate key in object 'dbo.FT0111IvoaColumnEntity'. The duplicate key value is (E_QDx, 7241739). 
+2014-06-12 03:24:26,354 INFO  [main] [AbstractBatchImpl] HHH000010: On release of batch it still contained JDBC statements 
+
+    -----------
+
+    curl  'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/ApJ/716/1217/table2' | xmllint --format - | tee table2.xml
+
+      <column std="true">
+        <name>e_QDx</name>
+        <description>? Standard error lower bound on QDx (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E_QDx</name>
+        <description>? Standard error upper bound on QDx (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+
+    -----------
+
+    Vizier columns names are case sensitive.
+
+        <name>e_QDx</name>
+        <name>E_QDx</name>
+
+    By default, SQLServer constraints are case-insensitive.
+    Possibly even selects as well.
+
+    -----------
+
+    # FIX - set the COLLATE property on the field.
+    # https://stackoverflow.com/questions/1514253/sql-server-2008-unique-column-that-is-case-sensitive
+
+# -------------------------------------------------------------------------------------------
+
+
+    @Table(
+        name = IvoaColumnEntity.DB_TABLE_NAME,
+        indexes={
+            @Index(
+                columnList = IvoaColumnEntity.DB_PARENT_COL
+                )
+            },
+        uniqueConstraints={
+            @UniqueConstraint(
+                columnNames = {
+                    BaseComponentEntity.DB_NAME_COL,
+                    BaseComponentEntity.DB_PARENT_COL
+                    }
+                )
+            }
+        )
+
+# -------------------------------------------------------------------------------------------
+# Login to SQLServer and examine the metadata database.
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Set the new database name.
+        dbversion=ZRQ011103DEV
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Login to the metadata database.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${metadataname:?}"
+
+            /*
+             * Get the list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadata%'
+            ORDER BY 
+                name
+            go
+
+                FirethornMetadataSHEP010910TEST
+                FirethornMetadataSHEP010910TEST_log
+                FirethornMetadataZRQ011103DEV
+                FirethornMetadataZRQ011103DEV_log
+            
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT
+                table_name
+            FROM
+                information_schema.tables
+            ORDER BY
+                table_name
+            go
+
+
+                ....
+                FT0111IvoaColumnEntity
+                FT0111IvoaEndpointEntity
+                FT0111IvoaResourceEntity
+                FT0111IvoaSchemaEntity
+                FT0111IvoaTableEntity
+                ....
+
+            /*
+             * Get a list of columns.
+             *
+             */
+            SELECT
+                column_name
+            FROM
+                information_schema.columns
+            WHERE
+                table_name = 'FT0111IvoaColumnEntity'
+            ORDER BY
+                column_name
+            go
+
+                adqldtype
+                adqlsize
+                adqltype
+                adqlucdtype
+                adqlucdvalue
+                adqlunit
+                adqlunits
+                adqlutype
+                copydepth
+                created
+                ident
+                ivoasize
+                ivoatype
+                modified
+                name
+                owner
+                parent
+                scantime
+                status
+                text
+                uidhi
+                uidlo
+
+            /*
+             * Get the database COLLATION.
+             *
+             */
+            SELECT DATABASEPROPERTYEX('FirethornMetadataZRQ011103DEV', 'Collation') SQLCollation;
+
+                SQLCollation
+                -----------------------
+                Latin1_General_CI_AS
+
+            /**
+             * Get the table object ID.
+             *
+             */	
+	        SELECT OBJECT_ID('FT0111IvoaColumnEntity');
+	        go
+
+                34099162
+                
+            /*
+             * Get the column COLLATION.
+             *
+             */
+            SELECT object_id, name, collation_name FROM sys.columns WHERE name = 'name' AND object_id = OBJECT_ID('FT0111IvoaColumnEntity') ;
+            go
+
+
+                34099162    name    Latin1_General_CI_AS
+
+	
+	
+        #
+        # Collation and Unicode Support	
+        http://msdn.microsoft.com/en-us/library/ms143726.aspx
+
+            Latin1_General_CI_AS
+            
+                CI = Case Insensitive
+                AS = Accent Sensitive
+
+
+        #
+        # Set or Change the Column Collation
+        http://msdn.microsoft.com/en-us/library/ms190920.aspx
+
+        Example :
+
+            ALTER TABLE MyTable ALTER COLUMN Column1 [TYPE] COLLATE [NewCollation]	
+
+        Caveat :	
+
+            "
+            You cannot change the collation of a column that is currently referenced by any one of the following:
+
+                * A computed column
+                * An index
+                * Distribution statistics, either generated automatically or by the CREATE STATISTICS statement
+                * A CHECK constraint
+                * A FOREIGN KEY constraint
+            "
+
+        So we would need to find the column type, drop any indexes or constraints, change the COLLATION and then re-create the constraints.
+
+# -------------------------------------------------------------------------------------------
+# Test
+# DROP the table and re-create without the UniqueConstraint.
+
+
+        DROP TABLE FT0111IvoaColumnEntity ;
+        go
+
+        uniqueConstraints={}
+
+# -------------------------------------------------------------------------------------------
+
+    #
+    # The extended TAPVizieR tables/xxxx endpoint is seems to be broken (for some tables).
+    # TAP tables/xxxx
+
+    curl 'http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/AJ/139/1338/table11'
+    -- HANGS
+
+    #
+    # Standard Vizier seems to be working ok.
+    firefox 'http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=J/AJ/139/1338/table11'
+    -- WORKS
+
+
+    #
+    # Basic TAP page.
+    firefox 'http://tapvizier.u-strasbg.fr/TAPVizieR/'
+    
+        SELECT
+            TOP 5 *
+        FROM        
+            "J/AJ/139/1338/table11"
+        -- long pause (>5min), but works    
+
+
+        SELECT
+            round(("J/AJ/139/1338/table11".e_pm/9.999999999999998)::numeric,1) AS e_pm,
+            "J/AJ/139/1338/table11".recno AS recno,
+            "J/AJ/139/1338/table11".Ind AS Ind,
+            "J/AJ/139/1338/table11".Zone_1 AS Zone,
+            "J/AJ/139/1338/table11".Mmb AS Mmb,
+            "J/AJ/139/1338/table11"._MASS AS "2MASS",
+            round(("J/AJ/139/1338/table11".pmDE/9.999999999999998)::numeric,1) AS pmDE,
+            round(("J/AJ/139/1338/table11".pmRA/9.999999999999998)::numeric,1) AS pmRA,
+            "J/AJ/139/1338/table11".SpType AS SpType
+        FROM
+            vbig.c51391338t11 AS "J/AJ/139/1338/table11"
+        Limit 5
+
+    #
+    # User friendly TAP/metadata pages
+    firefox 'http://tapvizier.u-strasbg.fr/adql/'
+
+        SELECT
+            TOP 5 *
+        FROM        
+            "J/AJ/139/1338/table11"
+        -- long pause (>5min), but works    
+
+# -------------------------------------------------------------------------------------------
+
+    DAL Sessions for IVOA Interop October 2012 
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpOct2012DAL
+
+     	"VizieR implementation and TAP improvements"
+        http://wiki.ivoa.net/internal/IVOA/InterOpOct2012DAL/TAPVizieR_DAL.pdf
+
+        presented by "Sebastien Derriere" <sebastien.derriere@astro.unistra.fr>
+        written by "François Ochsenbein" <francois.ochsenbein@astro.unistra.fr>
+
+
+    ADASS 2012 – Urbana
+    "TAPVizieR, a new way to acess the VizieR database"
+    http://cdsweb.u-strasbg.fr/~landais/presentations/posterADASSTAPVizieR.pdf
+        written by "Gilles Landais" <gilles.landais@astro.unistra.fr>
+
+    --------------------
+
+    To : "Gilles Landais" <gilles.landais@astro.unistra.fr>
+
+    I'm experimenting with using data from your TAPVizieR service.
+
+    I'm looking at your extension of the /tables endpoint to
+    provide the metadata for each table as a separate call.
+
+    I'm using the TAP /tables endpoint listed in your presentation
+    at the 2012 interop at Sao Paulo.
+
+     	"VizieR implementation and TAP improvements"
+        http://wiki.ivoa.net/internal/IVOA/InterOpOct2012DAL/TAPVizieR_DAL.pdf
+
+    and ADASS 2012
+
+        "TAPVizieR, a new way to acess the VizieR database"
+        http://cdsweb.u-strasbg.fr/~landais/presentations/posterADASSTAPVizieR.pdf
+
+
+    The initial query to list all the tables works fine.
+
+        http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables
+
+    Howerer, at the moment your TAP service seems to be having some problems
+    with some of the tables.
+
+    A query to get the metadata for a table like "J/AJ/139/1338/table11"
+    may take over 5 min to execute.
+
+        http://tapvizier.u-strasbg.fr/TAPVizieR/tap/tables/J/AJ/139/1338/table11
+
+    The TAP service itself seems to have simlar problems
+           
+        http://tapvizier.u-strasbg.fr/TAPVizieR/
+        
+            SELECT
+                COUNT(*)
+            FROM        
+                "J/AJ/139/1338/table11"
+
+        
+
+
+
+
+
+
+

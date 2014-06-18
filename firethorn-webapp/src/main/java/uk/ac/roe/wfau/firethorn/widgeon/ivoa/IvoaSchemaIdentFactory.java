@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -31,4 +33,11 @@ public class IvoaSchemaIdentFactory
 extends WebappIdentFactory
 implements IvoaSchema.IdentFactory
     {
+    /**
+     * The type URI for this type.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/ivoa-schema-1.0.json"
+        );
     }

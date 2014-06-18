@@ -20,7 +20,10 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
@@ -31,60 +34,77 @@ public interface AdqlColumn
 extends BaseColumn<AdqlColumn>
     {
     /**
-     * Name factory interface.
-     *
-     */
-    public static interface NameFactory
-    extends Entity.NameFactory<AdqlColumn>
-        {
-        }
-
-    /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlColumn>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseColumn.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseColumn.IdentFactory
         {
         }
 
     /**
-     * Alias factory interface.
+     * {@link BaseColumn.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseColumn.NameFactory<AdqlColumn>
+        {
+        }
+   
+    /**
+     * {@link BaseColumn.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
     extends BaseColumn.AliasFactory<AdqlColumn>
         {
         }
+    
+    /**
+     * {@link BaseColumn.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseColumn.LinkFactory<AdqlColumn>
+        {
+        }
 
     /**
-     * Column factory interface.
+     * {@link BaseColumn.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseColumn.EntityFactory<AdqlTable, AdqlColumn>
         {
         /**
-         * Create a new column.
+         * Create a new {@link AdqlColumn}.
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base);
 
         /**
-         * Create a new column.
+         * Create a new {@link AdqlColumn}.
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
 
+        
+        //TODO - move to services
+        @Override
+        public AdqlColumn.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public AdqlColumn.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlColumn.AliasFactory aliases();
+        
+        //TODO - move to services
+        @Override
+        public AdqlColumn.LinkFactory links();
+        
         }
 
     @Override
@@ -248,4 +268,119 @@ extends BaseColumn<AdqlColumn>
                 }
             }
         }
+
+    /**
+     * The {@link AdqlColumn} metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseColumn.Metadata
+        {
+        /**
+         * The ADQL metadata.
+         *
+         */
+        public interface Adql
+            {
+            /**
+             * The column name.
+             *
+             */
+            public String name();
+
+            /**
+             * The column description.
+             * 
+             */
+            public String text();
+            
+            /**
+             * The array size, or null if this is not an array.
+             *
+             */
+            public Integer arraysize();
+
+            /**
+             * Set the array size.
+             *
+             */
+            public void arraysize(final Integer size);
+
+            /**
+             * The ADQL type.
+             *
+             */
+            public AdqlColumn.Type type();
+
+            /**
+             * Set the ADQL type.
+             *
+             */
+            public void type(final AdqlColumn.Type type);
+
+            /**
+             * The ADQL units.
+             *
+             */
+            public String units();
+
+            /**
+             * Set the ADQL units.
+             *
+             */
+            public void units(final String unit);
+
+            /**
+             * The ADQL utype.
+             *
+             */
+            public String utype();
+
+            /**
+             * Set the ADQL utype.
+             *
+             */
+            public void utype(final String utype);
+
+            /**
+             * The ADQL dtype.
+             *
+             */
+            public String dtype();
+
+            /**
+             * Set the ADQL dtype.
+             *
+             */
+            public void dtype(final String dtype);
+
+            /**
+             * The column UCD.
+             *
+             */
+            public String ucd();
+
+            /**
+             * Set the column UCD.
+             *
+             */
+            public void ucd(final String value);
+
+            /**
+             * Set the column UCD.
+             *
+             */
+            @Deprecated
+            public void ucd(final String type, final String value);
+            
+            }
+        /**
+         * The ADQL metadata.
+         *
+         */
+        public Adql adql();
+        }
+
+    @Override
+    public AdqlColumn.Metadata meta();
     }

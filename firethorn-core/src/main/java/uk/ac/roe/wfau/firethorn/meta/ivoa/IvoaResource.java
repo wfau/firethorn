@@ -18,6 +18,10 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -28,45 +32,54 @@ public interface IvoaResource
 extends BaseResource<IvoaSchema>
     {
     /**
-     *
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<IvoaResource>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseResource.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseResource.IdentFactory
         {
         }
 
     /**
-     * Resource factory interface.
+     * {@link BaseResource.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseResource.NameFactory<IvoaResource>
+        {
+        }
+    
+    /**
+     * {@link BaseResource.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseResource.LinkFactory<IvoaResource>
+        {
+        }
+
+    /**
+     * {@link BaseResource.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseResource.EntityFactory<IvoaResource>
         {
         /**
-         * Create a new Resource.
+         * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String endpoint);
+        public IvoaResource create(final String ogsaid, final String ivoaid);
 
         /**
-         * Create a new Resource.
+         * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String endpoint, final String name);
+        public IvoaResource create(final String ogsaid, final String ivoaid, final String name);
 
         /**
-         * The resource schema factory.
+         * Our local {@link IvoaSchema.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public IvoaSchema.EntityFactory schemas();
@@ -74,11 +87,17 @@ extends BaseResource<IvoaSchema>
         }
 
     /**
-     * Access to the resource schemas.
+     * The resource {@link IvoaSchema schema}.
      *
      */
     public interface Schemas extends BaseResource.Schemas<IvoaSchema>
         {
+        /**
+         * Create a {@link IvoaSchema.Builder}.
+         *
+         */
+        public IvoaSchema.Builder builder();  
+
         }
     @Override
     public Schemas schemas();
@@ -87,13 +106,13 @@ extends BaseResource<IvoaSchema>
      * The resource registry URI.
      *
      */
-    public String uri();
+    public String ivoaid();
 
     /**
      * The resource registry URI.
      *
      */
-    public void uri(final String uri);
+    public void ivoaid(final String ivoaid);
 
     /**
      * Public interface for a service Endpoint.
@@ -121,11 +140,17 @@ extends BaseResource<IvoaSchema>
     public interface Endpoints
         {
         /**
+         * Add a new service Endpoint.
+         * 
+         */
+        public Endpoint create(final String url);
+
+        /**
          * Select a list of the service Endpoint(s).
          * 
          */
         public Iterable<Endpoint> select();
-        
+
         }
     
     /**
@@ -133,5 +158,29 @@ extends BaseResource<IvoaSchema>
      * 
      */
     public Endpoints endpoints();
+
+    /**
+     * The {@link IvoaResource} metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseResource.Metadata
+        {
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public interface Ivoa
+            {
+            }
+        /**
+         * The IVOA metadata.
+         * 
+         */
+        public Ivoa ivoa();
+        }
+
+    @Override
+    public IvoaResource.Metadata meta();
     
     }

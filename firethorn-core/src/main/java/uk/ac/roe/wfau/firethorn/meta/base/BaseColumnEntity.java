@@ -49,25 +49,64 @@ extends BaseComponentEntity<ColumnType>
     implements BaseColumn<ColumnType>
     {
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_TYPE_COL  = "adqltype"  ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_SIZE_COL  = "adqlsize"  ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
-    protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_ADQL_DTYPE_COL = "adqldtype" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_ADQL_UNIT_COL = "adqlunit" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UCD_TYPE_COL  = "adqlucdtype"  ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_UCD_VALUE_COL = "adqlucdvalue" ;
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected BaseColumnEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Remove the parent reference.
+     *
+     */
     protected BaseColumnEntity(final BaseTable<?,ColumnType> parent, final String name)
         {
         super(name);
-        //this.parent = parent;
         }
 
     @Override
@@ -84,28 +123,6 @@ extends BaseComponentEntity<ColumnType>
             }
         return builder;
         }
-
-    /*
-    @Index(
-        name=DB_TABLE_NAME + "IndexByParent"
-        )
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = BaseTableEntity.class
-        )
-    @JoinColumn(
-        name = DB_PARENT_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    private BaseTable<?,ColumnType> parent;
-    @Override
-    public BaseTable<?,ColumnType> table()
-        {
-        return this.parent;
-        }
-     */
 
     @Override
     public BaseSchema<?,?> schema()
@@ -139,13 +156,7 @@ extends BaseComponentEntity<ColumnType>
     protected AdqlColumn.Type adqltype ;
     protected AdqlColumn.Type adqltype()
         {
-        if (this.adqltype != null)
-            {
-            return this.adqltype;
-            }
-        else {
-            return base().meta().adql().type();
-            }
+        return this.adqltype;
         }
     protected void adqltype(final AdqlColumn.Type type)
         {
@@ -164,13 +175,7 @@ extends BaseComponentEntity<ColumnType>
     protected Integer adqlsize ;
     protected Integer adqlsize()
         {
-        if (this.adqlsize != null)
-            {
-            return this.adqlsize ;
-            }
-        else {
-            return base().meta().adql().arraysize();
-            }
+        return this.adqlsize ;
         }
     protected void adqlsize(final Integer size)
         {
@@ -181,25 +186,19 @@ extends BaseComponentEntity<ColumnType>
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_ADQL_UNITS_COL,
+        name = DB_ADQL_UNIT_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    protected String adqlunits ;
-    protected String adqlunits()
+    protected String adqlunit ;
+    protected String adqlunit()
         {
-        if (this.adqlunits != null)
-            {
-            return this.adqlunits ;
-            }
-        else {
-            return base().meta().adql().units();
-            }
+        return this.adqlunit ;
         }
-    protected void adqlunits(final String value)
+    protected void adqlunit(final String value)
         {
-        this.adqlunits = emptystr(
+        this.adqlunit = emptystr(
             value
             );
         }
@@ -216,13 +215,7 @@ extends BaseComponentEntity<ColumnType>
     protected String adqlutype ;
     protected String adqlutype()
         {
-        if (this.adqlutype != null)
-            {
-            return this.adqlutype ;
-            }
-        else {
-            return base().meta().adql().utype();
-            }
+        return this.adqlutype ;
         }
     protected void adqlutype(final String value)
         {
@@ -231,8 +224,27 @@ extends BaseComponentEntity<ColumnType>
             );
         }
 
-    /*
-     *
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_DTYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqldtype ;
+    protected String adqldtype()
+        {
+        return this.adqldtype ;
+        }
+    protected void adqldtype(final String value)
+        {
+        this.adqldtype = emptystr(
+            value
+            );
+        }
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -242,145 +254,25 @@ extends BaseComponentEntity<ColumnType>
         nullable = true,
         updatable = true
         )
-    protected String adqlucdvalue ;
-    protected String adqlucdvalue()
+    protected String adqlucd ;
+    protected String adqlucd()
         {
-        if (this.adqlucdvalue != null)
-            {
-            return this.adqlucdvalue ;
-            }
-        else {
-            return base().meta().adql().ucdversion();
-            }
+        return this.adqlucd ;
         }
-    protected void adqlucd0(final String value)
+    protected void adqlucd(final String value)
         {
-        this.adqlucd0 = emptystr(
+        this.adqlucd = emptystr(
             value
             );
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_ADQL_UCD1_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected String adqlucd1 ;
-    protected String adqlucd1()
-        {
-        if (this.adqlucd1 != null)
-            {
-            return this.adqlucd1 ;
-            }
-        else {
-            return base().meta().adql().ucd();
-            }
-        }
-    protected void adqlucd1(final String value)
-        {
-        this.adqlucd1 = emptystr(
-            value
-            );
-        }
+    /**
+     * Generate the {@link AdqlColumn.Metadata.Adql adql} metadata.
      *
      */
-
-    @Embeddable
-    @Access(
-        AccessType.FIELD
-        )
-    public static class UCDEntity
-    implements UCD
+    protected AdqlColumn.Metadata.Adql adqlmeta()
         {
-        protected UCDEntity()
-            {
-            }
-
-        public UCDEntity(final UCD.Type type, final String value)
-            {
-            this.ucdtype  = type  ;
-            this.ucdvalue = value ;
-            }
-
-        @Basic(
-            fetch = FetchType.EAGER
-            )
-        @Column(
-            name = DB_ADQL_UCD_TYPE_COL,
-            unique = false,
-            nullable = true,
-            updatable = true
-            )
-        @Enumerated(
-            EnumType.STRING
-            )
-        private UCD.Type ucdtype  ;
-
-        @Basic(
-            fetch = FetchType.EAGER
-            )
-        @Column(
-            name = DB_ADQL_UCD_VALUE_COL,
-            unique = false,
-            nullable = true,
-            updatable = true
-            )
-        private String ucdvalue ;
-
-        @Override
-        public UCD.Type type()
-            {
-            return this.ucdtype;
-            }
-
-        @Override
-        public String value()
-            {
-            return this.ucdvalue;
-            }
-        }
-
-    @Embedded
-    private UCDEntity ucdentity;
-    protected UCDEntity ucdentity()
-        {
-        return this.ucdentity;
-        }
-
-    protected void ucdentity(final UCD.Type type, final String value)
-        {
-        if (value != null)
-            {
-            this.ucdentity = new UCDEntity(
-                type,
-                value
-                );
-            }
-        else {
-            this.ucdentity = null ;
-            }
-        }
-
-    @Override
-    public BaseColumn.Metadata meta()
-        {
-        return new BaseColumn.Metadata()
-            {
-            @Override
-            public BaseColumn.Metadata.AdqlMetadata adql()
-                {
-                return adqlmeta();
-                }
-            };
-        }
-
-    protected BaseColumn.Metadata.AdqlMetadata adqlmeta()
-        {
-        return new BaseColumn.Metadata.AdqlMetadata()
+        return new AdqlColumn.Metadata.Adql()
             {
             @Override
             public Integer arraysize()
@@ -410,12 +302,12 @@ extends BaseComponentEntity<ColumnType>
             @Override
             public String units()
                 {
-                return adqlunits();
+                return adqlunit();
                 }
             @Override
             public void units(final String units)
                 {
-                adqlunits(
+                adqlunit(
                     units
                     );
                 }
@@ -434,17 +326,64 @@ extends BaseComponentEntity<ColumnType>
                 }
 
             @Override
-            public UCD ucd()
+            public String dtype()
                 {
-                return ucdentity();
+                return adqldtype();
                 }
             @Override
-            public void ucd(final UCD.Type type, final String value)
+            public void dtype(final String dtype)
                 {
-                ucdentity(
-                    type,
+                adqldtype(
+                    dtype
+                    );
+                }
+
+            @Override
+            public String ucd()
+                {
+                return adqlucd();
+                }
+            @Override
+            public void ucd(final String value)
+                {
+                adqlucd(
                     value
                     );
+                }
+            @Override
+            public void ucd(final String type, final String value)
+                {
+                adqlucd(
+                    value
+                    );
+                }
+            @Override
+            public String name()
+                {
+                return BaseColumnEntity.this.name();
+                }
+            @Override
+            public String text()
+                {
+                return BaseColumnEntity.this.text();
+                }
+            };
+        }
+
+    @Override
+    public AdqlColumn.Metadata meta()
+        {
+        return new AdqlColumn.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return BaseColumnEntity.this.name();
+                }
+            @Override
+            public AdqlColumn.Metadata.Adql adql()
+                {
+                return adqlmeta();
                 }
             };
         }

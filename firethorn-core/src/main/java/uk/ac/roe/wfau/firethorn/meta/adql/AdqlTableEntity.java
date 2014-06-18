@@ -17,11 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -42,9 +42,9 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
@@ -103,37 +103,19 @@ public class AdqlTableEntity
     implements AdqlTable
     {
     /**
-     * Hibernate database table name.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlTableEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
 
     /**
-     * Alias factory implementation.
-     * @todo move to a common implementation
-     *
-     */
-    @Component
-    public static class AliasFactory
-    implements AdqlTable.AliasFactory
-        {
-        @Override
-        public String alias(final AdqlTable table)
-            {
-            return "ADQL_".concat(
-                table.ident().toString()
-                );
-            }
-        }
-
-    /**
-     * Name factory implementation.
+     * {@link AdqlTable.NameFactory} implementation.
      *
      */
     @Component
@@ -144,7 +126,62 @@ public class AdqlTableEntity
         }
 
     /**
-     * Table factory implementation.
+     * {@link AdqlTable.AliasFactory} implementation.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements AdqlTable.AliasFactory
+        {
+        private static final String PREFIX = "JDBC_";
+
+        @Override
+        public String alias(final AdqlTable column)
+            {
+            return PREFIX.concat(
+                column.ident().toString()
+                );
+            }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public AdqlTable resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link AdqlTable.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlTable.IdentFactory idents ;
+
+        /**
+         * Our {@link AdqlTable.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlTable.EntityFactory entities;
+
+        }
+    
+    /**
+     * {@link AdqlTable.EntityFactory} implementation.
      *
      */
     @Repository
@@ -368,11 +405,11 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        protected AdqlTable.LinkFactory links;
+        protected AdqlTable.NameFactory names;
         @Override
-        public AdqlTable.LinkFactory links()
+        public AdqlTable.NameFactory names()
             {
-            return this.links;
+            return this.names;
             }
 
         @Autowired
@@ -384,19 +421,28 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        protected AdqlTable.NameFactory names;
+        protected AdqlTable.LinkFactory links;
         @Override
-        public AdqlTable.NameFactory names()
+        public AdqlTable.LinkFactory links()
             {
-            return this.names;
+            return this.links;
             }
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlTableEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -408,6 +454,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -419,6 +470,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -430,6 +486,11 @@ public class AdqlTableEntity
             );
         }
 
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
     protected AdqlTableEntity(final CopyDepth type, final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(
@@ -454,14 +515,6 @@ public class AdqlTableEntity
             AdqlTableEntity.this,
             base
             );
-        /*
-         * HibernateCollections
-        children.put(
-            column.name(),
-            column
-            );
-         *
-         */
         }
 
     /**
@@ -543,23 +596,6 @@ public class AdqlTableEntity
         return this.base.root();
         }
 
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "table",
-        targetEntity = AdqlColumnEntity.class
-        )
-    private Map<String, AdqlColumn> children = new LinkedHashMap<String, AdqlColumn>();
-     *
-     */
-
     @Override
     public AdqlTable.Columns columns()
         {
@@ -577,11 +613,6 @@ public class AdqlTableEntity
                         );
                     }
                 else {
-                    /*
-                     * HibernateCollections
-                    return children.values();
-                     *
-                     */
                     return factories().adql().columns().select(
                         AdqlTableEntity.this
                         );
@@ -620,20 +651,6 @@ public class AdqlTableEntity
                         AdqlTableEntity.this,
                         name
                         );
-                    /*
-                     * HibernateCollections
-                    AdqlColumn column = children.get(name);
-                    if (column != null)
-                        {
-                        return column;
-                        }
-                    else {
-                        throw new NameNotFoundException(
-                            name
-                            );
-                        }
-                     *
-                     */
                     }
                 }
 
@@ -641,19 +658,10 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base)
                 {
                 realize();
-                final AdqlColumn column = factories().adql().columns().create(
+                return factories().adql().columns().create(
                     AdqlTableEntity.this,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    column.name(),
-                    column
-                    );
-                 *
-                 */
-                return column ;
                 }
 
             @Override
@@ -696,7 +704,7 @@ public class AdqlTableEntity
                         }
                     }
                 else {
-                    // TODO pass reference to this table too.
+                    // TODO pass parent reference.
                     return factories().adql().columns().select(
                         ident
                         );

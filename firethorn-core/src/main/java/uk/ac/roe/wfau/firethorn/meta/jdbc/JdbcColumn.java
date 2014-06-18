@@ -21,8 +21,11 @@ import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 
 /**
  *
@@ -31,27 +34,41 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
-
     /**
-     * Link factory interface.
-     *
+     * {@link EntityBuilder} interface.
+     * 
      */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<JdbcColumn>
+    public static interface Builder
+    extends EntityBuilder<JdbcColumn, JdbcColumn.Metadata>
         {
+        /**
+         * Create or update a column.
+         *
+         */
+        public JdbcColumn build(final JdbcColumn.Metadata param)
+        throws DuplicateEntityException;
         }
 
     /**
-     * Identifier factory interface.
+     * {@link BaseColumn.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseColumn.IdentFactory
         {
         }
-
+    
     /**
-     * Alias factory interface.
+     * {@link BaseColumn.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseColumn.NameFactory<JdbcColumn>
+        {
+        }
+    
+    /**
+     * {@link BaseColumn.AliasFactory} interface.
      *
      */
     public static interface AliasFactory
@@ -60,29 +77,62 @@ extends BaseColumn<JdbcColumn>
         }
 
     /**
-     * Column factory interface.
+     * {@link BaseColumn.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<JdbcColumn>
+        {
+        }
+
+    /**
+     * {@link BaseColumn.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseColumn.EntityFactory<JdbcTable, JdbcColumn>
         {
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
+         *
+         */
+        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcColumn}.
          *
          */
         public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field);
 
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size);
 
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type);
+
+        //TODO - move to services
+        @Override
+        public JdbcColumn.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public JdbcColumn.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public JdbcColumn.AliasFactory aliases();
+        
+        //TODO - move to services
+        @Override
+        public JdbcColumn.LinkFactory links();
 
         }
 
@@ -296,27 +346,32 @@ extends BaseColumn<JdbcColumn>
         }
 
     /**
-     * Access to the column metadata.
+     * The column metadata.
      *
      */
     public interface Metadata
     extends AdqlColumn.Metadata
         {
         /**
-         * The JDBC column metadata.
+         * The JDBC metadata.
          *
          */
-        public interface JdbcMeta
+        public interface Jdbc
             {
-
             /**
-             * Get the JDBC size.
+             * The column name.
+             *
+             */
+            public String name();
+            
+            /**
+             * The column size.
              *
              */
             public Integer size();
 
             /**
-             * Set the JDBC size.
+             * Set the column size.
              *
              */
             public void size(final Integer size);
@@ -351,10 +406,10 @@ extends BaseColumn<JdbcColumn>
 
             }
         /**
-         * The JDBC column metadata.
+         * The JDBC metadata.
          *
          */
-        public JdbcMeta jdbc();
+        public Jdbc jdbc();
 
         }
 
@@ -362,9 +417,9 @@ extends BaseColumn<JdbcColumn>
     public JdbcColumn.Metadata meta();
 
     /**
-     * Update the column metadata.
-     *
-    public void scan();
+     * Update the column properties.
+     * 
      */
+    public void update(final JdbcColumn.Metadata meta);
 
     }

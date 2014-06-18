@@ -31,97 +31,111 @@ public interface AdqlResource
 extends BaseResource<AdqlSchema>
     {
     /**
-     * Name factory interface.
-     *
-     */
-    public static interface NameFactory
-    extends Entity.NameFactory<AdqlResource>
-        {
-        }
-
-    /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlResource>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link BaseResource.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends BaseResource.IdentFactory
         {
         }
 
     /**
-     * Resource factory interface.
+     * {@link BaseResource.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseResource.NameFactory<AdqlResource>
+        {
+        }
+
+    /**
+     * {@link BaseResource.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends BaseResource.LinkFactory<AdqlResource>
+        {
+        }
+
+    /**
+     * {@link BaseResource.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseResource.EntityFactory<AdqlResource>
         {
         /**
-         * Create a new Resource.
+         * Create a new {@link AdqlResource}.
          *
          */
         public AdqlResource create(final String name);
 
         /**
-         * The resource schema factory.
+         * Our local {@link AdqlSchema.EntityFactory} implementation.
+         * @todo - move to services
          *
          */
         public AdqlSchema.EntityFactory schemas();
 
+        //TODO - move to services
+        @Override
+        public AdqlResource.IdentFactory idents();
+
+        //TODO - move to services
+        //@Override
+        //public AdqlSchema.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public AdqlResource.LinkFactory links();
+        
         }
 
     /**
-     * Access to the resource schemas.
+     * Our resource {@link AdqlSchema schema}.
      *
      */
     public interface Schemas extends BaseResource.Schemas<AdqlSchema>
         {
         /**
-         * Create a new schema.
+         * Create a new {@link AdqlSchema schema}.
          *
          */
         public AdqlSchema create(final String name);
 
         /**
-         * Create a new schema, importing a base table.
+         * Create a new {@link AdqlSchema schema}, importing a {@link BaseTable}.
          *
          */
         public AdqlSchema create(final String name, final BaseTable<?,?> base);
 
         /**
-         * Create a new schema, importing all the tables from a base schema.
+         * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
         public AdqlSchema create(final BaseSchema<?,?> base);
 
         /**
-         * Create a new schema, importing the tables from a base schema.
+         * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
         public AdqlSchema create(final CopyDepth depth, final BaseSchema<?,?> base);
 
         /**
-         * Create a new schema, importing all the tables from a base schema.
+         * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
         public AdqlSchema create(final String name, final BaseSchema<?,?> base);
 
         /**
-         * Create a new schema, importing the tables from a base schema.
+         * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
         public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
         /**
-         * Import a base schema.
+         * Import a {@link BaseSchema}.
+         * @todo How is this different from create ?
          *
          */
         public AdqlSchema inport(final String name, final BaseSchema<?, ?> base);
@@ -130,4 +144,23 @@ extends BaseResource<AdqlSchema>
     @Override
     public Schemas schemas();
 
+    /**
+     * The {@link AdqlResource} metadata.
+     *
+     */
+    public interface Metadata
+    extends BaseResource.Metadata
+        {
+        /**
+         * The ADQL metadata.
+         * 
+         */
+        public interface Adql
+            {
+            }
+        }
+
+    @Override
+    public AdqlResource.Metadata meta();
+    
     }

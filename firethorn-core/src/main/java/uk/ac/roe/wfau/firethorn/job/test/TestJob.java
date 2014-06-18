@@ -47,12 +47,6 @@ extends Job, NamedEntity
         public IdentFactory idents();
 
         /**
-         * Our TestJob resolver.
-         *
-         */
-        public Resolver resolver();
-
-        /**
          * Our TestJob Factory.
          *
          */
@@ -87,15 +81,6 @@ extends Job, NamedEntity
      */
     public static interface IdentFactory
     extends Entity.IdentFactory
-        {
-        }
-
-    /**
-     * Job resolver interface.
-     *
-     */
-    public static interface Resolver
-    extends Entity.EntityFactory<TestJob>
         {
         }
 

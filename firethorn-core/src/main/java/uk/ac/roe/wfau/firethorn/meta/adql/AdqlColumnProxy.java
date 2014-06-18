@@ -274,7 +274,7 @@ implements AdqlColumn
         }
 
     @Override
-    public BaseColumn.Metadata meta()
+    public AdqlColumn.Metadata meta()
         {
         return base().meta();
         }

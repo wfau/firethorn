@@ -174,9 +174,9 @@ public class JdbcTableController
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=JDBC_STATUS_PARAM, required=false)
-        final JdbcTable.JdbcStatus jdbcstatus,
+        final JdbcTable.TableStatus jdbcstatus,
         @RequestParam(value=ADQL_STATUS_PARAM, required=false)
-        final AdqlTable.AdqlStatus adqlstatus
+        final AdqlTable.TableStatus adqlstatus
         ){
         log.debug("update(JdbcTable.JdbcStatus)");
         log.debug(" jdbcstatus [{}]", jdbcstatus);

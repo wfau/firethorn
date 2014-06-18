@@ -30,10 +30,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
  * Spring MVC controller for our TableMapping service.
- * @todo Move to firethorn-ogsadai-metadata-server
  *
  */
-//@Slf4j
 @Controller
 @RequestMapping(TableMappingController.CONTROLLER_PATH)
 public class TableMappingController
@@ -79,7 +77,7 @@ public class TableMappingController
         final String alias
         ) throws EntityNotFoundException {
         return new TableMappingBean(
-            factories().base().tables().resolve(
+            factories().ogsa().tables().resolve(
                 alias
                 ).root()
             );
@@ -137,7 +135,7 @@ public class TableMappingController
          */
         public String getResource()
             {
-            return this.table.resource().ogsaid();
+            return this.table.resource().meta().ogsa().id();
             }
         }
     }

@@ -38,17 +38,16 @@ implements XMLReader
     {
 
     /**
-     * Our XML XMLEventReader factory.
+     * Our {@link XMLEventReader} factory.
      *
      */
     private static final XMLInputFactory xmlreaderfactory = XMLInputFactory.newInstance();
 
     /**
-     * Create an XMLEventReader for a Java IO Reader.
-     * @todo Move this to new XMLReader
+     * Create an {@link XMLEventReader} for a Java IO Reader.
      *
      */
-    public static XMLEventReader wrap(final Reader reader)
+    public static XMLEventReader xmlreader(final Reader reader)
     throws XMLReaderException
         {
         try {
@@ -109,23 +108,12 @@ implements XMLReader
      */
     protected XMLParser parser;
 
-    /**
-     * The XML element QName this reader handles.
-     *
-     */
     @Override
     public QName qname()
         {
         return parser.qname();
         }
 
-    /**
-     * Peek at the next XMLEvent from an XMLEventReader to see if it matches
-     * this reader. This may skip processing instructions, comments and
-     * whitespace to find the next element event.
-     * @returns true if the next event matches.
-     *
-     */
     @Override
     public boolean match(final XMLEventReader reader)
     throws XMLParserException
@@ -135,28 +123,21 @@ implements XMLReader
             );
         }
 
-    /**
-     * Check if an XMLEvent matches this reader.
-     * @returns true if the event matches this reader.
-     *
-     */
     @Override
     public boolean match(final XMLEvent event)
     throws XMLParserException
         {
-        log.debug("match(XMLEvent)");
-        log.debug("  Event [{}]", event);
         return parser.match(
             event
             );
         }
 
     /**
-     * Check if a StartElement matches this reader.
-     * @returns true if the element matches this reader.
+     * Check if a {@link StartElement} matches this reader.
+     * @returns true if the {@link StartElement} matches.
      *
      */
-    public boolean match(final StartElement element)
+    protected boolean match(final StartElement element)
     throws XMLParserException
         {
         log.debug("match(StartElement)");
@@ -167,14 +148,13 @@ implements XMLReader
         }
 
     /**
-     * Validate our start element.
-     *
-     * @param reader The XMLEventReader to read from.
-     * @return Our start element.
-     * @throws XMLReaderException If we didn't find what we expected.
+     * Read a {@link StartElement} from a {@link XMLEventReader}
+     * @param reader The {@link XMLEventReader} to read from.
+     * @return A matching {@link StartElement}.
+     * @throws XMLReaderException If the next {@link XMLEvent} from the {@link XMLEventReader} wasn't a matching {@link StartElement}..
      *
      */
-    public StartElement start(final XMLEventReader reader)
+    protected StartElement start(final XMLEventReader reader)
     throws XMLParserException
         {
         log.debug("start(XMLEventReader)");
@@ -185,14 +165,12 @@ implements XMLReader
         }
 
     /**
-     * Validate our end element.
-     *
-     * @param reader The XMLEventReader to read from.
-     * @return Our start element.
-     * @throws XMLReaderException If we didn't find what we expected.
+     * Read an {@link EndElement} from a {@link XMLEventReader}
+     * @param reader The {@link XMLEventReader} to read from.
+     * @throws XMLReaderException If the next {@link XMLEvent} from the {@link XMLEventReader} wasn't a matching {@link EndElement}..
      *
      */
-    public void done(final XMLEventReader reader)
+    protected void done(final XMLEventReader reader)
     throws XMLParserException
         {
         log.debug("done(XMLEventReader)");
@@ -201,6 +179,4 @@ implements XMLReader
             reader
             );
         }
-
-    
     }

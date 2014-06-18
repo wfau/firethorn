@@ -21,6 +21,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -34,9 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -55,6 +58,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
     )
 @Table(
     name = IvoaSchemaEntity.DB_TABLE_NAME,
+    indexes={
+        @Index(
+            columnList = IvoaSchemaEntity.DB_PARENT_COL
+            )
+        },
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
@@ -84,10 +92,44 @@ public class IvoaSchemaEntity
     extends BaseSchemaEntity<IvoaSchema, IvoaTable>
     implements IvoaSchema
     {
+    /**
+     * Hibernate table mapping, {@value}.
+     * 
+     */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaSchemaEntity";
 
     /**
-     * Entity factory.
+     * {@link EntityBuilder} implementation.
+     *
+     */
+    public static abstract class Builder
+    extends AbstractEntityBuilder<IvoaSchema, IvoaSchema.Metadata>
+    implements IvoaSchema.Builder
+        {
+        public Builder(final Iterable<IvoaSchema> source)
+            {
+            this.init(
+                source
+                );
+            }
+
+        @Override
+        protected String name(IvoaSchema.Metadata meta)
+            {
+            return meta.name();
+            }
+
+        @Override
+        protected void update(final IvoaSchema schema, final IvoaSchema.Metadata meta)
+            {
+            schema.update(
+                meta
+                );
+            }
+        }
+
+    /**
+     * {@link Entity.EntityFactory} implementation.
      *
      */
     @Repository
@@ -104,16 +146,16 @@ public class IvoaSchemaEntity
 
         @Override
         @CreateMethod
-        public IvoaSchema create(final IvoaResource parent, final String name)
+        public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata meta)
             {
             return this.insert(
                 new IvoaSchemaEntity(
                     parent,
-                    name
+                    meta
                     )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public Iterable<IvoaSchema> select(final IvoaResource parent)
@@ -133,8 +175,7 @@ public class IvoaSchemaEntity
         public IvoaSchema select(final IvoaResource parent, final String name)
         throws NameNotFoundException
             {
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "IvoaSchema-select-parent.name"
@@ -204,10 +245,16 @@ public class IvoaSchemaEntity
         super();
         }
 
-    protected IvoaSchemaEntity(final IvoaResource resource, final String name)
+    protected IvoaSchemaEntity(final IvoaResource resource, IvoaSchema.Metadata meta)
         {
-        super(resource, name);
+        super(
+            resource,
+            meta.name()
+            );
         this.resource = resource;
+        this.update(
+            meta
+            );
         }
 
     @ManyToOne(
@@ -275,6 +322,23 @@ public class IvoaSchemaEntity
                     ident
                     );
                 }
+
+            @Override
+            public IvoaTable.Builder builder()
+                {
+                return new IvoaTableEntity.Builder(this.select())
+                    {
+                    @Override
+                    public IvoaTable create(final IvoaTable.Metadata meta)
+                    throws DuplicateEntityException
+                        {
+                        return factories().ivoa().tables().create(
+                            IvoaSchemaEntity.this,
+                            meta
+                            );
+                        }
+                    };
+                }
             };
         }
 
@@ -290,6 +354,88 @@ public class IvoaSchemaEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
 
+    /**
+     * Generate the IVOA metadata.
+     * 
+     */
+    protected IvoaSchema.Metadata.Ivoa ivoameta()
+        {
+        return new IvoaSchema.Metadata.Ivoa()
+            {
+            @Override
+            public String name()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
+            public String title()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
+            public String text()
+                {
+                return IvoaSchemaEntity.this.text();
+                }
+
+            @Override
+            public String utype()
+                {
+                return IvoaSchemaEntity.this.adqlutype();
+                }
+            };
+        }
+    
+    @Override
+    public IvoaSchema.Metadata meta()
+        {
+        return new IvoaSchema.Metadata()
+            {
+            @Override
+            public String name()
+                {
+                return IvoaSchemaEntity.this.name();
+                }
+
+            @Override
+            public Adql adql()
+                {
+                return adqlmeta();
+                }
+
+            @Override
+            public Ivoa ivoa()
+                {
+                return ivoameta();
+                }
+            };
+        }
+
+    @Override
+    public void update(final IvoaSchema.Metadata meta)
+        {
+        if (meta.ivoa() != null)
+            {
+            this.update(
+                meta.ivoa()
+                );
+            }
+        }
+
+    @Override
+    public void update(final IvoaSchema.Metadata.Ivoa ivoa)
+        {
+        if (ivoa.text() != null)
+            {
+            this.text(ivoa.text());
+            }
+        if (ivoa.utype() != null)
+            {
+            this.adqlutype(ivoa.utype());
+            }
         }
     }

@@ -72,16 +72,16 @@ public class QueryResultsTestCase
             );
 
         assertEquals(
-            AdqlTable.AdqlStatus.CREATED,
+            AdqlTable.TableStatus.CREATED,
             query.results().adql().meta().adql().status()
             );
 
         assertEquals(
-            AdqlTable.AdqlStatus.CREATED,
+            AdqlTable.TableStatus.CREATED,
             query.results().jdbc().meta().adql().status()
             );
         assertEquals(
-            JdbcTable.JdbcStatus.CREATED,
+            JdbcTable.TableStatus.CREATED,
             query.results().jdbc().meta().jdbc().status()
             );
 

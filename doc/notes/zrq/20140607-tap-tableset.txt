@@ -1,0 +1,433 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    newbranch=1.11.4-zrq-tableset
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Do stuff ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=ZRQ011104DEV
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Update our local properties.
+#[user@desktop]
+
+    gedit "${HOME}/firethorn.properties" &
+
+        firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ011103DEV
+        firethorn.meta.user=xxxxxxxx
+        firethorn.meta.pass=xxxxxxxx
+
+        firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataZRQ011103DEV
+        firethorn.user.user=xxxxxxxx
+        firethorn.user.pass=xxxxxxxx
+
+# -----------------------------------------------------
+# Run the FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig twomassjdbc  firethorn.twomass
+                jdbcconfig ukidss       firethorn.ukidss
+                jdbcconfig atlas        firethorn.atlas
+                jdbcconfig wfau         firethorn.wfau
+                jdbcconfig userdata     firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Import the JDBC table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'Atlas ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+        cat > "${HOME:?}/firethorn.testing" << EOF
+atlasspace=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh"   'TWOMASS JDBC conection' 'spring:RoeTWOMASS'  'TWOMASS' 'twomassjdbc'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh"   'TWOMASS ADQL workspace'
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'  'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+
+        cat >> "${HOME:?}/firethorn.testing" << EOF
+twomassjdbc=${adqlspace:?}
+EOF
+
+    popd
+
+# -----------------------------------------------------
+# Check the test settings.
+#[user@desktop]
+
+    cat "${HOME:?}/firethorn.testing"
+
+        atlasspace=/adql/resource/....
+        twomassjdbc=/adql/resource/....
+
+# -----------------------------------------------------
+# Run some local tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"  'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassjdbc:?}" 'TWOMASS'  'twomassjdbc'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlas.atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomassjdbc.twomass_psc
+            "
+    popd
+
+
+# -----------------------------------------------------
+# Manually load the IVOA resources.
+#[user@desktop]
+
+    http://localhost:8080/firethorn/ivoa/resource/753664      urn:cadc-tableset
+    http://localhost:8080/firethorn/ivoa/resource/1277952     urn:gaia-tableset                                                                                                                                                                                                                                              
+    http://localhost:8080/firethorn/ivoa/resource/1474560     urn:gavo-tableset           
+    http://localhost:8080/firethorn/ivoa/resource/1671168     urn:test-6             
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${atlasspace:?}"  'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-05-import-query-schema.sh" "${twomassjdbc:?}" 'TWOMASS'  'twomassjdbc'
+
+        gaiatable=http://localhost:8080/firethorn/ivoa/table/1343496
+        gaiaschema=http://localhost:8080/firethorn/ivoa/schema/1310720
+        
+        gavotable=http://localhost:8080/firethorn/adql/table/%281802240:1540206%29
+        gavoschema=http://localhost:8080/firethorn/adql/schema/1802240
+
+        viziertable=http://localhost:8080/firethorn/adql/table/%281802241:1746801%29
+        vizierschema=http://localhost:8080/firethorn/adql/schema/1802241
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=gaiaschema" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            | ./pp | tee query-schema.json
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=gavoschema" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+            | ./pp | tee query-schema.json
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=vizierschema" \
+            --data   "adql.resource.schema.import.base=${vizierschema:?}" \
+            | ./pp | tee query-schema.json
+
+
+        source "${FIRETHORN_TEST:?}/05-02-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                atlas.atlassource
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                dec
+            FROM
+                twomassjdbc.twomass_psc
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                decl
+            FROM
+                gaiaschema.twomass_psc
+            "
+
+    2014-06-14 04:05:34,536 DEBUG [http-bio-8080-exec-2] [JdbcTableEntity] create(SelectField) 
+    2014-06-14 04:05:34,536 DEBUG [http-bio-8080-exec-2] [JdbcTableEntity]   Name [ra] 
+    2014-06-14 04:05:34,536 DEBUG [http-bio-8080-exec-2] [JdbcTableEntity]   Type [null] 
+    2014-06-14 04:05:34,536 DEBUG [http-bio-8080-exec-2] [JdbcTableEntity]   Size [null] 
+
+    The IvoaColumn type is not being populated - so fails to create matching JdbcColumn.
+    Need to have a unit test for this.
+     
+    The data is in the vosi XML document
+
+          <column std="false">
+            <name>ra</name>
+            <description/>
+            <unit/>
+            <ucd>pos.eq.ra;meta.main</ucd>
+            <utype>Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1</utype>
+            <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+            <flag>indexed</flag>
+          </column>
+
+    But it doesn't make it into the database
+
+        "meta": {
+            "adql": {
+                "arraySize": null,
+                "units": null,
+                "utype": "Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1",
+                "ucd": "pos.eq.ra;meta.main",
+                "type": null
+                }
+            }
+
+
+

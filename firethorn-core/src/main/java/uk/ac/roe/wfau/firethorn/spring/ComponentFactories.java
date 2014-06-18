@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -29,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResolvers;
 
 
 /**
@@ -74,10 +76,16 @@ public interface ComponentFactories
     public JdbcFactories jdbc();
 
     /**
+     * Our OGSA-DAI component factories.
+     *
+     */
+    public OgsaResolvers ogsa();
+    
+    /**
      * Our local Identity factory.
      *
-    public Identity.EntityFactory identities();
      */
+    public Identity.EntityFactory identities();
 
     /**
      * Our local Community factory.
@@ -107,6 +115,7 @@ public interface ComponentFactories
      * Our generic Job<?> factories.
      *
      */
+    @Deprecated
     public Job.Services jobs();
 
     /**

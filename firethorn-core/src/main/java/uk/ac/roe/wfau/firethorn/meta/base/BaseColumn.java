@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 
 /**
  * Public interface for a table column.
@@ -41,7 +42,7 @@ extends BaseComponent
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -50,7 +51,16 @@ extends BaseComponent
         }
 
     /**
-     * Alias factory interface.
+     * {@link Entity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory<ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.NameFactory<ColumnType>
+        {
+        }
+
+    /**
+     * {@link Entity.AliasFactory} interface.
      *
      */
     public static interface AliasFactory<ColumnType extends BaseColumn<ColumnType>>
@@ -59,7 +69,25 @@ extends BaseComponent
         }
 
     /**
-     * Entity factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory<ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.LinkFactory<ColumnType>
+        {
+        }
+
+    /**
+     * {@link Entity.EntityResolver} interface.
+     *
+     */
+    public static interface EntityResolver<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.EntityFactory<ColumnType>
+        {
+        }
+    
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
@@ -85,7 +113,8 @@ extends BaseComponent
         public ColumnType search(final TableType parent, final String name);
 
         /**
-         * AliasFactory implementation.
+         * Our local {@link BaseColumn.AliasFactory} implementation.
+         * @todo Move to services.
          *
          */
         public AliasFactory<ColumnType> aliases();
@@ -93,31 +122,31 @@ extends BaseComponent
         }
 
     /**
-     * The base column this is derived from.
+     * The {@link BaseColumn} this column is derived from.
      *
      */
     public BaseColumn<?>   base();
 
     /**
-     * The root column this is derived from.
+     * The root of the chain this column is derived from.
      *
      */
     public BaseColumn<?>   root();
 
     /**
-     * The parent table.
+     * Our parent {@link BaseTable table}.
      *
      */
     public BaseTable<?,?>  table();
 
     /**
-     * The parent schema.
+     * Our parent {@link BaseSchema schema}.
      *
      */
     public BaseSchema<?,?> schema();
 
     /**
-     * The parent resource.
+     * Our parent {@link BaseResource resource}.
      *
      */
     public BaseResource<?> resource();
@@ -129,128 +158,29 @@ extends BaseComponent
     public String alias();
 
     /**
-     * The full name, including parent table, schema and catalog.
+     * The full name, including parent table and schema.
      *
      */
     public StringBuilder namebuilder();
 
     /**
-     * A class to represent a column UCD.
-     *
-     */
-    public interface UCD
-        {
-        /**
-         * The UCD version.
-         *
-         */
-        public enum Type
-            {
-            ONE(),
-            ONEPLUS();
-            }
-
-        /**
-         * The UCD type.
-         *
-         */
-        public Type type();
-
-        /**
-         * The UCD value.
-         *
-         */
-        public String value();
-
-        }
-
-    /**
-     * The column metadata.
+     * The {@link BaseColumn} metadata.
      *
      */
     public interface Metadata
         {
-
         /**
-         * The ADQL metadata.
-         *
+         * The column name.
+         * 
          */
-        public interface AdqlMetadata
-            {
-
-            /**
-             * The array size, or null if this is not an array.
-             *
-             */
-            public Integer arraysize();
-
-            /**
-             * Set the array size.
-             *
-             */
-            public void arraysize(final Integer size);
-
-            /**
-             * The ADQL type.
-             *
-             */
-            public AdqlColumn.Type type();
-
-            /**
-             * Set the ADQL type.
-             *
-             */
-            public void type(final AdqlColumn.Type type);
-
-            /**
-             * The ADQL units.
-             *
-             */
-            public String units();
-            /**
-             * Set the ADQL units.
-             *
-             */
-            public void units(final String unit);
-
-            /**
-             * The ADQL utype.
-             *
-             */
-            public String utype();
-
-            /**
-             * Set the ADQL utype.
-             *
-             */
-            public void utype(final String utype);
-
-            /**
-             * The column UCD.
-             *
-             */
-            public UCD ucd();
-
-            /**
-             * Set the column UCD.
-             *
-             */
-            public void ucd(final UCD.Type type, final String value);
-
-            }
-
-        /**
-         * The ADQL metadata.
-         *
-         */
-        public AdqlMetadata adql();
+        public String name();
 
         }
 
     /**
-     * Access to the column metadata.
+     * The {@link BaseColumn} metadata.
      *
      */
-    public Metadata meta();
+    public AdqlColumn.Metadata meta();
 
     }

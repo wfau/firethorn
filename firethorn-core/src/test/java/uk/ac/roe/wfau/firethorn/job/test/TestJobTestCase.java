@@ -63,7 +63,7 @@ extends TestRoot
 
         log.debug("Status [{}]", services().executor().status(ident));
 
-        final TestJob job = services().resolver().select(
+        final TestJob job = services().factory().select(
             ident
             );
         log.debug("Status  [{}]", job.status());

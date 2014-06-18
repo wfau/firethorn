@@ -17,13 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.AdqlStatus;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcStatus;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean.FormatsBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
@@ -85,7 +82,7 @@ extends BaseTableBean<JdbcTable>
             {
             public Long getCount();
             public JdbcTable.JdbcType getType();
-            public JdbcTable.JdbcStatus getStatus();
+            public JdbcTable.TableStatus getStatus();
             }
         public JdbcMetadataBean getJdbc();
         }
@@ -106,7 +103,7 @@ extends BaseTableBean<JdbcTable>
                         }
 
                     @Override
-                    public AdqlStatus getStatus()
+                    public AdqlTable.TableStatus getStatus()
                         {
                         return entity().meta().adql().status();
                         }
@@ -125,13 +122,13 @@ extends BaseTableBean<JdbcTable>
                         }
 
                     @Override
-                    public JdbcType getType()
+                    public JdbcTable.JdbcType getType()
                         {
                         return entity().meta().jdbc().type();
                         }
 
                     @Override
-                    public JdbcStatus getStatus()
+                    public JdbcTable.TableStatus getStatus()
                         {
                         return entity().meta().jdbc().status();
                         }

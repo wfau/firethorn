@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -63,5 +67,26 @@ implements JdbcResource.LinkFactory
             RESOURCE_PATH,
             entity
             );
+        }
+
+    @Autowired
+    private JdbcResource.EntityFactory factory ;
+    @Override
+    public JdbcResource resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+        {
+        if (this.matches(link))
+            {
+            return factory.select(
+                this.ident(
+                    link
+                    )
+                );
+            }
+        else {
+            throw new EntityNotFoundException(
+                "Unable to resolve [" + link + "]"
+                );
+            }
         }
     }

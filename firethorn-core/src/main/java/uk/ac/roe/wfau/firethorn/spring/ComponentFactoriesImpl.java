@@ -26,6 +26,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -33,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResolvers;
 
 /**
  * Our component factories.
@@ -150,10 +152,14 @@ public class ComponentFactoriesImpl
         return this.jdbc;
         }
 
-    /**
-     * Our Autowired Identity context factory.
-     *
-     */
+    @Autowired
+    protected OgsaResolvers ogsa;
+    @Override
+    public OgsaResolvers ogsa()
+        {
+        return this.ogsa;
+        }
+
     @Autowired
     protected Community.EntityFactory communities;
     @Override
@@ -162,10 +168,14 @@ public class ComponentFactoriesImpl
         return this.communities;
         }
 
-    /**
-     * Our Autowired ConfigProperty factory.
-     *
-     */
+    @Autowired
+    protected Identity.EntityFactory identities;
+    @Override
+    public Identity.EntityFactory identities()
+        {
+        return this.identities;
+        }
+
     @Autowired
     protected ConfigProperty.EntityFactory config ;
     @Override
@@ -174,10 +184,6 @@ public class ComponentFactoriesImpl
         return this.config ;
         }
 
-    /**
-     * Our Autowired Job factory.
-     *
-     */
     @Autowired
     protected Job.Services jobs;
     @Override
@@ -186,10 +192,6 @@ public class ComponentFactoriesImpl
         return this.jobs;
         }
 
-    /**
-     * Our Autowired Test factory.
-     *
-     */
     @Autowired
     protected TestJob.Services tests;
     @Override
@@ -198,10 +200,6 @@ public class ComponentFactoriesImpl
         return this.tests;
         }
 
-    /**
-     * Our Autowired Query factory.
-     *
-     */
     @Autowired
     protected AdqlQuery.Services queries;
     @Override
@@ -210,10 +208,6 @@ public class ComponentFactoriesImpl
         return this.queries;
         }
 
-    /**
-     * Our Autowired operation factory.
-     *
-     */
     @Autowired
     protected Operation.EntityFactory operations;
     @Override
@@ -222,10 +216,6 @@ public class ComponentFactoriesImpl
         return this.operations ;
         }
 
-    /**
-     * Our Autowired authentication factory.
-     *
-     */
     @Autowired
     protected Authentication.EntityFactory authentications;
     @Override

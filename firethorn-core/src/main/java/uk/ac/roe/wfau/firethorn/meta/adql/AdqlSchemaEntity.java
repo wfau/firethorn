@@ -17,11 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -42,15 +42,13 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.DataSpace;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -101,13 +99,13 @@ extends BaseSchemaEntity<AdqlSchema, AdqlTable>
 implements AdqlSchema
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlSchemaEntity";
 
     /**
-     * Schema factory implementation.
+     * {@link AdqlSchema.EntityFactory} implementation.
      *
      */
     @Repository
@@ -317,14 +315,21 @@ implements AdqlSchema
             {
             return this.links;
             }
-
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaEntity(final AdqlResource resource, final String name)
         {
         this(
@@ -335,6 +340,10 @@ implements AdqlSchema
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
@@ -345,6 +354,10 @@ implements AdqlSchema
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
     protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         super(
@@ -381,14 +394,6 @@ implements AdqlSchema
             AdqlSchemaEntity.this,
             base
             );
-        /*
-         * HibernateCollections
-        children.put(
-            table.name(),
-            table
-            );
-         *
-         */
         }
 
     /**
@@ -475,23 +480,6 @@ implements AdqlSchema
         return this.resource;
         }
 
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "schema",
-        targetEntity = AdqlTableEntity.class
-        )
-    private Map<String, AdqlTable> children = new LinkedHashMap<String, AdqlTable>();
-     *
-     */
-
     @Override
     public AdqlSchema.Tables tables()
         {
@@ -513,11 +501,6 @@ implements AdqlSchema
                     return factories().adql().tables().select(
                         AdqlSchemaEntity.this
                         );
-                    /*
-                     * HibernateCollections
-                    return children.values();
-                     *
-                     */
                     }
                 }
 
@@ -566,116 +549,56 @@ implements AdqlSchema
                         AdqlSchemaEntity.this,
                         name
                         );
-                    /*
-                     * HibernateCollections
-                    AdqlTable table = children.get(name);
-                    if (table != null)
-                        {
-                        return table;
-                        }
-                    else {
-                        throw new NotFoundException(
-                            name
-                            );
-                        }
-                     *
-                     */
                     }
                 }
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    table.name(),
-                    table
-                    );
-                 *
-                 */
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    table.name(),
-                    table
-                    );
-                 *
-                 */
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base,
                     name
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    table.name(),
-                    table
-                    );
-                 *
-                 */
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,
                     name
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    table.name(),
-                    table
-                    );
-                 *
-                 */
-                return table ;
                 }
 
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
-                //realize();
-                final AdqlTable table = factories().adql().tables().create(
+                return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     query
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    table.name(),
-                    table
-                    );
-                 *
-                 */
-                return table ;
                 }
 
             @Override
@@ -717,7 +640,7 @@ implements AdqlSchema
                         }
                     }
                 else {
-                    // TODO pass reference to this schema too.
+                    // TODO pass parent reference too.
                     return factories().adql().tables().select(
                         ident
                         );
@@ -772,31 +695,6 @@ implements AdqlSchema
         {
         return new Queries()
             {
-            /*
-             *
-            @Override
-            public AdqlQuery create(final String query)
-            throws QueryProcessingException
-                {
-                return factories().adql().queries().create(
-                    AdqlSchemaEntity.this,
-                    query
-                    );
-                }
-
-            @Override
-            public AdqlQuery create(final String query, final String name)
-            throws QueryProcessingException
-                {
-                return factories().adql().queries().create(
-                    AdqlSchemaEntity.this,
-                    query,
-                    name
-                    );
-                }
-             *
-             */
-
             @Override
             public AdqlQuery create(final QueryParam param, final String query)
             throws QueryProcessingException

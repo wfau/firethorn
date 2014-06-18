@@ -40,6 +40,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -47,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema.Builder;
 
 /**
  *
@@ -77,16 +79,21 @@ public class JdbcResourceEntity
     implements JdbcResource
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcResourceEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
 
     /**
@@ -236,11 +243,19 @@ public class JdbcResourceEntity
 
         }
 
+    /**
+     * Protected constructor. 
+     *
+     */
     protected JdbcResourceEntity()
         {
         super();
         }
 
+    /**
+     * Protected constructor. 
+     *
+     */
     protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final  String url)
         {
         super(name);
@@ -252,6 +267,10 @@ public class JdbcResourceEntity
             );
         }
 
+    /**
+     * Protected constructor. 
+     *
+     */
     protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
 	    {
 	    super(name);
@@ -264,23 +283,6 @@ public class JdbcResourceEntity
 	        pass
 	        );
 	    }
-
-    /*
-     * HibernateCollections
-    @OrderBy(
-        "name ASC"
-        )
-    @MapKey(
-        name="name"
-        )
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "resource",
-        targetEntity = JdbcSchemaEntity.class
-        )
-    private Map<String, JdbcSchema> children = new LinkedHashMap<String, JdbcSchema>();
-     *
-     */
 
     @Override
     public JdbcResource.Schemas schemas()
@@ -297,11 +299,6 @@ public class JdbcResourceEntity
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                /*
-                 * HibernateCollections
-                return children.values();
-                 *
-                 */
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this
                     );
@@ -310,38 +307,30 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final Identity identity)
                 {
-                final JdbcSchema result = factories().jdbc().schemas().build(
+                return factories().jdbc().schemas().build(
                     JdbcResourceEntity.this,
                     identity
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    result.name(),
-                    result
-                    );
-                 *
-                 */
-                return result ;
                 }
 
             @Override
+            public JdbcSchema create(final JdbcSchema.Metadata meta)
+                {
+                return factories().jdbc().schemas().create(
+                    JdbcResourceEntity.this,
+                    meta
+                    );
+                }
+            
+            @Override
+            @Deprecated
             public JdbcSchema create(final String catalog, final String schema)
                 {
-                final JdbcSchema result = factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().create(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
                     );
-                /*
-                 * HibernateCollections
-                children.put(
-                    result .name(),
-                    result
-                    );
-                 *
-                 */
-                return result ;
                 }
 
             @Override
@@ -370,20 +359,6 @@ public class JdbcResourceEntity
                     JdbcResourceEntity.this,
                     name
                     );
-                /*
-                 * HibernateCollections
-                JdbcSchema result = children.get(name);
-                if (result != null)
-                    {
-                    return result ;
-                    }
-                else {
-                    throw new NotFoundException(
-                        name
-                        );
-                    }
-                 *
-                 */
                 }
 
             @Override
@@ -434,6 +409,23 @@ public class JdbcResourceEntity
                         );
                     }
                 }
+
+            @Override
+            public JdbcSchema.Builder builder()
+                {
+                return new JdbcSchemaEntity.Builder(this.select())
+                    {
+                    @Override
+                    protected JdbcSchema create(final JdbcSchema.Metadata meta)
+                        throws DuplicateEntityException
+                        {
+                        return factories().jdbc().schemas().create(
+                            JdbcResourceEntity.this,
+                            meta
+                            );
+                        }
+                    };
+                }
             };
         }
 
@@ -444,31 +436,6 @@ public class JdbcResourceEntity
     public JdbcConnection connection()
         {
         return this.connection;
-        }
-
-    /**
-     * The the OGSA-DAI resource ID.
-     *
-     */
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_JDBC_OGSAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ogsaid;
-    @Override
-    public String ogsaid()
-        {
-        return this.ogsaid;
-        }
-    @Override
-    public void ogsaid(final String ogsaid)
-        {
-        this.ogsaid = ogsaid;
         }
 
     @Basic(
@@ -747,5 +714,34 @@ public class JdbcResourceEntity
     public Integer jdbcsize(final JdbcColumn.Type type)
         {
         return connection().type().jdbcsize(type);
+        }
+
+    /**
+     * Generate the JDBC metadata.
+     * 
+     */
+    protected JdbcResource.Metadata.Jdbc jdbcmeta()
+        {
+        return new JdbcResource.Metadata.Jdbc()
+            {
+            };
+        }
+    
+    @Override
+    public JdbcResource.Metadata meta()
+        {
+        return new JdbcResource.Metadata()
+            {
+            @Override
+            public Jdbc jdbc()
+                {
+                return jdbcmeta();
+                }
+            @Override
+            public Ogsa ogsa()
+                {
+                return ogsameta();
+                }
+            };
         }
     }

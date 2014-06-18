@@ -33,14 +33,26 @@ public class XMLStringValueReader
 extends XMLObjectReaderImpl<String>
 implements XMLObjectReader<String>
     {
+
+    /**
+     * Public constructor.
+     * @param qname The XML element {@link QName}.
+     *
+     */
     public XMLStringValueReader(final QName qname)
         {
         this(
             qname,
-            true
+            false
             );
         }
 
+    /**
+     * Public constructor.
+     * @param qname The XML element {@link QName}.
+     * @param required True if this element is required.
+     *
+     */
     public XMLStringValueReader(final QName qname, final boolean required)
         {
         super(
@@ -49,6 +61,12 @@ implements XMLObjectReader<String>
         this.required = required ;
         }
 
+    /**
+     * Public constructor.
+     * @param name The XML element name.
+     * @param namespave The XML element namespace URI.
+     *
+     */
     public XMLStringValueReader(final String namespace, final String name)
         {
         this(
@@ -58,6 +76,13 @@ implements XMLObjectReader<String>
             );
         }
 
+    /**
+     * Public constructor.
+     * @param name The XML element name.
+     * @param namespave The XML element namespace URI.
+     * @param required True if this element is required.
+     *
+     */
     public XMLStringValueReader(final String namespace, final String name, final boolean required)
         {
         super(
@@ -67,7 +92,8 @@ implements XMLObjectReader<String>
         this.required = required ;
         }
 
-    private final boolean required ;
+    private boolean trim = true ;
+    private boolean required ;
 
     @Override
     public String read(final XMLEventReader reader)
@@ -96,9 +122,8 @@ implements XMLObjectReader<String>
     /**
      * Process our element content.
      *
-     *
      */
-    public String content(final XMLEventReader reader)
+    protected String content(final XMLEventReader reader)
     throws XMLParserException, XMLReaderException
         {
         log.debug("content(XMLEventReader)");
@@ -144,6 +169,12 @@ implements XMLObjectReader<String>
                     );
                 }
             }
-        return result;
+        if ((result != null) & trim)
+            {
+            return result.trim();
+            }
+        else {
+            return result ;
+            }
         }
     }

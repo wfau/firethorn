@@ -23,9 +23,11 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 
 /**
  *
@@ -35,16 +37,31 @@ public interface JdbcTable
 extends BaseTable<JdbcTable, JdbcColumn>
     {
     /**
-     * Alias factory interface.
+     * {@link EntityBuilder} interface.
+     * 
+     */
+    public static interface Builder
+    extends EntityBuilder<JdbcTable, JdbcTable.Metadata>
+        {
+        /**
+         * Create or update a table.
+         *
+         */
+        public JdbcTable build(final JdbcTable.Metadata meta)
+        throws DuplicateEntityException;
+        }
+    
+    /**
+     * {@link BaseTable.IdentFactory} interface.
      *
      */
-    public static interface AliasFactory
-    extends BaseTable.AliasFactory<JdbcTable>
+    public static interface IdentFactory
+    extends BaseTable.IdentFactory
         {
         }
 
     /**
-     * Name factory interface.
+     * {@link BaseTable.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -56,22 +73,22 @@ extends BaseTable<JdbcTable, JdbcColumn>
          */
         public String name(final AdqlQuery query);
         }
-
+    
     /**
-     * Link factory interface.
+     * {@link BaseTable.AliasFactory} interface.
      *
      */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<JdbcTable>
+    public static interface AliasFactory
+    extends BaseTable.AliasFactory<JdbcTable>
         {
         }
 
     /**
-     * Identifier factory interface.
+     * {@link BaseTable.LinkFactory} interface.
      *
      */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
+    public static interface LinkFactory
+    extends BaseTable.LinkFactory<JdbcTable>
         {
         }
 
@@ -81,7 +98,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      *
      */
     @Deprecated
-    public static interface Builder
+    public static interface OldBuilder
         {
         /**
          * Create a JDBC table.
@@ -128,41 +145,50 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
-     * Table factory interface.
+     * {@link BaseTable.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
     extends BaseTable.EntityFactory<JdbcSchema, JdbcTable>
         {
         /**
-         * Create a new table.
+         * Create a new {@link JdbcTable}.
          *
          */
+        public JdbcTable create(final JdbcSchema parent, final JdbcTable.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcTable}.
+         *
+         */
+        @Deprecated
         public JdbcTable create(final JdbcSchema parent, final String name);
 
         /**
-         * Create a new table.
+         * Create a new {@link JdbcTable}.
          *
          */
+        @Deprecated
         public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
 
         /**
-         * Create a new query table.
+         * Create a new {@link JdbcTable}.
          *
          */
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
 
         /**
-         * Column factory implementation.
+         * Our {@link JdbcColumn.EntityFactory} factory.
          *
          */
         public JdbcColumn.EntityFactory columns();
 
         /**
-         * Builder implementation.
+         * OldBuilder implementation.
          *
          */
-        public JdbcTable.Builder builder();
+        @Deprecated
+        public JdbcTable.OldBuilder builder();
 
         /**
          * Our physical JDBC factory.
@@ -171,45 +197,77 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable.JdbcDriver driver();
 
         /**
-         * Get the next set of tables to process.
-         * This is just for clean up for now ...
+         * Get the next set of tables for garbage collection ..
+         * @Move this to the data space interface.
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
+        
+        //TODO - move to services
+        @Override
+        public JdbcTable.IdentFactory idents();
 
+        //TODO - move to services
+        @Override
+        public JdbcTable.NameFactory names();
+
+        //TODO - move to services
+        @Override
+        public JdbcTable.AliasFactory aliases();
+
+        //TODO - move to services
+        @Override
+        public JdbcTable.LinkFactory links();
+        
         }
 
     @Override
     public JdbcResource resource();
+
     @Override
     public JdbcSchema schema();
 
     /**
-     * The table columns.
+     * Our table {@link JdbcColumn columns}.
      *
      */
     public interface Columns extends BaseTable.Columns<JdbcColumn>
         {
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
+         *
+         */
+        public JdbcColumn create(final JdbcColumn.Metadata meta);
+
+        /**
+         * Create a new {@link JdbcColumn}.
          *
          */
         public JdbcColumn create(final AdqlQuery.SelectField field);
 
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final String name, final int type, final int size);
 
         /**
-         * Create a new column.
+         * Create a new {@link JdbcColumn}.
          *
          */
+        @Deprecated
         public JdbcColumn create(final String name, final JdbcColumn.Type type);
 
         /**
+         * Create a {@link JdbcColumn.Builder}.
+         *
+         */
+        public JdbcColumn.Builder builder();  
+        
+        /**
          * Scan the JDBC metadata.
+         * @todo Move this inside ?
          *
          */
         public void scan();
@@ -264,21 +322,19 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Enum for the physical table status.
-     * @todo Move up to resource ?
      *
      */
-    public static enum JdbcStatus
+    public static enum TableStatus
         {
         CREATED(),
         UPDATED(),
         DELETED(),
         DROPPED(),
         UNKNOWN();
-
         }
 
     /**
-     * JDBC table metadata.
+     * The table metadata.
      *
      */
     public interface Metadata
@@ -288,8 +344,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public interface JdbcMetadata {
+        public interface Jdbc {
 
+            /**
+             * The table name.
+             * 
+             */
+            public String name();
+            
             /**
              * The table row count.
              *
@@ -309,16 +371,16 @@ extends BaseTable<JdbcTable, JdbcColumn>
             public void type(final JdbcType type);
 
             /**
-             * The JDBC table status.
+             * Get the JDBC table status.
              *
              */
-            public JdbcTable.JdbcStatus status() ;
+            public JdbcTable.TableStatus status() ;
 
             /**
              * Set the JDBC table status.
              *
              */
-            public void status(final JdbcTable.JdbcStatus status) ;
+            public void status(final JdbcTable.TableStatus status) ;
 
             }
 
@@ -326,11 +388,17 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public JdbcMetadata jdbc();
+        public Jdbc jdbc();
 
         }
 
     @Override
     public JdbcTable.Metadata meta();
 
+    /**
+     * Update the table properties.
+     * 
+     */
+    public void update(final JdbcTable.Metadata meta);
+    
     }

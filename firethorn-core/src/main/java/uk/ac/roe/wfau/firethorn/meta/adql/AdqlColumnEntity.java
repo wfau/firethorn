@@ -98,38 +98,78 @@ public class AdqlColumnEntity
     implements AdqlColumn
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}..
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlColumnEntity";
+    /**
+     * Hibernate column mapping, {@value}..
+     *
+     */
     protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlColumnJoinTo";
+    /**
+     * Hibernate column mapping, {@value}..
+     *
+     */
     protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlColumnIndexBy";
 
     /**
-     * Hibernate column mapping.
-     *
-     */
-
-    /**
-     * Alias factory implementation.
-     * @todo Move to a separate package.
+     * {@link AdqlColumn.AliasFactory} implementation.
      *
      */
     @Component
     public static class AliasFactory
     implements AdqlColumn.AliasFactory
         {
+        private static final String PREFIX = "ADQL_";
+
         @Override
         public String alias(final AdqlColumn column)
             {
-            return "ADQL_".concat(
+            return PREFIX.concat(
                 column.ident().toString()
                 );
             }
+
+        @Override
+        public boolean matches(String alias)
+            {
+            return alias.startsWith(
+                PREFIX
+                );
+            }
+        
+        @Override
+        public AdqlColumn resolve(String alias)
+            throws EntityNotFoundException
+            {
+            return entities.select(
+                idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
+                    )
+                );
+            }
+
+        /**
+         * Our {@link AdqlColumn.IdentFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlColumn.IdentFactory idents ;
+
+        /**
+         * Our {@link AdqlColumn.EntityFactory}.
+         * 
+         */
+        @Autowired
+        private AdqlColumn.EntityFactory entities;
+        
         }
 
     /**
-     * Column factory implementation.
+     * {@link AdqlColumn.EntityFactory} implementation.
      *
      */
     @Repository
@@ -386,5 +426,71 @@ public class AdqlColumnEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
+        }
+
+    protected AdqlColumn.Type adqltype()
+        {
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else {
+            return base().meta().adql().type();
+            }
+        }
+
+    protected Integer adqlsize()
+        {
+        if (this.adqlsize != null)
+            {
+            return this.adqlsize ;
+            }
+        else {
+            return base().meta().adql().arraysize();
+            }
+        }
+
+    protected String adqlunit()
+        {
+        if (this.adqlunit != null)
+            {
+            return this.adqlunit ;
+            }
+        else {
+            return base().meta().adql().units();
+            }
+        }
+
+    protected String adqlutype()
+        {
+        if (this.adqlutype != null)
+            {
+            return this.adqlutype ;
+            }
+        else {
+            return base().meta().adql().utype();
+            }
+        }
+
+    protected String adqldtype()
+        {
+        if (this.adqldtype != null)
+            {
+            return this.adqldtype ;
+            }
+        else {
+            return base().meta().adql().dtype();
+            }
+        }
+
+    protected String adqlucd()
+        {
+        if (this.adqlucd != null)
+            {
+            return this.adqlucd ;
+            }
+        else {
+            return base().meta().adql().ucd();
+            }
         }
     }

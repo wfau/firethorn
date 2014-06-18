@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+  <schema>
+    <name>vbig</name>
+    <table type="base_table">
+      <name>vbig.J/ApJ/716/1217/table2</name>
+      <description>Chandra SMC deep fields source catalog</description>
+      <column std="true">
+        <name>recno</name>
+        <description>Record number assigned by the VizieR team. Should Not be used for identification.</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.record</ucd>
+        <dataType xsi:type="vod:TAPType">INTEGER</dataType>
+      </column>
+      <column std="true">
+        <name>CXOU</name>
+        <description>Source name (JHHMMSS.s+DDMMSS)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType" size="20">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>P</name>
+        <description>{\bf P} indicates a pulsar (details in table 3)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.ref.url</ucd>
+        <dataType xsi:type="vod:TAPType" size="5">CHAR</dataType>
+      </column>
+      <column std="true">
+        <name>RAJ2000</name>
+        <description>Right Ascension in decimal degrees (J2000)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.eq.ra;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+        <flag>primary</flag>
+      </column>
+      <column std="true">
+        <name>DEJ2000</name>
+        <description>Declination in decimal degrees (J2000)</description>
+        <unit>deg</unit>
+        <utype>          </utype>
+        <ucd>pos.eq.dec;meta.main</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+        <flag>primary</flag>
+      </column>
+      <column std="true">
+        <name>r95</name>
+        <description>The 95% confidence radius</description>
+        <unit>arcsec</unit>
+        <utype>          </utype>
+        <ucd>phys.angSize</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>offset</name>
+        <description>Distance from Chandra aimpoint</description>
+        <unit>arcmin</unit>
+        <utype>          </utype>
+        <ucd>pos.angDistance</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Ncts</name>
+        <description>Net background subtracted counts</description>
+        <unit>ct</unit>
+        <utype>          </utype>
+        <ucd>phot.count;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_Ncts</name>
+        <description>Standard error in Ncts</description>
+        <unit>ct</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>snr</name>
+        <description>Signal/noise ratio; Ncts/e_Ncts</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>snrSc</name>
+        <description>? Soft, 0.5-2keV, band signal/noise ratio (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>snrHc</name>
+        <description>? Hard, 2-8keV, band signal/noise ratio (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>snrBc</name>
+        <description>? Broad, 0.5-8keV, band signal/noise ratio (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.snr</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Sc</name>
+        <description>? Soft, 0.5-2keV, band count rate (1)(2)</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>phot.count;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_Sc</name>
+        <description>Standard error in Sc</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Hc</name>
+        <description>? Hard, 2-8keV, band count rate (1)(2)</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>phot.count;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_Hc</name>
+        <description>Standard error in Hc</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>Bc</name>
+        <description>? Broad, 0.5-8keV, band count rate (1)(2)</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>phot.count;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_Bc</name>
+        <description>Standard error in Bc</description>
+        <unit>ct/ks</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E25</name>
+        <description>The 25% percentile photon energy</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_E25</name>
+        <description>Standard error in E25</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E50</name>
+        <description>Median (50% percentile) photon energy</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_E50</name>
+        <description>Standard error in E50</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E75</name>
+        <description>The 75% percentile photon energy</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_E75</name>
+        <description>Standard error in E75</description>
+        <unit>keV</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>QDx</name>
+        <description>Quantile X value for plotting in conventional parameter space (7)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.fit.param</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_QDx</name>
+        <description>? Standard error lower bound on QDx (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E_QDx</name>
+        <description>? Standard error upper bound on QDx (1)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>QDy</name>
+        <description>Quantile Y value for plotting in conventional parameter space (7)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.fit.param</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>e_QDy</name>
+        <description>? Standard error lower bound on QDy</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>E_QDy</name>
+        <description>Standard error upper bound on QDy</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>em.energy</ucd>
+        <dataType xsi:type="vod:TAPType">DOUBLE</dataType>
+      </column>
+      <column std="true">
+        <name>gr</name>
+        <description>[1/3] Quantile-based classification (3)</description>
+        <unit/>
+        <utype>          </utype>
+        <ucd>meta.id</ucd>
+        <dataType xsi:type="vod:TAPType">SMALLINT</dataType>
+      </column>
+      <column std="true">
+        <name>FSc1</name>
+        <description>? Soft, 0.5-2keV, band X-ray flux (1)(4)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FSc1</name>
+        <description>Standard error in FSc1</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FHc1</name>
+        <description>? Hard, 2-8keV, band X-ray flux (1)(4)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FHc1</name>
+        <description>Standard error in FHc1</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FBc1</name>
+        <description>? Broad, 0.5-8keV, band X-ray flux (1)(4)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FBc1</name>
+        <description>Standard error in FBc1</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FSc2</name>
+        <description>? Soft, 0.5-2keV, band X-ray flux (1)(5)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FSc2</name>
+        <description>Standard error in FSc2</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FHc2</name>
+        <description>? Hard, 2-8keV, band X-ray flux (1)(5)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FHc2</name>
+        <description>Standard error in FHc2</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FBc2</name>
+        <description>? Broad, 0.5-8keV, band X-ray flux (1)(5)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FBc2</name>
+        <description>Standard error in FBc2</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FSc3</name>
+        <description>? Soft, 0.5-2keV, band X-ray flux (1)(6)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FSc3</name>
+        <description>Standard error in FSc3</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FHc3</name>
+        <description>? Hard, 2-8keV, band X-ray flux (1)(6)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FHc3</name>
+        <description>Standard error in FHc3</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>FBc3</name>
+        <description>? Broad, 0.5-8keV, band X-ray flux (1)(6)</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>phot.flux;em.X-ray</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+      <column std="true">
+        <name>e_FBc3</name>
+        <description>Standard error in FBc3</description>
+        <unit>mW/m2</unit>
+        <utype>          </utype>
+        <ucd>stat.error</ucd>
+        <dataType xsi:type="vod:TAPType">REAL</dataType>
+      </column>
+    </table>
+  </schema>
+</tableset>
