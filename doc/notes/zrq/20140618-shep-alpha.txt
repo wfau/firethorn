@@ -24,9 +24,8 @@
 # Create our release branch.
 #[user@desktop]
 
-    newrelease=1.10.9-release
-    newversion=1.10.9-alpha
-    devversion=1.11.1-SNAPSHOT
+    newrelease=1.11.5-release
+    newversion=1.11.5-alpha-01
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -60,36 +59,6 @@
 
     popd
 
-# -------------------------------------------------------------------------------------------
-# Increment the main branch version.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        #
-        # Swap to the default branch.
-        hg update default
-
-        #
-        # Set the project version.
-        ./bin/version.sh "${devversion:?}"
-
-        #
-        # Commit and tag the new version.
-        hg commit -m "Snapshot [version-${devversion:?}]"
-        hg tag    -f "version-${devversion:?}"
-        hg push
-
-        #
-        # Re-build everything.
-        mvn -P all clean install
-
-        #
-        # Push to our Maven repositiry.
-        ./bin/rsync-repo.sh
-
-    popd
 
 # -------------------------------------------------------------------------------------------
 # Swap to the release branch.
