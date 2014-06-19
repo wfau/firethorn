@@ -642,7 +642,7 @@ description=
 CONFIG
 END
 id=uk.org.ogsadai.ADQLQuery
-class=uk.org.ogsadai.activity.astro.ADQLAsyncQueryActivity
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.tap.ADQLAsyncQueryActivity01
 description=
 CONFIG
 END

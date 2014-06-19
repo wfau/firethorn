@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.5-SNAPSHOT</version>
+        <version project='firethorn'>1.11.5-zrq-gaia-tap</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -85,7 +85,8 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-<!--
+<!--+
+    | This gets included twice.
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
@@ -93,7 +94,8 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
--->        
+    |
+    +-->        
 
         <!--+
             | Our metadata service client.
