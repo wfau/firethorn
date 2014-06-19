@@ -398,6 +398,8 @@ public class ADQLAsyncQueryActivity01
             String jobServiceURL = asyncTAPServiceURL + "/" + jobID;
 
             // start job: post PHASE=RUN
+//ZRQ
+// Only IF no0t already running.
             //startJob(jobServiceURL);
             
             // check for errors
@@ -763,8 +765,9 @@ public class ADQLAsyncQueryActivity01
                     new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
         postParameters.add(new BasicNameValuePair("QUERY", adql));
-
-        //postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
+//ZRQ
+//Work around for the Gaia TAP that doesn't allow RUN after create.
+        postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
 
         UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
         post.setEntity(formEntity);

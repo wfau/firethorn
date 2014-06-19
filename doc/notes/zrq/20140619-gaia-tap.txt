@@ -29,6 +29,292 @@
     Details on user auth
     http://www.rssd.esa.int/mantisSI/view.php?id=27348
 
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
 
+    newbranch=1.11.5-zrq-gaia-tap
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Do stuff ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+
+# -----------------------------------------------------
+# Run the FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig twomassjdbc  firethorn.twomass
+                jdbcconfig ukidss       firethorn.ukidss
+                jdbcconfig atlas        firethorn.atlas
+                jdbcconfig wfau         firethorn.wfau
+                jdbcconfig userdata     firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Manually load the IVOA resources.
+#[user@desktop]
+
+    #
+    # Run the tests in Eclipse.
+    # VosiTableSetReaderTestCase
+
+    #
+    # Run the tests in Maven.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+            mvn -D skipTests=false -D test=VosiTableSetReaderTestCase test
+        popd
+    popd
+
+# -----------------------------------------------------
+# .....
+#[user@desktop]
+
+    #
+    # Collect the results using sqsh
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to our database server.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}"
+        
+            /*
+             * Get a list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadata%'
+            ORDER BY 
+                name
+            go
+
+            ....
+            FirethornMetadataZRQ011104DEV
+            FirethornMetadataZRQ011104DEV_log
+
+            /*
+             * Select our metadata database.
+             *
+             */
+            use [FirethornMetadataZRQ011104DEV]
+            go
+
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT
+                table_name
+            FROM
+                information_schema.tables
+            ORDER BY
+                table_name
+            go
+
+            ....
+            FT0111IvoaResourceEntity
+
+            /*
+             * Get a list of IVOA resources.
+             *
+             */
+            SELECT
+                ident, name, ogsaid
+            FROM
+                FT0111IvoaResourceEntity
+            go
+
+            458752  cadc-tap    cadc-tap                                                                                                                                             
+            458753  gaia-tap    gaia-tap                                                                                                                                             
+            458754  gavo-tap    gavo-tap                                                                                                                                             
+            458755  vizier-tap  vizier-tap                                                                                                                                           
+
+    #
+    # Work out the firethorn URLs
+    firefox 'http://localhost:8080/firethorn/ivoa/resource/458752/schemas/select' &
+    firefox 'http://localhost:8080/firethorn/ivoa/resource/458753/schemas/select' &
+    firefox 'http://localhost:8080/firethorn/ivoa/resource/458754/schemas/select' &
+    firefox 'http://localhost:8080/firethorn/ivoa/resource/458755/schemas/select' &
+
+
+        #
+        # Work out the schema for each of the IVOA resources.
+        cadcschema=http://localhost:8080/firethorn/ivoa/schema/491521
+        gaiaschema=http://localhost:8080/firethorn/ivoa/schema/491525
+        gavoschema=http://localhost:8080/firethorn/ivoa/schema/491577
+        vizischema=http://localhost:8080/firethorn/ivoa/schema/491583
+
+# -----------------------------------------------------
+# Create a new ADQL workspace.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.testing"
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        cadcschema=http://localhost:8080/firethorn/ivoa/schema/491521
+        gaiaschema=http://localhost:8080/firethorn/ivoa/schema/491525
+        gavoschema=http://localhost:8080/firethorn/ivoa/schema/491577
+        vizischema=http://localhost:8080/firethorn/ivoa/schema/491583
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=cadc" \
+            --data   "adql.resource.schema.import.base=${cadcschema:?}" \
+            | ./pp | tee query-schema.json
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=gaia" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            | ./pp | tee query-schema.json
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=gavo" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+            | ./pp | tee query-schema.json
+
+        POST "${queryspace:?}/schemas/import" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=vizier" \
+            --data   "adql.resource.schema.import.base=${vizischema:?}" \
+            | ./pp | tee query-schema.json
+
+
+        #
+        # Works (requires patched TAP Activity)
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                ra,
+                decl
+            FROM
+                gaia.twomass_psc
+            "
+
+        #
+        # Works
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                raj2000,
+                dej2000
+            FROM
+                gavo.data
+            "
+
+        #
+        # Fails in our ADQL parser
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                TOP 123
+                RAJ2000,
+                DEJ2000
+            FROM
+                "vizier"."II/246/out"
+            "
 
 
