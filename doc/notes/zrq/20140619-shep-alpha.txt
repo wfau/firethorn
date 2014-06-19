@@ -20,12 +20,77 @@
 #
 #
 
+# -----------------------------------------------------
+# Merge the previous release into main.
+#[user@desktop]
+
+    devversion=1.11.5-release
+    oldversion=1.11.6
+    newversion=1.11.7
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Load our script tools.
+        source 'bin/util.sh'
+        
+        #
+        # Close the dev branch.
+        hg update "${devversion:?}"
+        hg commit --close-branch -m "Closing [branch-${devversion:?}]"
+        hg push
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devversion:?}"
+
+        #
+        # Update the project version.
+        setversion "${oldversion}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devversion:?}] into [default]"
+        hg push
+
+        #
+        # Update the project version.
+        setversion "${newversion}"
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clear our Maven cache.
+#[user@desktop]
+
+    pushd /var/local/toolkits/maven
+
+        newname="repository-$(date +%Y%m%d)"
+        mkdir "${newname:?}"
+        rm repository
+        ln -s "${newname:?}" repository
+
+    popd
+
 # -------------------------------------------------------------------------------------------
 # Create our release branch.
 #[user@desktop]
 
-    newrelease=1.11.5-release
-    newversion=1.11.5-alpha-01
+    newrelease=1.11.7-release
+    newversion=1.11.7-alpha-01
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -74,7 +139,7 @@
 
         #
         # Set the new database name.
-        dbversion=SHEP011105TEST
+        dbversion=SHEP011107TEST
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 
@@ -100,7 +165,7 @@
         pushd "${FIRETHORN_CODE:?}"    
 
             hg pull
-            hg update
+            hg update default
             
             pushd 'firethorn-sqlserver/src/sql'
 
@@ -177,14 +242,6 @@ cat  "${databasefile:?}"
 # Update our deployment properties
 #[user@desktop]
 
-metadburl=xxxx
-metadbuser=xxxx
-metadbpass=xxxx
-
-userdburl=xxxx
-userdbuser=xxxx
-userdbpass=xxxx
-
     deploytype=test
     deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
@@ -201,15 +258,6 @@ userdbpass=xxxx
 cp -f "firethorn.properties" "firethorn.properties-\$(date +%Y%m%d%H%M%S)"
 sed -i '
     s|^firethorn.version=.*$|firethorn.version=${newversion:?}|
-
-    s|^firethorn.meta.url=.*$|firethorn.meta.url=${metadburl:?}|
-    s|^firethorn.meta.user=.*$|firethorn.meta.user=${metadbuser:?}|
-    s|^firethorn.meta.pass=.*$|firethorn.meta.pass=${metadbpass:?}|
-
-    s|^firethorn.user.url=.*$|firethorn.user.url=${userdburl:?}|
-    s|^firethorn.user.user=.*$|firethorn.user.user=${userdbuser:?}|
-    s|^firethorn.user.pass=.*$|firethorn.user.pass=${userdbpass:?}|
-
     ' "firethorn.properties"
 EOF
                 ;;
@@ -457,8 +505,8 @@ EOF
         vi /var/www/osa/firethorn.ini
 
         ~   adqlspace=http://pyratest2:8080/firethorn/adql/resource/32770
-        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/163889
-        ~   atlasprivate=http://pyratest2:8080/firethorn/adql/schema/163890
+        ~   atlasschema=http://pyratest2:8080/firethorn/adql/schema/163885
+        ~   atlasprivate=http://pyratest2:8080/firethorn/adql/schema/163886
         ~   firethorn_base=http://pyratest2:8080/firethorn
 
     exit
@@ -491,13 +539,14 @@ EOF
 
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'BESTDR9'  'best'
 
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'DENIS'    'denis'
+          # source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'DENIS'    'denis'
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'FIRST'    'first'
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'GLIMPSE'  'glimpse'
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'IRAS'     'iras'
 
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
           # source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOXMM'   'twoxmm'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'XMM'      'xmm'
 
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'MGC'         'mgc'
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'       'roast'
@@ -533,42 +582,214 @@ EOF
                 AND
                     dec BETWEEN '24.0' AND '24.2'
                 "
-
-            logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
-
-            looptest()
-                {
-                local count=0
-                exec 6<> ${logged} 
-                while read <&6 adql
-                do
-                    let count++
-                    if [[ "${adql}" == '' ]]
-                    then
-                        echo "[${count:?}] SKIP [${adql}]"
-                    else                    
-                        if [[ "${adql}" =~ ^# ]]
-                        then
-                            echo "[${count:?}] SKIP [${adql}]"
-                        else
-                            echo "--------"
-                            echo "[${count:?}] ADQL [${adql}]"
-
-                            echo "Running query"
-                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
-                            
-                            echo "--------"
-                            echo "Pause [${loopwait:?}]"                            
-                            sleep "${loopwait:?}"
-                        fi
-                    fi
-                done
-                echo "Done"
-                exec 6>&-
-                }
-
-    loopwait=5
-    looptest
-
+        popd
     exit
+
+# -----------------------------------------------------
+# Manually load the IVOA resources.
+#[user@desktop]
+
+    #
+    # Run the tests in Eclipse.
+    # VosiTableSetReaderTestCase
+
+    #
+    # Update our local properties
+    gedit "${HOME:?}/firethorn.properties" &
+
+    ~   firethorn.meta.url=xxxxx
+    ~   firethorn.meta.user=xxxx
+    ~   firethorn.meta.pass=xxxx
+
+    ~   firethorn.user.url=xxxxx
+    ~   firethorn.user.user=xxxx
+    ~   firethorn.user.pass=xxxx
+
+    #
+    # Run the tests in Maven.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+            mvn -D skipTests=false -D test=VosiTableSetReaderTestCase test
+        popd
+    popd
+
+# -----------------------------------------------------
+# Collect the results using sqsh
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to our database server.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}"
+        
+            /*
+             * Get a list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadata%'
+            ORDER BY 
+                name
+            go
+
+            ....
+            FirethornMetadataSHEP011107TEST
+            FirethornMetadataSHEP011107TEST_log
+
+
+            /*
+             * Select our metadata database.
+             *
+             */
+            use [FirethornMetadataSHEP011107TEST]
+            go
+
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT
+                table_name
+            FROM
+                information_schema.tables
+            ORDER BY
+                table_name
+            go
+
+            ....
+            FT0111IvoaResourceEntity
+
+            /*
+             * Get a list of IVOA resources.
+             *
+             */
+            SELECT
+                ident, name, ogsaid
+            FROM
+                FT0111IvoaResourceEntity
+            go
+
+            425984  cadc-tap    cadc-tap                                                                                                                                             
+            425985  gaia-tap    gaia-tap                                                                                                                                             
+            425986  gavo-tap    gavo-tap                                                                                                                                             
+            425987  vizier-tap  vizier-tap                                                                                                                                           
+
+# -----------------------------------------------------
+# Check the firethorn URLs using iceweasel.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh -X "${wepyuser}@${wepyhost:?}" 
+
+        iceweasel 'http://pyratest2:8080/firethorn/ivoa/resource/425984/schemas/select' &
+        iceweasel 'http://pyratest2:8080/firethorn/ivoa/resource/425985/schemas/select' &
+        iceweasel 'http://pyratest2:8080/firethorn/ivoa/resource/425986/schemas/select' &
+        iceweasel 'http://pyratest2:8080/firethorn/ivoa/resource/425987/schemas/select' &
+
+
+        #
+        # Work out the schema for each of the IVOA resources.
+        cadcschema=http://pyratest2:8080/firethorn/ivoa/schema/458753
+        gaiaschema=http://pyratest2:8080/firethorn/ivoa/schema/458757
+        gavoschema=http://pyratest2:8080/firethorn/ivoa/schema/458809
+        vizischema=http://pyratest2:8080/firethorn/ivoa/schema/458815
+
+# -----------------------------------------------------
+# Import the IVOA schemas into our ADQL workspace.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            cadcschema=http://pyratest2:8080/firethorn/ivoa/schema/458753
+            gaiaschema=http://pyratest2:8080/firethorn/ivoa/schema/458757
+            gavoschema=http://pyratest2:8080/firethorn/ivoa/schema/458809
+            vizischema=http://pyratest2:8080/firethorn/ivoa/schema/458815
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=CADC" \
+                --data   "adql.resource.schema.import.base=${cadcschema:?}" \
+                | ./pp | tee query-schema.json
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=GAIA" \
+                --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+                | ./pp | tee query-schema.json
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=GAVO" \
+                --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+                | ./pp | tee query-schema.json
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=Vizier" \
+                --data   "adql.resource.schema.import.base=${vizischema:?}" \
+                | ./pp | tee query-schema.json
+
+
+SELECT
+    TOP 1000
+    twomass_psc.ra,
+    twomass_psc.decl
+FROM
+    GAIA.twomass_psc
+
+
+SELECT
+    TOP 1000
+    igsl_source.galactic_lat,
+    igsl_source.galactic_lon
+FROM
+    GAIA.igsl_source
+
+
+
+
 
