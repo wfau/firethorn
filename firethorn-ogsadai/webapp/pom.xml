@@ -85,7 +85,8 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-<!--
+<!--+
+    | This gets included twice.
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
@@ -93,7 +94,8 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
--->        
+    |
+    +-->        
 
         <!--+
             | Our metadata service client.

@@ -76,6 +76,8 @@ import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
+import uk.org.ogsadai.activity.astro.QueryFailedException;
+import uk.org.ogsadai.activity.astro.UWSJobStatus;
 import uk.org.ogsadai.activity.astro.util.TupleUtilities;
 import uk.org.ogsadai.activity.extension.ActivityInitialisationException;
 import uk.org.ogsadai.activity.extension.ConfigurableActivity;
@@ -194,18 +196,18 @@ import uk.org.ogsadai.resource.generic.GenericResourceAccessor;
  * 
  * @author The OGSA-DAI Project Team.
  */
-public class ADQLAsyncQueryActivity
+public class ADQLAsyncQueryActivity01
     extends MatchedIterativeActivity
     implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
 {
     
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE = 
-        "Copyright (c) The University of Edinburgh 2012-2013.";
+        "Copyright (c) The University of Edinburgh 2012-2014.";
     
     /** Logger object for logging in this class. */
     private static final DAILogger LOG = 
-        DAILogger.getLogger(ADQLAsyncQueryActivity.class);
+        DAILogger.getLogger(ADQLAsyncQueryActivity01.class);
     
     /** Activity input name - ADQL expression. */
     public static final String INPUT_ADQL_EXPRESSION = "expression";
@@ -265,7 +267,7 @@ public class ADQLAsyncQueryActivity
     /**
      * Constructor.
      */
-    public ADQLAsyncQueryActivity() {
+    public ADQLAsyncQueryActivity01() {
         super();
         mClient = new DefaultHttpClient();
         // default TAP request parameters
@@ -396,7 +398,7 @@ public class ADQLAsyncQueryActivity
             String jobServiceURL = asyncTAPServiceURL + "/" + jobID;
 
             // start job: post PHASE=RUN
-            startJob(jobServiceURL);
+            //startJob(jobServiceURL);
             
             // check for errors
             String state = waitForJobComplete(jobServiceURL);
@@ -761,6 +763,9 @@ public class ADQLAsyncQueryActivity
                     new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
         postParameters.add(new BasicNameValuePair("QUERY", adql));
+
+        //postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
+
         UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
         post.setEntity(formEntity);
         return post;
