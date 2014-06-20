@@ -78,16 +78,16 @@ implements AdqlParserTable
         }
 
     /**
-     * The local ADQL name, if different to the original AdqlTable.
+     * The ADQL name, if different to the original AdqlTable.
      *
      */
     private String adqlName ;
 
     /**
-     * The local JDBC name, if different to the original JdbcTable.
+     * The base name, if different to the original BaseTable.
      *
      */
-    private String jdbcName ;
+    private String baseName ;
 
     /**
      * Protected constructor.
@@ -107,10 +107,11 @@ implements AdqlParserTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlParserTableImpl(final AdqlQuery.Mode mode, final AdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlParserTableImpl(final AdqlQuery.Mode mode, final AdqlTable table, final String baseName, final String adqlName)
         {
         log.debug("AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)");
-        log.debug("JDBC name [{}]", jdbcName);
+        log.debug("real name [{}]", table.name());
+        log.debug("BASE name [{}]", baseName);
         log.debug("ADQL name [{}]", adqlName);
         this.mode  = mode  ;
         this.table = table ;
@@ -128,29 +129,29 @@ implements AdqlParserTable
             }
         //
         // Only set the JDBC name if it is not the same as the original.
-        if (jdbcName != null)
+        if (baseName != null)
             {
-            if (jdbcName.length() > 0)
+            if (baseName.length() > 0)
                 {
-                if (jdbcName.equals(table.root().name()) == false)
+                if (baseName.equals(table.root().name()) == false)
                     {
-                    this.jdbcName = jdbcName;
+                    this.baseName = baseName;
                     }
                 }
             }
         }
 
     /**
-     * Make a copy of the AdqlParserTable, changing the ADQL and JDBC names.
-     * @param jdbcName - The new JDBC name (optional). If this is null, then the new AdqlParserTable inherits its JDBC name, schema and catalog from the original.
+     * Make a copy of the AdqlParserTable, changing the ADQL and BASE names.
+     * @param baseName - The new BASE name (optional). If this is null, then the new AdqlParserTable inherits its BASE name, schema and catalog from the original.
      * @param adqlName - The new ADQL name (required). This can't be null or empty.
      *
      */
     @Override
-    public AdqlParserTable copy(final String jdbcName, final String adqlName)
+    public AdqlParserTable copy(final String baseName, final String adqlName)
         {
         log.debug("copy(String, String)");
-        log.debug("JDBC name [{}]", jdbcName);
+        log.debug("BASE name [{}]", baseName);
         log.debug("ADQL name [{}]", adqlName);
         if ((adqlName == null) || (adqlName.length() == 0))
             {
@@ -161,7 +162,7 @@ implements AdqlParserTable
         return new AdqlParserTableImpl(
             this.mode,
             this.table,
-            jdbcName,
+            baseName,
             adqlName
             );
         }
@@ -201,7 +202,7 @@ implements AdqlParserTable
 
     /**
      * Get the ADQL catalog name.
-     * If the ADQL adqlTable name was changed using copy, then the ADQL catalog name will be null.
+     * If the ADQL table name was changed using copy, then the ADQL catalog name will be null.
      *
      */
     @Override
@@ -211,15 +212,15 @@ implements AdqlParserTable
         }
 
     /**
-     * Get the JDBC adqlTable name.
+     * Get the BASE table name.
      *
      */
     @Override
     public String getDBName()
         {
-        if (this.jdbcName != null)
+        if (this.baseName != null)
             {
-            return this.jdbcName ;
+            return this.baseName ;
             }
         else {
             if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
@@ -233,14 +234,14 @@ implements AdqlParserTable
         }
 
     /**
-     * Get the JDBC schema name.
-     * If the JDBC adqlTable name was changed using copy, then the JDBC schema name will be null.
+     * Get the BASE schema name.
+     * If the base table name was changed using copy, then the BASE schema name will be null.
      *
      */
     @Override
     public String getDBSchemaName()
         {
-        if (this.jdbcName != null)
+        if (this.baseName != null)
             {
             return null ;
             }
@@ -256,14 +257,14 @@ implements AdqlParserTable
         }
 
     /**
-     * Get the JDBC catalog name.
-     * If the JDBC adqlTable name was changed using copy, then the JDBC catalog name will be null.
+     * Get the BASE catalog name.
+     * If the BASE table name was changed using copy, then the BASE catalog name will be null.
      *
      */
     @Override
     public String getDBCatalogName()
         {
-        if (this.jdbcName != null)
+        if (this.baseName != null)
             {
             return null ;
             }
@@ -453,10 +454,10 @@ implements AdqlParserTable
         private final String adqlName ;
 
         /**
-         * Local JDBC name, if different to the original.
+         * Local BASE name, if different to the original.
          *
          */
-        private final String jdbcName ;
+        private final String baseName ;
 
         /**
          * Private constructor.
@@ -476,14 +477,15 @@ implements AdqlParserTable
          * Private constructor, used by the copy method.
          *
          */
-        private AdqlColumnImpl(final AdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
+        private AdqlColumnImpl(final AdqlColumn adqlColumn, final String baseName, final String adqlName, final DBTable parent)
             {
-            //log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
-            //log.debug("JDBC name [{}]", jdbcName);
-            //log.debug("ADQL name [{}]", adqlName);
+            log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
+            log.debug("real name [{}]", adqlColumn.name());
+            log.debug("BASE name [{}]", baseName);
+            log.debug("ADQL name [{}]", adqlName);
             this.parent = parent ;
             this.column = adqlColumn ;
-            this.jdbcName = jdbcName;
+            this.baseName = baseName;
             this.adqlName = adqlName;
             }
 
@@ -492,11 +494,10 @@ implements AdqlParserTable
             {
             //log.debug("copy(String, String, DBTable)");
             //log.debug("DB   name [{}]", dbName);
-            //log.debug("JDBC name [{}]", jdbcName);
             //log.debug("ADQL name [{}]", adqlName);
             return AdqlParserTableImpl.this.wrap(
                 this.column,
-                this.jdbcName,
+                this.baseName,
                 adqlName,
                 parent
                 );
@@ -517,12 +518,12 @@ implements AdqlParserTable
         @Override
         public String getDBName()
             {
-            log.debug("getDBName() [{}][{}]", this.jdbcName, this.column.root().name());
-            String result = this.jdbcName ;
+            log.debug("getDBName() [{}][{}]", this.baseName, this.column.root().name());
+            String result = this.baseName ;
 /*
-            if (this.jdbcName != null)
+            if (this.baseName != null)
                 {
-                return this.jdbcName ;
+                return this.baseName ;
                 }
             else {
                 return this.column.root().name();

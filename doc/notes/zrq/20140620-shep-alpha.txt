@@ -277,8 +277,8 @@ EOF
 
             source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
 
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'ATLAS'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'TWOMASS'
 
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'CADC'      'CADC'
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'GAIA'      'GAIA'
@@ -306,7 +306,7 @@ EOF
                     ra,
                     dec
                 FROM
-                    twomass.twomass_psc
+                    TWOMASS.twomass_psc
                 WHERE
                     ra  BETWEEN '56.0' AND '57.9'
                 AND
@@ -370,13 +370,14 @@ EOF
                     dej2000 BETWEEN '24.0' AND '24.2'
                 "
 
+            #FAIL
             source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
                 SELECT
                     TOP 100
                     RAJ2000,
                     DEJ2000
                 FROM
-                    "II/246/out"
+                    Vizier."II/246/out"
                 "
 
         popd

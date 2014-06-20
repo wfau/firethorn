@@ -105,7 +105,7 @@ implements SearchTableApi
     public List<DBTable> search(ADQLTable target)
         {
         log.debug("search(ADQLTable)");
-        log.debug("  target [{}][{}][{}]", target.getTableName(), target.getSchemaName(), target.getCatalogName());
+        log.debug("  target [{}][{}][{}]", target.getCatalogName(), target.getSchemaName(), target.getTableName());
 
         List<DBTable> tables = new ArrayList<DBTable>();
 
