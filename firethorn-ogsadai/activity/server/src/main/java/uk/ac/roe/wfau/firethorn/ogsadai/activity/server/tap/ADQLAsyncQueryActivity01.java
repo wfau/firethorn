@@ -398,9 +398,7 @@ public class ADQLAsyncQueryActivity01
             String jobServiceURL = asyncTAPServiceURL + "/" + jobID;
 
             // start job: post PHASE=RUN
-//ZRQ
-// Only IF no0t already running.
-            //startJob(jobServiceURL);
+            startJob(jobServiceURL);
             
             // check for errors
             String state = waitForJobComplete(jobServiceURL);
@@ -503,7 +501,7 @@ public class ADQLAsyncQueryActivity01
         }
 
     }
-    
+
     private String submitJob(String asyncTAPServiceURL, String expression) 
     throws ClientProtocolException, IOException,  
            ActivityProcessingException, ActivityUserException 
@@ -527,14 +525,26 @@ public class ADQLAsyncQueryActivity01
     private void startJob(String jobServiceURL)
     throws ClientProtocolException, ActivityProcessingException, IOException
     {
-        HttpPost startJob = new HttpPost(jobServiceURL + "/phase");
+        LOG.debug("Checking phase.");
+        HttpGet getPhase = new HttpGet(jobServiceURL+ "/phase");
+        InputStream input = getStreamFromRequest(getPhase);
+        String phase = readInputStream(input);
+        LOG.debug(" phase [" + phase + "]");
+
+        if (isPhase(phase,UWSJobStatus.PHASE_PENDING))
+        {
+        LOG.debug("Phase is PENDING .. starting job.");
+    	HttpPost startJob = new HttpPost(jobServiceURL + "/phase");
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
         UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
         startJob.setEntity(formEntity);
-        LOG.debug("Starting job.");
         String jobResult = readInputStream(getStreamFromRequest(startJob));
         LOG.debug(jobResult);
+    	}
+        else {
+            LOG.debug("Phase is not PENDING .. skipping start");
+        }
     }
     
     private String waitForJobComplete(final String jobServiceURL)
