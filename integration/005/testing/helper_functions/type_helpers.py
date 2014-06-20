@@ -5,7 +5,7 @@ Helper functions for type checking etc
 
 @author: stelios
 '''
-import firethorn_config as config
+import config as config
 
 
 

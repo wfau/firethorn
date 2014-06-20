@@ -3,38 +3,11 @@ Created on May 3, 2013
 
 @author: stelios
 '''
-import os
-import web
 
+from config import *
 
-### Configurations
-live = True
-debug_mode = True
-no_users = True
-offline=False
-use_config = 'singletap'
-mode_global = 'async'
-request = 'doQuery'
-result_format = 'votable'
-lang = 'ADQL'
-MAX_FILE_SIZE = 2048576000 #use : 104857600
-delay = 3
-use_cached_endpoints = 0
-global_precision = 0.0000001
-MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
-MAX_ELAPSED_TIME = 18000
-MAX_DELAY = 15
-INITIAL_DELAY = 2
-
-## Directory and URL Information
-host = 'localhost'
-port = ''
-base_host = host if port=='' else host + ':' + port
-base_location = os.getcwd()
 web_services_url = "http://localhost:8080/firethorn"
-firethorn_ini = base_location  + '/firethorn.ini'
-FULL_SURVEYDBS = ['ATLASv20131127']
-test_email = "test@test.roe.ac.uk"
+
 
 ### URL, Type and Parameter associations and Information
 get_jdbc_resources_url = "/firethorn/jdbc/resource/select"
@@ -61,6 +34,7 @@ table_create_uri = '/tables/create'
 table_import_uri = '/tables/import'
 
 workspace_creator = web_services_url + "/adql/resource/create"
+jdbc_creator = web_services_url + "/jdbc/resource/create"
 
 
 resource_create_name_params = {
