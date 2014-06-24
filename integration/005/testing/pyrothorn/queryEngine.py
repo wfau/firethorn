@@ -87,7 +87,7 @@ class QueryEngine(object):
             if query_loop_results.get("Code", "") !="":
                 if query_loop_results.get("Code", "") ==-1:
                     error_message = query_loop_results.get("Content", "Error")
-                    logging.exception('Query returned an error:' + error_message)
+                    logging.exception(error_message)
                     return -1
             
             if results_adql_url!=None:

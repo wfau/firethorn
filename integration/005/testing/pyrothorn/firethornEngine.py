@@ -6,7 +6,7 @@ Created on Jul 22, 2013
 
 import urllib2
 import json
-import pyrethorn
+import pyrothorn
 import logging
 import urllib
 import urllib2
@@ -49,7 +49,7 @@ class FirethornEngine(object):
             self.schema_alias = self.getAttribute(self.adqlschema, "name" )
             self.starting_catalogue_id = self.create_initial_workspace(self.schema_name, self.schema_alias, self.adqlschema)
         except Exception as e:
-            logging.exception("Error during pyrethorn initialization")
+            logging.exception("Error during pyrothorn initialization")
 
                     
     def initialise_metadata_import(self, resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile ):

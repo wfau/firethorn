@@ -24,7 +24,10 @@ base_location = os.getcwd()
 ### Email ###
 test_email = ""
 
-
+### Queries ###
+sample_query=""
+sample_query_expected_rows=0
+limit_query = None
 
 #------------------- Test Configurations ----------------------------------#
 

@@ -10,10 +10,10 @@ from selenium.webdriver.support import expected_conditions as EC # available sin
 import logging
 import urllib2
 import json
-import pyrethorn
+import pyrothorn
 import urllib
-from pyrethorn import firethornEngine
-from pyrethorn import queryEngine
+from pyrothorn import firethornEngine
+from pyrothorn import queryEngine
 from mssql import sqlEngine
 import sys
 import config
@@ -24,29 +24,59 @@ class test_firethorn(unittest.TestCase):
     def setUp(self):
         self.use_preset_params = False
         self.verificationErrors = []
-        self.query="SELECT TOP 10 * FROM Filter"
-        self.expected_rows=10
+        self.sample_query=config.sample_query
+        self.sample_query_expected_rows=config.sample_query_expected_rows
         self.setUpLogging()
     
 
-    def test_sql_queries(self):
+    def test_sample_sql_query(self):
         sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
         row_length = sqlEng.execute_sql_query( self.query, config.test_database)
         self.assertEqual(row_length, self.expected_rows)
 
-        
-    def test_firethorn_queries(self):
+
+    def test_sample_firethorn_query(self):
         if (self.use_preset_params):
-            fEng = pyrethorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+            fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
             fEng.printClassVars()
         else:
-            fEng = pyrethorn.firethornEngine.FirethornEngine()
+            fEng = pyrothorn.firethornEngine.FirethornEngine()
             fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
             fEng.printClassVars()
         qEng = queryEngine.QueryEngine()
         row_length = qEng.run_query(self.query, "", fEng.starting_catalogue_id)
         self.assertEqual(row_length, self.expected_rows)
 
+
+    def test_logged_queries(self):
+        sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
+        #row_length = sqlEng.execute_sql_query( self.query, config.test_database)
+        row_length  = 10
+        logging.info("Setting up Firethorn Environment..")
+
+        fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+        fEng.printClassVars()
+        
+        logging.info("")
+        
+        with open("query_logs/atlas-logged-queries-short.txt") as f:
+            
+            for line in f:
+                qEng = queryEngine.QueryEngine()
+                logging.info("--- Start Query Test ---")
+                query = line.strip()
+                if (config.limit_query!=None):
+                    query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
+                    print query
+                logging.info("Query : " +  query)
+                sql_row_length = sqlEng.execute_sql_query(query, config.test_database)
+                logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
+                logging.info("")
+                firethorn_row_length = qEng.run_query(query, "", fEng.starting_catalogue_id)
+                logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
+                self.assertEqual(sql_row_length, firethorn_row_length)
+                logging.info("--- End Query Test ---")
+                logging.info("")
 
     def setUpLogging(self):
         root = logging.getLogger()
