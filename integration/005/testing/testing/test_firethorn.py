@@ -31,8 +31,8 @@ class test_firethorn(unittest.TestCase):
 
     def test_sample_sql_query(self):
         sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
-        row_length = sqlEng.execute_sql_query( self.query, config.test_database)
-        self.assertEqual(row_length, self.expected_rows)
+        row_length = sqlEng.execute_sql_query( self.sample_query, config.test_database)
+        self.assertEqual(row_length, self.sample_query_expected_rows)
 
 
     def test_sample_firethorn_query(self):
@@ -44,8 +44,8 @@ class test_firethorn(unittest.TestCase):
             fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
             fEng.printClassVars()
         qEng = queryEngine.QueryEngine()
-        row_length = qEng.run_query(self.query, "", fEng.starting_catalogue_id)
-        self.assertEqual(row_length, self.expected_rows)
+        row_length = qEng.run_query(self.sample_query, "", fEng.starting_catalogue_id)
+        self.assertEqual(row_length, self.sample_query_expected_rows)
 
 
     def test_logged_queries(self):

@@ -6,8 +6,15 @@ Created on May 3, 2013
 
 from config import *
 
-web_services_url = "http://localhost:8080/firethorn"
+web_services_url = "http://" + full_firethorn_host + "/firethorn"
 
+### Query Runtime and Polling Configurations ###
+MAX_FILE_SIZE = 248576000 
+delay = 3
+MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
+MAX_ELAPSED_TIME = 18000
+MAX_DELAY = 15
+INITIAL_DELAY = 2
 
 ### URL, Type and Parameter associations and Information
 get_jdbc_resources_url = "/firethorn/jdbc/resource/select"

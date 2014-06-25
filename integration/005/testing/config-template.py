@@ -16,9 +16,9 @@ MAX_DELAY = 15
 INITIAL_DELAY = 2
 
 ### Directory and URL Information ###
-host = ""
-port = ''
-base_host = host if port=='' else host + ':' + port
+firethorn_host = "localhost"
+firethorn_port = "8080"
+full_firethorn_host = firethorn_host if firethorn_port=='' else firethorn_host + ':' + firethorn_port
 base_location = os.getcwd()
 
 ### Email ###

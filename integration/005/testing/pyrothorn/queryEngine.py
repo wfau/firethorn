@@ -21,8 +21,7 @@ import re
 from helper_functions.string_functions import string_functions
 string_functions = string_functions()
 import datetime
-from firethorn_config import  *
-import firethorn_config as config
+from firethorn_config import *
 from time import gmtime,  strftime
 import logging
 
@@ -100,7 +99,14 @@ class QueryEngine(object):
                 if query_loop_results.get("Code", "") == 1:
                     req = urllib2.Request(query_loop_results.get("Content", ""), headers={"firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
                     f = urllib2.urlopen(req)
-                    datatable = f.read() 
+                    datatable = f.read(MAX_FILE_SIZE) 
+                    
+                    
+                    if len(f.read())>0:
+                       logging.exception('Query exceeded byte size limit.. ')
+                       f.close()
+                       return -1    
+                   
                     f.close()
             else :
                 logging.exception('Query returned an error.. ')
