@@ -37,7 +37,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.10.8-alpha</version>
+        <version project='firethorn'>1.10.8-stv-pyrothorn</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity</artifactId>
