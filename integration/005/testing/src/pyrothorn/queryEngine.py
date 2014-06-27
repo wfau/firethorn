@@ -10,7 +10,7 @@ import urllib
 import StringIO
 import time
 import xml.dom.minidom
-from mssql import pyodbc
+import pyodbc
 try:
     import simplejson as json
 except ImportError:

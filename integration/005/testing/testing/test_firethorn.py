@@ -1,3 +1,10 @@
+import sys, os
+srcdir = '../src/'
+configdir = '../'
+testdir = os.path.dirname(__file__)
+sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
+sys.path.insert(0, os.path.abspath(os.path.join(testdir, configdir)))
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -7,17 +14,6 @@ import unittest, time, re
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
-
-import sys, os
-
-
-srcdir = '../src/'
-testdir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.dirname(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
-
-
-print sys.path
 import logging
 import urllib2
 import json
