@@ -66,7 +66,7 @@ class test_firethorn(unittest.TestCase):
         
         logging.info("")
         
-        with open("query_logs/atlas-logged-queries-short.txt") as f:
+        with open(testdir + "/query_logs/atlas-logged-queries-short.txt") as f:
             
             for line in f:
                 qEng = queryEngine.QueryEngine()
