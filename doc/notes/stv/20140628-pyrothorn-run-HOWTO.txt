@@ -1,0 +1,104 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+apt-get install mercurial
+apt-get install maven
+apt-get install tomcat7
+apt-get install g++
+apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev
+
+## edit odbc.ini  and odbcinst.ini files
+
+wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
+unzip pyodbc-3.0.7.zip
+cd pyodbc-3.0.7/
+python setup.py install
+
+## setup ssh keys
+
+hg clone ssh://Stelios@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code hg
+cd hg
+hg update -C 1.10.8-stv-pyrothorn
+mvn -P all clean install
+mvn -P all eclipse:eclipse
+
+## create firethorn.properties
+
+
+sshhostname=djer.roe.ac.uk
+sshusername=stv
+ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshusername}@${sshhostname:?}"
+
+/etc/init.d/tomcat7 stop
+
+## new terminal
+
+cd ~/hg
+pushd 'firethorn-webapp'
+
+        pushd ../firethorn-ogsadai/activity/ ; mvn clean install ; popd
+        pushd ../firethorn-core/ ; mvn clean install ; popd
+
+        export MAVEN_OPTS=-Xmx128m
+        mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+    popd
+
+
+## new terminal
+cd ~/hg
+ pushd 'firethorn-ogsadai/webapp'
+
+            pushd ../activity/ ; mvn clean install ; popd
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+         popd      
+         
+         
+## create/edit integration/005/testing/config.py
+        
+        
+cd ~/hg/integration/005/testing
+python testing/test_firethorn.py
+
+
