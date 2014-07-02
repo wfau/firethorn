@@ -7,13 +7,6 @@ import os
 
 #------------------------- General Configurations -----------------------#
 
-### Query Runtime and Polling Configurations ###
-MAX_FILE_SIZE = 2048576000 
-delay = 3
-MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
-MAX_ELAPSED_TIME = 18000
-MAX_DELAY = 15
-INITIAL_DELAY = 2
 
 ### Directory and URL Information ###
 firethorn_host = "localhost"
@@ -42,15 +35,15 @@ test_database = ""
 
 ### Firethorn Live test Configuration ###
 
-adql_copy_depth = ""
-resourcename = "" 
-resourceuri = ""
-adqlspacename = ""
-catalogname = ""
-ogsadainame = ""
-jdbccatalogname = ""
-jdbcschemaname = ""
-metadocfile = ""
+adql_copy_depth = "THIN"
+resourcename = 'Atlas JDBC conection' 
+resourceuri = 'spring:RoeATLAS'
+adqlspacename = 'Atlas Workspace' 
+catalogname = '*'
+ogsadainame = 'atlas'
+jdbccatalogname = 'ATLASDR1'
+jdbcschemaname = 'dbo'
+metadocfile = "/var/www/atlas/testing/metadocs/ATLASDR1_TablesSchema.xml"
 
 
 ### Firethorn Predefined test Configuration ###
