@@ -32,6 +32,16 @@ test_dbserver_password = ""
 test_dbserver_port = ""
 test_database = ""
 
+### Logged Queries Configuration ###
+
+stored_queries_dbserver= ""
+stored_queries_dbserver_username = ""
+stored_queries_dbserver_password = ""
+stored_queries_dbserver_port = ""
+stored_queries_database = ""
+stored_queries_query = "select top 10 * from [table] where [dbname] like 'atlas%'"
+logged_queries_txt_file = "query_logs/atlas-logged-queries-short.txt"
+
 
 ### Firethorn Live test Configuration ###
 

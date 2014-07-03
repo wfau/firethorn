@@ -88,7 +88,7 @@ class test_firethorn(unittest.TestCase):
     def test_sql_logged_queries(self):
         logged_query_sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
         sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
-        log_sql_query = "select top 10 * from webqueries where dbname like 'atlas%'"
+        log_sql_query = config.stored_queries_query
         logging.info("Setting up Firethorn Environment..")
 
         fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
