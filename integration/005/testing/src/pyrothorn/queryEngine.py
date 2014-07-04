@@ -76,13 +76,10 @@ class QueryEngine(object):
             query_create_result = json.loads(f.read())
             query_identity = query_create_result["ident"]
             
-            logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
             query_loop_results = self.start_query_loop(query_identity)
             results_adql_url = query_create_result["results"]["adql"]
             
-            logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-
             if query_loop_results.get("Code", "") !="":
                 if query_loop_results.get("Code", "") ==-1:
                     error_message = query_loop_results.get("Content", "Error")

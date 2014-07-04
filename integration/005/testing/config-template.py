@@ -32,6 +32,15 @@ test_dbserver_password = ""
 test_dbserver_port = ""
 test_database = ""
 
+### Reporting Database Configuration ###
+
+reporting_dbserver= ""
+reporting_dbserver_username = ""
+reporting_dbserver_password = ""
+reporting_dbserver_port = ""
+reporting_database = "pyrothorn_testing"
+
+
 ### Logged Queries Configuration ###
 
 stored_queries_dbserver= ""

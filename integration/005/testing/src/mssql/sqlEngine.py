@@ -34,7 +34,7 @@ class DBHelper:
     
     """
     
-    def __init__(self, db_server, username, password, port="1433"):
+    def __init__(self, db_server, username, password, port="1433", driver="TDS"):
         """
         Initialise DBHelper class instance
         """
@@ -42,14 +42,14 @@ class DBHelper:
         self.username = username
         self.password = password
         self.port = port
-        
+        self.driver = driver
         
     def execute_qry_single_row (self, query, db_name):
         """
         Execute a query on a database & table, that will return a single row
         """
         return_val = []
-        params = 'DRIVER={TDS};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
+        params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
         cursor.execute(query)
@@ -68,7 +68,7 @@ class DBHelper:
         Execute a query on a database & table that may return any number of rows
         """
         return_val = []
-        params = 'DRIVER={TDS};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
+        params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
 
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
@@ -90,7 +90,7 @@ class DBHelper:
         """
         return_val = []
        
-        params = 'DRIVER={TDS};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
+        params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
 
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
@@ -109,15 +109,15 @@ class DBHelper:
         return return_val
 
 
-    def execute_insert (self, insert_query, db_name):           
+    def execute_insert (self, insert_query, db_name, query_parameters):           
         """
         Execute an insert on a database & table 
         """
         return_val = []
-        params = 'DRIVER={TDS};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
+        params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
-        cursor.execute(insert_query)
+        cursor.execute(insert_query, query_parameters)
         cnxn.commit()
         cnxn.close()
         
@@ -130,7 +130,7 @@ class SQLEngine(object):
     '''
 
 
-    def __init__(self, dbserver, dbuser, dbpasswd, dbport='1433'):
+    def __init__(self, dbserver, dbuser, dbpasswd, dbport='1433', driver='TDS'):
         '''
         Constructor
         '''
@@ -138,6 +138,7 @@ class SQLEngine(object):
         self.dbuser = dbuser
         self.dbpasswd = dbpasswd
         self.dbport = dbport
+        self.driver = driver
         
     def _getRows(self, query_result):
         row_length = -1
@@ -172,7 +173,6 @@ class SQLEngine(object):
             obj.isoformat()
             if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date) else None)
         
-        logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
  
         try:
 
@@ -184,17 +184,23 @@ class SQLEngine(object):
         except Exception as e:
             logging.exception(e) 
             return error_code
-        logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         
         return self._getRows(query_results)
     
+    def execute_insert (self, qry, database, params):
+        """
+        Execute an insert query (qry) against a db 
+        """
+        mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
+        res = mydb.execute_insert(qry.encode('utf-8'), database, params)
+        return res
     
 
     def _execute_query (self, qry, database):
         """
-        Execute a query (qry) against a db and table, the information of which is stored as global variables
+        Execute a query (qry) against a db and table
         """
-        mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport)
+        mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
         table_data = mydb.execute_query_multiple_rows(qry.encode('utf-8'), database)
         return table_data
         
@@ -203,7 +209,7 @@ class SQLEngine(object):
         """
         Execute a query (qry) against a db and table, the information of which is stored as global variables
         """
-        mydb = DBHelper(self.dbserver,self.dbuser ,self.dbpasswd, self.dbport)
+        mydb = DBHelper(self.dbserver,self.dbuser ,self.dbpasswd, self.dbport, self.driver)
         table_data = mydb.execute_query_get_cols_rows(qry.encode('utf-8'), database)
         return table_data        
           

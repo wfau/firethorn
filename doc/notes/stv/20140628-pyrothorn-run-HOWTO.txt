@@ -24,9 +24,9 @@ apt-get install mercurial
 apt-get install maven
 apt-get install tomcat7
 apt-get install g++
-apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev
+apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
 
-## edit odbc.ini  and odbcinst.ini files
+## edit odbc.ini  and odbcinst.ini files (/usr/local/etc/)
 
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
