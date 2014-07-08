@@ -1,0 +1,54 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # UCD1+ controlled vocabulary
+    http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html#_Toc163276346
+
+    #
+    # Gaia acronyms
+    http://gaia.esac.esa.int/gpdb/glossary.txt
+
+    #
+    # Notes on using Tex for Gaia
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_System_Architecture:Tex
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_System_Architecture:_Tex_2
+
+    #
+    # DPAC wiki ages
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/Data_Processing_and_Analysis_Consortium
+
+    #
+    # CU9 wiki pages
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU9:SystemEngineeringGroup
+
+    #
+    # CU1 in websvn
+    http://gaia.esac.esa.int/WebSVN/listing.php?repname=DPAC+Subversion+Repository&path=%2FDPAC%2FCU1%2F#_DPAC_CU1_
+
+    #
+    # CU9 in websvn
+    http://gaia.esac.esa.int/WebSVN/listing.php?repname=DPAC+Subversion+Repository&path=%2FDPAC%2FCU9%2F#_DPAC_CU9_
+
+
+

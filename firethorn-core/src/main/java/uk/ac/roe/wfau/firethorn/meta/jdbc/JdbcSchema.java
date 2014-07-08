@@ -280,7 +280,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         public interface Jdbc
             {
             /**
-             * The fully qualified schema name.
+             * The fully qualified name.
              * 
              */
             public String fullname() ;

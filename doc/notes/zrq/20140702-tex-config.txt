@@ -1,0 +1,53 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Guidelines on using Tex.
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_System_Architecture:Tex
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_System_Architecture:_Tex_2
+
+    #
+    # Software Product Assurance Plan
+    # The link returns a permission error - not clear why.
+    # Easiest would probably be to checkout the whole CU1 tree.
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_Product_Assurance_Plan
+    http://gaia.esac.esa.int/dpacsvn/DPAC/CU1/docs/ECSS/SPAP/QA-TL-001/GAIA-C1-PL-CNES-TL-001.pdf
+
+
+    #
+    # Interesting.
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/CU1:_System_Architecture:_Java:_MigrationToJava8
+
+
+    #
+    # Shared Resources: Documentation
+    http://wiki.cosmos.esa.int/gaia-dpac/index.php/Shared_Resources:_Documentation#DPAC_Guidelines
+
+    #
+    # Example Maven .project file (N.Hambly).
+    http://gaia.esac.esa.int/WebSVN/filedetails.php?repname=DPAC+Subversion+Repository&path=%2FDPAC%2FCU9%2Fdocs%2FWP930_Architecture%2FECSS%2FICD%2FTemplate%2F.project
+
+    #
+    # CU1 docs/common
+    http://gaia.esac.esa.int/WebSVN/listing.php?repname=DPAC+Subversion+Repository&path=%2FDPAC%2FCU1%2Fdocs%2Fcommon%2F&rev=0&sc=0
+
+
