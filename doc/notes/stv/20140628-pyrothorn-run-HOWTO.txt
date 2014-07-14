@@ -22,18 +22,17 @@
 
 apt-get install mercurial
 apt-get install maven
-apt-get install tomcat7
 apt-get install g++
 apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
+apt-get install mysql-server mysql-client
 
-## edit odbc.ini  and odbcinst.ini files (/usr/local/etc/)
+## edit odbc.ini  and odbcinst.ini files (/etc/)
 
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
 cd pyodbc-3.0.7/
 python setup.py install
 
-/etc/init.d/tomcat7 stop
 ## setup ssh keys
 
 
@@ -49,12 +48,27 @@ mvn -P all eclipse:eclipse
 
 ## create firethorn.properties
 
+# create mysql reporting database
+mysql -u${mysqlusername}
+    CREATE DATABASE pyrothorn_testing;
+    USE pyrothorn_testing;
+    CREATE TABLE IF NOT EXISTS `queries` (
+       `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+       `query` text NOT NULL,
+       `direct_sql_rows` int(11) NOT NULL,
+       `firethorn_sql_rows` int(11) NOT NULL,
+       `firethorn_duration` varchar(60) NOT NULL,
+       `sql_duration` varchar(60) NOT NULL,
+       `test_passed` tinyint(1) NOT NULL,
+       `firethorn_version` varchar(60) NOT NULL,
+       `error_message` varchar(60) NOT NULL,
+       PRIMARY KEY (`queryid`)
+     ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+
 
 cd ~/hg
 pushd 'firethorn-webapp'
-
-        pushd ../firethorn-ogsadai/activity/ ; mvn clean install ; popd
-        pushd ../firethorn-core/ ; mvn clean install ; popd
 
         export MAVEN_OPTS=-Xmx128m
         mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
@@ -66,7 +80,6 @@ pushd 'firethorn-webapp'
 cd ~/hg
  pushd 'firethorn-ogsadai/webapp'
 
-            pushd ../activity/ ; mvn clean install ; popd
 
             mvn clean compile war:war
 
@@ -98,4 +111,3 @@ cd ~/hg
         
 cd ~/hg/integration/005/testing
 python testing/test_firethorn.py
-
