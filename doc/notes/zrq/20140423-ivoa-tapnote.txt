@@ -70,6 +70,10 @@
     # yum --enablerepo=elrepo
 
     #
+    # Install wget
+    yum -y install wget
+
+    #
     # Install the jpackage repository
     wget http://www.jpackage.org/jpackage50.repo
 
@@ -105,6 +109,7 @@
     yum -y install openssh-clients
 
     yum -y install make
+    yum -y install patch
     yum -y install subversion
 
 # -----------------------------------------------------
@@ -158,13 +163,6 @@
     echo "Login as  [${username?}@$(hostname -f)]"
 
 # -----------------------------------------------------
-# Transfer a copy of the code.
-#[user@testvm]
-
-    scp -r {USERNAME}@{HOSTNAME}:{PROJECTS}/volute/trunk/projects/dal/TAPNotes .
-    ....
-
-# -----------------------------------------------------
 # Download a (a specific) version of Saxon.
 #[user@testvm]
 
@@ -174,11 +172,11 @@
 
     mkdir ${HOME:?}/saxon
 
-    mkdir ${HOME:?}/saxon/saxon9
-    pushd ${HOME:?}/saxon/saxon9
-        curl --output 'SaxonHE9-5-1-5J.zip' 'http://freefr.dl.sourceforge.net/project/saxon/Saxon-HE/9.5/SaxonHE9-5-1-5J.zip'
-        unzip SaxonHE9-5-1-5J.zip
-    popd
+    #mkdir ${HOME:?}/saxon/saxon9
+    #pushd ${HOME:?}/saxon/saxon9
+    #    curl --output 'SaxonHE9-5-1-5J.zip' 'http://freefr.dl.sourceforge.net/project/saxon/Saxon-HE/9.5/SaxonHE9-5-1-5J.zip'
+    #    unzip SaxonHE9-5-1-5J.zip
+    #popd
 
     #curl --head 'http://sourceforge.net/projects/saxon/files/Saxon-B/saxonb8-5-1.zip/download' | grep 'Location'
     #curl --head 'http://downloads.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip?r=&ts=1398265920&use_mirror=optimate'
@@ -189,6 +187,12 @@
         curl --output 'saxonb8-5-1.zip' 'http://optimate.dl.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip'
         unzip saxonb8-5-1.zip
     popd
+
+# -----------------------------------------------------
+# Checkout a copy of the code.
+#[user@testvm]
+
+    svn co 'https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes' 'TAPNotes'
 
 # -----------------------------------------------------
 # patch the makefile.
@@ -256,7 +260,7 @@ EOF
 #            ' Makefile
 
         sed -i '
-            s|SAXONHOME|'${HOME:?}'|
+            s|SAXONHOME|'${HOME}/saxon'|
             ' Makefile
 
         make
