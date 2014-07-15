@@ -20,23 +20,49 @@
 #
 #
 
+# ---------------------------------------------
+# Install required packages
+# ---------------------------------------------
+
 apt-get install mercurial
 apt-get install maven
 apt-get install g++
 apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
 apt-get install mysql-server mysql-client
-
-## edit odbc.ini  and odbcinst.ini files (/etc/)
-
+apt-get install python-numpy python-scipy
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
 cd pyodbc-3.0.7/
 python setup.py install
 
+
+# ---------------------------------------------
+# Edit odbc configurations 
+# ---------------------------------------------
+
+## overwrite odbc.ini  (/etc/) 
+## overwrite odbcinst.ini   (/etc/)
+
+
+
+# ---------------------------------------------
+# Setup ssh user and tunneling 
+# ---------------------------------------------
+
+# Create a local user
+username=$(pwgen 16 1)
+useradd --create-home --shell /bin/bash --groups users "${username:?}"
+usermod --append --groups users "${username:?}" 
+
 ## setup ssh keys
 
-
 ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshusername}@${sshhostname:?}"
+
+
+
+# ---------------------------------------------
+# Get a clone of the firethorn repository 
+# ---------------------------------------------
 
 ## new terminal
 cd ~
@@ -44,12 +70,16 @@ hg clone ssh://${sshuser}@${sshhost}:${sshport}/${sshpath} hg
 cd hg
 hg update -C 1.10.8-stv-pyrothorn
 mvn -P all clean install
-mvn -P all eclipse:eclipse
 
 ## create firethorn.properties
 
-# create mysql reporting database
-mysql -u${mysqlusername}
+
+
+# ---------------------------------------------
+# Create mysql reporting database/table 
+# ---------------------------------------------
+
+mysql -u${mysqlusername:?} -p${mysqlpassword:?}
     CREATE DATABASE pyrothorn_testing;
     USE pyrothorn_testing;
     CREATE TABLE IF NOT EXISTS `queries` (
@@ -67,8 +97,13 @@ mysql -u${mysqlusername}
 
 
 
+
+# ---------------------------------------------
+# Run firethorn in new console 
+# ---------------------------------------------
+
 cd ~/hg
-pushd 'firethorn-webapp'
+    pushd 'firethorn-webapp'
 
         export MAVEN_OPTS=-Xmx128m
         mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
@@ -76,10 +111,12 @@ pushd 'firethorn-webapp'
     popd
 
 
-## new terminal
-cd ~/hg
- pushd 'firethorn-ogsadai/webapp'
+# ---------------------------------------------
+# Run ogsadai in new console 
+# ---------------------------------------------
 
+cd ~/hg
+    pushd 'firethorn-ogsadai/webapp'
 
             mvn clean compile war:war
 
@@ -103,11 +140,21 @@ cd ~/hg
             
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
-         popd      
+    popd      
          
+
+
+# ---------------------------------------------
+# Create config.py file (based on config-template.py)
+# ---------------------------------------------
          
 ## create/edit integration/005/testing/config.py
         
-        
+
+
+# ---------------------------------------------
+# Run test 
+# ---------------------------------------------
+      
 cd ~/hg/integration/005/testing
 python testing/test_firethorn.py
