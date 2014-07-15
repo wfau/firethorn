@@ -21,17 +21,6 @@
 #
 
 # -------------------------------------------------------------------------------------------
-# Testing Ubuntu 13 VM images
-#[root@desktop]
-
-
-    ischnura-createvm 
-
-        [7] ubuntu-13-base-20140211.qcow // pass
-        [8] ubuntu-13-wfau-20140304.qcow // fails
-
-
-# -------------------------------------------------------------------------------------------
 # Swap to Stelio's development branch
 #[user@desktop]
 
@@ -48,99 +37,193 @@
 #[root@desktop]
 
     ischnura-createvm 
-
-        Available machine names
-        [1] nu
-        [2] xi
         ....
-
-        Available base images
-        ....
-        [6] ubuntu-12-base-20130106.qcow
-        [7] ubuntu-13-base-20140211.qcow
-
-
-        INFO : Node name [xi]
+        INFO : Node name [omicron]
         INFO : Base name [ubuntu-13-base-20140211.qcow]
-        INFO : Disc name [xi.qcow]
+        INFO : Disc name [omicron.qcow]
         INFO : Disc size [8G]
 
 # -------------------------------------------------------------------------------------------
-# Login to the VM and configure ..
+# Login to the VM as root.
 #[user@desktop]
 
-    ssh root@xi
+    cat > "/tmp/tester-settings.txt" << EOF
+testhost=omicron.virtual.metagrid.co.uk    
+EOF
+
+    source "/tmp/tester-settings.txt"
+    ssh root@${testhost:?}
+
+# ------------------------------------------
+# Install basic tools.
+#[root@testhost]
+
+    apt-get -y install \
+        htop  \
+        wget  \
+        gzip  \
+        unzip \
+        pwgen \
+        rsync \
+        patch \
 
 # -------------------------------------------------------------------------------------------
-# Login to the VM and configure ..
-#[root@xi]
+# Install the Java tools we need
+#[root@testhost]
 
-    apt-get install openjdk-7-jre
-    apt-get install openjdk-7-jdk
+    apt-get -y install \
+        openjdk-7-jre \
+        openjdk-7-jdk \
+        maven
 
-    apt-get install mercurial
-    apt-get install maven
+# -------------------------------------------------------------------------------------------
+# Install the SCM tools we need
+#[root@testhost]
 
-    apt-get install g++
-    apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
+    apt-get -y install \
+        mercurial
 
-    apt-get install mysql-server mysql-client
-
-    apt-get install python-numpy python-scipy
-
-
-## edit odbc.ini  and odbcinst.ini files (/usr/local/etc/)
+# -------------------------------------------------------------------------------------------
+# Initialise our mysql settings.
+#[root@testhost]
 
     #
-    # Edit odbc.ini
+    # MySQL admin name and pass
+    if [ ! -e "${HOME:?}/mysql-admin-settings.txt" ]
+    then
+cat > "${HOME:?}/mysql-admin-settings.txt" << EOF
+
+mysqladminuser=root
+mysqladminpass=$(pwgen -s 10 1)
+
+EOF
+    fi
+
+    #
+    # MySQL user name and pass
+    if [ ! -e "${HOME:?}/mysql-tester-settings.txt" ]
+    then
+cat > "${HOME:?}/mysql-tester-settings.txt" << EOF
+
+mysqltestdata=pyrothorn
+mysqltestuser=$(pwgen -s 10 1)
+mysqltestpass=$(pwgen -s 10 1)
+
+EOF
+    fi
+
+# -------------------------------------------------------------------------------------------
+# Install the MySQL client and server
+#[root@testhost]
+
+    source "${HOME:?}/mysql-admin-settings.txt"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password ${mysqladminpass:?}"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mysqladminpass:?}"
+
+    apt-get -y install \
+        mysql-server \
+        mysql-client
+
+# -------------------------------------------------------------------------------------------
+# Create the MySQL reporting database.
+#[root@testhost]
+
+    source "${HOME:?}/mysql-admin-settings.txt"
+    source "${HOME:?}/mysql-tester-settings.txt"
+
+    #
+    # Test the admin password.
+    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
+        "SELECT version()"
+
+    #
+    # Create our (empty) database.
+    mysqladmin --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" create "${mysqltestdata:?}"
+
+    #
+    # Create our database user
+    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
+        "CREATE USER '${mysqltestuser:?}'@'localhost' IDENTIFIED BY '${mysqltestpass:?}'"
+
+    #
+    # Grant access to our database
+    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
+        "GRANT ALL ON ${mysqltestdata:?}.* TO '${mysqltestuser:?}'@'localhost'"
+
+    #
+    # Check our login.
+    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" --execute \
+        "SHOW DATABASES ; SHOW TABLES"
+
+    #
+    # Create our table.
+    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" << EOF
+
+        CREATE TABLE IF NOT EXISTS others (
+           queryid            int(10) unsigned NOT NULL AUTO_INCREMENT,
+           query              text NOT NULL,
+           direct_sql_rows    int(11) NOT NULL,
+           firethorn_sql_rows int(11) NOT NULL,
+           firethorn_duration varchar(60) NOT NULL,
+           sql_duration       varchar(60) NOT NULL,
+           test_passed        tinyint(1) NOT NULL,
+           firethorn_version  varchar(60) NOT NULL,
+           error_message      varchar(60) NOT NULL,
+           PRIMARY KEY (queryid)
+         ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+EOF
+
+    #
+    # Check the table.
+    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" --execute \
+        "SHOW DATABASES ; SHOW TABLES"
+
+# -------------------------------------------------------------------------------------------
+# Install the ODBC tools we need
+#[root@testhost]
+
+    apt-get -y install \
+        unixodbc \
+        tdsodbc \
+        libmyodbc
+
+# -------------------------------------------------------------------------------------------
+# Configure the ODBC tools.
+#[root@testhost]
+
+    cat > /etc/odbcinst.ini << EOF
+[ODBC Drivers]
+TDS             = Installed
+
+[TDS]
+Description     = TDS driver (Sybase/MS SQL)
+Driver          = $(find / -name 'libtdsodbc.so' | head -n 1)
+Setup           = $(find / -name 'libtdsS.so' | head -n 1)
+FileUsage       = 1
+
+[ODBC]
+Trace           = No
+TraceFile       = /tmp/odbc-sql-trace.log
+ForceTrace      = No
+Pooling         = No
+EOF
+
     cat > /etc/odbc.ini << EOF
 [ODBC]
 Debug         = 0
 Trace         = 0
+DebugFile     = /tmp/odbc-sys-debugfile.log
+TraceFile     = /tmp/odbc-sys-tracefile.log
 TraceAutoStop = 1
 
 [ODBC Data Sources]
-WSADB           = WSA on Ramses1
-VSADB           = VSA on Ramses2
-SSADB           = SSA on Ramses7
-TWOMASSDB       = TWOMASS on Ramses3
-AHMOSE          = general connection to ahmose
-AMENHOTEP       = general connection to amenhotep
-THUTMOSE        = general connection to thutmose
-HATSHEPSUT      = general connection to hatshepsut
-RAMSES1         = general connection to ramses1
+RAMSES1         = General connection to ramses1
+RAMSES2         = General connection to ramses2
+RAMSES3         = General connection to ramses3
 
 [Default]
 Servername      =
 Database        =
-
-[AHMOSE]
-Driver          = TDS
-Servername      = ahmose
-Database        =
-UID             =
-Password        =
-
-[AMENHOTEP]
-Driver          = TDS
-Servername      = amenhotep
-Database        =
-UID             =
-Password        =
-
-[THUTMOSE]
-Driver          = TDS
-Servername      = thutmose
-Database        =
-UID             =
-Password        =
-
-[HATSHEPSUT]
-Driver          = TDS
-Servername      = hatshepsut
-Database        =
-UID             =
-Password        =
 
 [RAMSES1]
 Driver          = TDS
@@ -163,183 +246,64 @@ Database        =
 UID             =
 Password        =
 
-[RAMSES4]
-Driver          = TDS
-Servername      = ramses4
-Database        =
-UID             =
-Password        =
+# -------------------------------------------------------------------------------------------
+# Install the Python tools we need
+#[root@testhost]
 
-[RAMSES5]
-Driver          = TDS
-Servername      = ramses5
-Database        =
-UID             =
-Password        =
-
-[RAMSES6]
-Driver          = TDS
-Servername      = ramses6
-Database        =
-UID             =
-Password        =
-
-[RAMSES7]
-Driver          = TDS
-Servername      = ramses7
-Database        =
-UID             =
-Password        =
-
-[RAMSES8]
-Driver          = TDS
-Servername      = ramses8
-Database        =
-UID             =
-Password        =
-
-[RAMSES9]
-Driver          = TDS
-Servername      = ramses9
-Database        =
-UID             =
-Password        =
-
-[RAMSES10]
-Driver          = TDS
-Servername      = ramses10
-Database        =
-UID             =
-Password        =
-
-[RAMSES11]
-Driver          = TDS
-Servername      = ramses11
-Database        =
-UID             =
-Password        =
-
-[WSADB]
-Driver          = TDS
-Servername      = ramses1
-Database        = WSA
-UID             =
-Password        =
-
-[VSADB]
-Driver          = TDS
-Servername      = ramses2
-Database        = VSA-v1_0
-UID             =
-Password        =
-
-[TWOMASSDB]
-Driver          = TDS
-Servername      = ramses3
-Database        = TWOMASS
-UID             =
-Password        =
-
-[SSADB]
-Driver          = TDS
-Servername      = ramses7
-Database        = SSA
-UID             =
-Password        =
-
-[TEST]
-Driver          = TDS
-Servername      = hatshepsut
-Database        = TESTWSA
-UID             =
-Password        =
-
-[PSSA]
-Driver          = TDS
-Servername      = ramses7
-Database        = pssa
-Password        = 
-EOF
-
-    #
-    # Edit odbc.ini
-    cat > /etc/odbcinst.ini << EOF
-[ODBC Drivers]
-TDS             = Installed
-
-[TDS]
-Description     = TDS driver (Sybase/MS SQL)
-; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
-; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
-Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
-Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
-FileUsage       = 1
-
-[ODBC]
-Trace           = No
-; TraceFile       = /usr/tmp/sql.log
-TraceFile       = /tmp/sql.log
-ForceTrace      = No
-Pooling         = No
-EOF
+    apt-get -y install \
+        python \
+        python-numpy \
+        python-scipy
 
 # -------------------------------------------------------------------------------------------
 # Install pyodbc
-#[root@xi]
+#[root@testhost]
 
-    apt-get install python
-    apt-get install wget
-    apt-get install unzip
+    apt-get -y install \
+        g++ \
+        make \
+        python-dev
+        unixodbc-dev
 
-    wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
-    unzip pyodbc-3.0.7.zip
-    pushd pyodbc-3.0.7/
+    if [ ! -d pyodbc-3.0.7 ]
+    then
 
-        python setup.py install
+        if [ ! -e pyodbc-3.0.7.zip ]
+        then
+            wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
+        fi
 
-            ....
-            running install_lib
-            copying build/lib.linux-x86_64-2.7/pyodbc.so -> /usr/local/lib/python2.7/dist-packages
-            running install_egg_info
-            Writing /usr/local/lib/python2.7/dist-packages/pyodbc-3.0.7.egg-info
+        if [ ! -d pyodbc-3.0.7 ]
+        then
+            unzip pyodbc-3.0.7.zip
+        fi
 
-    popd
+        pushd pyodbc-3.0.7/
 
-# -------------------------------------------------------------------------------------------
-# Some paths need fixing ..
-#[root@xi]
+            python setup.py install
 
-    /etc/odbc.ini
-
-        ....
-        ; DebugFile     = /data/djer/scos/usr/tmp/odbc-sys-debugfile.log
-        ; TraceFile     = /data/djer/scos/usr/tmp/odbc-sys-tracefile.log
-        ....
-        ; UID             = xxxx
-
-    /etc/odbcinst.ini
-
-        ....
-        ; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
-        ; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
-        ....
-        ; TraceFile       = /usr/tmp/sql.log
+        popd
+    fi
 
 # -------------------------------------------------------------------------------------------
 # Create our test user
-#[root@xi]
-
-    apt-get install pwgen
+#[root@testhost]
 
     username=$(pwgen 16 1)
 
     useradd --create-home --shell /bin/bash --groups users "${username:?}"
     usermod --append --groups users "${username:?}"
 
+cat > "${HOME:?}/tester-settings.txt" << EOF
+testuser=${username:?}
+testhost=$(hostname -f)
+EOF
+
 # -----------------------------------------------------
 # Create our ssh config.
-#[root@testvm]
+#[root@testhost]
 
+    source "${HOME:?}/tester-settings.txt"
     if [ ! -e "/home/${username:?}/.ssh" ]
     then
         mkdir "/home/${username:?}/.ssh"
@@ -358,39 +322,51 @@ EOF
     chown -R "${username:?}"  "/home/${username:?}/.ssh"
     chgrp -R "${username:?}"  "/home/${username:?}/.ssh"
     chmod g=,o=,u=rwx "/home/${username:?}/.ssh"
-    
+
+# -----------------------------------------------------
+# Pass on the MySQL tester login.
+#[root@testhost]
+
+    cp "${HOME:?}/mysql-tester-settings.txt" "/home/${username:?}/mysql-tester-settings.txt"
+    chown "${username:?}" "/home/${username:?}/mysql-tester-settings.txt"
+
+# -----------------------------------------------------
+# Display our SSH login info.
+#[root@testhost]
+
+    source "${HOME:?}/tester-settings.txt"
+    echo "User name [${username:?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "SSH login  ssh ${username:?}@$(hostname -f)"
+
+# -----------------------------------------------------
+# NEW TERMINAL - Fetch the tester settings.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    scp "root@${testhost:?}:tester-settings.txt"  "/tmp/tester-settings.txt"
+
 # -----------------------------------------------------
 # Login as test user.
-#[root@testvm]
+#[user@desktop]
 
-    echo "User name [${username?}]"
-    echo "Host name [$(hostname -f)]"
-    echo "Login as  ssh ${username?}@$(hostname -f)"
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
 
 # -------------------------------------------------------------------------------------------
 # Open a tunnelled connection to our SQLServer hosts
-#[root@xi]
+#[user@testhost]
 
-    sshusername=dave
-    sshhostname=fenrir.roe.ac.uk
+    tunneluser=dave
+    tunnelhost=fenrir.roe.ac.uk
 
     ssh -L '*:1432:ramses2:1433' \
         -L '*:1433:ramses3:1433' \
         -L '*:1435:ramses5:1433' \
-    "${sshusername}@${sshhostname:?}"
+    "${tunneluser}@${tunnelhost:?}"
 
 # -------------------------------------------------------------------------------------------
-# Configure our firethorn directories.
-#[user@xi]
-
-cat > "${HOME:?}/firethorn.settings" << 'EOF'
-FIRETHORN_BASE=${HOME}
-FIRETHORN_CODE=${FIRETHORN_BASE:?}/hg
-EOF
-
-# -------------------------------------------------------------------------------------------
-# Create new metadata and userdata database(s).
-# (uses the test VM to run sqsh)
+# NEW TERMINAL - Create new metadata and userdata database(s).
 #[user@desktop]
 
     deploytype=test
@@ -498,34 +474,71 @@ cat  "${databasefile:?}"
         popd
     exit
 
+# -----------------------------------------------------
+# Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Configure our firethorn directories.
+#[user@testhost]
+
+cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_BASE=\${HOME}
+FIRETHORN_CODE=\${FIRETHORN_BASE:?}/$(pwgen 8 1)
+EOF
+
 # -------------------------------------------------------------------------------------------
 # Clone the firethorn source code.
-#[user@xi]
+#[user@testhost]
 
+    testbranch=1.10.8-stv-pyrothorn
+    
     source "${HOME:?}/firethorn.settings"
-    pushd "$(dirname ${FIRETHORN_CODE:?})"
-
-        hg clone http://wfau.metagrid.co.uk/code/firethorn/ "$(basename ${FIRETHORN_CODE:?})"
-
-    popd
+    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    then 
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+            hg clone http://wfau.metagrid.co.uk/code/firethorn/ "$(basename ${FIRETHORN_CODE:?})"
+            pushd "$(basename ${FIRETHORN_CODE:?})"
+                hg update "${testbranch:?}"
+            popd
+        popd
+    else
+        pushd "${FIRETHORN_CODE:?}"
+            hg pull
+            hg update "${testbranch:?}"
+        popd
+    fi
 
 # -------------------------------------------------------------------------------------------
 # Create our firethorn properties.
-#[user@xi]
+#[user@testhost]
 
     source "${HOME:?}/firethorn.settings"
     cp "${FIRETHORN_CODE:?}/conf/base.properties" "${HOME:?}/firethorn.properties"
 
     vi "${HOME:?}/firethorn.properties"
 
+    ~    firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataPYROTHORN011008TEST
+    ~    firethorn.meta.user=xxxx
+    ~    firethorn.meta.pass=xxxx
+
+    ~    firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataPYROTHORN011008TEST
+    ~    firethorn.user.user=xxxx
+    ~    firethorn.user.pass=xxxx
+
+    ~    firethorn.atlas.url=jdbc:jtds:sqlserver://localhost:1432/ATLASDR1
+    ~    firethorn.atlas.user=xxxx
+    ~    firethorn.atlas.pass=xxxx
+
 # -------------------------------------------------------------------------------------------
 # Build the firethorn source code.
-#[user@xi]
+#[user@testhost]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-
-        hg update -C 1.10.8-stv-pyrothorn
 
         mvn -P all clean install
 
@@ -533,7 +546,7 @@ cat  "${databasefile:?}"
 
 # -------------------------------------------------------------------------------------------
 # Launch the firethorn-webapp.
-#[user@xi]
+#[user@testhost]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -543,19 +556,16 @@ cat  "${databasefile:?}"
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
-        popd
-    popd
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
 
-# -------------------------------------------------------------------------------------------
-# Property name conflict in this version :-(
-#[user@xi]
-
-    firethorn.meta.c3p0...
-    firethorn.meta.c3po...
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
 
 # -------------------------------------------------------------------------------------------
 # Launch the ogsadai-webapp.
-#[user@xi]
+#[user@testhost]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -582,11 +592,16 @@ cat  "${databasefile:?}"
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
-         popd      
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
 
 # -------------------------------------------------------------------------------------------
 # Configure our python tests.
-#[user@xi]
+#[user@testhost]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -597,9 +612,9 @@ cat  "${databasefile:?}"
 
             vi config.py
 
-                test_email = "####"
+                test_email = "pyratest@metagrid.co.uk"
 
-                sample_query="Select top 10 * from Filter"
+                sample_query="SELECT TOP 10 * FROM Filter"
                 sample_query_expected_rows=10
 
                 test_dbserver= "localhost"
@@ -611,7 +626,7 @@ cat  "${databasefile:?}"
                 reporting_dbserver= "localhost"
                 reporting_dbserver_username = ""
                 reporting_dbserver_password = ""
-                reporting_dbserver_port = "1433"
+                reporting_dbserver_port = "3306"
                 reporting_database = "pyrothorn_testing"
 
                 stored_queries_dbserver= "localhost"
@@ -627,28 +642,5 @@ cat  "${databasefile:?}"
         popd
     popd
 
-# -------------------------------------------------------------------------------------------
-# Create the MySQL reporting database.
-#[user@xi]
-
-    mysql -u root -p
-
-        CREATE DATABASE pyrothorn_testing;
-        USE pyrothorn_testing;
-        CREATE TABLE IF NOT EXISTS `queries` (
-           `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-           `query` text NOT NULL,
-           `direct_sql_rows` int(11) NOT NULL,
-           `firethorn_sql_rows` int(11) NOT NULL,
-           `firethorn_duration` varchar(60) NOT NULL,
-           `sql_duration` varchar(60) NOT NULL,
-           `test_passed` tinyint(1) NOT NULL,
-           `firethorn_version` varchar(60) NOT NULL,
-           `error_message` varchar(60) NOT NULL,
-           PRIMARY KEY (`queryid`)
-         ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
-
-
-ssh aethietichiewuop@xi.virtual.metagrid.co.uk
 
 
