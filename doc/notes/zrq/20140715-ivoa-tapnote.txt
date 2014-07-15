@@ -1,0 +1,230 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+#[root@desktop]
+# Create a local VM
+
+    ischnura-createvm 
+
+        ....
+        INFO : Node name [xi]
+        INFO : Base name [centos-65-base-20140421.qcow]
+        INFO : Disc name [xi.qcow]
+        INFO : Disc size [8G]
+        ....
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install EPEL and ELREPO
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+
+    #
+    # Install wget
+    yum -y install wget
+
+    #
+    # Install the jpackage repository
+    pushd /etc/yum.repos.d/
+
+        wget http://www.jpackage.org/jpackage50.repo
+
+        sed -i '
+            /^\[jpackage-rhel\]/,/^\[/ {
+                s/^enabled=.*$/enabled=0/p
+                }
+            ' jpackage50.repo
+
+        restorecon /etc/yum.repos.d/jpackage50.repo
+
+    popd
+
+# ----------------------------------------------------------
+# Install Java 1.7
+#[root@test-vm] 
+
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install system tools we need
+
+    yum -y install pwgen
+    yum -y install gzip
+    yum -y install unzip
+    yum -y install wget
+
+    yum -y install openssh-clients
+
+    yum -y install make
+    yum -y install patch
+    yum -y install subversion
+
+# -----------------------------------------------------
+#[root@testvm]
+# Install document tools we need
+
+    yum -y install sed
+    yum -y install fop
+    yum -y install saxon
+    yum -y install texlive
+
+# -----------------------------------------------------
+#[root@testvm]
+# Create a local user
+
+    username=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${username:?}"
+    usermod --append --groups users "${username:?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@testvm]
+
+    if [ ! -e "/home/${username:?}/.ssh" ]
+    then
+        mkdir "/home/${username:?}/.ssh"
+    fi
+
+    pushd "/home/${username:?}/.ssh"
+    
+        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${username:?}"  "/home/${username:?}/.ssh"
+    chgrp -R "${username:?}"  "/home/${username:?}/.ssh"
+    restorecon -R -v  "/home/${username:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${username:?}/.ssh"
+    
+# -----------------------------------------------------
+# Login as test user.
+#[root@testvm]
+
+    echo "User name [${username?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "ssh ${username?}@$(hostname -f)"
+
+# -----------------------------------------------------
+# Download a (a specific) version of Saxon.
+#[user@testvm]
+
+    mkdir ${HOME:?}/saxon
+
+    mkdir ${HOME:?}/saxon/saxonb8
+    pushd ${HOME:?}/saxon/saxonb8
+        wget 'http://optimate.dl.sourceforge.net/project/saxon/Saxon-B/saxonb8-5-1.zip'
+        unzip saxonb8-5-1.zip
+    popd
+
+# -----------------------------------------------------
+# Checkout a copy of the code.
+#[user@testvm]
+
+    svn co 'https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes' 'TAPNotes'
+
+# -----------------------------------------------------
+# patch the makefile.
+#[user@testvm]
+
+    pushd TAPNotes
+
+        patch << 'EOF'
+*** Makefile	2014-07-15 13:22:01.688000745 +0100
+--- Makefile	2014-07-15 13:23:50.628985629 +0100
+***************
+*** 55,62 ****
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-resolver.jar
+! SAXONJAR=$(JARROOT)/saxonb.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+--- 55,62 ----
+  FOPHYPH=/usr/share/fop/fop-hyph.jar
+  
+  JARROOT=/usr/share/java
+! RESOLVERJAR=$(JARROOT)/xml-commons-resolver.jar
+! SAXONJAR=SAXONHOME/saxonb8/saxon8.jar
+  SAXON=java -cp $(RESOLVERJAR):$(SAXONJAR) \
+  	-Dxml.catalog.files=$(CATALOG) -Dxml.catalog.verbosity=1\
+  	net.sf.saxon.Transform\
+EOF
+
+        #
+        # Fails due to tabs in the original.
+        patch << 'EOF'
+*** Makefile	2014-07-15 13:25:10.759990156 +0100
+--- Makefile	2014-07-15 13:25:56.689000328 +0100
+***************
+*** 95,101 ****
+  
+  # this is for BibTex
+  %.aux: %.html
+!	$(SAXON) -o:$@ -xsl:$(CITEEXSTYLE) -s:$< 
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+--- 95,101 ----
+  
+  # this is for BibTex
+  %.aux: %.html
+!	$(SAXON) -o $@ $< $(CITEEXSTYLE) 
+  
+  %.bbl: %.aux
+  	$(BIBTEX) $<
+EOF
+
+
+    popd
+
+# -----------------------------------------------------
+# Build the documents.
+#[user@testvm]
+
+    pushd TAPNotes
+
+        sed -i '
+            s|SAXONHOME|'${HOME}/saxon'|
+            ' Makefile
+
+        make
+
+    popd
+
