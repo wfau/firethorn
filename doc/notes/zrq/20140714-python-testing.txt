@@ -1,0 +1,654 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Testing Ubuntu 13 VM images
+#[root@desktop]
+
+
+    ischnura-createvm 
+
+        [7] ubuntu-13-base-20140211.qcow // pass
+        [8] ubuntu-13-wfau-20140304.qcow // fails
+
+
+# -------------------------------------------------------------------------------------------
+# Swap to Stelio's development branch
+#[user@desktop]
+
+    stvbranch=1.10.8-stv-pyrothorn
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update "${stvbranch:?}"
+
+# -------------------------------------------------------------------------------------------
+# Create a clean Ubuntu 13 VM
+#[root@desktop]
+
+    ischnura-createvm 
+
+        Available machine names
+        [1] nu
+        [2] xi
+        ....
+
+        Available base images
+        ....
+        [6] ubuntu-12-base-20130106.qcow
+        [7] ubuntu-13-base-20140211.qcow
+
+
+        INFO : Node name [xi]
+        INFO : Base name [ubuntu-13-base-20140211.qcow]
+        INFO : Disc name [xi.qcow]
+        INFO : Disc size [8G]
+
+# -------------------------------------------------------------------------------------------
+# Login to the VM and configure ..
+#[user@desktop]
+
+    ssh root@xi
+
+# -------------------------------------------------------------------------------------------
+# Login to the VM and configure ..
+#[root@xi]
+
+    apt-get install openjdk-7-jre
+    apt-get install openjdk-7-jdk
+
+    apt-get install mercurial
+    apt-get install maven
+
+    apt-get install g++
+    apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
+
+    apt-get install mysql-server mysql-client
+
+    apt-get install python-numpy python-scipy
+
+
+## edit odbc.ini  and odbcinst.ini files (/usr/local/etc/)
+
+    #
+    # Edit odbc.ini
+    cat > /etc/odbc.ini << EOF
+[ODBC]
+Debug         = 0
+Trace         = 0
+TraceAutoStop = 1
+
+[ODBC Data Sources]
+WSADB           = WSA on Ramses1
+VSADB           = VSA on Ramses2
+SSADB           = SSA on Ramses7
+TWOMASSDB       = TWOMASS on Ramses3
+AHMOSE          = general connection to ahmose
+AMENHOTEP       = general connection to amenhotep
+THUTMOSE        = general connection to thutmose
+HATSHEPSUT      = general connection to hatshepsut
+RAMSES1         = general connection to ramses1
+
+[Default]
+Servername      =
+Database        =
+
+[AHMOSE]
+Driver          = TDS
+Servername      = ahmose
+Database        =
+UID             =
+Password        =
+
+[AMENHOTEP]
+Driver          = TDS
+Servername      = amenhotep
+Database        =
+UID             =
+Password        =
+
+[THUTMOSE]
+Driver          = TDS
+Servername      = thutmose
+Database        =
+UID             =
+Password        =
+
+[HATSHEPSUT]
+Driver          = TDS
+Servername      = hatshepsut
+Database        =
+UID             =
+Password        =
+
+[RAMSES1]
+Driver          = TDS
+Servername      = ramses1
+Database        =
+UID             =
+Password        =
+
+[RAMSES2]
+Driver          = TDS
+Servername      = ramses2
+Database        =
+UID             =
+Password        =
+
+[RAMSES3]
+Driver          = TDS
+Servername      = ramses3
+Database        =
+UID             =
+Password        =
+
+[RAMSES4]
+Driver          = TDS
+Servername      = ramses4
+Database        =
+UID             =
+Password        =
+
+[RAMSES5]
+Driver          = TDS
+Servername      = ramses5
+Database        =
+UID             =
+Password        =
+
+[RAMSES6]
+Driver          = TDS
+Servername      = ramses6
+Database        =
+UID             =
+Password        =
+
+[RAMSES7]
+Driver          = TDS
+Servername      = ramses7
+Database        =
+UID             =
+Password        =
+
+[RAMSES8]
+Driver          = TDS
+Servername      = ramses8
+Database        =
+UID             =
+Password        =
+
+[RAMSES9]
+Driver          = TDS
+Servername      = ramses9
+Database        =
+UID             =
+Password        =
+
+[RAMSES10]
+Driver          = TDS
+Servername      = ramses10
+Database        =
+UID             =
+Password        =
+
+[RAMSES11]
+Driver          = TDS
+Servername      = ramses11
+Database        =
+UID             =
+Password        =
+
+[WSADB]
+Driver          = TDS
+Servername      = ramses1
+Database        = WSA
+UID             =
+Password        =
+
+[VSADB]
+Driver          = TDS
+Servername      = ramses2
+Database        = VSA-v1_0
+UID             =
+Password        =
+
+[TWOMASSDB]
+Driver          = TDS
+Servername      = ramses3
+Database        = TWOMASS
+UID             =
+Password        =
+
+[SSADB]
+Driver          = TDS
+Servername      = ramses7
+Database        = SSA
+UID             =
+Password        =
+
+[TEST]
+Driver          = TDS
+Servername      = hatshepsut
+Database        = TESTWSA
+UID             =
+Password        =
+
+[PSSA]
+Driver          = TDS
+Servername      = ramses7
+Database        = pssa
+Password        = 
+EOF
+
+    #
+    # Edit odbc.ini
+    cat > /etc/odbcinst.ini << EOF
+[ODBC Drivers]
+TDS             = Installed
+
+[TDS]
+Description     = TDS driver (Sybase/MS SQL)
+; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
+; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
+Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
+FileUsage       = 1
+
+[ODBC]
+Trace           = No
+; TraceFile       = /usr/tmp/sql.log
+TraceFile       = /tmp/sql.log
+ForceTrace      = No
+Pooling         = No
+EOF
+
+# -------------------------------------------------------------------------------------------
+# Install pyodbc
+#[root@xi]
+
+    apt-get install python
+    apt-get install wget
+    apt-get install unzip
+
+    wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
+    unzip pyodbc-3.0.7.zip
+    pushd pyodbc-3.0.7/
+
+        python setup.py install
+
+            ....
+            running install_lib
+            copying build/lib.linux-x86_64-2.7/pyodbc.so -> /usr/local/lib/python2.7/dist-packages
+            running install_egg_info
+            Writing /usr/local/lib/python2.7/dist-packages/pyodbc-3.0.7.egg-info
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Some paths need fixing ..
+#[root@xi]
+
+    /etc/odbc.ini
+
+        ....
+        ; DebugFile     = /data/djer/scos/usr/tmp/odbc-sys-debugfile.log
+        ; TraceFile     = /data/djer/scos/usr/tmp/odbc-sys-tracefile.log
+        ....
+        ; UID             = xxxx
+
+    /etc/odbcinst.ini
+
+        ....
+        ; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
+        ; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
+        ....
+        ; TraceFile       = /usr/tmp/sql.log
+
+# -------------------------------------------------------------------------------------------
+# Create our test user
+#[root@xi]
+
+    apt-get install pwgen
+
+    username=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${username:?}"
+    usermod --append --groups users "${username:?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@testvm]
+
+    if [ ! -e "/home/${username:?}/.ssh" ]
+    then
+        mkdir "/home/${username:?}/.ssh"
+    fi
+
+    pushd "/home/${username:?}/.ssh"
+    
+        if [ ! -e dmr.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub
+            cat dmr.roe.ac.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${username:?}"  "/home/${username:?}/.ssh"
+    chgrp -R "${username:?}"  "/home/${username:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${username:?}/.ssh"
+    
+# -----------------------------------------------------
+# Login as test user.
+#[root@testvm]
+
+    echo "User name [${username?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "Login as  ssh ${username?}@$(hostname -f)"
+
+# -------------------------------------------------------------------------------------------
+# Open a tunnelled connection to our SQLServer hosts
+#[root@xi]
+
+    sshusername=dave
+    sshhostname=fenrir.roe.ac.uk
+
+    ssh -L '*:1432:ramses2:1433' \
+        -L '*:1433:ramses3:1433' \
+        -L '*:1435:ramses5:1433' \
+    "${sshusername}@${sshhostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Configure our firethorn directories.
+#[user@xi]
+
+cat > "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${HOME}
+FIRETHORN_CODE=${FIRETHORN_BASE:?}/hg
+EOF
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=PYROTHORN011008TEST
+
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/sqshtest.properties"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Clone the firethorn source code.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+        hg clone http://wfau.metagrid.co.uk/code/firethorn/ "$(basename ${FIRETHORN_CODE:?})"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Create our firethorn properties.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE:?}/conf/base.properties" "${HOME:?}/firethorn.properties"
+
+    vi "${HOME:?}/firethorn.properties"
+
+# -------------------------------------------------------------------------------------------
+# Build the firethorn source code.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update -C 1.10.8-stv-pyrothorn
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Launch the firethorn-webapp.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Property name conflict in this version :-(
+#[user@xi]
+
+    firethorn.meta.c3p0...
+    firethorn.meta.c3po...
+
+# -------------------------------------------------------------------------------------------
+# Launch the ogsadai-webapp.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+         popd      
+
+# -------------------------------------------------------------------------------------------
+# Configure our python tests.
+#[user@xi]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd integration/005/testing
+
+            cp config-template.py config.py
+
+            vi config.py
+
+                test_email = "####"
+
+                sample_query="Select top 10 * from Filter"
+                sample_query_expected_rows=10
+
+                test_dbserver= "localhost"
+                test_dbserver_username = "####"
+                test_dbserver_password = "####"
+                test_dbserver_port = "1432"
+                test_database = "ATLASDR1"
+
+                reporting_dbserver= "localhost"
+                reporting_dbserver_username = ""
+                reporting_dbserver_password = ""
+                reporting_dbserver_port = "1433"
+                reporting_database = "pyrothorn_testing"
+
+                stored_queries_dbserver= "localhost"
+                stored_queries_dbserver_username = "####"
+                stored_queries_dbserver_password = "####"
+                stored_queries_dbserver_port = "1435"
+                stored_queries_database = "userinterface"
+                stored_queries_query = "select top 2 * from webqueries where dbname like 'atlas%'"
+                logged_queries_txt_file = "query_logs/atlas-logged-queries-short.txt"
+
+                metadocfile = "testing/metadocs/ATLASDR1_TablesSchema.xml"
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Create the MySQL reporting database.
+#[user@xi]
+
+    mysql -u root -p
+
+        CREATE DATABASE pyrothorn_testing;
+        USE pyrothorn_testing;
+        CREATE TABLE IF NOT EXISTS `queries` (
+           `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+           `query` text NOT NULL,
+           `direct_sql_rows` int(11) NOT NULL,
+           `firethorn_sql_rows` int(11) NOT NULL,
+           `firethorn_duration` varchar(60) NOT NULL,
+           `sql_duration` varchar(60) NOT NULL,
+           `test_passed` tinyint(1) NOT NULL,
+           `firethorn_version` varchar(60) NOT NULL,
+           `error_message` varchar(60) NOT NULL,
+           PRIMARY KEY (`queryid`)
+         ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+
+ssh aethietichiewuop@xi.virtual.metagrid.co.uk
+
+
