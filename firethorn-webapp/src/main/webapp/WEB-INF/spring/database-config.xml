@@ -133,7 +133,6 @@
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-        +-->
     <bean id="RoeWFAU" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
         <property name="jdbcUrl"     value="${firethorn.wfau.url}"/>
@@ -146,6 +145,7 @@
         <property name="maxIdleTime" value="60" />
 
     </bean>
+        +-->
 
     <!--+
         | SSH tunnel to ROE database server.

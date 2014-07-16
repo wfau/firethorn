@@ -36,15 +36,19 @@ class test_firethorn(unittest.TestCase):
         self.setUpLogging()
     
     def test_sample_firethorn_query(self):
-        if (self.use_preset_params):
-            fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
-            fEng.printClassVars()
-        else:
-            fEng = pyrothorn.firethornEngine.FirethornEngine()
-            fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
-            fEng.printClassVars()
-        qEng = queryEngine.QueryEngine()
+        try:
+            if (self.use_preset_params):
+                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+                fEng.printClassVars()
+            else:
+                fEng = pyrothorn.firethornEngine.FirethornEngine()
+                fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
+                fEng.printClassVars()
+            qEng = queryEngine.QueryEngine()
+        except Exception as e:
+            logging.exception(e)
         row_length = qEng.run_query(self.sample_query, "", fEng.starting_catalogue_id)
+        
         self.assertEqual(row_length, self.sample_query_expected_rows)
 
       

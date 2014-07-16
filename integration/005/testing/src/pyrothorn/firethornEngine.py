@@ -82,7 +82,7 @@ class FirethornEngine(object):
         return jdbcspace    
     
 
-    def import_jdbc_metadoc(self, adqlspace="", jdbcspace="", jdbccatalogname='ATLASDR1', jdbcschemaname='dbo',metadocfile="/var/www/atlas/testing/metadocs/ATLASDR1_TablesSchema.xml"):
+    def import_jdbc_metadoc(self, adqlspace="", jdbcspace="", jdbccatalogname='ATLASDR1', jdbcschemaname='dbo',metadocfile=""):
         """
         Import a JDBC metadoc
         """
