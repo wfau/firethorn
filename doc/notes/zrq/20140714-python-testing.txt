@@ -88,26 +88,28 @@ EOF
 #[root@testhost]
 
     #
-    # MySQL admin name and pass
-    if [ ! -e "${HOME:?}/mysql-admin-settings.txt" ]
+    # MySQL root name and pass
+    if [ ! -e "${HOME:?}/mysql-root-settings.txt" ]
     then
-cat > "${HOME:?}/mysql-admin-settings.txt" << EOF
+cat > "${HOME:?}/mysql-root-settings.txt" << EOF
 
-mysqladminuser=root
-mysqladminpass=$(pwgen -s 10 1)
+mysqlrootuser=root
+mysqlrootpass=$(pwgen -s 10 1)
 
 EOF
     fi
 
     #
-    # MySQL user name and pass
-    if [ ! -e "${HOME:?}/mysql-tester-settings.txt" ]
+    # MySQL test user and pass
+    if [ ! -e "${HOME:?}/mysql-pyro-settings.txt" ]
     then
-cat > "${HOME:?}/mysql-tester-settings.txt" << EOF
+cat > "${HOME:?}/mysql-pyro-settings.txt" << EOF
 
-mysqltestdata=pyrothorn
-mysqltestuser=$(pwgen -s 10 1)
-mysqltestpass=$(pwgen -s 10 1)
+mysqlpyrodata=pyrothorn
+mysqlpyrouser=$(pwgen -s 10 1)
+mysqlpyropass=$(pwgen -s 10 1)
+
+pyrothorndata
 
 EOF
     fi
@@ -116,9 +118,9 @@ EOF
 # Install the MySQL client and server
 #[root@testhost]
 
-    source "${HOME:?}/mysql-admin-settings.txt"
-    debconf-set-selections <<< "mysql-server mysql-server/root_password password ${mysqladminpass:?}"
-    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mysqladminpass:?}"
+    source "${HOME:?}/mysql-root-settings.txt"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password ${mysqlrootpass:?}"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mysqlrootpass:?}"
 
     apt-get -y install \
         mysql-server \
@@ -128,36 +130,36 @@ EOF
 # Create the MySQL reporting database.
 #[root@testhost]
 
-    source "${HOME:?}/mysql-admin-settings.txt"
-    source "${HOME:?}/mysql-tester-settings.txt"
+    source "${HOME:?}/mysql-root-settings.txt"
+    source "${HOME:?}/mysql-pyro-settings.txt"
 
     #
     # Test the admin password.
-    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
         "SELECT version()"
 
     #
     # Create our (empty) database.
-    mysqladmin --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" create "${mysqltestdata:?}"
+    mysqladmin --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" create "${mysqlpyrodata:?}"
 
     #
     # Create our database user
-    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
-        "CREATE USER '${mysqltestuser:?}'@'localhost' IDENTIFIED BY '${mysqltestpass:?}'"
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "CREATE USER '${mysqlpyrouser:?}'@'localhost' IDENTIFIED BY '${mysqlpyropass:?}'"
 
     #
     # Grant access to our database
-    mysql --user="${mysqladminuser:?}" --password="${mysqladminpass:?}" --execute \
-        "GRANT ALL ON ${mysqltestdata:?}.* TO '${mysqltestuser:?}'@'localhost'"
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "GRANT ALL ON ${mysqlpyrodata:?}.* TO '${mysqlpyrouser:?}'@'localhost'"
 
     #
     # Check our login.
-    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" --execute \
+    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}" --execute \
         "SHOW DATABASES ; SHOW TABLES"
 
     #
     # Create our table.
-    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" << EOF
+    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}" << EOF
 
         CREATE TABLE IF NOT EXISTS others (
            queryid            int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -175,8 +177,9 @@ EOF
 
     #
     # Check the table.
-    mysql --user="${mysqltestuser:?}" --password="${mysqltestpass:?}" --database="${mysqltestdata:?}" --execute \
+    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}" --execute \
         "SHOW DATABASES ; SHOW TABLES"
+
 
 # -------------------------------------------------------------------------------------------
 # Install the ODBC tools we need
@@ -197,8 +200,8 @@ TDS             = Installed
 
 [TDS]
 Description     = TDS driver (Sybase/MS SQL)
-Driver          = $(find / -name 'libtdsodbc.so' | head -n 1)
-Setup           = $(find / -name 'libtdsS.so' | head -n 1)
+Driver          = $(find /usr -name 'libtdsodbc.so' | head -n 1)
+Setup           = $(find /usr -name 'libtdsS.so' | head -n 1)
 FileUsage       = 1
 
 [ODBC]
@@ -289,27 +292,26 @@ Password        =
 # Create our test user
 #[root@testhost]
 
-    username=$(pwgen 16 1)
-
-    useradd --create-home --shell /bin/bash --groups users "${username:?}"
-    usermod --append --groups users "${username:?}"
-
 cat > "${HOME:?}/tester-settings.txt" << EOF
-testuser=${username:?}
+testuser=$(pwgen 16 1)
 testhost=$(hostname -f)
 EOF
+
+    source "${HOME:?}/tester-settings.txt"
+    useradd --create-home --shell /bin/bash --groups users "${testuser:?}"
+    usermod --append --groups users "${testuser:?}"
 
 # -----------------------------------------------------
 # Create our ssh config.
 #[root@testhost]
 
     source "${HOME:?}/tester-settings.txt"
-    if [ ! -e "/home/${username:?}/.ssh" ]
+    if [ ! -e "/home/${testuser:?}/.ssh" ]
     then
-        mkdir "/home/${username:?}/.ssh"
+        mkdir "/home/${testuser:?}/.ssh"
     fi
 
-    pushd "/home/${username:?}/.ssh"
+    pushd "/home/${testuser:?}/.ssh"
     
         if [ ! -e dmr.roe.ac.uk.pub ]
         then    
@@ -319,25 +321,25 @@ EOF
 
     popd
 
-    chown -R "${username:?}"  "/home/${username:?}/.ssh"
-    chgrp -R "${username:?}"  "/home/${username:?}/.ssh"
-    chmod g=,o=,u=rwx "/home/${username:?}/.ssh"
+    chown -R "${testuser:?}"  "/home/${testuser:?}/.ssh"
+    chgrp -R "${testuser:?}"  "/home/${testuser:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${testuser:?}/.ssh"
 
 # -----------------------------------------------------
-# Pass on the MySQL tester login.
+# Add a link to the MySQL test database details.
 #[root@testhost]
 
-    cp "${HOME:?}/mysql-tester-settings.txt" "/home/${username:?}/mysql-tester-settings.txt"
-    chown "${username:?}" "/home/${username:?}/mysql-tester-settings.txt"
+    source "${HOME:?}/tester-settings.txt"
+    ln "${HOME:?}/mysql-pyro-settings.txt" "/home/${testuser:?}/mysql-pyro-settings.txt"
 
 # -----------------------------------------------------
 # Display our SSH login info.
 #[root@testhost]
 
     source "${HOME:?}/tester-settings.txt"
-    echo "User name [${username:?}]"
-    echo "Host name [$(hostname -f)]"
-    echo "SSH login  ssh ${username:?}@$(hostname -f)"
+    echo "User name [${testuser:?}]"
+    echo "Host name [$(testuser -f)]"
+    echo "SSH login : ssh ${testuser:?}@$(hostname -f)"
 
 # -----------------------------------------------------
 # NEW TERMINAL - Fetch the tester settings.
@@ -639,8 +641,6 @@ EOF
 
                 metadocfile = "testing/metadocs/ATLASDR1_TablesSchema.xml"
 
-        popd
-    popd
 
 
 
