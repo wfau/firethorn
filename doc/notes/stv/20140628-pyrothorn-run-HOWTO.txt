@@ -20,30 +20,236 @@
 #
 #
 
+
+
 # ---------------------------------------------
 # Install required packages
 # ---------------------------------------------
 
+apt-get install openjdk-7-jre
+apt-get install openjdk-7-jdk
 apt-get install mercurial
 apt-get install maven
+apt-get install ssh
 apt-get install g++
 apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
 apt-get install mysql-server mysql-client
 apt-get install python-numpy python-scipy
+apt-get install pwgen
+apt-get install python
+apt-get install wget
+apt-get install unzip
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
 cd pyodbc-3.0.7/
 python setup.py install
 
 
+mysqlusername=###
+mysqlpassword=###
+sshusername=###
+sshhostname=###
+
 # ---------------------------------------------
 # Edit odbc configurations 
 # ---------------------------------------------
 
-## overwrite odbc.ini  (/etc/) 
-## overwrite odbcinst.ini   (/etc/)
+#
+# Edit odbc.ini
+cat > /etc/odbc.ini << EOF
+[ODBC]
+Debug         = 0
+Trace         = 0
+TraceAutoStop = 1
 
+[ODBC Data Sources]
+WSADB           = WSA on Ramses1
+VSADB           = VSA on Ramses2
+SSADB           = SSA on Ramses7
+TWOMASSDB       = TWOMASS on Ramses3
+AHMOSE          = general connection to ahmose
+AMENHOTEP       = general connection to amenhotep
+THUTMOSE        = general connection to thutmose
+HATSHEPSUT      = general connection to hatshepsut
+RAMSES1         = general connection to ramses1
 
+[Default]
+Servername      =
+Database        =
+
+[AHMOSE]
+Driver          = TDS
+Servername      = ahmose
+Database        =
+UID             =
+Password        =
+
+[AMENHOTEP]
+Driver          = TDS
+Servername      = amenhotep
+Database        =
+UID             =
+Password        =
+
+[THUTMOSE]
+Driver          = TDS
+Servername      = thutmose
+Database        =
+UID             =
+Password        =
+
+[HATSHEPSUT]
+Driver          = TDS
+Servername      = hatshepsut
+Database        =
+UID             =
+Password        =
+
+[RAMSES1]
+Driver          = TDS
+Servername      = ramses1
+Database        =
+UID             =
+Password        =
+
+[RAMSES2]
+Driver          = TDS
+Servername      = ramses2
+Database        =
+UID             =
+Password        =
+
+[RAMSES3]
+Driver          = TDS
+Servername      = ramses3
+Database        =
+UID             =
+Password        =
+
+[RAMSES4]
+Driver          = TDS
+Servername      = ramses4
+Database        =
+UID             =
+Password        =
+
+[RAMSES5]
+Driver          = TDS
+Servername      = ramses5
+Database        =
+UID             =
+Password        =
+
+[RAMSES6]
+Driver          = TDS
+Servername      = ramses6
+Database        =
+UID             =
+Password        =
+
+[RAMSES7]
+Driver          = TDS
+Servername      = ramses7
+Database        =
+UID             =
+Password        =
+
+[RAMSES8]
+Driver          = TDS
+Servername      = ramses8
+Database        =
+UID             =
+Password        =
+
+[RAMSES9]
+Driver          = TDS
+Servername      = ramses9
+Database        =
+UID             =
+Password        =
+
+[RAMSES10]
+Driver          = TDS
+Servername      = ramses10
+Database        =
+UID             =
+Password        =
+
+[RAMSES11]
+Driver          = TDS
+Servername      = ramses11
+Database        =
+UID             =
+Password        =
+
+[WSADB]
+Driver          = TDS
+Servername      = ramses1
+Database        = WSA
+UID             =
+Password        =
+
+[VSADB]
+Driver          = TDS
+Servername      = ramses2
+Database        = VSA-v1_0
+UID             =
+Password        =
+
+[TWOMASSDB]
+Driver          = TDS
+Servername      = ramses3
+Database        = TWOMASS
+UID             =
+Password        =
+
+[SSADB]
+Driver          = TDS
+Servername      = ramses7
+Database        = SSA
+UID             =
+Password        =
+
+[TEST]
+Driver          = TDS
+Servername      = hatshepsut
+Database        = TESTWSA
+UID             =
+Password        =
+
+[PSSA]
+Driver          = TDS
+Servername      = ramses7
+Database        = pssa
+Password        = 
+EOF
+
+#
+# Edit odbc.ini
+cat > /etc/odbcinst.ini << EOF
+[ODBC Drivers]
+TDS             = Installed
+
+[TDS]
+Description     = TDS driver (Sybase/MS SQL)
+; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
+; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
+Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
+FileUsage       = 1
+
+[ODBC]
+Trace           = No
+; TraceFile       = /usr/tmp/sql.log
+TraceFile       = /tmp/sql.log
+ForceTrace      = No
+Pooling         = No
+
+[MySQL]
+Description = ODBC for MySQL
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
+FileUsage = 1
+EOF
 
 # ---------------------------------------------
 # Setup ssh user and tunneling 
@@ -56,9 +262,12 @@ usermod --append --groups users "${username:?}"
 
 ## setup ssh keys
 
-ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' "${sshusername}@${sshhostname:?}"
+ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' -L '*:1432:ramses2:1433'  -L '*:1433:ramses3:1433'  "${sshusername}@${sshhostname:?}"
 
-
+#    ssh -L '*:1432:ramses2:1433' \
+#        -L '*:1433:ramses3:1433' \
+#        -L '*:1435:ramses5:1433' \
+#    "${sshusername}@${sshhostname:?}"
 
 # ---------------------------------------------
 # Get a clone of the firethorn repository 
@@ -95,7 +304,7 @@ mysql -u${mysqlusername:?} -p${mysqlpassword:?}
        PRIMARY KEY (`queryid`)
      ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
-
+    exit
 
 
 # ---------------------------------------------
@@ -157,4 +366,4 @@ cd ~/hg
 # ---------------------------------------------
       
 cd ~/hg/integration/005/testing
-python testing/test_firethorn.py
+python testing/test_firethorn_logged_sql.py
