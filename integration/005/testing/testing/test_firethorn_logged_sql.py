@@ -38,54 +38,56 @@ class test_firethorn(unittest.TestCase):
    
    
     def test_sql_logged_queries(self):
-        logged_query_sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
-        sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
-        reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
+        try:
+            logged_query_sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
+            sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
+            reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
 
-        log_sql_query = config.stored_queries_query
-        logging.info("Setting up Firethorn Environment..")
+            log_sql_query = config.stored_queries_query
+            logging.info("Setting up Firethorn Environment..")
 
-        fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
-        fEng.printClassVars()
-        
-        logging.info("")
-        logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)
-            
-        for query in logged_queries:
-            qEng = queryEngine.QueryEngine()
-            query = query[0].strip()
-            if (config.limit_query!=None):
-                query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
-            logging.info("Query : " +  query)
-            
-            sql_start_time = time.time()
-            logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-            sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
-            logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-            logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
-            sql_duration = int(time.time() - sql_start_time)
+            fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+            fEng.printClassVars()
             
             logging.info("")
-            
-            start_time = time.time()
-            logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-            firethorn_row_length = qEng.run_query(query, "", fEng.starting_catalogue_id)
-            logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-            logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
-            firethorn_duration = int(time.time() - start_time)
-            
-            
-            self.assertEqual(sql_row_length, firethorn_row_length)
-            logging.info("--- End Query Test ---")
-            logging.info("")
-            
-            test_passed = (sql_row_length == firethorn_row_length)
-            firethorn_version = "1.10.8"
-            error_message = ""
-            params = (query.encode('utf-8'), sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message )
-            report_query = "INSERT INTO queries (query, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" 
-            reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)
                 
+            for query in logged_queries:
+                qEng = queryEngine.QueryEngine()
+                query = query[0].strip()
+                if (config.limit_query!=None):
+                    query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
+                logging.info("Query : " +  query)
+                
+                sql_start_time = time.time()
+                logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
+                logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
+                sql_duration = int(time.time() - sql_start_time)
+                
+                logging.info("")
+                
+                start_time = time.time()
+                logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                firethorn_row_length = qEng.run_query(query, "", fEng.starting_catalogue_id)
+                logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
+                firethorn_duration = int(time.time() - start_time)
+                
+                
+                self.assertEqual(sql_row_length, firethorn_row_length)
+                logging.info("--- End Query Test ---")
+                logging.info("")
+                
+                test_passed = (sql_row_length == firethorn_row_length)
+                firethorn_version = "1.10.8"
+                error_message = ""
+                params = (query.encode('utf-8'), sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message )
+                report_query = "INSERT INTO queries (query, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" 
+                reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+        except Exception as e:
+            logging.exception(e)            
                 
     def setUpLogging(self):
         root = logging.getLogger()

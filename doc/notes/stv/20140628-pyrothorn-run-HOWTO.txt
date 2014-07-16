@@ -39,6 +39,7 @@ apt-get install pwgen
 apt-get install python
 apt-get install wget
 apt-get install unzip
+apt-get install python-pycurl
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
 cd pyodbc-3.0.7/
