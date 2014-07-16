@@ -1,30 +1,32 @@
-import sys, os
-srcdir = '../src/'
-configdir = '../'
-testdir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.dirname(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
-sys.path.insert(0, os.path.abspath(os.path.join(testdir, configdir)))
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-import unittest, time, re
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
-from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
-import logging
-import urllib2
-import json
-import pyrothorn
-import urllib
-from pyrothorn import firethornEngine
-from pyrothorn import queryEngine
-from mssql import sqlEngine
-import config
-from time import gmtime,  strftime
-
+try:
+    import sys, os
+    srcdir = '../src/'
+    configdir = '../'
+    testdir = os.path.dirname(__file__)
+    sys.path.insert(0, os.path.dirname(__file__))
+    sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
+    sys.path.insert(0, os.path.abspath(os.path.join(testdir, configdir)))
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.support.ui import Select
+    from selenium.common.exceptions import NoSuchElementException
+    import unittest, time, re
+    from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
+    from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+    import logging
+    import urllib2
+    import json
+    import pyrothorn
+    import urllib
+    from pyrothorn import firethornEngine
+    from pyrothorn import queryEngine
+    from mssql import sqlEngine
+    import config
+    from time import gmtime,  strftime
+except Exception as e:
+    logging.exception(e)
 
 class test_firethorn(unittest.TestCase):
             
