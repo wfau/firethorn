@@ -48,9 +48,14 @@ class test_firethorn(unittest.TestCase):
             log_sql_query = config.stored_queries_query
             logging.info("Setting up Firethorn Environment..")
 
-            fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
-            fEng.printClassVars()
-            
+            if (self.use_preset_params):
+                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+                fEng.printClassVars()
+            else:
+                fEng = pyrothorn.firethornEngine.FirethornEngine()
+                fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
+                fEng.printClassVars()
+                
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)
                 
