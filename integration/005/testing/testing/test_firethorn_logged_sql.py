@@ -24,9 +24,21 @@ try:
     from pyrothorn import queryEngine
     from mssql import sqlEngine
     import config
+    import uuid
     from time import gmtime,  strftime
+    import datetime
+    import base64
+
+    # get a UUID - URL safe, Base64
+    def get_a_uuid():
+        r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
+        return r_uuid.replace('=', '')
 except Exception as e:
     logging.exception(e)
+
+
+
+
 
 class test_firethorn(unittest.TestCase):
             
@@ -41,6 +53,7 @@ class test_firethorn(unittest.TestCase):
    
     def test_sql_logged_queries(self):
         try:
+            
             logged_query_sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
             sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
@@ -58,15 +71,15 @@ class test_firethorn(unittest.TestCase):
                 
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)
-                
+            queryrunID = get_a_uuid()                                                   
             for query in logged_queries:
                 qEng = queryEngine.QueryEngine()
                 query = query[0].strip()
                 if (config.limit_query!=None):
                     query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
                 logging.info("Query : " +  query)
-                
                 sql_start_time = time.time()
+                query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
                 logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                 sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
                 logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
@@ -90,8 +103,8 @@ class test_firethorn(unittest.TestCase):
                 test_passed = (sql_row_length == firethorn_row_length)
                 firethorn_version = "1.10.8"
                 error_message = ""
-                params = (query.encode('utf-8'), sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message )
-                report_query = "INSERT INTO queries (query, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" 
+                params = (query.encode('utf-8'), queryrunID, query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message )
+                report_query = "INSERT INTO queries (query, queryrunID, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                 reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
         except Exception as e:
             logging.exception(e)            
