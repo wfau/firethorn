@@ -94,7 +94,6 @@
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
-
 # -----------------------------------------------------
 # NEW TERMINAL - Login as root user.
 #[user@desktop]
@@ -104,7 +103,7 @@
 
 # -------------------------------------------------------------------------------------------
 # Edit the ODBC config.
-#[user@testhost]
+#[root@testhost]
 
     vi /etc/odbcinst.ini
 
@@ -118,7 +117,7 @@
 
 # -------------------------------------------------------------------------------------------
 # Add pycurl.
-#[user@testhost]
+#[root@testhost]
 
     # apt-get -y install python-pycurl
     # WARNING: The following packages cannot be authenticated!
@@ -207,12 +206,12 @@
 
 # -----------------------------------------------------
 # Check the test results.
-#[user@desktop]
+#[user@testhost]
 
     source "${HOME:?}/mysql-pyro-settings.txt"
-    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}"
+    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}" --execute \
+        "SELECT * FROM queries"
 
-        SELECT * FROM queries ;
         +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
         | queryid | query       | direct_sql_rows | firethorn_sql_rows | firethorn_duration | sql_duration | test_passed | firethorn_version | error_message |
         +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
@@ -220,9 +219,6 @@
         |      11 | select .... |              10 |                 10 | 26                 | 0            |           1 | 1.10.8            |               |
         +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
         2 rows in set (0.07 sec)
-
-
-
 
 
 # -----------------------------------------------------
@@ -240,9 +236,9 @@
     then
 cat > "${HOME:?}/mysql-meta-settings.txt" << EOF
 
-mysqlmetadata=metadata$(pwgen -s 10 1)
-mysqlmetauser=metauser$(pwgen -s 10 1)
-mysqlmetapass=metapass$(pwgen -s 10 1)
+mysqlmetadata=meta$(pwgen -s 10 1)
+mysqlmetauser=meta$(pwgen -s 10 1)
+mysqlmetapass=meta$(pwgen -s 10 1)
 
 EOF
     fi
@@ -277,9 +273,9 @@ EOF
     then
 cat > "${HOME:?}/mysql-user-settings.txt" << EOF
 
-mysqluserdata=userdata$(pwgen -s 10 1)
-mysqluseruser=useruser$(pwgen -s 10 1)
-mysqluserpass=userpass$(pwgen -s 10 1)
+mysqluserdata=user$(pwgen -s 10 1)
+mysqluseruser=user$(pwgen -s 10 1)
+mysqluserpass=user$(pwgen -s 10 1)
 
 EOF
     fi
@@ -315,4 +311,63 @@ EOF
     ln "${HOME:?}/mysql-meta-settings.txt" "/home/${testuser:?}/mysql-meta-settings.txt"
     ln "${HOME:?}/mysql-user-settings.txt" "/home/${testuser:?}/mysql-user-settings.txt"
 
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Update our firethorn config.
+#[user@testhost]
+
+    source "${HOME:?}/mysql-meta-settings.txt"
+    sed -i '
+        s/^firethorn.meta.url=.*/firethorn.meta.url=jdbc:mysql:\/\/localhost:3306\/'${mysqlmetadata:?}'/
+        s/^firethorn.meta.user=.*/firethorn.meta.user='${mysqlmetauser:?}'/
+        s/^firethorn.meta.pass=.*/firethorn.meta.pass='${mysqlmetapass:?}'/
+        s/^firethorn.meta.type=.*/firethorn.meta.type=mysql/
+        s/^firethorn.meta.driver=.*/firethorn.meta.driver=com.mysql.jdbc.Driver/
+        ' "${HOME:?}/firethorn.properties"
+
+    source "${HOME:?}/mysql-user-settings.txt"
+    sed -i '
+        s/^firethorn.user.url=.*/firethorn.user.url=jdbc:mysql:\/\/localhost:3306\/'${mysqluserdata:?}'/
+        s/^firethorn.user.user=.*/firethorn.user.user='${mysqluseruser:?}'/
+        s/^firethorn.user.pass=.*/firethorn.user.pass='${mysqluserpass:?}'/
+        s/^firethorn.user.type=.*/firethorn.user.type=mysql/
+        s/^firethorn.user.driver=.*/firethorn.user.driver=com.mysql.jdbc.Driver/
+        ' "${HOME:?}/firethorn.properties"
+
+# -------------------------------------------------------------------------------------------
+# SWAP TERMINAL - Launch the firethorn-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -------------------------------------------------------------------------------------------
+# SWAP TERMINAL - Launch the ogsadai-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
