@@ -31,7 +31,7 @@ test_dbserver_password = ""
 test_dbserver_port = ""
 test_database = ""
 neighbours_query = """
-            SELECT
+            SELECT DISTINCT
                 ExternalSurvey.databaseName
             FROM
                 RequiredNeighbours

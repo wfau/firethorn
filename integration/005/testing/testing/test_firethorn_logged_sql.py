@@ -72,11 +72,11 @@ class test_firethorn(unittest.TestCase):
                 fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
                 fEng.printClassVars()
                 if (self.include_neighbours):
-                    neighbour_tables = list(set(sqlEng.execute_sql_query(config.neighbours_query, config.test_database)))
+                    neighbour_tables = sqlEng.execute_sql_query(config.neighbours_query, config.test_database)
                     for i in neighbour_tables:
                         logging.info("Importing " + i[0])
                         fEng.import_jdbc_metadoc(fEng.adqlspace, fEng.jdbcspace, i[0], config.jdbcschemaname, config.metadocdirectory + "/" + i[0].upper() + "_TablesSchema.xml" )
-            
+                        imported
     
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)            
