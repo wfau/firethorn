@@ -20,11 +20,14 @@
 #
 #
 
-mysqlusername=###
-mysqlpassword=###
-sshusername=###
-sshhostname=###
-system_architecture=i386 #x86_64
+
+sshusername=stv
+sshhostname=fenrir.roe.ac.uk
+system_architecture=i386 
+stvbranch=1.10.8-stv-pyrothorn
+testuser=''
+mysqlrootuser=root
+mysqlrootpass=pass
 
 
 # ---------------------------------------------
@@ -33,20 +36,9 @@ system_architecture=i386 #x86_64
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
 
-apt-get install openjdk-7-jre
-apt-get install openjdk-7-jdk
-apt-get install mercurial
-apt-get install maven
-apt-get install ssh
-apt-get install g++
-apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
-apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mysql-server mysql-client
-apt-get install python-numpy python-scipy
-apt-get install pwgen
-apt-get install python
-apt-get install wget
-apt-get install unzip
-apt-get install python-pycurl
+apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --allow-unauthenticated g++ python unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc python-numpy python-scipy pwgen   wget unzip  python-pycurl openjdk-7-jre openjdk-7-jdk mercurial maven ssh 
+# mysql-server mysql-client mysql-common
+
 wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
 unzip pyodbc-3.0.7.zip
 cd pyodbc-3.0.7/
@@ -54,6 +46,41 @@ python setup.py install
 
 
 
+# ------------------------------------------------
+# Install the MySQL client and server
+# ------------------------------------------------
+
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password ${mysqlrootpass:?}"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mysqlrootpass:?}"
+
+    apt-get -y install \
+        mysql-server \
+        mysql-client \
+        mysql-common
+        
+        
+# ---------------------------------------------
+# Create mysql reporting database/table 
+# ---------------------------------------------
+ mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}"
+    CREATE DATABASE pyrothorn_testing;
+    USE pyrothorn_testing;
+    CREATE TABLE IF NOT EXISTS `queries` (
+      `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `queryrunID` text NOT NULL,
+      `query_timestamp` varchar(120) NOT NULL,
+      `query` text NOT NULL,
+      `direct_sql_rows` int(11) NOT NULL,
+      `firethorn_sql_rows` int(11) NOT NULL,
+      `firethorn_duration` varchar(60) NOT NULL,
+      `sql_duration` varchar(60) NOT NULL,
+      `test_passed` tinyint(1) NOT NULL,
+      `firethorn_version` varchar(60) NOT NULL,
+      `error_message` varchar(60) NOT NULL,
+      PRIMARY KEY (`queryid`)
+    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+    exit
+     
 
 # ---------------------------------------------
 # Edit odbc configurations 
@@ -262,7 +289,30 @@ username=$(pwgen 16 1)
 useradd --create-home --shell /bin/bash --groups users "${username:?}"
 usermod --append --groups users "${username:?}" 
 
-## setup ssh keys
+
+# ---------------------------------------------
+# Create our ssh config.
+# ---------------------------------------------
+
+
+    if [ ! -e "/home/${testuser:?}/.ssh" ]
+    then
+        mkdir "/home/${testuser:?}/.ssh"
+    fi
+
+    pushd "/home/${testuser:?}/.ssh"
+    
+        if [ ! -e stv.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.pub
+            cat dmr.roe.ac.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${testuser:?}"  "/home/${testuser:?}/.ssh"
+    chgrp -R "${testuser:?}"  "/home/${testuser:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${testuser:?}/.ssh"
 
 ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' -L '*:1432:ramses2:1433'  -L '*:1433:ramses3:1433'  "${sshusername}@${sshhostname:?}"
 
@@ -275,35 +325,11 @@ ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433
 cd ~
 hg clone ssh://${sshuser}@${sshhost}:${sshport}/${sshpath} hg
 cd hg
-hg update -C 1.10.8-stv-pyrothorn
+hg update -C ${stvbranch}
 mvn -P all clean install
 
 ## create firethorn.properties
 
-
-
-# ---------------------------------------------
-# Create mysql reporting database/table 
-# ---------------------------------------------
-
-mysql -u${mysqlusername:?} -p${mysqlpassword:?}
-    CREATE DATABASE pyrothorn_testing;
-    USE pyrothorn_testing;
-    CREATE TABLE IF NOT EXISTS `queries` (
-      `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-      `queryrunID` text NOT NULL,
-      `query_timestamp` varchar(120) NOT NULL,
-      `query` text NOT NULL,
-      `direct_sql_rows` int(11) NOT NULL,
-      `firethorn_sql_rows` int(11) NOT NULL,
-      `firethorn_duration` varchar(60) NOT NULL,
-      `sql_duration` varchar(60) NOT NULL,
-      `test_passed` tinyint(1) NOT NULL,
-      `firethorn_version` varchar(60) NOT NULL,
-      `error_message` varchar(60) NOT NULL,
-      PRIMARY KEY (`queryid`)
-    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-    exit
 
 
 # ---------------------------------------------
