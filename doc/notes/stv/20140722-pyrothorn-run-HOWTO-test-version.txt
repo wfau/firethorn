@@ -20,18 +20,11 @@
 #
 #
 
-mysqlusername=###
-mysqlpassword=###
-sshusername=###
-sshhostname=###
-system_architecture=i386 #x86_64
 
 
 # ---------------------------------------------
 # Install required packages
 # ---------------------------------------------
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -q
 
 apt-get install openjdk-7-jre
 apt-get install openjdk-7-jdk
@@ -40,7 +33,7 @@ apt-get install maven
 apt-get install ssh
 apt-get install g++
 apt-get install unixodbc unixodbc-dev freetds-dev tdsodbc python-dev libmyodbc
-apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mysql-server mysql-client
+apt-get install mysql-server mysql-client
 apt-get install python-numpy python-scipy
 apt-get install pwgen
 apt-get install python
@@ -53,7 +46,10 @@ cd pyodbc-3.0.7/
 python setup.py install
 
 
-
+mysqlusername=###
+mysqlpassword=###
+sshusername=###
+sshhostname=###
 
 # ---------------------------------------------
 # Edit odbc configurations 
@@ -237,19 +233,22 @@ TDS             = Installed
 
 [TDS]
 Description     = TDS driver (Sybase/MS SQL)
-Driver          = /usr/lib/${system_architecture}-linux-gnu/odbc/libtdsodbc.so
-Setup           = /usr/lib/${system_architecture}-linux-gnu/odbc/libtdsS.so
+; Driver          = /usr/lib/i386-linux-gnu/odbc/libtdsodbc.so
+; Setup           = /usr/lib/i386-linux-gnu/odbc/libtdsS.so
+Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
 FileUsage       = 1
 
 [ODBC]
 Trace           = No
+; TraceFile       = /usr/tmp/sql.log
 TraceFile       = /tmp/sql.log
 ForceTrace      = No
 Pooling         = No
 
 [MySQL]
 Description = ODBC for MySQL
-Driver = /usr/lib/${system_architecture}-linux-gnu/odbc/libmyodbc.so
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
 FileUsage = 1
 EOF
 
@@ -266,6 +265,10 @@ usermod --append --groups users "${username:?}"
 
 ssh -v -L '*:1435:ramses5:1433' -L '*:1436:ramses6:1433' -L '*:1439:ramses9:1433' -L '*:1432:ramses2:1433'  -L '*:1433:ramses3:1433'  "${sshusername}@${sshhostname:?}"
 
+#    ssh -L '*:1432:ramses2:1433' \
+#        -L '*:1433:ramses3:1433' \
+#        -L '*:1435:ramses5:1433' \
+#    "${sshusername}@${sshhostname:?}"
 
 # ---------------------------------------------
 # Get a clone of the firethorn repository 
