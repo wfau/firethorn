@@ -43,7 +43,7 @@ class test_firethorn(unittest.TestCase):
             
                
     def setUp(self):
-        self.use_preset_params = True
+        self.use_preset_params = False
         self.firethorn_version = "1.10.8"
         self.verificationErrors = []
         self.sample_query=config.sample_query
