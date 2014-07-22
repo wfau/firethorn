@@ -336,34 +336,34 @@ EXPOSE :80
 ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
 EOF
 
-    docker build --tag grasshopper:003 grasshopper
+    docker build --tag grasshopper:001 grasshopper
 
         
     docker images
 
 
-    docker run -d -t grasshopper:003 | tee dockerid.txt
+    docker run -d -t grasshopper:001 | tee dockerid
 
 
     docker ps
 
 
-    docker inspect $(cat dockerid.txt)
+    docker inspect $(cat dockerid)
 
         
-    docker inspect $(cat dockerid.txt) | grep 'IPAddress'
+    docker inspect $(cat dockerid) | grep 'IPAddress'
 
 
-    curl --head 'http://172.17.0.xx/'
+    curl --head 'http://172.17.0.01/'
 
 
-    docker stop $(cat dockerid.txt)
+    docker stop $(cat dockerid)
 
 
     docker ps
 
 
-    curl --head 'http://172.17.0.xx/'
+    curl --head 'http://172.17.0.01/'
 
 
 
