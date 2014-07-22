@@ -39,12 +39,12 @@ except Exception as e:
 
 
 
-
 class test_firethorn(unittest.TestCase):
             
                
     def setUp(self):
-        self.use_preset_params = False
+        self.use_preset_params = True
+        self.firethorn_version = "1.10.8"
         self.verificationErrors = []
         self.sample_query=config.sample_query
         self.sample_query_expected_rows=config.sample_query_expected_rows
@@ -53,11 +53,13 @@ class test_firethorn(unittest.TestCase):
    
     def test_sql_logged_queries(self):
         try:
-            
+            # Set query run ID
+            queryrunID = get_a_uuid() 
             logged_query_sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
             sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
-
+         
+            
             log_sql_query = config.stored_queries_query
             logging.info("Setting up Firethorn Environment..")
 
@@ -68,10 +70,16 @@ class test_firethorn(unittest.TestCase):
                 fEng = pyrothorn.firethornEngine.FirethornEngine()
                 fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
                 fEng.printClassVars()
-                
+                neighbour_tables = sqlEng.execute_sql_query(config.neighbours_query, config.test_database)
+                for i in neighbour_tables:
+                    logging.info("Importing " + i[0])
+                    fEng.import_jdbc_metadoc(fEng.adqlspace, fEng.jdbcspace, i[0], config.jdbcschemaname, config.metadocdirectory + "/" + i[0].upper() + "_TablesSchema.xml" )
+        
+    
             logging.info("")
-            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)
-            queryrunID = get_a_uuid()                                                   
+            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)            
+                   
+                                                       
             for query in logged_queries:
                 qEng = queryEngine.QueryEngine()
                 query = query[0].strip()
@@ -94,20 +102,20 @@ class test_firethorn(unittest.TestCase):
                 logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                 logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
                 firethorn_duration = int(time.time() - start_time)
-                
-                
+            
 
                 logging.info("--- End Query Test ---")
                 logging.info("")
                 
                 test_passed = (sql_row_length == firethorn_row_length)
-                firethorn_version = "1.10.8"
+                
                 error_message = ""
-                params = (query.encode('utf-8'), queryrunID, query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message )
+                params = (query.encode('utf-8'), queryrunID, query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, error_message )
                 report_query = "INSERT INTO queries (query, queryrunID, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                 reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
         except Exception as e:
             logging.exception(e)            
+             
                 
     def setUpLogging(self):
         root = logging.getLogger()

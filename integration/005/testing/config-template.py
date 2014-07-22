@@ -7,7 +7,6 @@ import os
 
 #------------------------- General Configurations -----------------------#
 
-
 ### Directory and URL Information ###
 firethorn_host = "localhost"
 firethorn_port = "8080"
@@ -31,7 +30,28 @@ test_dbserver_username = ""
 test_dbserver_password = ""
 test_dbserver_port = ""
 test_database = ""
-
+neighbours_query = """
+            SELECT
+                ExternalSurvey.databaseName
+            FROM
+                RequiredNeighbours
+            JOIN
+                ExternalSurvey
+            ON
+                RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+            JOIN
+                ExternalSurveyTable
+            ON
+                RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+            AND
+                RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+            WHERE 
+                ExternalSurvey.databaseName!='NONE'
+            ORDER BY
+                ExternalSurvey.databaseName
+                """
+                
+                
 ### Reporting Database Configuration ###
 
 reporting_dbserver= ""
@@ -63,6 +83,7 @@ ogsadainame = 'atlas'
 jdbccatalogname = 'ATLASDR1'
 jdbcschemaname = 'dbo'
 metadocfile = "/var/www/atlas/testing/metadocs/ATLASDR1_TablesSchema.xml"
+metadocdirectory = "/var/www/atlas/testing/metadocs/"
 
 
 ### Firethorn Predefined test Configuration ###
