@@ -1,0 +1,369 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Login to test server as root.
+#[user@laptop]
+
+    ssh root@leucine
+
+# -------------------------------------------------------------------------------------------
+# Install docker.
+# https://docs.docker.com/installation/fedora/
+#[root@server]
+
+    yum install docker-io
+
+# -------------------------------------------------------------------------------------------
+# Start the docker daemon.
+# https://docs.docker.com/installation/fedora/
+#[root@server]
+
+    systemctl enable docker
+    systemctl start  docker
+
+# -------------------------------------------------------------------------------------------
+# Add our user to the docker group.
+# https://docs.docker.com/installation/fedora/
+#[root@server]
+
+    usermod -a -G docker Zarquan
+
+# -------------------------------------------------------------------------------------------
+# Login to test server as user.
+#[user@laptop]
+
+    ssh user@leucine
+
+# -------------------------------------------------------------------------------------------
+# Test docker ...
+#[user@server]
+
+    docker run -i -t fedora /bin/bash
+
+        Unable to find image 'fedora' locally
+        Pulling repository fedora
+        ....
+
+        bash-4.2#
+        
+            cat /etc/redhat-release 
+                Fedora release 20 (Heisenbug)
+
+
+    docker run -i -t ubuntu /bin/bash
+
+        Unable to find image 'ubuntu' locally
+        Pulling repository ubuntu
+        ....
+
+        root@cb43a4bca55c:/#
+        
+            cat /etc/debian_version 
+                jessie/sid
+
+
+    docker run -i -t centos /bin/bash
+
+        Unable to find image 'centos' locally
+        Pulling repository centos
+        ....
+
+        bash-4.2# 
+
+            /etc/redhat-release 
+                CentOS Linux release 7.0.1406 (Core) 
+
+# -------------------------------------------------------------------------------------------
+# List our downloaded images
+#[user@server]
+
+    docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+        ubuntu              latest              ba5877dc9bec        14 hours ago        192.7 MB
+        fedora              latest              88b42ffd1f7c        6 days ago          373.7 MB
+        centos              latest              1a7dc42f78ba        13 days ago         236.4 MB
+
+# -------------------------------------------------------------------------------------------
+# Build our own Apache image 
+# http://welldefinedbehaviour.wordpress.com/2014/01/30/adventures-with-containerization-fedora-docker-and-httpd/
+#[user@server]
+
+    mkdir panda
+
+    cat > panda/Dockerfile << EOF
+
+FROM fedora
+MAINTAINER Docker "panda.admin@metagrid.co.uk"
+
+RUN yum -y install httpd
+
+EXPOSE :80
+
+ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
+EOF
+
+    docker build --tag panda:001 panda
+
+    docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+        panda               001                 43ba18e8e283        14 minutes ago      571.2 MB
+
+    docker run -d -t panda:001
+
+        a73aacb903321512361b7082b8f7aca7c0d15d18f300bf5dbbabe4261e9b59f9
+
+    docker inspect a73aacb903321512361b7082b8f7aca7c0d15d18f300bf5dbbabe4261e9b59f9
+        [{
+            "Args": [
+                "-c",
+                "/usr/sbin/httpd -DFOREGROUND"
+                ],
+            "Config": {
+                "AttachStderr": false,
+                "AttachStdin": false,
+                "AttachStdout": false,
+                "Cmd": null,
+                "CpuShares": 0,
+                "Cpuset": "",
+                "Domainname": "",
+                "Entrypoint": [
+                    "/bin/sh",
+                    "-c",
+                    "/usr/sbin/httpd -DFOREGROUND"
+                    ],
+                "Env": [
+                    "HOME=/",
+                    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                    ],
+                "ExposedPorts": {
+                    "80/tcp": {}
+                    },
+                "Hostname": "6d8d8983db7b",
+                "Image": "panda.001",
+                "Memory": 0,
+                "MemorySwap": 0,
+                "NetworkDisabled": false,
+                "OnBuild": null,
+                "OpenStdin": false,
+                "PortSpecs": null,
+                "StdinOnce": false,
+                "Tty": true,
+                "User": "",
+                "Volumes": null,
+                "WorkingDir": ""
+                },
+            "Created": "2014-07-22T13:51:53.74457125Z",
+            "Driver": "btrfs",
+            "ExecDriver": "native-0.2",
+            "HostConfig": {
+                "Binds": null,
+                "ContainerIDFile": "",
+                "Dns": null,
+                "DnsSearch": null,
+                "Links": null,
+                "LxcConf": [],
+                "NetworkMode": "bridge",
+                "PortBindings": {
+                    "80/tcp": null
+                    },
+                "Privileged": false,
+                "PublishAllPorts": false,
+                "VolumesFrom": null
+                },
+            "HostnamePath": "/var/lib/docker/containers/6d8d8983db7b2d743701a482b93457dd05bdb66f1604eef063c8f0a64e9d94e2/hostname",
+            "HostsPath": "/var/lib/docker/containers/6d8d8983db7b2d743701a482b93457dd05bdb66f1604eef063c8f0a64e9d94e2/hosts",
+            "Id": "6d8d8983db7b2d743701a482b93457dd05bdb66f1604eef063c8f0a64e9d94e2",
+            "Image": "43ba18e8e2833171cf431cfe207bb7ab3a172df742f42312b46a0cc9c17b6374",
+            "MountLabel": "",
+            "Name": "/cocky_pike",
+            "NetworkSettings": {
+                "Bridge": "docker0",
+                "Gateway": "172.17.42.1",
+                "IPAddress": "172.17.0.23",
+                "IPPrefixLen": 16,
+                "PortMapping": null,
+                "Ports": {
+                    "80/tcp": null
+                    }
+                },
+            "Path": "/bin/sh",
+            "ProcessLabel": "",
+            "ResolvConfPath": "/etc/resolv.conf",
+            "State": {
+                "ExitCode": 0,
+                "FinishedAt": "0001-01-01T00:00:00Z",
+                "Paused": false,
+                "Pid": 9672,
+                "Running": true,
+                "StartedAt": "2014-07-22T13:51:54.28927674Z"
+                },
+            "Volumes": {},
+            "VolumesRW": {}
+        }]
+
+    docker ps
+
+        CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+        a73aacb90332        panda.001:latest    /bin/sh -c '/usr/sbi   46 seconds ago      Up 44 seconds       80/tcp              sick_heisenberg     
+
+    docker inspect a73aacb903321512361b7082b8f7aca7c0d15d18f300bf5dbbabe4261e9b59f9 | grep 'IPAddress'
+    docker inspect a73aacb90332 | grep 'IPAddress'
+
+        "IPAddress": "172.17.0.24",
+
+    curl --head 'http://172.17.0.24/'
+
+        HTTP/1.1 403 Forbidden
+        Date: Tue, 22 Jul 2014 13:58:02 GMT
+        Server: Apache/2.4.9 (Fedora)
+        Last-Modified: Fri, 28 Mar 2014 11:06:14 GMT
+        ETag: "1201-4f5a8b0a8b580"
+        Accept-Ranges: bytes
+        Content-Length: 4609
+        Content-Type: text/html; charset=UTF-8
+
+# -------------------------------------------------------------------------------------------
+# Build our own Apache image 
+# http://welldefinedbehaviour.wordpress.com/2014/01/30/adventures-with-containerization-fedora-docker-and-httpd/
+#[user@server]
+
+    mkdir panda
+
+    cat > panda/Dockerfile << EOF
+
+FROM fedora
+
+RUN yum -y install httpd
+
+EXPOSE :80
+
+ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
+EOF
+
+    docker build --tag panda:003 panda
+
+        ....
+        Step 2 : EXPOSE :80
+         ---> Running in 43b468e371e0
+         ---> 63df1ba31955
+        Removing intermediate container 43b468e371e0
+        Step 3 : ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
+         ---> Running in 25bfe6be4a85
+         ---> bea7a0602d11
+        Removing intermediate container 25bfe6be4a85
+        Successfully built bea7a0602d11
+        
+    docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+        panda               003                 bea7a0602d11        About a minute ago   571.2 MB
+        panda               001                 43ba18e8e283        19 minutes ago      571.2 MB
+        panda               002                 43ba18e8e283        19 minutes ago      571.2 MB
+
+    docker run -d -t panda:003
+
+        634425c80cd2f1b2c0f7d7da83712c3ade480f4a204c74d661d490bd5dd60df2
+
+    docker ps
+
+        CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+        634425c80cd2        panda:003           /bin/sh -c '/usr/sbi   13 seconds ago      Up 11 seconds       80/tcp              clever_ardinghelli   
+    
+    docker inspect 634425c80cd2 | grep 'IPAddress'
+
+        "IPAddress": "172.17.0.27",
+
+    curl --head 'http://172.17.0.27/'
+
+        HTTP/1.1 403 Forbidden
+        Date: Tue, 22 Jul 2014 14:10:47 GMT
+        Server: Apache/2.4.9 (Fedora)
+        Last-Modified: Fri, 28 Mar 2014 11:06:14 GMT
+        ETag: "1201-4f5a8b0a8b580"
+        Accept-Ranges: bytes
+        Content-Length: 4609
+        Content-Type: text/html; charset=UTF-8
+
+    docker stop 63
+
+        63
+
+    docker ps
+
+        CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+
+    curl --head 'http://172.17.0.25/'
+
+        curl: (7) Failed connect to 172.17.0.25:80; No route to host
+
+# -------------------------------------------------------------------------------------------
+# Build our own Apache image 
+# http://welldefinedbehaviour.wordpress.com/2014/01/30/adventures-with-containerization-fedora-docker-and-httpd/
+#[user@server]
+
+    mkdir grasshopper
+
+    cat > grasshopper/Dockerfile << EOF
+
+FROM fedora
+
+RUN yum -y install httpd
+
+EXPOSE :80
+
+ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
+EOF
+
+    docker build --tag grasshopper:003 grasshopper
+
+        
+    docker images
+
+
+    docker run -d -t grasshopper:003 | tee dockerid.txt
+
+
+    docker ps
+
+
+    docker inspect $(cat dockerid.txt)
+
+        
+    docker inspect $(cat dockerid.txt) | grep 'IPAddress'
+
+
+    curl --head 'http://172.17.0.xx/'
+
+
+    docker stop $(cat dockerid.txt)
+
+
+    docker ps
+
+
+    curl --head 'http://172.17.0.xx/'
+
+
+
