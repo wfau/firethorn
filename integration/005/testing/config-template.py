@@ -90,8 +90,8 @@ catalogname = '*'
 ogsadainame = 'atlas'
 jdbccatalogname = 'ATLASDR1'
 jdbcschemaname = 'dbo'
-metadocfile = "/var/www/atlas/testing/metadocs/ATLASDR1_TablesSchema.xml"
-metadocdirectory = "/var/www/atlas/testing/metadocs/"
+metadocfile = "metadocs/ATLASDR1_TablesSchema.xml"
+metadocdirectory = "testing/metadocs/"
 stored_env_config = 'conf/pyrothorn-stored.js'
 
 ### Firethorn Predefined test Configuration ###

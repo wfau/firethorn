@@ -75,18 +75,23 @@ class test_firethorn(unittest.TestCase):
             else:
                 
                 if (self.use_cached_firethorn_env):
-                    
-                    if (os.path.isfile(config.stored_env_config)):
-                        data = []
-                        valid_config_found = True
-                        with open(config.stored_env_config) as data_file:    
-                            data = json.load(data_file)
-                        if ('jdbcspace' in data) and ('adqlschema' in data) and ('adqlspace' in data):
-                            fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'] )
-                            valid_config_found = False
-                    else :
-                        valid_config_found = False   
-                    
+                    try:
+                        if (os.path.isfile(config.stored_env_config)):
+                            data = []
+                            
+                            with open(config.stored_env_config) as data_file:    
+                                data = json.load(data_file)
+                            if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
+                                fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'] )
+                                logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
+                                valid_config_found = True
+                            else :
+                                valid_config_found = False
+                        else :
+                            valid_config_found = False   
+                    except Exception as e:
+                        valid_config_found = False     
+                        
                     if (valid_config_found==False):  
                         fEng = pyrothorn.firethornEngine.FirethornEngine()
                         fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
@@ -101,7 +106,8 @@ class test_firethorn(unittest.TestCase):
                     fEng.printClassVars()
                     if (self.include_neighbours):
                         self.import_neighbours(sqlEng, fEng)
-                    self.store_environment_config(fEng, config.stored_env_config)
+            
+            self.store_environment_config(fEng, config.stored_env_config)
           
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)            
