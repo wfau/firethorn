@@ -7,6 +7,14 @@ import os
 
 #------------------------- General Configurations -----------------------#
 
+
+### Unit test specific configuration ###
+use_preset_params = True
+use_cached_firethorn_env = True
+firethorn_version =  "1.10.8"
+include_neighbour_import = True
+
+
 ### Directory and URL Information ###
 firethorn_host = "localhost"
 firethorn_port = "8080"
@@ -84,13 +92,13 @@ jdbccatalogname = 'ATLASDR1'
 jdbcschemaname = 'dbo'
 metadocfile = "/var/www/atlas/testing/metadocs/ATLASDR1_TablesSchema.xml"
 metadocdirectory = "/var/www/atlas/testing/metadocs/"
-
+stored_env_config = 'conf/pyrothorn-stored.js'
 
 ### Firethorn Predefined test Configuration ###
 
 jdbcspace = ""
 adqlspace = ""
 adqlschema = ""
-starting_catalogue_id = ""
+query_schema = ""
 schema_name = ""
 schema_alias = ""

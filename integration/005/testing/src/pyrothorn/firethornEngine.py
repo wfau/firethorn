@@ -20,20 +20,20 @@ class FirethornEngine(object):
     Class that provides the infrastructure to use the Firethorn project
     '''
 
-    def __init__(self, jdbcspace="", adqlspace="", adqlschema="", starting_catalogue_id="", schema_name="", schema_alias="" , **kwargs):
+    def __init__(self, jdbcspace="", adqlspace="", adqlschema="", query_schema="", schema_name="", schema_alias="" , **kwargs):
         '''
         Empty Constructor
         '''
         self.jdbcspace = ""
         self.adqlspace =  ""
         self.adqlschema = ""
-        self.starting_catalogue_id = ""
+        self.query_schema = ""
         self.schema_name = ""
         self.schema_alias = ""
         self.jdbcspace = jdbcspace
         self.adqlspace =  adqlspace
         self.adqlschema = adqlschema
-        self.starting_catalogue_id = starting_catalogue_id
+        self.query_schema = query_schema
         self.schema_name = schema_name
         self.schema_alias = schema_alias
         
@@ -47,7 +47,7 @@ class FirethornEngine(object):
             self.initialise_metadata_import(resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile)
             self.schema_name = self.getAttribute(self.adqlschema, "fullname" )
             self.schema_alias = self.getAttribute(self.adqlschema, "name" )
-            self.starting_catalogue_id = self.create_initial_workspace(self.schema_name, self.schema_alias, self.adqlschema)
+            self.query_schema = self.create_initial_workspace(self.schema_name, self.schema_alias, self.adqlschema)
         except Exception as e:
             logging.exception("Error during pyrothorn initialization")
 
@@ -205,7 +205,7 @@ class FirethornEngine(object):
         logging.info("jdbcspace: " + self.jdbcspace)
         logging.info("adqlspace: " + self.adqlspace)
         logging.info("adqlschema: " + self.adqlschema)
-        logging.info("starting_catalogue_id: " + self.starting_catalogue_id)
+        logging.info("query_schema: " + self.query_schema)
         logging.info("schema_name: " + self.schema_name)
         logging.info("schema_alias: " + self.schema_alias)     
     

@@ -41,7 +41,7 @@ class test_firethorn(unittest.TestCase):
       
         logging.info("Setting up Firethorn Environment..")
 
-        fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+        fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.query_schema, config.schema_name, config.schema_alias)
         fEng.printClassVars()
         
         logging.info("")
@@ -59,7 +59,7 @@ class test_firethorn(unittest.TestCase):
                 sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
                 logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
                 logging.info("")
-                firethorn_row_length = qEng.run_query(query, "", fEng.starting_catalogue_id)
+                firethorn_row_length = qEng.run_query(query, "", fEng.query_schema)
                 logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
                 self.assertEqual(sql_row_length, firethorn_row_length)
                 logging.info("--- End Query Test ---")

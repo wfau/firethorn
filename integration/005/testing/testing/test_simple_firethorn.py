@@ -38,7 +38,7 @@ class test_firethorn(unittest.TestCase):
     def test_sample_firethorn_query(self):
         try:
             if (self.use_preset_params):
-                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.starting_catalogue_id, config.schema_name, config.schema_alias)
+                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.query_schema, config.schema_name, config.schema_alias)
                 fEng.printClassVars()
             else:
                 fEng = pyrothorn.firethornEngine.FirethornEngine()
@@ -47,7 +47,7 @@ class test_firethorn(unittest.TestCase):
             qEng = queryEngine.QueryEngine()
         except Exception as e:
             logging.exception(e)
-        row_length = qEng.run_query(self.sample_query, "", fEng.starting_catalogue_id)
+        row_length = qEng.run_query(self.sample_query, "", fEng.query_schema)
         
         self.assertEqual(row_length, self.sample_query_expected_rows)
 
