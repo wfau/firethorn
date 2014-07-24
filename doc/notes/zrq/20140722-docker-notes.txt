@@ -371,13 +371,19 @@ EOF
 #[user@server]
 
     jvversion=1.8.0
+    tcmajor=8
     tcversion=8.0.9
     ftversion=1.11.7
     
     mkdir tumbleweed
 
-    wget -P tumbleweed http://apache.mirror.anlx.net/tomcat/tomcat-8/v${tcversion:?}/bin/apache-tomcat-${tcversion:?}.tar.gz
-    wget -P tumbleweed http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/firethorn-webapp/${ftversion:?}/firethorn-webapp-${ftversion:?}.war
+    wget -P tumbleweed 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/conf/base.properties'
+
+    wget -P tumbleweed "http://apache.mirror.anlx.net/tomcat/tomcat-${tcmajor:?}/v${tcversion:?}/bin/apache-tomcat-${tcversion:?}.tar.gz"
+    wget -P tumbleweed "http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/firethorn-webapp/${ftversion:?}/firethorn-webapp-${ftversion:?}.war"
+
+    cp tumbleweed/base.properties tumbleweed/firethorn.properties
+    #vi tumbleweed/firethorn.properties
 
     cat > tumbleweed/firethorn.xml << EOF
 <?xml version='1.0' encoding='utf-8'?>
@@ -407,6 +413,10 @@ ADD firethorn-webapp-${ftversion:?}.war /var/local/webapp/
 ADD firethorn.xml /var/local/tomcat/apache-tomcat-${tcversion:?}/conf/Catalina/localhost/firethorn.xml
 
 #
+# Install our config
+ADD firethorn.properties /root/firethorn.properties
+
+#
 # Run Tomcat
 EXPOSE :8080
 WORKDIR /var/local/tomcat/apache-tomcat-${tcversion:?}
@@ -414,49 +424,18 @@ CMD bin/catalina.sh run
 
 EOF
 
-    docker build --tag tumbleweed:005 tumbleweed
+    docker build --tag tumbleweed:008 tumbleweed
 
-    docker run --interactive --tty tumbleweed:005 bash
-
-    docker run --interactive --tty tumbleweed:005
+    docker run --interactive --tty tumbleweed:008 bash
 
 
 
+    docker run --interactive --tty tumbleweed:008
+
+# -------------------------------------------------------------------------------------------
+# 
+#[user@server]
 
 
-
-
-
-
-    mkdir tumbeweed
-
-    cat > tumbeweed/Dockerfile << EOF
-
-FROM fedora
-
-RUN yum -y install tomcat
-RUN yum -y install tomcat-native
-RUN yum -y install wget
-
-ADD http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/firethorn-webapp/1.11.7/firethorn-webapp-1.11.7.war /usr/share/tomcat/webapps/
-
-EXPOSE :8080
-
-WORKDIR /usr/share/tomcat
-
-ENTRYPOINT [""]
-EOF
-
-    docker build --tag grasshopper:001 grasshopper
-
-        
-    docker images
-
-
-    docker run -d -t grasshopper:001 | tee dockerid
-
-
-
-
-
+    Install a custom config file in each.
 

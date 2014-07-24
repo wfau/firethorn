@@ -1,0 +1,106 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+'open' branches
+
+    1.10.8-stv-pyrothorn
+        Still active
+        http://wfau.metagrid.co.uk/code/firethorn/rev/9c56819af539
+
+    1.11.5-stv-python-testing-suite
+        Closed, not merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/eedcbb51292e
+    
+    1.10.5-stv-paper-queries
+        Not closed, not merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/065989fffb47
+        
+    1.9.7-stv-tap
+        Not closed, not merged
+        Problems with Spring, Eclipse and Maven classpaths in tests
+        http://wfau.metagrid.co.uk/code/firethorn/rev/9dbb4b60080b
+
+    1.11.7-release
+        Not closed, not merged
+        Some changes need to be merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/770a7bb460c9)
+
+    1.11.5-release
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/b70f19643f4f
+    
+    1.10.9-release
+        Merged not closed
+        http://wfau.metagrid.co.uk/code/firethorn/rev/e51c732cacc4
+        
+    1.10.8-release
+        No changes, not merged, not closed
+        Used as base for 1.10.8-stv-pyrothorn
+        http://wfau.metagrid.co.uk/code/firethorn/rev/12d8b35e3b4e
+    
+    1.10.7-release
+        Not merged, not closed
+        Minor changes to JdbcResource
+        http://wfau.metagrid.co.uk/code/firethorn/rev/bd3397c0f516
+        
+    1.10.2-release
+        Not merged, not closed
+        Changes to notes and release notes only
+        http://wfau.metagrid.co.uk/code/firethorn/rev/735c1a641408
+
+    1.11.5-zrq-gaia-tap
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/62659034bb4e
+        
+    1.11.4-zrq-tableset
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/1dabe470669c
+        
+    1.11.3-zrq-community
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/4142f467483f
+        
+    1.11.2-zrq-merge-test
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/277337043c97
+    
+    1.10.5-zrq-interfaces
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/357205674841
+             
+    1.9.8-zrq-ogsadai-dqp
+        Closed and merged
+        http://wfau.metagrid.co.uk/code/firethorn/rev/e70a2cae6d73
+    
+    1.9.6-zrq-community
+        Closed and merged (into 1.11.3-zrq-community)
+        http://wfau.metagrid.co.uk/code/firethorn/rev/febd19b22933
+
+# -----------------------------------------------------------------------------------------
+# Close the closed branches.
+#[user@laptop]
+
+
+
+
+
+
