@@ -121,6 +121,17 @@ class DBHelper:
         cnxn.commit()
         cnxn.close()
         
+    def execute_update(self, update_query, db_name):           
+        """
+        Execute an insert on a database & table 
+        """
+        return_val = []
+        params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
+        cnxn = pyodbc.connect(params)  
+        cursor = cnxn.cursor()
+        cursor.execute(update_query)
+        cnxn.commit()
+        cnxn.close()        
             
             
 class SQLEngine(object):
@@ -154,6 +165,17 @@ class SQLEngine(object):
         """
         return self._execute_query(query, database)
     
+    
+    def execute_update(self, query, database):
+        """
+        Execute an SQL Update
+        @param query: The SQL Query
+        @param database: The Database
+        """
+        mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
+        response = mydb.execute_update(query.encode('utf-8'), database)
+        return response
+        
         
     def execute_sql_query_get_rows(self, query, database):
         """
@@ -175,17 +197,16 @@ class SQLEngine(object):
         
  
         try:
-
             query_results = self._execute_query_get_cols_rows(query,database)
         except pyodbc.ProgrammingError, err:
             error_message = repr(err)
             logging.exception(error_message)
-            return error_code     
+            return (-1, error_message)     
         except Exception as e:
             logging.exception(e) 
-            return error_code
+            return (-1, e)
         
-        return self._getRows(query_results)
+        return (self._getRows(query_results), "")
     
     def execute_insert (self, qry, database, params):
         """

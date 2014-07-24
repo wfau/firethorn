@@ -66,19 +66,22 @@ python setup.py install
     CREATE DATABASE pyrothorn_testing;
     USE pyrothorn_testing;
     CREATE TABLE IF NOT EXISTS `queries` (
-      `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-      `queryrunID` text NOT NULL,
-      `query_timestamp` varchar(120) NOT NULL,
-      `query` text NOT NULL,
-      `direct_sql_rows` int(11) NOT NULL,
-      `firethorn_sql_rows` int(11) NOT NULL,
-      `firethorn_duration` varchar(60) NOT NULL,
-      `sql_duration` varchar(60) NOT NULL,
-      `test_passed` tinyint(1) NOT NULL,
-      `firethorn_version` varchar(60) NOT NULL,
-      `error_message` varchar(60) NOT NULL,
-      PRIMARY KEY (`queryid`)
-    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+    `queryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `queryrunID` text NOT NULL,
+    `query_hash` text NOT NULL,
+    `query_count` int(10) unsigned NOT NULL,
+    `query_timestamp` varchar(120) NOT NULL,
+    `query` text NOT NULL,
+    `direct_sql_rows` int(11) NOT NULL,
+    `firethorn_sql_rows` int(11) NOT NULL,
+    `firethorn_duration` varchar(60) NOT NULL,
+    `sql_duration` varchar(60) NOT NULL,
+    `test_passed` tinyint(1) NOT NULL,
+    `firethorn_version` varchar(60) NOT NULL,
+    `firethorn_error_message` text NOT NULL,
+    `sql_error_message` text NOT NULL,
+    PRIMARY KEY (`queryid`)
+    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
     exit
      
 

@@ -30,6 +30,8 @@ try:
     import datetime
     import base64
     import collections
+    import hashlib
+    
     # get a UUID - URL safe, Base64
     def get_a_uuid():
         r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
@@ -111,45 +113,72 @@ class test_firethorn(unittest.TestCase):
           
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)            
-            
                                                        
             for query in logged_queries:
+                
                 qEng = queryEngine.QueryEngine()
                 query = query[0].strip()
-                if (config.limit_query!=None):
-                    query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
+                querymd5 = self.md5String(query)
+                query_duplicates_found = 0
+                queryid = None
+                query_count = 0
+                firethorn_error_message = ""
+                sql_error_message =  ""
                 logging.info("Query : " +  query)
-                sql_start_time = time.time()
-                query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
-                logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
-                logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
-                sql_duration = int(time.time() - sql_start_time)
-                
-                logging.info("")
-                
-                start_time = time.time()
-                logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                firethorn_row_length = qEng.run_query(query, "", fEng.query_schema)
-                logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
-                firethorn_duration = int(time.time() - start_time)
-            
 
-                logging.info("--- End Query Test ---")
-                logging.info("")
+                try:
+                    check_duplicate_query = "select count(*), queryid, query_count from queries where queryrunID='" + queryrunID + "' and query_hash='" + querymd5 + "'"
+                    query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
+                    query_duplicates_found = query_duplicates_found_row[0]
+                    queryid = query_duplicates_found_row[1]
+                    query_count = query_duplicates_found_row[2]
+                except Exception as e:
+                    logging.exception(e)
+                    query_duplicates_found = 0
+                    queryid = None
+                    query_count = 0
+             
+                if (query_duplicates_found<=0):
+                    if (config.limit_query!=None):
+                        query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
+                        
+                    logging.info("---------------------- Starting Query Test ----------------------")
+                    sql_start_time = time.time()
+                    query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
+                    logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database)
+                    logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                    logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
+                    sql_duration = int(time.time() - sql_start_time)
+                    
+                    logging.info("")
+                    
+                    start_time = time.time()
+                    logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                    firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+                    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                    logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
+                    firethorn_duration = int(time.time() - start_time)
                 
-                test_passed = (sql_row_length == firethorn_row_length)
-                
-                if (not test_passed):
-                    self.total_failed = self.total_failed + 1
-                
-                error_message = ""
-                params = (query.encode('utf-8'), queryrunID, query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, error_message )
-                report_query = "INSERT INTO queries (query, queryrunID, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
-                reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
-                
+    
+                    logging.info("---------------------- End Query Test ----------------------")
+                    logging.info("")
+                    
+                    test_passed = (sql_row_length == firethorn_row_length)
+                    
+                    if (not test_passed):
+                        self.total_failed = self.total_failed + 1
+                    
+                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8') )
+                    report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
+                    reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+                else :
+                    logging.info("Query has been run already..Skipping & updating count")
+                    if (queryid!=None and query_count!=None):
+                        update_query = "UPDATE queries SET query_count=" + str(query_count + 1) + " WHERE queryid=" + str(queryid)
+                        update_results = reporting_sqlEng.execute_update(update_query, config.reporting_database)
+
+                        
         except Exception as e:
             logging.exception(e)    
         
@@ -166,10 +195,15 @@ class test_firethorn(unittest.TestCase):
         ch.setFormatter(formatter)
         root.addHandler(ch)
     
-            
                     
     def tearDown(self):
         self.assertEqual([], self.verificationErrors)
+        
+        
+    def md5String(self, str):
+        m = hashlib.md5()
+        m.update(str)
+        return m.hexdigest()    
         
     
     def import_neighbours(self, sqlEng, fEng):

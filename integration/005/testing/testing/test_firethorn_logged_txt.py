@@ -56,7 +56,7 @@ class test_firethorn(unittest.TestCase):
                     query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
                     print query
                 logging.info("Query : " +  query)
-                sql_row_length = sqlEng.execute_sql_query_get_rows(query, config.test_database)
+                sql_row_length, error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database)
                 logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
                 logging.info("")
                 firethorn_row_length = qEng.run_query(query, "", fEng.query_schema)

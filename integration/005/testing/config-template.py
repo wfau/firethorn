@@ -9,10 +9,10 @@ import os
 
 
 ### Unit test specific configuration ###
-use_preset_params = True
-use_cached_firethorn_env = True
+use_preset_params = False # Use the preset firethorn resource parameters at the end of this config file
+use_cached_firethorn_env = True # Use cached firethorn environment, stored in (testing/conf/pyrothorn-stored.js)
 firethorn_version =  "1.10.8"
-include_neighbour_import = True
+include_neighbour_import = False # Choose whether to import all neighbour tables for a catalogue or not
 
 
 ### Directory and URL Information ###

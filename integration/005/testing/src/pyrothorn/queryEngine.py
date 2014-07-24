@@ -84,7 +84,7 @@ class QueryEngine(object):
                 if query_loop_results.get("Code", "") ==-1:
                     error_message = query_loop_results.get("Content", "Error")
                     logging.exception(error_message)
-                    return -1
+                    return (-1,error_message)
             
             if results_adql_url!=None:
                 req_rez_table = urllib2.Request( results_adql_url, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
@@ -102,22 +102,22 @@ class QueryEngine(object):
                     if len(f.read())>0:
                        logging.exception('Query exceeded byte size limit.. ')
                        f.close()
-                       return -1    
+                       return (-1,error_message)   
                    
                     f.close()
             else :
                 logging.exception('Query returned an error.. ')
-                return -1
+                return (-1,error_message)
                 
         except Exception as e:
             logging.exception('Exception caught in run query:')
             logging.exception(e) 
-            return -1
+            return (-1, e)
         
         if f!='':
             f.close()
             
-        return self._getRows(datatable)  
+        return (self._getRows(datatable), "")  
     
     
     
@@ -170,8 +170,7 @@ class QueryEngine(object):
             elif query_status=="CANCELLED":
                 return {'Code' :1,  'Content' : 'Query error: Query has been canceled' }
             elif query_status=="EDITING":
-                logging.exception( "Editing status in start_query_loop:" )
-                return {'Code' :-1,  'Content' : 'Query error: ' + query_json["syntax"]["status"] + ' - ' + query_json["syntax"]["friendly"] }
+                return {'Code' :-1,  'Content' :  query_json["syntax"]["status"] + ' - ' + query_json["syntax"]["friendly"] }
             elif query_status=="COMPLETED":
                 return {'Code' :1,  'Content' : query_json["results"]["datatable"] }
             elif elapsed_time>=MAX_ELAPSED_TIME:

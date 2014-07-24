@@ -38,7 +38,7 @@ class test_firethorn(unittest.TestCase):
 
     def test_sample_sql_query(self):
         sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
-        row_length = sqlEng.execute_sql_query_get_rows( self.sample_query, config.test_database)
+        row_length, error_message = sqlEng.execute_sql_query_get_rows( self.sample_query, config.test_database)
         self.assertEqual(row_length, self.sample_query_expected_rows)
 
      
