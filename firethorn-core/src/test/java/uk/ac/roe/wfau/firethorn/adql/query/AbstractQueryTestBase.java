@@ -84,7 +84,7 @@ extends TestPropertiesBase
         }
 
     /**
-     * Load a JDBC resource.
+     * Load a {@link JdbcResource}.
      * @throws IdentifierNotFoundException 
      * 
      */
@@ -125,7 +125,7 @@ extends TestPropertiesBase
         }
     
     /**
-     * Load an IVOA resource.
+     * Load an {@link IvoaResource}.
      * 
      */
     protected IvoaResource ivoaResource(final String tag)
@@ -134,7 +134,7 @@ extends TestPropertiesBase
         }
     
     /**
-     * Load an ADQL resource.
+     * Load an {@link AdqlResource}.
      * 
      */
     protected AdqlResource adqlResource(final String tag)
@@ -143,7 +143,7 @@ extends TestPropertiesBase
         }
 
     /**
-     * Load an AQDL resource.
+     * Load an {@link AdqlResource}.
      * 
      */
     protected AdqlResource adqlResource(final String tag, final String name)
@@ -186,8 +186,6 @@ extends TestPropertiesBase
     @After
     public void saveResources()
         {
-        log.debug("Saving JDBC resources");
-
         for (Map.Entry<String, JdbcResource> entry : jdbc.entrySet())
             {
             testprops().setProperty(
@@ -214,13 +212,13 @@ extends TestPropertiesBase
         }
     
     /**
-     * Our target ADQL query resource.
+     * Our target query resource.
      * 
      */
     private AdqlResource testspace ;
 
     /**
-     * Our target ADQL query resource.
+     * Our target query resource.
      * 
      */
     public AdqlResource testspace()
@@ -229,13 +227,13 @@ extends TestPropertiesBase
         }
 
     /**
-     * Our target ADQL query schema.
+     * Our target query schema.
      * 
      */
     private AdqlSchema testschema;
 
     /**
-     * Our target ADQL query schema.
+     * Our target query schema.
      * 
      */
     public AdqlSchema testschema()
@@ -281,7 +279,7 @@ extends TestPropertiesBase
         }
 
     /**
-     * Load an AdqlSchema into our test resource.
+     * Load a {@link JdbcSchema} into an {@link AdqlResource}.
      * 
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The JdbcResource to load the JdbcSchema from.
@@ -302,7 +300,28 @@ extends TestPropertiesBase
         }
 
     /**
-     * Load an AdqlSchema into our test resource.
+     * Load a {@link IvoaSchema} into an {@link AdqlResource}.
+     * 
+     * @param parent The AdqlResource to load the AdqlSchema from.
+     * @param source The IvoaResource to load the IvoaSchema from.
+     * @param name The name for both the AdqlSchema and JdbcSchema.
+     * @return The AdqlSchema.
+     * @throws NameNotFoundException
+     *
+     */
+    protected AdqlSchema testSchema(AdqlResource parent, IvoaResource source, String name)
+    throws NameNotFoundException
+        {
+        return testSchema(
+            parent, 
+            source,
+            name,
+            name
+            );
+        }
+    
+    /**
+     * Load a {@link JdbcSchema} into an {@link AdqlResource}.
      * 
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The JdbcResource to load the JdbcSchema from.
@@ -333,7 +352,38 @@ extends TestPropertiesBase
         }
 
     /**
-     * Load an AdqlSchema from an JdbcResource into an AdqlResource.
+     * Load a {@link IvoaSchema} into an {@link AdqlResource}.
+     * 
+     * @param parent The AdqlResource to load the AdqlSchema from.
+     * @param source The IvoaResource to load the IvoaSchema from.
+     * @param adql The name for the AdqlSchema.
+     * @param jdbc The name for the JdbcSchema.
+     * @return The AdqlSchema.
+     * @throws NameNotFoundException
+     *
+     */
+    protected AdqlSchema testSchema(AdqlResource parent, IvoaResource source, String adql, String jdbc)
+    throws NameNotFoundException
+        {
+        AdqlSchema found = testspace().schemas().search(adql); 
+        if (found == null)
+            {
+            found = testspace().schemas().create(
+                BaseComponent.CopyDepth.THIN,        
+                adql,
+                adqlSchema(
+                    parent,
+                    source,
+                    adql,
+                    jdbc
+                    )
+                );
+            }
+        return found ;
+        }
+
+    /**
+     * Load a {@link JdbcSchema} into an {@link AdqlResource}.
      * 
      * @param parent The AdqlResource to load the AdqlSchema into.
      * @param source The JdbcResource to load the JdbcSchema from.
@@ -363,6 +413,37 @@ extends TestPropertiesBase
         return found ;
         }
 
+    /**
+     * Load a {@link IvoaSchema} into an {@link AdqlResource}.
+     * 
+     * @param parent The AdqlResource to load the AdqlSchema into.
+     * @param source The IvoaResource to load the IvoaSchema from.
+     * @param adql The name for the AdqlSchema.
+     * @param jdbc The name for the IvoaSchema.
+     * @return The AdqlSchema.
+     * @throws NameNotFoundException
+     *
+     */
+    private AdqlSchema adqlSchema(AdqlResource parent, IvoaResource source, String adql, String ivoa)
+    throws NameNotFoundException
+        {
+        AdqlSchema found = parent.schemas().search(
+            adql
+            ); 
+        if (found == null)
+            {
+            found = parent.schemas().create(
+                BaseComponent.CopyDepth.THIN,        
+                adql,
+                source.schemas().select(
+                    ivoa
+                    )
+                );
+            }
+        return found ;
+        }
+    
+    
     /**
      * Check the expected state.
      *

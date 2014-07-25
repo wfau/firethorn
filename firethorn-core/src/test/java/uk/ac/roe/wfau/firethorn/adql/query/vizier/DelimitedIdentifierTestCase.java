@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query.atlas;
+package uk.ac.roe.wfau.firethorn.adql.query.vizier;
 
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 public class DelimitedIdentifierTestCase
-    extends AtlasQueryTestBase
+    extends VizierQueryTestBase
     {
 
     /**
@@ -45,20 +45,20 @@ public class DelimitedIdentifierTestCase
             State.VALID,
 
             " SELECT " +
-            "    \"atlas\".\"ra\"," +
-            "    \"atlas\".\"dec\"" +
+            "    \"twomass\".\"RAJ2000\"," +
+            "    \"twomass\".\"DEJ2000\"" +
             " FROM" +
-            "    \"atlasSource\" AS atlas",
+            "    \"II/246/out\"",
 
             " SELECT " +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra  AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    vizls.\"II/246/out\".RAJ2000," +
+            "    vizls.\"II/246/out\".DEJ2000" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
+            "    vizls.\"II/246/out\"",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("RAJ2000",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("DEJ2000", AdqlColumn.Type.DOUBLE, 0)
                 }
             );
         }
