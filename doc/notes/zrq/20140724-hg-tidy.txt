@@ -41,8 +41,7 @@
 
 
     1.11.7-release
-        Not closed, not merged - DONE
-        Some changes need to be merged
+        Closed and merged
         http://wfau.metagrid.co.uk/code/firethorn/rev/770a7bb460c9)
 
     1.11.5-release
@@ -50,22 +49,20 @@
         http://wfau.metagrid.co.uk/code/firethorn/rev/b70f19643f4f
     
     1.10.9-release
-        Merged not closed - DONE
+        Closed and merged
         http://wfau.metagrid.co.uk/code/firethorn/rev/e51c732cacc4
         
     1.10.8-release
-        No changes, not merged, not closed - DONE
+        Closed and merged
         Used as base for 1.10.8-stv-pyrothorn
         http://wfau.metagrid.co.uk/code/firethorn/rev/12d8b35e3b4e
     
     1.10.7-release
-        Not merged, not closed - DONE
-        Minor changes to JdbcResource
+        Closed and merged
         http://wfau.metagrid.co.uk/code/firethorn/rev/bd3397c0f516
         
     1.10.2-release
-        Not merged, not closed - DONE
-        Changes to notes and release notes only
+        Closed and merged
         http://wfau.metagrid.co.uk/code/firethorn/rev/735c1a641408
 
     1.11.5-zrq-gaia-tap
