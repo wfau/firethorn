@@ -134,6 +134,12 @@
         hg commit -m "Merging [branch-${oldbranch:?}] into [default]"
 
 
+
+        #
+        # Update the project version.
+        setversion '1.11.8'
+
+
     popd
 
 
