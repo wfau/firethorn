@@ -53,17 +53,17 @@
         http://wfau.metagrid.co.uk/code/firethorn/rev/e51c732cacc4
         
     1.10.8-release
-        No changes, not merged, not closed
+        No changes, not merged, not closed - DONE
         Used as base for 1.10.8-stv-pyrothorn
         http://wfau.metagrid.co.uk/code/firethorn/rev/12d8b35e3b4e
     
     1.10.7-release
-        Not merged, not closed
+        Not merged, not closed - DONE
         Minor changes to JdbcResource
         http://wfau.metagrid.co.uk/code/firethorn/rev/bd3397c0f516
         
     1.10.2-release
-        Not merged, not closed
+        Not merged, not closed - DONE
         Changes to notes and release notes only
         http://wfau.metagrid.co.uk/code/firethorn/rev/735c1a641408
 
@@ -112,6 +112,7 @@
 
         oldbranch=1.10.2-release
         oldbranch=1.10.7-release
+        oldbranch=1.10.8-release
 
         #
         # Close the old branch.
