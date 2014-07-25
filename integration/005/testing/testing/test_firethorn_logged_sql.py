@@ -193,7 +193,7 @@ class test_firethorn(unittest.TestCase):
             logging.exception(e)    
         
         # Test if total queries failed > 0            
-        self.assertEqual(self.total_failed , 0, "Total queries failed (" + str(self.total_failed) + ") > 0 ")
+        self.assertEqual(self.total_failed , 0, "Total queries failed: " + str(self.total_failed) + " (out of " + str(len(logged_queries)) +  ")" )
    
                 
     def setUpLogging(self):
