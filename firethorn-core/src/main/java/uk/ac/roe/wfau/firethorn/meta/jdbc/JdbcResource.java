@@ -145,8 +145,8 @@ extends BaseResource<JdbcSchema>
          * Select the {@link JdbcSchema} owned by an Identity.
          * @todo Move this to a data space interface.
          *
-         */
         public Iterable<JdbcSchema> select(final Identity identity);
+         */
 
         /**
          * Scan the JDBC metadata.
