@@ -99,8 +99,38 @@
 # Close the closed branches.
 #[user@laptop]
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+
+        hg pull
+        hg update
+
+        #
+        # Save a copy of the current release notes.
+        cp RELEASE-NOTES.txt doc/release-notes/devel-1.11.7.txt
+
+        #
+        # Close and merge the old branches.
+        oldbranch=1.10.2-release
+
+        #
+        # Close the old branche.
+        hg update "${oldbranch:?}"
+
+
+        #
+        # Merge the old branch into main.
+        hg update 'default'
+        hg merge "${oldbranch:?}"
+
+        #
+        # Commit the merged version.
+        hg commit -m "Merging [branch-${oldbranch:?}] into [default]"
+        hg push
 
 
 
+    popd
 
 
