@@ -39,8 +39,9 @@
         Problems with Spring, Eclipse and Maven classpaths in tests
         http://wfau.metagrid.co.uk/code/firethorn/rev/9dbb4b60080b
 
+
     1.11.7-release
-        Not closed, not merged
+        Not closed, not merged - DONE
         Some changes need to be merged
         http://wfau.metagrid.co.uk/code/firethorn/rev/770a7bb460c9)
 
