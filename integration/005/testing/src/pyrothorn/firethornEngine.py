@@ -22,8 +22,15 @@ class FirethornEngine(object):
 
     def __init__(self, jdbcspace="", adqlspace="", adqlschema="", query_schema="", schema_name="", schema_alias="" , **kwargs):
         '''
-        Empty Constructor
+        Constructor
+        :param jdbcspace:
+        :param adqlspace:
+        :param adqlschema:
+        :param query_schema:
+        :param schema_name:
+        :param schema_alias:
         '''
+       
         self.jdbcspace = ""
         self.adqlspace =  ""
         self.adqlschema = ""
@@ -39,10 +46,19 @@ class FirethornEngine(object):
         
         
     def setUpFirethornEnvironment(self, resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile):
-        """
+        '''
         Initialise the Firethorn environment
         Import metadata, setup initial workspace, import schemas, tables
-        """
+        
+        :param resourcename:
+        :param resourceuri:
+        :param catalogname:
+        :param ogsadainame:
+        :param adqlspacename:
+        :param jdbccatalogname:
+        :param jdbcschemaname:
+        :param metadocfile:
+        '''
         try:
             self.initialise_metadata_import(resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile)
             self.schema_name = self.getAttribute(self.adqlschema, "fullname" )
@@ -53,18 +69,33 @@ class FirethornEngine(object):
 
                     
     def initialise_metadata_import(self, resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile ):
-        """
+        '''
         Import metadata, fetch Schema from file provided
-        """
+        
+        :param resourcename:
+        :param resourceuri:
+        :param catalogname:
+        :param ogsadainame:
+        :param adqlspacename:
+        :param jdbccatalogname:
+        :param jdbcschemaname:
+        :param metadocfile:
+        '''
+      
         self.jdbcspace = self.create_jdbc_space(resourcename ,resourceuri, catalogname, ogsadainame)
         self.adqlspace = self.create_adql_space(adqlspacename)
         self.adqlschema = self.import_jdbc_metadoc(self.adqlspace, self.jdbcspace, jdbccatalogname, jdbcschemaname, metadocfile)
          
          
     def create_jdbc_space(self, resourcename ,resourceuri, catalogname, ogsadainame):
-        """
+        '''
         Create a JDBC resource 
-        """
+        :param resourcename:
+        :param resourceuri:
+        :param catalogname:
+        :param ogsadainame:
+        '''
+        
         jdbcspace=""
         try:
          
@@ -83,9 +114,15 @@ class FirethornEngine(object):
     
 
     def import_jdbc_metadoc(self, adqlspace="", jdbcspace="", jdbccatalogname='ATLASDR1', jdbcschemaname='dbo',metadocfile=""):
-        """
-        Import a JDBC metadoc
-        """
+        '''
+         Import a JDBC metadoc
+        :param adqlspace:
+        :param jdbcspace:
+        :param jdbccatalogname:
+        :param jdbcschemaname:
+        :param metadocfile:
+        '''
+      
         jdbcschemaident = ""
         adqlschema=""
         import pycurl
@@ -131,9 +168,12 @@ class FirethornEngine(object):
     
     
     def create_adql_space(self, adqlspacename=None):
-        """
+        '''
         Create an ADQL resource
-        """
+
+        :param adqlspacename:
+        '''
+     
         adqlspace = ""
         try:
             ### Create workspace
@@ -152,9 +192,11 @@ class FirethornEngine(object):
                          
                          
     def create_query_schema(self, resource=""):
-        """
+        '''
         Create a query schema
-        """
+ 
+        :param resource:
+        '''
         query_schema = ""
         try:    
             ### Create Query Schema 
@@ -169,9 +211,14 @@ class FirethornEngine(object):
     
         
     def create_initial_workspace(self, initial_catalogue_fullname, initial_catalogue_alias, initial_catalogue_ident):
-        """
+        '''
         Create the inital workspace given a name, alias and catalogue identifier
-        """
+        
+        :param initial_catalogue_fullname:
+        :param initial_catalogue_alias:
+        :param initial_catalogue_ident:
+        '''
+      
         query_schema =""
         importname = ""
         t = datetime.now()
@@ -199,9 +246,9 @@ class FirethornEngine(object):
     
     
     def printClassVars(self):
-        """
+        '''
         Print out the class (Firethorn environment) variables
-        """
+        '''
         logging.info("jdbcspace: " + self.jdbcspace)
         logging.info("adqlspace: " + self.adqlspace)
         logging.info("adqlschema: " + self.adqlschema)
@@ -211,9 +258,13 @@ class FirethornEngine(object):
     
     
     def getAttribute(self, ident, attr):
-        """
+        '''
         Get an attribute of a JSON HTTP resource
-        """
+        
+        :param ident:
+        :param attr:
+        '''
+    
         attr_val = ""
         try :
             req_exc = urllib2.Request( ident, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email, "firethorn.auth.community" :"public (unknown)"})

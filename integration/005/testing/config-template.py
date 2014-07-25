@@ -13,6 +13,7 @@ use_preset_params = False # Use the preset firethorn resource parameters at the 
 use_cached_firethorn_env = True # Use cached firethorn environment, stored in (testing/conf/pyrothorn-stored.js)
 firethorn_version =  "1.10.8"
 include_neighbour_import = False # Choose whether to import all neighbour tables for a catalogue or not
+test_is_continuation = False # Test is continued from prev run or not (If true, duplicate queries that have been run previously will not be run)
 
 
 ### Directory and URL Information ###

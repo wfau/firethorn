@@ -34,6 +34,9 @@ try:
     
     # get a UUID - URL safe, Base64
     def get_a_uuid():
+        '''
+        Generate uuid
+        '''
         r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
         return r_uuid.replace('=', '')
 except Exception as e:
@@ -58,6 +61,9 @@ class test_firethorn(unittest.TestCase):
    
    
     def test_sql_logged_queries(self):
+        '''
+        Test the logged sql queries against firethorn
+        '''
         
         try:
             # Set query run ID
@@ -127,7 +133,11 @@ class test_firethorn(unittest.TestCase):
                 logging.info("Query : " +  query)
 
                 try:
-                    check_duplicate_query = "select count(*), queryid, query_count from queries where queryrunID='" + queryrunID + "' and query_hash='" + querymd5 + "'"
+                    if (config.test_is_continuation):
+                        check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "'"
+                    else :
+                        check_duplicate_query = "select count(*), queryid, query_count from queries where queryrunID='" + queryrunID + "' and query_hash='" + querymd5 + "'"
+      
                     query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
                     query_duplicates_found = query_duplicates_found_row[0]
                     queryid = query_duplicates_found_row[1]
@@ -187,6 +197,9 @@ class test_firethorn(unittest.TestCase):
    
                 
     def setUpLogging(self):
+        '''
+        set up logging procedure
+        '''
         root = logging.getLogger()
         root.setLevel(logging.INFO)
         ch = logging.StreamHandler(sys.stdout)
@@ -207,6 +220,11 @@ class test_firethorn(unittest.TestCase):
         
     
     def import_neighbours(self, sqlEng, fEng):
+        '''
+        
+        :param sqlEng:
+        :param fEng:
+        '''
         neighbour_tables = sqlEng.execute_sql_query(config.neighbours_query, config.test_database)
         for i in neighbour_tables:
             logging.info("Importing " + i[0])
@@ -214,6 +232,11 @@ class test_firethorn(unittest.TestCase):
       
     
     def store_environment_config(self, fEng, stored_config_file):
+        '''
+        
+        :param fEng:
+        :param stored_config_file:
+        '''
         stored_config = collections.OrderedDict()
         stored_config['jdbcspace'] = fEng.jdbcspace
         stored_config['adqlspace'] = fEng.adqlspace

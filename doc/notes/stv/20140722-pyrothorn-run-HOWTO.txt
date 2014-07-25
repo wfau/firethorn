@@ -394,7 +394,14 @@ cd ~/hg
 # ---------------------------------------------
       
 cd ~/hg/integration/005/testing
+
+# Runs process in background
+nohup python testing/test_firethorn_logged_sql.py > logfile.txt 2>&1 </dev/null &
+
+# Runs embedded
 python testing/test_firethorn_logged_sql.py
+
+
 
 # ---------------------------------------------
 # Generate JSON of queries & statistics 

@@ -25,19 +25,19 @@ import datetime
 
          
 class DBHelper:
-    """
+    '''
     DBHelper module
     Class to provide necessary database functionality
 
     University of Edinburgh, WAFU
     @author: Stelios Voutsinas
     
-    """
+    '''
     
     def __init__(self, db_server, username, password, port="1433", driver="TDS"):
-        """
+        '''
         Initialise DBHelper class instance
-        """
+        '''
         self.db_server = db_server
         self.username = username
         self.password = password
@@ -45,9 +45,9 @@ class DBHelper:
         self.driver = driver
         
     def execute_qry_single_row (self, query, db_name):
-        """
+        '''
         Execute a query on a database & table, that will return a single row
-        """
+        '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         cnxn = pyodbc.connect(params)  
@@ -64,9 +64,9 @@ class DBHelper:
     
     
     def execute_query_multiple_rows(self, query, db_name):
-        """
+        '''
         Execute a query on a database & table that may return any number of rows
-        """
+        '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
 
@@ -85,9 +85,9 @@ class DBHelper:
         
         
     def execute_query_get_cols_rows(self, query, db_name):
-        """
+        '''
         Execute a query on a database & table that may return any number of rows
-        """
+        '''
         return_val = []
        
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
@@ -110,9 +110,9 @@ class DBHelper:
 
 
     def execute_insert (self, insert_query, db_name, query_parameters):           
-        """
+        '''
         Execute an insert on a database & table 
-        """
+        '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         cnxn = pyodbc.connect(params)  
@@ -122,9 +122,9 @@ class DBHelper:
         cnxn.close()
         
     def execute_update(self, update_query, db_name):           
-        """
+        '''
         Execute an insert on a database & table 
-        """
+        '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         cnxn = pyodbc.connect(params)  
@@ -143,8 +143,15 @@ class SQLEngine(object):
 
     def __init__(self, dbserver, dbuser, dbpasswd, dbport='1433', driver='TDS'):
         '''
-        Constructor
+        Constructor   
+           
+        :param dbserver:
+        :param dbuser:
+        :param dbpasswd:
+        :param dbport:
+        :param driver:
         '''
+     
         self.dbserver = dbserver
         self.dbuser = dbuser
         self.dbpasswd = dbpasswd
@@ -152,37 +159,45 @@ class SQLEngine(object):
         self.driver = driver
         
     def _getRows(self, query_result):
+        '''
+        Get rows from a query result array
+        
+        :param query_result:
+        '''
         row_length = -1
         if len(query_result)>=2:
             row_length = len(query_result[1])    
         return row_length
    
     def execute_sql_query(self, query, database):
-        """
+        '''
         Execute an SQL query
+        
         @param query: The SQL Query
         @param database: The Database
-        """
+        '''
         return self._execute_query(query, database)
     
     
     def execute_update(self, query, database):
-        """
+        '''
         Execute an SQL Update
+        
         @param query: The SQL Query
         @param database: The Database
-        """
+        '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
         response = mydb.execute_update(query.encode('utf-8'), database)
         return response
         
         
     def execute_sql_query_get_rows(self, query, database):
-        """
+        '''
         Execute an SQL query
+        
         @param query: The SQL Query
         @param database: The Database
-        """
+        '''
         file_path=''
         now = datetime.datetime.now()
         query_results=[]
@@ -209,27 +224,37 @@ class SQLEngine(object):
         return (self._getRows(query_results), "")
     
     def execute_insert (self, qry, database, params):
-        """
+        '''
         Execute an insert query (qry) against a db 
-        """
+        
+        :param qry:
+        :param database:
+        :param params:
+        '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
         res = mydb.execute_insert(qry.encode('utf-8'), database, params)
         return res
     
 
     def _execute_query (self, qry, database):
-        """
+        '''
         Execute a query (qry) against a db and table
-        """
+        
+        :param qry:
+        :param database:        
+        '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
         table_data = mydb.execute_query_multiple_rows(qry.encode('utf-8'), database)
         return table_data
         
         
     def _execute_query_get_cols_rows (self,qry, database):
-        """
+        '''
         Execute a query (qry) against a db and table, the information of which is stored as global variables
-        """
+        
+        :param qry:
+        :param database:
+        '''
         mydb = DBHelper(self.dbserver,self.dbuser ,self.dbpasswd, self.dbport, self.driver)
         table_data = mydb.execute_query_get_cols_rows(qry.encode('utf-8'), database)
         return table_data        

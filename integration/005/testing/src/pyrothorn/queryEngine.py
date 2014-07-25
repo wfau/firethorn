@@ -27,7 +27,9 @@ import logging
 
 class QueryEngine(object):
     '''
-    classdocs
+    Query Engine
+    
+    Used to drive queries through the firethorn service
     '''
 
 
@@ -39,6 +41,11 @@ class QueryEngine(object):
             
             
     def _getRows(self, query_results):
+        '''
+        Get rows from a query result
+        
+        :param query_results:
+        '''
         rows = json.loads(query_results)
         row_length = -1
         if len(rows)<=1:
@@ -49,9 +56,13 @@ class QueryEngine(object):
     
                 
     def run_query(self, query=None, query_name="", query_space="", **kwargs):
-        """
+        '''
         Run a query on a resource
-        """
+               
+        :param query:
+        :param query_name:
+        :param query_space:
+        '''
         
         f=''
         query_space = string_functions.decode(query_space)
@@ -122,11 +133,12 @@ class QueryEngine(object):
     
     
     def start_query_loop(self, url):
-        """
+        '''
+        Start the query loop
         
         @param url: A URL string to be used
         @return: Results of query
-        """
+        '''
         
         def get_status(url):
             request2 = urllib2.Request(url, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})

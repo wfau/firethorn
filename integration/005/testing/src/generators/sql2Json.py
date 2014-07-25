@@ -41,11 +41,11 @@ class Sql2Json(object):
  
    
     def generateJson(self, database, table):
-        """
+        '''
         Execute an SQL query
         @param query: The SQL Query
         @param database: The Database
-        """
+        '''
 
          
         connstr = 'DRIVER={' +  self.driver + '};SERVER=' +  self.dbserver + ';DATABASE=' + database +' ;'
