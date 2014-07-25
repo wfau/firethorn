@@ -138,7 +138,17 @@
         #
         # Update the project version.
         setversion '1.11.8'
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
 
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
 
     popd
 
