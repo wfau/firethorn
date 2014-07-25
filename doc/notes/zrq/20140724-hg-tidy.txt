@@ -49,7 +49,7 @@
         http://wfau.metagrid.co.uk/code/firethorn/rev/b70f19643f4f
     
     1.10.9-release
-        Merged not closed
+        Merged not closed - DONE
         http://wfau.metagrid.co.uk/code/firethorn/rev/e51c732cacc4
         
     1.10.8-release
@@ -100,7 +100,7 @@
 #[user@laptop]
 
     source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    pushd "${FIRETHORN_CODE:?}"1.10.9-release
 
 
         hg pull
@@ -113,6 +113,9 @@
         oldbranch=1.10.2-release
         oldbranch=1.10.7-release
         oldbranch=1.10.8-release
+        oldbranch=1.10.9-release
+
+        oldbranch=1.11.7-release
 
         #
         # Close the old branch.
@@ -123,6 +126,10 @@
         # Merge the old branch into main.
         hg update 'default'
         hg merge "${oldbranch:?}"
+
+        #
+        # Reset the project version.
+        setversion '1.11.7'
 
         #
         # Commit the merged version.
