@@ -1,12 +1,52 @@
 Version 1.10.2 (2014-14-08)
 -------------------------
 
+    Fixed issue #440
+        http://redmine.roe.ac.uk/issues/440
+        Fixes Group By bug, allowing expressions in the GROUP BY clause
+
+    Fixed issue #356
+        http://redmine.roe.ac.uk/issues/356
+        Created a new OGSA-DAI component, LimitsActivity, to implement row limits.
+        Updated the other OGSA-DAI Activity(s) to hande PipeClosedException correctly.
+        Created a copy of the OGSA-DAI SQLQuery component to fix PipeClosedException handling.
+        Added FireThorn configuration properties for default and absolute limits.
+
+
+Version 1.9.10 (2014-04-08)
+-------------------------
+
     Firethorn
-    ---------
-    Bug fix #440
-     http://redmine.roe.ac.uk/issues/440
+
+        Fixed issue #450
+        http://redmine.roe.ac.uk/issues/450
+        Brackets missing in output WHERE clause
+        http://redmine.roe.ac.uk/projects/wva/repository/revisions/7ca9caa94a24
+
+        Fixed issue #449
+        http://redmine.roe.ac.uk/issues/449
+        Added quotes to datetime values in BaseTableDataTableController.java
+        http://redmine.roe.ac.uk/projects/wva/repository/revisions/94d95c680c80 
 
 
+Version 1.9.7 (2014-03-25)
+-------------------------
 
+    Webpy GUI
 
+        Webpy OSA GUI changes to version 1.2.1 in parallel with this version
+        Fixed issues with calculation of elapsed time
+        Fixed error reporting (with max size calculations/max runtime calculations)
+        Fixed issue with logging of unsuccesful queryies
 
+        Refactoring to use the firethorn DataTables Controller (Replace atpy VOTable parsing)
+        Replace json parsing to use a different library to improve optimization
+
+    Firethorn
+
+        Fixed issue #422
+        "AbstractTableController calling column.root().name() for every row."
+        http://redmine.roe.ac.uk/issues/422
+
+        Create Datatables Controller, that creates a data format, usable by the Js "Datatables" library on the front end.
+        Refactored VOtable controller code (Abstract classes/code refactoring) 
