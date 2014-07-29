@@ -1,0 +1,309 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Separator Nonterminal
+** Notes don't say which option though.
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted as errata</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that this item should be included in the errata note for the current,
+    <cite>std:ADQL-20081030</cite>, version of the  standard.
+    </p>
+
+Type System
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that this item should be discussed further, with a view to including it in the
+    next (minor) version of the <cite>std:ADQL</cite> standard.
+    </p>
+
+DATETIME
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Rejected</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed to keep the existing term, <code>TIMESTAMP</code>, to maintain compatibility
+    with the original term defined in <cite>std:SQL1992</cite>.
+    </p>
+
+Empty Coordinate Systems
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Requires further discussion</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the proposal needs more work done on it before it could be included in the
+    <cite>std:ADQL</cite> standard.
+    </p>
+
+Explanation of optional features
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that this item should be discussed further, with a view to including it in the
+    next (minor) version of the <cite>std:ADQL</cite> standard.
+    </p>
+
+Simple Crossmatch Function
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Requires further discussion</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the proposal needs more work done on it before it could be included in the
+    <cite>std:ADQL</cite> standard.
+    <ul>
+        <li>It was agreed that this would be a useful feature for end users</li>
+        <li>It was noted that adding this feature could be difficult to implement</li>
+        <li>It was noted that part of the rationale for the IVOA services was to implement
+        difficult things on the server side, making things easier for the end user</li>
+        </ul>
+    </p>
+
+Type-based Decay of INTERSECTS
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the proposed text should be included in the next (minor) version of the
+    <cite>std:ADQL</cite> standard.
+    </p>
+
+Generalized User Defined Functions
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted as errata</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that there should be no restriction on the return types of User Defined Functions.
+    <br/>
+    It was agreed that this should be included in the errata note for the current,
+    <cite>std:ADQL-20081030</cite>, version of the standard.
+    </p>
+    <p>
+    <b>Futher discussion</b> -
+    It was also noted that the SimDAl working group would like to be able to define
+    table value functions in <cite>std:ADQL</cite>.
+    <br/>
+    It was agreed to continue the discussion to find a way of adding support for table value
+    functions in a future version of the <cite>std:ADQL</cite> standard.
+    </p>
+
+Case-Insensitive String Comparisons
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the following functions should be included as an optional feature in the
+    next (minor) version of the <cite>std:ADQL</cite> standard.
+    <ul>
+        <li><code>UPPER</code></li>
+        <li><code>LOWER</code></li>
+    </ul>
+    It was agreed that the following operator should be included as an optional feature in the
+    next (minor) version of the <cite>std:ADQL</cite> standard.
+    <ul>
+        <li><code>ILIKE</code></li>
+    </ul>
+    </p>
+
+Set Operators
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the following operators should be included in the next (minor) version of
+    the <cite>std:ADQL</cite> standard.
+    <ul>
+        <li><code>UNION</code></li>
+        <li><code>EXCEPT</code></li>
+        <li><code>INTERSECT</code></li>
+    </ul>
+    It was agreed that the text describing the set operators in the <cite>std:ADQL</cite>
+    standard should include the following caveats.
+    <ul>
+        <li>The set operands MUST produce the same number of columns</li>
+        <li>The corresponding columns in the operands MUST have the same data types</li>
+        <li>The corresponding columns in the operands SHOULD have the same metadata</li>
+        <li>The metadata for the results SHOULD be generated from the left-hand operand</li>
+    </ul>
+    </p>
+
+** Note - Oracle supports UNION, INTERSECT and MINUS.
+** Oracle's MINUS appears to be equivalent to the proposed EXCEPT.
+
+Adding a Boolean Type
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Requires further discussion</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that although making these changes would be a good thing, more work needs to be
+    done on identifying and solving potential compatibility issues before the changes can be
+    included in the <cite>std:ADQL</cite> standard.
+    <ul>
+        <li>It was agreed that BOOLEAN data type would be a useful feature to add</li>
+        <li>It was agreed that changing the return type of CONTAINS() to be a BOOLEAN would make
+        it easier to use</li>
+        <li>It was agreed that making these changes could cause compatibility issues which could
+        not be addressed in a (minor) increment of the <cite>std:ADQL</cite> standard</li>
+        <li>It was agreed that both of these changes should be considered for a future (major)
+        increment of the <cite>std:ADQL</cite> standard</li>
+    </ul>
+    </p>
+
+Casting to Unit
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Requires further discussion</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the proposal needs more work done on it before it could included in the
+    <cite>std:ADQL</cite> standard.
+    <ul>
+        <li>It was agreed that scaling conversions would not be difficult to implement</li>
+        <li>It was agreed that conversion between wavelength and frequency would be difficult to implement consistently</li>
+        <li>It was agreed that unit converstions would be most useful in a SELECT list</li>
+        <li>It was agreed that unit converstions would be most difficult to implement in a WHERE clause</li>
+    </ul>
+    </p>
+
+Column References with UCD Patterns
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Requires further discussion</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the proposal needs more work done on it before it could be considered ready
+    to be included in the <cite>std:ADQL</cite> standard.
+    </p>
+
+Modulo operator
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Rejected</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the benefits of adding the operator, <code>x % y</code>, syntax were
+    outweighed by cost of compatibility issues caused by adding a new operator to the grammar.
+    </p>
+
+Bitwise operators
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that hexadecimal literal values should be included in the next (minor) version
+    of the <cite>std:ADQL</cite> standard.
+    <br/>
+    It was agreed that the following functions should be included as an optional feature in the
+    next (minor) version of the <cite>std:ADQL</cite> standard.
+    <ul>
+        <li><code>BIT_AND(x, y)</code></li>
+        <li><code>BIT_OR(x, y)</code></li>
+        <li><code>BIT_XOR(x, y)</code></li>
+        <li><code>BIT_NOT(x)</code></li>
+    </ul>
+    It was agreed that the benefits of adding the operator, <code>exp op exp</code>, syntax for
+    each operation were outweighed by cost of compatibility issues caused by adding new operators
+    to the grammar.
+    </p>
+
+CAST operator
+
+    <!-- IVOA Interop 2014/05 -->
+    <p>
+    <b>Accepted for next version</b> -
+    This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+    <br/>
+    It was agreed that the CAST operator should be including as a required operator in the next
+    (minor) version of the <cite>std:ADQL</cite> standard.
+    <br/>
+    It was agreed that the set of type conversions should be discussed further, with a view to
+    finalising the set of conversions supported in the next (minor) version of the
+    <cite>std:ADQL</cite> standard.
+    </p>
+
+--------------------
+
+New item to add to the list ... 
+Allowing changes that require query re-writing
+
+
+The operator syntax, <code>x % y</code>, for the <code>MOD(x, y)</code>,
+function was rejected because it required adding a new operator to the
+language grammar which would in turn require some implementations to
+re-write the query if the RDBMS platform they were using did not support
+the operator syntax.
+
+In addition, it was decided not to support the operator syntax,
+<code>x op y</code>, for the bitwise operations
+<pre><![CDATA[
+    BIT_AND "&" 
+    BIT_OR  "|" 
+    BIT_XOR "^" 
+    BIT_NOT "~" 
+]]></pre>
+because, again, they required adding new operators to the
+language grammar.
+
+
+On the other hand, we have accepted adding the set operators
+<pre><![CDATA[
+    UNION
+    EXCEPT
+    INTERSECT
+]]></pre>
+and a case insensitive string comparison
+<pre><![CDATA[
+    ILIKE
+]]></pre>
+all of which will require new operators to the
+language grammar.
