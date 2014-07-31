@@ -35,6 +35,9 @@
         public String endpoint();
         public String ogsaid();
         public Status poke();
+
+        public enum Status {}
+
         
         interface Resources
             {

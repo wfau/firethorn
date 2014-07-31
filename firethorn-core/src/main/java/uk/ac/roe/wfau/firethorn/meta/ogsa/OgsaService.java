@@ -79,6 +79,15 @@ public interface OgsaService
          */
         public OgsaService create(final String endpoint);
 
+        /**
+         * Create a new service.
+         * @param name The OGSA-DAI web-service name.
+         * @param endpoint The OGSA-DAI web-service endpoint URL.
+         * @return A new {@link OgsaService}.
+         *
+         */
+        public OgsaService create(final String name, final String endpoint);
+
         }
 
     /**

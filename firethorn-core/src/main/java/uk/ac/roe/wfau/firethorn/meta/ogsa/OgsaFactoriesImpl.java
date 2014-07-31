@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class OgsaResolversImpl
-implements OgsaResolvers
+public class OgsaFactoriesImpl
+implements OgsaFactories
     {
     @Autowired
     private OgsaTableResolver tables;
@@ -42,5 +42,21 @@ implements OgsaResolvers
     public OgsaColumnResolver columns()
         {
         return this.columns;
+        }
+
+    @Autowired
+    private OgsaService.EntityFactory services;
+    @Override
+    public OgsaService.EntityFactory services()
+        {
+        return services;
+        }
+
+    @Autowired
+    public OgsaBaseResource.EntityFactory resources;
+    @Override
+    public OgsaBaseResource.EntityFactory resources()
+        {
+        return resources;
         }
     }

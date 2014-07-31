@@ -21,7 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
  *
  *
  */
-public interface OgsaResolvers
+public interface OgsaFactories
     {
     /**
      * Our {@link OgsaTableResolver}.
@@ -35,4 +35,16 @@ public interface OgsaResolvers
      */
     public OgsaColumnResolver columns();
 
+    /**
+     * Our {@link OgsaService} factory.
+     * 
+     */
+    public OgsaService.EntityFactory services();
+
+    /**
+     * Our {@link OgsaBaseResource} factory.
+     * 
+     */
+    public OgsaBaseResource.EntityFactory resources();
+    
     }

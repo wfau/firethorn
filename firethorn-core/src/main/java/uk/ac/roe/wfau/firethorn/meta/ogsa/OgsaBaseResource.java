@@ -113,7 +113,7 @@ public interface OgsaBaseResource
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
          *
          */
-        public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
         
         }
 
