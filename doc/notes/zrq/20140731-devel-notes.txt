@@ -82,7 +82,9 @@
             OgsaService create(String endpoint);
             }
 
-        String endpoint();
+        public String endpoint();
+        public String ogsaid();
+        public Status poke();
         
         interface Resources
             {
@@ -94,8 +96,8 @@
             Iterable<OgsaJdbcResource> select(JdbcResource source);
             Iterable<OgsaIvoaResource> select(IvoaResource source);
             }
-
         public Resources resources();
+
 
         }
 
@@ -115,9 +117,12 @@
             Iterable<OgsaIvoaResource> select(IvoaResource source);
             }
 
-        public String ogsaid();
         public OgsaService  service();
         public BaseResource source();
+
+        public String ogsaid();
+        public Status poke();
+
         }
 
     interface OgsaJdbcResource
@@ -131,9 +136,6 @@
         {
         public IvoaResource source();
         }
-
-
-
 
 
 
@@ -151,6 +153,41 @@
 
             }
         }
+
+# -----------------------------------------------------------------------------------------
+# New interfaces
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    newbranch=1.11.8-zrq-ogsa-meta
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${newbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${newbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${newbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
 
 
 
