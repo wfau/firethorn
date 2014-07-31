@@ -192,7 +192,7 @@ public class OgsaServiceEntity
             @Override
             public Iterable<OgsaBaseResource> select()
                 {
-                return factories().ogsa().resources().select(
+                return factories().ogsa().resources().base().select(
                     OgsaServiceEntity.this
                     );
                 }
@@ -200,7 +200,7 @@ public class OgsaServiceEntity
             @Override
             public OgsaJdbcResource create(final JdbcResource source)
                 {
-                return factories().ogsa().resources().create(
+                return factories().ogsa().resources().jdbc().create(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -209,7 +209,7 @@ public class OgsaServiceEntity
             @Override
             public OgsaIvoaResource create(final IvoaResource source)
                 {
-                return factories().ogsa().resources().create(
+                return factories().ogsa().resources().ivoa().create(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -218,7 +218,7 @@ public class OgsaServiceEntity
             @Override
             public Iterable<OgsaJdbcResource> select(final JdbcResource source)
                 {
-                return factories().ogsa().resources().select(
+                return factories().ogsa().resources().jdbc().select(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -227,7 +227,7 @@ public class OgsaServiceEntity
             @Override
             public Iterable<OgsaIvoaResource> select(final IvoaResource source)
                 {
-                return factories().ogsa().resources().select(
+                return factories().ogsa().resources().ivoa().select(
                     OgsaServiceEntity.this,
                     source
                     );

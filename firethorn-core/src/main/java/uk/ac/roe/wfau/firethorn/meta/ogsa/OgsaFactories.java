@@ -42,9 +42,34 @@ public interface OgsaFactories
     public OgsaService.EntityFactory services();
 
     /**
-     * Our {@link OgsaBaseResource} factory.
+     * Our resource factories.
      * 
      */
-    public OgsaBaseResource.EntityFactory resources();
+    public interface Resources
+        {
+        /**
+         * Our {@link OgsaBaseResource} factory.
+         * 
+         */
+        public OgsaBaseResource.EntityFactory base();
+
+        /**
+         * Our {@link OgsaJdbcResource} factory.
+         * 
+         */
+        public OgsaJdbcResource.EntityFactory jdbc();
+
+        /**
+         * Our {@link OgsaIvoaResource} factory.
+         * 
+         */
+        public OgsaIvoaResource.EntityFactory ivoa();
+}
+
+    /**
+     * Our resource factories.
+     * 
+     */
+    public Resources resources();
     
     }

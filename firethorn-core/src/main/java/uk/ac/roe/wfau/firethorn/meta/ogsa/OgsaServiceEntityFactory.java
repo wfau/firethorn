@@ -56,7 +56,6 @@ implements OgsaService.EntityFactory
         return links;
         }
 
-
     @Override
     @SelectMethod
     public Iterable<OgsaService> select()

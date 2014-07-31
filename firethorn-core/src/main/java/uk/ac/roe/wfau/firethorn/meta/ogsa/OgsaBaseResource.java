@@ -55,6 +55,7 @@ public interface OgsaBaseResource
     public static interface LinkFactory
     extends Entity.LinkFactory<OgsaBaseResource>
         {
+
         }
 
     /**
@@ -65,7 +66,7 @@ public interface OgsaBaseResource
     extends Entity.EntityFactory<OgsaBaseResource>
         {
         /**
-         * Select all the resources.
+         * Select all the {@link OgsaBaseResource}(s).
          * @return An {@link Iterable} set of {@link OgsaBaseResource}(s). 
          *
          */
@@ -85,8 +86,8 @@ public interface OgsaBaseResource
          * @param source  The corresponding {@link JdbcResource}.
          * @return A new {@link OgsaJdbcResource}.
          *
-         */
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource source);
+         */
 
         /**
          * Select the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
@@ -94,8 +95,8 @@ public interface OgsaBaseResource
          * @param source  The source {@link JdbcResource}.
          * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
          *
-         */
         public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source);
+         */
 
         /**
          * Create a new {@link OgsaIvoaResource}.
@@ -103,8 +104,8 @@ public interface OgsaBaseResource
          * @param source  The source {@link IvoaResource}.
          * @return A new {@link OgsaIvoaResource}.
          *
-         */
         public OgsaIvoaResource create(final OgsaService service, final IvoaResource source);
+         */
 
         /**
          * Select the {@link OgsaIvoaResource}(s) for a {@link IvoaResource}.
@@ -112,8 +113,8 @@ public interface OgsaBaseResource
          * @param source  The source {@link IvoaResource}.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
          *
-         */
         public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+         */
         
         }
 

@@ -53,10 +53,34 @@ implements OgsaFactories
         }
 
     @Autowired
-    public OgsaBaseResource.EntityFactory resources;
+    private OgsaBaseResource.EntityFactory base;
+
+    @Autowired
+    private OgsaJdbcResource.EntityFactory jdbc;
+
+    @Autowired
+    private OgsaIvoaResource.EntityFactory ivoa;
+
     @Override
-    public OgsaBaseResource.EntityFactory resources()
+    public Resources resources()
         {
-        return resources;
+        return new Resources()
+            {
+            @Override
+            public OgsaBaseResource.EntityFactory base()
+                {
+                return base;
+                }
+            @Override
+            public OgsaJdbcResource.EntityFactory jdbc()
+                {
+                return jdbc;
+                }
+            @Override
+            public OgsaIvoaResource.EntityFactory ivoa()
+                {
+                return ivoa;
+                }
+            };
         }
     }
