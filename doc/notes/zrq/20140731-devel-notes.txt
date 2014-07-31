@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------------------------------------------
+# Docker + Jenkins 
+
+    https://wiki.jenkins-ci.org/display/JENKINS/Docker+build+step+plugin
+    https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin
+
+# -----------------------------------------------------------------------------------------
+# Docker
+
+    Dockable
+
+        Config optimised for running in Docker containers.
+
+        Metadata
+
+            Hibernate database - local mysql
+            Hibernate database - local pgsql
+            Hibernate database - local derby
+
+        Userdata
+
+            local mysql
+            local pgsql
+            local derby
+
+            external mssql <-- via ssh ?
+        
+        Science data
+
+            JDBC resources - live create <-- via ssh ?
+            IVOA resources - live create
+            ADQL resources - live create
+
+# -----------------------------------------------------------------------------------------
+# OGSA-DAI service
+
+    Create an OGSA-DAI service connection
+
+# -----------------------------------------------------------------------------------------
+# JDBC create
+
+    Create JDBC resource using settings from webservice call. 
+    Dynamically create the corresponding OGSA-DAI resource.
+
+# -----------------------------------------------------------------------------------------
+# IVOA create
+
+    Create JDBC resource using settings from webservice call. 
+    Dynamically create the corresponding OGSA-DAI resource.
+
+# -----------------------------------------------------------------------------------------
+# New interfaces
+
+    interface OgsaService
+        {
+        interface Factory
+            {
+            Iterable<OgsaService> select();
+            OgsaService create(String endpoint);
+            }
+
+        String endpoint();
+        
+        interface Resources
+            {
+            Iterable<OgsaResource> select();
+
+            OgsaJdbcResource create(JdbcResource source);
+            OgsaIvoaResource create(IvoaResource source);
+
+            Iterable<OgsaJdbcResource> select(JdbcResource source);
+            Iterable<OgsaIvoaResource> select(IvoaResource source);
+            }
+
+        public Resources resources();
+
+        }
+
+    interface OgsaResource
+        {
+
+        interface Factory
+            {
+            Iterable<OgsaResource> select();
+
+            OgsaJdbcResource create(OgsaService service, JdbcResource source);
+            OgsaIvoaResource create(OgsaService service, IvoaResource source);
+
+            Iterable<OgsaResource> select(OgsaService service);
+
+            Iterable<OgsaJdbcResource> select(JdbcResource source);
+            Iterable<OgsaIvoaResource> select(IvoaResource source);
+            }
+
+        public String ogsaid();
+        public OgsaService  service();
+        public BaseResource source();
+        }
+
+    interface OgsaJdbcResource
+    extends OgsaResource
+        {
+        public JdbcResource source();
+        }
+
+    interface OgsaIvoaResource
+    extends OgsaResource
+        {
+        public IvoaResource source();
+        }
+
+
+
+
+
+
+    interface JdbcResource
+        {
+
+        JdbcConnection connection()
+
+        interface Resources
+            {
+            Iterable<OgsaJdbcResource> select();
+            Iterable<OgsaJdbcResource> select(OgsaService service);
+
+            OgsaJdbcResource create(OgsaService service);
+
+            }
+        }
+
+
+
+
+
+
+

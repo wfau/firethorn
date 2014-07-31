@@ -98,11 +98,10 @@
 #[user@laptop]
 
     source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"1.10.9-release
-
+    pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update
+        hg update 'default'
 
         #
         # Save a copy of the current release notes.
