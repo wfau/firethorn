@@ -148,13 +148,15 @@
         # Check for plugin Updates
         mvn versions:display-plugin-updates
 
+        hg commit -m "Updated dependencies"
+
     popd
 
 # -----------------------------------------------------
 # Merge the changes into main.
 #[user@desktop]
 
-    devbranch=1.11.8-zrq-ogsa-meta
+    devbranch=$(getversion)
     newversion=1.11.9
 
     source "${HOME:?}/firethorn.settings"
