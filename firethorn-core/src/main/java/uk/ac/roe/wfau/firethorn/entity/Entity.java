@@ -150,7 +150,7 @@ public interface Entity
          * Our local Identifier factory.
          *
          */
-        public IdentFactory idents();
+        public IdentFactory<EntityType> idents();
 
         /**
          * Our local link factory.

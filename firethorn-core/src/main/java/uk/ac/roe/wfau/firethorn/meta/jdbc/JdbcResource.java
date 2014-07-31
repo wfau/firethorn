@@ -17,14 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 
 /**
  *
