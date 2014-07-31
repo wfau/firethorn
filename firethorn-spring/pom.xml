@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.8</version>
+        <version project='firethorn'>1.11.8-zrq-ogsa-meta</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -52,13 +52,11 @@
 		<!--org.spring.version>3.2.0.M1</org.spring.version-->
         <!--org.hibernate.version>4.1.6.Final</org.hibernate.version-->
         <!--org.hibernate.version>4.2.0.CR1</org.hibernate.version-->
+		<!--org.spring.version>4.0.0.RELEASE</org.spring.version-->
 
-		<!--org.spring.version>3.2.4.RELEASE</org.spring.version-->
-		<org.spring.version>4.0.0.RELEASE</org.spring.version>
-        <!--org.hibernate.version>4.3.0.Beta3</org.hibernate.version-->
-        <!--org.hibernate.version>4.2.4.Final</org.hibernate.version-->
-        <org.hibernate.version>4.3.0.Final</org.hibernate.version>
-		<org.aspectj.version>1.7.4.RELEASE</org.aspectj.version>
+		<org.spring.version>4.1.0.RC1</org.spring.version>
+        <org.hibernate.version>4.3.6.Final</org.hibernate.version>
+		<org.aspectj.version>1.8.1</org.aspectj.version>
 
     </properties>
 
@@ -241,7 +239,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-instrument</artifactId>
             <version>${org.spring.version}</version>
-            <!--scope>test</scope-->
         </dependency>
 
         <!--+
@@ -261,6 +258,20 @@
             <version>2.0.Beta-20090815</version>  
         </dependency>  
 
+	    <!--+
+	        | JSR 303 and Hibernate Validator
+	        +-->
+	    <!--dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>1.1.0.Final</version>
+	    </dependency-->
+	    <dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>5.1.2.Final</version>
+	    </dependency>
+
         <!--+
             | Java Persistence API (included by hibernate/spring)
             | http://download.oracle.com/javaee/5/api/javax/persistence/package-summary.html
@@ -276,6 +287,11 @@
             | http://www.mularien.com/blog/2008/02/19/tutorial-how-to-set-up-tomcat-6-to-work-with-jstl-12/
             | http://forum.springsource.org/showthread.php?83953-pizza-shop-example-can-t-run-on-tomcat-5.5.15/page2
             +-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
 	    <!--+
 	    <dependency>
 		    <groupId>javax.servlet.jsp.jstl</groupId>
@@ -298,54 +314,10 @@
             <artifactId>com.springsource.javax.servlet.jsp.jstl</artifactId>
             <version>1.1.2</version>
         </dependency>
-            +-->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <!--+
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
-        </dependency>
-            +-->
-
-	    <!--+
-	        | JSR 303 and Hibernate Validator
-	        +-->
-	    <dependency>
-		    <groupId>javax.validation</groupId>
-		    <artifactId>validation-api</artifactId>
-		    <version>1.1.0.Final</version>
-	    </dependency>
-	    <dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-validator</artifactId>
-		    <version>5.0.2.Final</version>
-	    </dependency>
-
-        <!--+
-            | JDBC DataSource wrapper.
-            | http://www.mchange.com/projects/c3p0/index.html
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-            +-->
-
-        <!--+
-            | JDBC Database connection pooling.
-            | http://commons.apache.org/dbcp/
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
         </dependency>
             +-->
 
@@ -379,45 +351,6 @@
         </dependency>
 
     </dependencies>
-
-    <reporting>
-        <plugins>
-
-            <!--+
-                | Project reports.
-                | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
-                +-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.1.2</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>index</report>
-                            <report>summary</report>
-                            <report>license</report>
-                            <report>project-team</report>
-                            <report>scm</report>
-                            <report>issue-tracking</report>
-                            <!--report>cim</report-->
-                            <report>dependencies</report>
-                            <!--report>dependency-convergence</report-->
-                            <!--report>dependency-info</report-->
-                            <!--report>dependency-management</report-->
-                            <!--report>distribution-management</report-->
-                            <!--report>help</report-->
-                            <!--report>mailing-list</report-->
-                            <!--report>modules</report-->
-                            <!--report>plugin-management</report-->
-                            <report>plugins</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-
-        </plugins>
-    </reporting>
 
 </project>
 
