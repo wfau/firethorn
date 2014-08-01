@@ -156,7 +156,7 @@ class test_firethorn(unittest.TestCase):
                     sql_start_time = time.time()
                     query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
                     logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database)
+                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit)
                     logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                     logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
                     sql_duration = int(time.time() - sql_start_time)

@@ -87,6 +87,12 @@ class QueryEngine(object):
             query_create_result = json.loads(f.read())
             query_identity = query_create_result["ident"]
             
+            # Update query
+            urlenc_updt = { query_limit_rows_param : firethorn_limits_rows_absolute}
+            data_updt = urllib.urlencode(urlenc_updt)
+            request_updt = urllib2.Request(query_identity, data_updt, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
+            f_updt = urllib2.urlopen(request_updt)
+            f_updt.close()
 
             query_loop_results = self.start_query_loop(query_identity)
             results_adql_url = query_create_result["results"]["adql"]

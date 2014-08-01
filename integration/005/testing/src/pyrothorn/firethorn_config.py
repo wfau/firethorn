@@ -16,6 +16,16 @@ MAX_ELAPSED_TIME = 18000
 MAX_DELAY = 15
 INITIAL_DELAY = 2
 
+#firethorn.limits.rows.default=1000,0000
+firethorn_limits_rows_default=sql_rowlimit
+firethorn_limits_cells_default=0
+firethorn_limits_time_default=0
+
+#firethorn.limits.rows.absolute=1000000
+firethorn_limits_rows_absolute=sql_rowlimit
+firethorn_limits_cells_absolute=0
+firethorn_limits_time_absolute=0
+
 ### URL, Type and Parameter associations and Information
 get_jdbc_resources_url = "/firethorn/jdbc/resource/select"
 get_adql_resources_url = "/firethorn/adql/resource/select"
@@ -31,7 +41,9 @@ schema_import_schema_base = "adql.schema.table.import.base"
 schema_import_uri = "/tables/import"
 
 query_create_uri = "/queries/create"
+query_update_uri = "/queries/update"
 query_name_param = "adql.schema.query.create.name"
+query_limit_rows_param = "adql.query.update.limit.rows"
 query_param = "adql.schema.query.create.query"
 query_status_update = "adql.query.update.status"
 

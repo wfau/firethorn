@@ -63,13 +63,15 @@ class DBHelper:
         return return_val
     
     
-    def execute_query_multiple_rows(self, query, db_name):
+    def execute_query_multiple_rows(self, query, db_name, limit=None):
         '''
         Execute a query on a database & table that may return any number of rows
         '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
-
+        if limit!=None:
+            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q ORDER BY 1"
+            
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
         cursor.execute(query)
@@ -84,14 +86,16 @@ class DBHelper:
         
         
         
-    def execute_query_get_cols_rows(self, query, db_name):
+    def execute_query_get_cols_rows(self, query, db_name, limit=None):
         '''
         Execute a query on a database & table that may return any number of rows
         '''
         return_val = []
        
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
-
+        if limit!=None:
+            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q ORDER BY 1"
+            
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
         cursor.execute(query)
@@ -169,14 +173,14 @@ class SQLEngine(object):
             row_length = len(query_result[1])    
         return row_length
    
-    def execute_sql_query(self, query, database):
+    def execute_sql_query(self, query, database, limit=None):
         '''
         Execute an SQL query
         
         @param query: The SQL Query
         @param database: The Database
         '''
-        return self._execute_query(query, database)
+        return self._execute_query(query, database, limit)
     
     
     def execute_update(self, query, database):
@@ -191,7 +195,7 @@ class SQLEngine(object):
         return response
         
         
-    def execute_sql_query_get_rows(self, query, database):
+    def execute_sql_query_get_rows(self, query, database, limit=None):
         '''
         Execute an SQL query
         
@@ -212,7 +216,7 @@ class SQLEngine(object):
         
  
         try:
-            query_results = self._execute_query_get_cols_rows(query,database)
+            query_results = self._execute_query_get_cols_rows(query,database, limit)
         except pyodbc.ProgrammingError, err:
             error_message = repr(err)
             logging.exception(error_message)
@@ -236,7 +240,7 @@ class SQLEngine(object):
         return res
     
 
-    def _execute_query (self, qry, database):
+    def _execute_query (self, qry, database, limit=None):
         '''
         Execute a query (qry) against a db and table
         
@@ -244,11 +248,11 @@ class SQLEngine(object):
         :param database:        
         '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
-        table_data = mydb.execute_query_multiple_rows(qry.encode('utf-8'), database)
+        table_data = mydb.execute_query_multiple_rows(qry.encode('utf-8'), database, limit)
         return table_data
         
         
-    def _execute_query_get_cols_rows (self,qry, database):
+    def _execute_query_get_cols_rows (self,qry, database, limit=None):
         '''
         Execute a query (qry) against a db and table, the information of which is stored as global variables
         
@@ -256,7 +260,7 @@ class SQLEngine(object):
         :param database:
         '''
         mydb = DBHelper(self.dbserver,self.dbuser ,self.dbpasswd, self.dbport, self.driver)
-        table_data = mydb.execute_query_get_cols_rows(qry.encode('utf-8'), database)
+        table_data = mydb.execute_query_get_cols_rows(qry.encode('utf-8'), database, limit)
         return table_data        
           
  
