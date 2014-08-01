@@ -21,13 +21,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -45,18 +45,18 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
@@ -184,9 +184,23 @@ public class JdbcSchemaEntity
      */
     @Component
     public static class NameFactory
-    extends BaseNameFactory<JdbcSchema>
+    extends DateNameFactory<JdbcSchema>
     implements JdbcSchema.NameFactory
         {
+        /**
+         * The default name prefix, {@value}.
+         * 
+         */
+        protected static final String PREFIX = "JDBC_TABLE";
+
+        @Override
+        public String name()
+            {
+            return datename(
+                PREFIX
+                );
+            }
+
         @Override
         public String fullname(final String catalog, final String schema)
             {
@@ -216,6 +230,7 @@ public class JdbcSchemaEntity
                 }
             }
 
+        /*
         @Override
         public String datename()
             {
@@ -224,7 +239,9 @@ public class JdbcSchemaEntity
                 factories().authentications().current().identity()
                 );
             }
-
+         */
+        
+        /*
         @Override
         public String datename(final Identity identity)
             {
@@ -233,7 +250,9 @@ public class JdbcSchemaEntity
                 identity
                 );
             }
+         */
 
+        /*
         @Override
         public String datename(final String prefix, final Identity identity)
             {
@@ -242,6 +261,7 @@ public class JdbcSchemaEntity
                 identity.ident()
                 );
             }
+         */
         }
 
     /**
@@ -286,9 +306,7 @@ public class JdbcSchemaEntity
                 this.create(
                     parent,
                     parent.catalog(),
-                    names.datename(
-                        identity
-                        )
+                    names.name()
                     )
                 );
             }

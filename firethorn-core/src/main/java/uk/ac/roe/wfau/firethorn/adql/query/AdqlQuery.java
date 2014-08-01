@@ -379,13 +379,8 @@ extends NamedEntity, Job
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory<AdqlQuery>
+    extends NamedEntity.NameFactory<AdqlQuery>
         {
-        /**
-         * Generate a unique name for a query.
-         *
-         */
-        public String name();
         }
 
     /**
@@ -402,7 +397,7 @@ extends NamedEntity, Job
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<AdqlQuery>
         {
         }
 

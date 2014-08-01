@@ -20,14 +20,13 @@ package uk.ac.roe.wfau.firethorn.config;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
  * Public interface for a configuration property.
  *
  */
 public interface ConfigProperty
-extends NamedEntity
+extends Entity
     {
     /**
      * Link factory interface.
@@ -43,7 +42,7 @@ extends NamedEntity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<ConfigProperty>
         {
         }
 
@@ -59,15 +58,13 @@ extends NamedEntity
          * Create or update a ConfigProperty.
          * @param key
          *      The property key.
-         * @param name
-         *      A descriptive name.
          * @param value
          *      The property value.
          * @return
          *      The corresponding ConfigProperty.
          *
          */
-        public ConfigProperty create(final URI key, final String name, final String value);
+        public ConfigProperty create(final URI key, final String value);
 
         /**
          * Select a specific ConfigProperty by key.

@@ -65,6 +65,7 @@ implements Entity
     {
     /**
      * Shared random number generator, used to create the random part of the Entity UID.
+     * This does not need to be secure, it just needs to be random enough to prevent collisions.
      * 
      */
     protected static final Random random = new Random(
@@ -250,8 +251,6 @@ implements Entity
         {
         return this.uidhi;
         }
-
-    
     
     /**
      * The Entity owner.

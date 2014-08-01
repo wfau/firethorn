@@ -44,7 +44,7 @@ public interface OgsaService
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory<OgsaService>
+    extends NamedEntity.NameFactory<OgsaService>
         {
         }
     
@@ -70,6 +70,13 @@ public interface OgsaService
          *
          */
         public Iterable<OgsaService> select();
+
+        /**
+         * Create a new service.
+         * @return A new {@link OgsaService}.
+         *
+         */
+        public OgsaService create();
 
         /**
          * Create a new service.

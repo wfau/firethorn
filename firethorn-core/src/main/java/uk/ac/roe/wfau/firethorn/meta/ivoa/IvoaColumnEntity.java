@@ -29,7 +29,6 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,9 +38,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -49,8 +48,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -120,6 +117,18 @@ public class IvoaColumnEntity
     protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
 
     /**
+     * The default name prefix, {@value}.
+     * 
+     */
+    protected static final String NAME_PREFIX = "IVOA_COLUMN";
+
+    /**
+     * The default alias prefix, {@value}.
+     * 
+     */
+    protected static final String ALIAS_PREFIX = "IVOA_COLUMN_";
+    
+    /**
      * {@link EntityBuilder} implementation.
      *
      */
@@ -157,12 +166,10 @@ public class IvoaColumnEntity
     public static class AliasFactory
     implements IvoaColumn.AliasFactory
         {
-        private static final String PREFIX = "IVOA_";
-
         @Override
         public String alias(final IvoaColumn column)
             {
-            return PREFIX.concat(
+            return ALIAS_PREFIX.concat(
                 column.ident().toString()
                 );
             }
@@ -171,7 +178,7 @@ public class IvoaColumnEntity
         public boolean matches(String alias)
             {
             return alias.startsWith(
-                PREFIX
+                ALIAS_PREFIX
                 );
             }
         
@@ -182,7 +189,7 @@ public class IvoaColumnEntity
             return entities.select(
                 idents.ident(
                     alias.substring(
-                        PREFIX.length()
+                        ALIAS_PREFIX.length()
                         )
                     )
                 );

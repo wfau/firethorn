@@ -18,10 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -36,7 +33,7 @@ extends BaseResource<IvoaSchema>
      *
      */
     public static interface IdentFactory
-    extends BaseResource.IdentFactory
+    extends Entity.IdentFactory<IvoaResource>
         {
         }
 
@@ -45,7 +42,7 @@ extends BaseResource<IvoaSchema>
      *
      */
     public static interface NameFactory
-    extends BaseResource.NameFactory<IvoaResource>
+    extends NamedEntity.NameFactory<IvoaResource>
         {
         }
     

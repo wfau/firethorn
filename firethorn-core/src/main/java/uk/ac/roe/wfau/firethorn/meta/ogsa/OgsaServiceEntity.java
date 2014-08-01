@@ -100,10 +100,13 @@ public class OgsaServiceEntity
      * TODO automatic name generator.
      * 
      */
-    public OgsaServiceEntity(final String endpoint) throws NameFormatException
+    public OgsaServiceEntity(final String endpoint)
+    throws NameFormatException
         {
-        super(true);
-        this.endpoint = endpoint; 
+        this(
+            "fred",
+            endpoint
+            ); 
         }
 
     /**

@@ -24,8 +24,6 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-
 /**
  *
  *

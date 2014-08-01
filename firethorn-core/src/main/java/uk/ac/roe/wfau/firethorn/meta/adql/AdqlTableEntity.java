@@ -38,6 +38,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -47,7 +48,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -115,14 +115,33 @@ public class AdqlTableEntity
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
 
     /**
+     * The default name prefix, {@value}.
+     * 
+     */
+    protected static final String NAME_PREFIX = "ADQL_TABLE";
+
+    /**
+     * The default alias prefix, {@value}.
+     * 
+     */
+    protected static final String ALIAS_PREFIX = "ADQL_TABLE_";
+
+    /**
      * {@link AdqlTable.NameFactory} implementation.
      *
      */
     @Component
     public static class NameFactory
-    extends BaseNameFactory<AdqlTable>
+    extends DateNameFactory<AdqlTable>
     implements AdqlTable.NameFactory
         {
+        @Override
+        public String name()
+            {
+            return datename(
+                NAME_PREFIX
+                );
+            }
         }
 
     /**
@@ -133,13 +152,12 @@ public class AdqlTableEntity
     public static class AliasFactory
     implements AdqlTable.AliasFactory
         {
-        private static final String PREFIX = "JDBC_";
 
         @Override
-        public String alias(final AdqlTable column)
+        public String alias(final AdqlTable entity)
             {
-            return PREFIX.concat(
-                column.ident().toString()
+            return ALIAS_PREFIX.concat(
+                entity.ident().toString()
                 );
             }
 
@@ -147,7 +165,7 @@ public class AdqlTableEntity
         public boolean matches(String alias)
             {
             return alias.startsWith(
-                PREFIX
+                ALIAS_PREFIX
                 );
             }
         
@@ -158,7 +176,7 @@ public class AdqlTableEntity
             return entities.select(
                 idents.ident(
                     alias.substring(
-                        PREFIX.length()
+                        ALIAS_PREFIX.length()
                         )
                     )
                 );
@@ -511,7 +529,7 @@ public class AdqlTableEntity
     protected void realize(final BaseColumn<?> base)
         {
         log.debug("realize(CopyDepth, BaseColumn) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
-        final AdqlColumn column = factories().adql().columns().create(
+        factories().adql().columns().create(
             AdqlTableEntity.this,
             base
             );

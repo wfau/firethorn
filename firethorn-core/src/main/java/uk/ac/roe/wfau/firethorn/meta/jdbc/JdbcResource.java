@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -35,7 +37,7 @@ extends BaseResource<JdbcSchema>
      *
      */
     public static interface IdentFactory
-    extends BaseResource.IdentFactory
+    extends Entity.IdentFactory<JdbcResource>
         {
         }
 
@@ -44,7 +46,7 @@ extends BaseResource<JdbcSchema>
      *
      */
     public static interface NameFactory
-    extends BaseResource.NameFactory<JdbcResource>
+    extends NamedEntity.NameFactory<JdbcResource>
         {
         }
 

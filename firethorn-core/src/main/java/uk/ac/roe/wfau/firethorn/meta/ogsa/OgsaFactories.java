@@ -64,7 +64,7 @@ public interface OgsaFactories
          * 
          */
         public OgsaIvoaResource.EntityFactory ivoa();
-}
+        }
 
     /**
      * Our resource factories.

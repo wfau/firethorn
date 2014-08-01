@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  *
@@ -33,20 +31,20 @@ public interface OgsaBaseResource
     /**
      * {@link Entity.IdentFactory} interface.
      *
-     */
     public static interface IdentFactory
     extends Entity.IdentFactory<OgsaBaseResource>
         {
         }
+     */
 
     /**
      * {@link Entity.NameFactory} interface.
      *
-     */
     public static interface NameFactory
-    extends Entity.NameFactory<OgsaBaseResource>
+    extends NamedEntity.NameFactory<OgsaBaseResource>
         {
         }
+     */
     
     /**
      * {@link Entity.LinkFactory} interface.

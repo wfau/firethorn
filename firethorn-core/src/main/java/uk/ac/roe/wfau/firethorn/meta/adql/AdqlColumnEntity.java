@@ -98,21 +98,35 @@ public class AdqlColumnEntity
     implements AdqlColumn
     {
     /**
-     * Hibernate table mapping, {@value}..
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlColumnEntity";
+
     /**
-     * Hibernate column mapping, {@value}..
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlColumnJoinTo";
+
     /**
-     * Hibernate column mapping, {@value}..
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlColumnIndexBy";
 
+    /**
+     * The default name prefix, {@value}.
+     * 
+     */
+    protected static final String NAME_PREFIX = "ADQL_COLUMN";
+
+    /**
+     * The default alias prefix, {@value}.
+     * 
+     */
+    protected static final String ALIAS_PREFIX = "ADQL_COLUMN_";
+    
     /**
      * {@link AdqlColumn.AliasFactory} implementation.
      *
@@ -121,13 +135,11 @@ public class AdqlColumnEntity
     public static class AliasFactory
     implements AdqlColumn.AliasFactory
         {
-        private static final String PREFIX = "ADQL_";
-
         @Override
-        public String alias(final AdqlColumn column)
+        public String alias(final AdqlColumn entity)
             {
-            return PREFIX.concat(
-                column.ident().toString()
+            return ALIAS_PREFIX.concat(
+                entity.ident().toString()
                 );
             }
 
@@ -135,7 +147,7 @@ public class AdqlColumnEntity
         public boolean matches(String alias)
             {
             return alias.startsWith(
-                PREFIX
+                ALIAS_PREFIX
                 );
             }
         
@@ -146,7 +158,7 @@ public class AdqlColumnEntity
             return entities.select(
                 idents.ident(
                     alias.substring(
-                        PREFIX.length()
+                        ALIAS_PREFIX.length()
                         )
                     )
                 );

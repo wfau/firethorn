@@ -12,8 +12,28 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 public interface NamedEntity
 extends Entity
 	{
+    /**
+     * Common interface for a name factory.
+     *
+     */
+    public interface NameFactory<EntityType extends NamedEntity>
+        {
+        /**
+         * Generate a new name.
+         *
+         */
+        public String name();
 
-	/**
+        /**
+         * Generate a new name.
+         * @param name An initial name to base the new name on. 
+         *
+         */
+        public String name(final String name);
+        
+        }
+
+    /**
      * Get the Entity name.
      *
      */

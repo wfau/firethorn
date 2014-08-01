@@ -27,11 +27,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -41,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
  *
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

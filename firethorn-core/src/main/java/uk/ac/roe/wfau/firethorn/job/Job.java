@@ -82,8 +82,9 @@ extends Entity
      * Identifier factory interface.
      *
      */
+    @Deprecated
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<Job>
         {
         }
 

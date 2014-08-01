@@ -45,7 +45,6 @@ extends TestBase
                         "urn:test-property"
                         )
                     ),
-                "test property name",
                 "test property value"
                 )
             );
@@ -64,7 +63,6 @@ extends TestBase
         assertNotNull(
             factories().config().create(
                 key,
-                "test property name",
                 "test property value"
                 )
             );
@@ -87,7 +85,6 @@ extends TestBase
         assertNotNull(
             factories().config().create(
                 key,
-                "test property name",
                 "test property value"
                 )
             );
@@ -95,12 +92,6 @@ extends TestBase
             factories().config().select(
                 key
                 )
-            );
-        assertEquals(
-            "test property name",
-            factories().config().select(
-                key
-                ).name()
             );
         }
 
@@ -116,7 +107,6 @@ extends TestBase
         assertNotNull(
             factories().config().create(
                 key,
-                "test property name",
                 "test property value"
                 )
             );

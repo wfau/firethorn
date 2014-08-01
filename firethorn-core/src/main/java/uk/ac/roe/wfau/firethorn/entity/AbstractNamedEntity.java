@@ -26,7 +26,6 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.Type;
 
-import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 
 /**
@@ -69,13 +68,13 @@ implements Entity, NamedEntity
      * Protected constructor, sets the owner and create date.
      * @param init A flag to distinguish this from the default constructor.
      *
-     */
     @Deprecated
     protected AbstractNamedEntity(final boolean init)
     throws NameFormatException
         {
         super(init);
         }
+     */
 
     /**
      * Protected constructor, sets the owner, name and create date.

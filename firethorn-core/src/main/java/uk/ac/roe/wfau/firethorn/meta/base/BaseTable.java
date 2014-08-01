@@ -20,12 +20,12 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.AliasFactory;
 
 /**
  *
@@ -37,20 +37,20 @@ extends BaseComponent
     /**
      * {@link Entity.IdentFactory} interface.
      *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
+    public static interface IdentFactory<TableType extends BaseTable<?,?>>
+    extends Entity.IdentFactory<TableType>
         {
         }
+     */
 
     /**
      * {@link Entity.NameFactory} interface.
      *
-     */
     public static interface NameFactory<TableType extends BaseTable<?,?>>
-    extends Entity.NameFactory<TableType>
+    extends NamedEntity.NameFactory<TableType>
         {
         }
+     */
 
     /**
      * {@link Entity.AliasFactory} interface.
@@ -125,7 +125,7 @@ extends BaseComponent
          * @todo Move to services.
          *
          */
-        public NameFactory<TableType> names();
+        public NamedEntity.NameFactory<TableType> names();
 
         }
 

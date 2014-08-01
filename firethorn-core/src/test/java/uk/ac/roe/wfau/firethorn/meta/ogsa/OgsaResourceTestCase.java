@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.adql ;
+package uk.ac.roe.wfau.firethorn.meta.ogsa ;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 /**
  *
  */
-public class AdqlResourceTestCase
+public class OgsaResourceTestCase
 extends TestBase
     {
 
@@ -34,13 +34,9 @@ extends TestBase
     public void test001()
     throws Exception
         {
-        //
-        // Create with name works.
         assertNotNull(
-            factories().adql().resources().create(
-                this.unique(
-                    "resource"
-                    )
+            factories().ogsa().services().create(
+                "http://localhost:8080/example"
                 )
             );
         }
@@ -49,15 +45,9 @@ extends TestBase
     public void test002()
     throws Exception
         {
-        //
-        // Create with name works.
-        final AdqlResource created = factories().adql().resources().create(
-            this.unique(
-                "resource"
-                )
+        final OgsaService created = factories().ogsa().services().create(
+            "http://localhost:8080/example"
             );
-        //
-        // Select by ident works.
         assertNotNull(
             factories().adql().resources().select(
                 created.ident()

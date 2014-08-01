@@ -68,6 +68,14 @@ implements OgsaService.EntityFactory
         }
 
     @Override
+    public OgsaService create()
+        {
+        return super.insert(
+            new OgsaServiceEntity()
+            );
+        }
+
+    @Override
     public OgsaService create(final String endpoint)
         {
         return super.insert(
