@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
 /**
@@ -73,30 +74,33 @@ implements OgsaService.EntityFactory
         }
 
     @Override
+    @CreateMethod
     public OgsaService create()
         {
         return create(
-            names.name(),
-            null
+            null,
+            names.name()
             );
         }
 
     @Override
+    @CreateMethod
     public OgsaService create(final String endpoint)
         {
         return create(
-            names.name(),
-            endpoint
+            endpoint,
+            names.name()
             );
         }
 
     @Override
-    public OgsaService create(final String name, final String endpoint)
+    @CreateMethod
+    public OgsaService create(final String endpoint, final String name)
         {
         return super.insert(
             new OgsaServiceEntity(
-                name,
-                endpoint
+                endpoint,
+                name
                 )
             );
         }

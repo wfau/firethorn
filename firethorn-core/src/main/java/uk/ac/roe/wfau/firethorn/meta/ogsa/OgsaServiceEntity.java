@@ -99,7 +99,7 @@ public class OgsaServiceEntity
      * @throws NameFormatException
      *
      */
-    public OgsaServiceEntity(final String name, final String endpoint) throws NameFormatException
+    public OgsaServiceEntity(final String endpoint, final String name) throws NameFormatException
         {
         super(
             name

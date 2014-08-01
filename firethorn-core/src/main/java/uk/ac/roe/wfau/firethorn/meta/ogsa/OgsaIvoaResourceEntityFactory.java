@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 
 /**
@@ -62,6 +64,7 @@ implements OgsaIvoaResource.EntityFactory
         }
     
     @Override
+    @SelectMethod
     public Iterable<OgsaIvoaResource> select()
         {
         return super.iterable(
@@ -72,6 +75,7 @@ implements OgsaIvoaResource.EntityFactory
         }
     
     @Override
+    @SelectMethod
     public Iterable<OgsaIvoaResource> select(final OgsaService service)
         {
         return super.iterable(
@@ -82,6 +86,7 @@ implements OgsaIvoaResource.EntityFactory
         }
 
     @Override
+    @SelectMethod
     public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source)
         {
         return super.iterable(
@@ -92,6 +97,7 @@ implements OgsaIvoaResource.EntityFactory
         }
 
     @Override
+    @CreateMethod
     public OgsaIvoaResource create(final OgsaService service, final IvoaResource source)
         {
         return super.insert(
@@ -102,7 +108,9 @@ implements OgsaIvoaResource.EntityFactory
                 )
             );
         }
+
     @Override
+    @CreateMethod
     public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name)
         {
         return super.insert(
