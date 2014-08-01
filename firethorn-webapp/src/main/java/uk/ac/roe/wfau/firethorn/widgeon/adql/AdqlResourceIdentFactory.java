@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AdqlResourceIdentFactory
-extends WebappIdentFactory
+extends WebappIdentFactory<AdqlResource>
 implements AdqlResource.IdentFactory
     {
     /**

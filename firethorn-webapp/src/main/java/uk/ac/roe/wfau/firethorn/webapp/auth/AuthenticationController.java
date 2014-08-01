@@ -28,10 +28,4 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 public class AuthenticationController
     {
-    @Component
-    public static class IdentFactory
-    extends WebappIdentFactory
-    implements Authentication.IdentFactory
-        {
-        }
     }

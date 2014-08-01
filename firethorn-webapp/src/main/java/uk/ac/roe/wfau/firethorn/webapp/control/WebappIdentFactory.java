@@ -24,9 +24,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
  * Base class for IdentFactory implementations within the webapp.
  *
  */
-public abstract class WebappIdentFactory
-extends AbstractIdentFactory
-implements Entity.IdentFactory
+public abstract class WebappIdentFactory<EntityType extends Entity>
+extends AbstractIdentFactory<EntityType>
     {
 
     }

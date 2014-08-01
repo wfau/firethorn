@@ -29,9 +29,17 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class OgsaResourceTestCase
 extends TestBase
     {
-
     @Test
     public void test001()
+    throws Exception
+        {
+        assertNotNull(
+            factories().ogsa().services().create()
+            );
+        }
+
+    @Test
+    public void test002()
     throws Exception
         {
         assertNotNull(
@@ -42,12 +50,22 @@ extends TestBase
         }
 
     @Test
-    public void test002()
+    public void test003()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8080/example"
+        assertNotNull(
+            factories().ogsa().services().create(
+                "test service",
+                "http://localhost:8080/example"
+                )
             );
+        }
+
+    @Test
+    public void test004()
+    throws Exception
+        {
+        final OgsaService created = factories().ogsa().services().create();
         assertNotNull(
             factories().adql().resources().select(
                 created.ident()

@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class JdbcTableIdentFactory
-extends WebappIdentFactory
+extends WebappIdentFactory<JdbcTable>
 implements JdbcTable.IdentFactory
     {
     /**
