@@ -25,6 +25,7 @@ import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
@@ -44,6 +45,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 
 @Component
 public class TestFactories
@@ -723,6 +727,149 @@ public class TestFactories
                     {
                     // TODO Auto-generated method stub
                     return null;
+                    }
+                }
+            }
+        }
+
+    @Component
+    public static class OgsaFactories
+        {
+        @Component
+        public static class ServiceFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory<OgsaService>
+            implements OgsaService.IdentFactory
+                {
+                }
+
+            @Component
+            public static class LinkFactory
+            extends AbstractLinkFactory<OgsaService>
+            implements OgsaService.LinkFactory
+                {
+                public LinkFactory()
+                    {
+                    super(
+                        "/ogsa/service"
+                        );
+                    }
+
+                @Override
+                public OgsaService resolve(String link)
+                throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+                }
+            @Component
+            public static class NameFactory
+            extends DateNameFactory<OgsaService>
+            implements OgsaService.NameFactory
+                {
+                @Override
+                public String name()
+                    {
+                    return datename(
+                        "OGSA_SERVICE"
+                        );
+                    }
+                }
+            }
+        @Component
+        public static class ResourceFactories
+            {
+            @Component
+            public static class JdbcResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.IdentFactory
+                    {
+                    }
+                @Component
+                public static class LinkFactory
+                extends AbstractLinkFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/resource/jdbc"
+                            );
+                        }
+
+                    @Override
+                    public OgsaJdbcResource resolve(String link)
+                        throws IdentifierFormatException,
+                        IdentifierNotFoundException, EntityNotFoundException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
+                    }
+                @Component
+                public static class NameFactory
+                extends DateNameFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.NameFactory
+                    {
+                    @Override
+                    public String name()
+                        {
+                        return datename(
+                            "OGSA_JDBC_RESOURCE"
+                            );
+                        }
+                    }
+                }
+
+            @Component
+            public static class IvoaResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.IdentFactory
+                    {
+                    }
+
+                @Component
+                public static class LinkFactory
+                extends AbstractLinkFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/resource/ivoa"
+                            );
+                        }
+
+                    @Override
+                    public OgsaIvoaResource resolve(String link)
+                        throws IdentifierFormatException,
+                        IdentifierNotFoundException, EntityNotFoundException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
+                    }
+                @Component
+                public static class NameFactory
+                extends DateNameFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.NameFactory
+                    {
+                    @Override
+                    public String name()
+                        {
+                        return datename(
+                            "OGSA_IVOA_RESOURCE"
+                            );
+                        }
                     }
                 }
             }

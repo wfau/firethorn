@@ -19,11 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,7 +27,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
@@ -56,33 +51,15 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
         }
     )
 public class OgsaIvoaResourceEntity
-    extends AbstractNamedEntity
+    extends OgsaBaseResourceEntity
     implements OgsaIvoaResource
     {
     /**
      * Hibernate table mapping, {@value}.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaServiceEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaIvoaResource";
 
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_OGSAID_COL = "ogsaid";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_STATUS_COL = "status";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_SERVICE_COL = "service";
-    
     /**
      * Hibernate column mapping, {@value}.
      *
@@ -93,28 +70,10 @@ public class OgsaIvoaResourceEntity
      * Protected constructor. 
      *
      */
-    public OgsaIvoaResourceEntity()
+    protected OgsaIvoaResourceEntity()
         {
         super();
         }
-
-    /**
-    *
-    * Public constructor.
-    * @param name The resource name.
-    * @param service The parent {@link OgsaService}
-    * @param source  The source {@link IvoaResource}
-    * @throws NameFormatException
-    *
-    */
-   public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source) throws NameFormatException
-       {
-       this(
-           service,
-           source,
-           "fred"
-           );
-       }
 
    /**
      *
@@ -125,30 +84,14 @@ public class OgsaIvoaResourceEntity
      * @throws NameFormatException
      *
      */
-    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source, final String name) throws NameFormatException
+    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source, final String name)
+    throws NameFormatException
         {
         super(
+            service,
             name
             );
-        this.source  = source  ;
-        this.service = service ;
-        }
-
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = OgsaServiceEntity.class
-        )
-    @JoinColumn(
-        name = DB_RESOURCE_SERVICE_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private OgsaService service;
-    @Override
-    public OgsaService service()
-        {
-        return this.service;
+        this.source = source  ;
         }
 
     @ManyToOne(
@@ -168,36 +111,12 @@ public class OgsaIvoaResourceEntity
         return this.source;
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_RESOURCE_OGSAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ogsaid;
     @Override
-    public String ogsaid()
+    public String link()
         {
-        return ogsaid;
-        }
-
-    @Column(
-        name = DB_RESOURCE_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Status status = Status.CREATED ;
-    @Override
-    public Status status()
-        {
-        return this.status;
+        return factories().ogsa().resources().ivoa().links().link(
+            this
+            );
         }
 
     @Override
@@ -205,13 +124,5 @@ public class OgsaIvoaResourceEntity
         {
         // TODO Auto-generated method stub
         return null;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ogsa().resources().ivoa().links().link(
-            this
-            );
         }
     }

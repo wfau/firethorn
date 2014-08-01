@@ -64,6 +64,7 @@ public interface OgsaService
     public static interface EntityFactory
     extends Entity.EntityFactory<OgsaService>
         {
+
         /**
          * Select all the services.
          * @return An {@link Iterable} set of {@link OgsaService}(s). 

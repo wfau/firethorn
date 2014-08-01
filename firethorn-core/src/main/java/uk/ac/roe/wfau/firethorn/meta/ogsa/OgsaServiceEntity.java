@@ -50,7 +50,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "JdbcResource-select-all",
+            name  = "OgsaService-select-all",
             query = "FROM OgsaServiceEntity ORDER BY name asc, ident desc"
             ),
         }
@@ -90,23 +90,6 @@ public class OgsaServiceEntity
     protected OgsaServiceEntity()
         {
         super();
-        }
-
-    /**
-     * Public constructor.
-     * @param endpoint The service endpoint.
-     * @throws NameFormatException
-     *
-     * TODO automatic name generator.
-     * 
-     */
-    public OgsaServiceEntity(final String endpoint)
-    throws NameFormatException
-        {
-        this(
-            "fred",
-            endpoint
-            ); 
         }
 
     /**

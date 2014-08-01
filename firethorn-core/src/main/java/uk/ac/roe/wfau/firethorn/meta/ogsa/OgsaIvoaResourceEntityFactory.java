@@ -21,81 +21,81 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 
 /**
  * {@link OgsaJdbcResource.EntityFactory} implementation.
  *
  */
 @Repository
-public class OgsaJdbcResourceEntityFactory
-extends AbstractEntityFactory<OgsaJdbcResource>
-implements OgsaJdbcResource.EntityFactory
+public class OgsaIvoaResourceEntityFactory
+extends AbstractEntityFactory<OgsaIvoaResource>
+implements OgsaIvoaResource.EntityFactory
     {
 
     @Override
     public Class<?> etype()
         {
-        return OgsaJdbcResourceEntity.class;
+        return OgsaIvoaResourceEntity.class;
         }
 
     @Autowired
-    private OgsaJdbcResource.NameFactory names;
-    public OgsaJdbcResource.NameFactory names()
+    private OgsaIvoaResource.NameFactory names;
+    public OgsaIvoaResource.NameFactory names()
         {
         return this.names;
         }
 
     @Autowired
-    private OgsaJdbcResource.IdentFactory idents;
+    private OgsaIvoaResource.IdentFactory idents;
     @Override
-    public OgsaJdbcResource.IdentFactory idents()
+    public OgsaIvoaResource.IdentFactory idents()
         {
         return this.idents;
         }
 
-    private OgsaJdbcResource.LinkFactory links;
+    private OgsaIvoaResource.LinkFactory links;
     @Override
-    public OgsaJdbcResource.LinkFactory links()
+    public OgsaIvoaResource.LinkFactory links()
         {
         return this.links;
         }
     
     @Override
-    public Iterable<OgsaJdbcResource> select()
+    public Iterable<OgsaIvoaResource> select()
         {
         return super.iterable(
             super.query(
-                "OgsaJdbcResource-select-all"
+                "OgsaIvoaResource-select-all"
                 )
             );
         }
     
     @Override
-    public Iterable<OgsaJdbcResource> select(final OgsaService service)
+    public Iterable<OgsaIvoaResource> select(final OgsaService service)
         {
         return super.iterable(
             super.query(
-                "OgsaJdbcResource-select-service"
+                "OgsaIvoaResource-select-service"
                 )
             );
         }
 
     @Override
-    public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source)
+    public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source)
         {
         return super.iterable(
             super.query(
-                "OgsaJdbcResource-select-service-source"
+                "OgsaIvoaResource-select-service-source"
                 )
             );
         }
 
     @Override
-    public OgsaJdbcResource create(final OgsaService service, final JdbcResource source)
+    public OgsaIvoaResource create(final OgsaService service, final IvoaResource source)
         {
         return super.insert(
-            new OgsaJdbcResourceEntity(
+            new OgsaIvoaResourceEntity(
                 service,
                 source,
                 names.name()
@@ -103,10 +103,10 @@ implements OgsaJdbcResource.EntityFactory
             );
         }
     @Override
-    public OgsaJdbcResource create(final OgsaService service, final JdbcResource source, final String name)
+    public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name)
         {
         return super.insert(
-            new OgsaJdbcResourceEntity(
+            new OgsaIvoaResourceEntity(
                 service,
                 source,
                 name

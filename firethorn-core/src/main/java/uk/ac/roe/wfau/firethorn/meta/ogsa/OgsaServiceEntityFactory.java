@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.Entity.IdentFactory;
-import uk.ac.roe.wfau.firethorn.entity.Entity.LinkFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
 /**
@@ -41,19 +39,26 @@ implements OgsaService.EntityFactory
         }
 
     @Autowired
-    private IdentFactory<OgsaService> idents;
+    private OgsaService.IdentFactory idents;
     @Override
-    public IdentFactory<OgsaService> idents()
+    public OgsaService.IdentFactory idents()
         {
-        return idents;
+        return this.idents;
         }
 
     @Autowired
-    private LinkFactory<OgsaService> links;
+    private OgsaService.LinkFactory links;
     @Override
-    public LinkFactory<OgsaService> links()
+    public OgsaService.LinkFactory links()
         {
-        return links;
+        return this.links;
+        }
+
+    @Autowired
+    private OgsaService.NameFactory names;
+    public OgsaService.NameFactory names()
+        {
+        return this.names;
         }
 
     @Override
@@ -70,21 +75,20 @@ implements OgsaService.EntityFactory
     @Override
     public OgsaService create()
         {
-        return super.insert(
-            new OgsaServiceEntity()
+        return create(
+            names.name(),
+            null
             );
         }
 
     @Override
     public OgsaService create(final String endpoint)
         {
-        return super.insert(
-            new OgsaServiceEntity(
-                endpoint
-                )
+        return create(
+            names.name(),
+            endpoint
             );
         }
-
 
     @Override
     public OgsaService create(final String name, final String endpoint)

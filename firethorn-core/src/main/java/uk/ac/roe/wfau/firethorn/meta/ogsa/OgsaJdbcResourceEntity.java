@@ -19,20 +19,15 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -58,32 +53,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
         }
     )
 public class OgsaJdbcResourceEntity
-    extends AbstractNamedEntity
-    implements OgsaJdbcResource
+extends OgsaBaseResourceEntity
+implements OgsaJdbcResource
     {
     /**
      * Hibernate table mapping, {@value}.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaServiceEntity";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_OGSAID_COL = "ogsaid";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_STATUS_COL = "status";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_RESOURCE_SERVICE_COL = "service";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaJdbcResource";
     
     /**
      * Hibernate column mapping, {@value}.
@@ -101,24 +78,6 @@ public class OgsaJdbcResourceEntity
         }
 
     /**
-    *
-    * Public constructor.
-    * @param name The resource name.
-    * @param service The parent {@link OgsaService}
-    * @param source  The source {@link JdbcResource}
-    * @throws NameFormatException
-    *
-    */
-   public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source) throws NameFormatException
-       {
-       this(
-           service,
-           source,
-           "fred"
-           );
-       }
-
-   /**
      *
      * Public constructor.
      * @param name The resource name.
@@ -127,30 +86,14 @@ public class OgsaJdbcResourceEntity
      * @throws NameFormatException
      *
      */
-    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source, final String name) throws NameFormatException
+    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source, final String name)
+    throws NameFormatException
         {
         super(
+            service,
             name
             );
-        this.source  = source  ;
-        this.service = service ;
-        }
-
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = OgsaServiceEntity.class
-        )
-    @JoinColumn(
-        name = DB_RESOURCE_SERVICE_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private OgsaService service;
-    @Override
-    public OgsaService service()
-        {
-        return this.service;
+        this.source = source  ;
         }
 
     @ManyToOne(
@@ -170,36 +113,12 @@ public class OgsaJdbcResourceEntity
         return this.source;
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_RESOURCE_OGSAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ogsaid;
     @Override
-    public String ogsaid()
+    public String link()
         {
-        return ogsaid;
-        }
-
-    @Column(
-        name = DB_RESOURCE_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Status status = Status.CREATED ;
-    @Override
-    public Status status()
-        {
-        return this.status;
+        return factories().ogsa().resources().jdbc().links().link(
+            this
+            );
         }
 
     @Override
@@ -207,13 +126,5 @@ public class OgsaJdbcResourceEntity
         {
         // TODO Auto-generated method stub
         return null;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ogsa().resources().jdbc().links().link(
-            this
-            );
         }
     }
