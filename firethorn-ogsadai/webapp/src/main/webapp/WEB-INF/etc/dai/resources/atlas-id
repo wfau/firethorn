@@ -1,12 +1,12 @@
-id=atlas
+id=atlas-id
 type=uk.org.ogsadai.DATA_RESOURCE
 creationTime=null
 terminationTime=null
 PROPERTIES
 END
 CONFIG
-dai.driver.class=net.sourceforge.jtds.jdbc.Driver
-dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/ATLAS
+dai.driver.class=xxxx
+dai.data.resource.uri=xxxx
 dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
 END
 ACTIVITIES

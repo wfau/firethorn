@@ -17,6 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -28,6 +35,13 @@ import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
+
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
@@ -69,13 +83,13 @@ public class OgsaServiceEntity
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_SERVICE_OGSAID_COL = "ogsaid";
+    protected static final String DB_SERVICE_ENDPOINT_COL = "endpoint";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_SERVICE_ENDPOINT_COL = "endpoint";
+    protected static final String DB_SERVICE_VERSION_COL = "version";
 
     /**
      * Hibernate column mapping, {@value}.
@@ -127,39 +141,32 @@ public class OgsaServiceEntity
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_SERVICE_OGSAID_COL,
+        name = DB_SERVICE_VERSION_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String ogsaid;
+    private String version ;
     @Override
-    public String ogsaid()
+    public String version()
         {
-        return ogsaid;
+        return this.version;
         }
 
     @Column(
         name = DB_SERVICE_STATUS_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = true
         )
     @Enumerated(
         EnumType.STRING
         )
-    private Status status = Status.CREATED ;
+    private HttpStatus http ;
     @Override
-    public Status status()
+    public HttpStatus http()
         {
-        return status;
-        }
-
-    @Override
-    public Status ping()
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return http ;
         }
 
     @Override
@@ -219,5 +226,71 @@ public class OgsaServiceEntity
                     );
                 }
             };
+        }
+
+    
+    protected URI baseuri()
+    throws URISyntaxException
+        {
+        if (this.endpoint() == null)
+            {
+            throw new URISyntaxException(
+                null,
+                "Null service endpoint",
+                0
+                );
+            }
+        else {
+            if (this.endpoint().endsWith("/"))
+                {
+                return new URI(
+                    this.endpoint()
+                    );                
+                }
+            else {
+                return new URI(
+                    this.endpoint() + "/"
+                    );                
+                }
+            }
+        }
+
+    @Override
+    public HttpStatus ping()
+        {
+        ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory(); 
+        try {
+            ClientHttpRequest request = factory.createRequest(
+                baseuri().resolve(
+                    "services/version"
+                    ),
+                HttpMethod.GET
+                );
+
+            log.debug("Service request [{}][{}]", this.ident(), request.getURI());
+            ClientHttpResponse response = request.execute();
+
+            this.http = response.getStatusCode();
+            log.debug("Service response [{}][{}]", this.ident(), response.getStatusText());
+
+            this.version = new LineNumberReader(
+                new InputStreamReader(
+                    response.getBody()
+                    )
+                ).readLine();
+            log.debug("Service version [{}][{}]", this.ident(), this.version());
+
+            }
+        catch (URISyntaxException ouch)
+            {
+            log.warn("Problem occured parsing service endpoint [{}][{}][{}]", this.ident(), ouch.getInput(), ouch.getReason());
+            this.http = HttpStatus.BAD_REQUEST;
+            }
+        catch (IOException ouch)
+            {
+            log.error("Problem occured sending service request [{}][{}][{}]", this.ident(), this.endpoint(), ouch.getMessage());
+            this.http = HttpStatus.BAD_REQUEST;
+            }
+        return this.http ;
         }
     }

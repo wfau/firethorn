@@ -22,17 +22,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
  */
-public class OgsaResourceTestCase
+public class OgsaServiceTestCase
 extends TestBase
     {
     @Test
-    public void test001()
+    public void testCreate001()
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create();
@@ -49,15 +50,12 @@ extends TestBase
             created.owner()
             );
         assertNull(
-            created.ogsaid()
-            );
-        assertNull(
             created.endpoint()
             );
         }
 
     @Test
-    public void test002()
+    public void testCreate002()
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
@@ -75,9 +73,6 @@ extends TestBase
         assertNotNull(
             created.owner()
             );
-        assertNull(
-            created.ogsaid()
-            );
         assertEquals(
             "http://localhost:8080/example",
             created.endpoint()
@@ -85,7 +80,7 @@ extends TestBase
         }
 
     @Test
-    public void test003()
+    public void testCreate003()
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
@@ -105,9 +100,6 @@ extends TestBase
         assertNotNull(
             created.owner()
             );
-        assertNull(
-            created.ogsaid()
-            );
         assertEquals(
             "http://localhost:8080/example",
             created.endpoint()
@@ -115,7 +107,7 @@ extends TestBase
         }
 
     @Test
-    public void test004()
+    public void testCreate004()
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create();
@@ -131,15 +123,8 @@ extends TestBase
         assertNotNull(
             created.owner()
             );
-        assertNull(
-            created.ogsaid()
-            );
         final OgsaService selected = factories().ogsa().services().select(
             created.ident()
-            );
-        assertEquals(
-            created,
-            selected
             );
         assertEquals(
             created.ident(),
@@ -149,25 +134,37 @@ extends TestBase
             created.name(),
             selected.name()
             );
-/*
- * 
-        assertEquals(
-            created.owner(),
-            selected.owner()
-            );
- * 
- */
         assertEquals(
             created.owner().ident(),
             selected.owner().ident()
             );
         assertEquals(
-            created.ogsaid(),
-            selected.ogsaid()
-            );
-        assertEquals(
             created.hashCode(),
             selected.hashCode()
+            );
+        }
+
+    
+    @Test
+    public void testPing000()
+    throws Exception
+        {
+        final OgsaService created = factories().ogsa().services().create(
+            "http://localhost:8081/albert"
+            );
+        assertNotNull(
+            created
+            );
+        assertNull(
+            created.http()
+            );
+        assertEquals(
+            HttpStatus.OK,
+            created.ping()
+            );
+        assertEquals(
+            HttpStatus.OK,
+            created.http()
             );
         }
     }

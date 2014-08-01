@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import org.springframework.http.HttpStatus;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -99,43 +101,32 @@ public interface OgsaService
         }
 
     /**
-     * The OGSA-DAI web-service endpoint URL.
+     * The OGSA-DAI service endpoint URL.
      * @return The endpoint URL.
      *
      */
     public String endpoint();
 
     /**
-     * The OGSA-DAI resource ID.
-     * @return The resource ID.
+     * The OGSA-DAI -service version.
+     * @return The service version.
      *
      */
-    public String ogsaid();
-
-    /**
-     * OGSA-DAI service status.
-     *
-     */
-    public static enum Status
-        {
-        CREATED(),
-        ACTIVE(),
-        UNKNOWN();
-        }
+    public String version();
 
     /**
      * Get the service status.
      * @return The service status.
      *
      */
-    public Status status();
+    public HttpStatus http();
 
     /**
      * Check the service status.
      * @return The service status.
      *
      */
-    public Status ping();
+    public HttpStatus ping();
 
     /**
      * Access to the {@link OgsaBaseResource}(s) provided by this {@link OgsaService}.
@@ -187,5 +178,18 @@ public interface OgsaService
      *
      */
     public Resources resources();
+
+    /**
+     * OGSA-DAI service status.
+     *
+    public static enum Status
+        {
+        CREATED(),
+        ONLINE(),
+        OFFLINE(),
+        UNKNOWN();
+        }
+     */
+
 
     }
