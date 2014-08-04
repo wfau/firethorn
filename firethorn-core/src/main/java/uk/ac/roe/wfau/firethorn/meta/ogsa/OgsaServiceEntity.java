@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -32,9 +31,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,6 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -228,8 +228,8 @@ public class OgsaServiceEntity
             };
         }
 
-    
-    protected URI baseuri()
+    @Override
+    public URI baseuri()
     throws URISyntaxException
         {
         if (this.endpoint() == null)
@@ -255,10 +255,15 @@ public class OgsaServiceEntity
             }
         }
 
+    /**
+     *  Our local HTTP request factory.
+     *
+     */
+    private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+    
     @Override
     public HttpStatus ping()
         {
-        ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory(); 
         try {
             ClientHttpRequest request = factory.createRequest(
                 baseuri().resolve(

@@ -238,9 +238,6 @@ extends BaseActivity implements Activity
         return output.getSingleActivityOutputs()[0];
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityInput[] getInputs()
         {
@@ -252,9 +249,6 @@ extends BaseActivity implements Activity
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityOutput[] getOutputs()
         {
@@ -263,9 +257,6 @@ extends BaseActivity implements Activity
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException

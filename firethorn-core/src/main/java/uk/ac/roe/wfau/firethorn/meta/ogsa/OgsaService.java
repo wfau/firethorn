@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.http.HttpStatus;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -106,6 +109,15 @@ public interface OgsaService
      *
      */
     public String endpoint();
+
+    /**
+     * The base webapp URI.
+     * @return The base webapp URI.
+     * @throws URISyntaxException If the endpoint is not a valid URI.
+     *
+     */
+    public URI baseuri()
+    throws URISyntaxException ;
 
     /**
      * The OGSA-DAI -service version.

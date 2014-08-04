@@ -90,6 +90,7 @@ uk.ac.roe.wfau.firethorn.Insert=uk.ac.roe.wfau.firethorn.Insert
 uk.ac.roe.wfau.firethorn.Limits=uk.ac.roe.wfau.firethorn.Limits
 uk.ac.roe.wfau.firethorn.Delays=uk.ac.roe.wfau.firethorn.Delays
 uk.ac.roe.wfau.firethorn.Rownum=uk.ac.roe.wfau.firethorn.Rownum
+uk.org.ogsadai.ExtendedCreateRelationalResource=uk.org.ogsadai.ExtendedCreateRelationalResource
 END
 acceptRequests=true
 ENGINE-CONFIG

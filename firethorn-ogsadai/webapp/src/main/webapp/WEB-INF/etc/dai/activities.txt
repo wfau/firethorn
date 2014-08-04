@@ -676,5 +676,11 @@ class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.RownumActivity
 description=
 CONFIG
 END
+id=uk.org.ogsadai.ExtendedCreateRelationalResource
+class=uk.org.ogsadai.activity.management.ExtendedCreateRelationalResourceActivity
+description=
+CONFIG
+dai.template.id=NOT_USED
+END
 EOF
 

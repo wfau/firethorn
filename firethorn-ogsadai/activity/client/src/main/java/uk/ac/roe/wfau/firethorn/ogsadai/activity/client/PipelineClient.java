@@ -64,13 +64,13 @@ public class PipelineClient
     public PipelineResult execute(final PipelineParam param)
         {
         //
-        // Create our ogsadai client.
+        // Our ogsadai client.
         final Server server = new JerseyServer();
         server.setDefaultBaseServicesURL(
             this.endpoint
             );
         //
-        // Create our DRER.
+        // Lookup our DRER.
         final DataRequestExecutionResource drer = server.getDataRequestExecutionResource(
             new ResourceID(
                 DRER_IDENT

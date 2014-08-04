@@ -380,7 +380,7 @@ cat  "${databasefile:?}"
 
             pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
 
-                jdbcconfig atlas-id     firethorn.atlas
+                jdbcconfig atlas-id  firethorn.atlas
                 jdbcconfig userd-id  firethorn.user
 
             popd
@@ -388,6 +388,4 @@ cat  "${databasefile:?}"
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
-        popd
-    popd
 
