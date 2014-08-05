@@ -21,13 +21,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
-
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
+import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
+import uk.org.ogsadai.client.toolkit.exception.ActivityOutputUnreadableException;
+import uk.org.ogsadai.client.toolkit.exception.ClientException;
+import uk.org.ogsadai.client.toolkit.exception.ClientToolkitException;
+import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
+import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
+import uk.org.ogsadai.client.toolkit.exception.RequestException;
+import uk.org.ogsadai.client.toolkit.exception.ResourceUnknownException;
+import uk.org.ogsadai.client.toolkit.exception.ServerCommsException;
+import uk.org.ogsadai.client.toolkit.exception.ServerException;
+import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
@@ -37,7 +48,69 @@ import uk.org.ogsadai.resource.ResourceID;
 @Slf4j
 public class JdbcCreateWorkflow
     {
+    /**
+     * Public interface for the workflow params.
+     *
+     */
+    public interface Param
+    extends JdbcCreateActivity.Param
+        {
+        }
 
+    /**
+     * Workflow results.
+     * 
+     */
+    public static class Result
+    extends SimpleWorkflowResult
+        {
+        public Result(final RequestResource request, ResourceID resource)
+            {
+            super(
+                request
+                );
+            this.resource = resource;
+            }
+
+        /**
+         * Public constructor.
+         * 
+         */
+        public Result(final Throwable cause)
+            {
+            super(
+                cause
+                );
+            }
+
+        /**
+         * Public constructor.
+         * 
+         */
+        public Result(final String message, final Throwable cause)
+            {
+            super(
+                message,
+                cause
+                );
+            }
+
+        /**
+         * The created resource ID.
+         * 
+         */
+        private ResourceID resource ;
+
+        /**
+         * The created resource ID.
+         * 
+         */
+        public ResourceID resource()
+            {
+            return this.resource;
+            }
+        }
+    
     /**
      * Public constructor.
      * @param endpoint The OGSA-DAI service endpoint URL.
@@ -85,13 +158,13 @@ public class JdbcCreateWorkflow
      * 
      */
     private OgsaServiceClient client ;  
-
+    
     /**
      * Execute our workflow.
+     * @param The workflow params.
      * 
      */
-    public ResourceID execute(final JdbcCreateParam param)
-    throws WorkflowException
+    public Result execute(final Param param)
         {
         JdbcCreateActivity create = new JdbcCreateActivity(
             param
@@ -107,23 +180,93 @@ public class JdbcCreateWorkflow
         workflow.add(deliver);
 
         try {
-            client.drer().execute(
-                workflow,
-                RequestExecutionType.SYNCHRONOUS
-                );
-            if (create.result().hasData())
-                {
-                return new ResourceID(
+            return new Result(
+                client.drer().execute(
+                    workflow,
+                    RequestExecutionType.SYNCHRONOUS
+                    ),
+                new ResourceID(
                     create.result().getDataValueIterator().nextAsString()
-                    ); 
-                }
-            log.debug("Null result");
-            return null ;
+                    )
+                );
             }
-        catch (Exception ouch) {
-            log.debug("Exception while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            throw new WorkflowException(
-                "Exception creating data source",
+        catch (ServerCommsException ouch)
+            {
+            log.debug("ServerCommsException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ServerCommsException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (ServerException ouch)
+            {
+            log.debug("ServerException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ServerException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (ClientToolkitException ouch)
+            {
+            log.debug("ClientToolkitException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ClientToolkitException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (ResourceUnknownException ouch)
+            {
+            log.debug("ResourceUnknownException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ResourceUnknownException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (ClientException ouch)
+            {
+            log.debug("ClientException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ClientException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (RequestException ouch)
+            {
+            log.debug("RequestException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "RequestException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (DataStreamErrorException ouch)
+            {
+            log.debug("DataStreamErrorException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "DataStreamErrorException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (UnexpectedDataValueException ouch)
+            {
+            log.debug("UnexpectedDataValueException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "UnexpectedDataValueException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (DataSourceUsageException ouch)
+            {
+            log.debug("DataSourceUsageException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "DataSourceUsageException while creating data source [" + ouch.getMessage() + "]",
+                ouch
+                );
+            }
+        catch (ActivityOutputUnreadableException ouch)
+            {
+            log.debug("ActivityOutputUnreadableException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new Result(
+                "ActivityOutputUnreadableException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
             }

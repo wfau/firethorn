@@ -33,7 +33,7 @@ import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.request.RequestExecutionStatus;
 
 /**
- * Pipeline client that connects the components we need.
+ * OGSA-DAI client workflow to process a query.
  *
  */
 @Slf4j

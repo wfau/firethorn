@@ -3,6 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
@@ -15,8 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
-import uk.org.ogsadai.resource.ResourceID;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 
 /**
  * Simple test for OGSA-DAI queries.
@@ -54,15 +54,14 @@ public class JdbcCreateWorkflowTestCase
     public void test000()
     throws Exception
         {
-        
-        JdbcCreateWorkflow client = new JdbcCreateWorkflow(
+        final JdbcCreateWorkflow workflow = new JdbcCreateWorkflow(
             new URL(
                 endpoint
                 )
             );
 
-        ResourceID created = client.execute(
-            new JdbcCreateParam()
+        final JdbcCreateWorkflow.Result created = workflow.execute(
+            new JdbcCreateWorkflow.Param()
                 {
                 @Override
                 public String jdbcurl()
@@ -89,6 +88,16 @@ public class JdbcCreateWorkflowTestCase
 
         assertNotNull(
             created
+            );
+        assertEquals(
+            WorkflowResult.Status.COMPLETED,            
+            created.status()
+            );
+        assertNotNull(
+            created.request()
+            );
+        assertNotNull(
+            created.resource()
             );
         }
     }

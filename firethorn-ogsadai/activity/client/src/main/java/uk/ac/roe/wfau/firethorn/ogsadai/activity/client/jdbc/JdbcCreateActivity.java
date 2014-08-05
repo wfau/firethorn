@@ -27,6 +27,11 @@ import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
+import uk.org.ogsadai.client.toolkit.exception.ActivityOutputUnreadableException;
+import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
+import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
+import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
+import uk.org.ogsadai.resource.ResourceID;
 
 /**
  * OGSA-DAI client to manage JDBC Resources 
@@ -35,6 +40,38 @@ import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 public class JdbcCreateActivity
 extends BaseActivity implements Activity
     {
+    /**
+     * Public interface for the Activity params.
+     *
+     */
+    public interface Param
+        {
+        /**
+         * The database URL, as a String.
+         *
+         */
+        public String jdbcurl();
+
+        /**
+         * The database username, as a String.
+         *
+         */
+        public String username();
+
+        /**
+         * The database password, as a String.
+         *
+         */
+        public String password();
+
+        /**
+         * The database driver class name, as a String.
+         *
+         */
+        public String driver();
+        
+        }
+
     /**
      * The database URL, as a String.
      *
@@ -80,7 +117,7 @@ extends BaseActivity implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public JdbcCreateActivity(final JdbcCreateParam param)
+    public JdbcCreateActivity(final Param param)
         {
         super(
             new ActivityName(
@@ -136,5 +173,13 @@ extends BaseActivity implements Activity
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
+        }
+
+    public ResourceID resource()
+    throws Exception
+        {
+        return new ResourceID(
+            this.result.getDataValueIterator().nextAsString()
+            );
         }
     }

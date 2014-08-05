@@ -60,29 +60,5 @@ public interface JdbcCreateParam
      */
     public static final String JDBC_CREATE_RESULT = "jdbc.create.result"  ;
 
-    /**
-     * The database URL, as a String.
-     *
-     */
-    public String jdbcurl();
-
-    /**
-     * The database username, as a String.
-     *
-     */
-    public String username();
-
-    /**
-     * The database password, as a String.
-     *
-     */
-    public String password();
-
-    /**
-     * The database driver class name, as a String.
-     *
-     */
-    public String driver();
-
     }
 
