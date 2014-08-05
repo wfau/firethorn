@@ -106,7 +106,7 @@ implements ResourceActivity
      * The output tuples
      *
      */
-    private final ActivityOutput output;
+    private final ActivityOutput results;
 
     /**
      * Public constructor.
@@ -116,66 +116,50 @@ implements ResourceActivity
      */
     public JdbcInsertDataClient(final SingleActivityOutput source, final Param param)
         {
-        this(
-            param
-            );
-        input(
-            source
-            );
-        }
-
-    /**
-     * Public constructor.
-     * @param param The activity parameters.
-     * 
-     */
-    public JdbcInsertDataClient(final Param param)
-        {
-        this();
-        if (param != null)
-            {
-            resource(
-                param.store()
-                );
-            table(
-                param.table()
-                );
-            first(
-                param.first()
-                );
-            block(
-                param.block()
-                );
-            }
-        }
-    
-    /**
-     * Public constructor.
-     * 
-     */
-    public JdbcInsertDataClient()
-        {
         super(
             new ActivityName(
                 JdbcInsertDataParam.ACTIVITY_NAME
                 )
             );
-        input = new SimpleActivityInput(
+        this.input = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
             );
-        table = new SimpleActivityInput(
+        this.input.connect(
+            source
+            );
+
+        this.table = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_TABLE_NAME
             );
-        first = new SimpleActivityInput(
+        this.table.add(
+            new StringData(
+                param.table()
+                )
+            );
+
+        this.first = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_FIRST_SIZE,
             true
             );
-        block = new SimpleActivityInput(
+        this.first.add(
+            new IntegerData(
+                param.first()
+                )
+            );
+
+        this.block = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_BLOCK_SIZE,
             true
             );
-        output = new SimpleActivityOutput(
-            JdbcInsertDataParam.JDBC_INSERT_RESULTS);
+        this.block.add(
+            new IntegerData(
+                param.block()
+                )
+            );
+
+        this.results = new SimpleActivityOutput(
+            JdbcInsertDataParam.JDBC_INSERT_RESULTS
+            );
         }
 
     /**
@@ -203,73 +187,13 @@ implements ResourceActivity
         }
 
     /**
-     * Set the table name.
-     *
-     */
-    public void table(final String value)
-        {
-        if (value != null)
-            {
-            table.add(
-                new StringData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Set the first block size.
-     *
-     */
-    public void first(final Integer value)
-        {
-        if (value != null)
-            {
-            first.add(
-                new IntegerData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Set the main block size.
-     *
-     */
-    public void block(final Integer value)
-        {
-        if (value != null)
-            {
-            block.add(
-                new IntegerData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Connect the tuple input.
-     * @param source The tuple input.
-     *
-     */
-    public void input(final SingleActivityOutput source)
-        {
-        input.connect(
-            source
-            );
-        }
-
-    /**
-     * Get the tuple output.
+     * Get the tuples output.
      * @return The tuples output
      *
      */
     public SingleActivityOutput output()
         {
-        return output.getSingleActivityOutputs()[0];
+        return results.getSingleActivityOutputs()[0];
         }
 
     @Override
@@ -295,7 +219,7 @@ implements ResourceActivity
         {
         return new ActivityOutput[]
           {
-          output
+          results
           };
         }
     }

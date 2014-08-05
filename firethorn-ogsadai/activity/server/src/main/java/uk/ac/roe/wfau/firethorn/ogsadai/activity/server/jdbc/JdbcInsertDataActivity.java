@@ -99,10 +99,11 @@ implements ResourceActivity
     private PreparedStatement statement;
 
     /**
-     * Our Activity output.
+     * Our results writer.
      * 
      */
     private BlockWriter writer;
+
     
     @Override
     public Class<? extends ResourceAccessor> getTargetResourceAccessorClass()
@@ -111,9 +112,9 @@ implements ResourceActivity
         }
 
     @Override
-    public void setTargetResourceAccessor(final ResourceAccessor resource)
+    public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
-        provider = (JDBCConnectionProvider) resource;
+        provider = (JDBCConnectionProvider) accessor;
         }
 
     @Override
@@ -151,8 +152,8 @@ implements ResourceActivity
             validateOutput(
                 JdbcInsertDataParam.JDBC_INSERT_RESULTS
                 );
-            writer = getOutput(
-                DelaysParam.TUPLE_OUTPUT
+            this.writer = this.getOutput(
+                JdbcInsertDataParam.JDBC_INSERT_RESULTS
                 );
             }
         catch (final Exception ouch)

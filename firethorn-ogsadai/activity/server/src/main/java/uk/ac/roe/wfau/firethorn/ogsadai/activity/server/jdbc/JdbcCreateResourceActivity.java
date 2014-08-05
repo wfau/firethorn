@@ -73,7 +73,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        DelaysActivity.class
+        JdbcCreateResourceActivity.class
         );
     
     /**
@@ -111,10 +111,10 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         }
 
     /**
-     * A block writer for our result.
+     * Our results writer.
      * 
      */
-    private BlockWriter result;
+    private BlockWriter writer;
 
     @Override
     protected void preprocess()
@@ -123,7 +123,9 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         validateOutput(
             JdbcCreateResourceParam.JDBC_CREATE_RESULT
             );
-        this.result = getOutput();
+        this.writer = this.getOutput(
+            JdbcCreateResourceParam.JDBC_CREATE_RESULT
+            );
         }
 
     @Override
@@ -276,7 +278,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 );
              */
             logger.debug("Writing ResourceID to results [" + uniqueid + "]");
-            result.write(
+            writer.write(
                 uniqueid
                 );
             }

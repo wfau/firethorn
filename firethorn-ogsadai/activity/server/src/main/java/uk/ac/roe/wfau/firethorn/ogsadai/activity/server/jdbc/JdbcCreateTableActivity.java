@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -24,6 +24,7 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateTableParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -50,7 +51,7 @@ import uk.org.ogsadai.tuple.TupleTypes;
  *
  *
  */
-public class CreateTableActivity
+public class JdbcCreateTableActivity
 extends MatchedIterativeActivity
 implements ResourceActivity
     {
@@ -60,34 +61,28 @@ implements ResourceActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        CreateTableActivity.class
+        JdbcCreateTableActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public CreateTableActivity()
+    public JdbcCreateTableActivity()
         {
         super();
-        logger.debug("Constructor()");
         }
 
-    /**
-     * Get a list of the ActivityInputs.
-     *
-     */
     @Override
     public ActivityInput[] getIterationInputs()
         {
-        logger.debug("getIterationInputs()");
         return new ActivityInput[] {
             new TypedActivityInput(
-                "table",
+                JdbcCreateTableParam.JDBC_CREATE_TABLE_NAME,
                 String.class
                 ),
             new TupleListActivityInput(
-                "tuples"
+                JdbcCreateTableParam.JDBC_CREATE_TUPLE_INPUT
                 )
             };
         }
@@ -96,30 +91,18 @@ implements ResourceActivity
      * Our JDBC connection provider.
      *
      */
-    private JDBCConnectionProvider resource;
+    private JDBCConnectionProvider provider;
 
-    /**
-     *
-     *
-     */
     @Override
-    @SuppressWarnings({
-        "rawtypes",
-        "unchecked"
-        })
-    public Class getTargetResourceAccessorClass()
+    public Class<? extends ResourceAccessor> getTargetResourceAccessorClass()
         {
         return JDBCConnectionProvider.class;
         }
 
-    /**
-     *
-     *
-     */
     @Override
-    public void setTargetResourceAccessor(final ResourceAccessor resource)
+    public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
-        this.resource = (JDBCConnectionProvider) resource;
+        this.provider = (JDBCConnectionProvider) accessor;
         }
 
     /**
@@ -129,21 +112,17 @@ implements ResourceActivity
     private Connection connection;
 
     /**
-     * Flag to indicate if we changed the autocommit statue.
+     * Flag to indicate if we changed the autocommit state.
      *
      */
-    private boolean changed = false;
+    private boolean autochanged = false;
 
     /**
-     * Block writer for output.
+     * Our results writer.
      *
      */
     private BlockWriter writer;
 
-    /**
-     * Pre-processing.
-     *
-     */
     @Override
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
@@ -151,13 +130,13 @@ implements ResourceActivity
         logger.debug("starting preprocess ----");
         try {
             logger.debug("Creating database connection");
-            connection = resource.getConnection();
+            this.connection = provider.getConnection();
             logger.debug("Checking connection autocommit");
-            if (connection.getAutoCommit() == true)
+            if (this.connection.getAutoCommit() == true)
                 {
                 logger.debug("Disabling connection autocommit");
-                changed = true ;
-                connection.setAutoCommit(
+                this.autochanged = true ;
+                this.connection.setAutoCommit(
                     false
                     );
                 }
@@ -165,14 +144,14 @@ implements ResourceActivity
             }
         catch (final JDBCConnectionUseException ouch)
             {
-            logger.warn("Exception connecting to database", ouch);
+            logger.warn("Exception connecting to database [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             throw new ActivitySQLException(
                 ouch
                 );
             }
         catch (final Throwable ouch)
             {
-            logger.warn("Exception connecting to database", ouch);
+            logger.warn("Exception connecting to database [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             throw new ActivityProcessingException(
                 ouch
                 );
@@ -180,8 +159,12 @@ implements ResourceActivity
 
         try {
             logger.debug("Validating outputs");
-            validateOutput("result");
-            writer = getOutput("result");
+            validateOutput(
+                JdbcCreateTableParam.JDBC_CREATE_RESULTS
+                );
+            this.writer = this.getOutput(
+                JdbcCreateTableParam.JDBC_CREATE_RESULTS
+                );
             }
         catch (final Exception ouch)
             {
@@ -193,17 +176,10 @@ implements ResourceActivity
         logger.debug("---- preprocess done");
         }
 
-    /**
-     * Process an iteration.
-     *
-     */
     @Override
     protected void processIteration(final Object[] iteration)
-    throws ActivityProcessingException,
-           ActivityTerminatedException,
-           ActivityUserException
+    throws ActivityProcessingException, ActivityTerminatedException, ActivityUserException
         {
-        logger.debug("processIteration(Object[])");
         try {
             //
             // Get the table name.
@@ -218,6 +194,8 @@ implements ResourceActivity
             final MetadataWrapper wrapper  = tuples.getMetadataWrapper();
             final TupleMetadata   metadata = (TupleMetadata) wrapper.getMetadata();
 
+            //
+            // Start the CREATE TABLE statement
             final StringBuilder builder = new StringBuilder();
             builder.append("CREATE TABLE");
             builder.append(" ");
@@ -249,7 +227,7 @@ implements ResourceActivity
             logger.debug("SQL [{}]", builder.toString());
 
             //
-            // Create the database table.
+            // Execute the CREATE TABLE statement.
             logger.debug("Creating table");
             final Statement statement = connection.createStatement();
             final int result = statement.executeUpdate(
@@ -266,7 +244,7 @@ implements ResourceActivity
             writer.write(wrapper);
             //
             // Process the tuples (pass through).
-            logger.debug("Processing tuples");
+            logger.debug("Processing tuples ...");
             Tuple tuple ;
             long count ;
             for(count = 0 ; ((tuple = (Tuple) tuples.nextValue()) != null) ; count++)
@@ -281,19 +259,9 @@ implements ResourceActivity
             writer.write(ControlBlock.LIST_END);
 
             }
-/*
-        catch (SQLException ouch)
-            {
-            logger.warn("Exception during processing", ouch);
-            rollback();
-            throw new ActivitySQLUserException(
-                ouch
-                );
-            }
- */
         catch (final Throwable ouch)
             {
-            logger.warn("Exception during processing", ouch);
+            logger.warn("Exception during processing [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             rollback();
             throw new ActivityProcessingException(
                 ouch
@@ -301,26 +269,21 @@ implements ResourceActivity
             }
         }
 
-    /**
-     * Post-processing.
-     *
-     */
     @Override
     protected void postprocess()
     throws ActivityProcessingException
         {
-        logger.debug("postprocess()");
         try {
-            if (changed)
+            if (this.autochanged)
                 {
-                connection.setAutoCommit(
+                this.connection.setAutoCommit(
                     true
                     );
                 }
             }
         catch (final Throwable ouch)
             {
-            logger.warn("Exception resetting autocommit", ouch);
+            logger.warn("Exception resetting autocommit [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             throw new ActivityProcessingException(
                 ouch
                 );
@@ -333,35 +296,18 @@ implements ResourceActivity
      */
     private void rollback()
         {
-        logger.debug("rollback()");
         try {
-            connection.rollback();
+            this.connection.rollback();
             }
         catch (final Exception ouch)
             {
-            logger.warn("Exception during rollback", ouch);
+            logger.warn("Exception during rollback [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             }
         }
 
     /**
-     * Create our database table.
-     *
-     */
-    protected void createTable()
-        {
-        }
-
-    /**
-     * Iterate the tuples (pass through).
-     *
-     */
-    protected void processTuples()
-        {
-        }
-
-
-    /**
      * Translate a tuple type into a SQL data type.
+     * @todo This totally depends on the database provider.
      *
      */
     public String sqltype(final int type)

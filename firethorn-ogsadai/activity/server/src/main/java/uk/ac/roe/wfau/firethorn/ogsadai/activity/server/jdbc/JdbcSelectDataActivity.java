@@ -100,7 +100,7 @@ implements ResourceActivity, ServiceAddressesActivity
      * The resource this activity is targeted at.
      * 
      */
-    private ResourceAccessor resource;
+    private ResourceAccessor accessor;
 
     /**
      * Our JDBC connection provider.
@@ -167,10 +167,10 @@ implements ResourceActivity, ServiceAddressesActivity
         }
 
     @Override
-    public void setTargetResourceAccessor(final ResourceAccessor resource)
+    public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
-        this.resource = resource;
-        provider = (EnhancedJDBCConnectionProvider) resource;
+        this.accessor = accessor;
+        provider = (EnhancedJDBCConnectionProvider) accessor;
         }
 
     @Override
@@ -233,7 +233,7 @@ implements ResourceActivity, ServiceAddressesActivity
                 );
 
             logger.debug("Executing query");
-            final ResultSet results = executeQuery(
+            final ResultSet results = execute(
                 expression
                 );
 
@@ -241,11 +241,11 @@ implements ResourceActivity, ServiceAddressesActivity
             try {
                 SQLUtilities.createTupleList(
                     results, 
-                    getOutput(), 
-                    mapper,
-                    resource.getResource().getResourceID(),
-                    addresses.getDataRequestExecutionService(),
-                    settings.getResourceMetaDataHandler(),
+                    this.getOutput(), 
+                    this.mapper,
+                    this.accessor.getResource().getResourceID(),
+                    this.addresses.getDataRequestExecutionService(),
+                    this.settings.getResourceMetaDataHandler(),
                     true,
                     true
                     );
@@ -316,7 +316,7 @@ implements ResourceActivity, ServiceAddressesActivity
      * @throws Throwable If there is a problem during execution.
      * 
      */
-    private ResultSet executeQuery(String expression)
+    private ResultSet execute(String expression)
     throws Throwable
         {
         // Create a callable statement to execute the query in the background.
@@ -394,14 +394,14 @@ implements ResourceActivity, ServiceAddressesActivity
         
         executor.shutdown();
         
-        if (statement != null)
+        if (this.statement != null)
             {
-            statement.close();
+            this.statement.close();
             }
 
-        if (resource != null)
+        if (this.provider != null)
             {
-            provider.releaseConnection(
+            this.provider.releaseConnection(
                 connection
                 );
             }

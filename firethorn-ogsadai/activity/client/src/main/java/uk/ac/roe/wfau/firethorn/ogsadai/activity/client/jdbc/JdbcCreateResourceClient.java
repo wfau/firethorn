@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StringActivityInput;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateResourceParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
@@ -25,8 +24,10 @@ import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
+import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
+import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
@@ -103,7 +104,7 @@ extends BaseActivity implements Activity
      * Our result output.
      *
      */
-    private final ActivityOutput result;
+    private final ActivityOutput results;
 
     /**
      * Get our results output.
@@ -112,7 +113,7 @@ extends BaseActivity implements Activity
      */
     public SingleActivityOutput result()
         {
-        return result.getSingleActivityOutputs()[0];
+        return results.getSingleActivityOutputs()[0];
         }
 
     /**
@@ -127,29 +128,48 @@ extends BaseActivity implements Activity
                 JdbcCreateResourceParam.ACTIVITY_NAME
                 )
             );
-        this.jdbcurl = new StringActivityInput(
+        this.jdbcurl = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_URL,
-            param.jdbcurl(),
             true
             );
-        this.username = new StringActivityInput(
+        this.jdbcurl.add(
+            new StringData(
+                param.jdbcurl()
+                )
+            );
+
+        this.username = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
-            param.username(),
             true
             );
-        this.password = new StringActivityInput(
+        this.username.add(
+            new StringData(
+                param.username()
+                )
+            );
+
+        this.password = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
-            param.password(),
             true
             );
-        this.driver = new StringActivityInput(
+        this.password.add(
+            new StringData(
+                param.password()
+                )
+            );
+        
+        this.driver = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
-            param.driver(),
             true
             );
-        this.result = new SimpleActivityOutput(
-            JdbcCreateResourceParam.JDBC_CREATE_RESULT,
-            false
+        this.driver.add(
+            new StringData(
+                param.driver()
+                )
+            );
+
+        this.results = new SimpleActivityOutput(
+            JdbcCreateResourceParam.JDBC_CREATE_RESULT
             );
         }
     
@@ -168,7 +188,7 @@ extends BaseActivity implements Activity
     protected ActivityOutput[] getOutputs()
         {
         return new ActivityOutput[]{
-            result
+            results
             };
         }
 
@@ -182,7 +202,7 @@ extends BaseActivity implements Activity
     throws Exception
         {
         return new ResourceID(
-            this.result.getDataValueIterator().nextAsString()
+            this.results.getDataValueIterator().nextAsString()
             );
         }
     }

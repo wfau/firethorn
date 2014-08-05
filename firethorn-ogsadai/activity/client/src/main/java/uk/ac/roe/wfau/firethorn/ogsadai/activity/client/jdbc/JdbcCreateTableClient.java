@@ -19,7 +19,7 @@
 
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcSelectDataParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateTableParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
@@ -33,10 +33,10 @@ import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Client for the JdbcSelectData Activity.
+ * Client for the JdbcCreateTable Activity.
  *
  */
-public class JdbcSelectDataClient
+public class JdbcCreateTableClient
 extends BaseResourceActivity
 implements ResourceActivity
     {
@@ -48,19 +48,25 @@ implements ResourceActivity
     public static interface Param
         {
         /**
-         * The SQL select query.
-         * @return The SQL select query.
+         * The table name.
+         * @return The table name.
          *
          */
-        public String query();
-        
+        public String table();
+
         }
     
     /**
-     * The SQL select query.
+     * The input tuples
      *
      */
-    private final ActivityInput query;
+    private final ActivityInput input;
+
+    /**
+     * The table name.
+     *
+     */
+    private final ActivityInput table;
 
     /**
      * The output tuples
@@ -70,36 +76,58 @@ implements ResourceActivity
 
     /**
      * Public constructor.
+     * @param source The input tuple source.
      * @param param The activity parameters.
      * 
      */
-    public JdbcSelectDataClient(final Param param)
+    public JdbcCreateTableClient(final SingleActivityOutput source, final Param param)
         {
         super(
             new ActivityName(
-                JdbcSelectDataParam.ACTIVITY_NAME
+                JdbcCreateTableParam.ACTIVITY_NAME
                 )
             );
-        this.query = new SimpleActivityInput(
-            JdbcSelectDataParam.JDBC_SELECT_QUERY,
-            false
+
+        this.input = new SimpleActivityInput(
+            JdbcCreateTableParam.JDBC_CREATE_TUPLE_INPUT
             );
-        this.query.add(
+        this.input.connect(
+            source
+            );
+
+        this.table = new SimpleActivityInput(
+            JdbcCreateTableParam.JDBC_CREATE_TABLE_NAME
+            );
+        this.table.add(
             new StringData(
-                param.query()
+                param.table()
                 )
             );
 
         this.results = new SimpleActivityOutput(
-            JdbcSelectDataParam.JDBC_SELECT_RESULTS
+            JdbcCreateTableParam.JDBC_CREATE_RESULTS
+            );
+
+        }
+
+    /**
+     * Set the target resource.
+     *
+     */
+    public void resource(final String ident)
+        {
+        this.resource(
+            new ResourceID(
+                ident
+                )
             );
         }
 
     /**
-     * Set the source resource ID.
+     * Set the target resource.
      *
      */
-    public void source(final ResourceID ident)
+    public void resource(final ResourceID ident)
         {
         this.setResourceID(
             ident
@@ -107,11 +135,11 @@ implements ResourceActivity
         }
 
     /**
-     * Get the query results.
-     * @return The query results.
+     * Get the tuples output.
+     * @return The tuples output
      *
      */
-    public SingleActivityOutput results()
+    public SingleActivityOutput output()
         {
         return results.getSingleActivityOutputs()[0];
         }
@@ -127,7 +155,8 @@ implements ResourceActivity
         {
         return new ActivityInput[]
             {
-            query
+            input,
+            table
             };
         }
 
