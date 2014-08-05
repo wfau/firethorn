@@ -63,13 +63,13 @@ class test_firethorn(unittest.TestCase):
     def test_sql_logged_queries(self):
         '''
         Test the logged sql queries against firethorn
-        ''' 
-         
+        '''
+        
         try:
             # Set query run ID
             queryrunID = get_a_uuid() 
             logged_query_sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
-            sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
+            sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
             fEng=None
             logged_queries=[] 
