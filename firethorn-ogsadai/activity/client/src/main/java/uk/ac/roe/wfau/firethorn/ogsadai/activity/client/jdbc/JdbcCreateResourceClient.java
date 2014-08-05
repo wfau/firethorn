@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StringActivityInput;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateResourceParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -27,17 +27,13 @@ import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.client.toolkit.exception.ActivityOutputUnreadableException;
-import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
-import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
-import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * OGSA-DAI client to manage JDBC Resources 
+ * Client for the JdbcCreateResource Activity.
  *
  */
-public class JdbcCreateActivity
+public class JdbcCreateResourceClient
 extends BaseActivity implements Activity
     {
     /**
@@ -69,7 +65,14 @@ extends BaseActivity implements Activity
          *
          */
         public String driver();
-        
+
+        /**
+         * A flag to indicate if the resource should be writable.
+         * (adds the InsertActivity)
+         *
+         */
+        public boolean writable();
+
         }
 
     /**
@@ -117,35 +120,35 @@ extends BaseActivity implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public JdbcCreateActivity(final Param param)
+    public JdbcCreateResourceClient(final Param param)
         {
         super(
             new ActivityName(
-                JdbcCreateParam.ACTIVITY_NAME
+                JdbcCreateResourceParam.ACTIVITY_NAME
                 )
             );
         this.jdbcurl = new StringActivityInput(
-            JdbcCreateParam.JDBC_DATABASE_URL,
+            JdbcCreateResourceParam.JDBC_DATABASE_URL,
             param.jdbcurl(),
             true
             );
         this.username = new StringActivityInput(
-            JdbcCreateParam.JDBC_DATABASE_USERNAME,
+            JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
             param.username(),
             true
             );
         this.password = new StringActivityInput(
-            JdbcCreateParam.JDBC_DATABASE_PASSWORD,
+            JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
             param.password(),
             true
             );
         this.driver = new StringActivityInput(
-            JdbcCreateParam.JDBC_DATABASE_DRIVER,
+            JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
             param.driver(),
             true
             );
         this.result = new SimpleActivityOutput(
-            JdbcCreateParam.JDBC_CREATE_RESULT,
+            JdbcCreateResourceParam.JDBC_CREATE_RESULT,
             false
             );
         }

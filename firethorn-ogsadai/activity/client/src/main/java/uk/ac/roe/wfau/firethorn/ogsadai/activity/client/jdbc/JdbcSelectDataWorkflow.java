@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.query;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,11 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow.Result;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
+import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
 import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
 import uk.org.ogsadai.client.toolkit.exception.ClientException;
@@ -37,11 +38,11 @@ import uk.org.ogsadai.client.toolkit.exception.ResourceUnknownException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * OGSA-DAI client workflow to create a new JdbcResource.
+ * Workflow for the JdbcSelectData Activity.
  *
  */
 @Slf4j
-public class QueryWorkflow
+public class JdbcSelectDataWorkflow
     {
     /**
      * Public interface for the workflow parameters.
@@ -62,10 +63,10 @@ public class QueryWorkflow
         public String query();
 
         /**
-         * The {@link InsertActivity} params.
+         * The {@link JdbcInsertData} params.
          *
          */
-        public InsertClient.Param insert();
+        public JdbcInsertDataClient.Param insert();
         
         /**
          * The {@link DelaysActivity} params.
@@ -82,12 +83,54 @@ public class QueryWorkflow
         }
 
     /**
+     * Workflow results.
+     * 
+     */
+    public static class Result
+    extends SimpleWorkflowResult
+        {
+        /**
+         * Public constructor.
+         * 
+         */
+        public Result(final RequestResource request)
+            {
+            super(
+                request
+                );
+            }
+
+        /**
+         * Public constructor.
+         * 
+         */
+        public Result(final Throwable cause)
+            {
+            super(
+                cause
+                );
+            }
+
+        /**
+         * Public constructor.
+         * 
+         */
+        public Result(final String message, final Throwable cause)
+            {
+            super(
+                message,
+                cause
+                );
+            }
+        }
+
+    /**
      * Public constructor.
      * @param endpoint The OGSA-DAI service endpoint URL.
      * @throws MalformedURLException 
      *
      */
-    public QueryWorkflow(final String endpoint)
+    public JdbcSelectDataWorkflow(final String endpoint)
     throws MalformedURLException
         {
         this(
@@ -104,7 +147,7 @@ public class QueryWorkflow
      * @param endpoint The OGSA-DAI service endpoint URL.
      *
      */
-    public QueryWorkflow(final URL endpoint)
+    public JdbcSelectDataWorkflow(final URL endpoint)
         {
         this(
             new OgsaServiceClient(
@@ -115,25 +158,27 @@ public class QueryWorkflow
 
     /**
      * Public constructor.
-     * @param endpoint Our {@link OgsaServiceClient} client.
+     * @param service Our {@link OgsaServiceClient} service client.
      *
      */
-    public QueryWorkflow(final OgsaServiceClient client)
+    public JdbcSelectDataWorkflow(final OgsaServiceClient service)
         {
-        this.client = client ;
+        this.serviceservice = service ;
         }
 
     /**
-     * Our {@link OgsaServiceClient} client.
+     * Our {@link OgsaServiceClient} service client.
      * 
      */
-    private OgsaServiceClient client ;  
+    private OgsaServiceClient serviceservice ;  
 
     /**
      * Execute our workflow.
+     * @param param The workflow params.
+     * @return A workflow {@link Result} containing the results.
      * 
      */
-    public WorkflowResult execute(final Param param)
+    public Result execute(final Param param)
         {
         final SQLQuery select = new SQLQuery();
         select.setResourceID(
@@ -153,7 +198,7 @@ public class QueryWorkflow
             param.limits()
             );
         
-        final InsertClient insert = new InsertClient(
+        final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             limits.output(),
             param.insert()
             );
@@ -181,8 +226,8 @@ public class QueryWorkflow
             );
         
         try {
-            return new SimpleWorkflowResult(
-                client.drer().execute(
+            return new Result(
+                serviceservice.drer().execute(
                     workflow,
                     RequestExecutionType.SYNCHRONOUS
                     )
@@ -191,21 +236,21 @@ public class QueryWorkflow
         catch (ResourceUnknownException ouch)
             {
             log.debug("Exception processing query [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new SimpleWorkflowResult(
+            return new Result(
                 ouch
                 );
             }
         catch (RequestException ouch)
             {
             log.debug("Exception processing query [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new SimpleWorkflowResult(
+            return new Result(
                 ouch
                 );
             }
         catch (ClientException ouch)
             {
             log.debug("Exception processing query [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new SimpleWorkflowResult(
+            return new Result(
                 ouch
                 );
             }

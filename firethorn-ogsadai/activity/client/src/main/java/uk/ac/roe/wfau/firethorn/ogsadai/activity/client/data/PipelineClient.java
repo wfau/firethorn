@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
 import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -127,7 +128,7 @@ public class PipelineClient
 	    
 	    //
         // Create our Insert Activity.
-        final InsertClient insert = new InsertClient(
+        final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             limits.output(),
             param.insert()
             );

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.SimpleProcessingException;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateResourceParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.DelaysActivity;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -55,14 +55,19 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResourceState;
 
 /**
  * Activity to create new JDBC resources.
- * Based on {@link ExtendedCreateRelationalResourceActivity} from OGSA-DAI source code.  
+ * Based on the original {@link ExtendedCreateRelationalResourceActivity} in the OGSA-DAI source code.  
  *
  */
-public class JdbcCreateActivity
+public class JdbcCreateResourceActivity
 extends MatchedIterativeActivity
 implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
     {
-
+    /**
+     * Our resource template name.
+     *
+     */
+    protected static final String JDBC_CREATE_TEMPLATE = "uk.ac.roe.wfau.firethorn.JDBC_RESOURCE_TEMPLATE" ;
+    
     /**
      * Our debug logger.
      *
@@ -76,7 +81,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      * 
      * 
      */
-    public JdbcCreateActivity()
+    public JdbcCreateResourceActivity()
         {
         super();
         }
@@ -87,19 +92,19 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         return new ActivityInput[]
              {
              new TypedOptionalActivityInput(
-                 JdbcCreateParam.JDBC_DATABASE_URL,
+                 JdbcCreateResourceParam.JDBC_DATABASE_URL,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateParam.JDBC_DATABASE_USERNAME,
+                 JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateParam.JDBC_DATABASE_PASSWORD,
+                 JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateParam.JDBC_DATABASE_DRIVER,
+                 JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
                  String.class
                  ),
              };
@@ -116,7 +121,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            JdbcCreateParam.JDBC_CREATE_RESULT
+            JdbcCreateResourceParam.JDBC_CREATE_RESULT
             );
         this.result = getOutput();
         }
@@ -129,7 +134,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         }
 
     /**
-     * The Security context for current request.
+     * The Security context for the current request.
      *  
      */
     private SecurityContext context;
@@ -167,7 +172,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         {
         ResourceID uniqueid = manager.createUniqueID();
         ResourceID template = new ResourceID(
-            "uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE"
+            JDBC_CREATE_TEMPLATE
             );        
         
         String jdbcurl  = (String) iterationData[0];
@@ -184,7 +189,9 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         logger.debug("Driver   ["+ driver +"]");
 
         try {
-            JDBCDataResource created = (JDBCDataResource) factory.createDataResource(template);
+            JDBCDataResource created = (JDBCDataResource) factory.createDataResource(
+                template
+                );
 
             JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
 
@@ -194,12 +201,16 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
 
             if (jdbcurl != null)
                 {
-                jdbcstate.setDatabaseURL(jdbcurl);
+                jdbcstate.setDatabaseURL(
+                    jdbcurl
+                    );
                 }
 
             if (driver != null)
                 {
-                jdbcstate.setDriverClass(driver);
+                jdbcstate.setDriverClass(
+                    driver
+                    );
                 }
             
             LoginProvider provider = jdbcstate.getLoginProvider();
@@ -253,13 +264,20 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                     );
                 }
 
+            logger.debug("Adding Resource to Factory [" + uniqueid + "][" + created.getResourceID().toString() + "]");
             factory.addResource(
                 uniqueid,
                 created
                 );
-
+            /*
+             * I _think_ this is wrong .. 
             result.write(
                 created.getResourceID().toString()
+                );
+             */
+            logger.debug("Writing ResourceID to results [" + uniqueid + "]");
+            result.write(
+                uniqueid
                 );
             }
         catch (ResourceCreationException ouch)

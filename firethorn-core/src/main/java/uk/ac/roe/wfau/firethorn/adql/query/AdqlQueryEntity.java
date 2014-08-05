@@ -80,12 +80,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
  *
@@ -1189,9 +1189,9 @@ implements AdqlQuery, AdqlParserQuery
                                 return query.osql();
                                 }
                             @Override
-                            public InsertClient.Param insert()
+                            public JdbcInsertDataClient.Param insert()
                                 {
-                                return new InsertClient.Param()
+                                return new JdbcInsertDataClient.Param()
                                     {
                                     @Override
                                     public String store()

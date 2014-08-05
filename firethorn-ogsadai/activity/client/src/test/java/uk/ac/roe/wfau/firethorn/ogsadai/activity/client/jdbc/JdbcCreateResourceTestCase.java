@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
         "classpath:component-config.xml",
         }
     )
-public class JdbcCreateWorkflowTestCase
+public class JdbcCreateResourceTestCase
     {
 
     @Value("${firethorn.ogsadai.endpoint}")
@@ -54,14 +54,14 @@ public class JdbcCreateWorkflowTestCase
     public void test000()
     throws Exception
         {
-        final JdbcCreateWorkflow workflow = new JdbcCreateWorkflow(
+        final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
             new URL(
                 endpoint
                 )
             );
 
-        final JdbcCreateWorkflow.Result created = workflow.execute(
-            new JdbcCreateWorkflow.Param()
+        final JdbcCreateResourceWorkflow.Result created = workflow.execute(
+            new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override
                 public String jdbcurl()
@@ -83,8 +83,17 @@ public class JdbcCreateWorkflowTestCase
                     {
                     return driver;
                     }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
                 }
             );
+
+        log.debug("Status  [{}]", created.status());
+        log.debug("Request [{}]", created.request());
+        log.debug("Created [{}]", created.created());
 
         assertNotNull(
             created
@@ -97,7 +106,7 @@ public class JdbcCreateWorkflowTestCase
             created.request()
             );
         assertNotNull(
-            created.resource()
+            created.created()
             );
         }
     }

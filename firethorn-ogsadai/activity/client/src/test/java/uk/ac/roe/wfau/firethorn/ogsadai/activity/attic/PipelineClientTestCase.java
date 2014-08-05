@@ -1,19 +1,19 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
 
 import java.net.URL;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
  * These tests  no longer work - because we need firethorn to create the tables for us.
@@ -121,9 +121,9 @@ extends SimpleQueryTestBase
                     }
 
                 @Override
-                public InsertClient.Param insert()
+                public JdbcInsertDataClient.Param insert()
                     {
-                    return new InsertClient.Param()
+                    return new JdbcInsertDataClient.Param()
                         {
                         @Override
                         public String table()
@@ -210,9 +210,9 @@ extends SimpleQueryTestBase
                     }
 
                 @Override
-                public InsertClient.Param insert()
+                public JdbcInsertDataClient.Param insert()
                     {
-                    return new InsertClient.Param()
+                    return new JdbcInsertDataClient.Param()
                         {
                         @Override
                         public String table()

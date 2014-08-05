@@ -29,17 +29,10 @@
 
         pushd 'firethorn-ogsadai/webapp'
 
-            mvn clean compile war:war
-
-            source ../../bin/util.sh
-            source src/test/bin/jdbc-functions.sh
-
-            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
-
-                jdbcconfig user-data  firethorn.user
-
+            pushd '..'
+                mvn clean install
             popd
-            
-            export MAVEN_OPTS=-Xmx128m
+
+            mvn clean install
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 

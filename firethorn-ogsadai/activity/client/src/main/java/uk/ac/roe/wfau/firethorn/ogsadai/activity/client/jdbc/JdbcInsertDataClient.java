@@ -17,9 +17,9 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.InsertParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
@@ -34,17 +34,16 @@ import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Client for our Insert Activity.
+ * Client for the JdbcInsertData Activity.
  *
  */
-public class InsertClient
+public class JdbcInsertDataClient
 extends BaseResourceActivity
 implements ResourceActivity
     {
 
     /**
      * Public interface for the Activity parameters.
-     * @todo Move this to the common package.
      *
      */
     public static interface Param
@@ -111,11 +110,11 @@ implements ResourceActivity
 
     /**
      * Public constructor.
-     * @param source The tuple input source.
-     * @param param The Activity parameters.
+     * @param source The input tuple source.
+     * @param param The activity parameters.
      * 
      */
-    public InsertClient(final SingleActivityOutput source, final Param param)
+    public JdbcInsertDataClient(final SingleActivityOutput source, final Param param)
         {
         this(
             param
@@ -127,10 +126,10 @@ implements ResourceActivity
 
     /**
      * Public constructor.
-     * @param param The Activity parameters.
+     * @param param The activity parameters.
      * 
      */
-    public InsertClient(final Param param)
+    public JdbcInsertDataClient(final Param param)
         {
         this();
         if (param != null)
@@ -154,29 +153,29 @@ implements ResourceActivity
      * Public constructor.
      * 
      */
-    public InsertClient()
+    public JdbcInsertDataClient()
         {
         super(
             new ActivityName(
-                InsertParam.ACTIVITY_NAME
+                JdbcInsertDataParam.ACTIVITY_NAME
                 )
             );
         input = new SimpleActivityInput(
-            InsertParam.TUPLE_INPUT
+            JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
             );
         table = new SimpleActivityInput(
-            InsertParam.TABLE_NAME
+            JdbcInsertDataParam.JDBC_INSERT_TABLE_NAME
             );
         first = new SimpleActivityInput(
-            InsertParam.FIRST_SIZE,
+            JdbcInsertDataParam.JDBC_INSERT_FIRST_SIZE,
             true
             );
         block = new SimpleActivityInput(
-            InsertParam.BLOCK_SIZE,
+            JdbcInsertDataParam.JDBC_INSERT_BLOCK_SIZE,
             true
             );
         output = new SimpleActivityOutput(
-            InsertParam.TUPLE_OUTPUT);
+            JdbcInsertDataParam.JDBC_INSERT_RESULTS);
         }
 
     /**
@@ -273,18 +272,12 @@ implements ResourceActivity
         return output.getSingleActivityOutputs()[0];
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityInput[] getInputs()
         {
@@ -297,9 +290,6 @@ implements ResourceActivity
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityOutput[] getOutputs()
         {

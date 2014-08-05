@@ -1,7 +1,7 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.query;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,9 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateWorkflow;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataWorkflow;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
@@ -38,7 +39,7 @@ import uk.org.ogsadai.resource.ResourceID;
         "classpath:component-config.xml",
         }
     )
-public class QueryWorkflowTestCase
+public class JdbcSelectDataWorkflowTestCase
     {
 
     @Value("${firethorn.ogsadai.endpoint}")
@@ -66,13 +67,13 @@ public class QueryWorkflowTestCase
         {
         final String query = "SELECT TOP 10 ra, dec FROM atlasSource"; 
         
-        final JdbcCreateWorkflow creator = new JdbcCreateWorkflow(
+        final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
             new URL(
                 endpoint
                 )
             );
-        final JdbcCreateWorkflow.Result created = creator.execute(
-            new JdbcCreateWorkflow.Param()
+        final JdbcCreateResourceWorkflow.Result created = creator.execute(
+            new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override
                 public String jdbcurl()
@@ -94,6 +95,11 @@ public class QueryWorkflowTestCase
                     {
                     return driver;
                     }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
                 }
             );
 
@@ -105,21 +111,21 @@ public class QueryWorkflowTestCase
             created.status()
             );
         assertNotNull(
-            created.resource()
+            created.created()
             );
 
-        final QueryWorkflow selector = new QueryWorkflow(
+        final JdbcSelectDataWorkflow selector = new JdbcSelectDataWorkflow(
             new URL(
                 endpoint
                 )
             ); 
         final WorkflowResult selected = selector.execute(
-            new QueryWorkflow.Param()
+            new JdbcSelectDataWorkflow.Param()
                 {
                 @Override
                 public ResourceID resource()
                     {
-                    return created.resource();
+                    return created.created();
                     }
                 
                 @Override
@@ -135,9 +141,9 @@ public class QueryWorkflowTestCase
                     }
                 
                 @Override
-                public InsertClient.Param insert()
+                public JdbcInsertDataClient.Param insert()
                     {
-                    return new InsertClient.Param()
+                    return new JdbcInsertDataClient.Param()
                         {
                         @Override
                         public String store()

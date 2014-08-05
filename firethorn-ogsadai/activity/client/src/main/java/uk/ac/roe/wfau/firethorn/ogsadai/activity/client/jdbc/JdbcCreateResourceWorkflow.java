@@ -22,8 +22,7 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowException;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataWorkflow.Result;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -42,18 +41,18 @@ import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * OGSA-DAI client workflow to create a new JdbcResource.
+ * Workflow for the JdbcCreateResource Activity.
  *
  */
 @Slf4j
-public class JdbcCreateWorkflow
+public class JdbcCreateResourceWorkflow
     {
     /**
      * Public interface for the workflow params.
      *
      */
     public interface Param
-    extends JdbcCreateActivity.Param
+    extends JdbcCreateResourceClient.Param
         {
         }
 
@@ -64,12 +63,12 @@ public class JdbcCreateWorkflow
     public static class Result
     extends SimpleWorkflowResult
         {
-        public Result(final RequestResource request, ResourceID resource)
+        public Result(final RequestResource request, ResourceID created)
             {
             super(
                 request
                 );
-            this.resource = resource;
+            this.created = created;
             }
 
         /**
@@ -99,15 +98,15 @@ public class JdbcCreateWorkflow
          * The created resource ID.
          * 
          */
-        private ResourceID resource ;
+        private ResourceID created ;
 
         /**
          * The created resource ID.
          * 
          */
-        public ResourceID resource()
+        public ResourceID created()
             {
-            return this.resource;
+            return this.created;
             }
         }
     
@@ -117,7 +116,7 @@ public class JdbcCreateWorkflow
      * @throws MalformedURLException 
      *
      */
-    public JdbcCreateWorkflow(final String endpoint)
+    public JdbcCreateResourceWorkflow(final String endpoint)
     throws MalformedURLException
         {
         this(
@@ -134,7 +133,7 @@ public class JdbcCreateWorkflow
      * @param endpoint The OGSA-DAI service endpoint URL.
      *
      */
-    public JdbcCreateWorkflow(final URL endpoint)
+    public JdbcCreateResourceWorkflow(final URL endpoint)
         {
         this(
             new OgsaServiceClient(
@@ -145,28 +144,29 @@ public class JdbcCreateWorkflow
 
     /**
      * Public constructor.
-     * @param endpoint Our {@link OgsaServiceClient} client.
+     * @param service Our {@link OgsaServiceClient} client.
      *
      */
-    public JdbcCreateWorkflow(final OgsaServiceClient client)
+    public JdbcCreateResourceWorkflow(final OgsaServiceClient service)
         {
-        this.client = client ;
+        this.servce = service ;
         }
 
     /**
      * Our {@link OgsaServiceClient} client.
      * 
      */
-    private OgsaServiceClient client ;  
+    private OgsaServiceClient servce ;  
     
     /**
      * Execute our workflow.
      * @param The workflow params.
-     * 
+     * @return A workflow {@link Result} containing the results.
+     *   
      */
     public Result execute(final Param param)
         {
-        JdbcCreateActivity create = new JdbcCreateActivity(
+        JdbcCreateResourceClient create = new JdbcCreateResourceClient(
             param
             ); 
         
@@ -181,7 +181,7 @@ public class JdbcCreateWorkflow
 
         try {
             return new Result(
-                client.drer().execute(
+                servce.drer().execute(
                     workflow,
                     RequestExecutionType.SYNCHRONOUS
                     ),

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+
 /**
  * Public interface for the pipeline parameters.
  *
@@ -33,7 +35,7 @@ public interface PipelineParam
 
     public RownumClient.Param rows();
     
-    public InsertClient.Param insert();
+    public JdbcInsertDataClient.Param insert();
     
     public DelaysClient.Param  delays();
 

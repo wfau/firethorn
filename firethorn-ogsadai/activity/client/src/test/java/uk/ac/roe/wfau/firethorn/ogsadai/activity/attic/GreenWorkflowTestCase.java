@@ -1,7 +1,7 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.green;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.attic;
 
 import java.net.URL;
 
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleQueryTestBase;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
 import uk.org.ogsadai.resource.ResourceID;
 

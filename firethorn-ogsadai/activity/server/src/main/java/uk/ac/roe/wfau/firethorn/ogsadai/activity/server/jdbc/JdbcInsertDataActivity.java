@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.InsertParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -53,11 +53,12 @@ import uk.org.ogsadai.tuple.Tuple;
 import uk.org.ogsadai.tuple.TupleMetadata;
 
 /**
- * Copy of the OGSA-DAI {@link SQLBulkLoadTupleActivity} modified to use batch insert.
+ * Activity to insert data into a table.
+ * Based on the original {@link SQLBulkLoadTupleActivity} in the OGSA-DAI source code, modified to use batch insert.
  * http://viralpatel.net/blogs/batch-insert-in-java-jdbc/
  *
  */
-public class InsertActivity
+public class JdbcInsertDataActivity
 extends MatchedIterativeActivity
 implements ResourceActivity
     {
@@ -67,14 +68,14 @@ implements ResourceActivity
      *
      */
     private static final Logger logger = LoggerFactory.getLogger(
-        InsertActivity.class
+        JdbcInsertDataActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public InsertActivity()
+    public JdbcInsertDataActivity()
         {
         super();
         }
@@ -121,21 +122,21 @@ implements ResourceActivity
         return new ActivityInput[]
             {
             new TypedActivityInput(
-                InsertParam.TABLE_NAME,
+                JdbcInsertDataParam.JDBC_INSERT_TABLE_NAME,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                InsertParam.FIRST_SIZE,
+                JdbcInsertDataParam.JDBC_INSERT_FIRST_SIZE,
                 Integer.class,
-                InsertParam.DEFAULT_FIRST
+                JdbcInsertDataParam.JDBC_INSERT_FIRST_DEFAULT
                 ),
             new TypedOptionalActivityInput(
-                InsertParam.BLOCK_SIZE,
+                JdbcInsertDataParam.JDBC_INSERT_BLOCK_SIZE,
                 Integer.class,
-                InsertParam.DEFAULT_BLOCK
+                JdbcInsertDataParam.JDBC_INSERT_BLOCK_DEFAULT_BLOCK
                 ),
             new TupleListActivityInput(
-                InsertParam.TUPLE_INPUT
+                JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
                 )
             };
         }
@@ -146,10 +147,9 @@ implements ResourceActivity
         ActivityProcessingException,
         ActivityTerminatedException
         {
-        logger.debug("preprocess()");
         try {
             validateOutput(
-                InsertParam.TUPLE_OUTPUT
+                JdbcInsertDataParam.JDBC_INSERT_RESULTS
                 );
             writer = getOutput(
                 DelaysParam.TUPLE_OUTPUT
@@ -169,13 +169,17 @@ implements ResourceActivity
                 false
                 );
             }
-        catch (final SQLException e)
+        catch (final SQLException ouch)
             {
-            throw new ActivitySQLException(e);
+            throw new ActivitySQLException(
+                ouch
+                );
             }
-        catch (final JDBCConnectionUseException e)
+        catch (final JDBCConnectionUseException ouch)
             {
-            throw new ActivitySQLException(e);
+            throw new ActivitySQLException(
+                ouch
+                );
             }
         }
 
@@ -185,7 +189,6 @@ implements ResourceActivity
         ActivityTerminatedException,
         ActivityUserException
         {
-        logger.debug("processIteration(Object[])");
         final String table = (String)  inputs[0];
         final long   first = (Integer) inputs[1];
         final long   block = (Integer) inputs[2];
@@ -197,7 +200,6 @@ implements ResourceActivity
         final String insert = SQLUtilities.createInsertStatementSQL(table, metadata);
 
         try {
-            //log.debug("Processing iter ..");
         	statement = connection.prepareStatement(insert);
 
             long count = 0 ;
@@ -211,7 +213,7 @@ implements ResourceActivity
                 if (++total <= first)
                     {
                     statement.executeUpdate();
-                    //log.debug("Row [" + total + "]");
+                    //log.debug("Data first [" + total + "]");
                     }
                 //
                 // Write the rest in batches.
@@ -220,7 +222,7 @@ implements ResourceActivity
                     if (++count >= block)
                     	{
                     	statement.executeBatch();
-                    	logger.debug("XX Block [" + count + "][" + total + "]");
+                    	//logger.debug("Data block [" + count + "][" + total + "]");
                         count = 0;
                     	}
                     }
@@ -231,7 +233,7 @@ implements ResourceActivity
             if (count != 0)
                 {
                 statement.executeBatch();
-                //log.debug("Last [" + count + "][" + total + "]");
+                //log.debug("Data last [" + count + "][" + total + "]");
                 }
 
             writer.write(
