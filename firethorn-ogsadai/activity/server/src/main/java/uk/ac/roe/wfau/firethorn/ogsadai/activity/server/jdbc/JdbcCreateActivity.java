@@ -20,8 +20,9 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc.JdbcCreateParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.DelaysActivity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.SimpleProcessingException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.DelaysActivity;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -31,14 +32,30 @@ import uk.org.ogsadai.activity.extension.ResourceManagerActivity;
 import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.BlockWriter;
+import uk.org.ogsadai.activity.io.PipeClosedException;
+import uk.org.ogsadai.activity.io.PipeIOException;
+import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
+import uk.org.ogsadai.activity.management.ExtendedCreateRelationalResourceActivity;
+import uk.org.ogsadai.authorization.Login;
+import uk.org.ogsadai.authorization.LoginDeniedException;
+import uk.org.ogsadai.authorization.LoginProvider;
+import uk.org.ogsadai.authorization.LoginProviderException;
+import uk.org.ogsadai.authorization.ManageableLoginProvider;
 import uk.org.ogsadai.authorization.SecurityContext;
+import uk.org.ogsadai.resource.ResourceCreationException;
 import uk.org.ogsadai.resource.ResourceFactory;
 import uk.org.ogsadai.resource.ResourceID;
+import uk.org.ogsadai.resource.ResourceIDAlreadyAssignedException;
 import uk.org.ogsadai.resource.ResourceManager;
+import uk.org.ogsadai.resource.ResourceTypeException;
+import uk.org.ogsadai.resource.ResourceUnknownException;
+import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
+import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResourceState;
 
 /**
- * OGSA-DAI Activity to create new JDBC resources. 
+ * Activity to create new JDBC resources.
+ * Based on {@link ExtendedCreateRelationalResourceActivity} from OGSA-DAI source code.  
  *
  */
 public class JdbcCreateActivity
@@ -116,18 +133,17 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      *  
      */
     private SecurityContext context;
-
     @Override
     public void setSecurityContext(SecurityContext context)
         {
         this.context = context ;
         }
+
     /**
      * Our OGSA-DAI resource factory.
      * 
      */
     private ResourceFactory factory;
-
     @Override
     public void setResourceFactory(ResourceFactory factory)
         {
@@ -139,7 +155,6 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      * 
      */
     private ResourceManager manager;
-
     @Override
     public void setResourceManager(ResourceManager manager)
         {
@@ -150,44 +165,151 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
     protected void processIteration(Object[] iterationData)
     throws ActivityProcessingException, ActivityTerminatedException, ActivityUserException
         {
-        ResourceID resource = manager.createUniqueID();
+        ResourceID uniqueid = manager.createUniqueID();
         ResourceID template = new ResourceID(
             "uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE"
             );        
         
-        String url = null;
-        if (iterationData[0] != null)
+        String jdbcurl  = (String) iterationData[0];
+        String username = (String) iterationData[1];
+        String password = (String) iterationData[2];
+        String driver   = (String) iterationData[3];
+
+        logger.debug("Resource ["+ uniqueid  +"]");
+        logger.debug("Template ["+ template +"]");
+
+        logger.debug("Database ["+ jdbcurl +"]");
+        logger.debug("Username ["+ username +"]");
+        logger.debug("Password ["+ password +"]");
+        logger.debug("Driver   ["+ driver +"]");
+
+        try {
+            JDBCDataResource created = (JDBCDataResource) factory.createDataResource(template);
+
+            JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
+
+            jdbcstate.getDataResourceState().setResourceID(
+                uniqueid
+                );
+
+            if (jdbcurl != null)
+                {
+                jdbcstate.setDatabaseURL(jdbcurl);
+                }
+
+            if (driver != null)
+                {
+                jdbcstate.setDriverClass(driver);
+                }
+            
+            LoginProvider provider = jdbcstate.getLoginProvider();
+            Login login = null;
+
+            if (username != null)
+                {
+                if (password == null)
+                    {
+                    password = "";
+                    }
+                login = new Login(
+                    username,
+                    password
+                    );
+                }
+            else {
+                try {
+                    login = provider.getLogin(
+                        template,
+                        context
+                        );
+                    }
+                catch (LoginDeniedException ouch)
+                    {
+                    throw new ActivityProcessingException(
+                        ouch
+                        );
+                    }
+                catch (LoginProviderException ouch)
+                    {
+                    throw new ActivityProcessingException(
+                        ouch
+                        );
+                    }
+                }
+
+            if (provider instanceof ManageableLoginProvider)
+                {
+                ((ManageableLoginProvider) provider).permitLogin(
+                    uniqueid, 
+                    context, 
+                    login
+                    );
+                }
+            else {
+                throw new ActivityProcessingException(
+                    new SimpleProcessingException(
+                        "LoginProvider does not implement ManageableLoginProvider"
+                        )
+                    );
+                }
+
+            factory.addResource(
+                uniqueid,
+                created
+                );
+
+            result.write(
+                created.getResourceID().toString()
+                );
+            }
+        catch (ResourceCreationException ouch)
             {
-            url = (String)iterationData[3];
+            logger.warn("ResourceCreationExceptioncreating JDBCDataResource [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
-
-        String username = null;
-        if (iterationData[1] != null)
+        catch (ResourceTypeException ouch)
             {
-            username = (String)iterationData[4];
+            logger.warn("ResourceTypeExceptioncreating JDBCDataResource [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
-
-        String password = null;
-        if (iterationData[2] != null)
+        catch (ResourceUnknownException ouch)
             {
-            password = (String)iterationData[5];
+            logger.warn("Unable to locate JDBCDataResource template [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
-        
-        String driver = null;
-        if (iterationData[3] != null)
+        catch (ResourceIDAlreadyAssignedException ouch)
             {
-            driver = (String)iterationData[2];
+            logger.warn("Resource ID already assigned [" + uniqueid + "][" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
-
-        logger.debug("Resource ID: " + resourceID);
-        logger.debug("Template ID: " + templateID);
-        logger.debug("Database driver: " + dbDriver);
-        logger.debug("Database URL: " + dbURL);
-                LOG.debug("Database username: " + dbUser);
-                LOG.debug("Database password: " + dbPassword);
+        catch (PipeClosedException ouch)
+            {
+            logger.warn("PipeClosedException [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
-
-// do stuff ....
-
+        catch (PipeIOException ouch)
+            {
+            logger.warn("PipeIOException [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        catch (PipeTerminatedException ouch)
+            {
+            logger.warn("PipeTerminatedException [" + ouch.getMessage() + "]");
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
         }
     }

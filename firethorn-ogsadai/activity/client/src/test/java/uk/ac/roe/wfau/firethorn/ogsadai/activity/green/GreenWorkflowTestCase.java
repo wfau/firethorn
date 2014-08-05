@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleQueryTestBase;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**

@@ -15,12 +15,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
@@ -42,6 +46,22 @@ public class JdbcCreateWorkflow
      */
     public JdbcCreateWorkflow(final String endpoint)
     throws MalformedURLException
+        {
+        this(
+            new OgsaServiceClient(
+                new URL(
+                    endpoint
+                    )
+                )
+            );
+        }
+
+    /**
+     * Public constructor.
+     * @param endpoint The OGSA-DAI service endpoint URL.
+     *
+     */
+    public JdbcCreateWorkflow(final URL endpoint)
         {
         this(
             new OgsaServiceClient(
@@ -71,6 +91,7 @@ public class JdbcCreateWorkflow
      * 
      */
     public ResourceID execute(final JdbcCreateParam param)
+    throws WorkflowException
         {
         JdbcCreateActivity create = new JdbcCreateActivity(
             param
@@ -96,12 +117,15 @@ public class JdbcCreateWorkflow
                     create.result().getDataValueIterator().nextAsString()
                     ); 
                 }
-            log.debug("Null create data source result");
+            log.debug("Null result");
             return null ;
             }
         catch (Exception ouch) {
             log.debug("Exception while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return null ;
+            throw new WorkflowException(
+                "Exception creating data source",
+                ouch
+                );
             }
         }
     }

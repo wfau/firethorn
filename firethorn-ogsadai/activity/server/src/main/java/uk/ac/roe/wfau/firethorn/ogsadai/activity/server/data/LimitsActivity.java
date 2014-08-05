@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelaysParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.LimitsParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;

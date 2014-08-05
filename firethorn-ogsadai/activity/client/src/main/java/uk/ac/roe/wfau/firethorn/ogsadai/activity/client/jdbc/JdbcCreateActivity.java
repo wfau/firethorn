@@ -15,8 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StringActivityInput;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -37,7 +39,7 @@ extends BaseActivity implements Activity
      * The database URL, as a String.
      *
      */
-    private final ActivityInput url;
+    private final ActivityInput jdbcurl;
 
     /**
      * The database username, as a String.
@@ -85,9 +87,9 @@ extends BaseActivity implements Activity
                 JdbcCreateParam.ACTIVITY_NAME
                 )
             );
-        this.url = new StringActivityInput(
+        this.jdbcurl = new StringActivityInput(
             JdbcCreateParam.JDBC_DATABASE_URL,
-            param.url(),
+            param.jdbcurl(),
             true
             );
         this.username = new StringActivityInput(
@@ -115,7 +117,7 @@ extends BaseActivity implements Activity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            url,
+            jdbcurl,
             username,
             password,
             driver

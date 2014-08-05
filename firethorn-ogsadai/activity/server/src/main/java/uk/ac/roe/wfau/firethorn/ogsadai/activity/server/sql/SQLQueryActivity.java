@@ -84,7 +84,7 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCSettings;
  * Unable to do this with by extending SQLQueryActivity because the class members are private.  
  *  
  */
-public class SQLQueryActivity01 
+public class SQLQueryActivity 
     extends MatchedIterativeActivity 
     implements ResourceActivity, ServiceAddressesActivity
     {
@@ -93,7 +93,7 @@ public class SQLQueryActivity01
      *
      */
     private static final Logger logger = LoggerFactory.getLogger(
-        SQLQueryActivity01.class
+        SQLQueryActivity.class
         );
     
     /** Copyright notice. */
@@ -102,7 +102,7 @@ public class SQLQueryActivity01
     
     /** Logger object for logging in this class. */
     private static final DAILogger LOG = 
-        DAILogger.getLogger(SQLQueryActivity01.class);
+        DAILogger.getLogger(SQLQueryActivity.class);
     
     /** Activity input name - SQL expression. */
     public static final String INPUT_SQL_EXPRESSION = "expression";
@@ -138,7 +138,7 @@ public class SQLQueryActivity01
     /**
      * Constructor.
      */
-    public SQLQueryActivity01()
+    public SQLQueryActivity()
     {
         super();
         mContracts.add(new ActivityContractName(

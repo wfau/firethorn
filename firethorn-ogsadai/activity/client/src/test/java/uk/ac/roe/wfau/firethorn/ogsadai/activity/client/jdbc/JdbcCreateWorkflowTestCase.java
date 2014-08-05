@@ -1,9 +1,12 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
 import static org.junit.Assert.assertNotNull;
+
+import java.net.URL;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -12,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateParam;
 import uk.org.ogsadai.resource.ResourceID;
 
@@ -34,34 +36,38 @@ public class JdbcCreateWorkflowTestCase
     {
 
     @Value("${firethorn.ogsadai.endpoint}")
-    protected String endpoint ;
+    private String endpoint ;
 
     @Value("${firethorn.atlas.url}")
-    protected String url ;
+    private String jdbcurl ;
 
     @Value("${firethorn.atlas.user}")
-    protected String username ;
+    private String username ;
 
     @Value("${firethorn.atlas.pass}")
-    protected String password ;
+    private String password ;
 
     @Value("${firethorn.atlas.driver}")
-    protected String driver ;
-    
+    private String driver;
+
     @Test
     public void test000()
     throws Exception
         {
-        JdbcCreateWorkflow workflow = new JdbcCreateWorkflow(
-            endpoint
+        
+        JdbcCreateWorkflow client = new JdbcCreateWorkflow(
+            new URL(
+                endpoint
+                )
             );
-        ResourceID resource = workflow.execute(
+
+        ResourceID created = client.execute(
             new JdbcCreateParam()
                 {
                 @Override
                 public String jdbcurl()
                     {
-                    return url;
+                    return jdbcurl;
                     }
                 @Override
                 public String username()
@@ -80,8 +86,9 @@ public class JdbcCreateWorkflowTestCase
                     }
                 }
             );
+
         assertNotNull(
-            resource
+            created
             );
         }
     }

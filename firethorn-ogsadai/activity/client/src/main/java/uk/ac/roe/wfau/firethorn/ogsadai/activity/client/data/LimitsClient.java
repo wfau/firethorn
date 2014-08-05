@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+ * Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.RownumParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -28,13 +28,13 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.StringData;
+import uk.org.ogsadai.data.LongData;
 
 /**
- * Client for our Rownum Activity.
+ * Client for our Limits Activity.
  *
  */
-public class RownumClient
+public class LimitsClient
 extends BaseActivity implements Activity
     {
 
@@ -46,25 +46,50 @@ extends BaseActivity implements Activity
     public static interface Param
         {
         /**
-         * The target column name.
-         * @return The target column name.
+         * The row limit.
+         * @return The row limit.
          *
          */
-        public String column();
-        
+        public Long rows();
+
+        /**
+         * The cells limit.
+         * @return The cells limit.
+         *
+         */
+        public Long cells();
+
+        /**
+         * The time limit.
+         * @return The time limit.
+         *
+         */
+        public Long time();
         }
 
     /**
-     * Activity input - column name.
+     * The row limit.
      *
      */
-    private final ActivityInput column;
+    private final ActivityInput rows;
 
+    /**
+     * The cell limit.
+     *
+     */
+    private final ActivityInput cells;
+
+    /**
+     * The time limit.
+     *
+     */
+    private final ActivityInput time;
+    
     /**
      * The input tuples
      *
      */
-    private final ActivityInput tuples;
+    private final ActivityInput input;
 
     /**
      * The output tuples
@@ -78,7 +103,7 @@ extends BaseActivity implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public RownumClient(final SingleActivityOutput source, final Param param)
+    public LimitsClient(final SingleActivityOutput source, final Param param)
         {
         this(
             param
@@ -93,65 +118,118 @@ extends BaseActivity implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public RownumClient(final Param param)
+    public LimitsClient(final Param param)
         {
         this();
         if (param != null)
             {
-            column(
-                param.column()
+            this.rows(
+                param.rows()
+                );
+            this.cells(
+                param.cells()
+                );
+            this.time(
+                param.time()
                 );
             }
         }
-    
+
     /**
      * Public constructor.
      *
      */
-    public RownumClient()
+    public LimitsClient()
         {
         super(
             new ActivityName(
-                RownumParam.ACTIVITY_NAME
+                LimitsParam.ACTIVITY_NAME
                 )
             );
-        column = new SimpleActivityInput(
-            RownumParam.COLUMN_NAME
+        rows = new SimpleActivityInput(
+            LimitsParam.ROW_LIMIT,
+            true
             );
-        tuples = new SimpleActivityInput(
-            RownumParam.TUPLE_INPUT
+        cells = new SimpleActivityInput(
+            LimitsParam.CELL_LIMIT,
+            true
+            );
+        time = new SimpleActivityInput(
+            LimitsParam.TIME_LIMIT,
+            true
+            );
+        input = new SimpleActivityInput(
+            LimitsParam.TUPLE_INPUT,
+            false
             );
         output = new SimpleActivityOutput(
-            RownumParam.TUPLE_OUTPUT
+            LimitsParam.TUPLE_OUTPUT,
+            false
             );
         }
 
     /**
-     * Set the column name.
+     * Set the row delay.
      *
      */
-    public void column(final String name)
+    public void rows(final Long value)
         {
-        column.add(
-            new StringData(
-                name
-                )
-            );
+        if (value != null)
+            {
+            rows.add(
+                new LongData(
+                    value
+                    )
+                );
+            }
         }
 
     /**
-     * Connect the tuple input.
+     * Set the cells limit.
+     *
+     */
+    public void cells(final Long value)
+        {
+        if (value != null)
+            {
+            cells.add(
+                new LongData(
+                    value
+                    )
+                );
+            }
+        }
+
+    /**
+     * Set the time limit.
+     *
+     */
+    public void time(final Long value)
+        {
+        if (value != null)
+            {
+            time.add(
+                new LongData(
+                    value
+                    )
+                );
+            }
+        }
+
+    /**
+     * Connect the tuples input.
+     * @param source The tuple input source.
      *
      */
     public void input(final SingleActivityOutput source)
         {
-        tuples.connect(
+        input.connect(
             source
             );
         }
 
     /**
-     * Get the tuple output.
+     * Get the tuples output.
      * @return The tuples output
      *
      */
@@ -160,21 +238,17 @@ extends BaseActivity implements Activity
         return output.getSingleActivityOutputs()[0];
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            column,
-            tuples
+            rows,
+            cells,
+            time,
+            input
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityOutput[] getOutputs()
         {
@@ -183,14 +257,10 @@ extends BaseActivity implements Activity
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
         }
     }
-
 

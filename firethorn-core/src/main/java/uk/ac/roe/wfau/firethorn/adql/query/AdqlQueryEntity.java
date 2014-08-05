@@ -79,13 +79,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.InsertClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
 
 /**
  *

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
  * Shared parameter names for our JdbcCreateActivity.
@@ -34,7 +34,7 @@ public interface JdbcCreateParam
      * Parameter name for the database URL, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_URL = "jdbc.create.url"  ;
+    public static final String JDBC_DATABASE_URL = "jdbc.create.jdbcurl"  ;
 
     /**
      * Parameter name for the database user name, {@value}.
@@ -64,7 +64,7 @@ public interface JdbcCreateParam
      * The database URL, as a String.
      *
      */
-    public String url();
+    public String jdbcurl();
 
     /**
      * The database username, as a String.

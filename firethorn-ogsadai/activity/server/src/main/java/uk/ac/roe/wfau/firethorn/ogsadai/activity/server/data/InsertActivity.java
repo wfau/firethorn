@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +25,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelaysParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.InsertParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.InsertParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -53,7 +53,7 @@ import uk.org.ogsadai.tuple.Tuple;
 import uk.org.ogsadai.tuple.TupleMetadata;
 
 /**
- * Copy of the OGSA-DAI SQLBulkLoadTupleActivity modified to use batch insert.
+ * Copy of the OGSA-DAI {@link SQLBulkLoadTupleActivity} modified to use batch insert.
  * http://viralpatel.net/blogs/batch-insert-in-java-jdbc/
  *
  */
@@ -103,27 +103,18 @@ implements ResourceActivity
      */
     private BlockWriter writer;
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Class<? extends ResourceAccessor> getTargetResourceAccessorClass()
         {
         return JDBCConnectionProvider.class;
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTargetResourceAccessor(final ResourceAccessor resource)
         {
         provider = (JDBCConnectionProvider) resource;
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ActivityInput[] getIterationInputs()
         {
@@ -149,12 +140,11 @@ implements ResourceActivity
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void preprocess() throws ActivityUserException,
-        ActivityProcessingException, ActivityTerminatedException
+    protected void preprocess()
+    throws ActivityUserException,
+        ActivityProcessingException,
+        ActivityTerminatedException
         {
         logger.debug("preprocess()");
         try {
@@ -189,12 +179,11 @@ implements ResourceActivity
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void processIteration(final Object[] inputs)
-    throws ActivityProcessingException, ActivityTerminatedException, ActivityUserException
+    throws ActivityProcessingException,
+        ActivityTerminatedException,
+        ActivityUserException
         {
         logger.debug("processIteration(Object[])");
         final String table = (String)  inputs[0];
@@ -256,8 +245,9 @@ implements ResourceActivity
 
         catch (final SQLException ouch)
             {
-            //rollback();
-            throw new ActivitySQLUserException(ouch);
+            throw new ActivitySQLUserException(
+                ouch
+                );
             }
         catch (final PipeClosedException ouch)
             {
@@ -266,53 +256,48 @@ implements ResourceActivity
             }
         catch (final PipeIOException ouch)
             {
-            logger.warn("PipeIOException during processing", ouch);
-            //rollback();
-            throw new ActivityPipeProcessingException(ouch);
+            logger.warn("PipeIOException during processing", ouch.getMessage());
+            throw new ActivityPipeProcessingException(
+                ouch
+                );
             }
         catch (final PipeTerminatedException ouch)
             {
-            //rollback();
             throw new ActivityTerminatedException();
             }
         catch (final ActivityUserException ouch)
             {
-            logger.warn("ActivityUserException during processing", ouch);
-            //rollback();
+            logger.warn("ActivityUserException during processing", ouch.getMessage());
             throw ouch;
             }
         catch (final ActivityProcessingException ouch)
             {
-            logger.warn("ActivityProcessingException during processing", ouch);
-            //rollback();
+            logger.warn("ActivityProcessingException during processing", ouch.getMessage());
             throw ouch;
             }
         catch (final ActivityTerminatedException ouch)
             {
-            logger.warn("ActivityTerminatedException during processing", ouch);
-            //rollback();
+            logger.warn("ActivityTerminatedException during processing", ouch.getMessage());
             throw ouch;
             }
         catch (final Throwable ouch)
             {
-            //rollback();
-            throw new ActivityProcessingException(ouch);
+            logger.warn("Throwable during processing", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
             }
         finally
             {
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void postprocess()
         throws ActivityUserException,
             ActivityProcessingException,
             ActivityTerminatedException
         {
-        logger.debug("postprocess()");
         if (connection != null)
             {
             try {
@@ -327,13 +312,9 @@ implements ResourceActivity
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void cleanUp() throws Exception
         {
-        logger.debug("cleanUp()");
         super.cleanUp();
 
         if (statement != null)
@@ -353,23 +334,6 @@ implements ResourceActivity
             {
             provider.releaseConnection(
                 connection
-                );
-            }
-        }
-
-    private void rollback()
-        {
-        try {
-            connection.rollback();
-            connection.setAutoCommit(
-                true
-                );
-            }
-        catch (final Exception ouch)
-            {
-            logger.error(
-                "Exception during rollback()",
-                ouch
                 );
             }
         }

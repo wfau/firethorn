@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 
 /**
  *

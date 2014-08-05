@@ -16,57 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data;
 
 /**
- * Parameter names for the LimitsActivity.
+ * Parameter names for the InsertActivity.
  *
  */
-public class LimitsParam
+public class InsertParam
     {
 
     /**
-     * Parameter name for the row limit.
+     * Parameter name for the size of the first block.
      * 
      */
-    public static final String ROW_LIMIT  = "limit.rows"  ;
+    public static final String FIRST_SIZE = "first.size" ;
 
     /**
-     * Default row limit (0 = no limit).
+     * Default value for the first block size.
      * 
      */
-    public static final Long DEFAULT_ROWS = new Long(0);
+    public static final Integer DEFAULT_FIRST = new Integer(100);
     
     /**
-     * Parameter name for the cell limit.
+     * Parameter name for the main block size.
      * 
      */
-    public static final String CELL_LIMIT = "limit.cells" ;
+    public static final String BLOCK_SIZE = "block.size"  ;
 
     /**
-     * Default cell limit (0 = no limit).
+     * Default value for the main block size.
      * 
      */
-    public static final Long DEFAULT_CELLS = new Long(0);
-    
-    /**
-     * Parameter name for the time limit.
-     * 
-     */
-    public static final String TIME_LIMIT = "limit.time"  ;
+    public static final Integer DEFAULT_BLOCK = new Integer(1000);
 
     /**
-     * Default time limit (0 = no limit).
+     * Parameter name for the table name.
      * 
      */
-    public static final Long DEFAULT_TIME = new Long(0);
+    public static final String TABLE_NAME = "table.name"  ;
     
     /**
      * Parameter name for the input tuples.
      * 
      */
     public static final String TUPLE_INPUT  = "tuples" ;
-    
+
     /**
      * Parameter name for the output tuples.
      * 
@@ -77,7 +71,7 @@ public class LimitsParam
      * Default Activity name.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Limits" ;
-    
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Insert" ;
+
     }
 

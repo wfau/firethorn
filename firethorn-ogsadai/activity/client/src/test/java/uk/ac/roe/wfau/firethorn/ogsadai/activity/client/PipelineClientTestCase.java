@@ -7,7 +7,13 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient.Param;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.InsertClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
 
 /**
  * These tests  no longer work - because we need firethorn to create the tables for us.

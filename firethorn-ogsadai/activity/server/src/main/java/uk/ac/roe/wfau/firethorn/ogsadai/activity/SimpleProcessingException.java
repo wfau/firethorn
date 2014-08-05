@@ -15,28 +15,36 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity;
 
 /**
- * Public interface for the pipeline parameters.
+ *
  *
  */
-public interface PipelineParam
+public class SimpleProcessingException
+extends Exception
     {
-    
-    public String source();
-    public String query();
+    /**
+     * Serial version ID. 
+     *
+     */
+    private static final long serialVersionUID = -6683378107860003836L;
 
-    //public String store();
-    //public String table();
-    //public String rownum();
+    /**
+     * Public constructor.
+     * 
+     */
+    public SimpleProcessingException()
+        {
+        super();
+        }
 
-    public RownumClient.Param rows();
-    
-    public InsertClient.Param insert();
-    
-    public DelaysClient.Param  delays();
-
-    public LimitsClient.Param limits();
-
+    /**
+     * Public constructor.
+     * 
+     */
+    public SimpleProcessingException(final String message)
+        {
+        super(message);
+        }
     }

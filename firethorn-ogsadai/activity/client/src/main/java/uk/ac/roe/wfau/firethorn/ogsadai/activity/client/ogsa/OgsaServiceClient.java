@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -80,7 +80,7 @@ public class OgsaServiceClient
      * Our OGSA-DAI server proxy.
      * 
      */
-    protected synchronized Server server()
+    public synchronized Server server()
         {
         if (this.server == null)
             {
@@ -102,7 +102,7 @@ public class OgsaServiceClient
      * Our OGSA-DAI DRER proxy.
      * 
      */
-    protected synchronized DataRequestExecutionResource drer()
+    public synchronized DataRequestExecutionResource drer()
         {
         if (this.drer == null)
             {

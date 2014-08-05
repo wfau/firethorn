@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+/**
+ * Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.DelaysParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.RownumParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -32,15 +35,21 @@ import uk.org.ogsadai.activity.io.ControlBlock;
 import uk.org.ogsadai.activity.io.PipeClosedException;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
-import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
-import uk.org.ogsadai.activity.sql.ActivitySQLException;
+import uk.org.ogsadai.activity.io.TypedActivityInput;
+import uk.org.ogsadai.metadata.MetadataWrapper;
+import uk.org.ogsadai.tuple.ColumnMetadata;
+import uk.org.ogsadai.tuple.SimpleColumnMetadata;
+import uk.org.ogsadai.tuple.SimpleTuple;
+import uk.org.ogsadai.tuple.SimpleTupleMetadata;
 import uk.org.ogsadai.tuple.Tuple;
+import uk.org.ogsadai.tuple.TupleMetadata;
+import uk.org.ogsadai.tuple.TupleTypes;
 
 /**
- * Activity to add processing delays.
+ * Activity to add a row number column.
  *
  */
-public class DelaysActivity
+public class RownumActivity
 extends MatchedIterativeActivity
     {
 
@@ -49,14 +58,14 @@ extends MatchedIterativeActivity
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        DelaysActivity.class
+        RownumActivity.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public DelaysActivity()
+    public RownumActivity()
         {
         super();
         }
@@ -65,47 +74,32 @@ extends MatchedIterativeActivity
     public ActivityInput[] getIterationInputs()
         {
         return new ActivityInput[] {
-            new TypedOptionalActivityInput(
-                DelaysParam.FIRST_DELAY,
-                Integer.class,
-                DelaysParam.DEFAULT_FIRST
-                ),
-            new TypedOptionalActivityInput(
-                DelaysParam.LAST_DELAY,
-                Integer.class,
-                DelaysParam.DEFAULT_LAST
-                ),
-            new TypedOptionalActivityInput(
-                DelaysParam.EVERY_DELAY,
-                Integer.class,
-                DelaysParam.DEFAULT_EVERY
+            new TypedActivityInput(
+                RownumParam.COLUMN_NAME,
+                String.class
                 ),
             new TupleListActivityInput(
-                DelaysParam.TUPLE_INPUT
+                RownumParam.TUPLE_INPUT
                 )
             };
         }
 
     /**
-     * Block writer for our output.
+     * Block writer for output.
      *
      */
     private BlockWriter writer;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void preprocess()
-    throws ActivitySQLException, ActivityProcessingException
+    throws ActivityProcessingException
         {
-        logger.debug("preprocess()");
-        try {
+    	try {
             validateOutput(
-                DelaysParam.TUPLE_OUTPUT
+                RownumParam.TUPLE_OUTPUT
                 );
             writer = getOutput(
-                DelaysParam.TUPLE_OUTPUT
+                RownumParam.TUPLE_OUTPUT
                 );
             }
         catch (final Exception ouch)
@@ -117,54 +111,85 @@ extends MatchedIterativeActivity
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void processIteration(final Object[] inputs)
+    protected void processIteration(final Object[] iteration)
     throws ActivityProcessingException,
            ActivityTerminatedException,
            ActivityUserException
         {
         logger.debug("processIteration(Object[])");
         try {
+
             //
-            // Get our delay values.
-            final Integer first = (Integer) inputs[0];
-            final Integer last  = (Integer) inputs[1];
-            final Integer every = (Integer) inputs[2];
+            // Get the column name.
+            final String colname = (String) iteration[0];
+            logger.debug("Column name [{}]", colname);
             //
-            // Get our tuple iterator.
-            final TupleListIterator tuples = (TupleListIterator) inputs[3];
+            // Get the tuple iterator.
+            final TupleListIterator tuples = (TupleListIterator) iteration[1];
+
             //
-            // Write the LIST_BEGIN marker and the tuple metadata.
-            writer.write(
-                ControlBlock.LIST_BEGIN
+            // Create the metadata for our new column and combine it with the original.
+            final MetadataWrapper metadata = new MetadataWrapper(
+	            new SimpleTupleMetadata(
+	                "Firethorn result set",
+	                new SimpleTupleMetadata(
+                		Arrays.asList(
+            				(ColumnMetadata) new SimpleColumnMetadata(
+    							colname,
+                                TupleTypes._LONG,
+                                0,
+                                ColumnMetadata.COLUMN_NO_NULLS,
+                                0
+                                )
+                    		)
+        	            ),
+	                (TupleMetadata) tuples.getMetadataWrapper().getMetadata()
+	                )
                 );
-            writer.write(
-                tuples.getMetadataWrapper()
-                );
+
             //
-            // Wait for the initial delay.
-            pause(
-                first
-                );
+            // Write the LIST_BEGIN marker and metadata
+            writer.write(ControlBlock.LIST_BEGIN);
+            writer.write(metadata);
+
             //
-            // Process our tuples.
-            for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
+            // Process the tuples.
+            Tuple tuple ;
+            for(long rownum = 0 ; ((tuple = (Tuple) tuples.nextValue()) != null) ; rownum++)
                 {
-                pause(
-                    every
+                //
+                // Create a new list of elements.
+                final ArrayList<Object> elements = new ArrayList<Object>(
+                    tuple.getColumnCount() + 1
                     );
+                //
+                // Add our row number.
+                elements.add(
+                    new Long(
+                        rownum
+                        )
+                    );
+                //
+                // Add the rest of the columns from the tuple.
+                final int count = tuple.getColumnCount();
+                for (int colnum = 0; colnum < count ; colnum++)
+                    {
+                    elements.add(
+                        tuple.getObject(
+                            colnum
+                            )
+                        );
+                    }
+                //
+                // Write the new tuple to our output.
                 writer.write(
-                    tuple
+                    new SimpleTuple(
+                        elements
+                        )
                     );
                 }
-            //
-            // Wait for the final delay.
-            pause(
-                last
-                );
+
             //
             // Write the list end marker
             done();
@@ -188,32 +213,12 @@ extends MatchedIterativeActivity
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void postprocess()
     throws ActivityProcessingException
         {
-        logger.debug("postprocess()");
-        }
-    
-    /**
-     * Helper method to wrap up the parameter checking.
-     * 
-     */
-    private void pause(Integer delay)
-    throws InterruptedException
-        {
-        if ((delay != null) && (delay > 0))
-            {
-            Thread.sleep(
-                delay
-                );
-            }
         }
 
-    // Common base class ?
     private void done()
     throws ActivityProcessingException
         {

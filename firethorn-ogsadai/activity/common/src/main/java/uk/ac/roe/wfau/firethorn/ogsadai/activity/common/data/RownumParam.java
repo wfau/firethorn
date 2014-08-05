@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.common;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data;
 
 /**
  * Parameter names for the RownumActivity.

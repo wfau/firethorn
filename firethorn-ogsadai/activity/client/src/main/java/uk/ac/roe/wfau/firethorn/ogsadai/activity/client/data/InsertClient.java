@@ -17,9 +17,9 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.InsertParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.InsertParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
