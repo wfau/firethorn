@@ -23,12 +23,15 @@
 
 sshusername=stv
 sshhostname=fenrir.roe.ac.uk
-system_architecture=i386 
+system_architecture=x86_64
 stvbranch=1.10.8-stv-pyrothorn
 testuser=''
 mysqlrootuser=root
 mysqlrootpass=pass
-
+sshuser=user
+sshhost=host.co.uk
+sshport=22
+sshpath=/path/
 
 # ---------------------------------------------
 # Install required packages
