@@ -68,7 +68,7 @@ public class JdbcCreateResourceWorkflow
             super(
                 request
                 );
-            this.created = created;
+            this.resource = created;
             }
 
         /**
@@ -98,15 +98,15 @@ public class JdbcCreateResourceWorkflow
          * The created resource ID.
          * 
          */
-        private ResourceID created ;
+        private ResourceID resource ;
 
         /**
          * The created resource ID.
          * 
          */
-        public ResourceID created()
+        public ResourceID resource()
             {
-            return this.created;
+            return this.resource;
             }
         }
     

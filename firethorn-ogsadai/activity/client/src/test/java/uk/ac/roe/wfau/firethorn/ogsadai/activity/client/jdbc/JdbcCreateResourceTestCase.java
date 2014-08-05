@@ -93,7 +93,7 @@ public class JdbcCreateResourceTestCase
 
         log.debug("Status  [{}]", created.status());
         log.debug("Request [{}]", created.request());
-        log.debug("Created [{}]", created.created());
+        log.debug("Created [{}]", created.resource());
 
         assertNotNull(
             created
@@ -106,7 +106,7 @@ public class JdbcCreateResourceTestCase
             created.request()
             );
         assertNotNull(
-            created.created()
+            created.resource()
             );
         }
     }

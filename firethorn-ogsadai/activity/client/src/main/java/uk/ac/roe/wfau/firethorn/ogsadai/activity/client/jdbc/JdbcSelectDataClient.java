@@ -73,36 +73,32 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcSelectDataClient(final Param param)
+    public JdbcSelectDataClient(final ResourceID source, final Param param)
         {
         super(
             new ActivityName(
                 JdbcSelectDataParam.ACTIVITY_NAME
                 )
             );
+        this.setResourceID(
+            source
+            );
+
         this.query = new SimpleActivityInput(
             JdbcSelectDataParam.JDBC_SELECT_QUERY,
             false
             );
-        this.query.add(
-            new StringData(
-                param.query()
-                )
-            );
+        if (param.query() != null)
+            {
+            this.query.add(
+                new StringData(
+                    param.query()
+                    )
+                );
+            }
 
         this.results = new SimpleActivityOutput(
             JdbcSelectDataParam.JDBC_SELECT_RESULTS
-            );
-        }
-
-    /**
-     * Set the source resource ID.
-     *
-     */
-    public void source(final ResourceID ident)
-        {
-        this.setResourceID(
-            ident
             );
         }
 

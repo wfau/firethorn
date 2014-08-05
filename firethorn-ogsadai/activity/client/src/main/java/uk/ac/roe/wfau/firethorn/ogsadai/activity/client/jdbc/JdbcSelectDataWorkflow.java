@@ -51,16 +51,16 @@ public class JdbcSelectDataWorkflow
     public interface Param
         {
         /**
-         * The target resource ID.
+         * The {@link JdbcCreateTable} params.
          *
          */
-        public ResourceID resource();
-
+        public JdbcCreateTableClient.Param create();
+        
         /**
-         * The ADQL/SQL query.
+         * The {@link JdbcSelectData} params.
          *
          */
-        public String query();
+        public JdbcSelectDataClient.Param select();
 
         /**
          * The {@link JdbcInsertData} params.
@@ -163,14 +163,14 @@ public class JdbcSelectDataWorkflow
      */
     public JdbcSelectDataWorkflow(final OgsaServiceClient service)
         {
-        this.serviceservice = service ;
+        this.service = service ;
         }
 
     /**
      * Our {@link OgsaServiceClient} service client.
      * 
      */
-    private OgsaServiceClient serviceservice ;  
+    private OgsaServiceClient service ;  
 
     /**
      * Execute our workflow.
@@ -178,18 +178,15 @@ public class JdbcSelectDataWorkflow
      * @return A workflow {@link Result} containing the results.
      * 
      */
-    public Result execute(final Param param)
+    public Result execute(final ResourceID source, final ResourceID target, final Param param)
         {
-        final SQLQuery select = new SQLQuery();
-        select.setResourceID(
-            param.resource()
-            );
-        select.addExpression(
-            param.query()
+        final JdbcSelectDataClient select = new JdbcSelectDataClient(
+            source,
+            param.select()
             );
 
         final DelaysClient delay = new DelaysClient(
-            select.getDataOutput(),
+            select.results(),
             param.delays()
             );
 
@@ -197,15 +194,22 @@ public class JdbcSelectDataWorkflow
             delay.output(),
             param.limits()
             );
+
+        final JdbcCreateTableClient create = new JdbcCreateTableClient(
+            limits.output(),
+            target,
+            param.create()
+            );
         
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
-            limits.output(),
+            create.results(),
+            target,
             param.insert()
             );
         
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
         delivery.connectInput(
-            insert.output()
+            insert.results()
             );
 
         final PipelineWorkflow workflow = new PipelineWorkflow();
@@ -219,6 +223,9 @@ public class JdbcSelectDataWorkflow
             limits
             );
         workflow.add(
+            create
+            );
+        workflow.add(
             insert
             );
         workflow.add(
@@ -227,7 +234,7 @@ public class JdbcSelectDataWorkflow
         
         try {
             return new Result(
-                serviceservice.drer().execute(
+                service.drer().execute(
                     workflow,
                     RequestExecutionType.SYNCHRONOUS
                     )

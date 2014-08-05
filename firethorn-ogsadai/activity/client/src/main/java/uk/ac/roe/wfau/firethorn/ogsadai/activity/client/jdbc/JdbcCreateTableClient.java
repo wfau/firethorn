@@ -80,12 +80,15 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcCreateTableClient(final SingleActivityOutput source, final Param param)
+    public JdbcCreateTableClient(final SingleActivityOutput source, final ResourceID target, final Param param)
         {
         super(
             new ActivityName(
                 JdbcCreateTableParam.ACTIVITY_NAME
                 )
+            );
+        this.setResourceID(
+            target
             );
 
         this.input = new SimpleActivityInput(
@@ -98,11 +101,14 @@ implements ResourceActivity
         this.table = new SimpleActivityInput(
             JdbcCreateTableParam.JDBC_CREATE_TABLE_NAME
             );
-        this.table.add(
-            new StringData(
-                param.table()
-                )
-            );
+        if (param.table() != null)
+            {
+            this.table.add(
+                new StringData(
+                    param.table()
+                    )
+                );
+            }
 
         this.results = new SimpleActivityOutput(
             JdbcCreateTableParam.JDBC_CREATE_RESULTS
@@ -113,7 +119,6 @@ implements ResourceActivity
     /**
      * Set the target resource.
      *
-     */
     public void resource(final String ident)
         {
         this.resource(
@@ -122,24 +127,25 @@ implements ResourceActivity
                 )
             );
         }
+     */
 
     /**
      * Set the target resource.
      *
-     */
-    public void resource(final ResourceID ident)
+    public void resource(final ResourceID resource)
         {
         this.setResourceID(
-            ident
+            resource
             );
         }
+     */
 
     /**
      * Get the tuples output.
      * @return The tuples output
      *
      */
-    public SingleActivityOutput output()
+    public SingleActivityOutput results()
         {
         return results.getSingleActivityOutputs()[0];
         }

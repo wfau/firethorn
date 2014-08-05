@@ -130,6 +130,7 @@ public class PipelineClient
         // Create our Insert Activity.
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             limits.output(),
+            null,                // BROKEN :-(
             param.insert()
             );
         pipeline.add(
@@ -143,7 +144,7 @@ public class PipelineClient
             delivery
             );
         delivery.connectInput(
-            insert.output()
+            insert.results()
             );
         //
         // Execute our pipeline.

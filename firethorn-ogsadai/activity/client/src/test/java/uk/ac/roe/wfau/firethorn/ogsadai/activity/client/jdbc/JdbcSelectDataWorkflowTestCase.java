@@ -46,17 +46,33 @@ public class JdbcSelectDataWorkflowTestCase
     private String endpoint ;
 
     @Value("${firethorn.atlas.url}")
-    private String jdbcurl ;
+    private String atlasurl ;
 
     @Value("${firethorn.atlas.user}")
-    private String username ;
+    private String atlasuser ;
 
     @Value("${firethorn.atlas.pass}")
-    private String password ;
+    private String atlaspass ;
 
     @Value("${firethorn.atlas.driver}")
-    private String driver;
+    private String atlasdriver;
 
+    
+    
+    @Value("${firethorn.user.url}")
+    private String userurl ;
+
+    @Value("${firethorn.user.user}")
+    private String useruser ;
+
+    @Value("${firethorn.user.pass}")
+    private String userpass ;
+
+    @Value("${firethorn.user.driver}")
+    private String userdriver;
+
+    
+    
     @Value("${firethorn.ogsadai.store}")
     private String store;
     
@@ -72,28 +88,29 @@ public class JdbcSelectDataWorkflowTestCase
                 endpoint
                 )
             );
-        final JdbcCreateResourceWorkflow.Result created = creator.execute(
+
+        final JdbcCreateResourceWorkflow.Result atlasdata = creator.execute(
             new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override
                 public String jdbcurl()
                     {
-                    return jdbcurl;
+                    return atlasurl;
                     }
                 @Override
                 public String username()
                     {
-                    return username;
+                    return atlasuser;
                     }
                 @Override
                 public String password()
                     {
-                    return password;
+                    return atlaspass;
                     }
                 @Override
                 public String driver()
                     {
-                    return driver;
+                    return atlasdriver;
                     }
                 @Override
                 public boolean writable()
@@ -102,42 +119,100 @@ public class JdbcSelectDataWorkflowTestCase
                     }
                 }
             );
-
         assertNotNull(
-            created
+            atlasdata
             );
         assertEquals(
             WorkflowResult.Status.COMPLETED,            
-            created.status()
+            atlasdata.status()
             );
         assertNotNull(
-            created.created()
+            atlasdata.resource()
             );
-
+        
+        final JdbcCreateResourceWorkflow.Result userdata = creator.execute(
+            new JdbcCreateResourceWorkflow.Param()
+                {
+                @Override
+                public String jdbcurl()
+                    {
+                    return userurl;
+                    }
+                @Override
+                public String username()
+                    {
+                    return useruser;
+                    }
+                @Override
+                public String password()
+                    {
+                    return userpass;
+                    }
+                @Override
+                public String driver()
+                    {
+                    return userdriver;
+                    }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
+                }
+            );
+        assertNotNull(
+            atlasdata
+            );
+        assertEquals(
+            WorkflowResult.Status.COMPLETED,            
+            atlasdata.status()
+            );
+        assertNotNull(
+            atlasdata.resource()
+            );
+        
+        
         final JdbcSelectDataWorkflow selector = new JdbcSelectDataWorkflow(
             new URL(
                 endpoint
                 )
             ); 
         final WorkflowResult selected = selector.execute(
+            atlasdata.resource(),
+            userdata.resource(),
             new JdbcSelectDataWorkflow.Param()
                 {
-                @Override
-                public ResourceID resource()
-                    {
-                    return created.created();
-                    }
-                
-                @Override
-                public String query()
-                    {
-                    return query;
-                    }
                 
                 @Override
                 public LimitsClient.Param limits()
                     {
                     return null;
+                    }
+
+                @Override
+                public JdbcSelectDataClient.Param select()
+                    {
+                    return new JdbcSelectDataClient.Param()
+                        {
+                        @Override
+                        public String query()
+                            {
+                            return query;
+                            }
+                        };
+                    }
+
+                @Override
+                public JdbcCreateTableClient.Param create()
+                    {
+                    return new JdbcCreateTableClient.Param()
+                        {
+                        @Override
+                        public String table()
+                            {
+                            return "fred";
+                            }
+                        };
                     }
                 
                 @Override
@@ -150,19 +225,16 @@ public class JdbcSelectDataWorkflowTestCase
                             {
                             return store;
                             }
-
                         @Override
                         public String table()
                             {
                             return "fred";
                             }
-
                         @Override
                         public Integer first()
                             {
                             return null;
                             }
-
                         @Override
                         public Integer block()
                             {

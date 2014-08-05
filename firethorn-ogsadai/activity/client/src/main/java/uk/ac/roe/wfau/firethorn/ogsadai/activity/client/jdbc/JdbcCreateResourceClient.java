@@ -132,41 +132,53 @@ extends BaseActivity implements Activity
             JdbcCreateResourceParam.JDBC_DATABASE_URL,
             true
             );
-        this.jdbcurl.add(
-            new StringData(
-                param.jdbcurl()
-                )
-            );
+        if (param.jdbcurl() != null)
+            {
+            this.jdbcurl.add(
+                new StringData(
+                    param.jdbcurl()
+                    )
+                );
+            }
 
         this.username = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
             true
             );
-        this.username.add(
-            new StringData(
-                param.username()
-                )
-            );
+        if (param.username() != null)
+            {
+            this.username.add(
+                new StringData(
+                    param.username()
+                    )
+                );
+            }
 
         this.password = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
             true
             );
-        this.password.add(
-            new StringData(
-                param.password()
-                )
-            );
+        if (param.password() != null)
+            {
+            this.password.add(
+                new StringData(
+                    param.password()
+                    )
+                );
+            }
         
         this.driver = new SimpleActivityInput(
             JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
             true
             );
-        this.driver.add(
-            new StringData(
-                param.driver()
-                )
-            );
+        if (param.driver() != null)
+            {
+            this.driver.add(
+                new StringData(
+                    param.driver()
+                    )
+                );
+            }
 
         this.results = new SimpleActivityOutput(
             JdbcCreateResourceParam.JDBC_CREATE_RESULT

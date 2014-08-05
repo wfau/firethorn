@@ -111,16 +111,21 @@ implements ResourceActivity
     /**
      * Public constructor.
      * @param source The input tuple source.
+     * @param target The target resource.
      * @param param The activity parameters.
      * 
      */
-    public JdbcInsertDataClient(final SingleActivityOutput source, final Param param)
+    public JdbcInsertDataClient(final SingleActivityOutput source, final ResourceID target, final Param param)
         {
         super(
             new ActivityName(
                 JdbcInsertDataParam.ACTIVITY_NAME
                 )
             );
+        this.setResourceID(
+            target
+            );
+        
         this.input = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
             );
@@ -141,21 +146,27 @@ implements ResourceActivity
             JdbcInsertDataParam.JDBC_INSERT_FIRST_SIZE,
             true
             );
-        this.first.add(
-            new IntegerData(
-                param.first()
-                )
-            );
+        if (param.first() != null)
+            {
+            this.first.add(
+                new IntegerData(
+                    param.first()
+                    )
+                );
+            }
 
         this.block = new SimpleActivityInput(
             JdbcInsertDataParam.JDBC_INSERT_BLOCK_SIZE,
             true
             );
-        this.block.add(
-            new IntegerData(
-                param.block()
-                )
-            );
+        if (param.block() != null)
+            {
+            this.block.add(
+                new IntegerData(
+                    param.block()
+                    )
+                );
+            }
 
         this.results = new SimpleActivityOutput(
             JdbcInsertDataParam.JDBC_INSERT_RESULTS
@@ -165,7 +176,6 @@ implements ResourceActivity
     /**
      * Set the target resource.
      *
-     */
     public void resource(final String ident)
         {
         this.resource(
@@ -174,24 +184,25 @@ implements ResourceActivity
                 )
             );
         }
+     */
 
     /**
      * Set the target resource.
      *
-     */
     public void resource(final ResourceID ident)
         {
         this.setResourceID(
             ident
             );
         }
+     */
 
     /**
      * Get the tuples output.
      * @return The tuples output
      *
      */
-    public SingleActivityOutput output()
+    public SingleActivityOutput results()
         {
         return results.getSingleActivityOutputs()[0];
         }

@@ -24,5 +24,6 @@ uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
 uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
 uk.ac.roe.wfau.firethorn.JdbcSelectData=uk.ac.roe.wfau.firethorn.JdbcSelectData
 uk.ac.roe.wfau.firethorn.JdbcInsertData=uk.ac.roe.wfau.firethorn.JdbcInsertData
+uk.ac.roe.wfau.firethorn.JdbcCreateTable=uk.ac.roe.wfau.firethorn.JdbcCreateTable
 END
 dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
