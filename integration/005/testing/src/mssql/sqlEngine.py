@@ -70,7 +70,7 @@ class DBHelper:
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         if limit!=None:
-            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q ORDER BY 1"
+            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q"
             
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
@@ -79,7 +79,7 @@ class DBHelper:
         
         for row in rows:
             return_val.append(row)
-        
+            
         cnxn.close()
         
         return return_val
@@ -94,7 +94,7 @@ class DBHelper:
        
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         if limit!=None:
-            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q ORDER BY 1"
+            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q"
             
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()

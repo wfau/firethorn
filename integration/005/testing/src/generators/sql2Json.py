@@ -5,6 +5,14 @@ Created on Jun 4, 2014
 '''
 
 import os
+import sys, os
+srcdir = '../../src/'
+configdir = '../../'
+testdir = os.path.dirname(__file__)
+sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
+sys.path.insert(0, os.path.abspath(os.path.join(testdir, configdir)))
+import os.path
 import urllib2
 import urllib
 import StringIO
@@ -48,7 +56,7 @@ class Sql2Json(object):
         '''
 
          
-        connstr = 'DRIVER={' +  self.driver + '};SERVER=' +  self.dbserver + ';DATABASE=' + database +' ;'
+        connstr = 'DRIVER={' +  self.driver + '};SERVER=' +  self.dbserver + ';UID=' + self.dbuser + ';PWD=' + self.dbpasswd +';DATABASE=' + database +' ;'
         conn = pyodbc.connect(connstr)
         cursor = conn.cursor()
          
@@ -80,7 +88,8 @@ class Sql2Json(object):
             d['sql_duration'] = row.sql_duration
             d['test_passed'] = row.test_passed
             d['firethorn_version'] = row.firethorn_version
-            d['error_message'] = row.error_message
+            d['firethorn_error_message'] = row.firethorn_error_message
+            d['sql_error_message'] = row.sql_error_message
             objects_list.append(d)
             queryrun = row.queryrunID
             
