@@ -49,13 +49,6 @@ implements ResourceActivity
     public static interface Param
         {
         /**
-         * The target resource name.
-         * @return The target resource name.
-         *
-         */
-        public String store();
-
-        /**
          * The target table name.
          * @return The target table name.
          *

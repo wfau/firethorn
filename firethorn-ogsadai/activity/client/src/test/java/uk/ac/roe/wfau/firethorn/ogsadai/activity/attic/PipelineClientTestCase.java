@@ -132,12 +132,6 @@ extends SimpleQueryTestBase
                             }
                         
                         @Override
-                        public String store()
-                            {
-                            return "userdata";
-                            }
-
-                        @Override
                         public Integer first()
                             {
                             return null;
@@ -220,12 +214,6 @@ extends SimpleQueryTestBase
                             return unique("table");
                             }
                         
-                        @Override
-                        public String store()
-                            {
-                            return "userdata";
-                            }
-
                         @Override
                         public Integer first()
                             {

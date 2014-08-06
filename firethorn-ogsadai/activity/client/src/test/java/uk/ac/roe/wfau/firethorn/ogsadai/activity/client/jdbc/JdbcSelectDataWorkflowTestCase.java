@@ -7,6 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
+import java.util.Formatter;
+import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +17,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.google.common.io.BaseEncoding;
+import com.google.common.primitives.Longs;
+import com.google.common.primitives.UnsignedLongs;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
@@ -41,7 +47,9 @@ import uk.org.ogsadai.resource.ResourceID;
     )
 public class JdbcSelectDataWorkflowTestCase
     {
-
+    private Random random = new Random(); 
+    
+    
     @Value("${firethorn.ogsadai.endpoint}")
     private String endpoint ;
 
@@ -73,15 +81,11 @@ public class JdbcSelectDataWorkflowTestCase
 
     
     
-    @Value("${firethorn.ogsadai.store}")
-    private String store;
-    
-    
     @Test
     public void test000()
     throws Exception
         {
-        final String query = "SELECT TOP 10 ra, dec FROM atlasSource"; 
+        final String query = "SELECT TOP 5000 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
         
         final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
             new URL(
@@ -161,16 +165,48 @@ public class JdbcSelectDataWorkflowTestCase
                 }
             );
         assertNotNull(
-            atlasdata
+            userdata
             );
         assertEquals(
             WorkflowResult.Status.COMPLETED,            
-            atlasdata.status()
+            userdata.status()
             );
         assertNotNull(
-            atlasdata.resource()
+            userdata.resource()
+            );
+
+        long time = System.currentTimeMillis();         
+        long rand = random.nextLong();  
+
+        final Formatter formatter = new Formatter(
+            new StringBuilder()
+            );
+        formatter.format("UD_%016X_%016X", time, rand);
+        
+
+        final StringBuffer buffer = new StringBuffer(); 
+        final BaseEncoding encoding = BaseEncoding.base32().omitPadding();
+
+        buffer.append("UD_");
+        buffer.append(
+            encoding.encode(
+                Longs.toByteArray(
+                    time
+                    )
+                )
+            );
+        buffer.append("_");
+        buffer.append(
+            encoding.encode(
+                Longs.toByteArray(
+                    rand
+                    )
+                )
             );
         
+        //final String name = formatter.out().toString();
+        final String name = buffer.toString();
+
         
         final JdbcSelectDataWorkflow selector = new JdbcSelectDataWorkflow(
             new URL(
@@ -210,7 +246,7 @@ public class JdbcSelectDataWorkflowTestCase
                         @Override
                         public String table()
                             {
-                            return "fred";
+                            return name;
                             }
                         };
                     }
@@ -221,24 +257,19 @@ public class JdbcSelectDataWorkflowTestCase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
-                            {
-                            return store;
-                            }
-                        @Override
                         public String table()
                             {
-                            return "fred";
+                            return name ;
                             }
                         @Override
                         public Integer first()
                             {
-                            return null;
+                            return new Integer(1000);
                             }
                         @Override
                         public Integer block()
                             {
-                            return null;
+                            return new Integer(1000);
                             }
                         };
                     }
