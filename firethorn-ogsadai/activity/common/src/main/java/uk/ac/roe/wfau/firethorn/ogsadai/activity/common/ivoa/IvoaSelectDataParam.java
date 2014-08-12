@@ -19,10 +19,11 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Common parameter names for the IvoaSelectData Activity.
+ * Parameter names for the IvoaSelectData Activity.
  *
  */
 public interface IvoaSelectDataParam
+extends IvoaResourceParam
     {
     /**
      * The Activity name, {@value}.
@@ -37,10 +38,10 @@ public interface IvoaSelectDataParam
     public static final String ACTIVITY_RESULTS = "ivoa.select.results"  ;
 
     /**
-     * Parameter name for the TAP service endpoint URL, {@value}.
+     * Parameter name for the TAP service ADQL query, {@value}.
      * 
      */
-    public static final String IVOA_SERVICE_URL = "ivoa.select.url"  ;
+    public static final String IVOA_TAP_ADQL_QUERY_PARAM = "ivoa.tap.adql.query"  ;
 
     }
 

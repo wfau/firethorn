@@ -17,9 +17,9 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateTableParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa.IvoaSelectDataParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
@@ -33,10 +33,10 @@ import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Client for the JdbcCreateTable Activity.
+ * Client for the IvoaSelectData Activity.
  *
  */
-public class JdbcCreateTableClient
+public class IvoaSelectDataClient
 extends BaseResourceActivity
 implements ResourceActivity
     {
@@ -48,25 +48,19 @@ implements ResourceActivity
     public static interface Param
         {
         /**
-         * The table name.
-         * @return The table name.
+         * The ADQL select query.
+         * @return The ADQL select query.
          *
          */
-        public String table();
-
+        public String query();
+        
         }
     
     /**
-     * The input tuples
+     * The ADQL select query.
      *
      */
-    private final ActivityInput input;
-
-    /**
-     * The table name.
-     *
-     */
-    private final ActivityInput table;
+    private final ActivityInput query;
 
     /**
      * The output tuples
@@ -76,73 +70,41 @@ implements ResourceActivity
 
     /**
      * Public constructor.
-     * @param source The input tuple source.
      * @param param The activity parameters.
      * 
      */
-    public JdbcCreateTableClient(final SingleActivityOutput source, final ResourceID target, final Param param)
+    public IvoaSelectDataClient(final ResourceID source, final Param param)
         {
         super(
             new ActivityName(
-                JdbcCreateTableParam.ACTIVITY_NAME
+                IvoaSelectDataParam.ACTIVITY_NAME
                 )
             );
         this.setResourceID(
-            target
-            );
-
-        this.input = new SimpleActivityInput(
-            JdbcCreateTableParam.JDBC_CREATE_TUPLE_INPUT
-            );
-        this.input.connect(
             source
             );
 
-        this.table = new SimpleActivityInput(
-            JdbcCreateTableParam.JDBC_CREATE_TABLE_NAME
+        this.query = new SimpleActivityInput(
+            IvoaSelectDataParam.IVOA_TAP_ADQL_QUERY_PARAM,
+            false
             );
-        if (param.table() != null)
+        if (param.query() != null)
             {
-            this.table.add(
+            this.query.add(
                 new StringData(
-                    param.table()
+                    param.query()
                     )
                 );
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcCreateTableParam.ACTIVITY_RESULTS
+            IvoaSelectDataParam.ACTIVITY_RESULTS
             );
-
         }
 
     /**
-     * Set the target resource.
-     *
-    public void resource(final String ident)
-        {
-        this.resource(
-            new ResourceID(
-                ident
-                )
-            );
-        }
-     */
-
-    /**
-     * Set the target resource.
-     *
-    public void resource(final ResourceID resource)
-        {
-        this.setResourceID(
-            resource
-            );
-        }
-     */
-
-    /**
-     * Get the tuples output.
-     * @return The tuples output
+     * Get the query results.
+     * @return The query results.
      *
      */
     public SingleActivityOutput results()
@@ -161,8 +123,7 @@ implements ResourceActivity
         {
         return new ActivityInput[]
             {
-            input,
-            table
+            query
             };
         }
 

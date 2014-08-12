@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,28 +39,28 @@ import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Workflow for the JdbcCreateResource Activity.
+ * Workflow for the IvoaCreateResource Activity.
  *
  */
 @Slf4j
-public class JdbcCreateResourceWorkflow
+public class IvoaCreateResourceWorkflow
     {
     /**
      * Public interface for the workflow params.
      *
      */
     public interface Param
-    extends JdbcCreateResourceClient.Param
+    extends IvoaCreateResourceClient.Param
         {
         }
-    
+
     /**
      * Public constructor.
      * @param endpoint The OGSA-DAI service endpoint URL.
      * @throws MalformedURLException 
      *
      */
-    public JdbcCreateResourceWorkflow(final String endpoint)
+    public IvoaCreateResourceWorkflow(final String endpoint)
     throws MalformedURLException
         {
         this(
@@ -77,7 +77,7 @@ public class JdbcCreateResourceWorkflow
      * @param endpoint The OGSA-DAI service endpoint URL.
      *
      */
-    public JdbcCreateResourceWorkflow(final URL endpoint)
+    public IvoaCreateResourceWorkflow(final URL endpoint)
         {
         this(
             new OgsaServiceClient(
@@ -91,7 +91,7 @@ public class JdbcCreateResourceWorkflow
      * @param service Our {@link OgsaServiceClient} client.
      *
      */
-    public JdbcCreateResourceWorkflow(final OgsaServiceClient service)
+    public IvoaCreateResourceWorkflow(final OgsaServiceClient service)
         {
         this.servce = service ;
         }
@@ -110,7 +110,7 @@ public class JdbcCreateResourceWorkflow
      */
     public CreateResourceResult execute(final Param param)
         {
-        JdbcCreateResourceClient create = new JdbcCreateResourceClient(
+        IvoaCreateResourceClient create = new IvoaCreateResourceClient(
             param
             ); 
         

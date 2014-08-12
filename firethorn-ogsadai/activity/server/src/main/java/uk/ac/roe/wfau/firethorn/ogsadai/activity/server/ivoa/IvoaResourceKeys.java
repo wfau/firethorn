@@ -18,36 +18,37 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa;
 
 import uk.org.ogsadai.config.Key;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa.IvoaResourceParam;
 
 /**
  *
  *
  */
-public interface IvoaActivityParam
+public interface IvoaResourceKeys
     {
 
     /**
-     * Configuration property name for the TAP service endpoint URL.
+     * Property key for the TAP service endpoint URL, {@value}.
      *  
      */
-    public static final Key TAP_ENDPOINT_URL_KEY = new Key("ivoa.tap.endpoint.url");
+    public static final Key IVOA_TAP_ENDPOINT_KEY = new Key(
+        IvoaResourceParam.IVOA_TAP_ENDPOINT_PARAM
+        );
 
     /**
-     * Configuration property name for the UWS service polling interval.
+     * Property key for the UWS service polling interval, {@value}.
      *  
      */
-    public static final Key UWS_POLL_INTERVAL_KEY = new Key("ivoa.tap.poll.interval");
-
+    public static final Key IVOA_UWS_POLL_INTERVAL_KEY = new Key(
+        IvoaResourceParam.IVOA_UWS_POLL_INTERVAL_PARAM
+        );
+    
     /**
-     * Configuration property name for the UWS service polling timeout.
+     * Property key for the UWS service polling timeout, {@value}.
      *  
      */
-    public static final Key UWS_POLL_TIMEOUT_KEY  = new Key("ivoa.tap.poll.timeout");
-
-    /**
-     * Configuration property name for additional TAP request parameters.
-     *  
-     */
-    public static final String TAP_PARAMETER_PREFIX = "ivoa.tap.param";
-
+    public static final Key IVOA_UWS_POLL_TIMEOUT_KEY = new Key(
+        IvoaResourceParam.IVOA_UWS_POLL_TIMEOUT_PARAM
+        );
+    
     }

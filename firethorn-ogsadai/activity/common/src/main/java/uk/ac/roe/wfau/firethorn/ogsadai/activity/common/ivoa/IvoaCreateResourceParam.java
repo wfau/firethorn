@@ -19,10 +19,11 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Common parameter names for the IvoaCreateResource Activity.
+ * Parameter names for the IvoaCreateResource Activity.
  *
  */
 public interface IvoaCreateResourceParam
+extends IvoaResourceParam
     {
     /**
      * The Activity name, {@value}.
@@ -35,12 +36,6 @@ public interface IvoaCreateResourceParam
      * 
      */
     public static final String ACTIVITY_RESULTS = "ivoa.create.results"  ;
-
-    /**
-     * Parameter name for the TAP service endpoint URL, {@value}.
-     * 
-     */
-    public static final String IVOA_SERVICE_URL = "ivoa.create.url"  ;
-
+    
     }
 

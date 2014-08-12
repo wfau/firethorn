@@ -150,10 +150,10 @@ implements ResourceActivity
         {
         try {
             validateOutput(
-                JdbcInsertDataParam.JDBC_INSERT_RESULTS
+                JdbcInsertDataParam.ACTIVITY_RESULTS
                 );
             this.writer = this.getOutput(
-                JdbcInsertDataParam.JDBC_INSERT_RESULTS
+                JdbcInsertDataParam.ACTIVITY_RESULTS
                 );
             }
         catch (final Exception ouch)

@@ -1,7 +1,7 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,72 +9,27 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URL;
 import java.util.Random;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateTableClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 
 /**
- * Simple test for OGSA-DAI queries.
- *
+ * Test for querying Ivoa resources.
  *
  */
-@Slf4j
-@RunWith(
-    SpringJUnit4ClassRunner.class
-    )
-@ContextConfiguration(
-    locations = {
-        "classpath:component-config.xml",
-        }
-    )
-public class JdbcSelectDataWorkflowTestCase
+public class IvoaSelectDataWorkflowTestCase
+extends IvoaResourceTestBase
     {
     private Random random = new Random(); 
-    
-    
-    @Value("${firethorn.ogsadai.endpoint}")
-    private String endpoint ;
-
-    @Value("${firethorn.atlas.url}")
-    private String atlasurl ;
-
-    @Value("${firethorn.atlas.user}")
-    private String atlasuser ;
-
-    @Value("${firethorn.atlas.pass}")
-    private String atlaspass ;
-
-    @Value("${firethorn.atlas.driver}")
-    private String atlasdriver;
-
-    
-    
-    @Value("${firethorn.user.url}")
-    private String userurl ;
-
-    @Value("${firethorn.user.user}")
-    private String useruser ;
-
-    @Value("${firethorn.user.pass}")
-    private String userpass ;
-
-    @Value("${firethorn.user.driver}")
-    private String userdriver;
-
-    
     
     @Test
     public void test000()
@@ -83,80 +38,40 @@ public class JdbcSelectDataWorkflowTestCase
 
         final String query = "SELECT TOP 10000 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
         
-        final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
+        final IvoaCreateResourceWorkflow creator = new IvoaCreateResourceWorkflow(
             new URL(
-                endpoint
+                config().endpoint()
                 )
             );
 
-        final CreateResourceResult atlasdata = creator.execute(
-            new JdbcCreateResourceWorkflow.Param()
+        final CreateResourceResult wfaudata = creator.execute(
+            new IvoaCreateResourceWorkflow.Param()
                 {
                 @Override
-                public String jdbcurl()
+                public String endpoint()
                     {
-                    return atlasurl;
-                    }
-                @Override
-                public String username()
-                    {
-                    return atlasuser;
-                    }
-                @Override
-                public String password()
-                    {
-                    return atlaspass;
-                    }
-                @Override
-                public String driver()
-                    {
-                    return atlasdriver;
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
+                    return config().services().get("WFAU").endpoint();
                     }
                 }
             );
         assertNotNull(
-            atlasdata
+            wfaudata
             );
         assertEquals(
             WorkflowResult.Status.COMPLETED,            
-            atlasdata.status()
+            wfaudata.status()
             );
         assertNotNull(
-            atlasdata.resource()
+            wfaudata.resource()
             );
         
         final CreateResourceResult userdata = creator.execute(
-            new JdbcCreateResourceWorkflow.Param()
+            new IvoaCreateResourceWorkflow.Param()
                 {
                 @Override
-                public String jdbcurl()
+                public String endpoint()
                     {
-                    return userurl;
-                    }
-                @Override
-                public String username()
-                    {
-                    return useruser;
-                    }
-                @Override
-                public String password()
-                    {
-                    return userpass;
-                    }
-                @Override
-                public String driver()
-                    {
-                    return userdriver;
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
+                    return null;
                     }
                 }
             );
@@ -174,14 +89,6 @@ public class JdbcSelectDataWorkflowTestCase
         long time = System.currentTimeMillis();         
         int  rand = random.nextInt();  
 
-        /*
-        final Formatter formatter = new Formatter(
-            new StringBuilder()
-            );
-        formatter.format("UD_%016X_%016X", time, rand);
-         */
-        
-        
         final StringBuffer buffer = new StringBuffer(); 
         final BaseEncoding encoding = BaseEncoding.base32().omitPadding().upperCase();
 
@@ -201,19 +108,18 @@ public class JdbcSelectDataWorkflowTestCase
                 )
             );
         
-        //final String name = formatter.out().toString();
         final String name = buffer.toString();
 
         
-        final JdbcSelectDataWorkflow selector = new JdbcSelectDataWorkflow(
+        final IvoaSelectDataWorkflow selector = new IvoaSelectDataWorkflow(
             new URL(
-                endpoint
+                config().endpoint()
                 )
             ); 
         final WorkflowResult selected = selector.execute(
-            atlasdata.resource(),
+            wfaudata.resource(),
             userdata.resource(),
-            new JdbcSelectDataWorkflow.Param()
+            new IvoaSelectDataWorkflow.Param()
                 {
                 @Override
                 public LimitsClient.Param limits()
@@ -240,9 +146,9 @@ public class JdbcSelectDataWorkflowTestCase
                         };
                     }
                 @Override
-                public JdbcSelectDataClient.Param select()
+                public IvoaSelectDataClient.Param select()
                     {
-                    return new JdbcSelectDataClient.Param()
+                    return new IvoaSelectDataClient.Param()
                         {
                         @Override
                         public String query()

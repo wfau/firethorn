@@ -185,7 +185,7 @@ implements ResourceActivity, ServiceAddressesActivity
         return new ActivityInput[]
             { 
             new TypedActivityInput(
-                JdbcSelectDataParam.JDBC_QUERY,
+                JdbcSelectDataParam.DATABASE_QUERY,
                 String.class
                 )
             };

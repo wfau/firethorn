@@ -36,13 +36,18 @@ import uk.org.ogsadai.activity.io.PipeIOException;
 import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.authorization.SecurityContext;
+import uk.org.ogsadai.config.Key;
+import uk.org.ogsadai.config.KeyValueProperties;
 import uk.org.ogsadai.resource.ResourceCreationException;
 import uk.org.ogsadai.resource.ResourceFactory;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.ResourceIDAlreadyAssignedException;
 import uk.org.ogsadai.resource.ResourceManager;
+import uk.org.ogsadai.resource.ResourceState;
 import uk.org.ogsadai.resource.ResourceTypeException;
 import uk.org.ogsadai.resource.ResourceUnknownException;
+import uk.org.ogsadai.resource.dataresource.DataResource;
+import uk.org.ogsadai.resource.dataresource.DataResourceState;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResourceState;
 
@@ -52,7 +57,7 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResourceState;
  */
 public class IvoaCreateResourceActivity
 extends MatchedIterativeActivity
-implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
+implements ResourceManagerActivity, ResourceFactoryActivity
     {
     /**
      * Our resource template name.
@@ -84,7 +89,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         return new ActivityInput[]
              {
              new TypedOptionalActivityInput(
-                 IvoaCreateResourceParam.IVOA_SERVICE_URL,
+                 IvoaCreateResourceParam.IVOA_TAP_ENDPOINT_PARAM,
                  String.class
                  ),
              };
@@ -98,32 +103,20 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
 
     @Override
     protected void preprocess()
-        throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
+    throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            JdbcCreateResourceParam.ACTIVITY_RESULTS
+            IvoaCreateResourceParam.ACTIVITY_RESULTS
             );
         this.writer = this.getOutput(
-            JdbcCreateResourceParam.ACTIVITY_RESULTS
+            IvoaCreateResourceParam.ACTIVITY_RESULTS
             );
         }
 
     @Override
     protected void postprocess()
-        throws ActivityUserException, ActivityProcessingException,
-        ActivityTerminatedException
+    throws ActivityUserException, ActivityProcessingException,ActivityTerminatedException
         {
-        }
-
-    /**
-     * The Security context for the current request.
-     *  
-     */
-    private SecurityContext context;
-    @Override
-    public void setSecurityContext(SecurityContext context)
-        {
-        this.context = context ;
         }
 
     /**
@@ -132,7 +125,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      */
     private ResourceFactory factory;
     @Override
-    public void setResourceFactory(ResourceFactory factory)
+    public void setResourceFactory(final ResourceFactory factory)
         {
         this.factory = factory;
         }
@@ -143,45 +136,53 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      */
     private ResourceManager manager;
     @Override
-    public void setResourceManager(ResourceManager manager)
+    public void setResourceManager(final ResourceManager manager)
         {
         this.manager = manager ;
         }
 
     @Override
-    protected void processIteration(Object[] iterationData)
+    protected void processIteration(final Object[] iterationData)
     throws ActivityProcessingException, ActivityTerminatedException, ActivityUserException
         {
-        ResourceID uniqueid = manager.createUniqueID();
-        ResourceID template = new ResourceID(
+        final ResourceID uniqueid = manager.createUniqueID();
+        final ResourceID template = new ResourceID(
             IVOA_CREATE_TEMPLATE
             );        
         
-        String ivoaurl  = (String) iterationData[0];
+        final String endpoint  = (String) iterationData[0];
 
-        logger.debug("Resource ["+ uniqueid  +"]");
+        logger.debug("Resource ["+ uniqueid +"]");
         logger.debug("Template ["+ template +"]");
-
-        logger.debug("Endpoint ["+ ivoaurl +"]");
+        logger.debug("Endpoint ["+ endpoint  +"]");
 
         try {
-            JDBCDataResource created = (JDBCDataResource) factory.createDataResource(
+            final DataResource created = factory.createDataResource(
                 template
                 );
 
-            JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
-
-            jdbcstate.getDataResourceState().setResourceID(
+            final ResourceState state = created.getState() ;
+            state.setResourceID(
                 uniqueid
                 );
+            
+            final KeyValueProperties properties = state.getConfiguration();
+            properties.put(
+                IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY,
+                endpoint
+                );
 
-            if (ivoaurl != null)
-                {
-                jdbcstate.setDatabaseURL(
-                    ivoaurl
-                    );
-                }
-
+            //
+            // Make these configurable ...
+            properties.put(
+                IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY,
+                new Integer(1000)
+                );
+            properties.put(
+                IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY,
+                new Integer(60000)
+                );
+            
             logger.debug("Adding Resource to Factory [" + uniqueid + "][" + created.getResourceID().toString() + "]");
             factory.addResource(
                 uniqueid,
@@ -194,21 +195,21 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
             }
         catch (ResourceCreationException ouch)
             {
-            logger.warn("ResourceCreationExceptioncreating JDBCDataResource [" + ouch.getMessage() + "]");
+            logger.warn("ResourceCreationExceptioncreating IvoaDataResource [" + ouch.getMessage() + "]");
             throw new ActivityProcessingException(
                 ouch
                 );
             }
         catch (ResourceTypeException ouch)
             {
-            logger.warn("ResourceTypeExceptioncreating JDBCDataResource [" + ouch.getMessage() + "]");
+            logger.warn("ResourceTypeExceptioncreating IvoaDataResource [" + ouch.getMessage() + "]");
             throw new ActivityProcessingException(
                 ouch
                 );
             }
         catch (ResourceUnknownException ouch)
             {
-            logger.warn("Unable to locate JDBCDataResource template [" + ouch.getMessage() + "]");
+            logger.warn("Unable to locate IvoaDataResource template [" + ouch.getMessage() + "]");
             throw new ActivityProcessingException(
                 ouch
                 );
@@ -240,6 +241,9 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
             throw new ActivityProcessingException(
                 ouch
                 );
+            }
+        finally {
+        
             }
         }
     }

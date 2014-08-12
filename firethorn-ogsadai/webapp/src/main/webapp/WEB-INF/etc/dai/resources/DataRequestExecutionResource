@@ -92,6 +92,8 @@ uk.ac.roe.wfau.firethorn.Rownum=uk.ac.roe.wfau.firethorn.Rownum
 uk.ac.roe.wfau.firethorn.JdbcInsertData=uk.ac.roe.wfau.firethorn.JdbcInsertData
 uk.ac.roe.wfau.firethorn.JdbcSelectData=uk.ac.roe.wfau.firethorn.JdbcSelectData
 uk.ac.roe.wfau.firethorn.JdbcCreateResource=uk.ac.roe.wfau.firethorn.JdbcCreateResource
+uk.ac.roe.wfau.firethorn.IvoaSelectData=uk.ac.roe.wfau.firethorn.IvoaSelectData
+uk.ac.roe.wfau.firethorn.IvoaCreateResource=uk.ac.roe.wfau.firethorn.IvoaCreateResource
 END
 acceptRequests=true
 ENGINE-CONFIG

@@ -340,6 +340,18 @@
             </dependency>
 
 		    <!--+
+		        | Java inject libraries.
+		        | http://mvnrepository.com/artifact/javax.inject/javax.inject/1
+		        | http://blogs.sourceallies.com/2011/08/spring-injection-with-resource-and-autowired/
+		        | https://stackoverflow.com/questions/7142622/what-is-the-difference-between-inject-and-autowired-in-spring-framework-which
+		        +-->
+            <dependency>
+	            <groupId>javax.inject</groupId>
+	            <artifactId>javax.inject</artifactId>
+	            <version>1</version>
+            </dependency>
+
+		    <!--+
 		        | Servlet libraries.
 		        +-->
 		    <dependency>
@@ -461,7 +473,6 @@
     </dependencyManagement>
 
     <dependencies>
-
     </dependencies>
 
     <build>

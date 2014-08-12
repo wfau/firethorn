@@ -20,9 +20,8 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.SimpleProcessingException;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateResourceParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.DelaysActivity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.SimpleProcessingException;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;

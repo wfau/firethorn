@@ -19,28 +19,41 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for the iVOASelectData.
+ * Parameter names for JdbcResources.
  *
  */
-public class IvoaSelectDataParam
+public interface JdbcResourceParam
     {
-    /**
-     * The Activity name, {@value}.
-     * 
-     */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.iVOASelectData" ;
 
     /**
-     * Parameter name for the adql query, {@value}.
+     * Parameter name for the database URL, {@value}.
      * 
      */
-    public static final String IVOA_QUERY = "ivoa.select.query"  ;
+    public static final String DATABASE_URL = "jdbc.database.url"  ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
+     * Parameter name for the database user name, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "ivoa.select.results" ;
+    public static final String DATABASE_USERNAME = "jdbc.database.username"  ;
+
+    /**
+     * Parameter name for the database password, {@value}.
+     * 
+     */
+    public static final String DATABASE_PASSWORD = "jdbc.database.password"  ;
+
+    /**
+     * Parameter name for the database driver name, {@value}.
+     * 
+     */
+    public static final String DATABASE_DRIVER = "jdbc.database.driver"  ;
+
+    /**
+     * Parameter name for the writable flag, {@value}.
+     * 
+     */
+    public static final String DATABASE_WRITABLE = "jdbc.database.writable"  ;
 
     }
 

@@ -680,13 +680,21 @@ id=uk.ac.roe.wfau.firethorn.JdbcCreateTable
 class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc.JdbcCreateTableActivity
 description=
 CONFIG
-dai.template.id=NOT_USED
 END
 id=uk.ac.roe.wfau.firethorn.JdbcCreateResource
 class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc.JdbcCreateResourceActivity
 description=
 CONFIG
-dai.template.id=NOT_USED
+END
+id=uk.ac.roe.wfau.firethorn.IvoaSelectData
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa.IvoaSelectDataActivity
+description=
+CONFIG
+END
+id=uk.ac.roe.wfau.firethorn.IvoaCreateResource
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa.IvoaCreateResourceActivity
+description=
+CONFIG
 END
 EOF
 

@@ -16,32 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Parameter names for the JdbcSelectData Activity.
+ * Parameter names for IvoaResources.
  *
  */
-public interface JdbcSelectDataParam
-extends JdbcResourceParam
+public interface IvoaResourceParam
     {
     /**
-     * The Activity name, {@value}.
+     * Parameter name for the TAP service endpoint URL, {@value}.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcSelectData" ;
+    public static final String IVOA_TAP_ENDPOINT_PARAM = "ivoa.tap.endpoint.url"  ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
+     * Parameter name for the UWS service polling interval, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "jdbc.select.results" ;
-
+    public static final String IVOA_UWS_POLL_INTERVAL_PARAM = "ivoa.uws.poll.interval"  ;
+    
     /**
-     * Parameter name for the SQL query, {@value}.
+     * Parameter name for the UWS service polling timeout, {@value}.
      * 
      */
-    public static final String DATABASE_QUERY = "jdbc.database.query"  ;
+    public static final String IVOA_UWS_POLL_TIMEOUT_PARAM = "ivoa.uws.poll.timeout"  ;
+
 
     }
 

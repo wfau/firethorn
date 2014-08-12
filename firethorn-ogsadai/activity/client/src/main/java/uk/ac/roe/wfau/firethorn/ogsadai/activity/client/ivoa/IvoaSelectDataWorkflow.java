@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateTableClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -34,11 +36,11 @@ import uk.org.ogsadai.client.toolkit.exception.ResourceUnknownException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Workflow for the JdbcSelectData Activity.
+ * Workflow for the IvoaSelectData Activity.
  *
  */
 @Slf4j
-public class JdbcSelectDataWorkflow
+public class IvoaSelectDataWorkflow
     {
     /**
      * Public interface for the workflow parameters.
@@ -53,10 +55,10 @@ public class JdbcSelectDataWorkflow
         public JdbcCreateTableClient.Param create();
         
         /**
-         * The {@link JdbcSelectData} params.
+         * The {@link IvoaSelectData} params.
          *
          */
-        public JdbcSelectDataClient.Param select();
+        public IvoaSelectDataClient.Param select();
 
         /**
          * The {@link JdbcInsertData} params.
@@ -84,7 +86,7 @@ public class JdbcSelectDataWorkflow
      * @throws MalformedURLException 
      *
      */
-    public JdbcSelectDataWorkflow(final String endpoint)
+    public IvoaSelectDataWorkflow(final String endpoint)
     throws MalformedURLException
         {
         this(
@@ -101,7 +103,7 @@ public class JdbcSelectDataWorkflow
      * @param endpoint The OGSA-DAI service endpoint URL.
      *
      */
-    public JdbcSelectDataWorkflow(final URL endpoint)
+    public IvoaSelectDataWorkflow(final URL endpoint)
         {
         this(
             new OgsaServiceClient(
@@ -115,7 +117,7 @@ public class JdbcSelectDataWorkflow
      * @param service Our {@link OgsaServiceClient} service client.
      *
      */
-    public JdbcSelectDataWorkflow(final OgsaServiceClient service)
+    public IvoaSelectDataWorkflow(final OgsaServiceClient service)
         {
         this.service = service ;
         }
@@ -134,7 +136,7 @@ public class JdbcSelectDataWorkflow
      */
     public SimpleWorkflowResult execute(final ResourceID source, final ResourceID target, final Param param)
         {
-        final JdbcSelectDataClient select = new JdbcSelectDataClient(
+        final IvoaSelectDataClient select = new IvoaSelectDataClient(
             source,
             param.select()
             );

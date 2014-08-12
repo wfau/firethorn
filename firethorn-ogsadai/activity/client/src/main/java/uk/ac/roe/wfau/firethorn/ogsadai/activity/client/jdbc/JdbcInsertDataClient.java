@@ -162,7 +162,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcInsertDataParam.JDBC_INSERT_RESULTS
+            JdbcInsertDataParam.ACTIVITY_RESULTS
             );
         }
 

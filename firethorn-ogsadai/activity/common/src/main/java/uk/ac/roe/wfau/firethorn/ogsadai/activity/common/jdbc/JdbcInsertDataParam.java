@@ -31,6 +31,12 @@ public class JdbcInsertDataParam
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcInsertData" ;
 
     /**
+     * Parameter name for the Activity results, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_RESULTS = "jdbc.insert.results" ;
+
+    /**
      * Parameter name for the size of the first block, {@value}.
      * 
      */
@@ -65,12 +71,6 @@ public class JdbcInsertDataParam
      * 
      */
     public static final String JDBC_INSERT_TUPLE_INPUT  = "jdbc.insert.input.tuples" ;
-
-    /**
-     * Parameter name for the Activity results, {@value}.
-     * 
-     */
-    public static final String JDBC_INSERT_RESULTS = "jdbc.insert.results" ;
 
     }
 

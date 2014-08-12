@@ -70,7 +70,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.IvoaSelectDataParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa.IvoaSelectDataParam;
 import uk.ac.starlink.table.OnceRowPipe;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.votable.VOTableBuilder;
@@ -96,7 +96,6 @@ import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.config.ConfigurationValueIllegalException;
 import uk.org.ogsadai.config.ConfigurationValueMissingException;
-import uk.org.ogsadai.config.Key;
 import uk.org.ogsadai.config.KeyValueProperties;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.generic.GenericResourceAccessor;
@@ -124,7 +123,6 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         IvoaSelectDataActivity.class
         );
     
-
     /**
      * Our HttpClient used to contact to the TAP service.
      * 
@@ -160,14 +158,14 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
      * The delay in milliseconds for polling the query status.
      *
      */
-    private long interval = 500;
+    private int interval = 500;
 
     /**
      * Timeout in milliseconds for polling the query status.
      * No timeout if the value is <= 0.
      *
      */
-    private long timeout = 0;
+    private int timeout = 0;
 
     /**
      * Our {@link ExecutorService}.
@@ -235,7 +233,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         {
         return new ActivityInput[] { 
             new TypedActivityInput(
-                IvoaSelectDataParam.IVOA_QUERY,
+                IvoaSelectDataParam.IVOA_TAP_ADQL_QUERY_PARAM,
                 String.class
                 )
             };
@@ -254,13 +252,14 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         validateOutput(
             IvoaSelectDataParam.ACTIVITY_RESULTS
             );
-        
+
+/*        
         // add the properties defined in the resource config
         // overwrites the default parameters if they are redefined
         settings = resource.getResource().getState().getConfiguration();
         for (Key key : settings.getKeys())
             {
-            if (IvoaActivityParam.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
+            if (IvoaResourceKeys.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
                 {
                 String param = key.getLocalPart();
                 String value = (String) settings.get(key);
@@ -275,35 +274,33 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         // overwrites any parameters that are redefined
         for (Key key : properties.getKeys())
             {
-            if (IvoaActivityParam.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
+            if (IvoaResourceKeys.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
                 {
                 String parameter = key.getLocalPart();
                 String value = (String) properties.get(key);
                 parameters.put(parameter, value);
                 }
             }
+ */
 
-        // Get TAP service URL
-        if (settings.containsKey(IvoaActivityParam.TAP_ENDPOINT_URL_KEY))
+        if (properties.containsKey(IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY))
             {
-            endpoint = (String) settings.get(IvoaActivityParam.TAP_ENDPOINT_URL_KEY);
+            endpoint = (String) settings.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY);
             }
         else {
             throw new ActivityProcessingException(
                 new ConfigurationValueMissingException(
-                    IvoaActivityParam.TAP_ENDPOINT_URL_KEY
+                    IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY
                     )
                 );
             }
-
-
         
-        if (settings.containsKey(IvoaActivityParam.UWS_POLL_INTERVAL_KEY))
+        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY))
             {
             try {
-                interval = Long.valueOf(
+                interval = Integer.valueOf(
                     (String) settings.get(
-                        IvoaActivityParam.UWS_POLL_INTERVAL_KEY
+                        IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY
                         )
                     );
                 }
@@ -311,20 +308,19 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                 {
                 throw new ActivityProcessingException(
                     new ConfigurationValueIllegalException(
-                        IvoaActivityParam.UWS_POLL_INTERVAL_KEY,
+                        IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY,
                         ouch
                         )
                     );
-                
                 }
             }
 
-        if (settings.containsKey(IvoaActivityParam.UWS_POLL_TIMEOUT_KEY))
+        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY))
             {
             try {
-                timeout = Long.valueOf(
+                timeout = Integer.valueOf(
                     (String) settings.get(
-                        IvoaActivityParam.UWS_POLL_TIMEOUT_KEY
+                        IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY
                         )
                     );
                 }
@@ -332,11 +328,10 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                 {
                 throw new ActivityProcessingException(
                     new ConfigurationValueIllegalException(
-                        IvoaActivityParam.UWS_POLL_TIMEOUT_KEY,
+                        IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY,
                         ouch
                         )
                     );
-                
                 }
             }
         }
@@ -391,9 +386,9 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             final OnceRowPipe sink = new OnceRowPipe();
             streamThread = new Thread()
                 {
+                @Override
                 public void run() 
                     {
-                 
                     try {
                         builder.streamStarTable(finalResult, sink, null);
                         }
@@ -437,6 +432,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             throw new ActivityUserException(e);
             }
         finally {
+
             if (streamThread != null)
                 {
                 try {
@@ -444,10 +440,10 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                     }
                 catch(Throwable ouch)
                     {
+                    logger.debug("Excepton joining stream thread [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                     }
                 }
             
-            // Try and close the input stream
             if (result != null)
                 {
                 try {
@@ -455,6 +451,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                     }
                 catch(Throwable ouch)
                     {
+                    logger.debug("Excepton closing result stream [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                     }
                 }
             }

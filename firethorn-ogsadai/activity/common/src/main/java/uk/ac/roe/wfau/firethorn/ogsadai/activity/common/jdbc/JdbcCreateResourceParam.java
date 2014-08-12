@@ -19,10 +19,11 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Common parameter names for the JdbcCreateResource Activity.
+ * Parameter names for the JdbcCreateResource Activity.
  *
  */
 public interface JdbcCreateResourceParam
+extends JdbcResourceParam
     {
     /**
      * The Activity name, {@value}.
@@ -35,36 +36,6 @@ public interface JdbcCreateResourceParam
      * 
      */
     public static final String ACTIVITY_RESULTS = "jdbc.create.resultS"  ;
-
-    /**
-     * Parameter name for the database URL, {@value}.
-     * 
-     */
-    public static final String DATABASE_URL = "jdbc.create.url"  ;
-
-    /**
-     * Parameter name for the database user name, {@value}.
-     * 
-     */
-    public static final String DATABASE_USERNAME = "jdbc.create.username"  ;
-
-    /**
-     * Parameter name for the database password, {@value}.
-     * 
-     */
-    public static final String DATABASE_PASSWORD = "jdbc.create.password"  ;
-
-    /**
-     * Parameter name for the database driver name, {@value}.
-     * 
-     */
-    public static final String DATABASE_DRIVER = "jdbc.create.driver"  ;
-
-    /**
-     * Parameter name for the writable flag, {@value}.
-     * 
-     */
-    public static final String DATABASE_WRITABLE = "jdbc.create.writable"  ;
 
     }
 

@@ -85,7 +85,7 @@ implements ResourceActivity
             );
 
         this.query = new SimpleActivityInput(
-            JdbcSelectDataParam.JDBC_QUERY,
+            JdbcSelectDataParam.DATABASE_QUERY,
             false
             );
         if (param.query() != null)
