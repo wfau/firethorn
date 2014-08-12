@@ -16,31 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Parameter names for the JdbcSelectData.
+ * Common parameter names for the IvoaSelectData Activity.
  *
  */
-public class JdbcSelectDataParam
+public interface IvoaSelectDataParam
     {
     /**
      * The Activity name, {@value}.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.jDBCSelectData" ;
-
-    /**
-     * Parameter name for the JDBC query, {@value}.
-     * 
-     */
-    public static final String JDBC_QUERY = "jdbc.select.query"  ;
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.IvoaSelectData" ;
 
     /**
      * Parameter name for the Activity results, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "jdbc.select.results" ;
+    public static final String ACTIVITY_RESULTS = "ivoa.select.results"  ;
+
+    /**
+     * Parameter name for the TAP service endpoint URL, {@value}.
+     * 
+     */
+    public static final String IVOA_SERVICE_URL = "ivoa.select.url"  ;
 
     }
 

@@ -85,7 +85,7 @@ implements ResourceActivity
             );
 
         this.query = new SimpleActivityInput(
-            JdbcSelectDataParam.JDBC_SELECT_QUERY,
+            JdbcSelectDataParam.JDBC_QUERY,
             false
             );
         if (param.query() != null)
@@ -98,7 +98,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcSelectDataParam.JDBC_SELECT_RESULTS
+            JdbcSelectDataParam.ACTIVITY_RESULTS
             );
         }
 

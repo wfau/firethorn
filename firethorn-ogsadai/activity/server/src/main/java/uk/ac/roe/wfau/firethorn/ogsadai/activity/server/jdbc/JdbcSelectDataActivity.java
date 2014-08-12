@@ -185,7 +185,7 @@ implements ResourceActivity, ServiceAddressesActivity
         return new ActivityInput[]
             { 
             new TypedActivityInput(
-                JdbcSelectDataParam.JDBC_SELECT_QUERY,
+                JdbcSelectDataParam.JDBC_QUERY,
                 String.class
                 )
             };
@@ -196,7 +196,7 @@ implements ResourceActivity, ServiceAddressesActivity
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            JdbcSelectDataParam.JDBC_SELECT_RESULTS
+            JdbcSelectDataParam.ACTIVITY_RESULTS
             );
         try {
             this.connection = this.provider.getConnection();

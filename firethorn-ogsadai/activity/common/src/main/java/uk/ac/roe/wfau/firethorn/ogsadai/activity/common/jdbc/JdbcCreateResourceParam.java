@@ -31,40 +31,40 @@ public interface JdbcCreateResourceParam
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcCreateResource" ;
 
     /**
+     * Parameter name for the Activity results, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_RESULTS = "jdbc.create.resultS"  ;
+
+    /**
      * Parameter name for the database URL, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_URL = "jdbc.create.jdbcurl"  ;
+    public static final String DATABASE_URL = "jdbc.create.url"  ;
 
     /**
      * Parameter name for the database user name, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_USERNAME = "jdbc.create.username"  ;
+    public static final String DATABASE_USERNAME = "jdbc.create.username"  ;
 
     /**
      * Parameter name for the database password, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_PASSWORD = "jdbc.create.password"  ;
+    public static final String DATABASE_PASSWORD = "jdbc.create.password"  ;
 
     /**
      * Parameter name for the database driver name, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_DRIVER = "jdbc.create.driver"  ;
+    public static final String DATABASE_DRIVER = "jdbc.create.driver"  ;
 
     /**
      * Parameter name for the writable flag, {@value}.
      * 
      */
-    public static final String JDBC_DATABASE_WRITABLE = "jdbc.create.writable"  ;
-
-    /**
-     * Parameter name for the Activity results, {@value}.
-     * 
-     */
-    public static final String JDBC_CREATE_RESULT = "jdbc.create.result"  ;
+    public static final String DATABASE_WRITABLE = "jdbc.create.writable"  ;
 
     }
 

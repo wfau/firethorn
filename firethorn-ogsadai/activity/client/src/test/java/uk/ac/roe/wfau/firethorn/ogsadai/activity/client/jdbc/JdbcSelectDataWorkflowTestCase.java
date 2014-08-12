@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
-import java.util.Formatter;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.common.io.BaseEncoding;
-import com.google.common.primitives.Longs;
-import com.google.common.primitives.UnsignedLongs;
-
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataWorkflow;
-import uk.org.ogsadai.resource.ResourceID;
+
+import com.google.common.io.BaseEncoding;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 
 /**
  * Simple test for OGSA-DAI queries.
@@ -85,7 +79,8 @@ public class JdbcSelectDataWorkflowTestCase
     public void test000()
     throws Exception
         {
-        final String query = "SELECT TOP 5000 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
+
+        final String query = "SELECT TOP 10000 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
         
         final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
             new URL(
@@ -176,16 +171,18 @@ public class JdbcSelectDataWorkflowTestCase
             );
 
         long time = System.currentTimeMillis();         
-        long rand = random.nextLong();  
+        int  rand = random.nextInt();  
 
+        /*
         final Formatter formatter = new Formatter(
             new StringBuilder()
             );
         formatter.format("UD_%016X_%016X", time, rand);
+         */
         
-
+        
         final StringBuffer buffer = new StringBuffer(); 
-        final BaseEncoding encoding = BaseEncoding.base32().omitPadding();
+        final BaseEncoding encoding = BaseEncoding.base32().omitPadding().upperCase();
 
         buffer.append("UD_");
         buffer.append(
@@ -195,10 +192,9 @@ public class JdbcSelectDataWorkflowTestCase
                     )
                 )
             );
-        buffer.append("_");
         buffer.append(
             encoding.encode(
-                Longs.toByteArray(
+                Ints.toByteArray(
                     rand
                     )
                 )
@@ -218,13 +214,30 @@ public class JdbcSelectDataWorkflowTestCase
             userdata.resource(),
             new JdbcSelectDataWorkflow.Param()
                 {
-                
                 @Override
                 public LimitsClient.Param limits()
                     {
-                    return null;
-                    }
+                    return new LimitsClient.Param()
+                        {
+                        @Override
+                        public Long rows()
+                            {
+                            return new Long(10);
+                            }
 
+                        @Override
+                        public Long cells()
+                            {
+                            return null;
+                            }
+
+                        @Override
+                        public Long time()
+                            {
+                            return null;
+                            }
+                        };
+                    }
                 @Override
                 public JdbcSelectDataClient.Param select()
                     {
@@ -237,7 +250,6 @@ public class JdbcSelectDataWorkflowTestCase
                             }
                         };
                     }
-
                 @Override
                 public JdbcCreateTableClient.Param create()
                     {
@@ -250,7 +262,6 @@ public class JdbcSelectDataWorkflowTestCase
                             }
                         };
                     }
-                
                 @Override
                 public JdbcInsertDataClient.Param insert()
                     {

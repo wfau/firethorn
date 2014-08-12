@@ -47,9 +47,8 @@
 
     <properties>
 
-        <commons.version>1.0.4</commons.version>
-        <org.log4j.version>1.2.8</org.log4j.version>
-        <org.slf4j.version>1.5.6</org.slf4j.version>
+        <!--org.log4j.version>1.2.8</org.log4j.version-->
+        <!--org.slf4j.version>1.5.6</org.slf4j.version-->
 
     </properties>
 
@@ -110,8 +109,7 @@
         </dependency>
 
         <!--+
-            | The StarLink VOTAble library,
-            | used by our TAP client Activity. 
+            | The StarLink VOTAble library, used by our TAP client Activity. 
             +-->
         <dependency>
             <groupId>uk.ac.starlink</groupId>
@@ -122,8 +120,7 @@
             <artifactId>stil-table</artifactId>
         </dependency>
 	    <!--+
-	        | The Apache HttpComponent libraries,
-            | used by our TAP client Activity. 
+	        | The Apache HttpComponent libraries, used by our TAP client Activity. 
 	        +-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

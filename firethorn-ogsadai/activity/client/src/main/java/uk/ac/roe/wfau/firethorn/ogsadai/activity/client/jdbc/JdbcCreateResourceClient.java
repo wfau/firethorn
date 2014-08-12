@@ -129,7 +129,7 @@ extends BaseActivity implements Activity
                 )
             );
         this.jdbcurl = new SimpleActivityInput(
-            JdbcCreateResourceParam.JDBC_DATABASE_URL,
+            JdbcCreateResourceParam.DATABASE_URL,
             true
             );
         if (param.jdbcurl() != null)
@@ -142,7 +142,7 @@ extends BaseActivity implements Activity
             }
 
         this.username = new SimpleActivityInput(
-            JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
+            JdbcCreateResourceParam.DATABASE_USERNAME,
             true
             );
         if (param.username() != null)
@@ -155,7 +155,7 @@ extends BaseActivity implements Activity
             }
 
         this.password = new SimpleActivityInput(
-            JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
+            JdbcCreateResourceParam.DATABASE_PASSWORD,
             true
             );
         if (param.password() != null)
@@ -168,7 +168,7 @@ extends BaseActivity implements Activity
             }
         
         this.driver = new SimpleActivityInput(
-            JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
+            JdbcCreateResourceParam.DATABASE_DRIVER,
             true
             );
         if (param.driver() != null)
@@ -181,7 +181,7 @@ extends BaseActivity implements Activity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcCreateResourceParam.JDBC_CREATE_RESULT
+            JdbcCreateResourceParam.ACTIVITY_RESULTS
             );
         }
     

@@ -15,14 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.SimpleProcessingException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa.IvoaCreateResourceParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcCreateResourceParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.DelaysActivity;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -36,12 +35,6 @@ import uk.org.ogsadai.activity.io.PipeClosedException;
 import uk.org.ogsadai.activity.io.PipeIOException;
 import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
-import uk.org.ogsadai.activity.management.ExtendedCreateRelationalResourceActivity;
-import uk.org.ogsadai.authorization.Login;
-import uk.org.ogsadai.authorization.LoginDeniedException;
-import uk.org.ogsadai.authorization.LoginProvider;
-import uk.org.ogsadai.authorization.LoginProviderException;
-import uk.org.ogsadai.authorization.ManageableLoginProvider;
 import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.resource.ResourceCreationException;
 import uk.org.ogsadai.resource.ResourceFactory;
@@ -54,11 +47,10 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResourceState;
 
 /**
- * Activity to create new JDBC resources.
- * Based on the original {@link ExtendedCreateRelationalResourceActivity} in the OGSA-DAI source code.  
+ * Activity to create new IVOA resources.
  *
  */
-public class JdbcCreateResourceActivity
+public class IvoaCreateResourceActivity
 extends MatchedIterativeActivity
 implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
     {
@@ -66,14 +58,14 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      * Our resource template name.
      *
      */
-    protected static final String JDBC_RESOURCE_TEMPLATE = "uk.ac.roe.wfau.firethorn.JDBC_RESOURCE_TEMPLATE" ;
+    protected static final String IVOA_CREATE_TEMPLATE = "uk.ac.roe.wfau.firethorn.IVOA_RESOURCE_TEMPLATE" ;
     
     /**
      * Our debug logger.
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        JdbcCreateResourceActivity.class
+        IvoaCreateResourceActivity.class
         );
     
     /**
@@ -81,7 +73,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
      * 
      * 
      */
-    public JdbcCreateResourceActivity()
+    public IvoaCreateResourceActivity()
         {
         super();
         }
@@ -92,19 +84,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         return new ActivityInput[]
              {
              new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_URL,
-                 String.class
-                 ),
-             new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_USERNAME,
-                 String.class
-                 ),
-             new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_PASSWORD,
-                 String.class
-                 ),
-             new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_DRIVER,
+                 IvoaCreateResourceParam.IVOA_SERVICE_URL,
                  String.class
                  ),
              };
@@ -174,21 +154,15 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         {
         ResourceID uniqueid = manager.createUniqueID();
         ResourceID template = new ResourceID(
-            JDBC_RESOURCE_TEMPLATE
+            IVOA_CREATE_TEMPLATE
             );        
         
-        String jdbcurl  = (String) iterationData[0];
-        String username = (String) iterationData[1];
-        String password = (String) iterationData[2];
-        String driver   = (String) iterationData[3];
+        String ivoaurl  = (String) iterationData[0];
 
         logger.debug("Resource ["+ uniqueid  +"]");
         logger.debug("Template ["+ template +"]");
 
-        logger.debug("Database ["+ jdbcurl +"]");
-        logger.debug("Username ["+ username +"]");
-        logger.debug("Password ["+ password +"]");
-        logger.debug("Driver   ["+ driver +"]");
+        logger.debug("Endpoint ["+ ivoaurl +"]");
 
         try {
             JDBCDataResource created = (JDBCDataResource) factory.createDataResource(
@@ -201,68 +175,10 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 uniqueid
                 );
 
-            if (jdbcurl != null)
+            if (ivoaurl != null)
                 {
                 jdbcstate.setDatabaseURL(
-                    jdbcurl
-                    );
-                }
-
-            if (driver != null)
-                {
-                jdbcstate.setDriverClass(
-                    driver
-                    );
-                }
-            
-            LoginProvider provider = jdbcstate.getLoginProvider();
-            Login login = null;
-
-            if (username != null)
-                {
-                if (password == null)
-                    {
-                    password = "";
-                    }
-                login = new Login(
-                    username,
-                    password
-                    );
-                }
-            else {
-                try {
-                    login = provider.getLogin(
-                        template,
-                        context
-                        );
-                    }
-                catch (LoginDeniedException ouch)
-                    {
-                    throw new ActivityProcessingException(
-                        ouch
-                        );
-                    }
-                catch (LoginProviderException ouch)
-                    {
-                    throw new ActivityProcessingException(
-                        ouch
-                        );
-                    }
-                }
-
-            if (provider instanceof ManageableLoginProvider)
-                {
-                ((ManageableLoginProvider) provider).permitLogin(
-                    uniqueid, 
-                    context, 
-                    login
-                    );
-                }
-            else {
-                throw new ActivityProcessingException(
-                    new SimpleProcessingException(
-                        "LoginProvider does not implement ManageableLoginProvider"
-                        )
+                    ivoaurl
                     );
                 }
 
@@ -271,12 +187,6 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 uniqueid,
                 created
                 );
-            /*
-             * Original example 
-            result.write(
-                created.getResourceID().toString()
-                );
-             */
             logger.debug("Writing ResourceID to results [" + uniqueid + "]");
             writer.write(
                 uniqueid

@@ -19,28 +19,28 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for the JdbcSelectData.
+ * Parameter names for the iVOASelectData.
  *
  */
-public class JdbcSelectDataParam
+public class IvoaSelectDataParam
     {
     /**
      * The Activity name, {@value}.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.jDBCSelectData" ;
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.iVOASelectData" ;
 
     /**
-     * Parameter name for the JDBC query, {@value}.
+     * Parameter name for the adql query, {@value}.
      * 
      */
-    public static final String JDBC_QUERY = "jdbc.select.query"  ;
+    public static final String IVOA_QUERY = "ivoa.select.query"  ;
 
     /**
      * Parameter name for the Activity results, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "jdbc.select.results" ;
+    public static final String ACTIVITY_RESULTS = "ivoa.select.results" ;
 
     }
 
