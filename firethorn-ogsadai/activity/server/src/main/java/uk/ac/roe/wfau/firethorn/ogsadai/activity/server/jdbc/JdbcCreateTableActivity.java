@@ -37,12 +37,9 @@ import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
-import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.exception.ErrorID;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
-
-import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
 import uk.org.ogsadai.tuple.ColumnMetadata;

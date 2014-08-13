@@ -72,12 +72,10 @@ import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.CallableStatement;
 import uk.org.ogsadai.activity.sql.SQLQueryActivity;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
-import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.EnhancedJDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCColumnTypeMapper;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
-import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCSettings;
 
 /**

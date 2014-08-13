@@ -18,14 +18,13 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -44,13 +43,12 @@ import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
+import uk.org.ogsadai.activity.sql.SQLBulkLoadTupleActivity;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
-import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
-import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.tuple.Tuple;
 import uk.org.ogsadai.tuple.TupleMetadata;
 
