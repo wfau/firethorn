@@ -201,6 +201,9 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
             created.getJDBCDataResourceState().getDataResourceState().setResourceID(
                 uniqueid
                 );
+            //
+            // Bug fix for uninitialised mResourceID in JDBCDataResource.
+            // mResourceID = JDBC_RESOURCE_TEMPLATE 
             created.initialize(
                 created.getState()
                 );
@@ -276,12 +279,6 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 uniqueid,
                 created
                 );
-            /*
-             * Original example 
-            result.write(
-                created.getResourceID().toString()
-                );
-             */
             logger.debug("Writing ResourceID to results [" + uniqueid + "]");
             writer.write(
                 uniqueid
