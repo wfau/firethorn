@@ -89,7 +89,11 @@ implements ResourceManagerActivity, ResourceFactoryActivity
         return new ActivityInput[]
              {
              new TypedOptionalActivityInput(
-                 IvoaCreateResourceParam.IVOA_TAP_ENDPOINT_PARAM,
+                 IvoaCreateResourceParam.IVOA_TAP_ENDPOINT,
+                 String.class
+                 ),
+             new TypedOptionalActivityInput(
+                 IvoaCreateResourceParam.IVOA_TAP_VERSION,
                  String.class
                  ),
              };
@@ -150,36 +154,47 @@ implements ResourceManagerActivity, ResourceFactoryActivity
             IVOA_CREATE_TEMPLATE
             );        
         
-        final String endpoint  = (String) iterationData[0];
+        final String endpoint = (String) iterationData[0];
+        final String version  = (String) iterationData[1];
 
         logger.debug("Resource ["+ uniqueid +"]");
         logger.debug("Template ["+ template +"]");
-        logger.debug("Endpoint ["+ endpoint  +"]");
+        logger.debug("Endpoint ["+ endpoint +"]");
+        logger.debug("Version  ["+ version  +"]");
 
         try {
             final DataResource created = factory.createDataResource(
                 template
                 );
-
             final ResourceState state = created.getState() ;
             state.setResourceID(
                 uniqueid
                 );
+            //
+            // Avoid similar bug in JDBCResource
+            // mResourceID = JDBC_RESOURCE_TEMPLATE 
+            created.initialize(
+                state
+                );
             
             final KeyValueProperties properties = state.getConfiguration();
             properties.put(
-                IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY,
+                IvoaResourceKeys.IVOA_TAP_ENDPOINT,
                 endpoint
+                );
+            properties.put(
+                IvoaResourceKeys.IVOA_TAP_VERSION,
+                version
                 );
 
             //
             // Make these configurable ...
             properties.put(
-                IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY,
+                IvoaResourceKeys.IVOA_UWS_INTERVAL,
                 new Integer(1000)
                 );
             properties.put(
-                IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY,
+                IvoaResourceKeys.IVOA_UWS_TIMEOUT,
                 new Integer(60000)
                 );
             
@@ -241,9 +256,6 @@ implements ResourceManagerActivity, ResourceFactoryActivity
             throw new ActivityProcessingException(
                 ouch
                 );
-            }
-        finally {
-        
             }
         }
     }

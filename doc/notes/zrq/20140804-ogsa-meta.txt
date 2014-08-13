@@ -36,3 +36,8 @@
             mvn clean install
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
+
+
+pushd '..' ; mvn clean install ; popd
+mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+

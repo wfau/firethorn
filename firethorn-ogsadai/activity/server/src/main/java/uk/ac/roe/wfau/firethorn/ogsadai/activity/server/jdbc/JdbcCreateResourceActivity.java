@@ -194,11 +194,12 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
             JDBCDataResource created = (JDBCDataResource) factory.createDataResource(
                 template
                 );
-
-            created.getState().setResourceID(
+            final ResourceState state = created.getState() ;
+            state.setResourceID(
                 uniqueid
                 );
-            created.getJDBCDataResourceState().getDataResourceState().setResourceID(
+            final JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
+            jdbcstate.getDataResourceState().setResourceID(
                 uniqueid
                 );
             //
@@ -208,7 +209,6 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 created.getState()
                 );
             
-            JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
             if (jdbcurl != null)
                 {
                 jdbcstate.setDatabaseURL(
@@ -223,7 +223,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                     );
                 }
             
-            LoginProvider provider = jdbcstate.getLoginProvider();
+            final LoginProvider provider = jdbcstate.getLoginProvider();
             Login login = null;
 
             if (username != null)

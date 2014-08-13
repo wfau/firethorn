@@ -25,22 +25,28 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 public interface IvoaResourceParam
     {
     /**
-     * Parameter name for the TAP service endpoint URL, {@value}.
+     * Parameter name for the TAP endpoint URL, {@value}.
      * 
      */
-    public static final String IVOA_TAP_ENDPOINT_PARAM = "ivoa.tap.endpoint.url"  ;
+    public static final String IVOA_TAP_ENDPOINT = "ivoa.tap.endpoint"  ;
+
+    /**
+     * Parameter name for the TAP endpoint type, {@value}.
+     * 
+     */
+    public static final String IVOA_TAP_VERSION = "ivoa.tap.version"  ;
 
     /**
      * Parameter name for the UWS service polling interval, {@value}.
      * 
      */
-    public static final String IVOA_UWS_POLL_INTERVAL_PARAM = "ivoa.uws.poll.interval"  ;
+    public static final String IVOA_UWS_INTERVAL = "ivoa.uws.interval"  ;
     
     /**
      * Parameter name for the UWS service polling timeout, {@value}.
      * 
      */
-    public static final String IVOA_UWS_POLL_TIMEOUT_PARAM = "ivoa.uws.poll.timeout"  ;
+    public static final String IVOA_UWS_TIMEOUT = "ivoa.uws.timeout"  ;
 
 
     }

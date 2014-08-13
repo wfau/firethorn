@@ -40,7 +40,7 @@ extends JdbcResourceTestBase
             );
 
         final CreateResourceResult created = workflow.execute(
-            config().databases().get("atlas")
+            config().jdbc().databases().get("atlas")
             );
 
         log.debug("Status  [{}]", created.status());

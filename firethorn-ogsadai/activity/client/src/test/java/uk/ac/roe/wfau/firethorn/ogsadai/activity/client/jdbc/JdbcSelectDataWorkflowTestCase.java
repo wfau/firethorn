@@ -42,7 +42,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
 
-        final String query = "SELECT TOP 10000 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
+        final String query = "SELECT TOP 100 ra, dec FROM ATLASDR1.dbo.atlasSource"; 
         
         final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
             new URL(
@@ -51,7 +51,7 @@ extends JdbcResourceTestBase
             );
 
         final CreateResourceResult atlasdata = creator.execute(
-            config().databases().get("atlas")
+            config().jdbc().databases().get("atlas")
             );
         assertNotNull(
             atlasdata
@@ -65,7 +65,7 @@ extends JdbcResourceTestBase
             );
         
         final CreateResourceResult userdata = creator.execute(
-            config().databases().get("user")
+            config().jdbc().databases().get("user")
             );
         assertNotNull(
             userdata
@@ -130,7 +130,7 @@ extends JdbcResourceTestBase
                         @Override
                         public Long rows()
                             {
-                            return new Long(10);
+                            return new Long(1000);
                             }
 
                         @Override

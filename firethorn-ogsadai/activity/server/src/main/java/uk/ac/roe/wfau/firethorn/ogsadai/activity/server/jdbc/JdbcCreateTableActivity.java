@@ -221,7 +221,7 @@ implements ResourceActivity
                     {
                     builder.append(", ");
                     }
-                builder.append(column.getName());
+                builder.append("COL_" + column.getName());
                 builder.append(" ");
                 builder.append(sqltype(column.getType()));
                 }

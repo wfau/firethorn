@@ -28,27 +28,35 @@ public interface IvoaResourceKeys
     {
 
     /**
-     * Property key for the TAP service endpoint URL, {@value}.
+     * Property key for the TAP endpoint URL, {@value}.
      *  
      */
-    public static final Key IVOA_TAP_ENDPOINT_KEY = new Key(
-        IvoaResourceParam.IVOA_TAP_ENDPOINT_PARAM
+    public static final Key IVOA_TAP_ENDPOINT = new Key(
+        IvoaResourceParam.IVOA_TAP_ENDPOINT
+        );
+
+    /**
+     * Property key for the TAP endpoint type, {@value}.
+     *  
+     */
+    public static final Key IVOA_TAP_VERSION = new Key(
+        IvoaResourceParam.IVOA_TAP_VERSION
         );
 
     /**
      * Property key for the UWS service polling interval, {@value}.
      *  
      */
-    public static final Key IVOA_UWS_POLL_INTERVAL_KEY = new Key(
-        IvoaResourceParam.IVOA_UWS_POLL_INTERVAL_PARAM
+    public static final Key IVOA_UWS_INTERVAL = new Key(
+        IvoaResourceParam.IVOA_UWS_INTERVAL
         );
     
     /**
      * Property key for the UWS service polling timeout, {@value}.
      *  
      */
-    public static final Key IVOA_UWS_POLL_TIMEOUT_KEY = new Key(
-        IvoaResourceParam.IVOA_UWS_POLL_TIMEOUT_PARAM
+    public static final Key IVOA_UWS_TIMEOUT = new Key(
+        IvoaResourceParam.IVOA_UWS_TIMEOUT
         );
     
     }

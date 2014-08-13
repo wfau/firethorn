@@ -136,18 +136,68 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
     private Map<String, String> parameters = new HashMap<String, String>();
 
     /**
-     * Configuration properties for our activity.
+     * Our Resource properties.
+     * 
+    private KeyValueProperties settings;
+     */
+
+    /**
+     * Our activity properties.
      * 
      */
     private KeyValueProperties properties;
-
     @Override
-    public void configureActivity(KeyValueProperties properties)
+    public void configureActivity(final KeyValueProperties properties)
     throws ActivityInitialisationException
         {
         this.properties = properties;
         }
 
+    protected void configure(final KeyValueProperties properties)
+    throws ActivityProcessingException
+        {
+        if (properties.containsKey(IvoaResourceKeys.IVOA_TAP_ENDPOINT))
+            {
+            endpoint = (String) properties.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT);
+            }
+
+        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_INTERVAL))
+            {
+            try {
+                interval = (Integer) properties.get(
+                    IvoaResourceKeys.IVOA_UWS_INTERVAL
+                    );
+                }
+            catch (Exception ouch)
+                {
+                throw new ActivityProcessingException(
+                    new ConfigurationValueIllegalException(
+                        IvoaResourceKeys.IVOA_UWS_INTERVAL,
+                        ouch
+                        )
+                    );
+                }
+            }
+
+        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_TIMEOUT))
+            {
+            try {
+                timeout = (Integer) properties.get(
+                    IvoaResourceKeys.IVOA_UWS_TIMEOUT
+                    );
+                }
+            catch (Exception ouch)
+                {
+                throw new ActivityProcessingException(
+                    new ConfigurationValueIllegalException(
+                        IvoaResourceKeys.IVOA_UWS_TIMEOUT,
+                        ouch
+                        )
+                    );
+                }
+            }
+        }
+    
     /**
      * Our TAP service endpoint.
      * 
@@ -239,12 +289,6 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             };
         }
 
-    /**
-     * Our resource settings.
-     * 
-     */
-    private KeyValueProperties settings;
-    
     @Override
     protected void preprocess()
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException 
@@ -252,88 +296,27 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         validateOutput(
             IvoaSelectDataParam.ACTIVITY_RESULTS
             );
-
-/*        
-        // add the properties defined in the resource config
-        // overwrites the default parameters if they are redefined
-        settings = resource.getResource().getState().getConfiguration();
-        for (Key key : settings.getKeys())
+        //
+        // Read our Activity properties.
+        configure(
+            properties
+            );
+        //
+        // Read our resource properties.
+        configure(
+            resource.getResource().getState().getConfiguration()
+            );
+        //
+        // Check we have an endpoint.
+        if (endpoint == null)
             {
-            if (IvoaResourceKeys.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
-                {
-                String param = key.getLocalPart();
-                String value = (String) settings.get(key);
-                parameters.put(
-                    param,
-                    value
-                    );
-                }
-            }
-
-        // add the properties defined in the activity config
-        // overwrites any parameters that are redefined
-        for (Key key : properties.getKeys())
-            {
-            if (IvoaResourceKeys.TAP_PARAMETER_PREFIX.equals(key.getNamespace()))
-                {
-                String parameter = key.getLocalPart();
-                String value = (String) properties.get(key);
-                parameters.put(parameter, value);
-                }
-            }
- */
-
-        if (properties.containsKey(IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY))
-            {
-            endpoint = (String) settings.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY);
-            }
-        else {
             throw new ActivityProcessingException(
                 new ConfigurationValueMissingException(
-                    IvoaResourceKeys.IVOA_TAP_ENDPOINT_KEY
+                    IvoaResourceKeys.IVOA_TAP_ENDPOINT
                     )
                 );
             }
-        
-        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY))
-            {
-            try {
-                interval = Integer.valueOf(
-                    (String) settings.get(
-                        IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY
-                        )
-                    );
-                }
-            catch (Exception ouch)
-                {
-                throw new ActivityProcessingException(
-                    new ConfigurationValueIllegalException(
-                        IvoaResourceKeys.IVOA_UWS_POLL_INTERVAL_KEY,
-                        ouch
-                        )
-                    );
-                }
-            }
 
-        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY))
-            {
-            try {
-                timeout = Integer.valueOf(
-                    (String) settings.get(
-                        IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY
-                        )
-                    );
-                }
-            catch (Exception ouch)
-                {
-                throw new ActivityProcessingException(
-                    new ConfigurationValueIllegalException(
-                        IvoaResourceKeys.IVOA_UWS_POLL_TIMEOUT_KEY,
-                        ouch
-                        )
-                    );
-                }
-            }
         }
     
     @Override
@@ -719,10 +702,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             postParameters.add(
                     new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
-        postParameters.add(new BasicNameValuePair("QUERY", adql));
-//ZRQ
-//Work around for the Gaia TAP that doesn't allow RUN after create.
+
+        //ZRQ
+        //Work around for the Gaia TAP that doesn't allow RUN after create.
         postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
+        
+        postParameters.add(new BasicNameValuePair("QUERY", adql));
 
         UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
         post.setEntity(formEntity);

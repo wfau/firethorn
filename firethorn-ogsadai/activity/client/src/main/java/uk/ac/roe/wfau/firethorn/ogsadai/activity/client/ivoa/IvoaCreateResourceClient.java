@@ -49,6 +49,12 @@ extends BaseActivity implements Activity
          */
         public String endpoint();
 
+        /**
+         * The TAP service type, as a String.
+         *
+         */
+        public String type();
+
         }
 
     /**
@@ -87,7 +93,7 @@ extends BaseActivity implements Activity
             );
 
         this.endpoint = new SimpleActivityInput(
-            IvoaCreateResourceParam.IVOA_TAP_ENDPOINT_PARAM,
+            IvoaCreateResourceParam.IVOA_TAP_ENDPOINT,
             true
             );
 

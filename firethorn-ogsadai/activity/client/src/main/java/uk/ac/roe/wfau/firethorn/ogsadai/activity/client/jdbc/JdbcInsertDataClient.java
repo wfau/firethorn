@@ -70,7 +70,54 @@ implements ResourceActivity
         public Integer block();
         
         }
-    
+
+    /**
+     * Simple {@link Param} implementation.
+     * 
+     */
+    public static class SimpleParam
+    implements Param
+        {
+        private static final Integer DEFAULT_FIRST = new Integer(1000);
+        private static final Integer DEFAULT_BLOCK = new Integer(1000);
+        
+        public SimpleParam(final String table)
+            {
+            this(
+                table,
+                DEFAULT_FIRST,
+                DEFAULT_BLOCK
+                );
+            }
+        
+        public SimpleParam(final String table, final Integer first, final Integer block)
+            {
+            this.table = table;
+            this.first = first;
+            this.block = block;
+            }
+
+        private String table;
+        @Override
+        public String table()
+            {
+            return this.table;
+            }
+        
+        private Integer first;
+        @Override
+        public Integer first()
+            {
+            return this.first;
+            }
+        
+        private Integer block;
+        @Override
+        public Integer block()
+            {
+            return this.block;
+            }
+        }
     /**
      * The input tuples
      *
@@ -165,30 +212,6 @@ implements ResourceActivity
             JdbcInsertDataParam.ACTIVITY_RESULTS
             );
         }
-
-    /**
-     * Set the target resource.
-     *
-    public void resource(final String ident)
-        {
-        this.resource(
-            new ResourceID(
-                ident
-                )
-            );
-        }
-     */
-
-    /**
-     * Set the target resource.
-     *
-    public void resource(final ResourceID ident)
-        {
-        this.setResourceID(
-            ident
-            );
-        }
-     */
 
     /**
      * Get the tuples output.
