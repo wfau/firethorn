@@ -37,9 +37,12 @@ import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.exception.ErrorID;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
+
+import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
 import uk.org.ogsadai.tuple.ColumnMetadata;
@@ -134,13 +137,25 @@ implements ResourceActivity
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
-        logger.debug("Provider [{}][{}]", provider.getClass().getName(), provider.getResource().getResourceID().getLocalPart());
-        logger.debug("Resource state [{}]", accessor.getResource().getState().getResourceID().getLocalPart());
-        logger.debug("Provider state [{}]", provider.getResource().getState().getResourceID().getLocalPart());
-
         try {
-            logger.debug("Creating database connection");
-            this.connection = provider.getConnection();
+            logger.debug("JdbcCreateTableActivity - Creating database connection");
+
+            logger.debug("Provider [{}][{}]", provider.getClass().getName(),               provider.getResource().getResourceID());
+            logger.debug("Provider [{}][{}]", provider.getResource().getState().getClass().getName(), provider.getResource().getState().getResourceID().getLocalPart());
+
+            logger.debug("Resource [{}][{}]", provider.getResource().getClass().getName(), provider.getResource().getResourceID());
+            logger.debug("Resource [{}][{}]", ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getClass().getName(), ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getDataResourceState().getResourceID());
+
+            //
+            // Bug fix
+            //final JDBCDataResource resource = (JDBCDataResource) provider.getResource();
+            //resource.initialize(resource.getJDBCDataResourceState());
+
+            //this.connection = provider.getConnection();
+            this.connection = ((JDBCDataResource) provider.getResource()).getConnection(
+                new SecurityContext(){}
+                );
+
             logger.debug("Checking connection autocommit");
             if (this.connection.getAutoCommit() == true)
                 {

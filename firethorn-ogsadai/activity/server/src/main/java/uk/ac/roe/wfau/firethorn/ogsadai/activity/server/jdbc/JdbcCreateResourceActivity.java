@@ -47,6 +47,7 @@ import uk.org.ogsadai.resource.ResourceFactory;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.ResourceIDAlreadyAssignedException;
 import uk.org.ogsadai.resource.ResourceManager;
+import uk.org.ogsadai.resource.ResourceState;
 import uk.org.ogsadai.resource.ResourceTypeException;
 import uk.org.ogsadai.resource.ResourceUnknownException;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
@@ -194,12 +195,17 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
                 template
                 );
 
-            JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
-
-            jdbcstate.getDataResourceState().setResourceID(
+            created.getState().setResourceID(
                 uniqueid
                 );
-
+            created.getJDBCDataResourceState().getDataResourceState().setResourceID(
+                uniqueid
+                );
+            created.initialize(
+                created.getState()
+                );
+            
+            JDBCDataResourceState jdbcstate = created.getJDBCDataResourceState();
             if (jdbcurl != null)
                 {
                 jdbcstate.setDatabaseURL(

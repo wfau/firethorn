@@ -45,10 +45,12 @@ import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
+import uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource;
 import uk.org.ogsadai.tuple.Tuple;
 import uk.org.ogsadai.tuple.TupleMetadata;
 
@@ -154,9 +156,6 @@ implements ResourceActivity
         ActivityProcessingException,
         ActivityTerminatedException
         {
-        logger.debug("Provider [{}][{}]", provider.getClass().getName(), provider.getResource().getResourceID().getLocalPart());
-        logger.debug("Resource state [{}]", accessor.getResource().getState().getResourceID().getLocalPart());
-        logger.debug("Provider state [{}]", provider.getResource().getState().getResourceID().getLocalPart());
 
         try {
             validateOutput(
@@ -174,9 +173,25 @@ implements ResourceActivity
                 );
             }
         try {
-            logger.debug("Preparing connection");
-            connection = provider.getConnection();
-            connection.setAutoCommit(
+            logger.debug("JdbcInsertDataActivity - Creating database connection");
+
+            logger.debug("Provider [{}][{}]", provider.getClass().getName(),               provider.getResource().getResourceID());
+            logger.debug("Provider [{}][{}]", provider.getResource().getState().getClass().getName(), provider.getResource().getState().getResourceID().getLocalPart());
+
+            logger.debug("Resource [{}][{}]", provider.getResource().getClass().getName(), provider.getResource().getResourceID());
+            logger.debug("Resource [{}][{}]", ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getClass().getName(), ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getDataResourceState().getResourceID());
+
+            //
+            // Bug fix
+            //final JDBCDataResource resource = (JDBCDataResource) provider.getResource();
+            //resource.initialize(resource.getJDBCDataResourceState());
+
+            //this.connection = provider.getConnection();
+            this.connection = ((JDBCDataResource) provider.getResource()).getConnection(
+                new SecurityContext(){}
+                );
+
+            this.connection.setAutoCommit(
                 false
                 );
             }
