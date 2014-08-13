@@ -36,11 +36,11 @@ public interface IvoaResourceKeys
         );
 
     /**
-     * Property key for the TAP endpoint type, {@value}.
+     * Property key for the UWS quick start property, {@value}.
      *  
      */
-    public static final Key IVOA_TAP_VERSION = new Key(
-        IvoaResourceParam.IVOA_TAP_VERSION
+    public static final Key IVOA_UWS_QUICKSTART = new Key(
+        IvoaResourceParam.IVOA_UWS_QUICKSTART
         );
 
     /**

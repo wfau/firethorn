@@ -28,42 +28,29 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
      *
      */
     public static class TapService
+    extends IvoaCreateResourceClient.SimpleParam
     implements IvoaCreateResourceWorkflow.Param
         {
         public TapService(final String endpoint)
             {
-            this(
-                null,
-                endpoint,
-                null
+            super(
+                endpoint
                 );
             }
-        public TapService(final String type, final String endpoint)
+        public TapService(final Boolean quickstart, final String endpoint)
             {
-            this(
-                type,
-                endpoint,
-                null
+            super(
+                quickstart,
+                endpoint
                 );
             }
-        public TapService(final String type, final String endpoint, final String example)
+        public TapService(final Boolean quickstart, final String endpoint, final String example)
             {
-            this.type     = type;
-            this.endpoint = endpoint;
+            super(
+                quickstart,
+                endpoint
+                );
             this.example  = example;
-            }
-        private String type;
-        @Override
-        public String type()
-            {
-            return this.type;
-            }
-
-        private String endpoint;
-        @Override
-        public String endpoint()
-            {
-            return this.endpoint;
             }
 
         private String example;
@@ -109,6 +96,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                     services.put(
                         "CADC",
                         new TapService(
+                            Boolean.FALSE,
                             "http://www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/tap/async",
                             "SELECT table_name, table_type FROM TAP_SCHEMA.tables"
                             )
@@ -116,6 +104,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                     services.put(
                         "GAIA",
                         new TapService(
+                            Boolean.TRUE,
                             "http://geadev.esac.esa.int/tap-dev/tap/async",
                             "SELECT TOP 1234 ra, decl FROM public.twomass_psc"
                             )
@@ -123,6 +112,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                     services.put(
                         "GAVO",
                         new TapService(
+                            Boolean.TRUE,
                             "http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async",
                             "SELECT TOP 1234 RAJ2000, DEJ2000 FROM twomass.data"
                             )
@@ -130,6 +120,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                     services.put(
                         "VIZIER",
                         new TapService(
+                            Boolean.TRUE,
                             "http://tapvizier.u-strasbg.fr/TAPVizieR/tap/async",
                             "SELECT TOP 1234 RAJ2000, DEJ2000 FROM vizls.\"II/246/out\""
                             )
@@ -137,6 +128,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                     services.put(
                         "WFAU",
                         new TapService(
+                            Boolean.TRUE,
                             "http://wfaudata.roe.ac.uk/twomass-dsa/TAP/async",
                             "SELECT TOP 1234 ra, dec FROM twomass_psc"
                             )

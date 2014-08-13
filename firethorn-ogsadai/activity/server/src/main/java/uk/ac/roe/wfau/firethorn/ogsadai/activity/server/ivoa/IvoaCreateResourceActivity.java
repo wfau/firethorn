@@ -93,8 +93,16 @@ implements ResourceManagerActivity, ResourceFactoryActivity
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 IvoaCreateResourceParam.IVOA_TAP_VERSION,
-                 String.class
+                 IvoaCreateResourceParam.IVOA_UWS_QUICKSTART,
+                 Integer.class
+                 ),
+             new TypedOptionalActivityInput(
+                 IvoaCreateResourceParam.IVOA_UWS_INTERVAL,
+                 Integer.class
+                 ),
+             new TypedOptionalActivityInput(
+                 IvoaCreateResourceParam.IVOA_UWS_TIMEOUT,
+                 Integer.class
                  ),
              };
         }
@@ -154,13 +162,17 @@ implements ResourceManagerActivity, ResourceFactoryActivity
             IVOA_CREATE_TEMPLATE
             );        
         
-        final String endpoint = (String) iterationData[0];
-        final String version  = (String) iterationData[1];
-
+        final String endpoint    = (String)  iterationData[0];
+        final Boolean quickstart = (Boolean) iterationData[2];
+        final Integer interval   = (Integer) iterationData[3];
+        final Integer timeout    = (Integer) iterationData[4];
+        
         logger.debug("Resource ["+ uniqueid +"]");
         logger.debug("Template ["+ template +"]");
         logger.debug("Endpoint ["+ endpoint +"]");
-        logger.debug("Version  ["+ version  +"]");
+        logger.debug("Quick    ["+ quickstart +"]");
+        logger.debug("Interval ["+ interval +"]");
+        logger.debug("Timeout  ["+ timeout  +"]");
 
         try {
             final DataResource created = factory.createDataResource(
@@ -182,21 +194,30 @@ implements ResourceManagerActivity, ResourceFactoryActivity
                 IvoaResourceKeys.IVOA_TAP_ENDPOINT,
                 endpoint
                 );
-            properties.put(
-                IvoaResourceKeys.IVOA_TAP_VERSION,
-                version
-                );
 
-            //
-            // Make these configurable ...
-            properties.put(
-                IvoaResourceKeys.IVOA_UWS_INTERVAL,
-                new Integer(1000)
-                );
-            properties.put(
-                IvoaResourceKeys.IVOA_UWS_TIMEOUT,
-                new Integer(60000)
-                );
+            if (quickstart != null)
+                {
+                properties.put(
+                    IvoaResourceKeys.IVOA_UWS_INTERVAL,
+                    quickstart
+                    );
+                }
+
+            if (interval != null)
+                {
+                properties.put(
+                    IvoaResourceKeys.IVOA_UWS_INTERVAL,
+                    interval
+                    );
+                }
+            
+            if (timeout != null)
+                {
+                properties.put(
+                    IvoaResourceKeys.IVOA_UWS_TIMEOUT,
+                    timeout
+                    );
+                }
             
             logger.debug("Adding Resource to Factory [" + uniqueid + "][" + created.getResourceID().toString() + "]");
             factory.addResource(

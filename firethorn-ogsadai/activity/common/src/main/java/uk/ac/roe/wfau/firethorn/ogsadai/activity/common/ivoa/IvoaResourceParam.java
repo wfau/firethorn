@@ -31,12 +31,6 @@ public interface IvoaResourceParam
     public static final String IVOA_TAP_ENDPOINT = "ivoa.tap.endpoint"  ;
 
     /**
-     * Parameter name for the TAP endpoint type, {@value}.
-     * 
-     */
-    public static final String IVOA_TAP_VERSION = "ivoa.tap.version"  ;
-
-    /**
      * Parameter name for the UWS service polling interval, {@value}.
      * 
      */
@@ -48,6 +42,11 @@ public interface IvoaResourceParam
      */
     public static final String IVOA_UWS_TIMEOUT = "ivoa.uws.timeout"  ;
 
+    /**
+     * Parameter name for the UWS quickstart flag, {@value}.
+     * 
+     */
+    public static final String IVOA_UWS_QUICKSTART = "ivoa.uws.quckstart"  ;
 
     }
 

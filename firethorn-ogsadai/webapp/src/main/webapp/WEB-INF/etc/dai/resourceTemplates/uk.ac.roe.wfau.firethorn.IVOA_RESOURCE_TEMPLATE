@@ -5,7 +5,11 @@ terminationTime=null
 PROPERTIES
 END
 CONFIG
-ivoa.tap.endpoint.url={endpoint}
+ivoa.tap.version={version}
+ivoa.tap.endpoint={endpoint}
+ivoa.uws.timeout=120000
+ivoa.uws.interval=1000
+ivoa.uws.quickstart=false
 END
 ACTIVITIES
 uk.ac.roe.wfau.firethorn.IvoaSelectData=uk.ac.roe.wfau.firethorn.IvoaSelectData

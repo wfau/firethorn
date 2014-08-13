@@ -136,12 +136,6 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
     private Map<String, String> parameters = new HashMap<String, String>();
 
     /**
-     * Our Resource properties.
-     * 
-    private KeyValueProperties settings;
-     */
-
-    /**
      * Our activity properties.
      * 
      */
@@ -159,6 +153,24 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         if (properties.containsKey(IvoaResourceKeys.IVOA_TAP_ENDPOINT))
             {
             endpoint = (String) properties.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT);
+            }
+
+        if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_QUICKSTART))
+            {
+            try {
+                quickstart = (Boolean) properties.get(
+                    IvoaResourceKeys.IVOA_UWS_QUICKSTART
+                    );
+                }
+            catch (Exception ouch)
+                {
+                throw new ActivityProcessingException(
+                    new ConfigurationValueIllegalException(
+                        IvoaResourceKeys.IVOA_UWS_QUICKSTART,
+                        ouch
+                        )
+                    );
+                }
             }
 
         if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_INTERVAL))
@@ -203,6 +215,18 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
      * 
      */
     private String endpoint;
+
+    /**
+     * Our TAP service version.
+     * 
+     */
+    private String version;
+
+    /**
+     * Flag to indicate if the TAP implementation supports PHASE=RUN in the initial POST request.
+     * 
+     */
+    private boolean quickstart = false ;
 
     /**
      * The delay in milliseconds for polling the query status.
@@ -676,7 +700,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                 );
             }
         }
-    
+
     /**
      * Prepares the HTTP post request to a TAP service with the ADQL query.
      * 
@@ -704,8 +728,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         }
 
         //ZRQ
-        //Work around for the Gaia TAP that doesn't allow RUN after create.
-        postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
+        // Most TAP services support this, apart from the CADC implementation.
+        // Gaia TAP needs this, because it doesn't allow RUN after create.
+        if (quickstart)
+            {
+            postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
+            }
         
         postParameters.add(new BasicNameValuePair("QUERY", adql));
 

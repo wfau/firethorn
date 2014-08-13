@@ -27,6 +27,8 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
+import uk.org.ogsadai.data.BooleanData;
+import uk.org.ogsadai.data.IntegerData;
 import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
@@ -50,18 +52,110 @@ extends BaseActivity implements Activity
         public String endpoint();
 
         /**
-         * The TAP service type, as a String.
+         * The UWS service quickstart flag, as a Boolean.
          *
          */
-        public String type();
+        public Boolean quickstart();
+        
+        /**
+         * The UWS service interval, as an Integer.
+         *
+         */
+        public Integer interval();
+        
+        /**
+         * The UWS service timeout, as an Integer.
+         *
+         */
+        public Integer timeout();
 
         }
 
+    /**
+     * Simple {@link Param}implementation.
+     * 
+     */
+    public static class SimpleParam
+    implements Param
+        {
+        public SimpleParam(final String endpoint)
+            {
+            this(
+                Boolean.FALSE,
+                endpoint,
+                null,
+                null
+                );
+            }
+        public SimpleParam(final Boolean quickstart, final String endpoint)
+            {
+            this(
+                quickstart,
+                endpoint,
+                null,
+                null
+                );
+            }
+        public SimpleParam(final Boolean quickstart, final String endpoint, final Integer interval, final Integer timeout)
+            {
+            this.endpoint   = endpoint;
+            this.quickstart = quickstart;
+            this.interval   = interval;
+            this.timeout    = timeout;
+            }
+        
+        private String endpoint;
+        @Override
+        public String endpoint()
+            {
+            return this.endpoint;
+            }
+
+        private Boolean quickstart;
+        @Override
+        public Boolean quickstart()
+            {
+            return this.quickstart;
+            }
+
+        private Integer interval;
+        @Override
+        public Integer interval()
+            {
+            return this.interval;
+            }
+
+        private Integer timeout;
+        @Override
+        public Integer timeout()
+            {
+            return this.timeout;
+            }
+        }
+    
     /**
      * The TAP service endpoint URL, as a String.
      *
      */
     private final ActivityInput endpoint;
+
+    /**
+     * The UWS quickstart flag, as a Boolean.
+     *
+     */
+    private final ActivityInput quickstart;
+
+    /**
+     * The UWS polling interval, as an Integer.
+     *
+     */
+    private final ActivityInput interval;
+
+    /**
+     * The UWS polling timeout, as an Integer.
+     *
+     */
+    private final ActivityInput timeout;
 
     /**
      * Our result output.
@@ -96,7 +190,6 @@ extends BaseActivity implements Activity
             IvoaCreateResourceParam.IVOA_TAP_ENDPOINT,
             true
             );
-
         if (param.endpoint() != null)
             {
             this.endpoint.add(
@@ -106,6 +199,45 @@ extends BaseActivity implements Activity
                 );
             }
 
+        this.quickstart= new SimpleActivityInput(
+            IvoaCreateResourceParam.IVOA_UWS_QUICKSTART,
+            true
+            );
+        if (param.quickstart() != null)
+            {
+            this.quickstart.add(
+                new BooleanData(
+                    param.quickstart()
+                    )
+                );
+            }
+        
+        this.interval = new SimpleActivityInput(
+            IvoaCreateResourceParam.IVOA_UWS_INTERVAL,
+            true
+            );
+        if (param.interval() != null)
+            {
+            this.interval.add(
+                new IntegerData(
+                    param.interval()
+                    )
+                );
+            }
+
+        this.timeout = new SimpleActivityInput(
+            IvoaCreateResourceParam.IVOA_UWS_TIMEOUT,
+            true
+            );
+        if (param.timeout() != null)
+            {
+            this.timeout.add(
+                new IntegerData(
+                    param.timeout()
+                    )
+                );
+            }
+        
         this.results = new SimpleActivityOutput(
             IvoaCreateResourceParam.ACTIVITY_RESULTS
             );
@@ -115,7 +247,10 @@ extends BaseActivity implements Activity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            endpoint
+            endpoint,
+            quickstart,
+            interval,
+            timeout
             };
         }
 
