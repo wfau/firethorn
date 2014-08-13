@@ -32,49 +32,10 @@ import com.google.common.primitives.Longs;
  *
  */
 @Slf4j
-@RunWith(
-    SpringJUnit4ClassRunner.class
-    )
-@ContextConfiguration(
-    locations = {
-        "classpath:component-config.xml",
-        }
-    )
 public class JdbcSelectDataWorkflowTestCase
+extends JdbcResourceTestBase
     {
     private Random random = new Random(); 
-    
-    
-    @Value("${firethorn.ogsadai.endpoint}")
-    private String endpoint ;
-
-    @Value("${firethorn.atlas.url}")
-    private String atlasurl ;
-
-    @Value("${firethorn.atlas.user}")
-    private String atlasuser ;
-
-    @Value("${firethorn.atlas.pass}")
-    private String atlaspass ;
-
-    @Value("${firethorn.atlas.driver}")
-    private String atlasdriver;
-
-    
-    
-    @Value("${firethorn.user.url}")
-    private String userurl ;
-
-    @Value("${firethorn.user.user}")
-    private String useruser ;
-
-    @Value("${firethorn.user.pass}")
-    private String userpass ;
-
-    @Value("${firethorn.user.driver}")
-    private String userdriver;
-
-    
     
     @Test
     public void test000()
@@ -85,39 +46,12 @@ public class JdbcSelectDataWorkflowTestCase
         
         final JdbcCreateResourceWorkflow creator = new JdbcCreateResourceWorkflow(
             new URL(
-                endpoint
+                config().endpoint()
                 )
             );
 
         final CreateResourceResult atlasdata = creator.execute(
-            new JdbcCreateResourceWorkflow.Param()
-                {
-                @Override
-                public String jdbcurl()
-                    {
-                    return atlasurl;
-                    }
-                @Override
-                public String username()
-                    {
-                    return atlasuser;
-                    }
-                @Override
-                public String password()
-                    {
-                    return atlaspass;
-                    }
-                @Override
-                public String driver()
-                    {
-                    return atlasdriver;
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
-                    }
-                }
+            config().databases().get("atlas")
             );
         assertNotNull(
             atlasdata
@@ -131,34 +65,7 @@ public class JdbcSelectDataWorkflowTestCase
             );
         
         final CreateResourceResult userdata = creator.execute(
-            new JdbcCreateResourceWorkflow.Param()
-                {
-                @Override
-                public String jdbcurl()
-                    {
-                    return userurl;
-                    }
-                @Override
-                public String username()
-                    {
-                    return useruser;
-                    }
-                @Override
-                public String password()
-                    {
-                    return userpass;
-                    }
-                @Override
-                public String driver()
-                    {
-                    return userdriver;
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
-                    }
-                }
+            config().databases().get("user")
             );
         assertNotNull(
             userdata
@@ -207,7 +114,7 @@ public class JdbcSelectDataWorkflowTestCase
         
         final JdbcSelectDataWorkflow selector = new JdbcSelectDataWorkflow(
             new URL(
-                endpoint
+                config().endpoint()
                 )
             ); 
         final WorkflowResult selected = selector.execute(

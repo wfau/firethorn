@@ -57,6 +57,10 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
             }
         }
 
+    /**
+     * Configuration for a Map of TAP services.
+     *
+     */
     public static class TapServiceMap
     extends HashMap<String, TapService>
         {
@@ -93,16 +97,19 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
             }
         }
 
+    /**
+     * Configuration for our IVOA resources.
+     *
+     */
     @Configuration
-    public static class Config
-    extends OgsaResourceTestBase.Config
+    public static class IvoaConfig
         {
         private TapServiceMap services = new TapServiceMap(); 
         public TapServiceMap services()
             {
             return this.services;
             }
-        public Config()
+        public IvoaConfig()
             {
             services.put(
                 "CADC",
@@ -126,10 +133,26 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
                 );
             }
         }
+
+    /**
+     * Configuration for an IVOA resource test.
+     *
+     */
+    @Configuration
+    public static class IvoaTestConfig
+    extends OgsaResourceTestBase.OgsaTestConfig
+        {
+        @Autowired
+        private IvoaConfig ivoa;
+        public IvoaConfig ivoa()
+            {
+            return this.ivoa;
+            }
+        }
     
     @Autowired
-    private Config config ;
-    public  Config config()
+    private IvoaTestConfig config ;
+    public  IvoaTestConfig config()
         {
         return this.config;
         }

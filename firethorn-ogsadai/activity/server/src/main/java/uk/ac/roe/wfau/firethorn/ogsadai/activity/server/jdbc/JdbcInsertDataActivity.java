@@ -81,19 +81,7 @@ implements ResourceActivity
         }
 
     /**
-     * Our JDBC connection provider
-     * 
-     */
-    private JDBCConnectionProvider provider;
-
-    /**
-     * Our database Connection.
-     *
-     */
-    private Connection connection;
-
-    /**
-     * Our JDBC update statement.
+     * Our SQL statement.
      * 
      */
     private PreparedStatement statement;
@@ -104,6 +92,11 @@ implements ResourceActivity
      */
     private BlockWriter writer;
 
+    /**
+     * Our database Connection.
+     *
+     */
+    private Connection connection;
     
     @Override
     public Class<? extends ResourceAccessor> getTargetResourceAccessorClass()
@@ -111,10 +104,23 @@ implements ResourceActivity
         return JDBCConnectionProvider.class;
         }
 
+    /**
+     * Our target Resource accessor.
+     * 
+     */
+    private ResourceAccessor accessor;
+
+    /**
+     * Our JDBC connection provider
+     * 
+     */
+    private JDBCConnectionProvider provider;
+
     @Override
     public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
-        provider = (JDBCConnectionProvider) accessor;
+        this.accessor = accessor;
+        this.provider = (JDBCConnectionProvider) accessor;
         }
 
     @Override
@@ -148,6 +154,10 @@ implements ResourceActivity
         ActivityProcessingException,
         ActivityTerminatedException
         {
+        logger.debug("Provider [{}][{}]", provider.getClass().getName(), provider.getResource().getResourceID().getLocalPart());
+        logger.debug("Resource state [{}]", accessor.getResource().getState().getResourceID().getLocalPart());
+        logger.debug("Provider state [{}]", provider.getResource().getState().getResourceID().getLocalPart());
+
         try {
             validateOutput(
                 JdbcInsertDataParam.ACTIVITY_RESULTS

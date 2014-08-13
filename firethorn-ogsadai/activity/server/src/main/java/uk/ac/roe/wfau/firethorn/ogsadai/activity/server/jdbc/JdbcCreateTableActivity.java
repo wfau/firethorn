@@ -88,6 +88,12 @@ implements ResourceActivity
         }
 
     /**
+     * Our target Resource accessor.
+     * 
+     */
+    private ResourceAccessor accessor;
+
+    /**
      * Our JDBC connection provider.
      *
      */
@@ -102,6 +108,7 @@ implements ResourceActivity
     @Override
     public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
+        this.accessor = accessor;
         this.provider = (JDBCConnectionProvider) accessor;
         }
 
@@ -127,7 +134,10 @@ implements ResourceActivity
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
-        logger.debug("starting preprocess ----");
+        logger.debug("Provider [{}][{}]", provider.getClass().getName(), provider.getResource().getResourceID().getLocalPart());
+        logger.debug("Resource state [{}]", accessor.getResource().getState().getResourceID().getLocalPart());
+        logger.debug("Provider state [{}]", provider.getResource().getState().getResourceID().getLocalPart());
+
         try {
             logger.debug("Creating database connection");
             this.connection = provider.getConnection();

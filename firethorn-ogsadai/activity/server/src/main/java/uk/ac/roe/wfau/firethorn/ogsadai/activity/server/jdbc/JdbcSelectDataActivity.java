@@ -97,18 +97,6 @@ implements ResourceActivity, ServiceAddressesActivity
         );
 
     /**
-     * The resource this activity is targeted at.
-     * 
-     */
-    private ResourceAccessor accessor;
-
-    /**
-     * Our JDBC connection provider.
-     * 
-     */
-    private EnhancedJDBCConnectionProvider provider;
-    
-    /**
      * Our service addresses.
      * 
      */
@@ -166,11 +154,23 @@ implements ResourceActivity, ServiceAddressesActivity
         return EnhancedJDBCConnectionProvider.class;
         }
 
+    /**
+     * Our target Resource accessor.
+     * 
+     */
+    private ResourceAccessor accessor;
+
+    /**
+     * Our JDBC connection provider.
+     * 
+     */
+    private EnhancedJDBCConnectionProvider provider;
+
     @Override
     public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
         this.accessor = accessor;
-        provider = (EnhancedJDBCConnectionProvider) accessor;
+        this.provider = (EnhancedJDBCConnectionProvider) accessor;
         }
 
     @Override
@@ -195,6 +195,11 @@ implements ResourceActivity, ServiceAddressesActivity
     protected void preprocess()
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
+
+        logger.debug("Provider [{}][{}]", provider.getClass().getName(), provider.getResource().getResourceID().getLocalPart());
+        logger.debug("Resource state [{}]", accessor.getResource().getState().getResourceID().getLocalPart());
+        logger.debug("Provider state [{}]", provider.getResource().getState().getResourceID().getLocalPart());
+
         validateOutput(
             JdbcSelectDataParam.ACTIVITY_RESULTS
             );

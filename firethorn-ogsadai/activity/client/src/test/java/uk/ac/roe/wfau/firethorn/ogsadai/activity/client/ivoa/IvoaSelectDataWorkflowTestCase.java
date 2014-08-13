@@ -50,7 +50,7 @@ extends IvoaResourceTestBase
                 @Override
                 public String endpoint()
                     {
-                    return config().services().get("WFAU").endpoint();
+                    return config().ivoa().services().get("WFAU").endpoint();
                     }
                 }
             );

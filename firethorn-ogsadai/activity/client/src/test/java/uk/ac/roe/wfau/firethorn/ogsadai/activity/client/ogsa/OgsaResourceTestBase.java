@@ -25,6 +25,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
     ) 
  public abstract class OgsaResourceTestBase
     {
+
     /**
      * Basic test configuration.
      *
@@ -32,14 +33,20 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
     @Configuration
     @ComponentScan("uk.ac.roe.wfau.firethorn")
     @PropertySource("file:${user.home}/firethorn.properties")
-    public static class Config
+    public static class OgsaTestConfig
         {
         @Autowired
         private Environment environment ;
 
-        public String endpoint()
+        public String property(final String name)
             {
             return environment.getProperty(
+                name
+                );
+            }
+        public String endpoint()
+            {
+            return property(
                 "firethorn.ogsadai.endpoint"
                 );
             }
@@ -49,6 +56,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
      * Our test configuration.
      *
      */
-    public abstract Config config();
+    public abstract OgsaTestConfig config();
     
     }

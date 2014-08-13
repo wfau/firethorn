@@ -20,36 +20,14 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 
 /**
- * Simple test for OGSA-DAI queries.
+ * Test for JdbcCreateResource activity.
  *
  *
  */
 @Slf4j
-@RunWith(
-    SpringJUnit4ClassRunner.class
-    )
-@ContextConfiguration(
-    locations = {
-        "classpath:component-config.xml",
-        }
-    )
 public class JdbcCreateResourceTestCase
+extends JdbcResourceTestBase
     {
-
-    @Value("${firethorn.ogsadai.endpoint}")
-    private String endpoint ;
-
-    @Value("${firethorn.atlas.url}")
-    private String jdbcurl ;
-
-    @Value("${firethorn.atlas.user}")
-    private String username ;
-
-    @Value("${firethorn.atlas.pass}")
-    private String password ;
-
-    @Value("${firethorn.atlas.driver}")
-    private String driver;
 
     @Test
     public void test000()
@@ -57,39 +35,12 @@ public class JdbcCreateResourceTestCase
         {
         final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
             new URL(
-                endpoint
+                config().endpoint()
                 )
             );
 
         final CreateResourceResult created = workflow.execute(
-            new JdbcCreateResourceWorkflow.Param()
-                {
-                @Override
-                public String jdbcurl()
-                    {
-                    return jdbcurl;
-                    }
-                @Override
-                public String username()
-                    {
-                    return username;
-                    }
-                @Override
-                public String password()
-                    {
-                    return password;
-                    }
-                @Override
-                public String driver()
-                    {
-                    return driver;
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
-                    }
-                }
+            config().databases().get("atlas")
             );
 
         log.debug("Status  [{}]", created.status());

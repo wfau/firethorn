@@ -134,6 +134,7 @@ public class JdbcSelectDataWorkflow
      */
     public SimpleWorkflowResult execute(final ResourceID source, final ResourceID target, final Param param)
         {
+        log.debug("Execute [{}][{}]", source, target);
         final JdbcSelectDataClient select = new JdbcSelectDataClient(
             source,
             param.select()
