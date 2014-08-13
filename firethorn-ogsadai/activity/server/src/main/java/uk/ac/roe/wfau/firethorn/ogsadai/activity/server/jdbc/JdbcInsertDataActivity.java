@@ -107,6 +107,12 @@ implements ResourceActivity
         }
 
     /**
+     * Flag to indicate if we changed the autocommit state.
+     *
+     */
+    private boolean autochanged = false;
+    
+    /**
      * Our target Resource accessor.
      * 
      */
@@ -173,23 +179,14 @@ implements ResourceActivity
                 );
             }
         try {
-            logger.debug("JdbcInsertDataActivity - Creating database connection");
-
-            //logger.debug("Provider [{}][{}]", provider.getClass().getName(),               provider.getResource().getResourceID());
-            //logger.debug("Provider [{}][{}]", provider.getResource().getState().getClass().getName(), provider.getResource().getState().getResourceID().getLocalPart());
-            //logger.debug("Resource [{}][{}]", provider.getResource().getClass().getName(), provider.getResource().getResourceID());
-            //logger.debug("Resource [{}][{}]", ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getClass().getName(), ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getDataResourceState().getResourceID());
-
-            //
-            // Bug fix
-            //final JDBCDataResource resource = (JDBCDataResource) provider.getResource();
-            //resource.initialize(resource.getJDBCDataResourceState());
-
-            this.connection = provider.getConnection();
-
-            this.connection.setAutoCommit(
-                false
-                );
+            connection = provider.getConnection();
+            if (connection.getAutoCommit() == true)
+                {
+                autochanged = true ;
+                connection.setAutoCommit(
+                    false
+                    );
+                }
             }
         catch (final SQLException ouch)
             {
@@ -318,20 +315,24 @@ implements ResourceActivity
 
     @Override
     protected void postprocess()
-        throws ActivityUserException,
-            ActivityProcessingException,
-            ActivityTerminatedException
+    throws ActivityProcessingException
         {
         if (connection != null)
             {
             try {
-                connection.setAutoCommit(
-                    true
-                    );
+                if (autochanged)
+                    {
+                    connection.setAutoCommit(
+                        true
+                        );
+                    }
                 }
-            catch (final SQLException e)
+            catch (final Throwable ouch)
                 {
-                throw new ActivitySQLUserException(e);
+                logger.warn("Exception resetting autocommit [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+                throw new ActivityProcessingException(
+                    ouch
+                    );
                 }
             }
         }
@@ -349,9 +350,12 @@ implements ResourceActivity
         if ((connection != null) && (connection.getAutoCommit() == false))
             {
             connection.rollback();
-            connection.setAutoCommit(
-                true
-                );
+            if (autochanged)
+                {
+                connection.setAutoCommit(
+                    true
+                    );
+                }
             }
 
         if (provider != null)

@@ -138,24 +138,12 @@ implements ResourceActivity
     throws ActivitySQLException, ActivityProcessingException
         {
         try {
-            logger.debug("JdbcCreateTableActivity - Creating database connection");
+            connection = provider.getConnection();
 
-            //logger.debug("Provider [{}][{}]", provider.getClass().getName(),               provider.getResource().getResourceID());
-            //logger.debug("Provider [{}][{}]", provider.getResource().getState().getClass().getName(), provider.getResource().getState().getResourceID().getLocalPart());
-            //logger.debug("Resource [{}][{}]", provider.getResource().getClass().getName(), provider.getResource().getResourceID());
-            //logger.debug("Resource [{}][{}]", ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getClass().getName(), ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getDataResourceState().getResourceID());
-
-            //
-            // Bug fix
-            //final JDBCDataResource resource = (JDBCDataResource) provider.getResource();
-            //resource.initialize(resource.getJDBCDataResourceState());
-
-            this.connection = provider.getConnection();
-
-            if (this.connection.getAutoCommit() == true)
+            if (connection.getAutoCommit() == true)
                 {
-                this.autochanged = true ;
-                this.connection.setAutoCommit(
+                autochanged = true ;
+                connection.setAutoCommit(
                     false
                     );
                 }
@@ -292,9 +280,9 @@ implements ResourceActivity
     throws ActivityProcessingException
         {
         try {
-            if (this.autochanged)
+            if (autochanged)
                 {
-                this.connection.setAutoCommit(
+                connection.setAutoCommit(
                     true
                     );
                 }

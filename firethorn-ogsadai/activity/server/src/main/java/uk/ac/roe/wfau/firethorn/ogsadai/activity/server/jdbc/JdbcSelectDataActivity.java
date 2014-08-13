@@ -201,20 +201,7 @@ implements ResourceActivity, ServiceAddressesActivity
             JdbcSelectDataParam.ACTIVITY_RESULTS
             );
         try {
-            logger.debug("JdbcSelectDataActivity - Creating database connection");
-
-            //logger.debug("Provider [{}][{}]", provider.getClass().getName(),               provider.getResource().getResourceID());
-            //logger.debug("Provider [{}][{}]", provider.getResource().getState().getClass().getName(), provider.getResource().getState().getResourceID().getLocalPart());
-            //logger.debug("Resource [{}][{}]", provider.getResource().getClass().getName(), provider.getResource().getResourceID());
-            //logger.debug("Resource [{}][{}]", ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getClass().getName(), ((JDBCDataResource) provider.getResource()).getJDBCDataResourceState().getDataResourceState().getResourceID());
-
-            //
-            // Bug fix
-            //final JDBCDataResource resource = (JDBCDataResource) provider.getResource();
-            //resource.initialize(resource.getJDBCDataResourceState());
-            
             this.connection = this.provider.getConnection();
-            
             }
         catch (JDBCConnectionUseException ouch)
             {
