@@ -36,6 +36,25 @@ extends IvoaResourceTestBase
     public void test000()
     throws Exception
         {
+        final TapService source = config().ivoa().services().get("VIZIER");
+        final IvoaCreateResourceWorkflow ivoacreator = new IvoaCreateResourceWorkflow(
+            new URL(
+                config().endpoint()
+                )
+            );
+        final CreateResourceResult ivoadata = ivoacreator.execute(
+            source
+            );
+        assertNotNull(
+            ivoadata
+            );
+        assertEquals(
+            WorkflowResult.Status.COMPLETED,            
+            ivoadata.status()
+            );
+        assertNotNull(
+            ivoadata.resource()
+            );
 
         final JdbcCreateResourceWorkflow jdbccreator = new JdbcCreateResourceWorkflow(
             new URL(
@@ -54,27 +73,6 @@ extends IvoaResourceTestBase
             );
         assertNotNull(
             userdata.resource()
-            );
-        
-        final IvoaCreateResourceWorkflow ivoacreator = new IvoaCreateResourceWorkflow(
-            new URL(
-                config().endpoint()
-                )
-            );
-
-        final TapService source = config().ivoa().services().get("CADC");
-        final CreateResourceResult ivoadata = ivoacreator.execute(
-            source
-            );
-        assertNotNull(
-            ivoadata
-            );
-        assertEquals(
-            WorkflowResult.Status.COMPLETED,            
-            ivoadata.status()
-            );
-        assertNotNull(
-            ivoadata.resource()
             );
 
         long time = System.currentTimeMillis();         
@@ -99,7 +97,7 @@ extends IvoaResourceTestBase
                 )
             );
         
-        final String name = buffer.toString();
+        final String tablename = buffer.toString();
         
         final IvoaSelectDataWorkflow selector = new IvoaSelectDataWorkflow(
             new URL(
@@ -108,7 +106,6 @@ extends IvoaResourceTestBase
             ); 
         final WorkflowResult selected = selector.execute(
             ivoadata.resource(),
-            userdata.resource(),
             new IvoaSelectDataWorkflow.Param()
                 {
                 @Override
@@ -151,18 +148,43 @@ extends IvoaResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
+                        public String store()
+                            {
+                            return userdata.resource().toString();
+                            }
+                        @Override
                         public String table()
                             {
-                            return name;
+                            return tablename;
                             }
                         };
                     }
                 @Override
                 public JdbcInsertDataClient.Param insert()
                     {
-                    return new JdbcInsertDataClient.SimpleParam(
-                        name
-                        );
+                    return new JdbcInsertDataClient.Param()
+                        {
+                        @Override
+                        public String store()
+                            {
+                            return userdata.resource().toString();
+                            }
+                        @Override
+                        public String table()
+                            {
+                            return tablename ;
+                            }
+                        @Override
+                        public Integer first()
+                            {
+                            return new Integer(1000);
+                            }
+                        @Override
+                        public Integer block()
+                            {
+                            return new Integer(1000);
+                            }
+                        };
                     }
                 @Override
                 public DelaysClient.Param delays()

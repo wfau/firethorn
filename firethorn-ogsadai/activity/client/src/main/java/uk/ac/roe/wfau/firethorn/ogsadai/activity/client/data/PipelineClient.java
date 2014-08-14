@@ -94,7 +94,10 @@ public class PipelineClient
         select.addExpression(
             param.query()
             );
-
+/*
+ * Create table.
+ * 
+ */
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
@@ -115,22 +118,13 @@ public class PipelineClient
             limits
             );
 /*
-        //
-		// Add our row number generator.
-        final RowsClient rows = new RowsClient(
-            delay.output(),
-            param.rows()
-            );
-        pipeline.add(
-            rows
-            );
+ * Row number column.
+ * 
  */
-	    
 	    //
         // Create our Insert Activity.
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             limits.output(),
-            null,                // BROKEN :-(
             param.insert()
             );
         pipeline.add(

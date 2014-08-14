@@ -48,6 +48,13 @@ implements ResourceActivity
     public static interface Param
         {
         /**
+         * The target resource ID, as a String.
+         * @return The target resource ID.
+         *
+         */
+        public String store();
+
+        /**
          * The table name.
          * @return The table name.
          *
@@ -80,7 +87,7 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcCreateTableClient(final SingleActivityOutput source, final ResourceID target, final Param param)
+    public JdbcCreateTableClient(final SingleActivityOutput source, final Param param)
         {
         super(
             new ActivityName(
@@ -88,7 +95,9 @@ implements ResourceActivity
                 )
             );
         this.setResourceID(
-            target
+            new ResourceID(
+                param.store()
+                )
             );
 
         this.input = new SimpleActivityInput(
@@ -115,30 +124,6 @@ implements ResourceActivity
             );
 
         }
-
-    /**
-     * Set the target resource.
-     *
-    public void resource(final String ident)
-        {
-        this.resource(
-            new ResourceID(
-                ident
-                )
-            );
-        }
-     */
-
-    /**
-     * Set the target resource.
-     *
-    public void resource(final ResourceID resource)
-        {
-        this.setResourceID(
-            resource
-            );
-        }
-     */
 
     /**
      * Get the tuples output.

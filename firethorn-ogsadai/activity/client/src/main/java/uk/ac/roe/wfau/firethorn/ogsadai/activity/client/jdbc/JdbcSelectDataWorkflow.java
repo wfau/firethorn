@@ -132,9 +132,8 @@ public class JdbcSelectDataWorkflow
      * @return A workflow {@link SimpleWorkflowResult} containing the results.
      * 
      */
-    public SimpleWorkflowResult execute(final ResourceID source, final ResourceID target, final Param param)
+    public SimpleWorkflowResult execute(final ResourceID source, final Param param)
         {
-        log.debug("Execute [{}][{}]", source, target);
         final JdbcSelectDataClient select = new JdbcSelectDataClient(
             source,
             param.select()
@@ -152,13 +151,11 @@ public class JdbcSelectDataWorkflow
 
         final JdbcCreateTableClient create = new JdbcCreateTableClient(
             limits.output(),
-            target,
             param.create()
             );
         
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             create.results(),
-            target,
             param.insert()
             );
         

@@ -46,7 +46,7 @@ public interface IvoaResourceParam
      * Parameter name for the UWS quickstart flag, {@value}.
      * 
      */
-    public static final String IVOA_UWS_QUICKSTART = "ivoa.uws.quckstart"  ;
+    public static final String IVOA_UWS_QUICKSTART = "ivoa.uws.quickstart"  ;
 
     }
 

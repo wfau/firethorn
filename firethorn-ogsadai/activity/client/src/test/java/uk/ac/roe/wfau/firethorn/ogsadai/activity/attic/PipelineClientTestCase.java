@@ -16,9 +16,12 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
- * These tests  no longer work - because we need firethorn to create the tables for us.
+ * These tests no longer work :
+ * - we need something to create the target resources
+ * - we need something to create the target tables
  *
  */
+@Deprecated
 public class PipelineClientTestCase
 extends SimpleQueryTestBase
     {
@@ -98,13 +101,11 @@ extends SimpleQueryTestBase
         pipeline.execute(
             new PipelineParam()
                 {
-                
                 @Override
                 public String source()
                     {
                     return "twomass";
                     }
-            
                 @Override
                 public String query()
                     {
@@ -126,17 +127,20 @@ extends SimpleQueryTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
+                        public String store()
+                            {
+                            return unique("user");
+                            }
+                        @Override
                         public String table()
                             {
                             return unique("table");
                             }
-                        
                         @Override
                         public Integer first()
                             {
                             return null;
                             }
-
                         @Override
                         public Integer block()
                             {
@@ -144,19 +148,16 @@ extends SimpleQueryTestBase
                             }
                         };
                     }
-
                 @Override
                 public DelaysClient.Param delays()
                     {
                     return null;
                     }
-
                 @Override
                 public LimitsClient.Param limits()
                     {
                     return null;
                     }
-
                 @Override
                 public RownumClient.Param rows()
                     {
@@ -187,7 +188,6 @@ extends SimpleQueryTestBase
                     {
                     return "twomass";
                     }
-            
                 @Override
                 public String query()
                     {
@@ -202,24 +202,26 @@ extends SimpleQueryTestBase
                     " AND" +
                     "    twomass.dec BETWEEN '20.0' AND '22.9'" ;
                     }
-
                 @Override
                 public JdbcInsertDataClient.Param insert()
                     {
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
+                        public String store()
+                            {
+                            return unique("user");
+                            }
+                        @Override
                         public String table()
                             {
                             return unique("table");
                             }
-                        
                         @Override
                         public Integer first()
                             {
                             return null;
                             }
-
                         @Override
                         public Integer block()
                             {
@@ -227,7 +229,6 @@ extends SimpleQueryTestBase
                             }
                         };
                     }
-                
                 @Override
                 public Param delays()
                     {
@@ -238,13 +239,11 @@ extends SimpleQueryTestBase
                             {
                             return new Integer(100);
                             }
-
                         @Override
                         public Integer last()
                             {
                             return new Integer(100);
                             }
-
                         @Override
                         public Integer every()
                             {
@@ -252,13 +251,11 @@ extends SimpleQueryTestBase
                             }
                         };
                     }
-
                 @Override
                 public LimitsClient.Param limits()
                     {
                     return null;
                     }
-
                 @Override
                 public RownumClient.Param rows()
                     {

@@ -34,7 +34,10 @@ MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
 #
 # Sync the FireThorn binaries.
 rsync \
-    --recursive --copy-links --checksum \
+    --verbose \
+    --checksum \
+    --recursive \
+    --copy-links \
     --stats --human-readable --progress \
     --prune-empty-dirs \
     --omit-dir-times \
@@ -50,7 +53,10 @@ rsync \
 #
 # Sync the OGSA-DAI binaries.
 rsync \
-    --recursive --copy-links --checksum \
+    --verbose \
+    --checksum \
+    --recursive \
+    --copy-links \
     --stats --human-readable --progress \
     --prune-empty-dirs \
     --omit-dir-times \
@@ -65,7 +71,10 @@ rsync \
 #
 # Sync the 3rd party binaries.
 rsync \
-    --recursive --copy-links --checksum \
+    --verbose \
+    --checksum \
+    --recursive \
+    --copy-links \
     --stats --human-readable --progress \
     --prune-empty-dirs \
     --omit-dir-times \

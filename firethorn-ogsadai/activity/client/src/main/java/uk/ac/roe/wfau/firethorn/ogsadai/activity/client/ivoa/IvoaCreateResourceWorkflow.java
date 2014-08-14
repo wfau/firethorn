@@ -22,6 +22,7 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -48,12 +49,22 @@ public class IvoaCreateResourceWorkflow
     /**
      * Public interface for the workflow params.
      *
-     */
     public interface Param
     extends IvoaCreateResourceClient.Param
         {
         }
-
+     */
+    
+    /**
+     * Simple {@link Param}implementation.
+     * 
+    public static class SimpleParam
+    extends IvoaCreateResourceClient.SimpleParam
+    implements Param
+        {
+        }
+     */
+    
     /**
      * Public constructor.
      * @param endpoint The OGSA-DAI service endpoint URL.
@@ -108,7 +119,7 @@ public class IvoaCreateResourceWorkflow
      * @return A {@link CreateResourceResult} containing the results.
      *   
      */
-    public CreateResourceResult execute(final Param param)
+    public CreateResourceResult execute(final IvoaCreateResourceClient.Param param)
         {
         IvoaCreateResourceClient create = new IvoaCreateResourceClient(
             param

@@ -134,7 +134,7 @@ public class IvoaSelectDataWorkflow
      * @return A workflow {@link SimpleWorkflowResult} containing the results.
      * 
      */
-    public SimpleWorkflowResult execute(final ResourceID source, final ResourceID target, final Param param)
+    public SimpleWorkflowResult execute(final ResourceID source, final Param param)
         {
         final IvoaSelectDataClient select = new IvoaSelectDataClient(
             source,
@@ -153,13 +153,11 @@ public class IvoaSelectDataWorkflow
 
         final JdbcCreateTableClient create = new JdbcCreateTableClient(
             limits.output(),
-            target,
             param.create()
             );
         
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
             create.results(),
-            target,
             param.insert()
             );
         

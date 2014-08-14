@@ -152,12 +152,27 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         {
         if (properties.containsKey(IvoaResourceKeys.IVOA_TAP_ENDPOINT))
             {
-            endpoint = (String) properties.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT);
+            try {
+                Object object = properties.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT);
+                logger.debug("CFG endpoint [{}][{}]", object.getClass().getName(), object.toString());
+                endpoint = (String) properties.get(IvoaResourceKeys.IVOA_TAP_ENDPOINT);
+                }
+            catch (Exception ouch)
+                {
+                throw new ActivityProcessingException(
+                    new ConfigurationValueIllegalException(
+                        IvoaResourceKeys.IVOA_TAP_ENDPOINT,
+                        ouch
+                        )
+                    );
+                }
             }
 
         if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_QUICKSTART))
             {
             try {
+                Object object = properties.get(IvoaResourceKeys.IVOA_UWS_QUICKSTART);
+                logger.debug("CFG quickstart [{}][{}]", object.getClass().getName(), object.toString());
                 quickstart = (Boolean) properties.get(
                     IvoaResourceKeys.IVOA_UWS_QUICKSTART
                     );
@@ -176,8 +191,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_INTERVAL))
             {
             try {
-                interval = (Integer) properties.get(
-                    IvoaResourceKeys.IVOA_UWS_INTERVAL
+                Object object = properties.get(IvoaResourceKeys.IVOA_UWS_INTERVAL);
+                logger.debug("CFG interval [{}][{}]", object.getClass().getName(), object.toString());
+                interval = Integer.valueOf(
+                    (String) properties.get(
+                        IvoaResourceKeys.IVOA_UWS_INTERVAL
+                        )
                     );
                 }
             catch (Exception ouch)
@@ -194,8 +213,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         if (properties.containsKey(IvoaResourceKeys.IVOA_UWS_TIMEOUT))
             {
             try {
-                timeout = (Integer) properties.get(
-                    IvoaResourceKeys.IVOA_UWS_TIMEOUT
+                Object object = properties.get(IvoaResourceKeys.IVOA_UWS_TIMEOUT);
+                logger.debug("CFG timeout [{}][{}]", object.getClass().getName(), object.toString());
+                timeout = Integer.valueOf(
+                    (String) properties.get(
+                        IvoaResourceKeys.IVOA_UWS_TIMEOUT
+                        )
                     );
                 }
             catch (Exception ouch)

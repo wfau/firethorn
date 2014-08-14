@@ -49,6 +49,13 @@ implements ResourceActivity
     public static interface Param
         {
         /**
+         * The target resource ID, as a String.
+         * @return The target resource ID.
+         *
+         */
+        public String store();
+        
+        /**
          * The target table name.
          * @return The target table name.
          *
@@ -81,20 +88,29 @@ implements ResourceActivity
         private static final Integer DEFAULT_FIRST = new Integer(1000);
         private static final Integer DEFAULT_BLOCK = new Integer(1000);
         
-        public SimpleParam(final String table)
+        public SimpleParam(final String store, final String table)
             {
             this(
+                store,
                 table,
                 DEFAULT_FIRST,
                 DEFAULT_BLOCK
                 );
             }
         
-        public SimpleParam(final String table, final Integer first, final Integer block)
+        public SimpleParam(final String store, final String table, final Integer first, final Integer block)
             {
+            this.store = store;
             this.table = table;
             this.first = first;
             this.block = block;
+            }
+
+        private String store;
+        @Override
+        public String store()
+            {
+            return this.store;
             }
 
         private String table;
@@ -155,7 +171,7 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcInsertDataClient(final SingleActivityOutput source, final ResourceID target, final Param param)
+    public JdbcInsertDataClient(final SingleActivityOutput source, final Param param)
         {
         super(
             new ActivityName(
@@ -163,7 +179,9 @@ implements ResourceActivity
                 )
             );
         this.setResourceID(
-            target
+            new ResourceID(
+                param.store()
+                )
             );
         
         this.input = new SimpleActivityInput(
@@ -235,9 +253,9 @@ implements ResourceActivity
         return new ActivityInput[]
             {
             input,
+            table,
             first,
-            block,
-            table
+            block
             };
         }
 

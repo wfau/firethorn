@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcResourceTestBase;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcResourceTestBase.JdbcDatabase;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBase;
 
 /**
@@ -29,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
      */
     public static class TapService
     extends IvoaCreateResourceClient.SimpleParam
-    implements IvoaCreateResourceWorkflow.Param
         {
         public TapService(final String endpoint)
             {

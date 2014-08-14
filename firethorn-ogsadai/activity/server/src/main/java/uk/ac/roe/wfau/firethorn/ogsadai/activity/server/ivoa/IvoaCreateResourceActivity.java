@@ -94,7 +94,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity
                  ),
              new TypedOptionalActivityInput(
                  IvoaCreateResourceParam.IVOA_UWS_QUICKSTART,
-                 Integer.class
+                 Boolean.class
                  ),
              new TypedOptionalActivityInput(
                  IvoaCreateResourceParam.IVOA_UWS_INTERVAL,
@@ -162,10 +162,10 @@ implements ResourceManagerActivity, ResourceFactoryActivity
             IVOA_CREATE_TEMPLATE
             );        
         
-        final String endpoint    = (String)  iterationData[0];
-        final Boolean quickstart = (Boolean) iterationData[2];
-        final Integer interval   = (Integer) iterationData[3];
-        final Integer timeout    = (Integer) iterationData[4];
+        final String  endpoint   = (String)  iterationData[0];
+        final Boolean quickstart = (Boolean) iterationData[1];
+        final Integer interval   = (Integer) iterationData[2];
+        final Integer timeout    = (Integer) iterationData[3];
         
         logger.debug("Resource ["+ uniqueid +"]");
         logger.debug("Template ["+ template +"]");
@@ -190,15 +190,18 @@ implements ResourceManagerActivity, ResourceFactoryActivity
                 );
             
             final KeyValueProperties properties = state.getConfiguration();
-            properties.put(
-                IvoaResourceKeys.IVOA_TAP_ENDPOINT,
-                endpoint
-                );
+            if (endpoint != null)
+                {
+                properties.put(
+                    IvoaResourceKeys.IVOA_TAP_ENDPOINT,
+                    endpoint
+                    );
+                }
 
             if (quickstart != null)
                 {
                 properties.put(
-                    IvoaResourceKeys.IVOA_UWS_INTERVAL,
+                    IvoaResourceKeys.IVOA_UWS_QUICKSTART,
                     quickstart
                     );
                 }

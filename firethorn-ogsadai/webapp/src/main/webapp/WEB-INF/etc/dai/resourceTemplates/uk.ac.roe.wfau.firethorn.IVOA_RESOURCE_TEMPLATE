@@ -5,7 +5,6 @@ terminationTime=null
 PROPERTIES
 END
 CONFIG
-ivoa.tap.version={version}
 ivoa.tap.endpoint={endpoint}
 ivoa.uws.timeout=120000
 ivoa.uws.interval=1000

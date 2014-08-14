@@ -15,26 +15,37 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
+package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
- * Public interface for the pipeline parameters.
+ * {@link Entity.NameFactory} for {@link OgsaJdbcResource}s.
  *
  */
-public interface PipelineParam
-    {
+@Component
+public class OgsaJdbcResourceNameFactory
+extends DateNameFactory<OgsaJdbcResource>
+implements OgsaJdbcResource.NameFactory
+     {
+     /**
+      *  Public constructor.
+      *  
+      */
+    public OgsaJdbcResourceNameFactory()
+        {
+        super();
+        }
     
-    public String source();
-    public String query();
-
-    public RownumClient.Param rows();
-    
-    public JdbcInsertDataClient.Param insert();
-    
-    public DelaysClient.Param  delays();
-
-    public LimitsClient.Param limits();
-
+    @Override
+    public String name()
+        {
+        return datename(
+            "OGSA_JDBC"
+            );
+        }
     }

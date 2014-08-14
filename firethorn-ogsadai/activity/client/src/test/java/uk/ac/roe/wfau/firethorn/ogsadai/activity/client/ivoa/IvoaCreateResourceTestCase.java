@@ -35,14 +35,9 @@ extends IvoaResourceTestBase
             );
 
         final CreateResourceResult created = workflow.execute(
-            new IvoaCreateResourceWorkflow.Param()
-                {
-                @Override
-                public String endpoint()
-                    {
-                    return config().ivoa().services().get("WFAU").endpoint();
-                    }
-                }
+            new IvoaCreateResourceClient.SimpleParam(
+                config().ivoa().services().get("WFAU").endpoint()
+                )
             );
 
         log.debug("Status  [{}]", created.status());

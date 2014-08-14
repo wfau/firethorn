@@ -29,15 +29,8 @@
 
         pushd 'firethorn-ogsadai/webapp'
 
-            pushd '..'
-                mvn clean install
-            popd
-
-            mvn clean install
+            pushd '..' ; mvn clean install ; popd
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
 
-
-pushd '..' ; mvn clean install ; popd
-mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 

@@ -15,27 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>JdbcTable</code>.
+ * {@link Entity.LinkFactory} for {@link OgsaJdbcResource}s.
  *
  */
 @Component
-public class JdbcTableLinkFactory
-extends WebappLinkFactory<JdbcTable>
-implements JdbcTable.LinkFactory
+public class OgsaJdbcResourceLinkFactory
+extends WebappLinkFactory<OgsaJdbcResource>
+implements OgsaJdbcResource.LinkFactory
     {
-    protected JdbcTableLinkFactory()
+    protected OgsaJdbcResourceLinkFactory()
         {
         super(
             BASE_PATH
@@ -46,57 +47,27 @@ implements JdbcTable.LinkFactory
      * The URI path for the service.
      *
      */
-    public static final String BASE_PATH = "/jdbc/table";
+    public static final String BASE_PATH = "/ogsa/jdbc";
 
     /**
-     * The URI path for individual tables.
+     * The URI path for individual services.
      *
      */
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
-    /**
-     * The URI path for table columns.
-     *
-     */
-    public static final String COLUMN_PATH = ENTITY_PATH + "/columns" ;
-
-    /**
-     * The URI path for the VOTable representation.
-     *
-     */
-    public static final String VOTABLE_NAME = "/votable";
-
-    /**
-     * The URI path for the VOTable representation.
-     *
-     */
-    public static final String VOTABLE_PATH = ENTITY_PATH + "/" + VOTABLE_NAME;
-
-    /**
-     * The URI path for the DataTable representation.
-     *
-     */
-    public static final String DATATABLE_NAME = "/datatable";
-
-    /**
-     * The URI path for the DataTable representation.
-     *
-     */
-    public static final String DATATABLE_PATH = ENTITY_PATH + "/" + DATATABLE_NAME;
-    
     @Override
-    public String link(final JdbcTable entity)
+    public String link(final OgsaJdbcResource entity)
         {
-        return this.link(
+        return link(
             ENTITY_PATH,
             entity
             );
         }
 
     @Autowired
-    private JdbcTable.EntityFactory factory ;
+    private OgsaJdbcResource.EntityFactory factory ;
     @Override
-    public JdbcTable resolve(String link)
+    public OgsaJdbcResource resolve(String link)
     throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
         {
         if (this.matches(link))

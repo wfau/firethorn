@@ -1193,24 +1193,20 @@ implements AdqlQuery, AdqlParserQuery
                                 {
                                 return new JdbcInsertDataClient.Param()
                                     {
-                                    @Override
                                     public String store()
                                         {
                                         return params().store();
                                         }
-
                                     @Override
                                     public String table()
                                         {
                                         return tablename;
                                         }
-
                                     @Override
                                     public Integer first()
                                         {
                                         return null;
                                         }
-
                                     @Override
                                     public Integer block()
                                         {

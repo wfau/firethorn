@@ -119,7 +119,6 @@ extends JdbcResourceTestBase
             ); 
         final WorkflowResult selected = selector.execute(
             atlasdata.resource(),
-            userdata.resource(),
             new JdbcSelectDataWorkflow.Param()
                 {
                 @Override
@@ -164,6 +163,11 @@ extends JdbcResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
+                        public String store()
+                            {
+                            return userdata.resource().toString();
+                            }
+                        @Override
                         public String table()
                             {
                             return name;
@@ -175,6 +179,11 @@ extends JdbcResourceTestBase
                     {
                     return new JdbcInsertDataClient.Param()
                         {
+                        @Override
+                        public String store()
+                            {
+                            return userdata.resource().toString();
+                            }
                         @Override
                         public String table()
                             {
@@ -192,7 +201,6 @@ extends JdbcResourceTestBase
                             }
                         };
                     }
-                
                 @Override
                 public DelaysClient.Param delays()
                     {

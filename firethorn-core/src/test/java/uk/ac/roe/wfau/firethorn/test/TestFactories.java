@@ -799,7 +799,7 @@ public class TestFactories
                     public LinkFactory()
                         {
                         super(
-                            "/ogsa/resource/jdbc"
+                            "/ogsa/jdbc"
                             );
                         }
 
@@ -845,7 +845,7 @@ public class TestFactories
                     public LinkFactory()
                         {
                         super(
-                            "/ogsa/resource/ivoa"
+                            "/ogsa/ivoa"
                             );
                         }
 
