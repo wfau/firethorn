@@ -31,11 +31,10 @@ extends OgsaResourceTestBase
         }
 
     /**
-     * Configuration for a JDBC test.
+     * Base class for a JDBC test config.
      *
      */
-    @Configuration
-    public static class JdbcTestConfig
+    public static class JdbcBaseConfig
     extends OgsaResourceTestBase.OgsaTestConfig
         {
         /**
@@ -129,6 +128,16 @@ extends OgsaResourceTestBase
                     }
                 }.init();
             }
+        }
+
+    /**
+     * Configuration for a JDBC test.
+     *
+     */
+    @Configuration
+    public static class JdbcTestConfig
+    extends JdbcBaseConfig
+        {
         }
     
     @Autowired

@@ -64,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaResourceTestBas
      */
     @Configuration
     public static class IvoaTestConfig
-    extends JdbcResourceTestBase.JdbcTestConfig
+    extends JdbcResourceTestBase.JdbcBaseConfig
         {
         /**
          * Configuration for our IVOA services.
