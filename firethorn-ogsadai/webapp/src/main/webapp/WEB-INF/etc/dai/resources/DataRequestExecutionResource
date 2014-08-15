@@ -9,6 +9,7 @@ END
 ACTIVITIES
 uk.org.ogsadai.CreateEmptyTupleList=uk.org.ogsadai.CreateEmptyTupleList
 uk.org.ogsadai.IfEmptyList=uk.org.ogsadai.IfEmptyList
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
 uk.org.ogsadai.ADQLQuery=uk.org.ogsadai.ADQLQuery
 uk.org.ogsadai.ObtainFromDataSource=uk.org.ogsadai.ObtainFromDataSource
 uk.org.ogsadai.DeliverToDataSink=uk.org.ogsadai.DeliverToDataSink

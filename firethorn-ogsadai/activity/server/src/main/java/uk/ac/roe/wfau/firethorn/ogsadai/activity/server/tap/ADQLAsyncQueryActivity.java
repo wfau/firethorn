@@ -196,7 +196,7 @@ import uk.org.ogsadai.resource.generic.GenericResourceAccessor;
  * 
  * @author The OGSA-DAI Project Team.
  */
-public class ADQLAsyncQueryActivity01
+public class ADQLAsyncQueryActivity
     extends MatchedIterativeActivity
     implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
 {
@@ -207,7 +207,7 @@ public class ADQLAsyncQueryActivity01
     
     /** Logger object for logging in this class. */
     private static final DAILogger LOG = 
-        DAILogger.getLogger(ADQLAsyncQueryActivity01.class);
+        DAILogger.getLogger(ADQLAsyncQueryActivity.class);
     
     /** Activity input name - ADQL expression. */
     public static final String INPUT_ADQL_EXPRESSION = "expression";
@@ -267,7 +267,7 @@ public class ADQLAsyncQueryActivity01
     /**
      * Constructor.
      */
-    public ADQLAsyncQueryActivity01() {
+    public ADQLAsyncQueryActivity() {
         super();
         mClient = new DefaultHttpClient();
         // default TAP request parameters

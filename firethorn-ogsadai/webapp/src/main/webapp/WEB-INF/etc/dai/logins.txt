@@ -1,8 +1,13 @@
-id=user-data
+id=atlas
 userID=*
 username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
-
+id=userdata
+userID=*
+username={SQL-USER}
+password={SQL-PASS}
+LOGIN-END
+END
 

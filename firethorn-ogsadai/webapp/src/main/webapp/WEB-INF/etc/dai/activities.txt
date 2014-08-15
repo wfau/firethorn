@@ -388,11 +388,6 @@ class=uk.org.ogsadai.activity.sql.SQLParameterisedUpdateActivity
 description=
 CONFIG
 END
-id=uk.org.ogsadai.SQLQuery
-class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity
-description=
-CONFIG
-END
 id=uk.org.ogsadai.SQLResilient
 class=uk.org.ogsadai.activity.sql.SQLResilientActivity
 description=
@@ -641,8 +636,13 @@ class=uk.org.ogsadai.activity.views.ExtractTableSchemaActivity
 description=
 CONFIG
 END
+id=uk.org.ogsadai.SQLQuery
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity
+description=
+CONFIG
+END
 id=uk.org.ogsadai.ADQLQuery
-class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.tap.ADQLAsyncQueryActivity01
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.tap.ADQLAsyncQueryActivity
 description=
 CONFIG
 END

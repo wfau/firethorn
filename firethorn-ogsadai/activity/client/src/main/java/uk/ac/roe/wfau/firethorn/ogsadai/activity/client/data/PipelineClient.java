@@ -22,13 +22,13 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.Server;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
 import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.request.RequestExecutionStatus;
@@ -80,8 +80,11 @@ public class PipelineClient
         //
         // Create our pipeline.
         final PipelineWorkflow pipeline = new PipelineWorkflow();
+
         //
         // Add our SQLQuery Activity.
+/*
+ * 
         final SQLQuery select = new SQLQuery();
         pipeline.add(
             select
@@ -94,14 +97,34 @@ public class PipelineClient
         select.addExpression(
             param.query()
             );
+ * 
+ */
+        final JdbcSelectDataClient select = new JdbcSelectDataClient(
+            new ResourceID(
+                param.source()
+                ),
+            new JdbcSelectDataClient.Param()
+                {
+                @Override
+                public String query()
+                    {
+                    return param.query();
+                    }
+                }
+            );
+        pipeline.add(
+            select
+            );
+
 /*
  * Create table.
  * 
  */
+        
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
-            select.getDataOutput(),
+            select.results(),
             param.delays()
             );
         pipeline.add(
