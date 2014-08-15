@@ -342,3 +342,48 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
+
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    devbranch=$(getversion)
+    newversion=1.11.9
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Update the project version.
+        setversion "${newversion}"
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
+
