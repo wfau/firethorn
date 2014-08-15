@@ -40,7 +40,7 @@ extends Entity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<Operation>
         {
         }
 

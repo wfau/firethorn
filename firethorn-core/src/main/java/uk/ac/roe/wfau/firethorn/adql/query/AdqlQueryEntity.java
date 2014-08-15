@@ -38,8 +38,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -81,13 +79,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.InsertClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
  *
@@ -1191,28 +1189,24 @@ implements AdqlQuery, AdqlParserQuery
                                 return query.osql();
                                 }
                             @Override
-                            public InsertClient.Param insert()
+                            public JdbcInsertDataClient.Param insert()
                                 {
-                                return new InsertClient.Param()
+                                return new JdbcInsertDataClient.Param()
                                     {
-                                    @Override
                                     public String store()
                                         {
                                         return params().store();
                                         }
-
                                     @Override
                                     public String table()
                                         {
                                         return tablename;
                                         }
-
                                     @Override
                                     public Integer first()
                                         {
                                         return null;
                                         }
-
                                     @Override
                                     public Integer block()
                                         {

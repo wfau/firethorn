@@ -21,14 +21,15 @@ package uk.ac.roe.wfau.firethorn.entity;
  *
  *
  */
-public class AbstractNameFactory<EntityType extends Entity>
+public abstract class AbstractNameFactory<EntityType extends NamedEntity>
 extends AbstractComponent
-implements Entity.NameFactory<EntityType>
+implements NamedEntity.NameFactory<EntityType>
     {
+    /*
     @Override
     public String name(final String name)
         {
         return name;
         }
-
+     */
     }

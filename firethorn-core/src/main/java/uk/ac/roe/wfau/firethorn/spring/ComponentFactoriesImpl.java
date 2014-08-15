@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResolvers;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories;
 
 /**
  * Our component factories.
@@ -153,9 +153,9 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected OgsaResolvers ogsa;
+    protected OgsaFactories ogsa;
     @Override
-    public OgsaResolvers ogsa()
+    public OgsaFactories ogsa()
         {
         return this.ogsa;
         }

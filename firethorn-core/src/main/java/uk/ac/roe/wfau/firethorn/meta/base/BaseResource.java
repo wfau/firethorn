@@ -18,8 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 
 /**
  *
@@ -32,20 +32,20 @@ extends BaseComponent
     /**
      * {@link Entity.IdentFactory} interface.
      *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory
+    public static interface IdentFactory<ResourceType extends BaseResource<?>>
+    extends Entity.IdentFactory<ResourceType>
         {
         }
+     */
 
     /**
      * {@link Entity.NameFactory} interface.
      *
-     */
     public static interface NameFactory<ResourceType extends BaseResource<?>>
-    extends Entity.NameFactory<ResourceType>
+    extends NamedEntity.NameFactory<ResourceType>
         {
         }
+     */
     
     /**
      * {@link Entity.LinkFactory} interface.

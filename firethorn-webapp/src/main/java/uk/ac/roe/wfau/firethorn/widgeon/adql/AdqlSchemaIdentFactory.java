@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AdqlSchemaIdentFactory
-extends WebappIdentFactory
+extends WebappIdentFactory<AdqlSchema>
 implements AdqlSchema.IdentFactory
     {
     /**

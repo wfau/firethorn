@@ -37,20 +37,17 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 
 /**
  *
@@ -134,14 +131,33 @@ public class IvoaTableEntity
         }
 
     /**
+     * The default name prefix, {@value}.
+     * 
+     */
+    protected static final String NAME_PREFIX = "IVOA_TABLE";
+
+    /**
+     * The default alias prefix, {@value}.
+     * 
+     */
+    protected static final String ALIAS_PREFIX = "IVOA_TABLE_";
+    
+    /**
      * {@link IvoaTable.NameFactory} implementation.
      *
      */
     @Component
     public static class NameFactory
-    extends BaseNameFactory<IvoaTable>
+    extends DateNameFactory<IvoaTable>
     implements IvoaTable.NameFactory
         {
+        @Override
+        public String name()
+            {
+            return datename(
+                NAME_PREFIX
+                );
+            }
         }
     
     /**
@@ -152,13 +168,12 @@ public class IvoaTableEntity
     public static class AliasFactory
     implements IvoaTable.AliasFactory
         {
-        private static final String PREFIX = "IVOA_";
 
         @Override
-        public String alias(final IvoaTable column)
+        public String alias(final IvoaTable entity)
             {
-            return PREFIX.concat(
-                column.ident().toString()
+            return ALIAS_PREFIX.concat(
+                entity.ident().toString()
                 );
             }
 
@@ -166,7 +181,7 @@ public class IvoaTableEntity
         public boolean matches(String alias)
             {
             return alias.startsWith(
-                PREFIX
+                ALIAS_PREFIX
                 );
             }
         
@@ -177,7 +192,7 @@ public class IvoaTableEntity
             return entities.select(
                 idents.ident(
                     alias.substring(
-                        PREFIX.length()
+                        ALIAS_PREFIX.length()
                         )
                     )
                 );

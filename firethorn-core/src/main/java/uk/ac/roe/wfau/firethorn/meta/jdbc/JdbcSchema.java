@@ -22,14 +22,12 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 
 /**
  *
@@ -58,7 +56,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      *
      */
     public static interface IdentFactory
-    extends BaseSchema.IdentFactory
+    extends Entity.IdentFactory<JdbcSchema>
         {
         }
     
@@ -67,25 +65,25 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      *
      */
     public static interface NameFactory
-    extends BaseSchema.NameFactory<JdbcSchema>
+    extends NamedEntity.NameFactory<JdbcSchema>
         {
         /**
          * Create a new date-based name.
          *
-         */
         public String datename();
+         */
 
         /**
          * Create a new date-based name.
          *
-         */
         public String datename(final Identity identity);
+         */
 
         /**
          * Create a new date-based name.
          *
-         */
         public String datename(final String prefix, final Identity identity);
+         */
 
         /**
          * Create a fully qualified schema name from separate catalog and schema names.

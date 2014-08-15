@@ -23,11 +23,12 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 
 /**
  *
@@ -56,7 +57,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      *
      */
     public static interface IdentFactory
-    extends BaseTable.IdentFactory
+    extends Entity.IdentFactory<JdbcTable>
         {
         }
 
@@ -65,13 +66,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
      *
      */
     public static interface NameFactory
-    extends BaseTable.NameFactory<JdbcTable>
+    extends NamedEntity.NameFactory<JdbcTable>
         {
-        /**
-         * Create a name for a query results table.
-         *
-         */
-        public String name(final AdqlQuery query);
         }
     
     /**

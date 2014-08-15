@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AuthenticationIdentFactory
-extends WebappIdentFactory
+extends WebappIdentFactory<Authentication>
 implements Authentication.IdentFactory
     {
     public static final URI TYPE_URI = URI.create(

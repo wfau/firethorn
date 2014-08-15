@@ -34,7 +34,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
      *
      */
     public static interface IdentFactory
-    extends BaseTable.IdentFactory
+    extends BaseTable.IdentFactory<AdqlTable>
         {
         }
 

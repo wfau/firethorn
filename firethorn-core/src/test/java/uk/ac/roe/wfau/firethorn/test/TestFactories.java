@@ -24,6 +24,8 @@ import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
@@ -35,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -44,6 +45,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 
 @Component
 public class TestFactories
@@ -57,12 +61,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<Job>
             implements Job.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
             @Component
             public static class LinkFactory
@@ -89,12 +90,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<TestJob>
             implements TestJob.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -128,12 +126,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<Identity>
             implements Identity.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -163,12 +158,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<Community>
             implements Community.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -198,12 +190,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<Operation>
             implements Operation.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -233,12 +222,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<Authentication>
             implements Authentication.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -273,12 +259,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<ConfigProperty>
             implements ConfigProperty.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -313,12 +296,9 @@ public class TestFactories
             {
             @Component
             public static class NameFactory
-            extends BaseNameFactory<AdqlQuery>
+            extends DateNameFactory<AdqlQuery>
             implements AdqlQuery.NameFactory
                 {
-                public NameFactory()
-                    {
-                    }
                 @Override
                 public String name()
                     {
@@ -330,12 +310,9 @@ public class TestFactories
 
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<AdqlQuery>
             implements AdqlQuery.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -365,12 +342,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<AdqlColumn>
             implements AdqlColumn.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -400,12 +374,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<AdqlTable>
             implements AdqlTable.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -435,12 +406,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<AdqlSchema>
             implements AdqlSchema.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -470,12 +438,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<AdqlResource>
             implements AdqlResource.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -510,12 +475,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<JdbcColumn>
             implements JdbcColumn.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -545,12 +507,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<JdbcTable>
             implements JdbcTable.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -580,12 +539,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<JdbcSchema>
             implements JdbcSchema.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -615,12 +571,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<JdbcResource>
             implements JdbcResource.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -655,12 +608,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<IvoaColumn>
             implements IvoaColumn.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -690,12 +640,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<IvoaTable>
             implements IvoaTable.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -725,12 +672,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<IvoaSchema>
             implements IvoaSchema.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -760,12 +704,9 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory
+            extends AbstractIdentFactory<IvoaResource>
             implements IvoaResource.IdentFactory
                 {
-                public IdentFactory()
-                    {
-                    }
                 }
 
             @Component
@@ -786,6 +727,149 @@ public class TestFactories
                     {
                     // TODO Auto-generated method stub
                     return null;
+                    }
+                }
+            }
+        }
+
+    @Component
+    public static class OgsaFactories
+        {
+        @Component
+        public static class ServiceFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory<OgsaService>
+            implements OgsaService.IdentFactory
+                {
+                }
+
+            @Component
+            public static class LinkFactory
+            extends AbstractLinkFactory<OgsaService>
+            implements OgsaService.LinkFactory
+                {
+                public LinkFactory()
+                    {
+                    super(
+                        "/ogsa/service"
+                        );
+                    }
+
+                @Override
+                public OgsaService resolve(String link)
+                throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+                }
+            @Component
+            public static class NameFactory
+            extends DateNameFactory<OgsaService>
+            implements OgsaService.NameFactory
+                {
+                @Override
+                public String name()
+                    {
+                    return datename(
+                        "OGSA_SERVICE"
+                        );
+                    }
+                }
+            }
+        @Component
+        public static class ResourceFactories
+            {
+            @Component
+            public static class JdbcResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.IdentFactory
+                    {
+                    }
+                @Component
+                public static class LinkFactory
+                extends AbstractLinkFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/jdbc"
+                            );
+                        }
+
+                    @Override
+                    public OgsaJdbcResource resolve(String link)
+                        throws IdentifierFormatException,
+                        IdentifierNotFoundException, EntityNotFoundException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
+                    }
+                @Component
+                public static class NameFactory
+                extends DateNameFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.NameFactory
+                    {
+                    @Override
+                    public String name()
+                        {
+                        return datename(
+                            "OGSA_JDBC_RESOURCE"
+                            );
+                        }
+                    }
+                }
+
+            @Component
+            public static class IvoaResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.IdentFactory
+                    {
+                    }
+
+                @Component
+                public static class LinkFactory
+                extends AbstractLinkFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/ivoa"
+                            );
+                        }
+
+                    @Override
+                    public OgsaIvoaResource resolve(String link)
+                        throws IdentifierFormatException,
+                        IdentifierNotFoundException, EntityNotFoundException
+                        {
+                        // TODO Auto-generated method stub
+                        return null;
+                        }
+                    }
+                @Component
+                public static class NameFactory
+                extends DateNameFactory<OgsaIvoaResource>
+                implements OgsaIvoaResource.NameFactory
+                    {
+                    @Override
+                    public String name()
+                        {
+                        return datename(
+                            "OGSA_IVOA_RESOURCE"
+                            );
+                        }
                     }
                 }
             }

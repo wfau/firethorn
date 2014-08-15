@@ -9,6 +9,7 @@ END
 ACTIVITIES
 uk.org.ogsadai.CreateEmptyTupleList=uk.org.ogsadai.CreateEmptyTupleList
 uk.org.ogsadai.IfEmptyList=uk.org.ogsadai.IfEmptyList
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
 uk.org.ogsadai.ADQLQuery=uk.org.ogsadai.ADQLQuery
 uk.org.ogsadai.ObtainFromDataSource=uk.org.ogsadai.ObtainFromDataSource
 uk.org.ogsadai.DeliverToDataSink=uk.org.ogsadai.DeliverToDataSink
@@ -86,10 +87,14 @@ uk.org.ogsadai.ControlledRepeat=uk.org.ogsadai.ControlledRepeat
 uk.org.ogsadai.CharArraysResize=uk.org.ogsadai.CharArraysResize
 uk.org.ogsadai.ByteArraysResize=uk.org.ogsadai.ByteArraysResize
 uk.org.ogsadai.Tee=uk.org.ogsadai.Tee
-uk.ac.roe.wfau.firethorn.Insert=uk.ac.roe.wfau.firethorn.Insert
 uk.ac.roe.wfau.firethorn.Limits=uk.ac.roe.wfau.firethorn.Limits
 uk.ac.roe.wfau.firethorn.Delays=uk.ac.roe.wfau.firethorn.Delays
 uk.ac.roe.wfau.firethorn.Rownum=uk.ac.roe.wfau.firethorn.Rownum
+uk.ac.roe.wfau.firethorn.JdbcInsertData=uk.ac.roe.wfau.firethorn.JdbcInsertData
+uk.ac.roe.wfau.firethorn.JdbcSelectData=uk.ac.roe.wfau.firethorn.JdbcSelectData
+uk.ac.roe.wfau.firethorn.JdbcCreateResource=uk.ac.roe.wfau.firethorn.JdbcCreateResource
+uk.ac.roe.wfau.firethorn.IvoaSelectData=uk.ac.roe.wfau.firethorn.IvoaSelectData
+uk.ac.roe.wfau.firethorn.IvoaCreateResource=uk.ac.roe.wfau.firethorn.IvoaCreateResource
 END
 acceptRequests=true
 ENGINE-CONFIG

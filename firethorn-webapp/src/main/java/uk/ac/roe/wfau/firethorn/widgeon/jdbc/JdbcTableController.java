@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcTableLinkFactory.TABLE_PATH)
+@RequestMapping(JdbcTableLinkFactory.ENTITY_PATH)
 public class JdbcTableController
     extends AbstractEntityController<JdbcTable, JdbcTableBean>
     {
@@ -49,7 +49,7 @@ public class JdbcTableController
     public Path path()
         {
         return path(
-            JdbcTableLinkFactory.TABLE_PATH
+            JdbcTableLinkFactory.ENTITY_PATH
             );
         }
 

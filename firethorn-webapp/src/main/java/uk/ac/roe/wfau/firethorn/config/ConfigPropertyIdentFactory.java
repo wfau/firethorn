@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class ConfigPropertyIdentFactory
-extends WebappIdentFactory
+extends WebappIdentFactory<ConfigProperty>
 implements ConfigProperty.IdentFactory
     {
     }

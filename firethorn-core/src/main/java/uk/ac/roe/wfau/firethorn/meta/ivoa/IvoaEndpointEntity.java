@@ -11,10 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 
 /**
  * Implementation of the Endpoint interface. 

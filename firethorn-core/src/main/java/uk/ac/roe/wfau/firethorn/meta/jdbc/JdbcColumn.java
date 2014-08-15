@@ -22,10 +22,10 @@ import java.sql.Types;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 
 /**
  *
@@ -54,7 +54,7 @@ extends BaseColumn<JdbcColumn>
      *
      */
     public static interface IdentFactory
-    extends BaseColumn.IdentFactory
+    extends Entity.IdentFactory<JdbcColumn>
         {
         }
     
@@ -63,7 +63,7 @@ extends BaseColumn<JdbcColumn>
      *
      */
     public static interface NameFactory
-    extends BaseColumn.NameFactory<JdbcColumn>
+    extends NamedEntity.NameFactory<JdbcColumn>
         {
         }
     

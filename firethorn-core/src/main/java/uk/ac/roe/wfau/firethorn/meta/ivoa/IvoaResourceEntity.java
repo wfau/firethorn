@@ -29,8 +29,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +46,6 @@ import uk.ac.roe.wfau.firethorn.util.GenericIterable;
  *
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

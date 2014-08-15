@@ -19,9 +19,9 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
@@ -48,20 +48,20 @@ extends BaseColumn<IvoaColumn>
         }
 
     /**
-     * {@link BaseColumn.IdentFactory} interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<IvoaColumn>
         {
         }
 
     /**
-     * {@link BaseColumn.NameFactory} interface.
+     * {@link NamedEntity.NameFactory} interface.
      *
      */
     public static interface NameFactory
-    extends BaseColumn.NameFactory<IvoaColumn>
+    extends NamedEntity.NameFactory<IvoaColumn>
         {
         }
     

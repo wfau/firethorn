@@ -29,8 +29,17 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 public interface Community
-extends Entity, NamedEntity
+extends NamedEntity
     {
+    /**
+     * Public interface for a {@link Community} {@link NamedEntity.NameFactory}.
+     * @see NamedEntity.LinkFactory
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<Community>
+        {
+        }
 
     /**
      * Public interface for a {@link Community} {@link Entity.LinkFactory}.
@@ -48,7 +57,7 @@ extends Entity, NamedEntity
      * 
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<Community>
         {
         }
 

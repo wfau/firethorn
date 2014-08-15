@@ -43,7 +43,7 @@ extends Entity, NamedEntity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<Identity>
         {
         }
 

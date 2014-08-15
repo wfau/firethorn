@@ -80,7 +80,7 @@ extends Job, NamedEntity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<TestJob>
         {
         }
 

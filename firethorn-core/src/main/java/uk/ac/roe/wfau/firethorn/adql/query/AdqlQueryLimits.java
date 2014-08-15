@@ -24,14 +24,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Embeddable implementation of the AdqlQuery.QueryLimits interface.
  * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
  *
  */
-@Slf4j
 @Embeddable
 @Access(
     AccessType.FIELD

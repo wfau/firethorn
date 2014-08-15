@@ -20,10 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
@@ -34,20 +32,20 @@ public interface AdqlColumn
 extends BaseColumn<AdqlColumn>
     {
     /**
-     * {@link BaseColumn.IdentFactory} interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
-    extends BaseColumn.IdentFactory
+    extends Entity.IdentFactory<AdqlColumn>
         {
         }
 
     /**
-     * {@link BaseColumn.NameFactory} interface.
+     * {@link NamedEntity.NameFactory} interface.
      *
      */
     public static interface NameFactory
-    extends BaseColumn.NameFactory<AdqlColumn>
+    extends NamedEntity.NameFactory<AdqlColumn>
         {
         }
    

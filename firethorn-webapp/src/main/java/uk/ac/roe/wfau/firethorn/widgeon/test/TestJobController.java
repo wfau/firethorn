@@ -58,7 +58,7 @@ public class TestJobController
     {
 	@Component
 	public static class IdentFactory
-	extends WebappIdentFactory
+	extends WebappIdentFactory<TestJob>
 	implements TestJob.IdentFactory
 	    {
 	    public static final URI TYPE_URI = URI.create(

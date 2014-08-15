@@ -38,7 +38,7 @@ implements JdbcTable.LinkFactory
     protected JdbcTableLinkFactory()
         {
         super(
-            SERVICE_PATH
+            BASE_PATH
             );
         }
 
@@ -46,19 +46,19 @@ implements JdbcTable.LinkFactory
      * The URI path for the service.
      *
      */
-    public static final String SERVICE_PATH = "/jdbc/table";
+    public static final String BASE_PATH = "/jdbc/table";
 
     /**
      * The URI path for individual tables.
      *
      */
-    public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for table columns.
      *
      */
-    public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
+    public static final String COLUMN_PATH = ENTITY_PATH + "/columns" ;
 
     /**
      * The URI path for the VOTable representation.
@@ -70,7 +70,7 @@ implements JdbcTable.LinkFactory
      * The URI path for the VOTable representation.
      *
      */
-    public static final String VOTABLE_PATH = TABLE_PATH + "/" + VOTABLE_NAME;
+    public static final String VOTABLE_PATH = ENTITY_PATH + "/" + VOTABLE_NAME;
 
     /**
      * The URI path for the DataTable representation.
@@ -82,13 +82,13 @@ implements JdbcTable.LinkFactory
      * The URI path for the DataTable representation.
      *
      */
-    public static final String DATATABLE_PATH = TABLE_PATH + "/" + DATATABLE_NAME;
+    public static final String DATATABLE_PATH = ENTITY_PATH + "/" + DATATABLE_NAME;
     
     @Override
     public String link(final JdbcTable entity)
         {
         return this.link(
-            TABLE_PATH,
+            ENTITY_PATH,
             entity
             );
         }

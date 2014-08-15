@@ -37,7 +37,6 @@
 
     <!--+
         | WFAU TWOMASS data node.
-        +-->
     <bean id="twomassjdbc" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="twomassjdbc"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -45,10 +44,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
 
     <!--+
         | CADC TAP data node.
-        +-->
     <bean id="cadc-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="cadc-tap"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -56,9 +55,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
+
     <!--+
         | Gavo TAP data node.
-        +-->
     <bean id="gavo-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="gavo-tap"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -66,9 +66,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
+
     <!--+
         | Gaia TAP data node.
-        +-->
     <bean id="gaia-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="gaia-tap"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -76,9 +77,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
+
     <!--+
         | Vizier TAP data node.
-        +-->
     <bean id="vizier-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="vizier-tap"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -86,9 +88,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
+
     <!--+
         | WFAU TAP TWOMASS data node.
-        +-->
     <bean id="wfau-tap" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="twomasswfau"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -96,10 +99,10 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
 
     <!--+
         | ATLAS data node.
-        +-->
     <bean id="atlas" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="atlas"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
@@ -107,12 +110,24 @@
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
+        +-->
 
     <!--+
         | WFAU data node.
-        +-->
     <bean id="wfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="wfau"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+        +-->
+
+    <!--+
+        | ATLAS data node.
+        +-->
+    <bean id="atlas-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="atlas"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
@@ -122,7 +137,7 @@
     <!--+
         | Local user data node.
         +-->
-    <bean id="userdata" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    <bean id="userd-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="userdata"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
@@ -144,11 +159,7 @@
 
         <property name="dataNodesMap">
             <map>
-                <!--+
-                <entry key="ukidss">
-                    <ref bean="ukidss"/>
-                </entry>
-                    +-->
+<!--
                 <entry key="twomassjdbc">
                     <ref bean="twomassjdbc"/>
                 </entry>
@@ -180,9 +191,13 @@
                 <entry key="wfau-tap">
                     <ref bean="wfau-tap"/>
                 </entry>
+-->
+                <entry key="atlas-key">
+                    <ref bean="atlas-bean"/>
+                </entry>
 
-                <entry key="userdata">
-                    <ref bean="userdata"/>
+                <entry key="userd-key">
+                    <ref bean="userd-bean"/>
                 </entry>
             </map>
         </property>

@@ -32,6 +32,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -62,7 +63,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
         }
     )
 public class ConfigPropertyEntity
-extends AbstractNamedEntity
+extends AbstractEntity
 implements ConfigProperty
     {
 
@@ -112,7 +113,7 @@ implements ConfigProperty
 
         @Override
         @CreateMethod
-        public ConfigProperty create(final URI key, final String name, final String value)
+        public ConfigProperty create(final URI key, final String value)
             {
             final ConfigProperty property = this.select(
                 key
@@ -125,7 +126,6 @@ implements ConfigProperty
                 return super.insert(
                     new ConfigPropertyEntity(
                         key,
-                        name,
                         value
                         )
                     );
@@ -163,9 +163,9 @@ implements ConfigProperty
      * Protected constructor.
      *
      */
-    protected ConfigPropertyEntity(final URI key, final String name, final String value)
+    protected ConfigPropertyEntity(final URI key, final String value)
         {
-        super(name);
+        super();
         this.key   = key   ;
         this.value = value ;
         }

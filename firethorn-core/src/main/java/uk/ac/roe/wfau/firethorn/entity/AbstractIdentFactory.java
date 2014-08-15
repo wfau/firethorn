@@ -29,8 +29,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
  *
  */
 @Slf4j
-public class AbstractIdentFactory
-implements Entity.IdentFactory
+public class AbstractIdentFactory<EntityType extends Entity>
+implements Entity.IdentFactory<EntityType>
     {
 
     private static final Pattern p1 = Pattern.compile("^[0-9]+$") ;

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -35,7 +34,7 @@ extends BaseResource<AdqlSchema>
      *
      */
     public static interface IdentFactory
-    extends BaseResource.IdentFactory
+    extends BaseResource.IdentFactory<AdqlResource>
         {
         }
 

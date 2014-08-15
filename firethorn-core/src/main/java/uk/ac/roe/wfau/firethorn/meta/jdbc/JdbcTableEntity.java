@@ -48,6 +48,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -60,7 +61,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
@@ -185,7 +185,7 @@ implements JdbcTable
                 );
             }
         }
-    
+   
     /**
      * {@link JdbcTable.NameFactory} implementation.
      * @todo base64 hash of the ident ?
@@ -193,20 +193,24 @@ implements JdbcTable
      */
     @Component
     public static class NameFactory
-    extends BaseNameFactory<JdbcTable>
+    extends DateNameFactory<JdbcTable>
     implements JdbcTable.NameFactory
         {
+        /**
+         * The default name prefix, {@value}.
+         * 
+         */
+        protected static final String PREFIX = "JDBC_TABLE";
+
         @Override
-        public String name(final AdqlQuery query)
+        public String name()
             {
-            return name(
-                "QUERY_".concat(
-                    query.ident().toString()
-                    )
+            return datename(
+                PREFIX
                 );
             }
         }
-
+    
     /**
      * {@link JdbcTable.AliasFactory} implementation.
      *
@@ -215,13 +219,17 @@ implements JdbcTable
     public static class AliasFactory
     implements JdbcTable.AliasFactory
         {
-        private static final String PREFIX = "JDBC_";
+        /**
+         * The default alias prefix, {@value}.
+         * 
+         */
+        protected static final String PREFIX = "JDBC_TABLE_";
 
         @Override
-        public String alias(final JdbcTable column)
+        public String alias(final JdbcTable entity)
             {
             return PREFIX.concat(
-                column.ident().toString()
+                entity.ident().toString()
                 );
             }
 
@@ -325,9 +333,7 @@ implements JdbcTable
                 new JdbcTableEntity(
                     schema,
                     query,
-                    names.name(
-                        query
-                        )
+                    names.name()
                     )
                 );
             //

@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.11.9</version>
+    <version project='firethorn'>1.11.9-zrq-ogsa-meta</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -331,6 +331,27 @@
             </dependency>
 
 		    <!--+
+		        | The Google Guava libraries.
+		        +-->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>17.0</version>
+            </dependency>
+
+		    <!--+
+		        | Java inject libraries.
+		        | http://mvnrepository.com/artifact/javax.inject/javax.inject/1
+		        | http://blogs.sourceallies.com/2011/08/spring-injection-with-resource-and-autowired/
+		        | https://stackoverflow.com/questions/7142622/what-is-the-difference-between-inject-and-autowired-in-spring-framework-which
+		        +-->
+            <dependency>
+	            <groupId>javax.inject</groupId>
+	            <artifactId>javax.inject</artifactId>
+	            <version>1</version>
+            </dependency>
+
+		    <!--+
 		        | Servlet libraries.
 		        +-->
 		    <dependency>
@@ -452,7 +473,6 @@
     </dependencyManagement>
 
     <dependencies>
-
     </dependencies>
 
     <build>

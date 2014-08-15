@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -49,19 +50,10 @@ extends BaseSchema<IvoaSchema, IvoaTable>
      *
      */
     public static interface IdentFactory
-    extends BaseSchema.IdentFactory
+    extends Entity.IdentFactory<IvoaSchema>
         {
         }
 
-    /**
-     * {@link BaseSchema.NameFactory} interface.
-     *
-     */
-    public static interface NameFactory
-    extends BaseSchema.NameFactory<AdqlSchema>
-        {
-        }
-    
     /**
      * {@link BaseSchema.LinkFactory} interface.
      *

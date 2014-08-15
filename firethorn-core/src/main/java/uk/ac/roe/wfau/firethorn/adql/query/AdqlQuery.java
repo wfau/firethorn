@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 
 /**
  *
@@ -379,13 +379,8 @@ extends NamedEntity, Job
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory<AdqlQuery>
+    extends NamedEntity.NameFactory<AdqlQuery>
         {
-        /**
-         * Generate a unique name for a query.
-         *
-         */
-        public String name();
         }
 
     /**
@@ -402,7 +397,7 @@ extends NamedEntity, Job
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory
+    extends Entity.IdentFactory<AdqlQuery>
         {
         }
 

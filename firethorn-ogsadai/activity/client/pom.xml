@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>1.11.9</version>
+        <version project='firethorn'>1.11.9-zrq-ogsa-meta</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity-client</artifactId>
@@ -136,6 +136,14 @@
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-client</artifactId>
             <version>${ogsadai.version}</version>
+        </dependency>
+
+	    <!--+
+	        | The Google Guava libraries.
+	        +-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
     </dependencies>

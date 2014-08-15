@@ -65,6 +65,7 @@ implements Entity
     {
     /**
      * Shared random number generator, used to create the random part of the Entity UID.
+     * This does not need to be secure, it just needs to be random enough to prevent collisions.
      * 
      */
     protected static final Random random = new Random(
@@ -75,7 +76,7 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT0111";
+    protected static final String DB_TABLE_PREFIX = "FT011109";
 
     /**
      * Hibernate column mapping.
@@ -250,8 +251,6 @@ implements Entity
         {
         return this.uidhi;
         }
-
-    
     
     /**
      * The Entity owner.

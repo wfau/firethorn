@@ -35,15 +35,10 @@ public interface Entity
     /**
      * Common interface for a name factory.
      *
-     */
     public interface NameFactory<EntityType extends Entity>
         {
-        /**
-         * Generate a new name.
-         *
-         */
-        public String name(final String name);
         }
+     */
 
     /**
      * Common interface for an alias factory.
@@ -150,7 +145,7 @@ public interface Entity
          * Our local Identifier factory.
          *
          */
-        public IdentFactory idents();
+        public Entity.IdentFactory<EntityType> idents();
 
         /**
          * Our local link factory.

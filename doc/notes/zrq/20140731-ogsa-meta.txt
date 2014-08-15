@@ -35,6 +35,9 @@
         public String endpoint();
         public String ogsaid();
         public Status poke();
+
+        public enum Status {}
+
         
         interface Resources
             {
@@ -148,6 +151,12 @@
         # Check for plugin Updates
         mvn versions:display-plugin-updates
 
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Commit the changes
         hg commit -m "Updated dependencies"
 
     popd
@@ -188,11 +197,195 @@
         #
         # Re-build everything.
         mvn -P all clean install
-        mvn -P all eclipse:eclipse
 
         #
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
         
     popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devbranch=1.11.9-zrq-ogsa-meta
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Do stuff .....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=ZRQ011109DEV
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update default
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Update local config
+#[user@desktop]
+
+    gedit "${HOME:?}/firethorn.properties" &
+    
+# -----------------------------------------------------
+# Run the ogsa-dai service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig atlas-id  firethorn.atlas
+                jdbcconfig userd-id  firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
 

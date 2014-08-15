@@ -1,0 +1,142 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Missing code 
+#
+
+        final JdbcSelectDataClient select = new JdbcSelectDataClient(...);
+
+        /*
+         * Missing adding the select activity to the pipeline 
+        pipeline.add(
+            select
+            );
+         *
+         */
+
+# -----------------------------------------------------
+# Error log 
+#
+
+    2014-08-15 02:47:35,835 ERROR drer.JAXBUtilities [http-bio-8081-exec-1,errorExceptionAndChildren:401] #1408067255835:125# java.lang.NullPointerException: null
+
+# -----------------------------------------------------
+# XML messages
+#
+
+    POST /albert/services/drers/DataRequestExecutionResource/sync/ HTTP/1.1
+    Content-Type: application/xml
+    User-Agent: Java/1.7.0_65
+    Host: localhost:8081
+    Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+    Connection: keep-alive
+    Content-Length: 2064
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <execute xmlns="http://ogsadai.org.uk/namespaces/2007/04/types">
+        <executionType>SYNCHRONOUS</executionType>
+        <request>
+            <workflow>
+                <pipeline>
+                    <activity name="uk.ac.roe.wfau.firethorn.Delays" instanceName="uk.ac.roe.wfau.firethorn.Delays-ogsadai-38acb75e-82e0-4c61-8ec4-5d7ec83eae11">
+                        <inputs>
+                            <input name="tuples">
+                                <inputStream pipe="ogsadai-e7141695-a369-4ea4-8233-9d9ccb925059"/>
+                            </input>
+                        </inputs>
+                        <outputs>
+                            <outputStream name="tuples" pipe="ogsadai-e2704226-8f95-4699-b262-4510e36201c1"/>
+                        </outputs>
+                    </activity>
+                    <activity name="uk.ac.roe.wfau.firethorn.Limits" instanceName="uk.ac.roe.wfau.firethorn.Limits-ogsadai-107e0668-8dab-4516-861b-2c420a637e34">
+                        <inputs>
+                            <input name="limit.rows">
+                                <inputLiteral>
+                                    <long>100000</long>
+                                </inputLiteral>
+                            </input>
+                            <input name="limit.cells">
+                                <inputLiteral>
+                                    <long>0</long>
+                                </inputLiteral>
+                            </input>
+                            <input name="limit.time">
+                                <inputLiteral>
+                                    <long>0</long>
+                                </inputLiteral>
+                            </input>
+                            <input name="tuples">
+                                <inputStream pipe="ogsadai-e2704226-8f95-4699-b262-4510e36201c1"/>
+                            </input>
+                        </inputs>
+                        <outputs>
+                            <outputStream name="tuples" pipe="ogsadai-625782e0-67dd-429e-86b9-34cb1b385a4b"/>
+                        </outputs>
+                    </activity>
+                    <activity name="uk.ac.roe.wfau.firethorn.JdbcInsertData" instanceName="uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-b480a4d4-1e54-4d49-a220-c6c900f987f8" resource="userdata">
+                        <inputs>
+                            <input name="jdbc.insert.input.tuples">
+                                <inputStream pipe="ogsadai-625782e0-67dd-429e-86b9-34cb1b385a4b"/>
+                            </input>
+                            <input name="jdbc.insert.table.name">
+                                <inputLiteral>
+                                    <string>FirethornUserdataZRQ011109DEV.dbo.JDBC_TABLE_20140815_021435423</string>
+                                </inputLiteral>
+                            </input>
+                        </inputs>
+                        <outputs>
+                            <outputStream name="jdbc.insert.results" pipe="ogsadai-a3cfd7a0-61de-4bdf-870e-b13c16ec70f7"/>
+                        </outputs>
+                    </activity>
+                    <activity name="uk.org.ogsadai.DeliverToRequestStatus" instanceName="uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55aef6ff-6ec9-48b4-956a-9cd7edafd3e4">
+                        <inputs>
+                            <input name="input">
+                                <inputStream pipe="ogsadai-a3cfd7a0-61de-4bdf-870e-b13c16ec70f7"/>
+                            </input>
+                        </inputs>
+                        <outputs/>
+                    </activity>
+                </pipeline>
+            </workflow>
+        </request>
+    </execute>
+
+
+    HTTP/1.1 200 OK
+    Server: Apache-Coyote/1.1
+    Content-Type: application/xml
+    Content-Length: 425
+    Date: Fri, 15 Aug 2014 01:14:38 GMT
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <response xmlns="http://ogsadai.org.uk/namespaces/2007/04/types">
+        <error>
+            <errorCause>
+                <id>uk.org.ogsadai.SERVER_ERROR_WITH_HOST</id>
+                <msg>An internal error arose in the OGSA-DAI server. Contact the OGSA-DAI server administrator at threonine with ID 1408065278606:6.</msg>
+                <parameter>1408065278606:6</parameter>
+                <parameter>threonine</parameter>
+            </errorCause>
+        </error>
+    </response>
+

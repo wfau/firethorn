@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- *
+ * Generic interface for a component in a metadata tree.
  *
  */
 public interface BaseComponent
@@ -55,6 +55,7 @@ extends NamedEntity
          * Flag to indicate the component is enabled.
          *
          */
+        @Deprecated
         private final boolean enabled ;
 
         /**
@@ -159,8 +160,6 @@ extends NamedEntity
 
     /**
      * The persistence level, or depth of copy, of a entity.
-     * @todo Does this make sense for JDBC and IVOA components ?
-     * Or does it only apply to ADQL components ?
      *
      */
     enum CopyDepth

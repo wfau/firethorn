@@ -35,7 +35,7 @@ extends TestBase
     throws Exception
         {
         //
-        // Create with works.
+        // Create with name works.
         assertNotNull(
             factories().adql().resources().create(
                 this.unique(
