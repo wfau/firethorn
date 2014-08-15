@@ -348,11 +348,13 @@ EOF
 # Merge the changes into main.
 #[user@desktop]
 
-    devbranch=$(getversion)
-    newversion=1.11.9
-
     source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
     pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+        newversion=1.11.10
 
         #
         # Close the dev branch.
