@@ -1,0 +1,157 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Build our own Tomcat image 
+# http://blog.trifork.com/2013/08/15/using-docker-to-efficiently-create-multiple-tomcat-instances/
+#[user@desktop]
+
+    mkdir docker
+    pushd docker
+
+        jversion=1.8.0
+        tversion=8.0.9
+        fversion=1.11.10
+        
+        mkdir tumbleweed
+
+        wget -P tumbleweed 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/conf/base.properties'
+
+        tmajor=$(echo ${tversion:?} | cut -f 1 -d '.')
+
+        wget -P tumbleweed "http://apache.mirror.anlx.net/tomcat/tomcat-${tmajor:?}/v${tversion:?}/bin/apache-tomcat-${tversion:?}.tar.gz"
+        wget -P tumbleweed "http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/firethorn-webapp/${fversion:?}/firethorn-webapp-${fversion:?}.war"
+
+        cp tumbleweed/base.properties tumbleweed/firethorn.properties
+        #vi tumbleweed/firethorn.properties
+
+        cat > tumbleweed/firethorn.xml << EOF
+<?xml version='1.0' encoding='utf-8'?>
+<Context
+    path='/firethorn'
+    displayName='FireThorn service'
+    docBase='/var/local/webapp/firethorn-webapp-${fversion:?}.war'
+    >
+</Context>
+EOF
+
+    cat > tumbleweed/Dockerfile << EOF
+
+FROM fedora
+
+#
+# Install Java
+RUN yum -y install java-${jversion:?}-openjdk-headless
+
+#
+# Install Tomcat
+ADD apache-tomcat-${tversion:?}.tar.gz /var/local/tomcat/
+
+#
+# Make Tomcat the default executable
+EXPOSE :8080
+WORKDIR /var/local/tomcat/apache-tomcat-${tversion:?}
+CMD bin/catalina.sh run
+
+#
+# Install our webapp
+ADD firethorn-webapp-${fversion:?}.war /var/local/webapp/
+ADD firethorn.xml /var/local/tomcat/apache-tomcat-${tversion:?}/conf/Catalina/localhost/firethorn.xml
+
+#
+# Install our config
+ADD firethorn.properties /root/firethorn.properties
+
+EOF
+
+    docker build --tag tumbleweed:008 tumbleweed
+
+    docker run --interactive --tty tumbleweed:008 bash
+
+    docker run --interactive --tty tumbleweed:008
+
+# -------------------------------------------------------------------------------------------
+# Webapp inside can't see tunnelled SSH connection to external SQLServer. 
+#[user@desktop]
+
+    #
+    # Check that the SSH tunnel allows non-local connections.
+    gedit "${HOME:?}/.ssh/config"
+
+        Host sqltunnel
+            User ....
+            HostName ....
+            IdentityFile ....
+            Protocol 2
+            Compression yes
+            GatewayPorts yes
+            PasswordAuthentication no
+            LocalForward 1431 ramses1:1433
+            LocalForward 1432 ramses2:1433
+            LocalForward 1433 ramses3:1433
+            ....
+
+    #
+    # Check that firewall isn't in the way ** TEMP FIX !! **
+    sudo service iptables stop
+
+# -------------------------------------------------------------------------------------------
+# Error message stack trace indicates a host name lookup problem.
+#[user@desktop]
+
+    2014-08-16 11:45:32,564 WARN
+        [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@19d4d5ec]
+        [BasicResourcePool]
+        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4b08d17c --
+        Acquisition Attempt Failed!!! Clearing pending acquires.
+        While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30).
+        Last acquisition attempt exception:  
+
+            java.sql.SQLException: Unknown server host name 'threonine'.
+
+# -------------------------------------------------------------------------------------------
+# Try using the IPV4 address.
+#[user@desktop]
+
+    vi tumbleweed/firethorn.properties
+
+        -   firethorn.meta.url=jdbc:jtds:sqlserver://threonine:1432/FirethornMetadataZRQ011109DEV
+        +   firethorn.meta.url=jdbc:jtds:sqlserver://10.0.0.3:1432/FirethornMetadataZRQ011109DEV
+
+        -   firethorn.user.url=jdbc:jtds:sqlserver://threonine:1432/FirethornUserdataZRQ011109DEV
+        +   firethorn.user.url=jdbc:jtds:sqlserver://10.0.0.3:1432/FirethornUserdataZRQ011109DEV
+
+        -   firethorn.atlas.url=jdbc:jtds:sqlserver://threonine:1432/ATLASDR1
+        +   firethorn.atlas.url=jdbc:jtds:sqlserver://10.0.0.3:1432/ATLASDR1
+
+
+    docker build --tag tumbleweed:008 tumbleweed
+
+    docker run --interactive --tty tumbleweed:008
+
+    works :-)
+
+    docker build --tag tumbleweed:009 tumbleweed
+    docker run --interactive --tty tumbleweed:009 bash
+
+
+

@@ -342,8 +342,6 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
-
-
 # -----------------------------------------------------
 # Merge the changes into main.
 #[user@desktop]

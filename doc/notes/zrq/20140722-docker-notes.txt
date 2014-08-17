@@ -372,6 +372,8 @@ EOF
 
     jvversion=1.8.0
     tcmajor=8
+     echo 
+
     tcversion=8.0.9
     ftversion=1.11.7
     
