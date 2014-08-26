@@ -4,7 +4,6 @@ Created on Jun 4, 2014
 @author: stelios
 '''
 
-import os
 import sys, os
 srcdir = '../../src/'
 configdir = '../../'
@@ -12,7 +11,6 @@ testdir = os.path.dirname(__file__)
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
 sys.path.insert(0, os.path.abspath(os.path.join(testdir, configdir)))
-import os.path
 import urllib2
 import urllib
 import StringIO
@@ -90,6 +88,7 @@ class Sql2Json(object):
             d['firethorn_version'] = row.firethorn_version
             d['firethorn_error_message'] = row.firethorn_error_message
             d['sql_error_message'] = row.sql_error_message
+	   
             objects_list.append(d)
             queryrun = row.queryrunID
             
@@ -102,18 +101,21 @@ class Sql2Json(object):
                 sum[queryrun]['total_queries_run'] = 0
                 sum[queryrun]['total_failed'] = 0
                 sum[queryrun]['firethorn_version'] = row.firethorn_version
-                sum[queryrun]['average_sql_duration'] =  row.sql_duration
-                sum[queryrun]['average_firethorn_duration'] = row.firethorn_duration
-                
-                
-            sum[queryrun]['total_queries_run'] = sum[queryrun]['total_queries_run'] + 1
-            sum[queryrun]['average_firethorn_duration'] = (float(sum[queryrun]['average_firethorn_duration']) + float(row.firethorn_duration)) / 2
-            sum[queryrun]['average_sql_duration'] =  (float(sum[queryrun]['average_sql_duration']) + float(row.sql_duration)) / 2
+                sum[queryrun]['total_firethorn_querytime'] = 0
+                sum[queryrun]['total_sql_querytime'] = 0
             
+	    sum[queryrun]['total_queries_run'] = sum[queryrun]['total_queries_run'] + 1
+            sum[queryrun]['total_sql_querytime'] = float(sum[queryrun]['total_sql_querytime']) + float(row.sql_duration)
+	    sum[queryrun]['total_firethorn_querytime'] = float(sum[queryrun]['total_firethorn_querytime']) + float(row.firethorn_duration)
+            sum[queryrun]['query_timestamp'] = row.query_timestamp
+ 
             if row.test_passed!=1:
                 failed_list.append(d)
                 sum[queryrun]['total_failed'] = sum[queryrun]['total_failed'] + 1
                 
+       	
+            sum[queryrun]['average_firethorn_duration'] = float(float(sum[queryrun]['total_firethorn_querytime'])/int(sum[queryrun]['total_queries_run']))
+            sum[queryrun]['average_sql_duration'] =  float(float(sum[queryrun]['total_sql_querytime'])/int(sum[queryrun]['total_queries_run']))
    
            
         j = json.dumps(objects_list)

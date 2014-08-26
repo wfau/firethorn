@@ -72,7 +72,7 @@ class test_firethorn(unittest.TestCase):
             sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
             fEng=None
-            logged_queries=[] 
+            
             log_sql_query = config.stored_queries_query
             logging.info("Setting up Firethorn Environment..")
             
@@ -118,8 +118,8 @@ class test_firethorn(unittest.TestCase):
             self.store_environment_config(fEng, config.stored_env_config)
           
             logging.info("")
-            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)            
-                                                       
+            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)           
+
             for query in logged_queries:
                 
                 qEng = queryEngine.QueryEngine()
@@ -159,7 +159,7 @@ class test_firethorn(unittest.TestCase):
                     sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit)
                     logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                     logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
-                    sql_duration = int(time.time() - sql_start_time)
+                    sql_duration = float(time.time() - sql_start_time)
                     
                     logging.info("")
                     
@@ -168,7 +168,7 @@ class test_firethorn(unittest.TestCase):
                     firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
                     logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                     logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
-                    firethorn_duration = int(time.time() - start_time)
+                    firethorn_duration = float(time.time() - start_time)
                 
     
                     logging.info("---------------------- End Query Test ----------------------")

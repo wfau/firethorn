@@ -70,16 +70,16 @@ class DBHelper:
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
         if limit!=None:
-            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q"
-            
+            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q"   
+
         cnxn = pyodbc.connect(params)  
         cursor = cnxn.cursor()
         cursor.execute(query)
         rows = cursor.fetchall()
-        
+          
         for row in rows:
             return_val.append(row)
-            
+	    
         cnxn.close()
         
         return return_val
@@ -102,11 +102,10 @@ class DBHelper:
    
         columns = [column[0] for column in cursor.description]
         return_val.append(columns)
-        
         rowlist=[]
-        
+	        
         for row in cursor.fetchall():
-            rowlist.append(dict(zip(columns, row)))
+	    rowlist.append(dict(zip(columns, row)))
         return_val.append(rowlist)  
         cnxn.close()
 
