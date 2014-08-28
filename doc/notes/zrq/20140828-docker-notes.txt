@@ -52,7 +52,7 @@
     popd
 
 # -------------------------------------------------------------------------------------------
-# Our versions.
+# Set our versions.
 #[user@desktop]
 
     fedoraversion=20
@@ -61,21 +61,31 @@
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-
         source 'bin/util.sh'
-
         fireversion=$(getversion)
-        ogsadaiversion=$(getversion)
-
+        ogsaversion=$(getversion)
     popd
 
     maintainer='Dave Morris <docker-admin@metagrid.co.uk>'
 
+    fedoramajor=${fedoraversion:?}
+    javamajor=$(echo   "${javaversion:?}"   | sed 's/\([^.]\)\.\([^.]\)\.\(.*\)/\2/')
+    tomcatmajor=$(echo "${tomcatversion:?}" | sed 's/\([^.]\)\.\([^.]\)\.\(.*\)/\1/')
+
+    firemajor=$(echo "${fireversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
+    ogsamajor=$(echo "${ogsaversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
+
+
+echo "fedoramajor : ${fedoramajor:?}"
+echo "javamajor   : ${javamajor:?}"
+echo "tomcatmajor : ${tomcatmajor:?}"
+echo "firemajor   : ${firemajor:?}"
+echo "ogsamajor   : ${ogsamajor:?}"
+
+
 # -------------------------------------------------------------------------------------------
 # Setup our base image.
 #[user@desktop]
-
-    fedoramajor=${fedoraversion:?}
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -102,6 +112,7 @@ MAINTAINER ${maintainer:?}
 #
 # Install some tools
 RUN yum -y install wget
+RUN yum -y install unzip
 RUN yum -y install pwgen
 RUN yum -y install deltarpm
 
@@ -119,8 +130,6 @@ EOF
 # Setup our Java image.
 #[user@desktop]
 
-    javamajor=$(echo "${javaversion:?}" | sed 's/\(\[^.]\)\.\([^.]\)\.\(.*\)/\2/')
-
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -132,11 +141,11 @@ EOF
             fi
             pushd java
 
-                if [ ! -e "${javaversion:?}" ] 
+                if [ ! -e "${javamajor:?}" ] 
                 then
-                    mkdir "${javaversion:?}"
+                    mkdir "${javamajor:?}"
                 fi
-                pushd "${javaversion:?}"
+                pushd "${javamajor:?}"
 
                     cat > Dockerfile << EOF
 
@@ -157,8 +166,6 @@ EOF
 # Setup our Tomcat image
 # https://github.com/tutumcloud/tutum-docker-tomcat/blob/master/8.0/Dockerfile
 #[user@desktop]
-
-    tomcatmajor=$(echo "${tomcatversion:?}" | sed 's/\([^.]\)\.\([^.]\)\.\(.*\)/\1/')
 
     tomcaturl=https://archive.apache.org/dist/tomcat/tomcat-${tomcatmajor:?}/v${tomcatversion:?}/bin/
     tomcattar=apache-tomcat-${tomcatversion:?}.tar.gz
@@ -188,9 +195,20 @@ MAINTAINER ${maintainer:?}
 
 #
 # Install Tomcat
-RUN wget -q "${tomcaturl:?}/${tomcattar:?}"
-RUN wget -q "${tomcaturl:?}/${tomcattar:?}.md5"
+#RUN wget -P /tmp -q "${tomcaturl:?}/${tomcattar:?}"
+#RUN wget -P /tmp -q "${tomcaturl:?}/${tomcattar:?}.md5"
+#RUN md5sum -c /tmp/apache-tomcat-*.md5
+#RUN tar -zxf /tmp/apache-tomcat-*.tar.gz
+#RUN rm /tmp/apache-tomcat-*.tar.gz
+#RUN rm /tmp/apache-tomcat-*.tar.gz.md5
+#RUN mv apache-tomcat* ${tomcatdir:?}
+
+ADD ${tomcaturl:?}/${tomcattar:?}     /tmp/
+ADD ${tomcaturl:?}/${tomcattar:?}.md5 /tmp/
+
+WORKDIR /tmp
 RUN md5sum -c apache-tomcat-*.md5
+
 RUN tar -zxf apache-tomcat-*.tar.gz
 RUN rm apache-tomcat-*.tar.gz
 RUN rm apache-tomcat-*.tar.gz.md5
@@ -228,6 +246,20 @@ EOF
             fi
             pushd firethorn
 
+                if [ ! -e 'target' ] 
+                then
+                    mkdir target
+                fi
+                pushd target
+
+                    if [ -e "${firethornwar:?}" ]
+                    then
+                        rm "${firethornwar:?}"
+                    fi
+                    ln "${FIRETHORN_CODE:?}/firethorn-webapp/target/${firethornwar:?}"
+                    
+                popd
+
                 cat > Dockerfile << EOF
 
 FROM firethorn/tomcat:${tomcatversion:?}
@@ -235,8 +267,12 @@ MAINTAINER ${maintainer:?}
 
 #
 # Add our Firethorn war file
-RUN wget -q "${firethornurl:?}/${firethornwar:?}"
-RUN mv "${firethornwar:?}" "${tomcatdir:?}/webapps/firethorn.war"
+#RUN wget -q "${firethornurl:?}/${firethornwar:?}"
+#RUN mv "${firethornwar:?}" "${tomcatdir:?}/webapps/firethorn.war"
+
+ADD target/${firethornwar:?} /tmp/${firethornwar:?}
+RUN unzip -q /tmp/${firethornwar:?} -d ${tomcatdir:?}/webapps/firethorn
+RUN rm /tmp/${firethornwar:?}
 
 #
 # Configure Firethorn
@@ -244,10 +280,11 @@ RUN mv "${firethornwar:?}" "${tomcatdir:?}/webapps/firethorn.war"
 EOF
             popd
         popd
+
     popd
 
 # -------------------------------------------------------------------------------------------
-# Remove any old images.
+# Delete any existing images and containers.
 #[user@desktop]
 
     docker rm  $(docker ps -qa)
@@ -260,37 +297,66 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        docker build --tag firethorn/fedora:${fedoraversion:?}  docker/fedora/${fedoramajor:?}
+        docker build \
+            --tag "firethorn/fedora:${fedoraversion:?}" \
+            docker/fedora/${fedoramajor:?}
 
-        docker build --tag firethorn/java:${javaversion:?}      docker/java/${javamajor:?}
+        docker build \
+            --tag "firethorn/java:${javaversion:?}" \
+            docker/java/${javamajor:?}
 
-        docker build --tag firethorn/tomcat:${tomcatversion:?}  docker/tomcat/${tomcatmajor:?}
+        docker build \
+            --tag "firethorn/tomcat:${tomcatversion:?}" \
+            docker/tomcat/${tomcatmajor:?}
 
-        docker build --tag firethorn/firethorn:${fireversion:?} docker/firethorn
+        docker build \
+            --tag "firethorn/firethorn:${fireversion:?}" \
+            docker/firethorn
 
     popd
+
+
+    docker tag "firethorn/fedora:${fedoraversion:?}"  "firethorn/fedora:latest"
+    docker tag "firethorn/fedora:${fedoraversion:?}"  "firethorn/fedora:${fedoramajor:?}"
+
+    docker tag "firethorn/java:${javaversion:?}"      "firethorn/java:latest"
+    docker tag "firethorn/java:${javaversion:?}"      "firethorn/java:${javamajor:?}"
+
+    docker tag "firethorn/tomcat:${tomcatversion:?}"  "firethorn/tomcat:latest"
+    docker tag "firethorn/tomcat:${tomcatversion:?}"  "firethorn/tomcat:${tomcatmajor:?}"
+
+    docker tag "firethorn/firethorn:${fireversion:?}" "firethorn/firethorn:latest"
+
+    docker images
+
 
 # -------------------------------------------------------------------------------------------
 # Test our images.
 #[user@desktop]
 
-
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" java -version
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" pwd
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" ls -alh
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" ls -alh webapps
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" less RELEASE-NOTES
-
-    docker run -t -i "firethorn/firethorn:${fireversion:?}" bash
-
+    #
+    # Using specific version.
+    docker run "firethorn/firethorn:${fireversion:?}" java -version
+    docker run "firethorn/firethorn:${fireversion:?}" pwd
+    docker run "firethorn/firethorn:${fireversion:?}" ls -alh
+    docker run "firethorn/firethorn:${fireversion:?}" ls -alh webapps
+    docker run -i -t "firethorn/firethorn:${fireversion:?}" less RELEASE-NOTES
 
     docker run --name firethorn "firethorn/firethorn:${fireversion:?}"
 
+    #
+    # Using 'latest'
+    docker run "firethorn/firethorn" java -version
+    docker run "firethorn/firethorn" pwd
+    docker run "firethorn/firethorn" ls -alh
+    docker run "firethorn/firethorn" ls -alh webapps
+    docker run -t -i "firethorn/firethorn" less RELEASE-NOTES
+
+    docker run --name firethorn "firethorn/firethorn"
 
 
 
 
 
 
-Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 
