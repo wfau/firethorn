@@ -75,14 +75,6 @@
     firemajor=$(echo "${fireversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
     ogsamajor=$(echo "${ogsaversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
 
-
-echo "fedoramajor : ${fedoramajor:?}"
-echo "javamajor   : ${javamajor:?}"
-echo "tomcatmajor : ${tomcatmajor:?}"
-echo "firemajor   : ${firemajor:?}"
-echo "ogsamajor   : ${ogsamajor:?}"
-
-
 # -------------------------------------------------------------------------------------------
 # Setup our base image.
 #[user@desktop]
@@ -195,20 +187,10 @@ MAINTAINER ${maintainer:?}
 
 #
 # Install Tomcat
-#RUN wget -P /tmp -q "${tomcaturl:?}/${tomcattar:?}"
-#RUN wget -P /tmp -q "${tomcaturl:?}/${tomcattar:?}.md5"
-#RUN md5sum -c /tmp/apache-tomcat-*.md5
-#RUN tar -zxf /tmp/apache-tomcat-*.tar.gz
-#RUN rm /tmp/apache-tomcat-*.tar.gz
-#RUN rm /tmp/apache-tomcat-*.tar.gz.md5
-#RUN mv apache-tomcat* ${tomcatdir:?}
-
 ADD ${tomcaturl:?}/${tomcattar:?}     /tmp/
 ADD ${tomcaturl:?}/${tomcattar:?}.md5 /tmp/
-
 WORKDIR /tmp
 RUN md5sum -c apache-tomcat-*.md5
-
 RUN tar -zxf apache-tomcat-*.tar.gz
 RUN rm apache-tomcat-*.tar.gz
 RUN rm apache-tomcat-*.tar.gz.md5
@@ -232,7 +214,6 @@ EOF
 # Setup our Firethorn image
 #[user@desktop]
 
-    firethornurl="http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/firethorn-webapp/${fireversion:?}/"
     firethornwar="firethorn-webapp-${fireversion:?}.war"
 
     source "${HOME:?}/firethorn.settings"
@@ -266,10 +247,7 @@ FROM firethorn/tomcat:${tomcatversion:?}
 MAINTAINER ${maintainer:?}
 
 #
-# Add our Firethorn war file
-#RUN wget -q "${firethornurl:?}/${firethornwar:?}"
-#RUN mv "${firethornwar:?}" "${tomcatdir:?}/webapps/firethorn.war"
-
+# Install Firethorn war file
 ADD target/${firethornwar:?} /tmp/${firethornwar:?}
 RUN unzip -q /tmp/${firethornwar:?} -d ${tomcatdir:?}/webapps/firethorn
 RUN rm /tmp/${firethornwar:?}
