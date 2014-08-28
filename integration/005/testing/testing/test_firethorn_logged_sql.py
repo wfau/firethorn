@@ -132,31 +132,36 @@ class test_firethorn(unittest.TestCase):
                 sql_error_message =  ""
                 logging.info("Query : " +  query)
 
+                #problematic_qry = "356246b4671a27cb92c015d611ab7843"
+
                 try:
                     if (config.test_is_continuation):
                         check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "'"
                     else :
                         check_duplicate_query = "select count(*), queryid, query_count from queries where queryrunID='" + queryrunID + "' and query_hash='" + querymd5 + "'"
-      
+                   
+		          
                     query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
                     query_duplicates_found = query_duplicates_found_row[0]
                     queryid = query_duplicates_found_row[1]
                     query_count = query_duplicates_found_row[2]
+                    #if problematic_qry == querymd5:
+		    #    query_duplicates_found = 1
+
                 except Exception as e:
                     logging.exception(e)
                     query_duplicates_found = 0
                     queryid = None
                     query_count = 0
-             
+
+ 
                 if (query_duplicates_found<=0):
-                    if (config.limit_query!=None):
-                        query = "select top " + str(config.limit_query) + " * from (" + query + ") as q"
                         
                     logging.info("---------------------- Starting Query Test ----------------------")
                     sql_start_time = time.time()
                     query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
                     logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit)
+                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit, config.sql_timeout)
                     logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
                     logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
                     sql_duration = float(time.time() - sql_start_time)
