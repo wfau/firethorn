@@ -1,0 +1,172 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Initial problem, tests faling on shep VMs.
+#[user@desktop]
+
+    Caused by: java.sql.SQLException: Invalid object name 'FirethornUserdataSHEP011107TEST.dbo.
+    Caused by: java.sql.SQLException: Invalid object name 'FirethornUserdataSHEP011107TEST.dbo.QUERY_1703938'.
+
+# -------------------------------------------------------------------------------------------
+# Login to the database server.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to the database server.
+        echo "sqshhost : ${sqshhost:?}"
+        echo "sqshuser : ${sqshuser:?}"
+        echo "sqshpass : ${sqshpass:?}"
+        echo "sqshdata : ${sqshdata:?}"
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+
+            #
+            # Check the list of databases.
+            SELECT name FROM master..sysdatabases
+            go
+
+                ....                                                                                                                                                                                                                                
+                FirethornMetadataPYROTHORN011008TEST
+                FirethornMetadataSHEP010910TEST
+                FirethornMetadataSHEP011105TEST
+                FirethornMetadataSHEP011107TEST
+                FirethornMetadataTESTSTV20140716133707
+                FirethornMetadataZRQ011103DEV
+                FirethornMetadataZRQ011104DEV
+                FirethornMetadataZRQ011109DEV
+                FirethornUserdataPYROTHORN011008TEST
+                FirethornUserdataSHEP010910TEST
+                FirethornUserdataSHEP011105TEST
+                FirethornUserdataSHEP011107TEST
+                FirethornUserdataTESTSTV20140716133707
+                FirethornUserdataZRQ011103DEV
+                FirethornUserdataZRQ011104DEV
+                FirethornUserdataZRQ011109DEV 
+                ....                                                                                                                                                                                                                                
+                ....                                                                                                                                                                                                                                
+                TESTFirethornMetadata18537{dbuser:?}20140716135422
+                TESTFirethornMetadataSTV20140716135643
+                TESTFirethornMetadataSTV20140716135721
+                TESTFirethornUserdata18537{dbuser:?}20140716135422
+                TESTFirethornUserdataSTV20140716135643
+                TESTFirethornUserdataSTV20140716135721
+                ....                                                                                                                                                                                                                                
+
+# -------------------------------------------------------------------------------------------
+# Login to the firethorn VM.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        #
+        # Out of disc space.
+        df -h
+
+            Filesystem  Size  Used Avail Use% Mounted on
+            rootfs      9.9G  9.4G     0 100% /
+            udev         10M     0   10M   0% /dev
+            tmpfs       101M  204K  101M   1% /run
+
+# -------------------------------------------------------------------------------------------
+# Deleted logs, restarted firethorn.
+#[user@desktop]
+
+
+# -------------------------------------------------------------------------------------------
+# Checking test queries.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        source "${HOME:?}/firethorn.spaces"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'ATLAS'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    ATLAS.atlasSource
+                WHERE
+                    ra  BETWEEN '56.0' AND '57.9'
+                AND
+                    dec BETWEEN '24.0' AND '24.2'
+                "
+
+        #
+        # Errors caused by zero size for name.
+        # Fails to create user data table with CHAR(0).
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    TOP 10
+                    name
+                FROM
+                    ATLAS.Filter
+                "
+
+
+
+
+ 
+ 
+ 
+
+
+
