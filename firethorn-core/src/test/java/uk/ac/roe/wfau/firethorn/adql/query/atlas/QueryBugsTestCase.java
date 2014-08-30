@@ -79,7 +79,7 @@ public class QueryBugsTestCase
             "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("dist", AdqlColumn.AdqlType.FLOAT, 0),
                 }
             );
 
@@ -140,8 +140,8 @@ public class QueryBugsTestCase
             "    twomass.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
 
@@ -263,8 +263,8 @@ public class QueryBugsTestCase
             "    atlas.sourceid % 100 = 0",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
         }
@@ -327,8 +327,8 @@ public class QueryBugsTestCase
             "        )",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -389,8 +389,8 @@ public class QueryBugsTestCase
             "        )",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -420,8 +420,8 @@ public class QueryBugsTestCase
             "    {ATLAS_VERSION}.dbo.multiframe",
 
             new ExpectedField[] {
-                new ExpectedField("utDate",  AdqlColumn.Type.DATETIME, 23),
-                new ExpectedField("dateObs", AdqlColumn.Type.DATETIME, 23)
+                new ExpectedField("utDate",  AdqlColumn.AdqlType.DATETIME, 0),
+                new ExpectedField("dateObs", AdqlColumn.AdqlType.DATETIME, 0)
                 }
             );
 
@@ -471,7 +471,7 @@ public class QueryBugsTestCase
             "    neighbours.masterobjid - sources.ident < 1000000",
 
             new ExpectedField[] {
-                new ExpectedField("distanceMins", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("distanceMins", AdqlColumn.AdqlType.FLOAT, 0),
                 }
             );
         }
@@ -503,7 +503,7 @@ public class QueryBugsTestCase
             "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
 
             new ExpectedField[] {
-                new ExpectedField("COUNT_ALL", AdqlColumn.Type.LONG, 0),
+                new ExpectedField("COUNT_ALL", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }
@@ -556,7 +556,7 @@ public class QueryBugsTestCase
         	"    {ATLAS_VERSION}.dbo.multiframe.multiframeid > 0",
 
             new ExpectedField[] {
-                new ExpectedField("decBase", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("decBase", AdqlColumn.AdqlType.FLOAT, 0),
                 }
             );
         }

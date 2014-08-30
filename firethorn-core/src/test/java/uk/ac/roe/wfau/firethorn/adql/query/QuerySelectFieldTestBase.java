@@ -42,7 +42,7 @@ extends TwomassQueryTestBase
     public static class ExpectedField
     implements AdqlQuery.SelectField
         {
-        public ExpectedField(final String name, final AdqlColumn.Type type, final Integer size)
+        public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
             this.name = name ;
             this.type = type ;
@@ -54,9 +54,9 @@ extends TwomassQueryTestBase
             {
             return this.size;
             }
-        private final AdqlColumn.Type type;
+        private final AdqlColumn.AdqlType type;
         @Override
-        public  AdqlColumn.Type type()
+        public  AdqlColumn.AdqlType type()
             {
             return this.type;
             }

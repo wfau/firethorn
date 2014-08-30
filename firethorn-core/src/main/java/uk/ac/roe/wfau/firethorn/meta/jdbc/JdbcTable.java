@@ -96,16 +96,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
     @Deprecated
     public static interface OldBuilder
         {
-        /**
-         * Create a JDBC table.
-         *
-         */
         public JdbcTable create(final JdbcTable table);
 
-        /**
-         * Delete a JDBC table.
-         *
-         */
         public void delete(final JdbcTable table);
 
         }
@@ -169,6 +161,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
         /**
          * Create a new {@link JdbcTable}.
+         * Used by AdqlQuery.
          *
          */
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
@@ -182,9 +175,9 @@ extends BaseTable<JdbcTable, JdbcColumn>
         /**
          * OldBuilder implementation.
          *
-         */
         @Deprecated
         public JdbcTable.OldBuilder builder();
+         */
 
         /**
          * Our physical JDBC factory.
@@ -229,31 +222,20 @@ extends BaseTable<JdbcTable, JdbcColumn>
      */
     public interface Columns extends BaseTable.Columns<JdbcColumn>
         {
+
         /**
          * Create a new {@link JdbcColumn}.
+         * Used by JdbcColumn.Builder
          *
          */
         public JdbcColumn create(final JdbcColumn.Metadata meta);
 
         /**
          * Create a new {@link JdbcColumn}.
+         * Used by JdbcTableEntity.
          *
          */
-        public JdbcColumn create(final AdqlQuery.SelectField field);
-
-        /**
-         * Create a new {@link JdbcColumn}.
-         *
-         */
-        @Deprecated
-        public JdbcColumn create(final String name, final int type, final int size);
-
-        /**
-         * Create a new {@link JdbcColumn}.
-         *
-         */
-        @Deprecated
-        public JdbcColumn create(final String name, final JdbcColumn.Type type);
+        public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size);
 
         /**
          * Create a {@link JdbcColumn.Builder}.

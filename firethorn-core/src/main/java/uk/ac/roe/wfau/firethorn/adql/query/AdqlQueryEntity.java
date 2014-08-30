@@ -358,21 +358,6 @@ implements AdqlQuery, AdqlParserQuery
             return AdqlQueryEntity.class ;
             }
 
-        /*        
-        @Override
-        @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input)
-        throws QueryProcessingException
-            {
-            return create(
-                schema,
-                input,
-                null,
-                names().name()
-                );
-            }
-         */
-
         @Override
         @CreateMethod
         public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
@@ -385,35 +370,6 @@ implements AdqlQuery, AdqlParserQuery
                 names().name()
                 );
             }
-
-        /*
-        @Override
-        @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
-        throws QueryProcessingException
-            {
-            return create(
-                schema,
-                input,
-                rowid,
-                names().name()
-                );
-            }
-        
-        @Override
-        @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
-        throws QueryProcessingException
-            {
-            return create(
-                schema,
-                params,
-                input,
-                name
-                );
-            }
-         *
-         */
 
         @Override
         @CreateMethod

@@ -70,9 +70,9 @@ public class RedmineBug440TestCase
             "    ROUND({ATLAS_VERSION}.dbo.atlassource.b * 6.0,0,0)/ 6.0",
 
             new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("lat", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("num", AdqlColumn.Type.LONG, 0),
+                new ExpectedField("lon", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("lat", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("num", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }
@@ -114,9 +114,9 @@ public class RedmineBug440TestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.b * 6.0)/ 6.0",
 
             new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("lat", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("num", AdqlColumn.Type.LONG, 0),
+                new ExpectedField("lon", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("lat", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("num", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }
@@ -158,9 +158,9 @@ public class RedmineBug440TestCase
             "    {ATLAS_VERSION}.dbo.atlassource.b",
 
             new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("lat", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("num", AdqlColumn.Type.LONG, 0),
+                new ExpectedField("lon", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("lat", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("num", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }

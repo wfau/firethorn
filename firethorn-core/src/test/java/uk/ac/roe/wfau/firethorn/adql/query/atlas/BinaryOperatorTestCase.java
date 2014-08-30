@@ -101,8 +101,8 @@ public class BinaryOperatorTestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.rpperrbits | {ATLAS_VERSION}.dbo.atlassource.ipperrbits) < 65536",
 
             new ExpectedField[] {
-                new ExpectedField("iPetroMag", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("rmiExt",    AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("iPetroMag", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("rmiExt",    AdqlColumn.AdqlType.FLOAT, 0),
                 }
             );
         }
@@ -156,7 +156,7 @@ public class BinaryOperatorTestCase
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
-                new ExpectedField("BIT_OR", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_OR", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -211,7 +211,7 @@ public class BinaryOperatorTestCase
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
-                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -266,7 +266,7 @@ public class BinaryOperatorTestCase
             "    {ATLAS_VERSION}.dbo.atlassource.mergedclass = 1",
 
             new ExpectedField[] {
-                new ExpectedField("BIT_XOR", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_XOR", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -294,7 +294,7 @@ public class BinaryOperatorTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -322,7 +322,7 @@ public class BinaryOperatorTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("BIT_AND", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("BIT_AND", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }

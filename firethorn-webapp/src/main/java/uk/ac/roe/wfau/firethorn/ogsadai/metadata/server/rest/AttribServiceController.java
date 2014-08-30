@@ -235,7 +235,7 @@ public class AttribServiceController
      * @see TupleTypes
      *
      */
-    public static int convert(final AdqlColumn.Type type)
+    public static int convert(final AdqlColumn.AdqlType type)
         {
         if (type == null)
             {

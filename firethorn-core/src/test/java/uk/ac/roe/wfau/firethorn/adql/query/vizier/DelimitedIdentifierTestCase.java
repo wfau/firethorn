@@ -57,8 +57,8 @@ public class DelimitedIdentifierTestCase
             "    vizls.\"II/246/out\"",
 
             new ExpectedField[] {
-                new ExpectedField("RAJ2000",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("DEJ2000", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("RAJ2000", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("DEJ2000", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

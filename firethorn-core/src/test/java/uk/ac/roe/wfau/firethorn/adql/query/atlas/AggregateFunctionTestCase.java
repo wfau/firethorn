@@ -57,8 +57,8 @@ public class AggregateFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("MAX", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("MIN", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("MAX", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("MIN", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -88,8 +88,8 @@ public class AggregateFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("AVG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("AVG", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -119,8 +119,8 @@ public class AggregateFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("AVG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("AVG", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -148,7 +148,7 @@ public class AggregateFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("COUNT", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("COUNT", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }

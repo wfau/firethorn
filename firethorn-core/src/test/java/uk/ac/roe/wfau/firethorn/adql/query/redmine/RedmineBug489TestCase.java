@@ -58,8 +58,8 @@ public class RedmineBug489TestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("one", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("two", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("one", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("two", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
         }
@@ -97,8 +97,8 @@ public class RedmineBug489TestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.ra  + (6 / 2)) > 0",
 
             new ExpectedField[] {
-                new ExpectedField("one", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("two", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("one", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("two", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
         }
@@ -140,8 +140,8 @@ public class RedmineBug489TestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.ra  + (6 / 2))",
 
             new ExpectedField[] {
-                new ExpectedField("one", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("two", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("one", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("two", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
         }

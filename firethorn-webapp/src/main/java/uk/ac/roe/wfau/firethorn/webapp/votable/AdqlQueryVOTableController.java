@@ -378,17 +378,17 @@ public class AdqlQueryVOTableController
 
                     if (column.meta().adql().type() != null)
                         {
-                        if (column.meta().adql().type() == AdqlColumn.Type.DATE)
+                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
                             {
                             writer.append(" datatype='char'");
                             writer.append(" arraysize='*'");
                             }
-                        if (column.meta().adql().type() == AdqlColumn.Type.TIME)
+                        if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
                             {
                             writer.append(" datatype='char'");
                             writer.append(" arraysize='*'");
                             }
-                        if (column.meta().adql().type() == AdqlColumn.Type.DATETIME)
+                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
                             {
                             writer.append(" datatype='char'");
                             writer.append(" arraysize='*'");
@@ -400,10 +400,10 @@ public class AdqlQueryVOTableController
 
                             if (column.meta().adql().arraysize() != null)
                                 {
-                                if (column.meta().adql().arraysize() == BaseColumn.NON_ARRAY_SIZE)
+                                if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
                                     {
                                     }
-                                else if (column.meta().adql().arraysize() == BaseColumn.VAR_ARRAY_SIZE)
+                                else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
                                     {
                                     writer.append(" arraysize='*'");
                                     }
@@ -414,9 +414,13 @@ public class AdqlQueryVOTableController
                                     }
                                 }
                             }
-                        writer.append(" xtype='");
-                        writer.append(column.meta().adql().type().xtype());
-                        writer.append("'");
+
+                        if (column.meta().adql() != null)
+                            {
+                            writer.append(" xtype='");
+                            writer.append(column.meta().adql().type().xtype());
+                            writer.append("'");
+                            }
                         }
 
                     if (column.meta().adql().units() != null)

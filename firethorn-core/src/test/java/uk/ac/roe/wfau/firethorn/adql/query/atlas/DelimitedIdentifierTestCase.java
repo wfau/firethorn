@@ -51,14 +51,14 @@ public class DelimitedIdentifierTestCase
             "    \"atlasSource\" AS atlas",
 
             " SELECT " +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra  AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    atlas.ra  AS ra," +
+            "    atlas.dec AS dec" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

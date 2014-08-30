@@ -49,7 +49,7 @@ public class MathFunctionTestCase
             " SELECT PI() AS PI",
 
             new ExpectedField[] {
-                new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("PI", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -77,7 +77,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("PI", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("PI", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -106,7 +106,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("POWER", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("POWER", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -134,7 +134,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("LOG", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("LOG", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -162,7 +162,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("LOG10", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("LOG10", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -210,7 +210,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("ROUND", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ROUND", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -257,7 +257,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("TRUNCATE", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("TRUNCATE", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -304,7 +304,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("RAND", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("RAND", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -351,7 +351,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("SIGN", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SIGN", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -398,7 +398,7 @@ public class MathFunctionTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("SQUARE", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SQUARE", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

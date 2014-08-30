@@ -59,8 +59,8 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
-                new ExpectedField("fHMS", AdqlColumn.Type.CHAR, 32),
-                new ExpectedField("fDMS", AdqlColumn.Type.CHAR, 32)
+                new ExpectedField("fHMS", AdqlColumn.AdqlType.CHAR, 0),
+                new ExpectedField("fDMS", AdqlColumn.AdqlType.CHAR, 0)
                 }
             );
         }
@@ -93,8 +93,8 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
-                new ExpectedField("fra",  AdqlColumn.Type.CHAR, 32),
-                new ExpectedField("fdec", AdqlColumn.Type.CHAR, 32)
+                new ExpectedField("fra",  AdqlColumn.AdqlType.CHAR, 0),
+                new ExpectedField("fdec", AdqlColumn.AdqlType.CHAR, 0)
                 }
             );
         }

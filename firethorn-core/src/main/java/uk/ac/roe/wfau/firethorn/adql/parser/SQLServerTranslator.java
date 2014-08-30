@@ -351,7 +351,6 @@ public class SQLServerTranslator
         log.debug("translate(ADQLColumn)");
         log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
 
-
         if (column.getDBLink() == null)
             {
             log.warn("ADQLColumn getDBLink() is NULL");
@@ -361,11 +360,23 @@ public class SQLServerTranslator
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
             {
-            final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
-            log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
-            return translate(
-                adql
-                );
+            //
+            // If the column table has an alias.
+            if ((column.getAdqlTable() != null)  && (column.getAdqlTable().hasAlias()))
+                {
+                return super.translate(
+                    column
+                    );
+                }
+            //
+            // If the column doesn't have an alias, use the full column name
+            else {
+                final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
+                log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
+                return translate(
+                    adql
+                    );
+                }
             }
         else {
             log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());

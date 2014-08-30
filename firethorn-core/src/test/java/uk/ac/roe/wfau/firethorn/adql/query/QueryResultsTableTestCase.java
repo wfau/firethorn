@@ -47,7 +47,7 @@ extends TwomassQueryTestBase
      */
     public static class ExpectedColumn
         {
-        public ExpectedColumn(final String adqlname, final AdqlColumn.Type adqltype, final Integer adqlsize, final String jdbcname, final JdbcColumn.Type jdbctype, final Integer jdbcsize)
+        public ExpectedColumn(final String adqlname, final AdqlColumn.AdqlType adqltype, final Integer adqlsize, final String jdbcname, final JdbcColumn.JdbcType jdbctype, final Integer jdbcsize)
             {
             this.adqlname = adqlname ;
             this.adqltype = adqltype ;
@@ -63,8 +63,8 @@ extends TwomassQueryTestBase
             {
             return this.adqlsize;
             }
-        private final AdqlColumn.Type adqltype;
-        public  AdqlColumn.Type adqltype()
+        private final AdqlColumn.AdqlType adqltype;
+        public  AdqlColumn.AdqlType adqltype()
             {
             return this.adqltype;
             }
@@ -79,8 +79,8 @@ extends TwomassQueryTestBase
             {
             return this.jdbcsize;
             }
-        private final JdbcColumn.Type jdbctype;
-        public  JdbcColumn.Type jdbctype()
+        private final JdbcColumn.JdbcType jdbctype;
+        public  JdbcColumn.JdbcType jdbctype()
             {
             return this.jdbctype;
             }
@@ -134,19 +134,19 @@ extends TwomassQueryTestBase
             {
             log.debug("validate(JdbcColumn)");
             log.debug("  name [{}][{}]", this.jdbcname, column.name());
-            log.debug("  size [{}][{}]", this.jdbcsize, column.meta().jdbc().size());
-            log.debug("  type [{}][{}]", this.jdbctype, column.meta().jdbc().type());
+            log.debug("  size [{}][{}]", this.jdbcsize, column.meta().jdbc().arraysize());
+            log.debug("  type [{}][{}]", this.jdbctype, column.meta().jdbc().jdbctype());
             assertEquals(
                 this.jdbcname,
                 column.name()
                 ) ;
             assertEquals(
                 this.jdbcsize,
-                column.meta().jdbc().size()
+                column.meta().jdbc().arraysize()
                 ) ;
             assertEquals(
                 this.jdbctype,
-                column.meta().jdbc().type()
+                column.meta().jdbc().jdbctype()
                 ) ;
             }
         }
@@ -238,8 +238,8 @@ extends TwomassQueryTestBase
                 + ""
                 ),
             new ExpectedColumn[] {
-                new ExpectedColumn("ra",  AdqlColumn.Type.DOUBLE, 0, "ra",  JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("dec", AdqlColumn.Type.DOUBLE, 0, "dec", JdbcColumn.Type.DOUBLE, 53)
+                new ExpectedColumn("ra",  AdqlColumn.AdqlType.DOUBLE, 0, "ra",  JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("dec", AdqlColumn.AdqlType.DOUBLE, 0, "dec", JdbcColumn.JdbcType.DOUBLE, 0)
                 }
             );
         }
@@ -287,7 +287,7 @@ extends TwomassQueryTestBase
                 + ""
                 ),
             new ExpectedColumn[] {
-                new ExpectedColumn("mydate", AdqlColumn.Type.DATETIME, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
+                new ExpectedColumn("mydate", AdqlColumn.AdqlType.DATETIME, 0, "mydate", JdbcColumn.JdbcType.TIMESTAMP, 0)
                 }
             );
         }
@@ -310,70 +310,70 @@ extends TwomassQueryTestBase
                 + ""
                 ),
             new ExpectedColumn[] {
-                new ExpectedColumn("cx",               AdqlColumn.Type.DOUBLE,     0,   "cx",               JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("cy",               AdqlColumn.Type.DOUBLE,     0,   "cy",               JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("cz",               AdqlColumn.Type.DOUBLE,     0,   "cz",               JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("htmID",            AdqlColumn.Type.LONG,       0,   "htmID",            JdbcColumn.Type.BIGINT,    19),
-                new ExpectedColumn("ra",               AdqlColumn.Type.DOUBLE,     0,   "ra",               JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("dec",              AdqlColumn.Type.DOUBLE,     0,   "dec",              JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("err_maj",          AdqlColumn.Type.FLOAT,      0,   "err_maj",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("err_min",          AdqlColumn.Type.FLOAT,      0,   "err_min",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("err_ang",          AdqlColumn.Type.SHORT,      0,   "err_ang",          JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("designation",      AdqlColumn.Type.CHAR,      17,   "designation",      JdbcColumn.Type.VARCHAR,   17),
-                new ExpectedColumn("j_m",              AdqlColumn.Type.FLOAT,      0,   "j_m",              JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("j_cmsig",          AdqlColumn.Type.FLOAT,      0,   "j_cmsig",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("j_msigcom",        AdqlColumn.Type.FLOAT,      0,   "j_msigcom",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("j_snr",            AdqlColumn.Type.FLOAT,      0,   "j_snr",            JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_m",              AdqlColumn.Type.FLOAT,      0,   "h_m",              JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_cmsig",          AdqlColumn.Type.FLOAT,      0,   "h_cmsig",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_msigcom",        AdqlColumn.Type.FLOAT,      0,   "h_msigcom",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_snr",            AdqlColumn.Type.FLOAT,      0,   "h_snr",            JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_m",              AdqlColumn.Type.FLOAT,      0,   "k_m",              JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_cmsig",          AdqlColumn.Type.FLOAT,      0,   "k_cmsig",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_msigcom",        AdqlColumn.Type.FLOAT,      0,   "k_msigcom",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_snr",            AdqlColumn.Type.FLOAT,      0,   "k_snr",            JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("ph_qual",          AdqlColumn.Type.CHAR,       3,   "ph_qual",          JdbcColumn.Type.VARCHAR,    3),
-                new ExpectedColumn("rd_flg",           AdqlColumn.Type.CHAR,       3,   "rd_flg",           JdbcColumn.Type.VARCHAR,    3),
-                new ExpectedColumn("bl_flg",           AdqlColumn.Type.CHAR,       3,   "bl_flg",           JdbcColumn.Type.VARCHAR,    3),
-                new ExpectedColumn("cc_flg",           AdqlColumn.Type.CHAR,       3,   "cc_flg",           JdbcColumn.Type.VARCHAR,    3),
-                new ExpectedColumn("ndet",             AdqlColumn.Type.CHAR,       6,   "ndet",             JdbcColumn.Type.VARCHAR,    6),
-                new ExpectedColumn("prox",             AdqlColumn.Type.FLOAT,      0,   "prox",             JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("pxpa",             AdqlColumn.Type.SHORT,      0,   "pxpa",             JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("pxcntr",           AdqlColumn.Type.INTEGER,    0,   "pxcntr",           JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("gal_contam",       AdqlColumn.Type.SHORT,      0,   "gal_contam",       JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("mp_flg",           AdqlColumn.Type.SHORT,      0,   "mp_flg",           JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("pts_key",          AdqlColumn.Type.INTEGER,    0,   "pts_key",          JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("hemis",            AdqlColumn.Type.CHAR,       1,   "hemis",            JdbcColumn.Type.VARCHAR,    1),
-                new ExpectedColumn("date",             AdqlColumn.Type.DATETIME, 23,   "date",             JdbcColumn.Type.TIMESTAMP, 23),
-                new ExpectedColumn("scan",             AdqlColumn.Type.SHORT,      0,   "scan",             JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("glon",             AdqlColumn.Type.FLOAT,      0,   "glon",             JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("glat",             AdqlColumn.Type.FLOAT,      0,   "glat",             JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("x_scan",           AdqlColumn.Type.FLOAT,      0,   "x_scan",           JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("jdate",            AdqlColumn.Type.DOUBLE,     0,   "jdate",            JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("j_psfchi",         AdqlColumn.Type.FLOAT,      0,   "j_psfchi",         JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_psfchi",         AdqlColumn.Type.FLOAT,      0,   "h_psfchi",         JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_psfchi",         AdqlColumn.Type.FLOAT,      0,   "k_psfchi",         JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("j_m_stdap",        AdqlColumn.Type.FLOAT,      0,   "j_m_stdap",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("j_msig_stdap",     AdqlColumn.Type.FLOAT,      0,   "j_msig_stdap",     JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_m_stdap",        AdqlColumn.Type.FLOAT,      0,   "h_m_stdap",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("h_msig_stdap",     AdqlColumn.Type.FLOAT,      0,   "h_msig_stdap",     JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_m_stdap",        AdqlColumn.Type.FLOAT,      0,   "k_m_stdap",        JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("k_msig_stdap",     AdqlColumn.Type.FLOAT,      0,   "k_msig_stdap",     JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("dist_edge_ns",     AdqlColumn.Type.INTEGER,    0,   "dist_edge_ns",     JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("dist_edge_ew",     AdqlColumn.Type.INTEGER,    0,   "dist_edge_ew",     JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("dist_edge_flg",    AdqlColumn.Type.CHAR,       2,   "dist_edge_flg",    JdbcColumn.Type.VARCHAR,    2),
-                new ExpectedColumn("dup_src",          AdqlColumn.Type.SHORT,      0,   "dup_src",          JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("use_src",          AdqlColumn.Type.SHORT,      0,   "use_src",          JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("a",                AdqlColumn.Type.CHAR,       1,   "a",                JdbcColumn.Type.VARCHAR,    1),
-                new ExpectedColumn("dist_opt",         AdqlColumn.Type.FLOAT,      0,   "dist_opt",         JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("phi_opt",          AdqlColumn.Type.SHORT,      0,   "phi_opt",          JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("b_m_opt",          AdqlColumn.Type.FLOAT,      0,   "b_m_opt",          JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("vr_m_opt",         AdqlColumn.Type.FLOAT,      0,   "vr_m_opt",         JdbcColumn.Type.REAL,      24),
-                new ExpectedColumn("nopt_mchs",        AdqlColumn.Type.SHORT,      0,   "nopt_mchs",        JdbcColumn.Type.SMALLINT,   5),
-                new ExpectedColumn("ext_key",          AdqlColumn.Type.INTEGER,    0,   "ext_key",          JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("scan_key",         AdqlColumn.Type.INTEGER,    0,   "scan_key",         JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("coadd_key",        AdqlColumn.Type.INTEGER,    0,   "coadd_key",        JdbcColumn.Type.INTEGER,   10),
-                new ExpectedColumn("coadd",            AdqlColumn.Type.SHORT,      0,   "coadd",            JdbcColumn.Type.SMALLINT,   5)
+                new ExpectedColumn("cx",               AdqlColumn.AdqlType.DOUBLE,     0,   "cx",               JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("cy",               AdqlColumn.AdqlType.DOUBLE,     0,   "cy",               JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("cz",               AdqlColumn.AdqlType.DOUBLE,     0,   "cz",               JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("htmID",            AdqlColumn.AdqlType.LONG,       0,   "htmID",            JdbcColumn.JdbcType.BIGINT,    0),
+                new ExpectedColumn("ra",               AdqlColumn.AdqlType.DOUBLE,     0,   "ra",               JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("dec",              AdqlColumn.AdqlType.DOUBLE,     0,   "dec",              JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("err_maj",          AdqlColumn.AdqlType.FLOAT,      0,   "err_maj",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("err_min",          AdqlColumn.AdqlType.FLOAT,      0,   "err_min",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("err_ang",          AdqlColumn.AdqlType.SHORT,      0,   "err_ang",          JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("designation",      AdqlColumn.AdqlType.CHAR,      17,   "designation",      JdbcColumn.JdbcType.VARCHAR,   17),
+                new ExpectedColumn("j_m",              AdqlColumn.AdqlType.FLOAT,      0,   "j_m",              JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("j_cmsig",          AdqlColumn.AdqlType.FLOAT,      0,   "j_cmsig",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("j_msigcom",        AdqlColumn.AdqlType.FLOAT,      0,   "j_msigcom",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("j_snr",            AdqlColumn.AdqlType.FLOAT,      0,   "j_snr",            JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_m",              AdqlColumn.AdqlType.FLOAT,      0,   "h_m",              JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_cmsig",          AdqlColumn.AdqlType.FLOAT,      0,   "h_cmsig",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_msigcom",        AdqlColumn.AdqlType.FLOAT,      0,   "h_msigcom",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_snr",            AdqlColumn.AdqlType.FLOAT,      0,   "h_snr",            JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_m",              AdqlColumn.AdqlType.FLOAT,      0,   "k_m",              JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_cmsig",          AdqlColumn.AdqlType.FLOAT,      0,   "k_cmsig",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_msigcom",        AdqlColumn.AdqlType.FLOAT,      0,   "k_msigcom",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_snr",            AdqlColumn.AdqlType.FLOAT,      0,   "k_snr",            JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("ph_qual",          AdqlColumn.AdqlType.CHAR,       3,   "ph_qual",          JdbcColumn.JdbcType.VARCHAR,   3),
+                new ExpectedColumn("rd_flg",           AdqlColumn.AdqlType.CHAR,       3,   "rd_flg",           JdbcColumn.JdbcType.VARCHAR,   3),
+                new ExpectedColumn("bl_flg",           AdqlColumn.AdqlType.CHAR,       3,   "bl_flg",           JdbcColumn.JdbcType.VARCHAR,   3),
+                new ExpectedColumn("cc_flg",           AdqlColumn.AdqlType.CHAR,       3,   "cc_flg",           JdbcColumn.JdbcType.VARCHAR,   3),
+                new ExpectedColumn("ndet",             AdqlColumn.AdqlType.CHAR,       6,   "ndet",             JdbcColumn.JdbcType.VARCHAR,   6),
+                new ExpectedColumn("prox",             AdqlColumn.AdqlType.FLOAT,      0,   "prox",             JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("pxpa",             AdqlColumn.AdqlType.SHORT,      0,   "pxpa",             JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("pxcntr",           AdqlColumn.AdqlType.INTEGER,    0,   "pxcntr",           JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("gal_contam",       AdqlColumn.AdqlType.SHORT,      0,   "gal_contam",       JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("mp_flg",           AdqlColumn.AdqlType.SHORT,      0,   "mp_flg",           JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("pts_key",          AdqlColumn.AdqlType.INTEGER,    0,   "pts_key",          JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("hemis",            AdqlColumn.AdqlType.CHAR,       1,   "hemis",            JdbcColumn.JdbcType.VARCHAR,   1),
+                new ExpectedColumn("date",             AdqlColumn.AdqlType.DATETIME,   0,   "date",             JdbcColumn.JdbcType.TIMESTAMP, 0),
+                new ExpectedColumn("scan",             AdqlColumn.AdqlType.SHORT,      0,   "scan",             JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("glon",             AdqlColumn.AdqlType.FLOAT,      0,   "glon",             JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("glat",             AdqlColumn.AdqlType.FLOAT,      0,   "glat",             JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("x_scan",           AdqlColumn.AdqlType.FLOAT,      0,   "x_scan",           JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("jdate",            AdqlColumn.AdqlType.DOUBLE,     0,   "jdate",            JdbcColumn.JdbcType.DOUBLE,    0),
+                new ExpectedColumn("j_psfchi",         AdqlColumn.AdqlType.FLOAT,      0,   "j_psfchi",         JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_psfchi",         AdqlColumn.AdqlType.FLOAT,      0,   "h_psfchi",         JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_psfchi",         AdqlColumn.AdqlType.FLOAT,      0,   "k_psfchi",         JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("j_m_stdap",        AdqlColumn.AdqlType.FLOAT,      0,   "j_m_stdap",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("j_msig_stdap",     AdqlColumn.AdqlType.FLOAT,      0,   "j_msig_stdap",     JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_m_stdap",        AdqlColumn.AdqlType.FLOAT,      0,   "h_m_stdap",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("h_msig_stdap",     AdqlColumn.AdqlType.FLOAT,      0,   "h_msig_stdap",     JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_m_stdap",        AdqlColumn.AdqlType.FLOAT,      0,   "k_m_stdap",        JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("k_msig_stdap",     AdqlColumn.AdqlType.FLOAT,      0,   "k_msig_stdap",     JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("dist_edge_ns",     AdqlColumn.AdqlType.INTEGER,    0,   "dist_edge_ns",     JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("dist_edge_ew",     AdqlColumn.AdqlType.INTEGER,    0,   "dist_edge_ew",     JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("dist_edge_flg",    AdqlColumn.AdqlType.CHAR,       2,   "dist_edge_flg",    JdbcColumn.JdbcType.VARCHAR,   2),
+                new ExpectedColumn("dup_src",          AdqlColumn.AdqlType.SHORT,      0,   "dup_src",          JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("use_src",          AdqlColumn.AdqlType.SHORT,      0,   "use_src",          JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("a",                AdqlColumn.AdqlType.CHAR,       1,   "a",                JdbcColumn.JdbcType.VARCHAR,   1),
+                new ExpectedColumn("dist_opt",         AdqlColumn.AdqlType.FLOAT,      0,   "dist_opt",         JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("phi_opt",          AdqlColumn.AdqlType.SHORT,      0,   "phi_opt",          JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("b_m_opt",          AdqlColumn.AdqlType.FLOAT,      0,   "b_m_opt",          JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("vr_m_opt",         AdqlColumn.AdqlType.FLOAT,      0,   "vr_m_opt",         JdbcColumn.JdbcType.REAL,      0),
+                new ExpectedColumn("nopt_mchs",        AdqlColumn.AdqlType.SHORT,      0,   "nopt_mchs",        JdbcColumn.JdbcType.SMALLINT,  0),
+                new ExpectedColumn("ext_key",          AdqlColumn.AdqlType.INTEGER,    0,   "ext_key",          JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("scan_key",         AdqlColumn.AdqlType.INTEGER,    0,   "scan_key",         JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("coadd_key",        AdqlColumn.AdqlType.INTEGER,    0,   "coadd_key",        JdbcColumn.JdbcType.INTEGER,   0),
+                new ExpectedColumn("coadd",            AdqlColumn.AdqlType.SHORT,      0,   "coadd",            JdbcColumn.JdbcType.SMALLINT,  0)
                 }
             );
         }
@@ -418,26 +418,26 @@ extends TwomassQueryTestBase
                 ),
             new ExpectedColumn[] {
 
-                new ExpectedColumn("COUNT",    AdqlColumn.Type.LONG, 0, "COUNT",    JdbcColumn.Type.BIGINT, 19),
-                new ExpectedColumn("countra",  AdqlColumn.Type.LONG, 0, "countra",  JdbcColumn.Type.BIGINT, 19),
-                new ExpectedColumn("countdec", AdqlColumn.Type.LONG, 0, "countdec", JdbcColumn.Type.BIGINT, 19),
-                new ExpectedColumn("countall", AdqlColumn.Type.LONG, 0, "countall", JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("COUNT",    AdqlColumn.AdqlType.LONG, 0, "COUNT",    JdbcColumn.JdbcType.BIGINT, 0),
+                new ExpectedColumn("countra",  AdqlColumn.AdqlType.LONG, 0, "countra",  JdbcColumn.JdbcType.BIGINT, 0),
+                new ExpectedColumn("countdec", AdqlColumn.AdqlType.LONG, 0, "countdec", JdbcColumn.JdbcType.BIGINT, 0),
+                new ExpectedColumn("countall", AdqlColumn.AdqlType.LONG, 0, "countall", JdbcColumn.JdbcType.BIGINT, 0),
 
-                new ExpectedColumn("MIN",    AdqlColumn.Type.DOUBLE, 0, "MIN",      JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("minra",  AdqlColumn.Type.DOUBLE, 0, "minra",    JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("mindec", AdqlColumn.Type.DOUBLE, 0, "mindec",   JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("MIN",    AdqlColumn.AdqlType.DOUBLE, 0, "MIN",      JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("minra",  AdqlColumn.AdqlType.DOUBLE, 0, "minra",    JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("mindec", AdqlColumn.AdqlType.DOUBLE, 0, "mindec",   JdbcColumn.JdbcType.DOUBLE, 0),
 
-                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",      JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("maxra",  AdqlColumn.Type.DOUBLE, 0, "maxra",    JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec",   JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("MAX",    AdqlColumn.AdqlType.DOUBLE, 0, "MAX",      JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("maxra",  AdqlColumn.AdqlType.DOUBLE, 0, "maxra",    JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("maxdec", AdqlColumn.AdqlType.DOUBLE, 0, "maxdec",   JdbcColumn.JdbcType.DOUBLE, 0),
 
-                new ExpectedColumn("AVG",    AdqlColumn.Type.DOUBLE, 0, "AVG",      JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("avgra",  AdqlColumn.Type.DOUBLE, 0, "avgra",    JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("avgdec", AdqlColumn.Type.DOUBLE, 0, "avgdec",   JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("AVG",    AdqlColumn.AdqlType.DOUBLE, 0, "AVG",      JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("avgra",  AdqlColumn.AdqlType.DOUBLE, 0, "avgra",    JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("avgdec", AdqlColumn.AdqlType.DOUBLE, 0, "avgdec",   JdbcColumn.JdbcType.DOUBLE, 0),
 
-                new ExpectedColumn("SUM",    AdqlColumn.Type.DOUBLE, 0, "SUM",      JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("sumra",  AdqlColumn.Type.DOUBLE, 0, "sumra",    JdbcColumn.Type.DOUBLE, 0),
-                new ExpectedColumn("sumdec", AdqlColumn.Type.DOUBLE, 0, "sumdec",   JdbcColumn.Type.DOUBLE, 0),
+                new ExpectedColumn("SUM",    AdqlColumn.AdqlType.DOUBLE, 0, "SUM",      JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("sumra",  AdqlColumn.AdqlType.DOUBLE, 0, "sumra",    JdbcColumn.JdbcType.DOUBLE, 0),
+                new ExpectedColumn("sumdec", AdqlColumn.AdqlType.DOUBLE, 0, "sumdec",   JdbcColumn.JdbcType.DOUBLE, 0),
 
                 }
             );

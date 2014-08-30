@@ -76,8 +76,8 @@ public class RedmineBug450TestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.dec > -3 AND ({ATLAS_VERSION}.dbo.atlassource.dec < -2 OR {ATLAS_VERSION}.dbo.atlassource.dec < -3))",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -127,8 +127,8 @@ public class RedmineBug450TestCase
             "    (({ATLAS_VERSION}.dbo.atlassource.dec > -3 AND {ATLAS_VERSION}.dbo.atlassource.dec < -2) OR {ATLAS_VERSION}.dbo.atlassource.dec < -3)",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -178,8 +178,8 @@ public class RedmineBug450TestCase
             "    (({ATLAS_VERSION}.dbo.atlassource.dec > -3) AND (({ATLAS_VERSION}.dbo.atlassource.dec < -2) OR ({ATLAS_VERSION}.dbo.atlassource.dec < -3)))",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -223,8 +223,8 @@ public class RedmineBug450TestCase
             "    {ATLAS_VERSION}.dbo.atlassource.dec > -3 AND {ATLAS_VERSION}.dbo.atlassource.dec < -2 OR {ATLAS_VERSION}.dbo.atlassource.dec < -3",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

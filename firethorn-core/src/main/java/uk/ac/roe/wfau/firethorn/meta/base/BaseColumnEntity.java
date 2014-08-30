@@ -29,7 +29,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 
 /**
  *
@@ -151,12 +150,12 @@ extends BaseComponentEntity<ColumnType>
     @Enumerated(
         EnumType.STRING
         )
-    protected AdqlColumn.Type adqltype ;
-    protected AdqlColumn.Type adqltype()
+    protected AdqlColumn.AdqlType adqltype ;
+    protected AdqlColumn.AdqlType adqltype()
         {
         return this.adqltype;
         }
-    protected void adqltype(final AdqlColumn.Type type)
+    protected void adqltype(final AdqlColumn.AdqlType type)
         {
         this.adqltype = type;
         }
@@ -285,12 +284,12 @@ extends BaseComponentEntity<ColumnType>
                     );
                 }
             @Override
-            public AdqlColumn.Type type()
+            public AdqlColumn.AdqlType type()
                 {
                 return adqltype();
                 }
             @Override
-            public void type(final Type type)
+            public void type(final AdqlColumn.AdqlType type)
                 {
                 adqltype(
                     type

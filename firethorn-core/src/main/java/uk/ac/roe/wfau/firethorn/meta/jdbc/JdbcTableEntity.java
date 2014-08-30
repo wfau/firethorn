@@ -141,12 +141,6 @@ implements JdbcTable
     /**
      * Hibernate column mapping, {@value}.
      *
-    protected static final String DB_JDBC_COUNT_COL  = "jdbccount"  ;
-     */
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
      */
     protected static final String DB_JDBC_STATUS_COL = "jdbcstatus" ;
 
@@ -340,14 +334,10 @@ implements JdbcTable
             // Add the select fields.
             for (final AdqlQuery.SelectField field : query.fields())
                 {
-    // Size is confused .... ?
-    // Include alias for unsafe names ?
-                log.debug("create(SelectField)");
-                log.debug("  Name [{}]", field.name());
-                log.debug("  Type [{}]", field.type());
-                log.debug("  Size [{}]", field.arraysize());
                 table.columns().create(
-                    field
+                    field.name(),
+                    field.type().jdbctype(),
+                    field.arraysize()
                     );
                 }
 
@@ -457,7 +447,6 @@ implements JdbcTable
 
         @Autowired
         protected JdbcTable.OldBuilder builder;
-        @Override
         public JdbcTable.OldBuilder builder()
             {
             return this.builder;
@@ -655,15 +644,6 @@ implements JdbcTable
                 }
             
             @Override
-            public JdbcColumn create(final AdqlQuery.SelectField field)
-                {
-                return factories().jdbc().columns().create(
-                    JdbcTableEntity.this,
-                    field
-                    );
-                }
-
-            @Override
             public JdbcColumn create(final JdbcColumn.Metadata meta)
                 {
                 return factories().jdbc().columns().create(
@@ -673,25 +653,13 @@ implements JdbcTable
                 }
             
             @Override
-            @Deprecated
-            public JdbcColumn create(final String name, final int type, final int size)
+            public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size)
                 {
                 return factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     name,
                     type,
                     size
-                    );
-                }
-
-            @Override
-            @Deprecated
-            public JdbcColumn create(final String name, final JdbcColumn.Type type)
-                {
-                return factories().jdbc().columns().create(
-                    JdbcTableEntity.this,
-                    name,
-                    type
                     );
                 }
 
@@ -1104,7 +1072,7 @@ implements JdbcTable
                         final String csname  = columns.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
                         final String ctname  = columns.getString(JdbcTypes.JDBC_META_TABLE_NAME);
                         final String colname = columns.getString(JdbcTypes.JDBC_META_COLUMN_NAME);
-                        final JdbcColumn.Type coltype = JdbcColumn.Type.jdbc(
+                        final JdbcColumn.JdbcType coltype = JdbcColumn.JdbcType.sqltype(
                             columns.getInt(
                                 JdbcTypes.JDBC_META_COLUMN_TYPE_TYPE
                                 )
@@ -1139,19 +1107,17 @@ implements JdbcTable
                             //
                             // Update the column ..
                             // TODO How do we handle changes to column types ?
-                            column.meta().jdbc().size(
-                                colsize
-                                );
-                            column.meta().jdbc().type(
-                                coltype
-                                );
+                            if (coltype != column.meta().jdbc().jdbctype())
+                                {
+                                log.warn("JDBC column types don't match [{}][{}][{}][{}]", column.ident(), column.namebuilder(), column.meta().jdbc().jdbctype(), coltype);
+                                }
                             }
                         catch (final EntityNotFoundException ouch)
                             {
                             columnsimpl().create(
                                 colname,
-                                coltype.sqltype(),
-                                colsize.intValue()
+                                coltype,
+                                colsize
                                 );
                             }
                         }

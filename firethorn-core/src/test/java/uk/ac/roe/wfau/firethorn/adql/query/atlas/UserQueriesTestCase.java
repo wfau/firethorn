@@ -149,16 +149,16 @@ public class UserQueriesTestCase
             "        )",
 
             new ExpectedField[] {
-                new ExpectedField("upetromag",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gpetromag",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("rpetromag",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("ipetromag",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("zpetromag",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_u", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_g", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_r", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_i", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_z", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("upetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("rpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("ipetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("zpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_u", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_g", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_r", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_i", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_z", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -202,8 +202,8 @@ public class UserQueriesTestCase
             "    x.slaveobjid = photoobj.objid",
 
             new ExpectedField[] {
-                new ExpectedField("g",  AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("petromag_u", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("g",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("petromag_u", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -251,12 +251,12 @@ public class UserQueriesTestCase
             "    photozrf.objid = photoobj.objid",
 
             new ExpectedField[] {
-                new ExpectedField("dered_u", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dered_g", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dered_r", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dered_i", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("dered_z", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("z",       AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("dered_u", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("dered_g", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("dered_r", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("dered_i", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("dered_z", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("z",       AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -411,38 +411,38 @@ public class UserQueriesTestCase
             "            )",
 
             new ExpectedField[] {
-                new ExpectedField("upetromag",          AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("gpetromag",          AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("rpetromag",          AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("ipetromag",          AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("zpetromag",          AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("uatlasextinction",   AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("gatlasextinction",   AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("ratlasextinction",   AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("iatlasextinction",   AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("zatlasextinction",   AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromag_u",         AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromag_g",         AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromag_r",         AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromag_i",         AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromag_z",         AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromagerr_u",      AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromagerr_g",      AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromagerr_r",      AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromagerr_i",      AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("petromagerr_z",      AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("extinction_u",       AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("extinction_g",       AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("extinction_r",       AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("extinction_i",       AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("extinction_z",       AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("z",                  AdqlColumn.Type.FLOAT,  0),
-                new ExpectedField("ATLAS_RA",           AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("ATLAS_DEC",          AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("PHOTOOBJ_RA",        AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("PHOTOOBJ_DEC",       AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("ATLAS_ID",           AdqlColumn.Type.LONG,   0),
-                new ExpectedField("SDSS_ID",            AdqlColumn.Type.LONG,   0)
+                new ExpectedField("upetromag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("gpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("rpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("ipetromag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("zpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("uatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("gatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("ratlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("iatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("zatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromag_u",         AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromag_g",         AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromag_r",         AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromag_i",         AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromag_z",         AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromagerr_u",      AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromagerr_g",      AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromagerr_r",      AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromagerr_i",      AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("petromagerr_z",      AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("extinction_u",       AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("extinction_g",       AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("extinction_r",       AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("extinction_i",       AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("extinction_z",       AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("z",                  AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("ATLAS_RA",           AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("ATLAS_DEC",          AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("PHOTOOBJ_RA",        AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("PHOTOOBJ_DEC",       AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("ATLAS_ID",           AdqlColumn.AdqlType.LONG,   0),
+                new ExpectedField("SDSS_ID",            AdqlColumn.AdqlType.LONG,   0)
                 }
             );
         }
@@ -536,13 +536,13 @@ public class UserQueriesTestCase
             "            )",
 
             new ExpectedField[] {
-                new ExpectedField("framesetID",     AdqlColumn.Type.LONG,  0),
-                new ExpectedField("sourceid",       AdqlColumn.Type.LONG,  0),
-                new ExpectedField("gpetromag",      AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("ag",             AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("objID",          AdqlColumn.Type.LONG,  0),
-                new ExpectedField("petromag_g",     AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("extinction_g",   AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("framesetID",     AdqlColumn.AdqlType.LONG,  0),
+                new ExpectedField("sourceid",       AdqlColumn.AdqlType.LONG,  0),
+                new ExpectedField("gpetromag",      AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("ag",             AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("objID",          AdqlColumn.AdqlType.LONG,  0),
+                new ExpectedField("petromag_g",     AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("extinction_g",   AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }

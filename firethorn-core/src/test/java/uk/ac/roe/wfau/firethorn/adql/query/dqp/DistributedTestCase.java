@@ -91,8 +91,8 @@ extends DistributedQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -118,8 +118,8 @@ extends DistributedQueryTestBase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -145,8 +145,8 @@ extends DistributedQueryTestBase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -190,8 +190,8 @@ extends DistributedQueryTestBase
             "",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -235,8 +235,8 @@ extends DistributedQueryTestBase
             "",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

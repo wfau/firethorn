@@ -77,7 +77,7 @@ extends NamedEntityBeanImpl<ColumnType>
 
     public class AdqlMetadataBean
         {
-        public AdqlColumn.Type getType()
+        public AdqlColumn.AdqlType getType()
             {
             return entity().meta().adql().type();
             }

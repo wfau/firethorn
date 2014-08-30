@@ -106,7 +106,7 @@ extends AtlasQueryTestBase
             "    nested.id = CrossMatch.masterObjID",
 
             new ExpectedField[] {
-                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("DistanceMins", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -162,7 +162,7 @@ extends AtlasQueryTestBase
             "    Crossmatch.distanceMins < 2 / 60.0 AND Crossmatch.sdssType = 3",
 
             new ExpectedField[] {
-                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("DistanceMins", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -224,7 +224,7 @@ extends AtlasQueryTestBase
             "    ) > 0",
 
             new ExpectedField[] {
-                new ExpectedField("DistanceMins", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("DistanceMins", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
