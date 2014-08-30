@@ -257,7 +257,7 @@ public class ArithmeticOperatorCase
             "    (atlas.umgpnt) AS umgpnt," +
             "    (atlas.umgpnt + atlas.umgpnterr) AS sum," +
             "    (atlas.umgpnt - atlas.umgpnterr) AS sub," +
-            "    (atlas.gmrpnt AS gmrpnt)," +
+            "    (atlas.gmrpnt) AS gmrpnt," +
             "    (atlas.gmrpnt + atlas.gmrpnterr) AS gmrsum," +
             "    (atlas.gmrpnt - atlas.gmrpnterr) AS gmrsub" +
             " FROM" +
