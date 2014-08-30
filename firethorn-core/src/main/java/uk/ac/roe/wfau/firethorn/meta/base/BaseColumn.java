@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
@@ -29,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 public interface BaseColumn<ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponent
     {
+
     /**
      * The size for a non-array field.
      *
@@ -36,7 +36,7 @@ extends BaseComponent
     public static final Integer NON_ARRAY_SIZE = new Integer(0);
 
     /**
-     * The size for a variable size array field.
+     * The size for a variable size field.
      *
      */
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);

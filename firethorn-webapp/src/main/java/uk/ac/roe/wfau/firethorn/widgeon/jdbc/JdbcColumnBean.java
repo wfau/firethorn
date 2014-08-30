@@ -60,13 +60,13 @@ extends BaseColumnBean<JdbcColumn>
 
     public class JdbcMetadataBean
         {
-        public JdbcColumn.Type getType()
+        public JdbcColumn.JdbcType getType()
             {
-            return entity().meta().jdbc().type();
+            return entity().meta().jdbc().jdbctype();
             }
         public Integer getSize()
             {
-            return entity().meta().jdbc().size();
+            return entity().meta().jdbc().arraysize();
             }
         }
 

@@ -58,8 +58,8 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.INTEGER, 0),
-                new ExpectedField("dec", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("ra",  AdqlColumn.AdqlType.INTEGER, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -108,14 +108,14 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                    new ExpectedField("ra_short",   AdqlColumn.Type.SHORT,   0),
-                    new ExpectedField("ra_small",   AdqlColumn.Type.SHORT,   0),
-                    new ExpectedField("ra_int",     AdqlColumn.Type.INTEGER, 0),
-                    new ExpectedField("ra_integer", AdqlColumn.Type.INTEGER, 0),
-                    new ExpectedField("ra_long",    AdqlColumn.Type.LONG,    0),
-                    new ExpectedField("ra_big",     AdqlColumn.Type.LONG,    0),
-                    new ExpectedField("ra_float",   AdqlColumn.Type.FLOAT,   0),
-                    new ExpectedField("ra_double",  AdqlColumn.Type.DOUBLE,  0),
+                    new ExpectedField("ra_short",   AdqlColumn.AdqlType.SHORT,   0),
+                    new ExpectedField("ra_small",   AdqlColumn.AdqlType.SHORT,   0),
+                    new ExpectedField("ra_int",     AdqlColumn.AdqlType.INTEGER, 0),
+                    new ExpectedField("ra_integer", AdqlColumn.AdqlType.INTEGER, 0),
+                    new ExpectedField("ra_long",    AdqlColumn.AdqlType.LONG,    0),
+                    new ExpectedField("ra_big",     AdqlColumn.AdqlType.LONG,    0),
+                    new ExpectedField("ra_float",   AdqlColumn.AdqlType.FLOAT,   0),
+                    new ExpectedField("ra_double",  AdqlColumn.AdqlType.DOUBLE,  0),
                 }
             );
         }
@@ -145,8 +145,8 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("rasixth",  AdqlColumn.Type.INTEGER, 0),
-                new ExpectedField("decsixth", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("rasixth",  AdqlColumn.AdqlType.INTEGER, 0),
+                new ExpectedField("decsixth", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -175,7 +175,7 @@ extends AtlasQueryTestBase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("CASTED",  AdqlColumn.Type.INTEGER, 0),
+                new ExpectedField("CASTED",  AdqlColumn.AdqlType.INTEGER, 0),
                 }
             );
         }
@@ -209,8 +209,8 @@ extends AtlasQueryTestBase
             "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6)",
 
             new ExpectedField[] {
-                new ExpectedField("binsize",  AdqlColumn.Type.LONG,    0),
-                new ExpectedField("binvalue", AdqlColumn.Type.INTEGER, 0),
+                new ExpectedField("binsize",  AdqlColumn.AdqlType.LONG,    0),
+                new ExpectedField("binvalue", AdqlColumn.AdqlType.INTEGER, 0),
                 }
             );
         }

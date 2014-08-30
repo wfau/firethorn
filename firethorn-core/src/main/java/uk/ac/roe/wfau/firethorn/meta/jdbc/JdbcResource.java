@@ -200,22 +200,22 @@ extends BaseResource<JdbcSchema>
      * Get the JDBC type for an ADQL type.
      * Do we need this here ?
      *
+    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type);
      */
-    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type);
 
     /**
      * Get the JDBC size/precision for an ADQL type.
      * Do we need this here ?
      *
+    public Integer jdbcsize(final AdqlColumn.OldAdqlType type);
      */
-    public Integer jdbcsize(final AdqlColumn.Type type);
 
     /**
      * Get the JDBC size/precision for a JDBC type.
      * Do we need this here ?
      *
+    public Integer jdbcsize(final JdbcColumn.OldJdbcType type);
      */
-    public Integer jdbcsize(final JdbcColumn.Type type);
 
     /**
      * The {@link JdbcResource} metadata.

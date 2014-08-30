@@ -54,7 +54,7 @@ extends AtlasQueryTestBase
             "unknown" +
 
             new ExpectedField[] {
-                new ExpectedField("unknown",  AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("unknown",  AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

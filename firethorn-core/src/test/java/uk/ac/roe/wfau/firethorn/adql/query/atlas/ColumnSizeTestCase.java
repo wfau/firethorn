@@ -91,7 +91,7 @@ public class ColumnSizeTestCase
             "    {ATLAS_VERSION}.dbo.multiframe.project LIKE 'ATLAS%'",
 
             new ExpectedField[] {
-                new ExpectedField("project", AdqlColumn.Type.CHAR, 64)
+                new ExpectedField("project", AdqlColumn.AdqlType.CHAR, 64)
                 }
             );
 

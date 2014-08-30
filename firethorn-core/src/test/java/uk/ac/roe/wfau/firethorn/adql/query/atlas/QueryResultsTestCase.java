@@ -66,8 +66,8 @@ public class QueryResultsTestCase
             "    twomass.dbo.twomass_psc.dec BETWEEN '24.0' and '24.2'",
 
             new ExpectedField[] {
-                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0),
                 }
             );
 

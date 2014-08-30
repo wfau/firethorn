@@ -63,11 +63,11 @@ public class ArithmeticOperatorCase
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
             new ExpectedField[] {
-                new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("MUL",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("DIV",    AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("DIV",    AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -130,12 +130,12 @@ public class ArithmeticOperatorCase
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 
             new ExpectedField[] {
-                new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrSUM", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrSUB", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrSUM", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrSUB", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -195,11 +195,11 @@ public class ArithmeticOperatorCase
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
 
             new ExpectedField[] {
-                new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("MUL",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("DIV",    AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("DIV",    AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -264,12 +264,12 @@ public class ArithmeticOperatorCase
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 
             new ExpectedField[] {
-                new ExpectedField("umgPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUM",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrPnt", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrSUM", AdqlColumn.Type.FLOAT, 0),
-                new ExpectedField("gmrSUB", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrPnt", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrSUM", AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gmrSUB", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }

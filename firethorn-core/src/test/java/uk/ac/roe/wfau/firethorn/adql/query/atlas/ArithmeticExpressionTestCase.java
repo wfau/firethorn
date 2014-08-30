@@ -51,7 +51,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.BYTE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.BYTE, 0)
                 }
             );
         }
@@ -75,7 +75,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.BYTE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.BYTE, 0)
                 }
             );
         }
@@ -99,7 +99,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.BYTE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.BYTE, 0)
                 }
             );
         }
@@ -123,7 +123,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.BYTE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.BYTE, 0)
                 }
             );
         }
@@ -147,7 +147,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -171,7 +171,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -195,7 +195,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -219,7 +219,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -243,7 +243,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -267,7 +267,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasmergelog",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -293,7 +293,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.SHORT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.SHORT, 0)
                 }
             );
         }
@@ -317,7 +317,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.SHORT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.SHORT, 0)
                 }
             );
         }
@@ -341,7 +341,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.SHORT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.SHORT, 0)
                 }
             );
         }
@@ -365,7 +365,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.SHORT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.SHORT, 0)
                 }
             );
         }
@@ -389,7 +389,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -413,7 +413,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -437,7 +437,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -461,7 +461,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -485,7 +485,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -509,7 +509,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -535,7 +535,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -559,7 +559,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -583,7 +583,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -607,7 +607,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -631,7 +631,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -655,7 +655,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -679,7 +679,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -703,7 +703,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -727,7 +727,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -751,7 +751,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.INTEGER, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }
@@ -777,7 +777,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -801,7 +801,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -825,7 +825,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -849,7 +849,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -873,7 +873,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -897,7 +897,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -921,7 +921,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -945,7 +945,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -969,7 +969,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -993,7 +993,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.LONG, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.LONG, 0)
                 }
             );
         }
@@ -1019,7 +1019,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1043,7 +1043,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1067,7 +1067,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1091,7 +1091,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1115,7 +1115,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1139,7 +1139,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1163,7 +1163,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1187,7 +1187,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1211,7 +1211,7 @@ public class ArithmeticExpressionTestCase
             "    {ATLAS_VERSION}.dbo.atlasdetection",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.FLOAT, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
         }
@@ -1237,7 +1237,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1261,7 +1261,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1285,7 +1285,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1309,7 +1309,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1333,7 +1333,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1357,7 +1357,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1381,7 +1381,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1405,7 +1405,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1429,7 +1429,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("SUM", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("SUM", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }
@@ -1453,7 +1453,7 @@ public class ArithmeticExpressionTestCase
             "    TWOMASS.dbo.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("mysum", AdqlColumn.Type.DOUBLE, 0)
+                new ExpectedField("mysum", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

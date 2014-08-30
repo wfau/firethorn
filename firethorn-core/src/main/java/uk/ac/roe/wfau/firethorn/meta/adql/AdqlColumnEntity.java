@@ -440,7 +440,7 @@ public class AdqlColumnEntity
         // TODO Auto-generated method stub
         }
 
-    protected AdqlColumn.Type adqltype()
+    protected AdqlColumn.AdqlType adqltype()
         {
         if (this.adqltype != null)
             {

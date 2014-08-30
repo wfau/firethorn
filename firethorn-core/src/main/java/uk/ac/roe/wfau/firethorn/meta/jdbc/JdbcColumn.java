@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -94,29 +96,17 @@ extends BaseColumn<JdbcColumn>
         {
         /**
          * Create a new {@link JdbcColumn}.
+         * Used by JdbcColumn.Builder
          *
          */
         public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta);
 
         /**
          * Create a new {@link JdbcColumn}.
+         * Used by JdbcTableEntity.
          *
          */
-        public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field);
-
-        /**
-         * Create a new {@link JdbcColumn}.
-         *
-         */
-        @Deprecated
-        public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size);
-
-        /**
-         * Create a new {@link JdbcColumn}.
-         *
-         */
-        @Deprecated
-        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type);
+        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.JdbcType type, final Integer size);
 
         //TODO - move to services
         @Override
@@ -149,8 +139,8 @@ extends BaseColumn<JdbcColumn>
      * @todo refactor the sizes as arraysize or precision
      * @todo read the sizes from the table metadata
      *
-     */
-    public enum Type
+    @Deprecated
+    public enum OldJdbcType
         {
         ARRAY(          Types.ARRAY,         0,     VAR_ARRAY_SIZE),
         BIGINT(         Types.BIGINT,        0,     19),
@@ -208,26 +198,26 @@ extends BaseColumn<JdbcColumn>
             return this.strsize ;
             }
 
-        public AdqlColumn.Type adql()
+        public AdqlColumn.OldAdqlType adql()
             {
-            return AdqlColumn.Type.type(
+            return AdqlColumn.OldAdqlType.type(
                 this
                 );
             }
 
-        Type(final int sqltype, final int sqlsize, final int strsize)
+        OldJdbcType(final int sqltype, final int sqlsize, final int strsize)
             {
             this.sqltype = sqltype ;
             this.sqlsize = sqlsize ;
             this.strsize = strsize ;
             }
 
-        /**
+        **
          * Mapping from java.sql.Types to JdbcColumn.Type.
          * @see java.sql.Types
          *
-         */
-        public static Type jdbc(final int sql)
+         *
+        public static OldJdbcType jdbc(final int sql)
             {
             switch(sql)
                 {
@@ -344,7 +334,187 @@ extends BaseColumn<JdbcColumn>
                 }
             }
         }
+     */
 
+    
+    /**
+     * An enumeration of the {@link java.sql.Types} constants. 
+     *
+     */
+    public enum JdbcType
+        {
+        ARRAY(          Types.ARRAY,        true,   true),
+        BIGINT(         Types.BIGINT,       true,   false),
+        BINARY(         Types.BINARY,       false,  true),
+        BIT(            Types.BIT,          true,   false),
+        BLOB(           Types.BLOB,         false,  false),
+        BOOLEAN(        Types.BOOLEAN,      true,   false),
+        CHAR(           Types.CHAR,         true,   true),
+        CLOB(           Types.CLOB,         false,  false),
+        DATALINK(       Types.DATALINK,     false,  false),
+        DATE(           Types.DATE,         true,   false),
+        DECIMAL(        Types.DECIMAL,      false,  false),
+        DISTINCT(       Types.DISTINCT,     false,  false),
+        DOUBLE(         Types.DOUBLE,       true,   false),
+        FLOAT(          Types.FLOAT,        true,   false),
+        INTEGER(        Types.INTEGER,      true,   false),
+        JAVA_OBJECT(    Types.JAVA_OBJECT,  false,  false),
+        LONGNVARCHAR(   Types.LONGNVARCHAR, false,  false),
+        LONGVARBINARY(  Types.LONGVARBINARY,false,  false),
+        LONGVARCHAR(    Types.LONGVARCHAR,  false,  false),
+        NCHAR(          Types.NCHAR,        false,  false),
+        NCLOB(          Types.NCLOB,        false,  false),
+        NULL(           Types.NULL,         false,  false),
+        NUMERIC(        Types.NUMERIC,      false,  false),
+        NVARCHAR(       Types.NVARCHAR,     false,  false),
+        OTHER(          Types.OTHER,        false,  false),
+        REAL(           Types.REAL,         true,   false),
+        REF(            Types.REF,          false,  false),
+        ROWID(          Types.ROWID,        false,  false),
+        SMALLINT(       Types.SMALLINT,     true,   false),
+        SQLXML(         Types.SQLXML,       false,  false),
+        STRUCT(         Types.STRUCT,       false,  false),
+        TIME(           Types.TIME,         true,   false),
+        TIMESTAMP(      Types.TIMESTAMP,    true,   false),
+        TINYINT(        Types.TINYINT,      true,   false),
+        VARBINARY(      Types.VARBINARY,    false,  false),
+        VARCHAR(        Types.VARCHAR,      true,   true),
+        UNKNOWN(        Types.OTHER,        false,  false);
+
+        private JdbcType(final Integer sqltype, final boolean isvalid, final boolean isarray)
+            {
+            this.sqltype  = sqltype;
+            this.isvalid  = isvalid;
+            this.isarray  = isarray;
+            }
+
+        private Integer sqltype ;
+        public Integer sqltype()
+            {
+            return this.sqltype;
+            }
+
+        private boolean isarray ;
+        public boolean isarray()
+            {
+            return this.isarray;
+            }
+
+        private boolean isvalid ;
+        public boolean isvalid()
+            {
+            return this.isvalid;
+            }
+
+        /**
+         * Resolve our corresponding {@link AdqlColumn.AdqlType} 
+         *
+         */
+        public AdqlColumn.AdqlType adqltype()
+            {
+            return AdqlColumn.AdqlType.resolve(
+                this
+                );
+            }
+
+        /**
+         * Resolve a {@link AdqlColumn.AdqlType} into a {@link JdbcColumn.JdbcType}.
+         * 
+         */
+        public static JdbcColumn.JdbcType resolve(final AdqlColumn.AdqlType adql)
+            {
+            switch(adql)
+                {
+                case ARRAY :
+                    return JdbcColumn.JdbcType.ARRAY;
+                
+                case BOOLEAN :
+                    return JdbcColumn.JdbcType.BOOLEAN;
+                
+                case BIT :
+                    return JdbcColumn.JdbcType.BLOB;
+                
+                case BYTE :
+                    return JdbcColumn.JdbcType.TINYINT;
+                
+                case CHAR :
+                    return JdbcColumn.JdbcType.CHAR;
+                
+                case UNICODE :
+                    return JdbcColumn.JdbcType.CHAR;
+                
+                case SHORT :
+                    return JdbcColumn.JdbcType.SMALLINT;
+                
+                case INTEGER :
+                    return JdbcColumn.JdbcType.INTEGER;
+                
+                case LONG :
+                    return JdbcColumn.JdbcType.BIGINT;
+                
+                case FLOAT :
+                    return JdbcColumn.JdbcType.FLOAT;
+                
+                case DOUBLE :
+                    return JdbcColumn.JdbcType.DOUBLE;
+                
+                case FLOATCOMPLEX :
+                    return JdbcColumn.JdbcType.UNKNOWN;
+                
+                case DOUBLECOMPLEX :
+                    return JdbcColumn.JdbcType.UNKNOWN;
+                
+                case DATE :
+                    return JdbcColumn.JdbcType.DATE;
+                
+                case TIME :
+                    return JdbcColumn.JdbcType.TIME;
+                
+                case DATETIME :
+                    return JdbcColumn.JdbcType.DATE;
+                
+                case USER :
+                    return JdbcColumn.JdbcType.UNKNOWN;
+
+                case UNKNOWN :
+                    return JdbcColumn.JdbcType.UNKNOWN;
+                
+                default :
+                    return JdbcColumn.JdbcType.UNKNOWN;
+                }
+            }
+
+        
+        private static Map<Integer, JdbcType> sqlmap = new HashMap<Integer, JdbcType>();
+        static {
+            for(JdbcType type : JdbcType.values())
+                {
+                sqlmap.put(
+                    type.sqltype(),
+                    type
+                    );
+                }
+            }
+
+        /**
+         * Resolve a {@link java.sql.Type} into a {@link JdbcColumn.JdbcType}.
+         * 
+         */
+        public static JdbcType sqltype(final Integer sqltype)
+            {
+            JdbcType found = sqlmap.get(
+                sqltype
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                return JdbcColumn.JdbcType.UNKNOWN;
+                }
+            }
+        }
+    
     /**
      * The column metadata.
      *
@@ -365,28 +535,46 @@ extends BaseColumn<JdbcColumn>
             public String name();
             
             /**
+             * The column type.
+             * 
+             */
+            public JdbcType jdbctype();
+
+            /**
+             * The column array size (element count).
+             * 
+             */
+            public Integer arraysize();
+
+            
+            
+            /**
              * The column size.
              *
-             */
+            @Deprecated
             public Integer size();
+             */
 
             /**
              * Set the column size.
              *
-             */
+            @Deprecated
             public void size(final Integer size);
+             */
 
             /**
              * Get the JDBC type.
              *
+            @Deprecated
+            public OldJdbcType type();
              */
-            public Type type();
 
             /**
              * Set the JDBC type.
              *
+            @Deprecated
+            public void type(final OldJdbcType type);
              */
-            public void type(final Type type);
 
             /**
              * The corresponding SQL 'CREATE COLUMN' fields.

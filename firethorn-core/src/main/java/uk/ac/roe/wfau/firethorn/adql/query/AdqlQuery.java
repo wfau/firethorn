@@ -691,7 +691,7 @@ extends NamedEntity, Job
          * The field type.
          *
          */
-        public abstract AdqlColumn.Type type();
+        public abstract AdqlColumn.AdqlType type();
 
         /**
          * The ADQL column.

@@ -62,8 +62,8 @@ public class RedmineBug447TestCase
             "    ({ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID)",
 
             new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.INTEGER, 0),
-                new ExpectedField("lat", AdqlColumn.Type.INTEGER, 0),
+                new ExpectedField("lon", AdqlColumn.AdqlType.INTEGER, 0),
+                new ExpectedField("lat", AdqlColumn.AdqlType.INTEGER, 0),
                 }
             );
         }

@@ -219,25 +219,24 @@ public enum JdbcProductType
         }
 
     /**
-     * Get the corresponding {@link JdbcColumn.Type} for an {@link AdqlColumn.Type}.
-     * This defaults to calling {@link AdqlColumn.Type#jdbc()} on the {@link AdqlColumn.Type}.
-     * @param type The {@link AdqlColumn.Type} to check for.
-     * @return The corresponding {@link JdbcColumn.Type}.
+     * Get the corresponding {@link JdbcColumn.OldJdbcType} for an {@link AdqlColumn.OldAdqlType}.
+     * This defaults to calling {@link AdqlColumn.OldAdqlType#jdbc()} on the {@link AdqlColumn.OldAdqlType}.
+     * @param type The {@link AdqlColumn.OldAdqlType} to check for.
+     * @return The corresponding {@link JdbcColumn.OldJdbcType}.
      *
-     */
-    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type)
+    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type)
         {
         return type.jdbc();
         }
+     */
 
     /**
-     * Get the JDBC size/precision for an {@link AdqlColumn.Type}.
-     * This defaults to finding the corresponding {@link JdbcColumn.Type} and calling {@link JdbcColumn.Type#sqlsize()} to get the size from it.
-     * @param type The {@link AdqlColumn.Type} to check for.
+     * Get the JDBC size/precision for an {@link AdqlColumn.OldAdqlType}.
+     * This defaults to finding the corresponding {@link JdbcColumn.OldJdbcType} and calling {@link JdbcColumn.OldJdbcType#sqlsize()} to get the size from it.
+     * @param type The {@link AdqlColumn.OldAdqlType} to check for.
      * @return The JDBC size/precision .
      *
-     */
-    public Integer jdbcsize(final AdqlColumn.Type type)
+    public Integer jdbcsize(final AdqlColumn.OldAdqlType type)
         {
         return jdbcsize(
             jdbctype(
@@ -245,16 +244,17 @@ public enum JdbcProductType
                 )
             );
         }
+     */
 
     /**
-     * Get the JDBC size/precision for an {@link JdbcColumn.Type}.
-     * This defaults calling {@link JdbcColumn.Type#sqlsize()}.
-     * @param type The {@link JdbcColumn.Type} to get the size from.
+     * Get the JDBC size/precision for an {@link JdbcColumn.OldJdbcType}.
+     * This defaults calling {@link JdbcColumn.OldJdbcType#sqlsize()}.
+     * @param type The {@link JdbcColumn.OldJdbcType} to get the size from.
      * @return The JDBC size/precision .
      *
-     */
-    public Integer jdbcsize(final JdbcColumn.Type type)
+    public Integer jdbcsize(final JdbcColumn.OldJdbcType type)
         {
         return type.sqlsize();
         }
+     */
     }

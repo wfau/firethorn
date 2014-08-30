@@ -36,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -1058,11 +1057,9 @@ implements AdqlParser
             }
         }
 
-    public static final Integer DEFAULT_FIELD_SIZE = new Integer(0);
-
     public static final MySelectField UNKNOWN_FIELD = new MySelectFieldImpl(
         "unknown",
-        AdqlColumn.Type.UNKNOWN
+        AdqlColumn.AdqlType.UNKNOWN
         );
 
     /**
@@ -1096,16 +1093,16 @@ implements AdqlParser
     implements MySelectField
         {
 
-        private MySelectFieldImpl(final String name, final AdqlColumn.Type type)
+        private MySelectFieldImpl(final String name, final AdqlColumn.AdqlType type)
             {
             this(
                 name,
                 type,
-                DEFAULT_FIELD_SIZE
+                AdqlColumn.NON_ARRAY_SIZE
                 );
             }
 
-        private MySelectFieldImpl(final String name, final AdqlColumn.Type type, final Integer size)
+        private MySelectFieldImpl(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
             this.name  = name ;
             this.size  = size ;
@@ -1126,9 +1123,9 @@ implements AdqlParser
             return this.size;
             }
 
-        private final AdqlColumn.Type type;
+        private final AdqlColumn.AdqlType type;
         @Override
-        public AdqlColumn.Type type()
+        public AdqlColumn.AdqlType type()
             {
             return this.type;
             }
@@ -1159,7 +1156,7 @@ implements AdqlParser
 	            );
         	}
 
-        private MySelectFieldWrapper(final String name, final AdqlColumn.Type type, final MySelectField field)
+        private MySelectFieldWrapper(final String name, final AdqlColumn.AdqlType type, final MySelectField field)
             {
             this.name  = name  ;
             this.type  = type  ;
@@ -1179,9 +1176,9 @@ implements AdqlParser
         		}
             }
 
-        private final AdqlColumn.Type type;
+        private final AdqlColumn.AdqlType type;
         @Override
-        public AdqlColumn.Type type()
+        public AdqlColumn.AdqlType type()
             {
         	if (this.type != null)
         		{
@@ -1256,7 +1253,7 @@ implements AdqlParser
             return this.field.arraysize();
             }
         @Override
-        public Type type()
+        public AdqlColumn.AdqlType type()
             {
             return this.field.type();
             }
@@ -1270,16 +1267,16 @@ implements AdqlParser
     extends MySelectFieldImpl
     implements MySelectField
         {
-        protected MySelectOperWrapper(final ADQLOperand oper, final Type type)
+        protected MySelectOperWrapper(final ADQLOperand oper, final AdqlColumn.AdqlType type)
             {
             this(
                 oper,
                 type,
-                DEFAULT_FIELD_SIZE
+                AdqlColumn.NON_ARRAY_SIZE
                 );
             }
 
-        protected MySelectOperWrapper(final ADQLOperand oper, final Type type, final Integer arraysize)
+        protected MySelectOperWrapper(final ADQLOperand oper, final AdqlColumn.AdqlType type, final Integer arraysize)
             {
             super(
                 oper.getName(),
@@ -1333,7 +1330,7 @@ implements AdqlParser
             return this.adql.meta().adql().arraysize();
             }
         @Override
-        public AdqlColumn.Type type()
+        public AdqlColumn.AdqlType type()
             {
             return this.adql.meta().adql().type();
             }
@@ -1359,7 +1356,7 @@ implements AdqlParser
      * Get the type for an ADQLOperand.
      *
      */
-    protected static AdqlColumn.Type type(final ADQLOperand operand)
+    protected static AdqlColumn.AdqlType type(final ADQLOperand operand)
     throws AdqlParserException
         {
         log.debug("type(ADQLOperand)");
@@ -1377,7 +1374,7 @@ implements AdqlParser
 	        }
         else if (operand instanceof StringConstant)
             {
-            return AdqlColumn.Type.CHAR;
+            return AdqlColumn.AdqlType.CHAR;
             }
         else if (operand instanceof NumericConstant)
             {
@@ -1432,7 +1429,7 @@ implements AdqlParser
             {
             return new MySelectOperWrapper(
                 oper,
-                AdqlColumn.Type.CHAR,
+                AdqlColumn.AdqlType.CHAR,
                 ((StringConstant) oper).getValue().length()
                 );
             }
@@ -1480,7 +1477,7 @@ implements AdqlParser
      * Get the type of an ADQLColumn.
      *
      */
-    protected static AdqlColumn.Type type(final ADQLColumn column)
+    protected static AdqlColumn.AdqlType type(final ADQLColumn column)
     throws AdqlParserException
         {
         log.debug("type(ADQLColumn)");
@@ -1569,7 +1566,7 @@ implements AdqlParser
      * Get the smallest type for a numeric value.
      *
      */
-    protected static AdqlColumn.Type type(final NumericConstant number)
+    protected static AdqlColumn.AdqlType type(final NumericConstant number)
         {
         log.debug("type(NumericConstant)");
         log.debug("  number [{}]", number);
@@ -1584,10 +1581,10 @@ implements AdqlParser
                 }
             if ((value >= Float.MIN_VALUE) && (value <= Float.MAX_VALUE))
                 {
-                return AdqlColumn.Type.FLOAT;
+                return AdqlColumn.AdqlType.FLOAT;
                 }
             else {
-                return AdqlColumn.Type.DOUBLE;
+                return AdqlColumn.AdqlType.DOUBLE;
                 }
             }
         //
@@ -1596,10 +1593,10 @@ implements AdqlParser
             final long value = number.getIntegerValue();
             if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
                 {
-                return AdqlColumn.Type.INTEGER;
+                return AdqlColumn.AdqlType.INTEGER;
                 }
             else {
-                return AdqlColumn.Type.LONG;
+                return AdqlColumn.AdqlType.LONG;
                 }
             }
         }
@@ -1608,7 +1605,7 @@ implements AdqlParser
      * Get the type of an Operation.
      *
      */
-    public static AdqlColumn.Type type(final Operation oper)
+    public static AdqlColumn.AdqlType type(final Operation oper)
     throws AdqlParserException
         {
         log.debug("type(Operation)");
@@ -1616,70 +1613,71 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        final AdqlColumn.Type t1 = type(oper.getLeftOperand());
-        final AdqlColumn.Type t2 = type(oper.getRightOperand());
+        final AdqlColumn.AdqlType t1 = type(oper.getLeftOperand());
+        final AdqlColumn.AdqlType t2 = type(oper.getRightOperand());
 
-        if ((t1 == AdqlColumn.Type.DOUBLECOMPLEX) || (t2 == AdqlColumn.Type.DOUBLECOMPLEX))
+        if ((t1 == AdqlColumn.AdqlType.DOUBLECOMPLEX) || (t2 == AdqlColumn.AdqlType.DOUBLECOMPLEX))
             {
-            return AdqlColumn.Type.DOUBLECOMPLEX;
+            return AdqlColumn.AdqlType.DOUBLECOMPLEX;
             }
 
-        else if ((t1 == AdqlColumn.Type.FLOATCOMPLEX) || (t2 == AdqlColumn.Type.FLOATCOMPLEX))
+        else if ((t1 == AdqlColumn.AdqlType.FLOATCOMPLEX) || (t2 == AdqlColumn.AdqlType.FLOATCOMPLEX))
             {
-            return AdqlColumn.Type.FLOATCOMPLEX;
+            return AdqlColumn.AdqlType.FLOATCOMPLEX;
             }
 
-        else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE))
+        else if ((t1 == AdqlColumn.AdqlType.DOUBLE) || (t2 == AdqlColumn.AdqlType.DOUBLE))
             {
-            return AdqlColumn.Type.DOUBLE;
+            return AdqlColumn.AdqlType.DOUBLE;
             }
 
-        else if ((t1 == AdqlColumn.Type.FLOAT) || (t2 == AdqlColumn.Type.FLOAT))
+        else if ((t1 == AdqlColumn.AdqlType.FLOAT) || (t2 == AdqlColumn.AdqlType.FLOAT))
             {
-            return AdqlColumn.Type.FLOAT;
+            return AdqlColumn.AdqlType.FLOAT;
             }
 
-        else if ((t1 == AdqlColumn.Type.LONG) || (t2 == AdqlColumn.Type.LONG))
+        else if ((t1 == AdqlColumn.AdqlType.LONG) || (t2 == AdqlColumn.AdqlType.LONG))
             {
-            return AdqlColumn.Type.LONG;
+            return AdqlColumn.AdqlType.LONG;
             }
 
-        else if ((t1 == AdqlColumn.Type.INTEGER) || (t2 == AdqlColumn.Type.INTEGER))
+        else if ((t1 == AdqlColumn.AdqlType.INTEGER) || (t2 == AdqlColumn.AdqlType.INTEGER))
             {
-            return AdqlColumn.Type.INTEGER;
+            return AdqlColumn.AdqlType.INTEGER;
             }
 
-        else if ((t1 == AdqlColumn.Type.SHORT) || (t2 == AdqlColumn.Type.SHORT))
+        else if ((t1 == AdqlColumn.AdqlType.SHORT) || (t2 == AdqlColumn.AdqlType.SHORT))
             {
-            return AdqlColumn.Type.SHORT;
+            return AdqlColumn.AdqlType.SHORT;
             }
 
-        else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE))
+        else if ((t1 == AdqlColumn.AdqlType.BYTE) || (t2 == AdqlColumn.AdqlType.BYTE))
             {
-            return AdqlColumn.Type.BYTE;
+            return AdqlColumn.AdqlType.BYTE;
             }
 
-        else if ((t1 == AdqlColumn.Type.BIT) || (t2 == AdqlColumn.Type.BIT))
+        else if ((t1 == AdqlColumn.AdqlType.BIT) || (t2 == AdqlColumn.AdqlType.BIT))
             {
-            return AdqlColumn.Type.BIT;
+            return AdqlColumn.AdqlType.BIT;
             }
 
         // Probably wrong BOOLEAN + BIT = .... ?
-        else if ((t1 == AdqlColumn.Type.BOOLEAN) || (t2 == AdqlColumn.Type.BOOLEAN))
+        else if ((t1 == AdqlColumn.AdqlType.BOOLEAN) || (t2 == AdqlColumn.AdqlType.BOOLEAN))
             {
-            return AdqlColumn.Type.BOOLEAN;
+            return AdqlColumn.AdqlType.BOOLEAN;
             }
 
+        // UNICODE plus anything is probably wrong.
         // Check UNICODE + BYTE = ... ?
-        else if ((t1 == AdqlColumn.Type.UNICODE) || (t2 == AdqlColumn.Type.UNICODE))
+        else if ((t1 == AdqlColumn.AdqlType.UNICODE) || (t2 == AdqlColumn.AdqlType.UNICODE))
             {
-            return AdqlColumn.Type.UNICODE;
+            return AdqlColumn.AdqlType.UNICODE;
             }
 
         // Check CHAR + BYTE = ... ?
-        else if ((t1 == AdqlColumn.Type.CHAR) || (t2 == AdqlColumn.Type.CHAR))
+        else if ((t1 == AdqlColumn.AdqlType.CHAR) || (t2 == AdqlColumn.AdqlType.CHAR))
             {
-            return AdqlColumn.Type.CHAR;
+            return AdqlColumn.AdqlType.CHAR;
             }
 
         else {
@@ -1712,7 +1710,7 @@ implements AdqlParser
      * Get the type of an ADQLFunction.
      *
      */
-    public static AdqlColumn.Type type(final ADQLFunction funct)
+    public static AdqlColumn.AdqlType type(final ADQLFunction funct)
     throws AdqlParserException
         {
         log.debug("type(ADQLFunction)");
@@ -1777,7 +1775,7 @@ implements AdqlParser
      * Get the type of a SQLFunction.
      *
      */
-    public static AdqlColumn.Type type(final SQLFunction funct)
+    public static AdqlColumn.AdqlType type(final SQLFunction funct)
     throws AdqlParserException
         {
         log.debug("type(SQLFunction)");
@@ -1785,7 +1783,7 @@ implements AdqlParser
             {
             case COUNT :
             case COUNT_ALL :
-                return AdqlColumn.Type.LONG;
+                return AdqlColumn.AdqlType.LONG;
 
             case AVG:
             case MAX:
@@ -1819,7 +1817,7 @@ implements AdqlParser
             case COUNT_ALL :
                 return new MySelectFieldImpl(
                     funct.getName(),
-                    AdqlColumn.Type.LONG
+                    AdqlColumn.AdqlType.LONG
                     );
 
             case AVG:
@@ -1844,7 +1842,7 @@ implements AdqlParser
      * Get the floating point type of an ADQLOperand.
      *
      */
-    public static AdqlColumn.Type ftype(final ADQLOperand oper)
+    public static AdqlColumn.AdqlType ftype(final ADQLOperand oper)
     throws AdqlParserException
         {
         log.debug("ftype(ADQLOperand)");
@@ -1855,11 +1853,11 @@ implements AdqlParser
             case SHORT:
             case INTEGER:
             case FLOAT:
-                return Type.FLOAT;
+                return AdqlColumn.AdqlType.FLOAT;
 
             case LONG:
             case DOUBLE:
-                return Type.DOUBLE;
+                return AdqlColumn.AdqlType.DOUBLE;
 
             default :
                 throw new AdqlParserException(
@@ -1872,7 +1870,7 @@ implements AdqlParser
      * Get the type of a MathFunction.
      *
      */
-    public static AdqlColumn.Type type(final MathFunction funct)
+    public static AdqlColumn.AdqlType type(final MathFunction funct)
     throws AdqlParserException
         {
         log.debug("type(MathFunction)");
@@ -1910,9 +1908,9 @@ implements AdqlParser
             case PI:
             case SQRT:
             case EXP:
-                return AdqlColumn.Type.DOUBLE;
+                return AdqlColumn.AdqlType.DOUBLE;
             case SIGN:
-            	 return AdqlColumn.Type.INTEGER;
+            	 return AdqlColumn.AdqlType.INTEGER;
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1924,7 +1922,7 @@ implements AdqlParser
      * Get the type of a CastFunction.
      *
      */
-    public static AdqlColumn.Type type(final CastFunction funct)
+    public static AdqlColumn.AdqlType type(final CastFunction funct)
     throws AdqlParserException
         {
         log.debug("type(CastFunction)");
@@ -1932,21 +1930,21 @@ implements AdqlParser
         	{
         	case SHORT:
         	case SMALLINT:
-        		return AdqlColumn.Type.SHORT;
+        		return AdqlColumn.AdqlType.SHORT;
         	
         	case INT :
         	case INTEGER :
-        		return AdqlColumn.Type.INTEGER;
+        		return AdqlColumn.AdqlType.INTEGER;
 
         	case LONG:
         	case BIGINT:
-        		return AdqlColumn.Type.LONG;
+        		return AdqlColumn.AdqlType.LONG;
 
         	case FLOAT:
-        		return AdqlColumn.Type.FLOAT;
+        		return AdqlColumn.AdqlType.FLOAT;
 
         	case DOUBLE:
-        		return AdqlColumn.Type.DOUBLE;
+        		return AdqlColumn.AdqlType.DOUBLE;
 
         	default :
                 throw new AdqlParserException(
@@ -2010,12 +2008,12 @@ implements AdqlParser
             case EXP:
                 return new MySelectFieldImpl(
                     funct.getName(),
-                    AdqlColumn.Type.DOUBLE
+                    AdqlColumn.AdqlType.DOUBLE
                     );
             case SIGN:
           	  return new MySelectFieldImpl(
                         funct.getName(),
-                        AdqlColumn.Type.INTEGER
+                        AdqlColumn.AdqlType.INTEGER
                         );
             default :
                 throw new AdqlParserException(
@@ -2071,7 +2069,8 @@ implements AdqlParser
 	        log.debug("  number [{}]", funct.isNumeric());
 	        log.debug("  string [{}]", funct.isString());
 	        final String name = funct.getName();
-
+// TODO
+// STRING == WON'T WORK
 	        if ((name=="fDMS") ||
 	        	(name=="fDMSbase") ||
 	        	(name=="fHMS") ||
@@ -2079,20 +2078,20 @@ implements AdqlParser
 
 	        	   return new MySelectFieldImpl(
 				           name,
-				           AdqlColumn.Type.CHAR,
+				           AdqlColumn.AdqlType.CHAR,
 				           new Integer(32)
 				           );
 
 	        } else if (name=="fGreatCircleDist") {
 				   return new MySelectFieldImpl(
 						   name,
-				           AdqlColumn.Type.DOUBLE
+				           AdqlColumn.AdqlType.DOUBLE
 				           );
 
 		    } else {
 		    	 return new MySelectFieldImpl(
 		    			  name,
-				           AdqlColumn.Type.CHAR,
+				           AdqlColumn.AdqlType.CHAR,
 				           new Integer(32)
 				           );
 	        }

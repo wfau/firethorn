@@ -398,17 +398,17 @@ public class IvoaColumnEntity
     @Enumerated(
         EnumType.STRING
         )
-    private AdqlColumn.Type ivoatype ;
-    protected AdqlColumn.Type ivoatype()
+    private AdqlColumn.AdqlType ivoatype ;
+    protected AdqlColumn.AdqlType ivoatype()
         {
         return this.ivoatype;
         }
-    protected void ivoatype(final AdqlColumn.Type type)
+    protected void ivoatype(final AdqlColumn.AdqlType type)
         {
         this.ivoatype = type;
         }
     @Override
-    protected AdqlColumn.Type adqltype()
+    protected AdqlColumn.AdqlType adqltype()
         {
         if (this.adqltype != null)
             {
@@ -552,69 +552,71 @@ public class IvoaColumnEntity
                 }
             };
         }
+
     @Override
-    public void update(IvoaColumn.Metadata meta)
+    public void update(IvoaColumn.Metadata update)
         {
-        if (meta.ivoa() != null)
+        if (update.ivoa() != null)
             {
             this.update(
-                meta.ivoa()
+                update.ivoa()
                 );
             }
         }
 
     @Override
-    public void update(IvoaColumn.Metadata.Ivoa ivoa)
+    public void update(IvoaColumn.Metadata.Ivoa update)
         {
-        if (ivoa.text() != null)
+        if (update.text() != null)
             {
-            this.text(ivoa.text());
+            this.text(update.text());
             }
-        if (ivoa.ucd() != null)
+        if (update.ucd() != null)
             {
-            this.adqlucd(ivoa.ucd());
+            this.adqlucd(update.ucd());
             }
-        if (ivoa.unit() != null)
+        if (update.unit() != null)
             {
-            this.adqlunit(ivoa.unit());
+            this.adqlunit(update.unit());
             }
-        if (ivoa.utype() != null)
+        if (update.utype() != null)
             {
-            this.adqlutype(ivoa.utype());
+            this.adqlutype(update.utype());
             }
-        if (ivoa.dtype() != null)
+        if (update.dtype() != null)
             {
-            this.adqldtype(ivoa.dtype());
-            
+            this.adqldtype(update.dtype());
+/*            
             if (this.adqltype == null)
             	{
 //TODO Needs proper parser for the known type strings.
             	try {
-	            	this.adqltype = AdqlColumn.Type.type(
-	            		ivoa.dtype()
+	            	this.adqltype = AdqlColumn.AdqlType.dtype(
+	            		update.dtype()
 	        			);
             		}
             	catch (Exception ouch)
             		{
             		this.adqltype = null;
-            		log.warn("Failed to parse ADQL dtype [{}]", ivoa.dtype());
+            		log.warn("Failed to parse ADQL dtype [{}]", update.dtype());
             		}
             	}
+ */            	
             }
         else {
 //TODO        	
 // Unknown data type - useless unless we cast to char ?
 // We could find out from the results ...
         	}
-        if (ivoa.arraysize() != null)
+        if (update.arraysize() != null)
             {
             this.adqlsize(
-        		ivoa.arraysize()
+        		update.arraysize()
             	);
             }
         else {
             this.adqlsize(
-        		BaseColumn.NON_ARRAY_SIZE
+        		AdqlColumn.NON_ARRAY_SIZE
             	);
         	}
         }

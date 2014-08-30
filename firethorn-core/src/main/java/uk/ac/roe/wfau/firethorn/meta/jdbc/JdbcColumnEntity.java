@@ -224,122 +224,25 @@ public class JdbcColumnEntity
         @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta)
             {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    meta
-                    )
-                );
-            }
-        
-        @Override
-        @Deprecated
-        @CreateMethod
-        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    type.sqltype(),
-                    type.sqlsize()
-                    )
-                );
-            }
-
-        @Override
-        @Deprecated
-        @CreateMethod
-        public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    type,
-                    size
-                    )
-                );
-            }
-
-        @Deprecated
-        @CreateMethod
-        private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type, final Integer size)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    type,
-                    size
-                    )
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field)
-            {
-            log.debug("JdbcColumn create(JdbcTable, AdqlQuery.SelectField)");
-            log.debug("  name [{}]", field.name());
-/*
- * 
-            if (field.jdbc() != null)
-                {
-                log.debug("ADQL");
-                log.debug("  name [{}]", field.adql().namebuilder());
-                log.debug("  type [{}]", field.adql().meta().adql().type());
-                log.debug("  type [{}]", field.adql().meta().adql().type().jdbc());
-                log.debug("  size [{}]", field.adql().meta().adql().arraysize());
-
-                log.debug("JDBC");
-                log.debug("  name [{}]", field.jdbc().namebuilder());
-                log.debug("  type [{}]", field.jdbc().meta().jdbc().type());
-                log.debug("  size [{}]", field.jdbc().meta().jdbc().size());
-
-                log.debug("TEST");
-                log.debug("  type [{}]", field.type().jdbc());
-                log.debug("  size [{}]", field.arraysize());
-
-                if (field.type().jdbc() != field.jdbc().meta().jdbc().type())
-                    {
-                    log.error("Type mismatch");
-                    }
-                
-                // TODO include a base reference.
-            	// TODO inherit the metadata
-                log.debug("");
-                return create(
-                    parent,
-                    field.name(),
-                    field.jdbc()
-                    );
-                }
-            else if (field.adql() != null)
-                {
-            	// TODO include a base reference.
-            	// TODO inherit the metadata
-                return create(
-                    parent,
-                    field.name(),
-                    field.adql()
-                    );
-                }
-            else {
-                return create(
-                    parent,
-                    field.name(),
-                    field.type().jdbc(),
-                    field.arraysize()
-                    );
-                }
- *             
- */
             return create(
                 parent,
-                field.name(),
-                field.type().jdbc(),
-                field.arraysize()
+                meta.name(),
+                meta.jdbc().jdbctype(),
+                meta.jdbc().arraysize()
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.JdbcType type, final Integer size)
+            {
+            return this.insert(
+                new JdbcColumnEntity(
+                    parent,
+                    name,
+                    type,
+                    size
+                    )
                 );
             }
 
@@ -445,8 +348,8 @@ public class JdbcColumnEntity
         this(
             table,
             meta.jdbc().name(),
-            meta.jdbc().type(),
-            safeint(meta.jdbc().size())
+            meta.jdbc().jdbctype(),
+            meta.jdbc().arraysize()
             );
         this.update(
             meta
@@ -456,29 +359,28 @@ public class JdbcColumnEntity
     /**
      * Convert a JdbcColumn.Metadata array size into an int value.
      * 
-     */
-    public static int safeint(final Integer size)
+    public static Integer safeint(final Integer size)
     	{
     	if (size != null)
     		{
     		return size ;
     		}
     	else {
-    		return 0 ;
+    		return new Integer (0) ;
     		}
     	}
+     */
     
     /**
      * Protected constructor.
      *
-     */
     @Deprecated
     protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
         {
         this(
             table,
             name,
-            JdbcColumn.Type.jdbc(
+            JdbcColumn.JdbcType.resolve(
                 type
                 ),
             new Integer(
@@ -486,20 +388,25 @@ public class JdbcColumnEntity
                 )
             );
         }
+     */
 
     /**
      * Protected constructor.
      *
      */
-    protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.Type type, final Integer size)
+    protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.JdbcType type, final Integer size)
         {
         super(table, name);
         this.table    = table;
         this.jdbctype = type ;
-        //TODO use size for arrays
-		this.jdbcsize = resource().jdbcsize(
-				type
-	    	);
+
+        if (type.isarray())
+            {
+            this.jdbcsize = size ;
+            }
+        else {
+            this.jdbcsize = NON_ARRAY_SIZE ;
+            }
         }
 
     @Override
@@ -552,17 +459,17 @@ public class JdbcColumnEntity
     @Enumerated(
         EnumType.STRING
         )
-    private JdbcColumn.Type jdbctype ;
-    protected JdbcColumn.Type jdbctype()
+    private JdbcColumn.JdbcType jdbctype ;
+    protected JdbcColumn.JdbcType jdbctype()
         {
         return this.jdbctype;
         }
-    protected void jdbctype(final JdbcColumn.Type type)
+    protected void jdbctype(final JdbcColumn.JdbcType type)
         {
         this.jdbctype = type;
         }
     @Override
-    protected AdqlColumn.Type adqltype()
+    protected AdqlColumn.AdqlType adqltype()
         {
         if (this.adqltype != null)
             {
@@ -570,13 +477,7 @@ public class JdbcColumnEntity
             }
         else if (this.jdbctype != null)
             {
-            if (this.jdbctype == JdbcColumn.Type.ARRAY)
-                {
-                return AdqlColumn.Type.UNKNOWN;
-                }
-            else {
-                return this.jdbctype.adql();
-                }
+            return this.jdbctype.adqltype();
             }
         else {
             return null;
@@ -610,51 +511,12 @@ public class JdbcColumnEntity
             return this.adqlsize ;
             }
         else {
-            // TODO Move the calculation into the JdbcColumn.Type enum.
-            switch (this.jdbctype)
+            if (this.jdbctype.isarray())
                 {
-                //
-                // Array type.
-                case ARRAY :
-                    return BaseColumn.VAR_ARRAY_SIZE;
-    
-                // TODO unlimited TEXT size
-    
-                //
-                // Character types.
-                case LONGNVARCHAR :
-                case LONGVARCHAR :
-                case NVARCHAR :
-                case VARCHAR :
-                case NCHAR :
-                case CHAR :
-                    return this.jdbcsize ;
-    
-                //
-                // Date time values
-    //TODO Are these fixed formats and sizes ?
-                case DATE:
-                case TIME:
-                case TIMESTAMP:
-                    return this.jdbcsize ;
-    
-                //
-                // Blob types.
-                case BLOB:
-                case CLOB:
-                case NCLOB:
-                    return this.jdbcsize ;
-    
-                //
-                // Binary types.
-                case BINARY:
-                case VARBINARY:
-                    return this.jdbcsize ;
-    
-                //
-                // Single value types.
-                default :
-                    return BaseColumn.NON_ARRAY_SIZE;
+                return this.jdbcsize ;
+                }
+            else {
+                return AdqlColumn.NON_ARRAY_SIZE;
                 }
             }
         }
@@ -691,28 +553,14 @@ public class JdbcColumnEntity
                 return JdbcColumnEntity.this.name();
                 }
             @Override
-            public Integer size()
+            public Integer arraysize()
                 {
-                return jdbcsize();
+                return JdbcColumnEntity.this.jdbcsize();
                 }
             @Override
-            public JdbcColumn.Type type()
+            public JdbcColumn.JdbcType jdbctype()
                 {
-                return jdbctype();
-                }
-            @Override
-            public void size(final Integer size)
-                {
-                jdbcsize(
-                    size
-                    );
-                }
-            @Override
-            public void type(final Type type)
-                {
-                jdbctype(
-                    type
-                    );
+                return JdbcColumnEntity.this.jdbctype();
                 }
             @Override
             public CreateSql create()
@@ -730,7 +578,7 @@ public class JdbcColumnEntity
                     public String type()
                         {
                         final StringBuilder builder = new StringBuilder();
-                        final JdbcColumn.Type type = jdbctype();
+                        final JdbcColumn.JdbcType type = jdbctype();
                         final JdbcProductType prod = JdbcColumnEntity.this.resource().connection().type();
 
                         //
@@ -767,9 +615,10 @@ public class JdbcColumnEntity
                                 break ;
                             }
 
-                        if (jdbctype().strsize() == BaseColumn.VAR_ARRAY_SIZE)
+                        // TODO This should check for char() rather than array()
+                        if (jdbctype().isarray())
                             {
-                            if (jdbcsize() == BaseColumn.VAR_ARRAY_SIZE)
+                            if (jdbcsize() == AdqlColumn.VAR_ARRAY_SIZE)
                                 {
                                 builder.append("(*)");
                                 }
@@ -814,13 +663,13 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public void update(final JdbcColumn.Metadata meta)
+    public void update(final JdbcColumn.Metadata update)
         {
-        if (meta.adql() != null)
+        if (update.adql() != null)
             {
-            if (meta.adql().text() != null)
+            if (update.adql().text() != null)
                 {
-                this.text(meta.adql().text());
+                this.text(update.adql().text());
                 }
             //
             //TODO Check the type and size - warn/fail if they have changed ?

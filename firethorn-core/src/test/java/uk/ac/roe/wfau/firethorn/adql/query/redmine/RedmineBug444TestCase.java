@@ -84,9 +84,9 @@ public class RedmineBug444TestCase
             "     nested.lat",
 
             new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("lat", AdqlColumn.Type.DOUBLE, 0),
-                new ExpectedField("num", AdqlColumn.Type.LONG, 0),
+                new ExpectedField("lon", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("lat", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("num", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }

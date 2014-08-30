@@ -67,11 +67,11 @@ public class ColumnTypeTestCase
             "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("uClass", AdqlColumn.Type.SHORT,   0),
-                new ExpectedField("SUM",    AdqlColumn.Type.INTEGER, 0),
-                new ExpectedField("SUB",    AdqlColumn.Type.LONG,    0),
-                new ExpectedField("MUL",    AdqlColumn.Type.FLOAT,   0),
-                new ExpectedField("DIV",    AdqlColumn.Type.DOUBLE,  0)
+                new ExpectedField("uClass", AdqlColumn.AdqlType.SHORT,   0),
+                new ExpectedField("SUM",    AdqlColumn.AdqlType.INTEGER, 0),
+                new ExpectedField("SUB",    AdqlColumn.AdqlType.LONG,    0),
+                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT,   0),
+                new ExpectedField("DIV",    AdqlColumn.AdqlType.DOUBLE,  0)
                 }
             );
         }

@@ -30,7 +30,7 @@ extends CreateTableChange
 
         for (final JdbcColumn column : table.columns().select())
             {
-            log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().type(), column.meta().jdbc().size());
+            log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().jdbctype(), column.meta().jdbc().arraysize());
 
             final String colname = column.meta().jdbc().create().name();
             final String coltype = column.meta().jdbc().create().type();

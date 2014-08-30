@@ -463,7 +463,7 @@ extends TestPropertiesBase
     public static class ExpectedField
     implements AdqlQuery.SelectField
         {
-        public ExpectedField(final String name, final AdqlColumn.Type type, final Integer size)
+        public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
             this.name = name ;
             this.type = type ;
@@ -475,9 +475,9 @@ extends TestPropertiesBase
             {
             return this.size;
             }
-        private final AdqlColumn.Type type;
+        private final AdqlColumn.AdqlType type;
         @Override
-        public  AdqlColumn.Type type()
+        public  AdqlColumn.AdqlType type()
             {
             return this.type;
             }
@@ -506,18 +506,6 @@ extends TestPropertiesBase
                 field.type()
                 ) ;
             }
-/*
-        @Override
-        public AdqlColumn adql()
-            {
-            return null;
-            }
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return null;
-            }
- */        
         }
 
     public void validate(final AdqlQuery query, final ExpectedField[] fields)

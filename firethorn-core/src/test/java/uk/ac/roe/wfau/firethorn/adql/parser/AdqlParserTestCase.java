@@ -334,7 +334,7 @@ extends TestBase
                 "jdbc_table"
                 ).columns().create(
                     "jdbc_ra",
-                    JdbcColumn.Type.INTEGER.sqltype(),
+                    JdbcColumn.JdbcType.INTEGER,
                     1
                     );
 
@@ -345,7 +345,7 @@ extends TestBase
                 "jdbc_table"
                 ).columns().create(
                     "jdbc_dec",
-                    JdbcColumn.Type.INTEGER.sqltype(),
+                    JdbcColumn.JdbcType.INTEGER,
                     1
                     );
 
@@ -356,7 +356,7 @@ extends TestBase
                 "jdbc_table"
                 ).columns().create(
                     "jdbc_pts",
-                    JdbcColumn.Type.INTEGER.sqltype(),
+                    JdbcColumn.JdbcType.INTEGER,
                     1
                     );
 

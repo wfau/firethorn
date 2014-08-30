@@ -701,24 +701,26 @@ public class JdbcResourceEntity
             }
         }
 
+/*    
     @Override
-    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type)
+    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type)
         {
         return connection().type().jdbctype(type);
         }
 
     @Override
-    public Integer jdbcsize(final AdqlColumn.Type type)
+    public Integer jdbcsize(final AdqlColumn.OldAdqlType type)
         {
         return connection().type().jdbcsize(type);
         }
 
     @Override
-    public Integer jdbcsize(final JdbcColumn.Type type)
+    public Integer jdbcsize(final JdbcColumn.OldJdbcType type)
         {
         return connection().type().jdbcsize(type);
         }
-
+ */
+    
     /**
      * Generate the JDBC metadata.
      * 
