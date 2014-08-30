@@ -51,8 +51,8 @@ public class DelimitedIdentifierTestCase
             "    \"atlasSource\" AS atlas",
 
             " SELECT " +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra  AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    atlas.atlassource.ra  AS ra," +
+            "    atlas.atlassource.dec AS dec" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource AS atlas",
 

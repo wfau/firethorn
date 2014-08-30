@@ -420,8 +420,8 @@ public class QueryBugsTestCase
             "    {ATLAS_VERSION}.dbo.multiframe",
 
             new ExpectedField[] {
-                new ExpectedField("utDate",  AdqlColumn.AdqlType.DATETIME, 23),
-                new ExpectedField("dateObs", AdqlColumn.AdqlType.DATETIME, 23)
+                new ExpectedField("utDate",  AdqlColumn.AdqlType.DATETIME, 0),
+                new ExpectedField("dateObs", AdqlColumn.AdqlType.DATETIME, 0)
                 }
             );
 
