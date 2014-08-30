@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.11.11-zrq-char-debug</version>
+    <version project='firethorn'>1.11.12</version>
 
     <prerequisites>
         <maven>2.2.1</maven>

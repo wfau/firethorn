@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>1.11.11-zrq-char-debug</version>
+        <version project='firethorn'>1.11.12</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity-client</artifactId>
