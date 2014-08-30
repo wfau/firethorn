@@ -345,3 +345,9 @@ EOF
     # Fails because the arraysize for name is zero.
     # Original JdbcColumn metadata is CHAR(0).
 
+# -----------------------------------------------------
+# Bug fixes ....
+# -----------------------------------------------------
+
+
+
