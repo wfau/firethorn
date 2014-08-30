@@ -362,7 +362,7 @@ public class SQLServerTranslator
             {
             //
             // If the column table has an alias.
-            if (column.getAdqlTable().hasAlias())
+            if ((column.getAdqlTable() != null)  && (column.getAdqlTable().hasAlias()))
                 {
                 return super.translate(
                     column
