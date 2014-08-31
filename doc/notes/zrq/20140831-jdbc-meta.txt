@@ -1,0 +1,276 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+        devbranch=$(getversion)-zrq-jdbc-meta
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+
+# -------------------------------------------------------------------------------------------
+# Login to the database server.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to the database server.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+        
+        sqsh -S "${atlashost:?}" -U "${atlasuser:?}" -P "${atlaspass:?}" -D "${atlasdata:?}"
+
+            #
+            # List the catalogs.
+            SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4
+            go
+
+            #
+            # Select a catalog.
+            SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4 AND name = 'ATLASDR1'
+            go
+
+
+            #
+            # List the schemas.
+            SELECT name FROM ATLASDR1.sys.schemas
+            go
+
+                dbo
+                guest
+                INFORMATION_SCHEMA
+                sys
+                atlasro
+                db_owner
+                db_accessadmin
+                db_securityadmin
+                db_ddladmin
+                db_backupoperator
+                db_datareader
+                db_datawriter
+                db_denydatareader
+                db_denydatawriter
+
+            #
+            # List the schemas that have (USER_TABLE) tables.
+            SELECT * FROM ATLASDR1.sys.tables
+            go
+                                                     
+                name                atlasMergeLog                                                                                                                                                       
+                object_id           53575229
+                principal_id        NULL
+                schema_id           1
+                parent_object_id    0
+                type                U
+                type_desc           USER_TABLE
+
+            SELECT DISTINCT schema_id FROM ATLASDR1.sys.tables WHERE type = 'U'
+            go
+
+                1
+
+            SELECT DISTINCT schema_id, SCHEMA_NAME(schema_id) FROM ATLASDR1.sys.tables WHERE type = 'U'
+            go
+
+                1, dbo
+
+            SELECT object_id AS ident, name AS name FROM ATLASDR1.sys.tables WHERE schema_id = 1
+            go
+
+            SELECT TOP 2 * FROM ATLASDR1.sys.columns
+            go
+
+
+            SELECT column_id AS ident, name AS name FROM ATLASDR1.sys.columns WHERE object_id = 85575343
+            go
+
+#
+# Use INFORMATION_SCHEMA rather than the system tables.
+# http://msdn.microsoft.com/en-us/library/aa933204%28v=sql.80%29.aspx
+
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                COLUMN_NAME,
+                COLUMN_NAME,
+                CHARACTER_MAXIMUM_LENGTH
+            FROM
+                ATLASDR1.INFORMATION_SCHEMA.COLUMNS
+            go
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                TABLE_TYPE
+            FROM
+                ATLASDR1.INFORMATION_SCHEMA.TABLES
+            go
+
+            SELECT
+                CATALOG_NAME,
+                SCHEMA_NAME
+            FROM
+                ATLASDR1.INFORMATION_SCHEMA.SCHEMATA
+            go
+
+
+
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                COLUMN_NAME,
+                COLUMN_NAME,
+                CHARACTER_MAXIMUM_LENGTH
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.COLUMNS
+            go
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                TABLE_TYPE
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.TABLES
+            go
+
+
+            SELECT
+                CATALOG_NAME,
+                SCHEMA_NAME
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.SCHEMATA
+            go
+
+
+
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                COLUMN_NAME,
+                DATA_TYPE,
+                CHARACTER_MAXIMUM_LENGTH
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.COLUMNS
+            go
+
+            SELECT
+                TABLE_CATALOG,
+                TABLE_SCHEMA,
+                TABLE_NAME,
+                TABLE_TYPE
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.TABLES
+            go
+
+
+            SELECT
+                CATALOG_NAME,
+                SCHEMA_NAME
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.SCHEMATA
+            go
+
+
+
+            SELECT DISTINCT
+                TABLE_CATALOG,
+                TABLE_SCHEMA
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.TABLES
+            go
+
+
+
+
+            SELECT DISTINCT
+                TABLE_SCHEMA AS schema,
+            FROM
+                {catalog}.INFORMATION_SCHEMA.TABLES
+
+
+
+            SELECT DISTINCT
+                TABLE_SCHEMA
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.TABLES
+
+
+            SELECT DISTINCT
+                TABLE_CATALOG,
+                TABLE_SCHEMA
+            FROM
+                AKARI.INFORMATION_SCHEMA.TABLES
+            go
+
+            SELECT DISTINCT
+                TABLE_CATALOG,
+                TABLE_SCHEMA
+            FROM
+                TWOMASS.INFORMATION_SCHEMA.TABLES
+            go
+
