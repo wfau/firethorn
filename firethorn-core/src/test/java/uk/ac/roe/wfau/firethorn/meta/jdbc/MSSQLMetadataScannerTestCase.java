@@ -75,7 +75,7 @@ extends AbstractQueryTestBase
     
     private void scan(final JdbcMetadataScanner.Column column)
         {
-        log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
+        log.debug("      <column size='{}' type='{}' name='{}'/>", column.strlen(), column.type(), column.name());
         }
 
     @Test
@@ -117,7 +117,7 @@ extends AbstractQueryTestBase
             column
             );
 
-        log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
+        log.debug("      <column size='{}' type='{}' name='{}'/>", column.strlen(), column.type(), column.name());
         log.debug("    </table>");
         log.debug("  </schema>");
         log.debug("</catalog>");
