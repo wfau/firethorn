@@ -82,8 +82,8 @@ public interface JdbcMetadataScanner
         public Table parent();
         public String name();
 
-        public String  type();
         public Integer strlen();
+        public JdbcColumn.JdbcType type();
 
         }
     }

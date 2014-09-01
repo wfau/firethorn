@@ -353,6 +353,7 @@ extends BaseColumn<JdbcColumn>
         CLOB(           Types.CLOB,         false,  false),
         DATALINK(       Types.DATALINK,     false,  false),
         DATE(           Types.DATE,         true,   false),
+        DATETIME(       Types.DATE,         true,   false),
         DECIMAL(        Types.DECIMAL,      false,  false),
         DISTINCT(       Types.DISTINCT,     false,  false),
         DOUBLE(         Types.DOUBLE,       true,   false),

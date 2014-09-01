@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import static org.junit.Assert.*;
+
 import java.sql.SQLException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +38,48 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 public class MSSQLMetadataScannerTestCase
 extends AbstractQueryTestBase
     {
+
+
+    private void scan(final JdbcMetadataScanner.Catalog catalog)
+    throws SQLException
+        {
+        log.debug("<catalog name='{}'>", catalog.name());
+        for (JdbcMetadataScanner.Schema schema : catalog.schema().select())
+            {
+            scan(schema);
+            }
+        log.debug("</catalog>");
+        }
+
+    private void scan(final JdbcMetadataScanner.Schema schema)
+    throws SQLException
+        {
+        log.debug("  <schema name='{}'>", schema.name());
+        for (JdbcMetadataScanner.Table table : schema.tables().select())
+            {
+            scan(table);
+            }
+        log.debug("  </schema>");
+        }
+
+    private void scan(final JdbcMetadataScanner.Table table)
+    throws SQLException
+        {
+        log.debug("    <table name='{}'>", table.name());
+        for (JdbcMetadataScanner.Column column : table.columns().select())
+            {
+            scan(column);
+            }
+        log.debug("    </table>");
+        }
+    
+    private void scan(final JdbcMetadataScanner.Column column)
+        {
+        log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
+        }
+
     @Test
-    public void test000()
+    public void test001()
     throws Exception
         {
 
@@ -51,33 +93,34 @@ extends AbstractQueryTestBase
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
             resource.connection().open()
             );
-        
-        log.debug("<catalogs>");
-        for (JdbcMetadataScanner.Catalog catalog : meta.catalogs().select())
-            {
-            log.debug("  <catalog name='{}'>", catalog.name());
-            try {
-                for (JdbcMetadataScanner.Schema schema : catalog.schema().select())
-                    {
-                    log.debug("    <schema name='{}'>", schema.name());
-                    log.debug("    </schema>");
-                    }
-                }
-            catch (Exception ouch)
-                {
-                log.debug("<exception class='{}' text='{}'>", ouch.getClass().getName(), ouch.getMessage());
 
-                log.debug("JDBC connection closed - openning a new one");
-                resource.connection().close();
-                meta.connection(
-                    resource.connection().open()
-                    );
+        JdbcMetadataScanner.Catalog catalog = meta.catalogs().select("AtLaSdR1");
+        assertNotNull(
+            catalog
+            );
+        log.debug("<catalog name='{}'>", catalog.name());
 
-                log.debug("</exception>");
-                }
-            log.debug("  </catalog>");
-            }
-        log.debug("</catalogs>");
+        JdbcMetadataScanner.Schema schema = catalog.schema().select("dBo");
+        assertNotNull(
+            schema
+            );
+        log.debug("  <schema name='{}'>", schema.name());
+
+        JdbcMetadataScanner.Table table = schema.tables().select("AtLaSsOuRcE");
+        assertNotNull(
+            table
+            );
+        log.debug("    <table name='{}'>", table.name());
+
+        JdbcMetadataScanner.Column column = table.columns().select("rA");
+        assertNotNull(
+            column
+            );
+
+        log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
+        log.debug("    </table>");
+        log.debug("  </schema>");
+        log.debug("</catalog>");
         
         resource.connection().close();
         }
@@ -97,43 +140,71 @@ extends AbstractQueryTestBase
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
             resource.connection().open()
             );
-        
-        JdbcMetadataScanner.Catalog catalog = meta.catalogs().select("ATLASDR1");
-        log.debug("  <catalog name='{}'>", catalog.name());
         try {
-            for (JdbcMetadataScanner.Schema schema : catalog.schema().select())
+            JdbcMetadataScanner.Catalog catalog = meta.catalogs().select("ATLASDR1");
+            scan(catalog);
+            }
+        catch (SQLException ouch)
+            {
+            log.debug("<exception class='{}' code='{}' state='{}' text='{}'/>", ouch.getClass().getName(), ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
+            }
+        finally
+            {
+            resource.connection().close();
+            }
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+
+        JdbcResource resource = jdbcResource(
+            "atlas.jdbc.resource",
+            "atlas.jdbc.resource",
+            "*",
+            "spring:RoeATLAS"
+            );
+
+        MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
+            resource.connection().open()
+            );
+        
+        log.debug("<catalogs>");
+        for (JdbcMetadataScanner.Catalog catalog : meta.catalogs().select())
+            {
+            try {
+                scan(catalog);
+                }
+            catch (SQLException ouch)
                 {
-                log.debug("    <schema name='{}'>", schema.name());
-                try {
-                    for (JdbcMetadataScanner.Table table : schema.tables().select())
-                        {
-                        log.debug("    <table name='{}'>", table.name());
-                        try {
-                            for (JdbcMetadataScanner.Column column : table.columns().select())
-                                {
-                                log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
-                                }
-                            }
-                        catch (Exception ouch)
-                            {
-                            log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
-                            }
-                        log.debug("    </table>");
-                        }
-                    }
-                catch (Exception ouch)
+                final int code = ouch.getErrorCode() ;
+                final String state = ouch.getSQLState();
+                final String text = ouch.getMessage();
+                
+                log.debug("<exception class='{}' code='{}' state='{}' text='{}'>", ouch.getClass().getName(), code, state, text);
+                log.debug("Connection closed [{}]", meta.connection().isClosed());
+
+/*
+ * code='0'   state='HY010' text='Invalid state, the Connection object is closed.'
+ * code='21'  state='S1000' text='Warning: Fatal error 823 occurred at Sep  1 2014  3:55AM. Note the error and time, and contact your system administrator.' 
+ * code='916' state='S1000' text='The server principal "atlasro" is not able to access the database "BEDB" under the current security context.'                 
+ *                 
+ */
+                if ((code == 0) || (code == 21))
                     {
-                    log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
+                    log.debug("Openning a new connection");
+                    resource.connection().close();
+                    meta.connection(
+                        resource.connection().open()
+                        );
                     }
-                log.debug("    </schema>");
+                log.debug("</exception>");
                 }
             }
-        catch (Exception ouch)
-            {
-            log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
-            }
-        log.debug("  </catalog>");
+        log.debug("</catalogs>");
         
         resource.connection().close();
         }
+    
     }
