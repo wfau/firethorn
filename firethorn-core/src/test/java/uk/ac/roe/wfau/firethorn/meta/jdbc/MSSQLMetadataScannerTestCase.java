@@ -15,7 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query.atlas;
+package uk.ac.roe.wfau.firethorn.meta.jdbc;
+
+import java.sql.SQLException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,6 +66,14 @@ extends AbstractQueryTestBase
             catch (Exception ouch)
                 {
                 log.debug("<exception class='{}' text='{}'>", ouch.getClass().getName(), ouch.getMessage());
+
+                log.debug("JDBC connection closed - openning a new one");
+                resource.connection().close();
+                meta.connection(
+                    resource.connection().open()
+                    );
+
+                log.debug("</exception>");
                 }
             log.debug("  </catalog>");
             }
@@ -101,26 +111,26 @@ extends AbstractQueryTestBase
                         try {
                             for (JdbcMetadataScanner.Column column : table.columns().select())
                                 {
-                                log.debug("      <column name='{}'/>", column.name());
+                                log.debug("      <column name='{}' type='{}' size='{}'/>", column.name(), column.type(), column.strlen());
                                 }
                             }
                         catch (Exception ouch)
                             {
-                            log.debug("<exception class='{}' text='{}'>", ouch.getClass().getName(), ouch.getMessage());
+                            log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
                             }
                         log.debug("    </table>");
                         }
                     }
                 catch (Exception ouch)
                     {
-                    log.debug("<exception class='{}' text='{}'>", ouch.getClass().getName(), ouch.getMessage());
+                    log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
                     }
                 log.debug("    </schema>");
                 }
             }
         catch (Exception ouch)
             {
-            log.debug("<exception class='{}' text='{}'>", ouch.getClass().getName(), ouch.getMessage());
+            log.debug("<exception class='{}' text='{}'/>", ouch.getClass().getName(), ouch.getMessage());
             }
         log.debug("  </catalog>");
         

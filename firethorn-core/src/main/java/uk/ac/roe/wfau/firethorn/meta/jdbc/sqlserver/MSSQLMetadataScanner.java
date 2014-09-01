@@ -44,6 +44,15 @@ public class MSSQLMetadataScanner
         }
 
     protected Connection connection ;
+    public Connection connection()
+        {
+        return this.connection;
+        }
+
+    public void connection(Connection connection)
+        {
+        this.connection = connection;
+        }
 
     @Override
     public Catalogs catalogs()
@@ -124,6 +133,7 @@ public class MSSQLMetadataScanner
                     @Override
                     public Iterable<Schema> select() throws SQLException
                         {
+                        // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                         final Statement statement = connection.createStatement();
                         final ResultSet results = statement.executeQuery(
                             "SELECT DISTINCT " +
@@ -193,6 +203,7 @@ public class MSSQLMetadataScanner
                             public Iterable<Table> select()
                                 throws SQLException
                                 {
+                                // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection.prepareStatement(
                                     "SELECT DISTINCT " +
                                     "  TABLE_NAME " +
@@ -262,9 +273,12 @@ public class MSSQLMetadataScanner
                                     public Iterable<Column> select()
                                         throws SQLException
                                         {
+                                        // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection.prepareStatement(
                                             "SELECT DISTINCT " +
-                                            "  COLUMN_NAME " +
+                                            "  COLUMN_NAME, " +
+                                            "  DATA_TYPE, " +
+                                            "  CHARACTER_MAXIMUM_LENGTH " +
                                             "FROM " +
                                             "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
                                             "WHERE " +
@@ -315,7 +329,9 @@ public class MSSQLMetadataScanner
                                 {
                                 return new Column()
                                     {
-                                    protected String name = results.getString("COLUMN_NAME");
+                                    protected String  name = results.getString("COLUMN_NAME");
+                                    protected String  type = results.getString("DATA_TYPE");
+                                    protected Integer size = results.getInt("CHARACTER_MAXIMUM_LENGTH");
                                     @Override
                                     public Table parent()
                                         {
@@ -325,6 +341,16 @@ public class MSSQLMetadataScanner
                                     public String name()
                                         {
                                         return name;
+                                        }
+                                    @Override
+                                    public String type()
+                                        {
+                                        return type;
+                                        }
+                                    @Override
+                                    public Integer strlen()
+                                        {
+                                        return size;
                                         }
                                     };
                                 }
