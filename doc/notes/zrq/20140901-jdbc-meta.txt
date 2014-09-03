@@ -182,5 +182,56 @@ cat  "${databasefile:?}"
         firethorn.user.user=xxxxxxxx
         firethorn.user.pass=xxxxxxxx
 
+#
+# .......................
+#
 
+#
+# .......................
+#
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+        newversion=1.11.13
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Update the project version.
+        setversion "${newversion}"
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
 
