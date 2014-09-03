@@ -29,16 +29,13 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 
-import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-import com.sun.xml.internal.bind.v2.runtime.NameBuilder;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;

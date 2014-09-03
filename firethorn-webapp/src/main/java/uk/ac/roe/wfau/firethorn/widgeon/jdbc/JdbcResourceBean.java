@@ -73,10 +73,6 @@ extends BaseResourceBean<JdbcResource>
             {
             return entity().connection().user();
             }
-        public String getStatus()
-            {
-            return entity().connection().status().name();
-            }
         }
 
     public ConnectionBean getConnection()

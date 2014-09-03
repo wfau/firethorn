@@ -222,7 +222,7 @@ cat  "${databasefile:?}"
         # Update the project version.
         setversion "${newversion}"
         hg commit -m "Snapshot [version-$(getversion)]"
-        hg tag    -f "version-$(getversion)"
+        #hg tag    -f "version-$(getversion)"
         hg push
 
         #

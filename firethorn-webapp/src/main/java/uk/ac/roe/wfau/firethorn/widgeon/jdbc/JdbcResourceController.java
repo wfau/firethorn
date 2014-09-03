@@ -262,15 +262,6 @@ public class JdbcResourceController
                 );
             }
 
-        if (action != null)
-            {
-            entity.connection().status(
-                JdbcConnector.Status.valueOf(
-                    action
-                    )
-                );
-            }
-
         return new JdbcResourceBean(
             entity
             );
