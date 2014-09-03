@@ -200,7 +200,7 @@ cat  "${databasefile:?}"
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.13
+        newversion=1.11.14
 
         #
         # Close the dev branch.
