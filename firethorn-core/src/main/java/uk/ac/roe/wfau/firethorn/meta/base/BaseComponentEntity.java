@@ -76,7 +76,7 @@ implements BaseComponent
 
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
-    protected static final String DB_SCAN_DATE_COL   = "scandate";
+    protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
 
     
@@ -415,23 +415,23 @@ implements BaseComponent
     protected static final long BLOCKING_TIMEOUT = 500 ;
     
     /**
-     * The scan timestamp.
+     * The data/time of the last scan.
      * 
      */
     @Column(
-        name = DB_SCAN_DATE_COL,
+        name = DB_SCAN_TIME_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private DateTime scandate ;
-    protected DateTime scandate()
+    private DateTime scantime ;
+    protected DateTime scantime()
         {
-        return this.scandate;
+        return this.scantime;
         }
-    protected void scandate(final DateTime date)
+    protected void scandate(final DateTime time)
         {
-        this.scandate = date;
+        this.scantime = time;
         }
     
     /**
@@ -461,8 +461,8 @@ implements BaseComponent
     protected void scantest()
         {
         log.debug("scantest for [{}][{}]", this.ident(), this.name());
-        log.debug("scandate [{}]", scandate);
-        if ((scandate == null) || (scandate.plus(scanperiod).isBeforeNow()))
+        log.debug("scandate [{}]", scantime);
+        if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
             {
             log.debug("scandate is in the past");
             Object block = block();
@@ -473,7 +473,7 @@ implements BaseComponent
                     scanimpl();
                     }
                 finally {
-                    scandate = new DateTime();
+                    scantime = new DateTime();
                     release();
                     }
                 }
