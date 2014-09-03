@@ -54,6 +54,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
 
 /**
  * JDBC resource connection details.
+ * @todo Messed up and not thread safe at all.
+ * Miss-match, JDBC connections are helod in a ThreadLocal, but the count of open/close is per entity, not per thread.
  *
  */
 @Slf4j
@@ -63,7 +65,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
     )
 public class JdbcConnectionEntity
     extends BaseObject
-    implements JdbcConnection
+    implements JdbcConnector
     {
     /**
      * Hibernate column mapping.
@@ -315,7 +317,6 @@ public class JdbcConnectionEntity
 
     /**
      * Initialise our JDBC DataSource and create a Connection.
-     * @todo Messed up and not thread safe at all.
      *
      */
     private synchronized Connection connect()
@@ -530,6 +531,7 @@ public class JdbcConnectionEntity
         {
         log.debug("reset()");
         this.source = null ;
+        this.opens = 0;
         this.state = State.EMPTY;
         this.local.remove();
         }
@@ -576,7 +578,7 @@ public class JdbcConnectionEntity
                         );
                     }
                 }
-            if (opens <= 1)
+            if (opens == 0)
                 {
                 try {
                     if (this.state == State.CONNECTED)
@@ -674,7 +676,6 @@ public class JdbcConnectionEntity
     /**
      * The component status.
      *
-     */
     @Column(
         name = DB_JDBC_STATUS_COL,
         unique = false,
@@ -719,6 +720,7 @@ public class JdbcConnectionEntity
                     );
             }
         }
+     */
 
     /**
      * This connection state.

@@ -17,7 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner.Table;
 
 
 /**
@@ -26,7 +29,11 @@ import java.sql.SQLException;
  */
 public interface JdbcMetadataScanner
     {
+    public JdbcConnector connector();
+    public Connection connection();
 
+    public void handle(SQLException ouch);
+    
     public Catalogs catalogs();
     public interface Catalogs
         {
@@ -38,8 +45,9 @@ public interface JdbcMetadataScanner
 
     public interface Catalog
         {
+        public JdbcMetadataScanner scanner();
         public String name();
-        public Schemas schema();
+        public Schemas schemas();
         public interface Schemas
             {
             public Iterable<Schema> select()
@@ -51,7 +59,7 @@ public interface JdbcMetadataScanner
 
     public interface Schema
         {
-        public Catalog parent();
+        public Catalog catalog();
         public String name();
         public Tables tables();
         public interface Tables
@@ -65,7 +73,7 @@ public interface JdbcMetadataScanner
 
     public interface Table
         {
-        public Schema parent();
+        public Schema schema();
         public String name();
         public Columns columns();
         public interface Columns
@@ -79,11 +87,9 @@ public interface JdbcMetadataScanner
 
     public interface Column
         {
-        public Table parent();
+        public Table table();
         public String name();
-
         public Integer strlen();
         public JdbcColumn.JdbcType type();
-
         }
     }

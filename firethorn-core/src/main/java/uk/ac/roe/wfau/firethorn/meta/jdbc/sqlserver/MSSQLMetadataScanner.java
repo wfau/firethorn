@@ -29,6 +29,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
 /**
@@ -40,20 +41,53 @@ public class MSSQLMetadataScanner
     implements JdbcMetadataScanner
     {
 
-    public MSSQLMetadataScanner(final Connection connection)
+    public MSSQLMetadataScanner(final JdbcConnector connector)
         {
-        this.connection = connection ;
+        this.connector = connector ;
+        }
+
+    protected JdbcConnector connector ;
+    @Override
+    public JdbcConnector connector()
+        {
+        return this.connector;
         }
 
     protected Connection connection ;
     public Connection connection()
         {
-        return this.connection;
+        if (connection == null)
+            {
+            log.debug("Openning a new connection");
+            connection = connector.open();
+            }
+        return connection;
         }
 
-    public void connection(Connection connection)
+    protected JdbcMetadataScanner _scanner()
         {
-        this.connection = connection;
+        return this;
+        }
+
+    @Override
+    public void handle(SQLException ouch)
+        {
+        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
+        if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
+            {
+            log.debug("Fatal error code, closing existing connection");
+            try {
+                connector().close();
+                }
+            catch (Exception eeek)
+                {
+                //log.warn("SQLException while closing connection [{}][{}][{}]", eeek.getErrorCode(), eeek.getSQLState(), eeek.getMessage());
+                log.warn("Exception while closing connection [{}]", eeek.getMessage());
+                }
+            finally {
+                connection = null ;
+                }
+            }
         }
 
     @Override
@@ -72,7 +106,7 @@ public class MSSQLMetadataScanner
                     "SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4"
                     );
                  */
-                final ResultSet results = connection.getMetaData().getCatalogs();
+                final ResultSet results = connection().getMetaData().getCatalogs();
                 final List<Catalog> list = new ArrayList<Catalog>();
                 while (results.next())
                     {
@@ -96,7 +130,7 @@ public class MSSQLMetadataScanner
                 statement.setString(1, name);
                 final ResultSet results = statement.executeQuery();
                 */
-                final ResultSet results = connection.getMetaData().getCatalogs();
+                final ResultSet results = connection().getMetaData().getCatalogs();
                 while (results.next())
                     {
                     Catalog catalog = catalog(
@@ -117,18 +151,24 @@ public class MSSQLMetadataScanner
         {
         return new Catalog()
             {
-            protected String name = results.getString("TABLE_CAT");
+            @Override
+            public JdbcMetadataScanner scanner()
+                {
+                return _scanner();
+                }
             protected Catalog catalog()
                 {
                 return this ;
                 }
+
+            protected String name = results.getString("TABLE_CAT");
             @Override
             public String name()
                 {
                 return name;
                 }
             @Override
-            public Schemas schema()
+            public Schemas schemas()
                 {
                 return new Schemas()
                     {
@@ -136,7 +176,7 @@ public class MSSQLMetadataScanner
                     public Iterable<Schema> select() throws SQLException
                         {
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
-                        final Statement statement = connection.createStatement();
+                        final Statement statement = connection().createStatement();
                         final ResultSet results = statement.executeQuery(
                             "SELECT DISTINCT " +
                             "  TABLE_SCHEMA " +
@@ -152,6 +192,7 @@ public class MSSQLMetadataScanner
                             {
                             list.add(
                                 schema(
+                                    catalog(),
                                     results
                                     )
                                 );
@@ -163,7 +204,7 @@ public class MSSQLMetadataScanner
                     public Schema select(String name) throws SQLException
                         {
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
-                        final PreparedStatement statement = connection.prepareStatement(
+                        final PreparedStatement statement = connection().prepareStatement(
                             "SELECT DISTINCT " +
                             "  TABLE_SCHEMA " +
                             "FROM " +
@@ -176,6 +217,7 @@ public class MSSQLMetadataScanner
                         if (results.next())
                             {
                             return schema(
+                                catalog(),
                                 results
                                 );
                             }
@@ -186,21 +228,22 @@ public class MSSQLMetadataScanner
                     };
                 }
 
-            protected Schema schema(final ResultSet results)
+            protected Schema schema(final Catalog catalog, final ResultSet results)
             throws SQLException
                 {
                 return new Schema()
                     {
-                    protected String name = results.getString("TABLE_SCHEMA");
+                    @Override
+                    public Catalog catalog()
+                        {
+                        return catalog ;
+                        }
                     protected Schema schema()
                         {
                         return this ;
                         }
-                    @Override
-                    public Catalog parent()
-                        {
-                        return catalog();
-                        }
+
+                    protected String name = results.getString("TABLE_SCHEMA");
                     @Override
                     public String name()
                         {
@@ -216,7 +259,7 @@ public class MSSQLMetadataScanner
                                 throws SQLException
                                 {
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
-                                final PreparedStatement statement = connection.prepareStatement(
+                                final PreparedStatement statement = connection().prepareStatement(
                                     "SELECT DISTINCT " +
                                     "  TABLE_NAME " +
                                     "FROM " +
@@ -231,6 +274,7 @@ public class MSSQLMetadataScanner
                                     {
                                     list.add(
                                         table(
+                                            schema(),
                                             results
                                             )
                                         );
@@ -243,7 +287,7 @@ public class MSSQLMetadataScanner
                                 throws SQLException
                                 {
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
-                                final PreparedStatement statement = connection.prepareStatement(
+                                final PreparedStatement statement = connection().prepareStatement(
                                     "SELECT DISTINCT " +
                                     "  TABLE_NAME " +
                                     "FROM " +
@@ -259,6 +303,7 @@ public class MSSQLMetadataScanner
                                 if (results.next())
                                     {
                                     return table(
+                                        schema(),
                                         results
                                         );
                                     }
@@ -269,21 +314,22 @@ public class MSSQLMetadataScanner
                             };
                         }
 
-                    protected Table table(final ResultSet results)
+                    protected Table table(final Schema schema, final ResultSet results)
                     throws SQLException
                         {
                         return new Table()
                             {
-                            final String name = results.getString("TABLE_NAME");
+                            @Override
+                            public Schema schema()
+                                {
+                                return schema;
+                                }
                             protected Table table()
                                 {
                                 return this ;
                                 }
-                            @Override
-                            public Schema parent()
-                                {
-                                return schema();
-                                }
+
+                            final String name = results.getString("TABLE_NAME");
                             @Override
                             public String name()
                                 {
@@ -299,7 +345,7 @@ public class MSSQLMetadataScanner
                                         throws SQLException
                                         {
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
-                                        final PreparedStatement statement = connection.prepareStatement(
+                                        final PreparedStatement statement = connection().prepareStatement(
                                             "SELECT DISTINCT " +
                                             "  COLUMN_NAME, " +
                                             "  DATA_TYPE, " +
@@ -325,6 +371,7 @@ public class MSSQLMetadataScanner
                                             {
                                             list.add(
                                                 column(
+                                                    table(),
                                                     results
                                                     )
                                                 );
@@ -337,7 +384,7 @@ public class MSSQLMetadataScanner
                                         throws SQLException
                                         {
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
-                                        final PreparedStatement statement = connection.prepareStatement(
+                                        final PreparedStatement statement = connection().prepareStatement(
                                             "SELECT DISTINCT " +
                                             "  COLUMN_NAME, " +
                                             "  DATA_TYPE, " +
@@ -367,6 +414,7 @@ public class MSSQLMetadataScanner
                                         if (results.next())
                                             {
                                             return column(
+                                                table(),
                                                 results
                                                 );
                                             }
@@ -376,11 +424,16 @@ public class MSSQLMetadataScanner
                                         }
                                     };
                                 }
-                            protected Column column(final ResultSet results)
+                            protected Column column(final Table table, final ResultSet results)
                             throws SQLException
                                 {
                                 return new Column()
                                     {
+                                    @Override
+                                    public Table table()
+                                        {
+                                        return table ;
+                                        }
                                     protected String  name = results.getString("COLUMN_NAME");
                                     protected Integer size = results.getInt("CHARACTER_MAXIMUM_LENGTH");
                                     protected JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
@@ -389,11 +442,6 @@ public class MSSQLMetadataScanner
                                             )
                                         );
 
-                                    @Override
-                                    public Table parent()
-                                        {
-                                        return table();
-                                        }
                                     @Override
                                     public String name()
                                         {

@@ -21,6 +21,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -30,6 +32,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +52,8 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner.Catalog;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**
  *
@@ -294,7 +299,8 @@ public class JdbcResourceEntity
 
     protected JdbcResource.Schemas schemasimpl()
         {
-        return new JdbcResource.Schemas(){
+        return new JdbcResource.Schemas()
+            {
 
             @Override
             public Iterable<JdbcSchema> select()
@@ -436,7 +442,7 @@ public class JdbcResourceEntity
     private JdbcConnectionEntity connection;
 
     @Override
-    public JdbcConnection connection()
+    public JdbcConnector connection()
         {
         return this.connection;
         }
@@ -473,6 +479,128 @@ public class JdbcResourceEntity
 
     @Override
     protected void scanimpl()
+        {
+        log.debug("scanimpl()");
+        //
+        // Create our metadata scanner.
+        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
+            connection()
+            );
+
+        //
+        // Load the existing schema.
+        Map<String, JdbcSchema> existing = new HashMap<String, JdbcSchema>();
+        Map<String, JdbcSchema> matching = new HashMap<String, JdbcSchema>();
+        for (JdbcSchema schema : factories().jdbc().schemas().select(JdbcResourceEntity.this))
+            {
+            log.debug("Caching existing schema [{}][{}]", this.ident(), schema.name());
+            existing.put(
+                schema.name(),
+                schema
+                );
+            }
+
+        //
+        // Default to using the catalog name from the Connection.
+        if (this.catalog == null)
+            {
+            try {
+                this.catalog = connection().catalog();
+                }
+            catch (MetadataException ouch)
+                {
+                log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                }
+            }
+        //
+        // Scan all the catalogs.
+        if (ALL_CATALOGS.equals(this.catalog))
+            {
+            try {
+                for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
+                    {
+                    scan(
+                        existing,
+                        matching,
+                        catalog
+                        );
+                    }
+                }
+            catch (SQLException ouch)
+                {
+                log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                scanner.handle(ouch);
+                }
+            }
+        //
+        // Scan a specific catalog.
+        else {
+            try {
+                scan(
+                    existing,
+                    matching,
+                    scanner.catalogs().select(
+                        this.catalog
+                        )
+                    );
+                }
+            catch (SQLException ouch)
+                {
+                log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                }
+            }
+        }
+    
+    protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Catalog catalog)
+        {
+        log.debug("Scanning catalog [{}][{}]", this.ident(), catalog.name());
+        try {
+            for (JdbcMetadataScanner.Schema schema : catalog.schemas().select())
+                {
+                scan(
+                    existing,
+                    matching,
+                    schema
+                    );                
+                }
+            }
+        catch (SQLException ouch)
+            {
+            log.warn("Exception while fetching catalog schema [{}][{}][{}]", this.ident(), catalog.name(), ouch.getMessage());
+            catalog.scanner().handle(ouch);
+            }
+        }
+
+    protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Schema schema)
+        {
+        String fullname = schema.catalog().name() + "." + schema.name() ;
+        log.debug("Scanning for schema [{}][{}]", this.ident(), fullname);
+        //
+        // Check for an existing match.
+        if (existing.containsKey(fullname))
+            {
+            log.debug("Found existing schema [{}][{}]", this.ident(), fullname);
+            matching.put(
+                fullname,
+                existing.remove(
+                    fullname
+                    )
+                );            
+            }
+        else {
+            log.debug("Creating new schema [{}][{}]", this.ident(), fullname);
+            matching.put(
+                fullname,
+                factories().jdbc().schemas().create(
+                    JdbcResourceEntity.this,
+                    schema.catalog().name(),
+                    schema.name()
+                    )
+                );
+            }
+        }
+
+    protected void xscanimpl()
         {
         log.debug("scanimpl()");
         try {
@@ -701,26 +829,6 @@ public class JdbcResourceEntity
             }
         }
 
-/*    
-    @Override
-    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type)
-        {
-        return connection().type().jdbctype(type);
-        }
-
-    @Override
-    public Integer jdbcsize(final AdqlColumn.OldAdqlType type)
-        {
-        return connection().type().jdbcsize(type);
-        }
-
-    @Override
-    public Integer jdbcsize(final JdbcColumn.OldJdbcType type)
-        {
-        return connection().type().jdbcsize(type);
-        }
- */
-    
     /**
      * Generate the JDBC metadata.
      * 

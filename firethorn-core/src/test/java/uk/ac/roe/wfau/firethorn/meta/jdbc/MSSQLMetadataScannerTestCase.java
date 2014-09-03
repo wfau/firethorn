@@ -44,7 +44,7 @@ extends AbstractQueryTestBase
     throws SQLException
         {
         log.debug("<catalog name='{}'>", catalog.name());
-        for (JdbcMetadataScanner.Schema schema : catalog.schema().select())
+        for (JdbcMetadataScanner.Schema schema : catalog.schemas().select())
             {
             scan(schema);
             }
@@ -91,7 +91,7 @@ extends AbstractQueryTestBase
             );
 
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
-            resource.connection().open()
+            resource.connection()
             );
 
         JdbcMetadataScanner.Catalog catalog = meta.catalogs().select("AtLaSdR1");
@@ -100,7 +100,7 @@ extends AbstractQueryTestBase
             );
         log.debug("<catalog name='{}'>", catalog.name());
 
-        JdbcMetadataScanner.Schema schema = catalog.schema().select("dBo");
+        JdbcMetadataScanner.Schema schema = catalog.schemas().select("dBo");
         assertNotNull(
             schema
             );
@@ -138,7 +138,7 @@ extends AbstractQueryTestBase
             );
 
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
-            resource.connection().open()
+            resource.connection()
             );
         try {
             JdbcMetadataScanner.Catalog catalog = meta.catalogs().select("ATLASDR1");
@@ -167,7 +167,7 @@ extends AbstractQueryTestBase
             );
 
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
-            resource.connection().open()
+            resource.connection()
             );
         
         log.debug("<catalogs>");
@@ -191,14 +191,7 @@ extends AbstractQueryTestBase
  * code='916' state='S1000' text='The server principal "atlasro" is not able to access the database "BEDB" under the current security context.'                 
  *                 
  */
-                if ((code == 0) || (code == 21))
-                    {
-                    log.debug("Openning a new connection");
-                    resource.connection().close();
-                    meta.connection(
-                        resource.connection().open()
-                        );
-                    }
+                meta.handle(ouch);
                 log.debug("</exception>");
                 }
             }
