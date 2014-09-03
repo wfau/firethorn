@@ -154,9 +154,9 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
         /**
          * Create a new {@link JdbcTable}.
+         * Used by {@link JdbcSchemaEntity#scanimpl()}.
          *
          */
-        @Deprecated
         public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
 
         /**
@@ -243,13 +243,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
          */
         public JdbcColumn.Builder builder();  
         
-        /**
-         * Scan the JDBC metadata.
-         * @todo Move this inside ?
-         *
-         */
-        public void scan();
-
         }
     @Override
     public Columns columns();

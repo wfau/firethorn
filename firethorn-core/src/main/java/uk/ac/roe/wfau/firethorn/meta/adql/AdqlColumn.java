@@ -363,6 +363,8 @@ extends BaseColumn<AdqlColumn>
                     return AdqlColumn.AdqlType.BOOLEAN;
                 case DATE :
                     return AdqlColumn.AdqlType.DATE;
+                case DATETIME :
+                    return AdqlColumn.AdqlType.DATETIME;
                 case DOUBLE :
                     return AdqlColumn.AdqlType.DOUBLE;
                 case FLOAT :

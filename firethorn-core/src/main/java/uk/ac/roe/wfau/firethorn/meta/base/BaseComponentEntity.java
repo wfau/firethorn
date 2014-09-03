@@ -31,9 +31,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+
+import com.sun.xml.internal.bind.v2.runtime.NameBuilder;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
@@ -71,7 +74,6 @@ implements BaseComponent
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
 
-    protected static final String DB_SCAN_TIME_COL  = "scantime";
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
     protected static final String DB_SCAN_DATE_COL   = "scandate";
@@ -142,52 +144,11 @@ implements BaseComponent
         this.status = status;
         }
 
-    @Column(
-        name = DB_SCAN_TIME_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    private long scantime ;
-    protected long scantime()
-        {
-        return this.scantime;
-        }
-    protected void scantime(final long time)
-        {
-        this.scantime = time;
-        }
-
     /**
      * The polling interval for waiting scans.
      *
      */
     private static final long POLL_WAIT = 1000 ;
-
-    /**
-     * The interval between scans.
-     * Set to 60 minutes for now .. should be configurable.
-     * Extended to 4hrs.
-     *
-    private static final long SCAN_INTERVAL = 1000 * 60 * 60 * 4 ;
-     */
-
-    /**
-     * Scan our metadata.
-     *
-    public void scantest()
-        {
-        log.debug("scantest() for [{}]", ident());
-        if (this.scantime == 0)
-            {
-            log.debug("Running scan ...");
-            scansync();
-            }
-        else {
-            log.debug("Skipping scan ...");
-            }
-        }
-     */
 
     /**
      * Synchronised set of Identifiers for active scans.
@@ -200,11 +161,9 @@ implements BaseComponent
     /**
      * Synchronise our metadata scans.
      *
-     */
     public void scansync()
         {
         log.debug("scansync() for [{}]", ident());
-
         boolean doscan = false ;
         final String ident = this.ident().toString();
         //
@@ -267,6 +226,7 @@ implements BaseComponent
                 }
             }
         }
+     */
 
     /**
      * Metadata scan implementation.
@@ -500,13 +460,16 @@ implements BaseComponent
      */
     protected void scantest()
         {
+        log.debug("scantest for [{}][{}]", this.ident(), this.name());
+        log.debug("scandate [{}]", scandate);
         if ((scandate == null) || (scandate.plus(scanperiod).isBeforeNow()))
             {
+            log.debug("scandate is in the past");
             Object block = block();
             if (block == null)
                 {
                 try {
-                    log.debug("Running scan [{}]", this.ident());
+                    log.debug("Running scan [{}][{}]", this.ident(), this.name());
                     scanimpl();
                     }
                 finally {
@@ -515,21 +478,24 @@ implements BaseComponent
                     }
                 }
             else {
-                log.debug("Found block [{}][{}]", this.ident(), block);
+                log.debug("Found block [{}][{}][{}]", this.ident(), this.name(), block);
                 while (block != null)
                     {
                     try {
-                        log.debug("Waiting on block [{}][{}]", this.ident(), block);
+                        log.debug("Waiting on block [{}][{}][{}]", this.ident(), this.name(), block);
                         block.wait(BLOCKING_TIMEOUT);
                         }
                     catch (Exception ouch)
                         {
-                        log.debug("Interrupted [{}][{}][{}]", this.ident(), block, ouch.getMessage());
+                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), block, ouch.getMessage());
                         }
                     block = block();
                     }
-                log.debug("No more blocks [{}]", this.ident());
+                log.debug("No more blocks [{}][{}]", this.ident(), this.name());
                 }
+            }
+        else {
+            log.debug("scandate is recent [{}][{}]", this.ident(), this.name());
             }
         }
     }

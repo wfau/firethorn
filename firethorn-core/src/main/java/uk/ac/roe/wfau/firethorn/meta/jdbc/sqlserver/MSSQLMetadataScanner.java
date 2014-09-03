@@ -29,6 +29,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
@@ -349,6 +350,7 @@ public class MSSQLMetadataScanner
                                             "SELECT DISTINCT " +
                                             "  COLUMN_NAME, " +
                                             "  DATA_TYPE, " +
+                                            "  NUMERIC_PRECISION, " +
                                             "  CHARACTER_MAXIMUM_LENGTH " +
                                             "FROM " +
                                             "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
@@ -388,6 +390,7 @@ public class MSSQLMetadataScanner
                                             "SELECT DISTINCT " +
                                             "  COLUMN_NAME, " +
                                             "  DATA_TYPE, " +
+                                            "  NUMERIC_PRECISION, " +
                                             "  CHARACTER_MAXIMUM_LENGTH " +
                                             "FROM " +
                                             "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
@@ -427,6 +430,17 @@ public class MSSQLMetadataScanner
                             protected Column column(final Table table, final ResultSet results)
                             throws SQLException
                                 {
+                                final String  name = results.getString("COLUMN_NAME");
+                                final Integer strlen = results.getInt("CHARACTER_MAXIMUM_LENGTH");
+                                final JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
+                                    results.getInt(
+                                        "NUMERIC_PRECISION"
+                                        ),
+                                    results.getString(
+                                        "DATA_TYPE"
+                                        )
+                                    );
+                                log.debug("column() [{}][{}][{}]", name, strlen, type);
                                 return new Column()
                                     {
                                     @Override
@@ -434,6 +448,8 @@ public class MSSQLMetadataScanner
                                         {
                                         return table ;
                                         }
+/*
+ * 
                                     protected String  name = results.getString("COLUMN_NAME");
                                     protected Integer size = results.getInt("CHARACTER_MAXIMUM_LENGTH");
                                     protected JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
@@ -441,7 +457,8 @@ public class MSSQLMetadataScanner
                                             "DATA_TYPE"
                                             )
                                         );
-
+ * 
+ */
                                     @Override
                                     public String name()
                                         {
@@ -450,7 +467,7 @@ public class MSSQLMetadataScanner
                                     @Override
                                     public Integer strlen()
                                         {
-                                        return size;
+                                        return strlen;
                                         }
                                     @Override
                                     public JdbcColumn.JdbcType type()
@@ -500,13 +517,27 @@ public class MSSQLMetadataScanner
         typemap.put("uniqueidentifier", JdbcColumn.JdbcType.UNKNOWN); 
 
         };
-    protected static JdbcColumn.JdbcType type(final String name)
+    protected static JdbcColumn.JdbcType type(final Integer numlen, final String name)
         {
+        log.debug("type [{}][{}]", numlen, name);
         JdbcColumn.JdbcType type = typemap.get(
             name
             );
         if (type != null)
             {
+            //
+            // Floating point numeric depends on precision.
+            // http://msdn.microsoft.com/en-gb/library/ms173773.aspx
+            if ((type == JdbcType.REAL) || (type == JdbcType.FLOAT))
+                {
+                if (numlen > 24)
+                    {
+                    type = JdbcType.DOUBLE ;
+                    }
+                else {
+                    type = JdbcType.FLOAT ;
+                    }
+                }
             return type ;
             }
         else {

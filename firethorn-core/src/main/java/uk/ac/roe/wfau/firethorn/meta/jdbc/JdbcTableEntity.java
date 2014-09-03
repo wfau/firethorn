@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -63,6 +65,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**
  *
@@ -306,7 +309,6 @@ implements JdbcTable
             }
 
         @Override
-        @Deprecated
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
             {
@@ -607,13 +609,8 @@ implements JdbcTable
     @Override
     public JdbcTable.Columns columns()
         {
-        log.debug("columns() for [{}]", ident());
+        log.debug("columns() for [{}][{}]", ident(), namebuilder());
         scantest();
-        return columnsimpl();
-        }
-
-    public JdbcTable.Columns columnsimpl()
-        {
         return new JdbcTable.Columns()
             {
             @Override
@@ -661,13 +658,6 @@ implements JdbcTable
                     type,
                     size
                     );
-                }
-
-            @Override
-            public void scan()
-                {
-                log.debug("tables.scan() [{}]", ident());
-                JdbcTableEntity.this.scansync();
                 }
 
             @Override
@@ -1035,118 +1025,109 @@ implements JdbcTable
         }
 
     @Override
-    public void scanimpl()
+    protected void scanimpl()
         {
-        log.debug("scanimpl()");
-        try {
-            final DatabaseMetaData metadata = resource().connection().metadata();
-            final JdbcProductType  product  = JdbcProductType.match(
-                metadata
+        log.debug("columns() scan for [{}][{}]", this.ident(), this.namebuilder());
+        //
+        // Create our metadata scanner.
+        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
+            resource().connection()
+            );
+        //
+        // Load our existing tables.
+        Map<String, JdbcColumn> existing = new HashMap<String, JdbcColumn>();
+        Map<String, JdbcColumn> matching = new HashMap<String, JdbcColumn>();
+        for (JdbcColumn column : factories().jdbc().columns().select(JdbcTableEntity.this))
+            {
+            log.debug("Caching existing column [{}]", column.name());
+            existing.put(
+                column.name(),
+                column
                 );
-            log.debug("JdbcProductType [{}]", product);
-            // TODO - fix connection errors
-            if (metadata != null)
-                {
-                //
-                // TODO - Check the table actually exists !!
-
-                try {
-                    //
-                    // Check the table columns.
-
-/*
- * JDBC metadata ...
- * http://docs.oracle.com/javase/7/docs/api/java/sql/DatabaseMetaData.html
- *
- */
-
-                    final ResultSet columns = metadata.getColumns(
-                        this.schema().catalog(),
-                        this.schema().schema(),
-                        this.name(),
-                        null
-                        );
-                    while (columns.next())
-                        {
-                        final String ccname  = columns.getString(JdbcTypes.JDBC_META_TABLE_CAT);
-                        final String csname  = columns.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
-                        final String ctname  = columns.getString(JdbcTypes.JDBC_META_TABLE_NAME);
-                        final String colname = columns.getString(JdbcTypes.JDBC_META_COLUMN_NAME);
-                        final JdbcColumn.JdbcType coltype = JdbcColumn.JdbcType.sqltype(
-                            columns.getInt(
-                                JdbcTypes.JDBC_META_COLUMN_TYPE_TYPE
-                                )
-                            );
-                        final Integer colsize = new Integer(
-                            columns.getInt(
-                                JdbcTypes.JDBC_META_COLUMN_SIZE
-                                )
-                            );
-
-                        log.debug(
-                            "Found column [{}][{}][{}][{}][{}][{}]",
-                            new Object[]{
-                                ccname,
-                                csname,
-                                ctname,
-                                colname,
-                                coltype,
-                                colsize
-                                }
-                            );
-
-                        // TODO Remove the try/catch
-                        // Use search() and (column != null)
-
-                        // Might be faster to load all the existing columns into a HashMap indexed by name ?
-                        // One JDBC call rather than many.
-                        try {
-                            final JdbcColumn column = columnsimpl().select(
-                                colname
-                                );
-                            //
-                            // Update the column ..
-                            // TODO How do we handle changes to column types ?
-                            if (coltype != column.meta().jdbc().jdbctype())
-                                {
-                                log.warn("JDBC column types don't match [{}][{}][{}][{}]", column.ident(), column.namebuilder(), column.meta().jdbc().jdbctype(), coltype);
-                                }
-                            }
-                        catch (final EntityNotFoundException ouch)
-                            {
-                            columnsimpl().create(
-                                colname,
-                                coltype,
-                                colsize
-                                );
-                            }
-                        }
+            }
         //
-        // TODO
-        // Reprocess the list disable missing ones ...
-        //
-                    }
-                catch (final SQLException ouch)
+        // Process our columns.
+        try {
+            scan(
+                existing,
+                matching,
+                scanner.catalogs().select(
+                    schema().catalog()
+                    ).schemas().select(
+                        schema().schema()
+                        ).tables().select(
+                            this.name()
+                            )
+                );
+            }
+        catch (SQLException ouch)
+            {
+            log.warn("Exception while fetching table [{}][{}]", this.ident(), ouch.getMessage());
+            scanner.handle(ouch);
+            }
+        finally {
+            scanner.connector().close();
+            }
+        log.debug("columns() scan done for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
+        }
+
+    protected void scan(final Map<String, JdbcColumn> existing, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Table table)
+        {
+        log.debug("scanning table [{}]", (table != null) ? table.name() : null);
+        if (table == null)
+            {
+            log.warn("Null table");
+            }
+        else {
+            try {
+                for (JdbcMetadataScanner.Column column : table.columns().select())
                     {
-                    log.warn("Exception reading JDBC table metadata [{}]", ouch.getMessage());
-                    throw resource().connection().translator().translate(
-                        "Exception reading JDBC table metadata",
-                        null,
-                        ouch
+                    scan(
+                        existing,
+                        matching,
+                        column
                         );
                     }
                 }
+            catch (SQLException ouch)
+                {
+                log.warn("Exception while fetching table columns [{}][{}][{}]", this.ident(), table.name(), ouch.getMessage());
+                table.schema().catalog().scanner().handle(ouch);
+                }
             }
-        catch (final MetadataException ouch)
+        }
+
+    protected void scan(final Map<String, JdbcColumn> existing, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Column column)
+        {
+        String name = column.name();
+        log.debug("Scanning for column [{}]", name);
+        //
+        // Check for an existing match.
+        if (existing.containsKey(name))
             {
-            log.warn("Exception while reading JdbcSchema metadata [{}]", ouch.getMessage());
-            throw new EntityServiceException(
-                "Exception while reading JdbcSchema metadata",
-                ouch
-                );
+            log.debug("Found existing column [{}]", name);
+            matching.put(
+                name,
+                existing.remove(
+                    name
+                    )
+                );            
             }
-        finally {
-            resource().connection().close();
+        //
+        // No match, so create a new one.
+        else {
+            log.debug("Creating new column [{}]", name);
+            matching.put(
+                name,
+                factories().jdbc().columns().create(
+                    JdbcTableEntity.this,
+                    name,
+                    column.type(),
+                    column.strlen()
+                    )
+                );
             }
         }
 

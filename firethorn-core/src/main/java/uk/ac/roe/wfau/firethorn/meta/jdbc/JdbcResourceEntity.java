@@ -17,10 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +29,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,10 +45,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner.Catalog;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**
@@ -292,13 +286,8 @@ public class JdbcResourceEntity
     @Override
     public JdbcResource.Schemas schemas()
         {
-        log.debug("schemas() for [{}]", ident());
+        log.debug("schemas() for [{}][{}]", ident(), namebuilder());
         scantest();
-        return schemasimpl();
-        }
-
-    protected JdbcResource.Schemas schemasimpl()
-        {
         return new JdbcResource.Schemas()
             {
 
@@ -339,18 +328,6 @@ public class JdbcResourceEntity
                     );
                 }
 
-            /*          
-             * removed 20140507
-            @Override
-            public Iterable<JdbcSchema> select(final Identity identity)
-                {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    identity
-                    );
-                }
-             */
-            
             @Override
             public JdbcSchema search(final String name)
                 {
@@ -390,12 +367,6 @@ public class JdbcResourceEntity
                     catalog,
                     schema
                     );
-                }
-
-            @Override
-            public void scan()
-                {
-                JdbcResourceEntity.this.scansync();
                 }
 
             @Override
@@ -466,7 +437,9 @@ public class JdbcResourceEntity
     public void catalog(final String catalog)
         {
         this.catalog = catalog ;
-        scansync();
+        this.scandate(
+            null
+            );
         }
 
     @Override
@@ -480,352 +453,140 @@ public class JdbcResourceEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("scanimpl()");
+        log.debug("schemas() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
             connection()
             );
-
         //
-        // Load the existing schema.
+        // Load our existing schema.
         Map<String, JdbcSchema> existing = new HashMap<String, JdbcSchema>();
         Map<String, JdbcSchema> matching = new HashMap<String, JdbcSchema>();
         for (JdbcSchema schema : factories().jdbc().schemas().select(JdbcResourceEntity.this))
             {
-            log.debug("Caching existing schema [{}][{}]", this.ident(), schema.name());
+            log.debug("Caching existing schema [{}]", schema.name());
             existing.put(
                 schema.name(),
                 schema
                 );
             }
-
         //
-        // Default to using the catalog name from the Connection.
-        if (this.catalog == null)
-            {
-            try {
-                this.catalog = connection().catalog();
-                }
-            catch (MetadataException ouch)
+        // Try/finally to close our connection. 
+        try {
+            //
+            // Default to our Connection catalog name.
+            if (this.catalog == null)
                 {
-                log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
-                }
-            }
-        //
-        // Scan all the catalogs.
-        if (ALL_CATALOGS.equals(this.catalog))
-            {
-            try {
-                for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
+                try {
+                    this.catalog = connection().catalog();
+                    }
+                catch (MetadataException ouch)
                     {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                    }
+                }
+            //
+            // Scan all the catalogs.
+            if (ALL_CATALOGS.equals(this.catalog))
+                {
+                try {
+                    for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
+                        {
+                        scan(
+                            existing,
+                            matching,
+                            catalog
+                            );
+                        }
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                    scanner.handle(ouch);
+                    }
+                }
+            //
+            // Scan a specific catalog.
+            else {
+                try {
                     scan(
                         existing,
                         matching,
-                        catalog
+                        scanner.catalogs().select(
+                            this.catalog
+                            )
                         );
                     }
-                }
-            catch (SQLException ouch)
-                {
-                log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
-                scanner.handle(ouch);
-                }
-            }
-        //
-        // Scan a specific catalog.
-        else {
-            try {
-                scan(
-                    existing,
-                    matching,
-                    scanner.catalogs().select(
-                        this.catalog
-                        )
-                    );
-                }
-            catch (SQLException ouch)
-                {
-                log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                catch (SQLException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                    scanner.handle(ouch);
+                    }
                 }
             }
+        finally {
+            scanner.connector().close();
+            }
+        log.debug("schemas() scan done for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
         }
     
     protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Catalog catalog)
         {
-        log.debug("Scanning catalog [{}][{}]", this.ident(), catalog.name());
-        try {
-            for (JdbcMetadataScanner.Schema schema : catalog.schemas().select())
-                {
-                scan(
-                    existing,
-                    matching,
-                    schema
-                    );                
-                }
-            }
-        catch (SQLException ouch)
+        if (catalog == null)
             {
-            log.warn("Exception while fetching catalog schema [{}][{}][{}]", this.ident(), catalog.name(), ouch.getMessage());
-            catalog.scanner().handle(ouch);
+            log.warn("Null catalog");
+            }
+        else {
+            log.debug("Scanning catalog [{}]", catalog.name());
+            try {
+                for (JdbcMetadataScanner.Schema schema : catalog.schemas().select())
+                    {
+                    scan(
+                        existing,
+                        matching,
+                        schema
+                        );                
+                    }
+                }
+            catch (SQLException ouch)
+                {
+                log.warn("Exception while scanning catalog [{}][{}][{}]", this.ident(), catalog.name(), ouch.getMessage());
+                catalog.scanner().handle(ouch);
+                }
             }
         }
 
     protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Schema schema)
         {
-        String fullname = schema.catalog().name() + "." + schema.name() ;
-        log.debug("Scanning for schema [{}][{}]", this.ident(), fullname);
+        String name = schema.catalog().name() + "." + schema.name() ;
+        log.debug("Scanning for schema [{}]", name);
         //
         // Check for an existing match.
-        if (existing.containsKey(fullname))
+        if (existing.containsKey(name))
             {
-            log.debug("Found existing schema [{}][{}]", this.ident(), fullname);
+            log.debug("Found existing schema [{}]", name);
             matching.put(
-                fullname,
+                name,
                 existing.remove(
-                    fullname
+                    name
                     )
                 );            
             }
+        //
+        // No match, so create a new one.
         else {
-            log.debug("Creating new schema [{}][{}]", this.ident(), fullname);
+            log.debug("Creating new schema [{}]", name);
             matching.put(
-                fullname,
+                name,
                 factories().jdbc().schemas().create(
                     JdbcResourceEntity.this,
                     schema.catalog().name(),
                     schema.name()
                     )
                 );
-            }
-        }
-
-    protected void xscanimpl()
-        {
-        log.debug("scanimpl()");
-        try {
-            //
-            // Default to using the catalog name from the Connection.
-            // Explicitly set it to 'ALL_CATALOGS' to get all.
-            if (this.catalog == null)
-                {
-                this.catalog = connection().catalog();
-                }
-            //
-            // Scan all the catalogs.
-            if (ALL_CATALOGS.equals(this.catalog))
-                {
-                for (final String cname : connection().catalogs())
-                    {
-                    try {
-                        scanimpl(
-                            cname
-                            );
-                        }
-                    catch (final Exception ouch)
-                        {
-                        log.warn("Exception in catalog processing loop");
-                        log.warn("Exception text   [{}]", ouch.getMessage());
-                        log.warn("Exception string [{}]", ouch.toString());
-                        log.warn("Exception class  [{}]", ouch.getClass().toString());
-                        //
-                        // Continue with the rest of the catalogs ...
-                        //
-                        }
-                    }
-                }
-            //
-            // Just scan one catalog.
-            else {
-                scanimpl(
-                    this.catalog
-                    );
-                }
-            }
-        catch (final MetadataException ouch)
-            {
-            log.warn("Exception while scanning JdbcResource catalogs [{}]", ouch.getMessage());
-            throw new EntityServiceException(
-                "Exception while scanning JdbcResource catalogs",
-                ouch
-                );
-            }
-
-//
-// TODO
-// Reprocess the list disable missing ones ...
-//
-
-        }
-
-    protected void scanimpl(final String catalog)
-        {
-        log.debug("scanimpl(String)");
-        log.debug("  Catalog [{}]", catalog);
-        //
-        // Get the database metadata
-        try {
-            final DatabaseMetaData metadata = connection().metadata();
-            final JdbcProductType  product  = JdbcProductType.match(
-                metadata
-                );
-            // TODO - fix connection errors
-            if (metadata != null)
-                {
-                try {
-/*
- * getTables() fails if there are no tables
- */
-                    final ResultSet schemas = metadata.getTables(
-                        catalog,
-                        null, // sch
-                        null, // tab
-                        new String[]
-                            {
-                            JdbcTypes.JDBC_META_TABLE_TYPE_TABLE,
-                            JdbcTypes.JDBC_META_TABLE_TYPE_VIEW
-                            }
-                        );
-/*
- * getSchemas() fails because catalog is ignored
-                    final ResultSet schemas = metadata.getSchemas(
-                        catalog,
-                        null
-                        );
-
-// This will get ALL the catalogs.
-// But the cname is always null, so we can't distinguish between them.
-                    final ResultSet schemas = metadata.getSchemas();
- *
- */
-
-
-
-                    String cprev = null ;
-                    String sprev = null ;
-                    while (schemas.next())
-                        {
-                        //String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CATALOG);
-                        String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CAT);
-                        String sname = schemas.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
-                        log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
-/*
-                        ResultSetMetaData meta = schemas.getMetaData();
-                        for (int i = 1 ; i <= meta.getColumnCount() ; i++)
-                            {
-                            log.debug("Col [{}][{}]", i, meta.getColumnName(i));
-                            }
- */
-                        //
-                        // In MySQL the schema name is always null, use the catalog name instead.
-                        if (product == JdbcProductType.MYSQL)
-                            {
-                            sname = cname ;
-                            cname = null ;
-                            }
-                        //
-                        // In HSQLDB the schema and catalogs overlap, use the catalog name as the schema.
-                        if (product == JdbcProductType.HSQLDB)
-                            {
-                            //log.debug("JdbcProductType.HSQLDB, swapping names");
-                            //sname = cname ;
-                            //cname = null ;
-                            }
-                        //
-                        // The jTDS driver for SQLServer returns null column.
-                        // This fix works for single catalog resources.
-                        // This may fail for wildcard resources.
-                        // TODO test with wildcard resources.
-                        if (product == JdbcProductType.MSSQL)
-                            {
-                            if (cname == null)
-                                {
-                                cname = catalog ;
-                                }
-                            }
-                        //
-                        // Posgtresql - catalog is null :-(
-                        if (product == JdbcProductType.PGSQL)
-                            {
-                            if (cname == null)
-                                {
-                                cname = catalog ;
-                                }
-                            }
-                        //
-                        // Skip if the schema is on our ignore list.
-                        if (product.ignore().contains(sname))
-                            {
-                            //log.debug("Schema [{}] is on the ignore list for [{}]", sname, product);
-                            continue;
-                            }
-                        //
-                        // Check if we have already done this one.
-                        if (
-                            ((cname == null) ? cprev == null : cname.equals(cprev))
-                            &&
-                            ((sname == null) ? sprev == null : sname.equals(sprev))
-                            ){
-                            log.debug("Already done [{}][{}], skipping", cname, sname);
-                            continue;
-                            }
-                        else {
-                            cprev = cname;
-                            sprev = sname;
-                            }
-
-                        log.debug("Processing schema [{}][{}]", new Object[]{cname, sname});
-
-                        //
-                        // Check for an existing schema.
-                        // If none found, create a new one.
-                        JdbcSchema schema = this.schemasimpl().search(
-                            cname,
-                            sname
-                            );
-                        if (schema == null)
-                            {
-//////
-                            log.debug("Matching schema not found [{}][{}], creating", new Object[]{cname, sname});
-                            schema = this.schemasimpl().create(
-                                cname,
-                                sname
-                                );
-                            }
-                        else {
-                            log.debug("Matching schema found [{}][{}], skipping", new Object[]{cname, sname});
-//////
-                            }
-                        }
-                    }
-                catch (final SQLInvalidAuthorizationSpecException ouch)
-                    {
-                    log.debug("Authorization exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
-                    }
-                catch (final SQLException ouch)
-                    {
-                    log.warn("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
-                    log.warn("Exception text   [{}]", ouch.getMessage());
-                    log.warn("Exception string [{}]", ouch.toString());
-                    log.warn("Exception class  [{}]", ouch.getClass().toString());
-                    throw connection().translator().translate(
-                        "Reading JDBC catalog schemas",
-                        null,
-                        ouch
-                        );
-                    }
-                }
-            }
-        catch (final MetadataException ouch)
-            {
-            log.warn("Exception while reading JdbcResource catalog metadata [{}]", ouch.getMessage());
-            throw new EntityServiceException(
-                "Exception while reading JdbcResource catalog metadata",
-                ouch
-                );
-            }
-        finally {
-            connection().close();
             }
         }
 

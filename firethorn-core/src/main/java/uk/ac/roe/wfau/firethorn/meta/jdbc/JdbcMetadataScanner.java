@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner.Table;
-
 
 /**
  * An abstraction of JDBC database metadata.
