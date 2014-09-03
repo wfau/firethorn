@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
  * JDBC resource connection details.
  *
  */
-public interface JdbcConnection
+public interface JdbcConnector
     {
     /**
      * Get the connection URL (as a String).
@@ -118,7 +118,6 @@ public interface JdbcConnection
     /**
      * Connection status values.
      *
-     */
     public enum Status
         {
         CREATED(),
@@ -127,17 +126,18 @@ public interface JdbcConnection
         FAILED();
         }
 
-    /**
+     **
      * Get the connection status.
      *
-     */
+     *
     public Status status();
 
-    /**
+     **
      * Set the connection status.
      *
-     */
+     *
     public void status(final Status status);
+    */
 
     /**
      * Our Spring SQLException translator.

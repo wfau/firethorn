@@ -141,20 +141,6 @@ extends BaseResource<JdbcSchema>
         public JdbcSchema search(final String catalog, final String schema);
 
         /**
-         * Select the {@link JdbcSchema} owned by an Identity.
-         * @todo Move this to a data space interface.
-         *
-        public Iterable<JdbcSchema> select(final Identity identity);
-         */
-
-        /**
-         * Scan the JDBC metadata.
-         * @todo Move this out of the interface.
-         *
-         */
-        public void scan();
-
-        /**
          * The default catalog/schema for this resource.
          *
          */
@@ -176,7 +162,7 @@ extends BaseResource<JdbcSchema>
      * Access to our JDBC connection.
      *
      */
-    public JdbcConnection connection();
+    public JdbcConnector connection();
 
     /**
      * The 'wildcard' catalog name.

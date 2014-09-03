@@ -18,7 +18,9 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -27,8 +29,14 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
+import com.sun.xml.internal.bind.v2.runtime.NameBuilder;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
@@ -66,9 +74,12 @@ implements BaseComponent
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
 
-    protected static final String DB_SCAN_TIME_COL  = "scantime";
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
+    protected static final String DB_SCAN_TIME_COL   = "scantime";
+    protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
+
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -133,61 +144,11 @@ implements BaseComponent
         this.status = status;
         }
 
-    @Column(
-        name = DB_SCAN_TIME_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    private long scanprev ;
-    protected long scantime()
-        {
-        return this.scanprev;
-        }
-    protected void scantime(final long time)
-        {
-        this.scanprev = time;
-        }
     /**
      * The polling interval for waiting scans.
      *
      */
     private static final long POLL_WAIT = 1000 ;
-
-    /**
-     * The interval between scans.
-     * Set to 60 minutes for now .. should be configurable.
-     * Extended to 4hrs.
-     *
-    private static final long SCAN_INTERVAL = 1000 * 60 * 60 * 4 ;
-     */
-
-    /**
-     * Scan our metadata.
-     *
-     */
-    public void scantest()
-        {
-        log.debug("scantest() for [{}]", ident());
-/*
- * Regular scans disabled.
-        final long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
-        log.debug("  values [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
-        if (this.scanprev < scannext)
-            {
-            scansync();
-            }
- *
- */
-        if (this.scanprev == 0)
-            {
-            log.debug("Running scan ...");
-            scansync();
-            }
-        else {
-            log.debug("Skipping scan ...");
-            }
-        }
 
     /**
      * Synchronised set of Identifiers for active scans.
@@ -200,11 +161,9 @@ implements BaseComponent
     /**
      * Synchronise our metadata scans.
      *
-     */
     public void scansync()
         {
         log.debug("scansync() for [{}]", ident());
-
         boolean doscan = false ;
         final String ident = this.ident().toString();
         //
@@ -267,6 +226,7 @@ implements BaseComponent
                 }
             }
         }
+     */
 
     /**
      * Metadata scan implementation.
@@ -297,7 +257,6 @@ implements BaseComponent
         {
         this.depth = type;
         }
-
     
     /**
      * Exception thrown if loading self() fails.
@@ -357,10 +316,13 @@ implements BaseComponent
      * Load a persistent reference for this Entity.
      * @return The persistent instance or proxy for the entity.
      * @see Session#load(Class, java.io.Serializable)
+     * @todo Delegate to each entity class.
+     * @todo Check for recursion.
      *
      */
     protected ComponentType self()
         {
+        log.debug("Loading proxy for self");
         @SuppressWarnings("unchecked")
         final ComponentType entity = (ComponentType) factories().hibernate().session().load(
             this.getClass(),
@@ -375,6 +337,165 @@ implements BaseComponent
                 this.getClass(),
                 this.ident()
                 );
+            }
+        }
+
+    /**
+     * Synchronised Map of scan blocks.
+     *
+     */
+    private static Map<Identifier, Object> blocks = new HashMap<Identifier, Object>();
+
+    /**
+     * Check for an existing block, or create a new one.
+     *
+     */
+    protected Object block()
+        {
+        log.debug("Checking for existing block [{}]", this.ident());
+        synchronized (blocks)
+            {
+            Object block = blocks.get(
+                this.ident()
+                );
+            if (block != null)
+                {
+                log.debug("Found existing block [{}][{}]", this.ident(), block);
+                return block;
+                }
+            else {
+                block = new DateTime();
+                log.debug("Adding new block [{}][{}]", this.ident(), block);
+                blocks.put(
+                    this.ident(),
+                    block
+                    );
+                return null ;
+                }
+            }
+        }
+
+    /**
+     * Release waiting blocks.
+     * 
+     */
+    protected void release()
+        {
+        log.debug("Releasing blocks [{}]", this.ident());
+        synchronized (blocks)
+            {
+            Object block = blocks.get(
+                this.ident()
+                );
+            if (block != null)
+                {
+                log.debug("Found existing block [{}][{}]", this.ident(), block);
+                log.debug("Notifying ....");
+                synchronized (block)
+                    {
+                    block.notifyAll();
+                    }
+                }
+            else {
+                log.debug("No blocks found [{}]", this.ident());
+                }
+            }
+        }
+
+    /**
+     * The default re-scan interval.
+     * 
+     */
+    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+
+    /**
+     * The blocking timeout.
+     * 
+     */
+    protected static final long BLOCKING_TIMEOUT = 500 ;
+    
+    /**
+     * The data/time of the last scan.
+     * 
+     */
+    @Column(
+        name = DB_SCAN_TIME_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private DateTime scantime ;
+    protected DateTime scantime()
+        {
+        return this.scantime;
+        }
+    protected void scandate(final DateTime time)
+        {
+        this.scantime = time;
+        }
+    
+    /**
+     * The scan refresh period.
+     * 
+     */
+    @Column(
+        name = DB_SCAN_PERIOD_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    private Period scanperiod = DEFAULT_SCAN_PERIOD ;
+    protected Period scanperiod()
+        {
+        return this.scanperiod;
+        }
+    protected void scanperiod(final Period period)
+        {
+        this.scanperiod = period;
+        }
+    
+    /**
+     * Check the scan criteria and scan.
+     *
+     */
+    protected void scantest()
+        {
+        log.debug("scantest for [{}][{}]", this.ident(), this.name());
+        log.debug("scandate [{}]", scantime);
+        if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
+            {
+            log.debug("scandate is in the past");
+            Object block = block();
+            if (block == null)
+                {
+                try {
+                    log.debug("Running scan [{}][{}]", this.ident(), this.name());
+                    scanimpl();
+                    }
+                finally {
+                    scantime = new DateTime();
+                    release();
+                    }
+                }
+            else {
+                log.debug("Found block [{}][{}][{}]", this.ident(), this.name(), block);
+                while (block != null)
+                    {
+                    try {
+                        log.debug("Waiting on block [{}][{}][{}]", this.ident(), this.name(), block);
+                        block.wait(BLOCKING_TIMEOUT);
+                        }
+                    catch (Exception ouch)
+                        {
+                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), block, ouch.getMessage());
+                        }
+                    block = block();
+                    }
+                log.debug("No more blocks [{}][{}]", this.ident(), this.name());
+                }
+            }
+        else {
+            log.debug("scandate is recent [{}][{}]", this.ident(), this.name());
             }
         }
     }

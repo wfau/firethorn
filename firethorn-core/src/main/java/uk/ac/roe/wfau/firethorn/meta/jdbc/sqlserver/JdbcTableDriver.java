@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -74,7 +74,7 @@ public class JdbcTableDriver
     public void delete(final JdbcTable table)
         {
         log.debug("Delete JdbcTable [{}]", table.name());
-        final JdbcConnection connection = table.resource().connection();
+        final JdbcConnector connection = table.resource().connection();
         final String statement = DELETE_DATA_STATEMENT.replace(
             "{name}",
             table.namebuilder().toString()
@@ -101,7 +101,7 @@ public class JdbcTableDriver
     public void drop(final JdbcTable table)
         {
         log.debug("Drop JdbcTable [{}]", table.name());
-        final JdbcConnection connection = table.resource().connection();
+        final JdbcConnector connection = table.resource().connection();
         final String statement = DROP_TABLE_STATEMENT.replace(
             "{name}",
             table.namebuilder().toString()

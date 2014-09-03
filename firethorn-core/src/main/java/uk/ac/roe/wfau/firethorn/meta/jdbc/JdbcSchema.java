@@ -117,9 +117,9 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
         /**
          * Create a new {@link JdbcSchema}.
+         * Used by {@link JdbcResourceEntity#scanimpl()}.
          *
          */
-        @Deprecated
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema);
 
         /**
@@ -228,12 +228,6 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcTable create(final AdqlQuery query);
-
-        /**
-         * Update the tables.
-         *
-         */
-        public void scan();
 
         /**
          * Get the next set of tables for garbage collection ..

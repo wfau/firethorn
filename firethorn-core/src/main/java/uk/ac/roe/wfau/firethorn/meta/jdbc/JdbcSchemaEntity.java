@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -60,6 +62,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**
  *
@@ -229,39 +232,6 @@ public class JdbcSchemaEntity
                 return safe(catalog) + "." + safe(schema) ;
                 }
             }
-
-        /*
-        @Override
-        public String datename()
-            {
-            return datename(
-                "SCHEMA_",
-                factories().authentications().current().identity()
-                );
-            }
-         */
-        
-        /*
-        @Override
-        public String datename(final Identity identity)
-            {
-            return datename(
-                "IDENTITY_",
-                identity
-                );
-            }
-         */
-
-        /*
-        @Override
-        public String datename(final String prefix, final Identity identity)
-            {
-            return datename(
-                prefix,
-                identity.ident()
-                );
-            }
-         */
         }
 
     /**
@@ -641,13 +611,8 @@ public class JdbcSchemaEntity
     @Override
     public JdbcSchema.Tables tables()
         {
-        log.debug("tables() for [{}]", ident());
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
         scantest();
-        return tablesimpl();
-        }
-
-    protected JdbcSchema.Tables tablesimpl()
-        {
         return new JdbcSchema.Tables()
             {
             @Override
@@ -717,12 +682,6 @@ public class JdbcSchemaEntity
                 }
             
             @Override
-            public void scan()
-                {
-                JdbcSchemaEntity.this.scansync();
-                }
-
-            @Override
             public JdbcTable select(final Identifier ident)
             throws IdentifierNotFoundException
                 {
@@ -772,83 +731,104 @@ public class JdbcSchemaEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("scanimpl()");
-        try {
-            final DatabaseMetaData metadata = resource().connection().metadata();
-            final JdbcProductType  product  = JdbcProductType.match(
-                metadata
+        log.debug("tables() scan for [{}][{}]", this.ident(), this.namebuilder());
+        //
+        // Create our metadata scanner.
+        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
+            resource().connection()
+            );
+        //
+        // Load our existing tables.
+        Map<String, JdbcTable> existing = new HashMap<String, JdbcTable>();
+        Map<String, JdbcTable> matching = new HashMap<String, JdbcTable>();
+        for (JdbcTable table : factories().jdbc().tables().select(JdbcSchemaEntity.this))
+            {
+            log.debug("Caching existing table [{}]", table.name());
+            existing.put(
+                table.name(),
+                table
                 );
-            log.debug("JdbcProductType [{}]", product);
-            // TODO - fix connection errors
-            if (metadata != null)
-                {
-                try {
-                    final ResultSet tables = metadata.getTables(
-                        this.catalog(),
-                        this.schema(),
-                        null, // tab
-                        new String[]
-                            {
-                            JdbcTypes.JDBC_META_TABLE_TYPE_TABLE,
-                            JdbcTypes.JDBC_META_TABLE_TYPE_VIEW
-                            }
-                        );
-
-                    while (tables.next())
-                        {
-                        final String tcname = tables.getString(JdbcTypes.JDBC_META_TABLE_CAT);
-                        final String tsname = tables.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
-                        final String ttname = tables.getString(JdbcTypes.JDBC_META_TABLE_NAME);
-                        final String tttype = tables.getString(JdbcTypes.JDBC_META_TABLE_TYPE);
-                        log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
-
-                        // TODO Remove the try/catch
-                        try {
-                            final JdbcTable table = tablesimpl().select(
-                                ttname
-                                );
-                            table.meta().jdbc().type(
-                                JdbcTable.JdbcType.match(
-                                    tttype
-                                    )
-                                );
-                            }
-                        catch (final EntityNotFoundException ouch)
-                            {
-                            tablesimpl().create(
-                                ttname,
-                                JdbcTable.JdbcType.match(
-                                    tttype
-                                    )
-                                );
-                            }
-                        }
+            }
         //
-        // TODO
-        // Reprocess the list disable missing ones ...
-        //
-                    }
-                catch (final SQLException ouch)
+        // Process our tables.
+        try {
+            scan(
+                existing,
+                matching,
+                scanner.catalogs().select(
+                    this.catalog()
+                    ).schemas().select(
+                        this.schema()
+                        )
+                );
+            }
+        catch (SQLException ouch)
+            {
+            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
+            scanner.handle(ouch);
+            }
+        finally {
+            scanner.connector().close();
+            }
+        log.debug("tables() scan done for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
+        }
+
+    protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
+        {
+        log.debug("scanning schema [{}]", (schema != null) ? schema.name() : null);
+        if (schema == null)
+            {
+            log.warn("Null schema");
+            }
+        else {
+            try {
+                for (JdbcMetadataScanner.Table table : schema.tables().select())
                     {
-                    log.error("Exception reading JDBC schema metadata [{}]", ouch.getMessage());
-                    throw resource().connection().translator().translate(
-                        "Reading JDBC resource metadata",
-                        null,
-                        ouch
+                    scan(
+                        existing,
+                        matching,
+                        table
                         );
                     }
                 }
+            catch (SQLException ouch)
+                {
+                log.warn("Exception while fetching schema tables [{}][{}][{}]", this.ident(), schema.name(), ouch.getMessage());
+                schema.catalog().scanner().handle(ouch);
+                }
             }
-        catch (final MetadataException ouch)
+        }
+
+    protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Table table)
+        {
+        String name = table.name();
+        log.debug("Scanning for table [{}]", name);
+        //
+        // Check for an existing match.
+        if (existing.containsKey(name))
             {
-            log.warn("Exception while reading JdbcSchema metadata [{}]", ouch.getMessage());
-            throw new EntityServiceException(
-                "Exception while reading JdbcSchema metadata",
-                ouch
-                );
+            log.debug("Found existing table [{}]", name);
+            matching.put(
+                name,
+                existing.remove(
+                    name
+                    )
+                );            
             }
-        finally {
-            resource().connection().close();
+        //
+        // No match, so create a new one.
+        else {
+            log.debug("Creating new table [{}]", name);
+            matching.put(
+                name,
+                factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this,
+                    table.name(),
+                    JdbcTable.JdbcType.TABLE
+                    )
+                );
             }
         }
 

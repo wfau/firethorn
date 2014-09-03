@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -89,7 +89,7 @@ public class JdbcResourceInportTestCase
     public void test002()
     throws Exception
         {
-        final JdbcConnection connection = new JdbcConnectionEntity(
+        final JdbcConnector connection = new JdbcConnectionEntity(
             "spring:RoeTWOMASS"
             );
         final List<JdbcResource> resources = new ArrayList<JdbcResource>();
