@@ -1,5 +1,7 @@
 try:
     import sys, os
+    import errno
+    import signal
     srcdir = '../src/'
     configdir = '../'
     testdir = os.path.dirname(__file__)
@@ -42,7 +44,23 @@ try:
 except Exception as e:
     logging.exception(e)
 
-
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+ 
+    def __init__(self, sec):
+        self.sec = sec
+ 
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+ 
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+ 
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
 
 
 class test_firethorn(unittest.TestCase):
@@ -109,7 +127,7 @@ class test_firethorn(unittest.TestCase):
                     fEng.printClassVars()
                             
                 else:
-                    fEng = pyrothorn.firethornEngine.FirethornEngine()
+                    fEng = pyrothorn.firethornEngine.FirethornEngine( schema_name=config.schema_name, schema_alias=config.schema_alias )
                     fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
                     fEng.printClassVars()
                     if (self.include_neighbours):
@@ -118,8 +136,10 @@ class test_firethorn(unittest.TestCase):
             self.store_environment_config(fEng, config.stored_env_config)
           
             logging.info("")
-            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database)           
+            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=10)           
+	    
 
+         
             for query in logged_queries:
                 
                 qEng = queryEngine.QueryEngine()
@@ -131,7 +151,7 @@ class test_firethorn(unittest.TestCase):
                 firethorn_error_message = ""
                 sql_error_message =  ""
                 logging.info("Query : " +  query)
-
+		
                 #problematic_qry = "356246b4671a27cb92c015d611ab7843"
 
                 try:
@@ -152,41 +172,72 @@ class test_firethorn(unittest.TestCase):
                     logging.exception(e)
                     query_duplicates_found = 0
                     queryid = None
-                    query_count = 0
+	            query_count = 0
 
- 
                 if (query_duplicates_found<=0):
-                        
-                    logging.info("---------------------- Starting Query Test ----------------------")
-                    sql_start_time = time.time()
+		    sql_duration = 0
+		    firethorn_duration = 0
+		    test_passed = -1
+ 		    sql_start_time = time.time()
                     query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
-                    logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit, config.sql_timeout)
-                    logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
-                    sql_duration = float(time.time() - sql_start_time)
+                    sql_row_length = -1
+		    firethorn_row_length = -1
+		    sql_error_message = ""
+		    firethorn_error_message = ""	
+		    
+		    try :
+     
+                        logging.info("---------------------- Starting Query Test ----------------------")
+                        sql_start_time = time.time()
+                        query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
+                        logging.info("Starting sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                        with Timeout(config.sql_timeout):
+                            sql_row_length, sql_error_message = sqlEng.execute_sql_query_get_rows(query, config.test_database, config.sql_rowlimit, config.sql_timeout)
+                        logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                        logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
+                        sql_duration = float(time.time() - sql_start_time)
+
+                    except Exception as e:
+                        logging.info("Error caught while running sql query")
+                        logging.info(e)
+
                     
-                    logging.info("")
-                    
-                    start_time = time.time()
-                    logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
-                    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-                    logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
-                    firethorn_duration = float(time.time() - start_time)
+		    logging.info("")
+		    
+		    try:                    
+                        start_time = time.time()
+                        logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			with Timeout(config.sql_timeout):
+	                    firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+                        logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+                        logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
+                        firethorn_duration = float(time.time() - start_time)
                 
     
-                    logging.info("---------------------- End Query Test ----------------------")
-                    logging.info("")
+                        logging.info("")
                     
+                    except Exception as e:
+	                logging.info("Error caught while running the firethorn query")
+                        logging.info(e)
+
+
                     test_passed = (sql_row_length == firethorn_row_length)
-                    
+                    logging.info("---------------------- End Query Test ----------------------")
+		    if test_passed:		
+                        logging.info("Query Successful !!")
+                    else:
+		        logging.info("Query Failed..")
+
                     if (not test_passed):
                         self.total_failed = self.total_failed + 1
-                    
+		    logging.info("")
+		    logging.info("")
+		    logging.info("")
+
                     params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8') )
                     report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                     reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+
                 else :
                     logging.info("Query has been run already..Skipping & updating count")
                     if (queryid!=None and query_count!=None):

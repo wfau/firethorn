@@ -60,9 +60,11 @@ class FirethornEngine(object):
         :param metadocfile:
         '''
         try:
-            self.initialise_metadata_import(resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile)
+
+	    self.initialise_metadata_import(resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile)
             self.schema_name = self.getAttribute(self.adqlschema, "fullname" )
             self.schema_alias = self.getAttribute(self.adqlschema, "name" )
+
             self.query_schema = self.create_initial_workspace(self.schema_name, self.schema_alias, self.adqlschema)
         except Exception as e:
             logging.exception("Error during pyrothorn initialization")
@@ -83,7 +85,8 @@ class FirethornEngine(object):
         '''
       
         self.jdbcspace = self.create_jdbc_space(resourcename ,resourceuri, catalogname, ogsadainame)
-        self.adqlspace = self.create_adql_space(adqlspacename)
+        if (self.adqlspace=="" or self.adqlspace==None):
+	    self.adqlspace = self.create_adql_space(adqlspacename)
         self.adqlschema = self.import_jdbc_metadoc(self.adqlspace, self.jdbcspace, jdbccatalogname, jdbcschemaname, metadocfile)
          
          
@@ -222,23 +225,34 @@ class FirethornEngine(object):
         query_schema =""
         importname = ""
         t = datetime.now()
-        workspace = self.create_adql_space()
-        query_schema = self.create_query_schema(workspace)
+	workspace = self.create_adql_space()
+        self.adqlspace = workspace
+	query_schema = self.create_query_schema(workspace)
         
         name = initial_catalogue_fullname
         alias = initial_catalogue_alias
         ident = initial_catalogue_ident
         data = None
+
+	logging.info("query schema: " + query_schema)
+	logging.info("workspace: " + workspace)
+	logging.info("name" + name)
         try:   
             if alias!="":
                 importname = alias
             else :
                 importname = name
-            
+
+	    logging.info("workspace + config.workspace_import_uri:"  + workspace + config.workspace_import_uri)            
+   
+	    logging.info("importname: " + importname)
             if importname!="":
                 data = urllib.urlencode({'urn:adql.copy.depth' : config.adql_copy_depth, config.workspace_import_schema_base : ident, config.workspace_import_schema_name : importname})
-            req = urllib2.Request( workspace + config.workspace_import_uri, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email, "firethorn.auth.community" : "public (unknown)"}) 
-            response = urllib2.urlopen(req)
+           
+ 	        logging.info("data" + data)
+
+	        req = urllib2.Request( workspace + config.workspace_import_uri, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email, "firethorn.auth.community" : "public (unknown)"}) 
+                response = urllib2.urlopen(req)
         except Exception as e:
             logging.exception("Error importing catalogue")
        

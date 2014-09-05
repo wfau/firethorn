@@ -25,7 +25,7 @@ import logging
 import datetime
 
 
-def ResultIter(cursor, arraysize=1000):
+def ResultIter(cursor, arraysize=100000):
     'An iterator that uses fetchmany to keep memory usage down'
     while True:
         results = cursor.fetchmany(arraysize)
@@ -79,19 +79,38 @@ class DBHelper:
         '''
         return_val = []
         params = 'DRIVER={' + self.driver + '};SERVER=' + self.db_server + ';Database=' + db_name +';UID=' + self.username + ';PWD=' + self.password +';TDS_Version=8.0;Port='  + self.port + ';'
-        if limit!=None:
-            query = "SELECT TOP " + str(limit) + " * FROM (" + query + ") AS q"   
 
         cnxn = pyodbc.connect(params)  
 
-        if timeout!=None:
-	    cnxn.timeout=timeout
+        #if timeout!=None:
+	#    cnxn.timeout=timeout
 
         cursor = cnxn.cursor()
         cursor.execute(query)
-        for row in ResultIter(cursor):
-            return_val.append(row)
-	    
+	
+	if (limit!=None):
+	    rows = cursor.fetchmany(limit)
+	else :
+	    rows = cursor.fetchall()
+
+
+        for row in rows:
+	    return_val.append(row)
+
+
+        """
+	count = 0
+	for row in ResultsIter(cursor):
+
+	    if limit!=None:
+                count = count + 1
+                if count<= limit:
+	            return_val.append(row)
+	        else : 
+	            break
+	    else :
+	        return_val.append(row)
+	"""
         cnxn.close()
         
         return return_val
@@ -117,13 +136,28 @@ class DBHelper:
         columns = [column[0] for column in cursor.description]
         return_val.append(columns)
         rowlist=[]
-	count = 0        
-	for row in ResultIter(cursor):
+
+	if (limit!=None):
+            rows = cursor.fetchmany(limit)
+        else :
+            rows = cursor.fetchall()
+
+
+        for row in rows:
+	    rowlist.append(dict(zip(columns, row)))
+	
+
+	"""
+	count = 0        	
+	for row in  ResultIter(cursor):
 	    count = count + 1
 	    if count<= limit:
 	        rowlist.append(dict(zip(columns, row)))
 	    else :
 		break
+
+	"""
+
 	return_val.append(rowlist)  
         cnxn.close()
 
