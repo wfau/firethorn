@@ -1,0 +1,163 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#############################################################################
+### Query Test run #1: All ATLASDR1 queries that do not contain dr8 & dr9 ###
+#############################################################################
+
+(Reason: in previous runs dr9 crossmatches where taking very long time to complete)
+
+Query run ID: TrN90Q4mScuF5TlNPzlcdQ
+Started on: 2014-09-08 23:51:22,878 
+Finished on: 2014-09-09 00:01:35,836
+
+Json Summary:
+{
+"total_queries_run": 1904, 
+"average_firethorn_duration": 22.07288690324591, 
+"total_failed": 113, 
+"total_firethorn_querytime": 42026.77666378021, 
+"total_sql_querytime": 53158.143996953964, 
+"average_sql_duration": 27.919193275711116, 
+"firethorn_version": "1.10.8", 
+"query_timestamp": "2014-09-10 04:17:03"
+}
+
+
+Notes on run:
+Maximum row limit for both direct SQL & Firethorn set to 1000
+Timeout in seconds for Direct SQL: 1000
+Comparison: #rows==#rows
+Any query that contained 'dr8' or 'dr9' was counted as a duplicate
+
+
+Assertion: Total queries failed: 113 (out of 2645)
+
+
+Mysql:
+------
+mysql> use pyrothorn_testing;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> describe queries;
++-------------------------+------------------+------+-----+---------+----------------+
+| Field                   | Type             | Null | Key | Default | Extra          |
++-------------------------+------------------+------+-----+---------+----------------+
+| queryid                 | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| queryrunID              | text             | NO   |     | NULL    |                |
+| query_hash              | text             | NO   |     | NULL    |                |
+| query_count             | int(10) unsigned | NO   |     | NULL    |                |
+| query_timestamp         | varchar(120)     | NO   |     | NULL    |                |
+| query                   | text             | NO   |     | NULL    |                |
+| direct_sql_rows         | int(11)          | NO   |     | NULL    |                |
+| firethorn_sql_rows      | int(11)          | NO   |     | NULL    |                |
+| firethorn_duration      | varchar(60)      | NO   |     | NULL    |                |
+| sql_duration            | varchar(60)      | NO   |     | NULL    |                |
+| test_passed             | tinyint(1)       | NO   |     | NULL    |                |
+| firethorn_version       | varchar(60)      | NO   |     | NULL    |                |
+| firethorn_error_message | text             | NO   |     | NULL    |                |
+| sql_error_message       | text             | NO   |     | NULL    |                |
++-------------------------+------------------+------+-----+---------+----------------+
+14 rows in set (0.00 sec)
+
+
+# Total unique queries
+mysql> select count(*)  from queries where queryrunID like 'TrN90Q4mScuF5TlNPzlcdQ';
++----------+
+| count(*) |
++----------+
+|     1904 |
++----------+
+1 row in set (0.01 sec)
+
+
+# Number of unique firethorn error messages
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'TrN90Q4mScuF5TlNPzlcdQ';
++------------------------------------------+
+| count(Distinct(firethorn_error_message)) |
++------------------------------------------+
+|                                       30 |
++------------------------------------------+
+1 row in set (0.02 sec)
+
+
+# Total query count (Queries with dr8 & dr9 where skipped and not stored in mysql table)
+mysql> select sum(query_count)  from queries where queryrunID like 'TrN90Q4mScuF5TlNPzlcdQ';
++------------------+
+| sum(query_count) |
++------------------+
+|             2409 |
++------------------+
+1 row in set (0.02 sec)
+
+
+# Top 5 most popular queries
+mysql> select query_count, query, test_passed  from queries where queryrunID like 'TrN90Q4mScuF5TlNPzlcdQ' order by query_count desc limit 0,5;
++-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+| query_count |        query                                                                                                                                                                                                                                                                                                                                                                                                                      | test_passed |
++-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+|          12 | select 1                                                                                                                                                                                                                                                                                                                                                                                                                   |           0 |
+
+|          12 | select top 10 * from atlassource                                                                                                                                                                                                                                                                                                                                                                                           |           1 |
+
+|          10 | SELECT  ATLASsource.*,2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253) |           0 |
+
+|           6 | select top 10 filename from multiframe where abs(multiframeid)> 333                                                                                                                                                                                                                                                                                                                                                        |           1 |
+
+|           5 | select top 10 * from atlasSource                                                                                                                                                                                                                                                                                                                                                                                           |           1 |
++-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+5 rows in set (0.01 sec)
+
+
+----------------------------------------
+
+
+################################################
+### Query Test run #1: All ATLASDR1 queries  ###
+################################################
+
+Query run ID: AZzwGc0gS3-yDs0cZjmleA
+Started on: 2014-09-08 13:54:19,766
+Finished on: Ongoing..
+
+Json Summary:
+Ongoing..
+
+Notes on run:
+Maximum row limit for both direct SQL & Firethorn set to 1000
+Timeout in seconds for Direct SQL: 1000
+Comparison: #rows==#rows
+
+
+
+
+
+
+
+ 
+ 
+
+
+
