@@ -136,7 +136,7 @@ class test_firethorn(unittest.TestCase):
             self.store_environment_config(fEng, config.stored_env_config)
           
             logging.info("")
-            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=10)           
+            logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
 	    
 
          
@@ -167,7 +167,6 @@ class test_firethorn(unittest.TestCase):
                     query_count = query_duplicates_found_row[2]
                     #if problematic_qry == querymd5:
 		    #    query_duplicates_found = 1
-
                 except Exception as e:
                     logging.exception(e)
                     query_duplicates_found = 0
