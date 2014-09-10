@@ -622,10 +622,46 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+
+                        <manifestSections>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn</name>
+                                <manifestEntries>
+                                    <version>${project.version}</version>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+
+                        <manifestSections>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn</name>
+                                <manifestEntries>
+                                    <version>${project.version}</version>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
