@@ -193,11 +193,21 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!--+
+            | os-platform-finder
+            | https://github.com/aurbroszniowski/os-platform-finder
+            +-->
+        <dependency>
+            <groupId>org.jsoftbiz</groupId>
+            <artifactId>os-platform-finder</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
 
         <plugins>
+
             <!--+
                 | Include support for Spring's load time weaver.
                 | http://stackoverflow.com/questions/7996800/running-unit-tests-using-maven-in-spring-ltw-environment
@@ -226,6 +236,18 @@
                     <include>*.xml</include>
                 </includes>
     		</resource>
+            <!--+
+                | Build metadata.
+                +-->
+    		<resource>
+    			<directory>${basedir}/src/main/meta</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</resource>
+
         </resources>
 
         <testResources>

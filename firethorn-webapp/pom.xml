@@ -153,6 +153,15 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
+        <!--+
+            | os-platform-finder
+            | https://github.com/aurbroszniowski/os-platform-finder
+            +-->
+        <dependency>
+            <groupId>org.jsoftbiz</groupId>
+            <artifactId>os-platform-finder</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -222,9 +231,44 @@
                     </systemProperties>
                 </configuration>
             </plugin>
+
+            <!--+
+                | Maven dependency plugin.
+                | https://maven.apache.org/plugins/maven-dependency-plugin/
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                        <configuration>
+                            <silent>true</silent>
+                            <outputScope>false</outputScope>
+                            <outputFile>${project.build.directory}/${project.build.finalName}/depends</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+                +-->
+
         </plugins>
 
         <resources>
+
+            <!--+
+                | Build metadata.
+                +-->
+    		<resource>
+    			<directory>${basedir}/src/main/meta</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</resource>
+
         </resources>
 
         <testResources>
