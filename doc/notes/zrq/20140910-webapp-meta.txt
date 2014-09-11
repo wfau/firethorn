@@ -76,7 +76,7 @@
         hg push
 
         #
-        # Pull the latest changes.
+        # Pull the latest changes <- missed this :-(
         hg pull
         hg update
 
