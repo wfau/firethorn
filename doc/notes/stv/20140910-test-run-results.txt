@@ -30,6 +30,7 @@
 Query run ID: TrN90Q4mScuF5TlNPzlcdQ
 Started on: 2014-09-08 23:51:22,878 
 Finished on: 2014-09-09 00:01:35,836
+Assertion: Total queries failed: 113 (out of 2645)
 
 Json Summary:
 {
@@ -51,7 +52,7 @@ Comparison: #rows==#rows
 Any query that contained 'dr8' or 'dr9' was counted as a duplicate
 
 
-Assertion: Total queries failed: 113 (out of 2645)
+
 
 
 Mysql:
@@ -140,10 +141,103 @@ mysql> select query_count, query, test_passed  from queries where queryrunID lik
 
 Query run ID: AZzwGc0gS3-yDs0cZjmleA
 Started on: 2014-09-08 13:54:19,766
-Finished on: Ongoing..
+Finished on: 2014-09-11 14:50:26,759 
+Assertion: Total queries failed: 180 (out of 2644)
+
 
 Json Summary:
-Ongoing..
+{
+"total_queries_run": 2096, 
+"average_firethorn_duration": 34.566705843078275, 
+"total_failed": 180, 
+"total_firethorn_querytime": 72451.81544709206, 
+"total_sql_querytime": 179829.5353372097, 
+"average_sql_duration": 85.7965340349283, 
+"firethorn_version": "1.10.8", 
+"query_timestamp": "2014-09-11 14:49:46"
+}
+
+
+MySQL:
+
+# Total unique queries (non-duplicates)
+mysql> select count(*)  from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA';
++----------+
+| count(*) |
++----------+
+|     2096 |
++----------+
+1 row in set (0.02 sec)
+
+
+
+# Total queries encountered
+mysql> select sum(query_count)  from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA';
++------------------+
+| sum(query_count) |
++------------------+
+|             2644 |
++------------------+
+1 row in set (0.03 sec)
+
+# Total queries containing dr8 or dr9 that failed [113 (from previous run ) + 66 (of queries that where not included in previous run) = 179]
+mysql> select count(*)  from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA' and (query LIKE '%dr9%' or query LIKE '%dr8%') and test_passed<1;
++----------+
+| count(*) |
++----------+
+|       66 |
++----------+
+1 row in set (0.03 sec)
+
+
+# Number of Distinct firethorn messages
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA'
+    -> ;
++------------------------------------------+
+| count(Distinct(firethorn_error_message)) |
++------------------------------------------+
+|                                       47 |
++------------------------------------------+
+1 row in set (0.10 sec)
+
+
+# Number of Distinct SQL Server messages
+mysql> select count(Distinct(sql_error_message)) from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA'
+    -> ;
++------------------------------------+
+| count(Distinct(sql_error_message)) |
++------------------------------------+
+|                                  2 |
++------------------------------------+
+1 row in set (0.10 sec)
+
+
+
+
+
+# BEST DR# Queries Duration (1000 is the timeout limit)
+mysql> select avg(sql_duration), avg(firethorn_duration)  from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA' and (query like '%dr9%' or query like '%dr8%' ) and test_passed<1 limit 0,5;
++-------------------+-------------------------+
+| avg(sql_duration) | avg(firethorn_duration) |
++-------------------+-------------------------+
+| 876.0881672772495 |      46.295958164966464 |
++-------------------+-------------------------+
+1 row in set (0.01 sec)
+
+mysql> select avg(sql_duration), avg(firethorn_duration)  from queries where queryrunID like 'AZzwGc0gS3-yDs0cZjmleA' and (query like '%dr9%' or query like '%dr8%' ) ;
++-------------------+-------------------------+
+| avg(sql_duration) | avg(firethorn_duration) |
++-------------------+-------------------------+
+| 607.7359607530137 |      135.23562625795603 |
++-------------------+-------------------------+
+1 row in set (0.01 sec)
+
+Note: Several Best DR queries failed due to sql timeout reached, thus the 66 failed queries noted before
+
+
+
+
+
 
 Notes on run:
 Maximum row limit for both direct SQL & Firethorn set to 1000
