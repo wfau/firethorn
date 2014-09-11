@@ -76,6 +76,11 @@
         hg push
 
         #
+        # Pull the latest changes.
+        hg pull
+        hg update
+
+        #
         # Merge the dev branch.
         hg update 'default'
         hg merge "${devbranch:?}"
