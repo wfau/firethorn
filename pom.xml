@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.11.14</version>
+    <version project='firethorn'>1.11.14-zrq-webapp-meta</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -469,6 +469,16 @@
                 <version>3.0.4</version>
             </dependency>
 
+            <!--+
+                | os-platform-finder
+                | https://github.com/aurbroszniowski/os-platform-finder
+                +-->
+            <dependency>
+                <groupId>org.jsoftbiz</groupId>
+                <artifactId>os-platform-finder</artifactId>
+                <version>1.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -557,6 +567,11 @@
                     <artifactId>maven-source-plugin</artifactId>
                     <version>2.3</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.3</version>
+                </plugin>
 
                 <!--+
                     | SureFire unit testing.
@@ -568,6 +583,13 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.17</version>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
+                </plugin>
+
 
                 <!-- ======== Report plugins ======== -->
 
@@ -622,11 +644,92 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+
+                        <manifestSections>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn/build</name>
+                                <manifestEntries>
+                                    <version>${project.version}</version>
+                                    <changeset>${buildNumber}</changeset>
+                                    <timestamp>${timestamp}</timestamp>
+                                </manifestEntries>
+                            </manifestSection>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn/hg</name>
+                                <manifestEntries>
+                                    <changeset>${changeSet}</changeset>
+                                    <timestamp>${changeSetDate}</timestamp>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+
+                    </archive>
+                </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+
+                    <archiveClasses>true</archiveClasses>
+        
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+
+                        <manifestSections>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn/build</name>
+                                <manifestEntries>
+                                    <version>${project.version}</version>
+                                    <changeset>${buildNumber}</changeset>
+                                    <timestamp>${timestamp}</timestamp>
+                                </manifestEntries>
+                            </manifestSection>
+                            <manifestSection>
+                                <name>uk/ac/roe/wfau/firethorn/hg</name>
+                                <manifestEntries>
+                                    <changeset>${changeSet}</changeset>
+                                    <timestamp>${changeSetDate}</timestamp>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+
+                    </archive>
+                </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <getRevisionOnlyOnce>false</getRevisionOnlyOnce>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                            <goal>hgchangeset</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -638,6 +741,7 @@
             </plugin>
 
         </plugins>
+
     </build>
 
     <reporting>

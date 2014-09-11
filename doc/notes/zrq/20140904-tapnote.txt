@@ -1,0 +1,441 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# TWiki text for the IVOA wiki.
+# http://wiki.ivoa.net/twiki/bin/view/IVOA/TapNotes20140718
+#
+
+[std:ADQL]          = [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]]
+[std:SQL1992]       = [[https://en.wikipedia.org/wiki/SQL-92][std:SQL1992]]
+[std:ADQL-20081030] = [[http://www.ivoa.net/documents/cover/ADQL-20081030.html][std:ADQL-20081030]]
+[std:TAP]           = [[http://www.ivoa.net/documents/latest/TAP.html][std:TAP]]
+
+---
+---+++ Template
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html####][item]] proposes ....
+
+---+++++ May 2014 Interop
+It was agreed that ...
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | 0 | |
+|  |  |  |  | 
+
+# -------------------------------------------------------------------------------------------
+# TWiki text for the IVOA wiki.
+# http://wiki.ivoa.net/twiki/bin/view/IVOA/TapNotes20140718
+#
+
+Notes from the TAP/ADQL splinter session on [[http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpMay2014][Wednesday 21 May 2014]] at the [[http://www.sciops.esa.int/index.php?project=CONF2014&page=IVOA2014][IVOA Interop meeting]] at ESAC.
+
+During the meeting the group reviewed a number of proposed changes to TAP and ADQL described in the [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html][TAP Implementation Notes Version 1.0]].
+
+The following section lists the recommendations agreed at the meeting for each of the changes that were reviewed.
+
+After each section there is a table for adding feedback. Please add your vote to indicate
+
+   * +1 You agree with the decision
+   * 0 You don't mind either way
+   * -1 You disagree with the decision
+
+If you vote to disagree please provide a brief explanation describing why (or a link to a new page if you prefer).
+
+If you feel that an item needs more discussion please feel free to raise it on the working group [[http://www.ivoa.net/pipermail/dal/][mailing list]].
+
+Thank you for your feedback. -- IVOA.DaveMorris - 2014-09-04
+
+---+++ Example item
+_Some text describing the item, with a reference to the [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#adql][original item]] in the TAP Implementation Notes._
+
+---+++++ May 2014 Interop
+_A brief summary of the discussion at the May Interop._
+
+---+++++ Community feedback
+| Name | date | vote | notes |
+| IVOA.MarcoMolinaro | 2014-09-04 | +1 | Yes, good idea |
+| IVOA.DaveMorris | 2014-09-04 | 0 | Ok, as long as it is optional |
+| IVOA.DaveMorris | 2014-09-04 | -1 | It isn't the right colour, our users prefer blue background. |
+
+---
+---+++ Separator Nonterminal
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#ac-sep][item]] proposes two options to clarify the use of whitespace and comments in ADQL.
+
+One option for such a clarification is to amend section 2.1 of [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] with a subsection 2.1.4, "Tokens and literals", containing text like the following (taken essentially from [[https://en.wikipedia.org/wiki/SQL-92][std:SQL1992]]).
+
+   * Any token may be followed by a separator. A nondelimiter token shall be followed by a delimiter token or a separator.
+
+Since the full rules for the separator are somewhat more complex in [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]], an attractive alternative could be to omit the separator nonterminal from the grammar and to just note:
+
+   * Whitespace and comments can occur wherever they can occur in [[https://en.wikipedia.org/wiki/SQL-92][std:SQL1992]].
+
+---+++++ May 2014 Interop
+*Accepted as errata* -
+It was agreed that this item should be included in the errata note for the current, [[http://www.ivoa.net/documents/cover/ADQL-20081030.html][std:ADQL-20081030]], version of the standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Happy with either option |
+|  |  |  |  | 
+
+---
+---+++ Type System
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#ac-typesystem][item]] proposes adding new section to introduce a notion of types into section 2 of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+See [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#ac-typesystem][original text]] for details of the proposed type mappings. 
+
+[TODO insert table here]
+
+---+++++ May 2014 Interop
+*Accepted for next version* -
+It was agreed that this item should be discussed further, with a view to including it in the next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Yes, but needs some clarification (see below). |
+|  |  |  |  | 
+
+Transporting =BLOB=, =TIMESTAMP=, =POINT= and =REGION= as strings should *not* imply the ADQL string concatenation operators are applicable.
+-- IVOA.DaveMorris - 2014-09-04
+
+---
+---+++ Empty Coordinate Systems
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html##ac-emptycoosys][item]] proposes
+deprecating the string-valued first argument for the geometry constructors (=BOX=, =CIRCLE=, =POINT=, =POLYGON=).
+
+---+++++ May 2014 Interop
+*Requires further discussion* -
+It was agreed that the proposal needs more work done on it before it could be included in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | |
+|  |  |  |  | 
+
+---
+---+++ Explanation of optional features
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#ac-geo-opt][item]] proposes
+adding a section of text to both the [[http://www.ivoa.net/documents/latest/TAP.html][std:TAP]] and [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] specifications that clarifies how optional features are described.
+
+---+++++ May 2014 Interop
+*Accepted for next version* -
+It was agreed that this item should be discussed further, with a view to including it in the
+next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | I think this is needed |
+|  |  |  |  | 
+
+---
+---+++ Simple Crossmatch Function
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-simplecrossmatch][item]] proposes
+adding a simple positional crossmatch function to [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]].
+
+---+++++ May 2014 Interop
+*Requires further discussion* -
+It was agreed that the proposal needs more work done on it before it could be included in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * It was agreed that this would be a useful feature for end users
+   * It was noted that adding this feature could be difficult to implement
+   * It was noted that part of the rationale for the IVOA services was to implement difficult things on the server side, making things easier for the end user
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Like the idea, needs more work |
+|  |  |  |  | 
+
+---
+---+++ No type-based decay of INTERSECTS
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-intersects][item]] proposes
+deprecating the use of POINT as the first parameter to INTERSECTS.
+
+---+++++ May 2014 Interop
+*Accepted for next version* -
+It was agreed that the proposed text should be included in the next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | |
+|  |  |  |  | 
+
+---
+---+++ Generalized user defined functions
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-genudf][item]] proposes
+allowing user defined functions to return geometric types.
+
+---+++++ May 2014 Interop
+It was agreed that there should be no restriction on the return types of User Defined Functions.
+
+*Accepted as errata* -
+It was agreed that this should be included in the errata note for the current, [[http://www.ivoa.net/documents/cover/ADQL-20081030.html][std:ADQL-20081030]], version of the standard. 
+
+*Futher discussion* -
+It was also noted that the SimDAL working group would like to be able to define table value functions in [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]].
+It was agreed to continue the discussion to find a way of adding support for table value functions in a future version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | |
+|  |  |  |  | 
+
+---
+---+++ Case-Insensitive String Comparisons
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-casefolding][item]] proposes
+adding functions and operators for to support case-insensitive string comparisons.
+
+---+++++ May 2014 Interop
+*Accepted for next version* -
+This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+
+It was agreed that the following functions should be included as an *optional* feature in the
+next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * =UPPER=
+   * =LOWER=
+
+It was agreed that the following operator should be included as an *optional* feature in the
+next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * =ILIKE=
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | |
+|  |  |  |  | 
+
+---
+---+++ Set operators
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html####][item]] proposes
+adding support for the =UNION=, =EXCEPT= and =INTERSECT= operators.
+
+---+++++ May 2014 Interop
+*Accepted for next version* -
+This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+
+It was agreed that the following operators should be included as *required* operators in the next
+(minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * =UNION=
+   * =EXCEPT=
+   * =INTERSECT=
+
+It was agreed that the text describing the set operators in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard should
+include the following caveats.
+
+   * The set operands MUST produce the same number of columns
+   * The corresponding columns in the operands MUST have the same data types
+   * The corresponding columns in the operands SHOULD have the same metadata
+   * The metadata for the results SHOULD be generated from the left-hand operand
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | -1 | I agree with the proposal (+1), but we need to confirm which platforms support what operators (see below) |
+|  |  |  |  | 
+
+The Oracle database platform includes support for =UNION= and =INTERSECT=, but not =EXCEPT=.
+However, Oracle's =MINUS= operator appears to be equivalent to =EXCEPT=.
+
+If we make these operators as a required feature of [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]]
+then it means service implementations based on Oracle will have to
+parse and translate ADQL queries.  
+
+This may not be an issue, but it will be the first time we have (knowingly) added
+a feature to [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] that requires service implementations to  
+parse and translate ADQL queries.
+
+-- IVOA.DaveMorris - 2014-09-04
+
+Please contribute your knowledge to the table below to help us build a map of which
+platforms support which operators.
+
+|Vendor|version|=UNION=|=INTERSECT=|=EXCEPT=| verified by |
+| SQLServer  |  | YES | YES | YES | IVOA.DaveMorris  - 2014-09-04 |
+| Sybase     |  |     |     |     |   |
+| Oracle     |  | YES | YES | (see below) |  |
+| PostgreSQL |  | YES | YES |  YES |  |
+| MySQL      |  |     |     |      |  |
+| Derby      |  |     |     |      |  |
+| HSQLBD     |  |     |     |      |  |
+| SQLLite    |  |     |     |      |  |
+
+*Oracle* - The Oracle database platform supports the =UNION= and =INTERSECT=,
+operators directly, and the =MINUS= operator is equivalent to =EXCEPT=.
+
+---
+---+++ Adding a Boolean Type
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-booleans][item]] proposes
+adding a BOOLEAN type to [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]].
+
+---+++++ May 2014 Interop
+<b>Requires further discussion</b> -
+This item was discussed by members of the working group at the May 2014 IVOA Interop meeting.
+
+It was agreed that although making these changes would be a good thing, more work needs to be
+done on identifying and solving potential compatibility issues before the changes can be
+included in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * It was agreed that BOOLEAN data type would be a useful feature to add
+   * It was agreed that changing the return type of CONTAINS() to be a BOOLEAN would make it easier to use
+   * It was agreed that making these changes could cause compatibility issues which could not be addressed in a (minor) increment of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard
+   * It was agreed that both of these changes should be considered for a future (major) increment of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard
+
+Based on the points raised at the May 2014 Interop we would like to split this into two separate proposals
+and ask for your feedback on each proposal.
+
+---++++ Adding a Boolean Type
+The first proposal is to add support for a BOOLEAN type to [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]],
+without changing the return type of CONTAINS().
+
+This would avoid the potential compatibility issues raised at the May 2014 Interop.
+
+The general concensus at the May 2014 Interop was that a BOOLEAN data type would be useful,
+and that adding it as a new type would not cause compatibility issues.
+ 
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Yes to adding BOOLEAN |
+|  |  |  |  | 
+
+---++++ changing the return type of CONTAINS()
+The second proposal is to change the return type of CONTAINS().
+
+This is the part that would potentially cause compatibility issues
+with existing services and clients.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Yes to changing CONTAINS() |
+|  |  |  |  | 
+
+---
+---+++ Casting to Unit
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-unitcast][item]] proposes
+adding a new function =IN_UNIT(expr, <character_string_literal>)= which would convert values in one unit into another.
+
+---+++++ May 2014 Interop
+<b>Requires further discussion</b> -
+It was agreed that the proposal needs more work done on it before it could included in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * It was agreed that scaling conversions would not be difficult to implement
+   * It was agreed that conversion between wavelength and frequency would be difficult to implement consistently
+   * It was agreed that unit conversions would be most useful in a SELECT list
+   * It was agreed that unit conversions would be most difficult to implement in a WHERE clause
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | 0 | |
+|  |  |  |  | 
+
+---
+---+++ Column References with UCD Patterns
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-ucdcol][item]] proposes
+adding a pre-processing macro that locates columns based on their UCD.
+
+---+++++ May 2014 Interop
+<b>Requires further discussion</b> -
+It was agreed that the proposal needs more work done on it before it could be considered ready
+to be included in the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Good idea but needs more work |
+|  |  |  |  | 
+
+---
+---+++ Modulo operator
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-modulo][item]] proposes
+adding the modulus operator =x % y= to the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar.
+
+---+++++ May 2014 Interop
+<b>Rejected</b> -
+It was agreed that the benefits of adding the =x % y= operator syntax were outweighed by cost of
+compatibility issues caused by adding a new *required* operator to the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar. 
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | Disclosure - this is one of mine and I'm sneaking it back in (see below) |
+|  |  |  |  | 
+
+If this is the _only_ required operator we are adding, then it is probably not
+worth the potential compatibility issues.
+
+However, if we are updating the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar to add =UNION=, =EXCEPT= and =INTERSECT= as operators,
+does adding the =x % y=  operator cause any additional compatibility issues ?
+-- IVOA.DaveMorris - 2014-09-04
+
+---
+---+++ Bitwise operators
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-bitwise][item]] proposes
+adding support for the =AND=, =OR=, =XOR= and =NOT= bitwise operations and hexadecimal literals to the
+[std:ADQL] grammar.
+
+---+++++ May 2014 Interop
+<b>Accepted for next version</b> -
+It was agreed that hexadecimal literal values should be included in the next (minor) version
+of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+<b>Accepted for next version</b> -
+It was agreed that the following functions should be included as an *optional* feature in the
+next (minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+   * =BIT_AND(x, y)=
+   * =BIT_OR(x, y)=
+   * =BIT_XOR(x, y)=
+   * =BIT_NOT(x)=
+
+<b>Rejected</b> -
+It was agreed that the benefits of adding the operator, =[exp] op [exp]=, syntax for each operation
+were outweighed by cost of compatibility issues caused by adding new operators to the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar.
+
+However, if we are updating the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar to add =UNION=, =EXCEPT= and =INTERSECT= as operators,
+does adding the =[exp] op [exp]= for each of the bitwise operations cause any additional compatibility issues ?
+-- IVOA.DaveMorris - 2014-09-04
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +2 | Please vote +1 to accept the functions, +2 to accept the operators |
+|  |  |  |  | 
+
+---
+---+++ CAST operator
+This [[https://volute.googlecode.com/svn/trunk/projects/dal/TAPNotes/TAPNotes-fmt.html#af-cast][item]] proposes
+adding a limited form of the =CAST= operator to the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] grammar.
+
+This proposal specifically limited the =CAST= operation to numeric data types only,
+and excluded =CAST= to and from character strings.
+
+---+++++ May 2014 Interop
+<b>Accepted for next version</b> -
+It was agreed that the CAST operator should be including as a required operator in the next
+(minor) version of the [[http://www.ivoa.net/documents/latest/ADQL.html][std:ADQL]] standard.
+
+It was agreed that the set of type conversions should be discussed further, with a view to
+finalizing the set of conversions supported in the next (minor) version of the
+[std:ADQL] standard.
+
+---+++++ Community feedback
+| Name | date | vote | notes | 
+| IVOA.DaveMorris | 2014-09-04 | +1 | |
+|  |  |  |  | 
+
