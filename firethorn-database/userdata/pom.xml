@@ -28,7 +28,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-database</artifactId>
-        <version project='firethorn'>1.11.15</version>
+        <version project='firethorn'>1.11.15-zrq-sync-bug</version>
     </parent>
 
     <artifactId>firethorn-database-userdata</artifactId>
