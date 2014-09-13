@@ -387,6 +387,8 @@ implements BaseComponent
             if (block != null)
                 {
                 log.debug("Found existing block [{}][{}]", this.ident(), block);
+                log.debug("Removing ....");
+                blocks.remove(this.ident());
                 log.debug("Notifying ....");
                 synchronized (block)
                     {
