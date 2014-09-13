@@ -10,4 +10,10 @@ username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
+id=ukidss
+userID=*
+username={SQL-USER}
+password={SQL-PASS}
+LOGIN-END
+END
 
