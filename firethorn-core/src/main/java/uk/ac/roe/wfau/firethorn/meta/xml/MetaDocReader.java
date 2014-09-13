@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -38,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderImpl;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
-import uk.ac.starlink.table.UCD;
 
 /**
  *
@@ -49,6 +46,12 @@ public class MetaDocReader
 extends XMLReaderImpl
 implements XMLReader
     {
+    /*
+     *
+urn:astrogrid:schema:dsa:TableMetaDoc:v1.1
+urn:astrogrid:schema:TableMetaDoc:v1.1
+     *
+     */
 
     //public static final String NAMESPACE_OLD = "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1";
     public static final String NAMESPACE_URI = "urn:astrogrid:schema:TableMetaDoc:v1.1";
