@@ -128,7 +128,7 @@ class test_firethorn(unittest.TestCase):
                             
                 else:
                     fEng = pyrothorn.firethornEngine.FirethornEngine( schema_name=config.schema_name, schema_alias=config.schema_alias )
-                    fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
+                    fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile, config.jdbc_resource_user, config.jdbc_resource_pass)
                     fEng.printClassVars()
                     if (self.include_neighbours):
                         self.import_neighbours(sqlEng, fEng)
@@ -137,8 +137,9 @@ class test_firethorn(unittest.TestCase):
           
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
-	    
 
+	    logging.info("Found " + str(len(logged_queries))  + " available queries for " + config.stored_queries_database)
+	    logging.info("") 		    
          
             for query in logged_queries:
                 
@@ -152,7 +153,6 @@ class test_firethorn(unittest.TestCase):
                 sql_error_message =  ""
                 logging.info("Query : " +  query)
 		
-                #problematic_qry = "356246b4671a27cb92c015d611ab7843"
 
                 try:
                     if (config.test_is_continuation):
@@ -165,8 +165,6 @@ class test_firethorn(unittest.TestCase):
                     query_duplicates_found = query_duplicates_found_row[0]
                     queryid = query_duplicates_found_row[1]
                     query_count = query_duplicates_found_row[2]
-                    #if problematic_qry == querymd5:
-		    #    query_duplicates_found = 1
                 except Exception as e:
                     logging.exception(e)
                     query_duplicates_found = 0
