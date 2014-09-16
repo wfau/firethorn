@@ -82,11 +82,12 @@ class DBHelper:
 
         cnxn = pyodbc.connect(params)  
 
-        #if timeout!=None:
-	#    cnxn.timeout=timeout
+        if timeout!=None:
+	    cnxn.timeout=timeout
 
         cursor = cnxn.cursor()
         cursor.execute(query)
+
 	
 	if (limit!=None):
 	    rows = cursor.fetchmany(limit)
