@@ -123,7 +123,8 @@ select sourceid,yHallMag,yHallMagErr,j_1HallMag,j_1HallMagErr hHallMag, hHallMag
  
  select round(K_1apermag3*40,0)/40.0 as k,round( (Japermag3-K_1apermag3)*40,0)/40.0 as JK,count(*) as count FROM gpsJHKsource s WHERE s.l between 22.7500 and 23.2500 and s.b between -0.25 and 0.25 and Japermag3-K_1apermag3 between -1 and 6 and  mergedClass != 0 and (PriOrSec=0 OR PriOrSec=framesetID) and K_1apermag3 between 6 and 18 group by round( K_1apermag3*40,0)/40.0 , round( (Japermag3-K_1apermag3)*40,0)/40.0 
  
- 
+SELECT    min(utDate) AS 'MIN(utDate)',    max(utDate) AS 'MAX(utDate)',   min(dateobs) AS 'MIN(dateobs)',   max(dateobs) AS  'MAX(dateobs)',   min(mjdobs) AS 'MIN(mjdobs)',   max(mjdobs) AS 'MAX(mjdobs)' FROM MultiFrame WHERE utStart > 0
+
  
 Most common errors 
 ------------------
