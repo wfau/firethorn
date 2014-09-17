@@ -33,6 +33,7 @@ Assertion: Total queries failed: 211 (out of 3110)
 Success rate: 93.22%
 
 Json Summary:
+-------------
 {
 {"total_queries_run": 2111, 
 "average_firethorn_duration": 10.622147265845575, 
@@ -46,6 +47,7 @@ Json Summary:
 
 
 Notes on run:
+-------------
 Maximum row limit for both direct SQL & Firethorn set to 1000
 Timeout in seconds for Direct SQL: 1000
 Comparison: #rows==#rows
@@ -75,14 +77,13 @@ mysql> select count(*)  from queries where queryrunID like 'HhFvPRiASCGH0EGObC5H
 
 
 # Number of unique firethorn error messages
-mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ';
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ' and test_passed<1;
 +------------------------------------------+
 | count(Distinct(firethorn_error_message)) |
 +------------------------------------------+
-|                                       22 |
+|                                       16 |
 +------------------------------------------+
-1 row in set (0.02 sec)
-
+1 row in set (0.01 sec)
 
 
 # Total query count 
@@ -108,6 +109,32 @@ mysql> select query_count, query, test_passed  from queries where queryrunID lik
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
 5 rows in set (0.02 sec)
 
+
+
+
+Newly Identified Failed queries:
+--------------------------------
+
+select sourceID,ra,dec,yPetroMag,j_1PetroMag,hPetroMag,kPetroMag from UKIDSSDR3PLUS..lasYJHKsource where ra>333.5 and ra<335.4  and dec>-0.6 and dec<1.2  and (priOrSec <= 0 or priOrSec = frameSetID) /* Good quality, extended detection in J1, H and K: */ AND (j_1Class = +1 OR j_1Class = -3) AND j_1ppErrBits < 256 AND (hClass = +1 OR hClass = -3) AND hppErrBits < 256 AND (kClass = +1 OR kClass = -3) AND kppErrBits < 256 /* Good quality, extended detection, or no detection, in Y and J2: */ --AND (yClass = +1 OR yClass = -3 OR yClass = -9999) AND yppErrBits < 256 --AND (j_2Class = +1 OR j_2Class = -3 OR j_2Class = -9999) AND j_2ppErrBits < 256
+
+select sourceid,yHallMag,yHallMagErr,j_1HallMag,j_1HallMagErr hHallMag, hHallMagErr,kHallMag,kHallMagErr from lasSource where sourceid>=433802136897 and sourceid<433813446897 and yHallMag>0 and yHallMag<=19 and j_1HallMag>0 and j_1HallMag<=19 and hHallMag>0 and hHallMag<=19 and kHallMag>0 and kHallMag<=19 and mergedClass=-1 or mergedClass=-2 
+
+ SELECT l.ra, l.dec, l.mergedClass, l.yAperMag3, l.j_1AperMag3, l.hAperMag3, l.kAperMag3 FROM lasSource AS l LEFT OUTER JOIN lasSourceXDR5PhotoObjAll AS x ON l.sourceID=x.masterObjID WHERE l.ra>208 AND l.ra<208.1 AND l.dec>-0.05 AND l.dec<0.05 And (l.sourceID NOT IN  (SELECT y.masterObjID  FROM lasSourceXDR5PhotoObjAll AS y  WHERE l.ra>208 AND l.ra<208.1 AND l.dec>-0.05 AND l.dec<0.05 And y.masterObjID=l.sourceID) ) OR (x.distanceMins >= 0.033 AND x.distanceMins IN  (SELECT MIN(y.distanceMins)  FROM lasSourceXDR5PhotoObjAll AS y  WHERE l.ra>208 AND l.ra<208.1 AND l.dec>-0.05 AND l.dec<0.05 And y.masterObjID=x.masterObjID) )
+ 
+ select round(K_1apermag3*40,0)/40.0 as k,round( (Japermag3-K_1apermag3)*40,0)/40.0 as JK,count(*) as count FROM gpsJHKsource s WHERE s.l between 22.7500 and 23.2500 and s.b between -0.25 and 0.25 and Japermag3-K_1apermag3 between -1 and 6 and  mergedClass != 0 and (PriOrSec=0 OR PriOrSec=framesetID) and K_1apermag3 between 6 and 18 group by round( K_1apermag3*40,0)/40.0 , round( (Japermag3-K_1apermag3)*40,0)/40.0 
+ 
+ 
+ 
+Most common errors 
+------------------
+
+(selecting table.*):
+E.g.
+SELECT gpsSource.*,2*DEGREES(ASIN(sqrt(power(-0.022234422814807267-cx,2)+power(-0.879959580403436-cy,2)+power(-0.47452794153590283-cz,2))/2))*60 as distance FROM gpsSource WHERE dec > -28.33000768888889 and dec < -28.32722991111111 and RA >= 268.55100612766455 and RA <= 268.5541618723355 and ((cx * -0.022234422814807267 + cy * -0.879959580403436 + cz * -0.47452794153590283 ) >= 0.9999999997061946)   
+
+(PARSE_ERROR -  Encountered "count". Was expecting one of: "\"" <REGULAR_IDENTIFIER>  )
+E.g.
+select round(K_1apermag3*40,0)/40.0 as k,round( (Japermag3-K_1apermag3)*40,0)/40.0 as JK,count(*) as count FROM gpsJHKsource s WHERE s.l between 22.7500 and 23.2500 and s.b between -0.25 and 0.25 and Japermag3-K_1apermag3 between -1 and 6 and  mergedClass != 0 and (PriOrSec=0 OR PriOrSec=framesetID) and K_1apermag3 between 6 and 18 group by round( K_1apermag3*40,0)/40.0 , round( (Japermag3-K_1apermag3)*40,0)/40.0     
 
 
 
