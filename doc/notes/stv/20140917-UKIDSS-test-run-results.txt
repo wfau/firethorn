@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#################################################
+### Query Test run #1: All UKIDSSDR3 queries  ###
+#################################################
+
+
+Query run ID: HhFvPRiASCGH0EGObC5HsQ
+Started on: 2014-09-16 11:13:42,862 
+Finished on: 2014-09-17 00:19:30,761 
+Assertion: Total queries failed: 211 (out of 3110) 
+Success rate: 93.22%
+
+Json Summary:
+{
+{"total_queries_run": 2111, 
+"average_firethorn_duration": 10.622147265845575, 
+"total_failed": 211, 
+"total_firethorn_querytime": 22423.35287820001, 
+"total_sql_querytime": 17479.945873699988, 
+"average_sql_duration": 8.28041017228801, 
+"firethorn_version": "1.10.8", 
+"query_timestamp": "2014-09-17 00:19:20"
+}
+
+
+Notes on run:
+Maximum row limit for both direct SQL & Firethorn set to 1000
+Timeout in seconds for Direct SQL: 1000
+Comparison: #rows==#rows
+
+
+
+
+
+
+Mysql:
+------
+mysql> use pyrothorn_testing;
+
+Database changed
+mysql> describe queries;
+
+
+
+# Total unique queries
+mysql> select count(*)  from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ';
++----------+
+| count(*) |
++----------+
+|     2111 |
++----------+
+1 row in set (0.01 sec)
+
+
+# Number of unique firethorn error messages
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ';
++------------------------------------------+
+| count(Distinct(firethorn_error_message)) |
++------------------------------------------+
+|                                       22 |
++------------------------------------------+
+1 row in set (0.02 sec)
+
+
+
+# Total query count 
+mysql> select sum(query_count)  from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ';
++------------------+
+| sum(query_count) |
++------------------+
+|             3110 |
++------------------+
+1 row in set (0.01 sec)
+
+
+# Top 5 most popular queries
+mysql> select query_count, query, test_passed  from queries where queryrunID like 'HhFvPRiASCGH0EGObC5HsQ' order by query_count desc limit 0,5;
++-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+| query_count | query                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | test_passed |
++-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+|          14 | SELECT sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.10390166753809975-cx,2)+power(0.9800221457506806-cy,2)+power(0.1695907937390286-cz,2))/2))*60 as distance FROM lasSource WHERE dec > 9.762638911111111 and dec < 9.765416688888886 and RA >= 83.94671569086465 and RA <= 83.94953430913537 and ((cx * 0.10390166753809975 + cy * 0.9800221457506806 + cz * 0.1695907937390286 ) >= 0.9999999997061946)     |           1 |
+|          14 | SELECT sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.10328357398911978-cx,2)+power(0.9795527448707935-cy,2)+power(0.1726526089004397-cz,2))/2))*60 as distance FROM lasSource WHERE dec > 9.940694411111112 and dec < 9.943472188888888 and RA >= 83.97958992987579 and RA <= 83.98241007012419 and ((cx * 0.10328357398911978 + cy * 0.9795527448707935 + cz * 0.1726526089004397 ) >= 0.9999999997061946)     |           1 |
+|          14 | select round(K_1apermag3*20,0)/20.0 as k,round( (Japermag3-K_1apermag3)*20,0)/20.0 as JK,count(*) as count FROM gpsJHKsource s WHERE s.l between -0.2500 and 0.2500 and s.b between -0.25 and 0.25 and Japermag3-K_1apermag3 between -1 and 6 and (PriOrSec=0 OR PriOrSec=framesetID) and K_1apermag3 between 6 and 18 group by round( K_1apermag3*20,0)/20.0 , round( (Japermag3-K_1apermag3)*20,0)/20.0                                                                                                                                                                               |           0 |
+|          14 | SELECT sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.10215543913614106-cx,2)+power(0.9790389742815434-cy,2)+power(0.17620145598900608-cz,2))/2))*60 as distance FROM lasSource WHERE dec > 10.147194111111112 and dec < 10.149971888888887 and RA >= 84.04175602921407 and RA <= 84.04457797078592 and ((cx * 0.10215543913614106 + cy * 0.9790389742815434 + cz * 0.17620145598900608 ) >= 0.9999999997061946) |           1 |
+|          12 | select round(K_1apermag3*20,0)/20.0 as k,round( (Japermag3-K_1apermag3)*20,0)/20.0 as JK,count(*) as count FROM gpsJHKsource s WHERE s.l between 1.7500 and 2.2500 and s.b between -0.25 and 0.25 and Japermag3-K_1apermag3 between -1 and 6 and (PriOrSec=0 OR PriOrSec=framesetID) and K_1apermag3 between 6 and 18 group by round( K_1apermag3*20,0)/20.0 , round( (Japermag3-K_1apermag3)*20,0)/20.0                                                                                                                                                                                |           0 |
++-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+5 rows in set (0.02 sec)
+
+
+
+
+
+ 
+ 
+
+
+
