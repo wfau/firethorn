@@ -198,6 +198,13 @@ cat  "${databasefile:?}"
     # MAGIC STUFF HAPPENS HERE ...
     #
 
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
 
 # -----------------------------------------------------
 # Run our FireThorn service
@@ -276,7 +283,6 @@ EOF
         cat "${HOME:?}/firethorn.spaces.${datetime:?}"
 
     popd
-    exit
 
 # -----------------------------------------------------
 # Run some local tests.
@@ -321,7 +327,6 @@ EOF
             "
 
     popd
-    exit
 
 # -----------------------------------------------------
 # Import the UKIDSS table metadata.
@@ -369,7 +374,6 @@ EOF
         cat "${HOME:?}/firethorn.spaces.${datetime:?}"
 
     popd
-    exit
 
 # -----------------------------------------------------
 # Run some local tests.
@@ -421,7 +425,6 @@ EOF
             "
 
     popd
-    exit
 
 
 # -----------------------------------------------------
