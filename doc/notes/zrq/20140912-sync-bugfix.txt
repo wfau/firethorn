@@ -259,13 +259,8 @@ cat  "${databasefile:?}"
 
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
-        #ukidssurl=$(sed -n 's/^firethorn.ukidss.url=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
-        #ukidssuser=$(sed -n 's/^firethorn.ukidss.user=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
-        #ukidsspass=$(sed -n 's/^firethorn.ukidss.pass=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
-        #source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'UKIDSS JDBC conection' "${ukidssurl:?}" "${ukidssuser:?}" "${ukidsspass:?}"  '*' 'UKIDSSDR3PLUS'
-
         source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
-        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
 atlasjdbc=${jdbcspace:?}
 EOF
 
@@ -345,7 +340,7 @@ EOF
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
         source "${HOME:?}/firethorn.spaces"
-        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
 atlasjdbc=${atlasjdbc:?}
 atlasadql=${atlasadql:?}
 atlaspublic=${atlaspublic:?}
