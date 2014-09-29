@@ -10,7 +10,7 @@ username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
-id=ukidss
+id=UKIDSSDR3PLUS
 userID=*
 username={SQL-USER}
 password={SQL-PASS}

@@ -155,7 +155,8 @@ public class MSSQLMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                return _scanner();
+                //return _scanner();
+                return MSSQLMetadataScanner.this; 
                 }
             protected Catalog catalog()
                 {

@@ -191,6 +191,15 @@ cat  "${databasefile:?}"
         firethorn.ukidss.driver=xxxxx
 
 # -----------------------------------------------------
+# Code changes ..
+#[user@desktop]
+
+    #
+    # MAGIC STUFF HAPPENS HERE ...
+    #
+
+
+# -----------------------------------------------------
 # Run our FireThorn service
 #[user@desktop]
 
@@ -218,9 +227,9 @@ cat  "${databasefile:?}"
             source src/test/bin/jdbc-functions.sh
             pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
 
-                jdbcconfig atlas     firethorn.atlas
-                jdbcconfig userdata  firethorn.user
-                jdbcconfig ukidss    firethorn.ukidss
+                jdbcconfig atlas         firethorn.atlas
+                jdbcconfig userdata      firethorn.user
+                jdbcconfig UKIDSSDR3PLUS firethorn.ukidss
 
             popd
             
@@ -250,15 +259,15 @@ cat  "${databasefile:?}"
 
         source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
         cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
-jdbcspace=${jdbcspace:?}
+atlasjdbc=${jdbcspace:?}
 EOF
 
         source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
         cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
-adqlspace=${adqlspace:?}
+atlasadql=${adqlspace:?}
 EOF
 
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
         cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
 atlaspublic=${adqlschema:?}
 EOF
@@ -266,35 +275,8 @@ EOF
         ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
         cat "${HOME:?}/firethorn.spaces.${datetime:?}"
 
-# Configure the python service at this point.
-# Load the rest of the catalogs later 
-
-        #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
-        #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
-        #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR8'        'dbo' "${FIRETHORN_META:?}/BESTDR8_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'        'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
-        
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS_TablesSchema.xml"
-
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SEGUEDR6'       'dbo' "${FIRETHORN_META:?}/SEGUEDR6_TablesSchema.xml"
-      # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
-
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'Stripe82'       'dbo' "${FIRETHORN_META:?}/Stripe82_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
-      # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
-
-      # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
-      # source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR3'      'dbo' "${FIRETHORN_META:?}/VIKINGDR3_TablesSchema.xml"
-
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
-
     popd
+    exit
 
 # -----------------------------------------------------
 # Run some local tests.
@@ -315,7 +297,7 @@ EOF
 
         source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
 
-        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
 
         source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
@@ -338,6 +320,9 @@ EOF
                 atlas.Filter
             "
 
+    popd
+    exit
+
 # -----------------------------------------------------
 # Import the UKIDSS table metadata.
 #[user@desktop]
@@ -354,21 +339,28 @@ EOF
 
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
+        source "${HOME:?}/firethorn.spaces"
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${atlasjdbc:?}
+atlasadql=${atlasadql:?}
+atlaspublic=${atlaspublic:?}
+EOF
+
         ukidssurl=$(sed -n 's/^firethorn.ukidss.url=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
         ukidssuser=$(sed -n 's/^firethorn.ukidss.user=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
         ukidsspass=$(sed -n 's/^firethorn.ukidss.pass=\([^ ]*\)/\1/p' "${HOME}/firethorn.properties")
 
         source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'UKIDSS JDBC conection' "${ukidssurl:?}" "${ukidssuser:?}" "${ukidsspass:?}"  '*' 'UKIDSSDR3PLUS'
-        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
-jdbcspace=${jdbcspace:?}
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+ukidssjdbc=${jdbcspace:?}
 EOF
 
         source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'UKIDSS workspace'
         cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
-adqlspace=${adqlspace:?}
+ukidssadql=${adqlspace:?}
 EOF
 
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR3PLUS' 'dbo' "${FIRETHORN_META:?}/UKIDSS_DR3_metadoc.xml"
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'UKIDSSDR3PLUS' 'dbo' "${FIRETHORN_META:?}/UKIDSS_DR3_metadoc.xml"
         cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
 ukidsspublic=${adqlschema:?}
 EOF
@@ -376,6 +368,109 @@ EOF
         ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
         cat "${HOME:?}/firethorn.spaces.${datetime:?}"
 
+    popd
+    exit
 
+# -----------------------------------------------------
+# Run some local tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${HOME:?}/firethorn.spaces"
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}"  'ATLASDR1'   'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${ukidssadql:?}" 'UKIDSS_DR3' 'ukidss'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                ukidss.dxsDetection
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+    popd
+    exit
+
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+        newversion=1.11.15
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Pull the latest changes <- missed this :-(
+        hg pull
+        hg update
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Update the project version.
+        setversion "${newversion}"
+        hg commit -m "Snapshot [version-$(getversion)]"
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
     popd
 
