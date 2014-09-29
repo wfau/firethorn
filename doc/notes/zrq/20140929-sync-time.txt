@@ -1,0 +1,51 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2014 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+2014-09-29 10:33:44,999 DEBUG [http-bio-8080-exec-7] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2014-09-29 10:33:44,999 DEBUG [http-bio-8080-exec-7] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2014-09-29 10:33:44,999 DEBUG [http-bio-8080-exec-7] [AdqlTableEntity] columns().inport(String) 
+2014-09-29 10:33:44,999 DEBUG [http-bio-8080-exec-7] [AdqlTableEntity]   name [gAperMagNoAperCorr4] 
+2014-09-29 10:33:45,026 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Getting transaction for [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity$EntityFactory.select] 
+2014-09-29 10:33:45,055 DEBUG [http-bio-8080-exec-7] [AdqlColumnEntity] Unable to locate column [ATLASDR1.atlasSource][gAperMagNoAperCorr4] 
+2014-09-29 10:33:45,055 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Completing transaction for [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity$EntityFactory.select] after exception: uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException: Unable to find object for name [gAperMagNoAperCorr4] 
+2014-09-29 10:33:45,055 TRACE [http-bio-8080-exec-7] [RuleBasedTransactionAttribute] Applying rules to determine whether transaction should rollback on uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException: Unable to find object for name [gAperMagNoAperCorr4] 
+2014-09-29 10:33:45,055 TRACE [http-bio-8080-exec-7] [RuleBasedTransactionAttribute] Winning rollback rule is: null 
+2014-09-29 10:33:45,055 TRACE [http-bio-8080-exec-7] [RuleBasedTransactionAttribute] No relevant rollback rule found: applying default rules 
+2014-09-29 10:33:45,109 DEBUG [http-bio-8080-exec-7] [JdbcTableEntity] columns() for [196609][ATLASDR1.dbo.atlasSource] 
+2014-09-29 10:33:45,109 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity] scantest for [196609][atlasSource] 
+2014-09-29 10:33:45,109 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity] scandate [2014-09-29T10:33:14.890+01:00] 
+2014-09-29 10:33:45,109 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity] scandate is recent [196609][atlasSource] 
+2014-09-29 10:33:45,135 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Getting transaction for [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity$EntityFactory.select] 
+2014-09-29 10:33:45,166 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Completing transaction for [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity$EntityFactory.select] 
+2014-09-29 10:33:45,219 DEBUG [http-bio-8080-exec-7] [AdqlTableEntity] realize() [196729][atlasSource] 
+2014-09-29 10:33:45,247 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Getting transaction for [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity$EntityFactory.create] 
+2014-09-29 10:33:45,247 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity] BaseComponentEntity(CopyDepth, String) 
+2014-09-29 10:33:45,247 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity]   Name  [gAperMagNoAperCorr4] 
+2014-09-29 10:33:45,247 DEBUG [http-bio-8080-exec-7] [BaseComponentEntity]   Depth [FULL] 
+2014-09-29 10:33:45,247 DEBUG [http-bio-8080-exec-7] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity] ident[null]]] 
+2014-09-29 10:33:45,247 TRACE [http-bio-8080-exec-7] [TransactionInterceptor] Completing transaction for [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity$EntityFactory.create] 
+2014-09-29 10:33:45,365 DEBUG [http-bio-8080-exec-7] [AdqlTableEntity] Created new ADQL column [231447][gAperMagNoAperCorr4] 
+
+
+    45.365-44.999=0.366

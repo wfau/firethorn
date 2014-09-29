@@ -1,0 +1,134 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our SSH key.
+#[user@desktop]
+
+    pushd "${HOME:?}/.ssh"
+
+        ssh-keygen \
+            -t rsa -b 2048 \
+            -C "zarquan.digitalocean.com" \
+            -f 'zarquan.digitalocean.com'
+
+    popd
+
+# -----------------------------------------------------
+# Create our first droplet ...
+# https://cloud.digitalocean.com/droplets/
+
+    #
+    # Create our droplet.
+    # https://cloud.digitalocean.com/droplets/2712826
+
+        IPv4 Address:   178.62.58.59
+        IPv4 Gateway:   178.62.0.1
+        IPv4 Netmask:   255.255.192.0    
+
+        IPv6 Address:   2a03:b0c0:1:d0::13d:7001/64
+        IPv6 Gateway:   2a03:b0c0:1:d0::1
+        Address range:  2a03:b0c0:1:d0::13d:7000 - 2a03:b0c0:1:d0::13d:700f
+
+#
+# Update our DNS records.
+#[root@dns-server]
+
+    vi /etc/named.localnet
+    
+        zone "digitalocean.metagrid.co.uk" {
+            type master;
+            file  "data/digitalocean.metagrid.co.uk.zone";
+            };
+
+    vi /var/named/data/digitalocean.metagrid.co.uk.zone 
+
+        ;
+        ; Digital Ocean virtual machines.
+        $ORIGIN digitalocean.metagrid.co.uk.
+        $TTL 1d
+        
+        swordfish         A   178.62.58.59
+        swordfish      AAAA   2a03:b0c0:1:d0::13d:7001
+
+#
+# Check our DNS records.
+#[user@desktop]
+
+    host swordfish.digitalocean.metagrid.co.uk.
+
+        swordfish.digitalocean.metagrid.co.uk has address 178.62.58.59
+        swordfish.digitalocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::13d:7001
+
+#
+# Update pur SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+        Host swordfish
+            User core
+            HostName swordfish.digitalocean.metagrid.co.uk 
+            IdentityFile ~/.ssh/zarquan.digitalocean.com
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#
+# Clear existing SSH fingerprints.
+#[user@desktop]
+
+    ssh-keygen -F swordfish.digitalocean.metagrid.co.uk
+    ssh-keygen -R swordfish.digitalocean.metagrid.co.uk
+
+#
+# Login via ssh.
+#[user@desktop]
+
+    ssh swordfish
+
+        CoreOS (beta)
+        core@swordfish ~ $ 
+
+#
+# Run somethings in some containers.
+#[core@droplet]
+
+
+    docker run -t fedora cat /etc/redhat-release 
+
+        ....
+        Fedora release 20 (Heisenbug)
+
+
+    docker run -t centos cat /etc/redhat-release 
+
+        ....
+        CentOS Linux release 7.0.1406 (Core) 
+
+
+    docker run -t ubuntu cat /etc/debian_version
+
+        ....
+        jessie/sid
+
+
