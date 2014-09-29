@@ -1,0 +1,373 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Open a tunnelled connection to our SQLServer hosts
+#[user@testhost]
+
+    tunneluser=dave
+    tunnelhost=fenrir.roe.ac.uk
+
+    ssh -L '*:1432:ramses2:1433' \
+        -L '*:1433:ramses3:1433' \
+        -L '*:1435:ramses5:1433' \
+    "${tunneluser}@${tunnelhost:?}"
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Launch the firethorn-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Launch the ogsadai-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+
+            projversion=$(
+                sed -n "
+                    s/.*<version project='firethorn'>\(.*\)<\/version>/\1/p
+                    " pom.xml
+                )
+ 
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as root user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh root@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Edit the ODBC config.
+#[root@testhost]
+
+    vi /etc/odbcinst.ini
+
+    +    [MySQL]
+    +    Description = ODBC for MySQL
+    +    Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
+    +    FileUsage = 1
+
+    #
+    # $(find /usr -name 'libmyodbc.so' | head -n 1)
+
+# -------------------------------------------------------------------------------------------
+# Add pycurl.
+#[root@testhost]
+
+    # apt-get -y install python-pycurl
+    # WARNING: The following packages cannot be authenticated!
+
+    apt-get -y --allow-unauthenticated install python-pycurl
+
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Configure our python tests.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd integration/005/testing
+
+            vi config.py
+
+            ~    test_email = "pyratest@metagrid.co.uk"
+
+            ~    sample_query="SELECT TOP 10 * FROM Filter"
+            ~    sample_query_expected_rows=10
+
+            ~    test_dbserver= "localhost"
+            ~    test_dbserver_username = "####"
+            ~    test_dbserver_password = "####"
+            ~    test_dbserver_port = "1432"
+            ~    test_database = "ATLASDR1"
+
+            ~    reporting_dbserver= "localhost"
+            ~    reporting_dbserver_username = "####"
+            ~    reporting_dbserver_password = "####"
+            ~    reporting_dbserver_port = "3306"
+            ~    reporting_database = "pyrothorn_testing"
+
+            ~    stored_queries_dbserver= "localhost"
+            ~    stored_queries_dbserver_username = "####"
+            ~    stored_queries_dbserver_password = "####"
+            ~    stored_queries_dbserver_port = "1435"
+            ~    stored_queries_database = "userinterface"
+            ~    stored_queries_query = "select top 2 * from webqueries where dbname like 'atlas%'"
+            ~    logged_queries_txt_file = "query_logs/atlas-logged-queries-short.txt"
+
+            ~    metadocfile = "testing/metadocs/ATLASDR1_TablesSchema.xml"
+            ~    metadocfile = "........testing/metadocs/ATLASDR1_TablesSchema.xml" <-- added full path
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Run our python tests.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd integration/005/testing
+
+            python testing/test_simple_firethorn.py
+
+                ....
+                ....
+                ----------------------------------------------------------------------
+                Ran 1 test in 865.091s
+
+                OK
+
+            python testing/test_firethorn_logged_sql.py
+
+                ....
+                ....
+                ----------------------------------------------------------------------
+                Ran 1 test in 795.023s
+
+                OK
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Check the test results.
+#[user@testhost]
+
+    source "${HOME:?}/mysql-pyro-settings.txt"
+    mysql --user="${mysqlpyrouser:?}" --password="${mysqlpyropass:?}" --database="${mysqlpyrodata:?}" --execute \
+        "SELECT * FROM queries"
+
+        +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
+        | queryid | query       | direct_sql_rows | firethorn_sql_rows | firethorn_duration | sql_duration | test_passed | firethorn_version | error_message |
+        +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
+        |      10 | select .... |            1987 |               1987 | 30                 | 0            |           1 | 1.10.8            |               |
+        |      11 | select .... |              10 |                 10 | 26                 | 0            |           1 | 1.10.8            |               |
+        +---------+-------------+-----------------+--------------------+--------------------+--------------+-------------+-------------------+---------------+
+        2 rows in set (0.07 sec)
+
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as root user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh root@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Create the MySQL metadata database.
+#[root@testhost]
+
+    if [ ! -e "${HOME:?}/mysql-meta-settings.txt" ]
+    then
+cat > "${HOME:?}/mysql-meta-settings.txt" << EOF
+
+mysqlmetadata=meta$(pwgen -s 10 1)
+mysqlmetauser=meta$(pwgen -s 10 1)
+mysqlmetapass=meta$(pwgen -s 10 1)
+
+EOF
+    fi
+
+    source "${HOME:?}/mysql-root-settings.txt"
+    source "${HOME:?}/mysql-meta-settings.txt"
+
+    #
+    # Create our (empty) database.
+    mysqladmin --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" create "${mysqlmetadata:?}"
+
+    #
+    # Create our database user
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "CREATE USER '${mysqlmetauser:?}'@'localhost' IDENTIFIED BY '${mysqlmetapass:?}'"
+
+    #
+    # Grant access to our database
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "GRANT ALL ON ${mysqlmetadata:?}.* TO '${mysqlmetauser:?}'@'localhost'"
+
+    #
+    # Check our login.
+    mysql --user="${mysqlmetauser:?}" --password="${mysqlmetapass:?}" --database="${mysqlmetadata:?}" --execute \
+        "SHOW DATABASES ; SHOW TABLES"
+
+# -------------------------------------------------------------------------------------------
+# Create the MySQL userdata database.
+#[root@testhost]
+
+    if [ ! -e "${HOME:?}/mysql-user-settings.txt" ]
+    then
+cat > "${HOME:?}/mysql-user-settings.txt" << EOF
+
+mysqluserdata=user$(pwgen -s 10 1)
+mysqluseruser=user$(pwgen -s 10 1)
+mysqluserpass=user$(pwgen -s 10 1)
+
+EOF
+    fi
+
+    source "${HOME:?}/mysql-root-settings.txt"
+    source "${HOME:?}/mysql-user-settings.txt"
+
+    #
+    # Create our (empty) database.
+    mysqladmin --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" create "${mysqluserdata:?}"
+
+    #
+    # Create our database user
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "CREATE USER '${mysqluseruser:?}'@'localhost' IDENTIFIED BY '${mysqluserpass:?}'"
+
+    #
+    # Grant access to our database
+    mysql --user="${mysqlrootuser:?}" --password="${mysqlrootpass:?}" --execute \
+        "GRANT ALL ON ${mysqluserdata:?}.* TO '${mysqluseruser:?}'@'localhost'"
+
+    #
+    # Check our login.
+    mysql --user="${mysqluseruser:?}" --password="${mysqluserpass:?}" --database="${mysqluserdata:?}" --execute \
+        "SHOW DATABASES ; SHOW TABLES"
+
+# -----------------------------------------------------
+# Link the MySQL login details.
+#[root@testhost]
+
+    source "${HOME:?}/tester-settings.txt"
+    ln "${HOME:?}/mysql-pyro-settings.txt" "/home/${testuser:?}/mysql-pyro-settings.txt"
+    ln "${HOME:?}/mysql-meta-settings.txt" "/home/${testuser:?}/mysql-meta-settings.txt"
+    ln "${HOME:?}/mysql-user-settings.txt" "/home/${testuser:?}/mysql-user-settings.txt"
+
+# -----------------------------------------------------
+# NEW TERMINAL - Login as test user.
+#[user@desktop]
+
+    source "/tmp/tester-settings.txt"
+    ssh ${testuser:?}@${testhost:?}
+
+# -------------------------------------------------------------------------------------------
+# Update our firethorn config.
+#[user@testhost]
+
+    source "${HOME:?}/mysql-meta-settings.txt"
+    sed -i '
+        s/^firethorn.meta.url=.*/firethorn.meta.url=jdbc:mysql:\/\/localhost:3306\/'${mysqlmetadata:?}'/
+        s/^firethorn.meta.user=.*/firethorn.meta.user='${mysqlmetauser:?}'/
+        s/^firethorn.meta.pass=.*/firethorn.meta.pass='${mysqlmetapass:?}'/
+        s/^firethorn.meta.type=.*/firethorn.meta.type=mysql/
+        s/^firethorn.meta.driver=.*/firethorn.meta.driver=com.mysql.jdbc.Driver/
+        ' "${HOME:?}/firethorn.properties"
+
+    source "${HOME:?}/mysql-user-settings.txt"
+    sed -i '
+        s/^firethorn.user.url=.*/firethorn.user.url=jdbc:mysql:\/\/localhost:3306\/'${mysqluserdata:?}'/
+        s/^firethorn.user.user=.*/firethorn.user.user='${mysqluseruser:?}'/
+        s/^firethorn.user.pass=.*/firethorn.user.pass='${mysqluserpass:?}'/
+        s/^firethorn.user.type=.*/firethorn.user.type=mysql/
+        s/^firethorn.user.driver=.*/firethorn.user.driver=com.mysql.jdbc.Driver/
+        ' "${HOME:?}/firethorn.properties"
+
+# -------------------------------------------------------------------------------------------
+# SWAP TERMINAL - Launch the firethorn-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -------------------------------------------------------------------------------------------
+# SWAP TERMINAL - Launch the ogsadai-webapp.
+#[user@testhost]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            pushd "target/firethorn-ogsadai-webapp-${projversion:?}/WEB-INF/etc/dai"
+
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig userdata firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
