@@ -9,6 +9,7 @@
 %><%!
 private static final DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
 private static final OS os = OS.getOs();
+private static final Runtime runtime = Runtime.getRuntime();
 %><%
 final Properties props = new Properties();
 try {
@@ -21,11 +22,17 @@ try {
 catch (Exception ouch)
     {
     }
+%><%
 %>{
 "java": {
     "name" : "<%= System.getProperty("java.vm.name")    %>",
     "build" : "<%= System.getProperty("java.vm.version") %>",
-    "version" : "<%= System.getProperty("java.version")    %>"
+    "version" : "<%= System.getProperty("java.version")    %>",
+    "memory" : {
+        "total" : <%= runtime.totalMemory() %>,
+        "free" : <%= runtime.freeMemory() %>,
+        "max" : <%= runtime.maxMemory() %>
+        }
     },
 "build": {
     "name" : "<%= props.get("firethorn.build.name") %>",
