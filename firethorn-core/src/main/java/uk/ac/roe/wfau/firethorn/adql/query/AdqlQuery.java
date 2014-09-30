@@ -291,6 +291,12 @@ extends NamedEntity, Job
         public String dqp();
 
         /**
+         * The DQP processor mode.
+         *
+         */
+        public Mode mode();
+
+        /**
          * The user data store name.
          *
          */
@@ -301,7 +307,7 @@ extends NamedEntity, Job
          *
          */
         public AdqlQuery.Syntax.Level level();
-
+        
         }
 
     /**
@@ -317,10 +323,10 @@ extends NamedEntity, Job
         public QueryParam param();
 
         /**
-         * The current environment params, with a specific level.
+         * The current environment params, with a specific level and mode.
          *
          */
-        public QueryParam param(final AdqlQuery.Syntax.Level level);
+        public QueryParam param(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
 
         }
 
@@ -477,7 +483,7 @@ extends NamedEntity, Job
      *
      */
     public void input(final String input);
-
+        
     /**
      * Get the processed input text.
      *
@@ -597,6 +603,12 @@ extends NamedEntity, Job
      */
     public enum Mode
         {
+        /**
+         * Automatic selection.
+         *
+         */
+        AUTO(),
+
         /**
          * Direct query to a single resource.
          *

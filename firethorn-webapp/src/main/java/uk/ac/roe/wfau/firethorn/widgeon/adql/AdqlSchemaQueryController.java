@@ -160,9 +160,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         ) throws QueryProcessingException {
         return created(
             schema.queries().create(
-                factories().adql().queries().params().param(
-                    Level.LEGACY
-                    ),
+                factories().adql().queries().params().param(),
                 query,
                 name
                 )

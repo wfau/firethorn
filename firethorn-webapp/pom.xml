@@ -49,6 +49,18 @@
     <properties>
     </properties>
 
+    <repositories>
+        <!--+
+            | Repository for Java EE dependencies.
+            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+            +-->
+        <repository>
+            <id>java.net2</id>
+            <name>Repository hosting the Java EE dependencies</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <!--+
@@ -114,19 +126,14 @@
 
 	    <!--+
 	        | Servlet libraries.
+            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
 	        +-->
-	    <dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <version>2.5</version>
-		    <scope>provided</scope>
-	    </dependency>
-	    <dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <version>2.1</version>
-		    <scope>provided</scope>
-	    </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!--+
             | QRCode generator.

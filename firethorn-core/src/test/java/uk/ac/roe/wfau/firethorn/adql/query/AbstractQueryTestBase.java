@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -589,12 +590,13 @@ extends TestPropertiesBase
             );
         }
 
-    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final AdqlQuery.Mode mode, final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
         final AdqlQuery query = testschema().queries().create(
             factories().queries().params().param(
-                level
+                level,
+                mode
                 ),
             adql
             );
@@ -613,51 +615,16 @@ extends TestPropertiesBase
         return query;
         }
 
-    public AdqlQuery validate(final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
         return validate(
-            Level.STRICT,
-            status,
-            adql,
-            sql,
-            fields
-            );
-        }
-
-    public AdqlQuery validate(final String adql, final String sql, final ExpectedField[] fields)
-    throws QueryProcessingException
-        {
-        return validate(
-            Level.STRICT,
-            AdqlQuery.Syntax.State.VALID,
-            adql,
-            sql,
-            fields
-            );
-        }
-
-    public AdqlQuery validate(final String adql, final String sql)
-    throws QueryProcessingException
-        {
-        return validate(
-            Level.STRICT,
-            AdqlQuery.Syntax.State.VALID,
-            adql,
-            sql,
-            null
-            );
-        }
-
-    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql)
-    throws QueryProcessingException
-        {
-        return validate(
+            Mode.AUTO,
             level,
             status,
             adql,
             sql,
-            null
+            fields
             );
         }
 
@@ -665,6 +632,7 @@ extends TestPropertiesBase
     throws QueryProcessingException
         {
         return validate(
+            Mode.AUTO,
             level,
             status,
             adql,
@@ -672,7 +640,7 @@ extends TestPropertiesBase
             null
             );
         }
-
+    
     /**
      * Debug display of a query.
      *

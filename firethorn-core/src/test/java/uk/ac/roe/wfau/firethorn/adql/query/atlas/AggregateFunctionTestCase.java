@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
@@ -62,6 +63,38 @@ public class AggregateFunctionTestCase
                 }
             );
         }
+
+    /**
+     * MAX(), MIN()
+     *
+    @Test
+    public void test001D()
+    throws QueryProcessingException
+        {
+        validate(
+            Mode.DISTRIBUTED,
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 5" +
+            "    MAX(ra)," +
+            "    MIN(ra)" +
+            " FROM" +
+            "    atlasSource",
+
+            " SELECT TOP 5" +
+            "    MAX({ATLAS_VERSION}.dbo.atlassource.ra) AS MAX," +
+            "    MIN({ATLAS_VERSION}.dbo.atlassource.ra) AS MIN" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
+
+            new ExpectedField[] {
+                new ExpectedField("MAX", AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("MIN", AdqlColumn.AdqlType.DOUBLE, 0)
+                }
+            );
+        }
+     */
 
     /**
      * SUM(), AVG()
