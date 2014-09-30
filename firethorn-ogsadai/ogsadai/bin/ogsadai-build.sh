@@ -33,42 +33,43 @@
 
 #
 # Load our local settings.
-source ${HOME?}/ogsadai.settings
+source "${HOME:?}/ogsadai.settings"
 
 echo "----"
 echo "Starting OGSA-DAI build process"
-echo "OGSADAI_CODE is [${OGSADAI_CODE?}]"
+echo "OGSADAI_CODE is [${OGSADAI_CODE:?}]"
+echo "OGSADAI_REPO is [${OGSADAI_REPO:?}]"
 
 #
 # Check we have the required source code checked out.
 echo "----"
 echo "Checking OGSA-DAI source code"
-if [ ! -e "${OGSADAI_BASE?}" ]
+if [ ! -e "${OGSADAI_BASE:?}" ]
 then
-    mkdir "${OGSADAI_BASE?}"
+    mkdir "${OGSADAI_BASE:?}"
 fi
-if [ ! -e "${OGSADAI_CODE?}" ]
+if [ ! -e "${OGSADAI_CODE:?}" ]
 then
-    mkdir "${OGSADAI_CODE?}"
+    mkdir "${OGSADAI_CODE:?}"
 fi
 
-if [ ! -e "${OGSADAI_CODE?}" ]
+if [ ! -e "${OGSADAI_CODE:?}" ]
 then
-    echo "ERROR : can't find OGSA-DAI source directory at [${OGSADAI_CODE?}]"
+    echo "ERROR : can't find OGSA-DAI source directory at [${OGSADAI_CODE:?}]"
 else
 
     checksource()
         {
-        local codepath=${1?}
-        pushd "${OGSADAI_CODE?}"
-            echo "Checking [${codepath?}]"
-            if [ ! -e "${codepath?}" ]
+        local codepath=${1:?}
+        pushd "${OGSADAI_CODE:?}"
+            echo "Checking [${codepath:?}]"
+            if [ ! -e "${codepath:?}" ]
             then
-                echo "Checkout [${codepath?}]"
-                svn checkout -r "${OGSADAI_REV?}" "${OGSADAI_REPO?}/${codepath?}" "${codepath?}"
+                echo "Checkout [${codepath:?}]"
+                svn checkout -r "${OGSADAI_REV:?}" "${OGSADAI_REPO:?}/${codepath:?}" "${codepath:?}"
             else
-                echo "Updating [${codepath?}]"
-                svn update -r "${OGSADAI_REV?}" "${codepath?}"
+                echo "Updating [${codepath:?}]"
+                svn update -r "${OGSADAI_REV:?}" "${codepath:?}"
             fi
         popd
         }
