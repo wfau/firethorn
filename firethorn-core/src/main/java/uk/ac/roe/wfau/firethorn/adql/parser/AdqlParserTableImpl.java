@@ -326,6 +326,7 @@ implements AdqlParserTable
     @Override
     public Iterator<DBColumn> iterator()
         {
+        log.debug("Iterator<DBColumn> iterator()");
         return new Iterator<DBColumn>()
             {
 
@@ -360,6 +361,7 @@ implements AdqlParserTable
     @Override
     public AdqlParserTable.Columns columns()
         {
+        log.debug("AdqlParserTable.Columns columns()");
         return new AdqlParserTable.Columns()
             {
             @Override

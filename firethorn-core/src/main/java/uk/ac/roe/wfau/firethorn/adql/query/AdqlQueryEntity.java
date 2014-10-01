@@ -149,7 +149,9 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_ADQL_COL   = "adql";
     protected static final String DB_OSQL_COL   = "osql";
     protected static final String DB_ROWID_COL  = "rowid";
-    protected static final String DB_INPUT_COL  = "input";
+
+    protected static final String DB_INPUT_ADQL_COL  = "inputadql";
+    //protected static final String DB_INPUT_MODE_COL  = "inputmode";
 
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
@@ -170,6 +172,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
     protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
+    protected static final String DB_OGSADAI_RESOURCE_COL = "ogsadairesource";
 
     /**
      * Param factory implementation.
@@ -180,11 +183,18 @@ implements AdqlQuery, AdqlParserQuery
     public static class ParamFactory
     implements AdqlQuery.ParamFactory
         {
-        @Value("${firethorn.adql.level}")
+        /*
+         * Spring expression language property placeholders.
+         * https://stackoverflow.com/questions/2041558/how-does-spring-3-expression-language-interact-with-property-placeholders
+         */
+        @Value("${firethorn.adql.level:LEGACY}")
         private Level level ;
 
         @Value("${firethorn.ogsadai.dqp}")
         private String dqp ;
+
+        @Value("${firethorn.ogsadai.mode:AUTO}")
+        private Mode mode;
 
         @Value("${firethorn.ogsadai.store}")
         private String store ;
@@ -208,6 +218,11 @@ implements AdqlQuery, AdqlParserQuery
                     return ParamFactory.this.dqp;
                     }
                 @Override
+                public Mode mode()
+                    {
+                    return ParamFactory.this.mode;
+                    }
+                @Override
                 public String store()
                     {
                     return ParamFactory.this.store;
@@ -221,7 +236,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        public QueryParam param(final Level change)
+        public QueryParam param(final Level level, final Mode mode)
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -236,6 +251,11 @@ implements AdqlQuery, AdqlParserQuery
                     return ParamFactory.this.dqp;
                     }
                 @Override
+                public Mode mode()
+                    {
+                    return mode;
+                    }
+                @Override
                 public String store()
                     {
                     return ParamFactory.this.store;
@@ -243,7 +263,7 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public Level level()
                     {
-                    return change;
+                    return level;
                     }
                 };
             }
@@ -543,27 +563,11 @@ implements AdqlQuery, AdqlParserQuery
         return this.schema;
         }
 
-    /*
-    *
-    * org.hsqldb.HsqlException: data exception: string data, right truncation
-    *
-    *    length=DB_INPUT_LEN,
-    *    => query varchar(1000)
-    *
-    *    @org.hibernate.annotations.Type(
-    *        type="org.hibernate.type.TextType"
-    *        )
-    *    => query longvarchar
-    *
-    *    @Lob
-    *    => query clob
-    *
-    */
    @Type(
        type="org.hibernate.type.TextType"
        )
    @Column(
-       name = DB_INPUT_COL,
+       name = DB_INPUT_ADQL_COL,
        unique = false,
        nullable = true,
        updatable = true
@@ -581,25 +585,25 @@ implements AdqlQuery, AdqlParserQuery
        prepare();
        }
 
-   /**
-    * The query mode (DIRECT|DISTRIBUTED).
-    *
-    */
-   @Column(
-        name = DB_MODE_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Mode mode = Mode.DIRECT ;
-    @Override
-    public Mode mode()
-        {
-        return this.mode;
-        }
+    /**
+     * The query mode (DIRECT|DISTRIBUTED).
+     *
+     */
+    @Column(
+         name = DB_MODE_COL,
+         unique = false,
+         nullable = false,
+         updatable = true
+         )
+     @Enumerated(
+         EnumType.STRING
+         )
+     private Mode mode ;
+     @Override
+     public Mode mode()
+         {
+         return this.mode;
+         }
 
     /**
      * The processed ADQL query.
@@ -717,9 +721,18 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
+    @Column(
+        name = DB_OGSADAI_RESOURCE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String resource ;
+
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
+        this.mode     = params.mode();
         this.store    = params.store();
         this.level    = params.level();
         this.endpoint = params.endpoint();
@@ -735,19 +748,21 @@ implements AdqlQuery, AdqlParserQuery
                 {
                 return AdqlQueryEntity.this.endpoint;
                 }
-
             @Override
             public String dqp()
                 {
                 return AdqlQueryEntity.this.dqp;
                 }
-
+            @Override
+            public Mode mode()
+                {
+                return AdqlQueryEntity.this.mode;
+                }
             @Override
             public String store()
                 {
                 return AdqlQueryEntity.this.store;
                 }
-
             @Override
             public AdqlQuery.Syntax.Level level()
                 {
@@ -846,7 +861,6 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * The set of BaseResources used by the query.
-     * @Transient
      *
      */
     @ManyToMany(
@@ -893,6 +907,7 @@ implements AdqlQuery, AdqlParserQuery
                 }
             }
         else {
+            // ZRQ Why this here ?
             return this.schema.resource();
             }
         }
@@ -975,38 +990,64 @@ implements AdqlQuery, AdqlParserQuery
                 //
                 // Log the start time.
                 this.timings().adqlstart();
+                
                 //
-                // Process as a direct query.
                 // TODO - The parsers should be part of the resource/schema.
-                // TODO - Either plain ADQL or SQLServer dialect SQL.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
                     this.schema
                     );
-                direct.process(
-                    this
+                final AdqlParser distrib = this.factories().adql().parsers().create(
+                    Mode.DISTRIBUTED,
+                    this.schema
                     );
-                //
-                // If the query uses multiple resources, re-process as a distributed query.
-                if (this.resources.size() > 1)
+
+                log.debug("Query mode [{}]", this.mode);
+
+                if (this.mode == Mode.DIRECT)
                     {
-                    log.debug("Query uses multiple resources");
-                    log.debug("----");
-                    for (final BaseResource<?> resource : this.resources())
-                        {
-                        log.debug("Resource [{}]", resource);
-                        }
-                    log.debug("----");
-                    //
-                    // Process as a distributed query.
-                    // TODO - Either plain ADQL or DQP dialect SQL.
-                    final AdqlParser distrib = this.factories().adql().parsers().create(
-                        Mode.DISTRIBUTED,
-                        this.schema
+                    log.debug("Processing as [DIRECT] query");
+                    direct.process(
+                        this
                         );
+                    //
+                    // Use our primary resource.
+                    this.resource = primary().meta().ogsa().id();
+                    }
+                else if (this.mode == Mode.DISTRIBUTED)
+                    {
+                    log.debug("Processing as [DISTRIBUTED] query");
                     distrib.process(
                         this
                         );
+                    //
+                    // Use our DQP resource.
+                    this.resource = this.dqp;
+                    }
+                else {
+                    log.debug("Processing as [DIRECT] query");
+                    direct.process(
+                        this
+                        );
+                    if (this.resources.size() == 1)
+                        {
+                        //
+                        // Use our primary resource.
+                        this.mode = Mode.DIRECT;
+                        this.resource = primary().meta().ogsa().id();
+                        }
+                    else {
+                        //
+                        // Process as a distributed query.
+                        log.debug("Processing as [DISTRIBUTED] query");
+                        distrib.process(
+                            this
+                            );
+                        //
+                        // Use our DQP resource.
+                        this.mode = Mode.DISTRIBUTED;
+                        this.resource = this.dqp;
+                        }
                     }
                 //
                 // Log the end time.
@@ -1036,7 +1077,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         this.adql = null ;
         this.osql = null ;
-        this.mode = mode ;
+        //this.mode = mode ;
         this.syntax(
             Syntax.State.UNKNOWN
             );
@@ -1126,9 +1167,10 @@ implements AdqlQuery, AdqlParserQuery
     
     
                     // TODO - Check for valid resource ident in prepare().
-                    final String source = ((mode() == Mode.DIRECT) ? primary().meta().ogsa().id() : params().dqp());
-                    log.debug("-- Source   [{}]", source);
-                    final String tablename = query.results().jdbc().namebuilder().toString() ;
+                    // TODO - Make the target ogsa resource a property. 
+                    //final String source = ((mode() == Mode.DIRECT) ? primary().meta().ogsa().id() : params().dqp());
+                    log.debug("-- Resource [{}]", AdqlQueryEntity.this.resource);
+                    final String tablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
                     log.debug("-- Table    [{}]", tablename);
     
                     final PipelineResult frog = pipeline.execute(
@@ -1137,7 +1179,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public String source()
                                 {
-                                return source;
+                                return AdqlQueryEntity.this.resource ;
                                 }
                             @Override
                             public String query()

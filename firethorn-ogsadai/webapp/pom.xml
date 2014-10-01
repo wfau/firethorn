@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.17</version>
+        <version project='firethorn'>1.11.17-zrq-dqp-switch</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -58,63 +58,80 @@
             <artifactId>ogsadai-jersey-webapp</artifactId>
             <version>${ogsadai.version}</version>
             <type>war</type>
-            <scope>runtime</scope>
         </dependency>
 
         <!--+
-            | OGSA-DAI jars used to compile code for our components.
+            | Our astro server components.
             +-->
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-clientserver</artifactId>
-            <version>${ogsadai.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-server</artifactId>
-            <version>${ogsadai.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-dqp-server</artifactId>
-            <version>${ogsadai.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-<!--+
-    | This gets included twice.
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
             <version>${ogsadai.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
-    |
-    +-->        
 
         <!--+
-            | Our metadata service client.
+            | Our metadata client components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-client</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>firethorn-ogsadai-depends</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-clientserver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-dqp-server</artifactId>
+                </exclusion>
+
+            </exclusions>
         </dependency>
 
         <!--+
-            | Our result processing activities.
+            | Our activities server components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-server</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>firethorn-ogsadai-depends</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-clientserver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-relational-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.org.ogsadai</groupId>
+                    <artifactId>ogsadai-relational-server</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--+
@@ -125,6 +142,12 @@
             <artifactId>firethorn-jdbc</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sourceforge.jtds</groupId>
+                    <artifactId>jtds</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--+
