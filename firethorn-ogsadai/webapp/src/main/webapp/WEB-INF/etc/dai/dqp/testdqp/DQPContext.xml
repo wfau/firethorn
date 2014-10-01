@@ -135,6 +135,17 @@
     </bean>
 
     <!--+
+        | UKIDSS data node.
+        +-->
+    <bean id="ukidss-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="ukidss"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
         | Local user data node.
         +-->
     <bean id="userd-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
@@ -191,17 +202,13 @@
                 <entry key="wfau-tap">
                     <ref bean="wfau-tap"/>
                 </entry>
-
-                <entry key="atlas-key">
-                    <ref bean="atlas-bean"/>
-                </entry>
-                <entry key="userd-key">
-                    <ref bean="userd-bean"/>
-                </entry>
 -->
 
                 <entry key="atlas">
                     <ref bean="atlas-bean"/>
+                </entry>
+                <entry key="ukidss">
+                    <ref bean="ukidss-bean"/>
                 </entry>
                 <entry key="userdata">
                     <ref bean="userd-bean"/>

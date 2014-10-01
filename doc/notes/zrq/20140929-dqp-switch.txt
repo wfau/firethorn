@@ -331,7 +331,6 @@ EOF
                 twomass_psc.dec BETWEEN -3 AND -2
             "
 
-
         source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
             SELECT
                 ra,
@@ -357,13 +356,13 @@ EOF
 # New build of OGSA-DAI
 #[user@desktop]
 
-cat > ${HOME?}/ogsadai.settings << 'EOF'
-OGSADAI_REV=${OGSADAI_REV:-HEAD}
-OGSADAI_REPO=${OGSADAI_REPO:-http://svn.code.sf.net/p/ogsa-dai/code}
-OGSADAI_BASE=${OGSADAI_BASE:-/var/local/projects/edinburgh/ogsa-dai}
-OGSADAI_NAME=${OGSADAI_NAME:-code}
-OGSADAI_CODE=${OGSADAI_CODE:-${OGSADAI_BASE:?}/${OGSADAI_NAME:?}}
-EOF
+    cat > ${HOME?}/ogsadai.settings << 'EOF'
+    OGSADAI_REV=${OGSADAI_REV:-HEAD}
+    OGSADAI_REPO=${OGSADAI_REPO:-http://svn.code.sf.net/p/ogsa-dai/code}
+    OGSADAI_BASE=${OGSADAI_BASE:-/var/local/projects/edinburgh/ogsa-dai}
+    OGSADAI_NAME=${OGSADAI_NAME:-code}
+    OGSADAI_CODE=${OGSADAI_CODE:-${OGSADAI_BASE:?}/${OGSADAI_NAME:?}}
+    EOF
 
 
     OGSADAI_REV=HEAD
