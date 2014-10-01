@@ -102,25 +102,21 @@
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-server</artifactId>
             <version>${ogsadai.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-dqp-server</artifactId>
             <version>${ogsadai.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
             <version>${ogsadai.version}</version>
-            <type>jar</type>
         </dependency>
 
     </dependencies>

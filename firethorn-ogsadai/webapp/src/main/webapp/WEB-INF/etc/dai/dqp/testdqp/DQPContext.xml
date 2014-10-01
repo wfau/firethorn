@@ -191,14 +191,23 @@
                 <entry key="wfau-tap">
                     <ref bean="wfau-tap"/>
                 </entry>
--->
+
                 <entry key="atlas-key">
                     <ref bean="atlas-bean"/>
                 </entry>
-
                 <entry key="userd-key">
                     <ref bean="userd-bean"/>
                 </entry>
+-->
+
+                <entry key="atlas">
+                    <ref bean="atlas-bean"/>
+                </entry>
+                <entry key="userdata">
+                    <ref bean="userd-bean"/>
+                </entry>
+
+
             </map>
         </property>
 

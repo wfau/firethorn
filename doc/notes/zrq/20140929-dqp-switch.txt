@@ -219,19 +219,26 @@ cat  "${databasefile:?}"
 
         pushd 'firethorn-ogsadai/webapp'
 
-            mvn clean compile war:war
+            rebuild()
+                {
 
-            source src/test/bin/jdbc-functions.sh
-            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+                mvn clean compile war:war
 
-                jdbcconfig atlas         firethorn.atlas
-                jdbcconfig userdata      firethorn.user
-                jdbcconfig UKIDSSDR3PLUS firethorn.ukidss
+                source src/test/bin/jdbc-functions.sh
+                pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
 
-            popd
-            
-            export MAVEN_OPTS=-Xmx128m
-            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+                    jdbcconfig atlas         firethorn.atlas
+                    jdbcconfig userdata      firethorn.user
+                    jdbcconfig UKIDSSDR3PLUS firethorn.ukidss
+
+                popd
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+                }
+
+            rebuild
 
 # -----------------------------------------------------
 # Import the ATLAS table metadata.
@@ -264,6 +271,11 @@ EOF
 atlaspublic=${adqlschema:?}
 EOF
 
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
         ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
         cat "${HOME:?}/firethorn.spaces.${datetime:?}"
 
@@ -289,8 +301,36 @@ EOF
         source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
 
         source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
 
         source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
 
         source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
             SELECT

@@ -119,6 +119,7 @@
             <groupId>uk.ac.starlink</groupId>
             <artifactId>stil-table</artifactId>
         </dependency>
+
 	    <!--+
 	        | The Apache HttpComponent libraries, used by our TAP client Activity. 
 	        +-->

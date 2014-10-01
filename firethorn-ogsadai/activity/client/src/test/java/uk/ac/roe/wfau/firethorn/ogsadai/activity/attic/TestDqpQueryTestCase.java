@@ -71,5 +71,31 @@ extends SimpleQueryTestBase
 
             );
         }
+
+    /**
+     * ATLASR1, using test DQP, using GT and LT on both tables.
+     *
+     *
+     */
+    @Test
+    public void test002()
+    throws Exception
+        {
+        execute(
+            endpoint,
+            "testdqp",
+            
+            " SELECT\n" + 
+            "   ra,\n" + 
+            "   dec\n" + 
+            " FROM\n" + 
+            "   JDBC_TABLE_2228251 AS atlas\n" + 
+            " WHERE\n" + 
+            "   ra  BETWEEN '56.0' AND '57.9'\n" + 
+            " AND\n" + 
+            "   dec BETWEEN '24.0' AND '24.2'\n" 
+
+            );
+        }
     }
 

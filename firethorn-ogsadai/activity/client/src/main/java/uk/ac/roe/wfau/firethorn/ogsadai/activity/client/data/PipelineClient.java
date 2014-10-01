@@ -29,6 +29,7 @@ import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.Server;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
+import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
 import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.request.RequestExecutionStatus;
@@ -83,8 +84,6 @@ public class PipelineClient
 
         //
         // Add our SQLQuery Activity.
-/*
- * 
         final SQLQuery select = new SQLQuery();
         pipeline.add(
             select
@@ -97,8 +96,12 @@ public class PipelineClient
         select.addExpression(
             param.query()
             );
- * 
- */
+        /*
+         * 
+         * 
+         */
+        /*
+         * 
         final JdbcSelectDataClient select = new JdbcSelectDataClient(
             new ResourceID(
                 param.source()
@@ -115,6 +118,8 @@ public class PipelineClient
         pipeline.add(
             select
             );
+         * 
+         */
 
 /*
  * Create table.
@@ -124,7 +129,7 @@ public class PipelineClient
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
-            select.results(),
+            select.getDataOutput(),
             param.delays()
             );
         pipeline.add(
