@@ -402,7 +402,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.16
+        newversion=1.11.18
 
         #
         # Close the dev branch.
@@ -416,9 +416,17 @@ EOF
         hg update
 
         #
+        # Get the current version.
+        oldversion=$(getversion)
+
+        #
         # Merge the dev branch.
         hg update 'default'
         hg merge "${devbranch:?}"
+
+        #
+        # Reset the version.
+        setversion "${oldversion}"
 
         #
         # Commit the merge.
