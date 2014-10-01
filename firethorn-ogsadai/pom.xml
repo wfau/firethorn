@@ -70,8 +70,8 @@
 
         <ogsadai.webapp.path>albert</ogsadai.webapp.path>
         <ogsadai.webapp.port>8081</ogsadai.webapp.port>
-        <ogsadai.version>4.2.2184</ogsadai.version>
-        <!--ogsadai.version>4.2.2198</ogsadai.version-->
+        <!--ogsadai.version>4.2.2184</ogsadai.version-->
+        <ogsadai.version>4.2.2198</ogsadai.version>
 
     </properties>
 
