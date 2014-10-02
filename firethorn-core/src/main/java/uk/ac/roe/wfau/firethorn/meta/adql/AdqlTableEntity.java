@@ -683,6 +683,17 @@ public class AdqlTableEntity
                 }
 
             @Override
+            public AdqlColumn create(final BaseColumn<?> base, final String name)
+                {
+                realize();
+                return factories().adql().columns().create(
+                    AdqlTableEntity.this,
+                    base,
+                    name
+                    );
+                }
+
+            @Override
             public AdqlColumn select(final Identifier ident)
             throws IdentifierNotFoundException
                 {

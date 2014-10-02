@@ -156,11 +156,15 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                     )
                 );
 
+            AdqlTableImporter tables = new AdqlTableImporter(
+                schema
+                );
+            
             while (tablereader.match(source))
                 {
                 tablereader.inport(
                     source,
-                    schema
+                    tables
                     );
                 }
 
@@ -191,7 +195,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             true
             );
 
-        public void inport(final XMLEventReader source, final AdqlSchema schema)
+        public void inport(final XMLEventReader source, final AdqlTableImporter tables)
         throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlSchema)");
@@ -200,7 +204,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                 );
 
             config(
-                schema.tables().inport(
+                tables.inport(
                     namereader.read(
                         source
                         )
@@ -278,11 +282,16 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             conesettings.read(
                 source
                 );
+
+            AdqlColumnImporter columns = new AdqlColumnImporter(
+                table
+                ); 
+            
             while (columnreader.match(source))
                 {
                 columnreader.inport(
                     source,
-                    table
+                    columns
                     );
                 }
             }
@@ -306,7 +315,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             true
             );
 
-        public void inport(final XMLEventReader source, final AdqlTable table)
+        public void inport(final XMLEventReader source, final AdqlColumnImporter columns)
         throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlTable)");
@@ -314,7 +323,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                 source
                 );
             config(
-                table.columns().inport(
+                columns.inport(
                     namereader.read(
                         source
                         )
@@ -369,27 +378,6 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                     start(
                         reader
                         );
-/*                    
-                    UCD.Type type = UCD.Type.ONE;
-                    final Attribute attrib = element.getAttributeByName(
-                        new QName(
-                            "version"
-                            )
-                        );
-                    if (attrib != null)
-                        {
-                        if ("1+".equals(attrib.getValue()))
-                            {
-                            type = UCD.Type.ONEPLUS;
-                            }
-                        }
-                    column.meta().adql().ucd(
-                        type,
-                        content(
-                            reader
-                            )
-                        );
- */
                     column.meta().adql().ucd(
                         content(
                             reader
@@ -404,25 +392,6 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
         public void config(final AdqlColumn column, final XMLEventReader source)
         throws XMLParserException, XMLReaderException
             {
-            /*
-             * Ignore the type from the metadoc.
-            try {
-                column.meta().adql().type(
-                    AdqlColumn.Type.type(
-                        typereader.read(
-                            source
-                            )
-                        )
-                    );
-                }
-            catch (Exception ouch)
-                {
-                log.warn(
-                    "Unable to process column type",
-                    ouch.getMessage()
-                    );
-                }
-             */
             //
             // Skip the column type.
             typereader.read(

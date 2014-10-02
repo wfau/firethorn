@@ -170,6 +170,12 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
+     * The fully qualified table name.
+     *
+     */
+    public String fullname();
+
+    /**
      * The {@link BaseSchema} metadata.
      *
      */

@@ -154,6 +154,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlColumn create(final BaseColumn<?> base);
 
         /**
+         * Create a {@link AdqlColumn}.
+         *
+         */
+        public AdqlColumn create(final BaseColumn<?> base, final String name);
+
+        /**
          * Import a {@link AdqlColumn} from our base table.
          * @todo Add name change
          *

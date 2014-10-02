@@ -260,6 +260,11 @@ public class AdqlTableProxy
         {
         return this.schema().namebuilder().append(".").append(this.name());
         }
+    @Override
+    public String fullname()
+        {
+        return namebuilder().toString();
+        }
 
     @Override
     public Status status()
@@ -348,6 +353,13 @@ public class AdqlTableProxy
                     base,
                     AdqlTableProxy.this
                     );
+                }
+
+            @Override
+            public AdqlColumn create(final BaseColumn<?> base, final String name)
+                {
+                log.error("AdqlColumnProxy can't rename base column [{}][{}]", base.fullname(), name);
+                throw new IllegalArgumentException();
                 }
 
             @Override

@@ -122,6 +122,12 @@ extends BaseComponentEntity<ColumnType>
         }
 
     @Override
+    public String fullname()
+        {
+        return namebuilder().toString();
+        }
+
+    @Override
     public BaseSchema<?,?> schema()
         {
         return this.table().schema();
