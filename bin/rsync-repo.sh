@@ -84,3 +84,8 @@ rsync \
     "${MAVEN_REPO:?}/" \
     data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
 
+#
+# Make everything read/write to users.
+ssh data.metagrid.co.uk \
+    'chmod -R g+rw /var/local/websites/data/wfau/maven'
+
