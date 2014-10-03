@@ -150,8 +150,9 @@ public class JdbcResourceEntity
 
 		@Override
         @CreateMethod
-		public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass) {
-            return super.insert(
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
+		    {
+		    return super.insert(
                 new JdbcResourceEntity(
                     ogsaid,
                     catalog,
@@ -162,6 +163,32 @@ public class JdbcResourceEntity
                     )
                 );
 			}
+
+		@Override
+	    @CreateMethod
+	    public JdbcResource create(final String ogsaid, final String driver, final String catalog, final String name, final String url, final String user, final String pass)
+		    {
+		    if (driver != null)
+		        {
+    		    try {
+    		        Class.forName(driver);
+    		        }
+    		    catch (Exception ouch)
+    		        {
+    		        log.warn("Unable to load driver class [{}][{}]", driver, ouch.getMessage());
+    		        }
+                }
+		    return super.insert(
+		        new JdbcResourceEntity(
+		            ogsaid,
+		            catalog,
+		            name,
+		            url,
+		            user,
+		            pass
+		            )
+                );
+            }
 
         @Autowired
         protected JdbcSchema.EntityFactory schemas;

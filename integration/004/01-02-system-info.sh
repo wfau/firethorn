@@ -19,32 +19,12 @@
 #
 #
 
-
-resourcename=${1:?}
-resourceuri=${2:?}
-resourceuser=${3:?}
-resourcepass=${4:?}
-drivername=${5:?}
-catalogname=${6:?}
-ogsadainame=${7:?}
-
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
-    --data   "jdbc.resource.create.url=${resourceuri:?}" \
-    --data   "jdbc.resource.create.name=${resourcename:?}" \
-    --data   "jdbc.resource.create.user=${resourceuser:?}" \
-    --data   "jdbc.resource.create.pass=${resourcepass:?}" \
-    --data   "jdbc.resource.create.driver=${drivername:?}" \
-    --data   "jdbc.resource.create.catalog=${catalogname:?}" \
-    --data   "jdbc.resource.create.ogsadai=${ogsadainame:?}" \
-    "${endpointurl:?}/jdbc/resource/create" \
-    | ./pp | tee jdbc-space.json
+    "${endpointurl:?}/system/info" \
+    | ./pp | tee system-info.json
 
-jdbcspace=$(
-    cat jdbc-space.json | ident | node
-    )
 
 
 

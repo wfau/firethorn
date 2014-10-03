@@ -86,6 +86,12 @@ extends BaseResource<JdbcSchema>
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass);
 
         /**
+         * Create a new {@link JdbcResource}.
+         *
+         */
+        public JdbcResource create(final String ogsaid, final String driver, final String catalog, final String name, final String url, final String user, final String pass);
+
+        /**
          * Our local {@link JdbcSchema.EntityFactory} implementation.
          * @todo - move to services
          *

@@ -90,6 +90,12 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     public static final String CREATE_CATALOG = "jdbc.resource.create.catalog" ;
 
     /**
+     * MVC property for the JDBC driver name.
+     *
+     */
+    public static final String CREATE_DRIVER = "jdbc.resource.create.driver" ;
+
+    /**
      * MVC property for the initial connection URL.
      *
      */
@@ -152,6 +158,8 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final String user,
         @RequestParam(value=CREATE_CONN_PASS, required=false)
         final String pass,
+        @RequestParam(value=CREATE_DRIVER, required=false)
+        final String driver,
         @RequestParam(value=CREATE_CATALOG, required=false)
         final String catalog,
         @RequestParam(value=CREATE_OGSADAI, required=false)
@@ -161,6 +169,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
             factories().jdbc().resources().create(
                 ogsadai,
                 catalog,
+                driver,
                 name,
                 url,
                 user,

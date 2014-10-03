@@ -129,7 +129,7 @@ extends AbstractComponent
     /**
      * The Spring Scheduled cron expression.
      * Property : firethorn.cleaner.cron
-     * Default  : '0 0/10 * * * ?'
+     * Default  : 0 0/10 * * * ?
      *
      */
     @Scheduled(cron="${firethorn.cleaner.cron:0 0/10 * * * ?}")

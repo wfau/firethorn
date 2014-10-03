@@ -3,6 +3,9 @@
     import="org.joda.time.format.DateTimeFormatter"
     import="org.joda.time.format.ISODateTimeFormat"
     import="java.util.Properties"
+    import="java.util.Enumeration"
+    import="java.sql.Driver"
+    import="java.sql.DriverManager"
     import="org.jsoftbiz.utils.OS"
     contentType="application/json" 
     session="false"
@@ -50,6 +53,21 @@ catch (Exception ouch)
 "servlet": {
     "server" : "<%= application.getServerInfo() %>",
     "context" : "<%= application.getContextPath() %>"
+    }
+"jdbc": {
+    "drivers": [
+        <%
+        for (Enumeration<Driver> drivers = DriverManager.getDrivers(); drivers.hasMoreElements();)
+            {
+            Driver driver = drivers.nextElement();
+            %>
+            "driver": {
+                "class" : "<%= driver.getClass().getName() %>"
+                }
+            <%
+            }
+        %>
+        ]
     }
 }
 

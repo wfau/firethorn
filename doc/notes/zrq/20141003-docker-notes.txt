@@ -1,0 +1,610 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-docker-devops
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Create the branch name.
+        source "bin/util.sh"
+        devbranch=$(getversion)-${devname:?}
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Set our versions.
+#[user@desktop]
+
+    fedoraversion=20
+    javaversion=1.8.0
+    tomcatversion=8.0.14
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        source 'bin/util.sh'
+        fireversion=$(getversion)
+        ogsaversion=$(getversion)
+    popd
+
+    maintainer='Dave Morris <docker-admin@metagrid.co.uk>'
+
+    fedoramajor=${fedoraversion:?}
+    javamajor=$(echo   "${javaversion:?}"   | sed 's/\([^.]\)\.\([^.]\)\.\(.*\)/\2/')
+    tomcatmajor=$(echo "${tomcatversion:?}" | sed 's/\([^.]\)\.\([^.]\)\.\(.*\)/\1/')
+
+    firemajor=$(echo "${fireversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
+    ogsamajor=$(echo "${ogsaversion:?}" | sed 's/\([^-]\)-\(.*\)/\1/')
+
+    echo "Fedora version ${fedoraversion:?}"
+    echo "Fedora major   ${fedoramajor:?}"
+
+    echo "Java version ${javaversion:?}"
+    echo "Java major   ${javamajor:?}"
+
+    echo "Tomcat version ${tomcatversion:?}"
+    echo "Tomcat major   ${tomcatmajor:?}"
+
+    echo "FireThorn version ${fireversion:?}"
+    echo "FireThorn major   ${firemajor:?}"
+
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our Fedora image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            if [ ! -e 'fedora' ] 
+            then
+                mkdir fedora
+            fi
+            pushd fedora
+
+                if [ ! -e "${fedoraversion:?}" ] 
+                then
+                    mkdir "${fedoraversion:?}"
+                fi
+                pushd "${fedoraversion:?}"
+
+                    cat > Dockerfile << EOF
+
+FROM fedora:${fedoraversion:?}
+MAINTAINER ${maintainer:?}
+
+#
+# Install some tools
+RUN yum -y install wget
+RUN yum -y install unzip
+RUN yum -y install pwgen
+RUN yum -y install deltarpm
+
+#
+# Update the system
+RUN yum -y update
+
+EOF
+                popd
+            popd
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our Java image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            if [ ! -e 'java' ] 
+            then
+                mkdir 'java'
+            fi
+            pushd java
+
+                if [ ! -e "${javamajor:?}" ] 
+                then
+                    mkdir "${javamajor:?}"
+                fi
+                pushd "${javamajor:?}"
+
+                    cat > Dockerfile << EOF
+
+FROM firethorn/fedora:${fedoraversion}
+MAINTAINER ${maintainer:?}
+
+#
+# Install Java
+RUN yum -y install java-${javaversion:?}-openjdk-headless
+
+EOF
+                popd
+            popd
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our Tomcat image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+# https://github.com/tutumcloud/tutum-docker-tomcat/blob/master/8.0/Dockerfile
+#[user@desktop]
+
+    tomcaturl=https://archive.apache.org/dist/tomcat/tomcat-${tomcatmajor:?}/v${tomcatversion:?}/bin/
+    tomcattar=apache-tomcat-${tomcatversion:?}.tar.gz
+    tomcatdir=/var/local/tomcat
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            if [ ! -e 'tomcat' ] 
+            then
+                mkdir tomcat
+            fi
+            pushd tomcat
+
+                if [ ! -e "${tomcatmajor:?}" ] 
+                then
+                    mkdir "${tomcatmajor:?}"
+                fi
+                pushd "${tomcatmajor:?}"
+
+                    cat > Dockerfile << EOF
+
+FROM firethorn/java:${javaversion:?}
+MAINTAINER ${maintainer:?}
+
+#
+# Install Tomcat
+ADD ${tomcaturl:?}/${tomcattar:?}     /tmp/
+ADD ${tomcaturl:?}/${tomcattar:?}.md5 /tmp/
+WORKDIR /tmp
+RUN md5sum -c apache-tomcat-*.md5
+RUN tar -zxf apache-tomcat-*.tar.gz
+RUN rm apache-tomcat-*.tar.gz
+RUN rm apache-tomcat-*.tar.gz.md5
+RUN mv apache-tomcat* ${tomcatdir:?}
+
+#
+# Configure Tomcat
+EXPOSE :8080
+#
+# Run Tomcat
+WORKDIR ${tomcatdir:?}
+CMD bin/catalina.sh run
+
+EOF
+                popd
+            popd
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our Firethorn image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+#[user@desktop]
+
+    firethornwar="firethorn-webapp-${fireversion:?}.war"
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        
+        pushd docker
+
+            if [ ! -e 'firethorn' ] 
+            then
+                mkdir firethorn
+            fi
+            pushd firethorn
+
+                if [ ! -e 'target' ] 
+                then
+                    mkdir target
+                fi
+                pushd target
+
+                    if [ -e "${firethornwar:?}" ]
+                    then
+                        rm "${firethornwar:?}"
+                    fi
+                    ln "${FIRETHORN_CODE:?}/firethorn-webapp/target/${firethornwar:?}"
+                    
+                popd
+
+                cat > Dockerfile << EOF
+
+FROM firethorn/tomcat:${tomcatversion:?}
+MAINTAINER ${maintainer:?}
+
+#
+# Install Firethorn war file
+ADD target/${firethornwar:?} /tmp/${firethornwar:?}
+RUN unzip -q /tmp/${firethornwar:?} -d ${tomcatdir:?}/webapps/firethorn
+RUN rm /tmp/${firethornwar:?}
+
+#
+# Configure Firethorn
+
+EOF
+            popd
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our OGSA-DAI image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+#[user@desktop]
+
+# -------------------------------------------------------------------------------------------
+# Setup the docker file for our PostgreSQL image.
+# This creates the docker file that is used to build the image.
+# Once the docker file is in source control, this step is no longer needed.
+#[user@desktop]
+
+# -------------------------------------------------------------------------------------------
+# Delete any existing images and containers.
+#[user@desktop]
+
+    docker stop $(docker ps -qa)
+    docker rm   $(docker ps -qa)
+    docker rmi  $(docker images -q)
+
+# -------------------------------------------------------------------------------------------
+# Build our docker images.
+# Once the images have been stored in the repository, this step is no longer needed.
+# 
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag "firethorn/fedora:${fedoraversion:?}" \
+            docker/fedora/${fedoramajor:?}
+
+        docker build \
+            --tag "firethorn/java:${javaversion:?}" \
+            docker/java/${javamajor:?}
+
+        docker build \
+            --tag "firethorn/tomcat:${tomcatversion:?}" \
+            docker/tomcat/${tomcatmajor:?}
+
+        docker build \
+            --tag "firethorn/firethorn:${fireversion:?}" \
+            docker/firethorn
+
+    popd
+
+    docker tag "firethorn/fedora:${fedoraversion:?}"  "firethorn/fedora:latest"
+    docker tag "firethorn/fedora:${fedoraversion:?}"  "firethorn/fedora:${fedoramajor:?}"
+
+    docker tag "firethorn/java:${javaversion:?}"      "firethorn/java:latest"
+    docker tag "firethorn/java:${javaversion:?}"      "firethorn/java:${javamajor:?}"
+
+    docker tag "firethorn/tomcat:${tomcatversion:?}"  "firethorn/tomcat:latest"
+    docker tag "firethorn/tomcat:${tomcatversion:?}"  "firethorn/tomcat:${tomcatmajor:?}"
+
+    docker tag "firethorn/firethorn:${fireversion:?}" "firethorn/firethorn:latest"
+    docker tag "firethorn/firethorn:${fireversion:?}" "firethorn/firethorn:${firemajor}"
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL containers.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    docker run --name postgres-meta -d postgres
+
+    docker inspect postgres-meta
+    
+    docker inspect postgres-meta | sed -n '/IPAddress/p'
+    docker inspect postgres-meta | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    postgres_ip=$(docker_ip postgres-meta)
+
+
+    #
+    # Login using psql.
+    psql --host ${postgres_ip:?} --port 5432 --dbname postgres --username postgres --password
+
+
+echo 'xyzzy' | md5sum 
+89d447eb9afaeb94e463615e8ded6479
+
+        CREATE ROLE firethorn_role ENCRYPTED PASSWORD 'md589d447eb9afaeb94e463615e8ded6479' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+
+        CREATE DATABASE firethorn_data OWNER firethorn_role ;
+
+        GRANT ALL PRIVILEGES ON DATABASE firethorn_data TO firethorn_role ;
+
+    psql --host ${postgres_ip:?} --port 5432 --dbname firethorn_data --username firethorn_role --password
+
+
+# -------------------------------------------------------------------------------------------
+# PostgreSQL container.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    md5pass()
+        {
+        local pass=${1:?}
+        echo "${pass:?}" | md5sum | awk '{ print $1 }'
+        }
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    docker run --name postgres-meta -d postgres
+    docker run --name postgres-user -d postgres
+
+    dbinfo=$(mktemp)
+    cat > "${dbinfo:?}" << EOF
+    metadatatype=pgsql
+    metadataport=5432
+    metadatahost=$(docker_ip postgres-meta)
+    metadataname=firethorn_meta_data
+    metadatauser=firethorn_meta_role
+    metadatapass=$(pwgen -s 10 1)
+
+    userdatatype=pgsql
+    userdataport=5432
+    userdatahost=$(docker_ip postgres-user)
+    userdataname=firethorn_user_data
+    userdatauser=firethorn_user_role
+    userdatapass=$(pwgen -s 10 1)
+    EOF
+
+    source "${dbinfo:?}"
+
+    dbpass=$(mktemp)
+    cat > "${dbpass:?}" << EOF
+    ${metadatahost:?}:*:postgres:postgres:
+    ${userdatahost:?}:*:postgres:postgres:
+    ${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
+    ${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
+    EOF
+
+    #cat "${dbinfo:?}"
+    #cat "${dbpass:?}"
+
+    PGPASSFILE=${dbpass:?}
+
+    psql --host ${metadatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+
+        CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+        CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
+
+    EOF
+
+    psql --host ${userdatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+
+        CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+        CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+
+    EOF
+
+    ftinfo=$(mktemp)
+    cat > "${ftinfo:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://${metadatahost:?}:${metadataport}/${metadataname}
+firethorn.meta.user=${metadatauser:?}
+firethorn.meta.pass=${metadatapass:?}
+firethorn.meta.driver=org.postgresql.Driver
+
+firethorn.user.url=jdbc:postgresql://${userdatahost:?}:${userdataport}/${userdataname}
+firethorn.user.user=${userdatauser:?}
+firethorn.user.pass=${userdatapass:?}
+firethorn.user.driver=org.postgresql.Driver
+EOF
+
+    docker run --detach --volume "${ftinfo:?}:/etc/firethorn.properties:ro" "firethorn/firethorn"
+    
+    docker logs --follow 10209e5c4b61
+
+# -----------------------------------------------------
+# Import the JDBC table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+#
+# Set the Firethorn endpoint URL.
+endpointurl="http://$(docker_ip 10209e5c4b61):8080/firethorn"
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/01-02-system-info.sh"
+
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'Atlas JDBC conection' 'jdbc:jtds:sqlserver://10.0.0.3:1432/ATLASDR1' 'atlasro' 'atlasropw' '*' 'atlas'
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+        datetime=$(date +%Y%m%d%H%M%S)
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+        cat "${HOME:?}/firethorn.spaces.${datetime:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Run some local tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        #
+        # This produces a syntax error.
+        # Looks like OGSA-DAI doesn't support TOP.
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT TOP 10
+                name
+            FROM
+                atlas.Filter
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                atlasSource.ra  AS atra,
+                atlasSource.dec AS atdec,
+                twomass_psc.ra  AS tmra,
+                twomass_psc.dec AS tmdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+            JOIN
+                twomass.twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 180 AND 181
+            AND
+                atlasSource.dec BETWEEN -3 AND -2
+            AND
+                twomass_psc.ra BETWEEN 180 AND 181
+            AND
+                twomass_psc.dec BETWEEN -3 AND -2
+            "
+
+    popd
+
+
+
+
+
+# -------------------------------------------------------------------------------------------
+# Test our firethorn image.
+#[user@desktop]
+
+    docker run "firethorn/firethorn"
+
+TODO root ssh keys
+TODO tomcat user
+TODO tomcat manager
+TODO tomcat minimal
+TODO tomcat logs
+TODO tomcat logrotate
+TODO firethorn config
+
