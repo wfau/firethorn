@@ -375,7 +375,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.18
+        newversion=1.11.19
 
         #
         # Close the dev branch.
@@ -386,7 +386,7 @@ EOF
         #
         # Pull the latest changes
         hg pull
-        hg update
+        hg update 'default'
 
         #
         # Get the current version.
@@ -407,9 +407,7 @@ EOF
         hg push
 
         #
-        # Update the project version.
-        setversion "${newversion}"
-        hg commit -m "Snapshot [version-$(getversion)]"
+        # Update the version tag.
         hg tag    -f "version-$(getversion)"
         hg push
 
@@ -421,5 +419,26 @@ EOF
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
         
+    popd
+
+# -----------------------------------------------------
+# Close the old branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=1.11.18-zrq-adql-meta
+        
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        hg update 'default'
+
     popd
 
