@@ -86,6 +86,7 @@ rsync \
 
 #
 # Make everything read/write to users.
-ssh data.metagrid.co.uk \
-    'chmod -R g+rw /var/local/websites/data/wfau/maven'
+# (only works for files that I own)
+#ssh data.metagrid.co.uk \
+#    'chmod -R g+rw /var/local/websites/data/wfau/maven'
 
