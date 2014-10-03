@@ -166,18 +166,8 @@ public class JdbcResourceEntity
 
 		@Override
 	    @CreateMethod
-	    public JdbcResource create(final String ogsaid, final String driver, final String catalog, final String name, final String url, final String user, final String pass)
+	    public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
 		    {
-		    if (driver != null)
-		        {
-    		    try {
-    		        Class.forName(driver);
-    		        }
-    		    catch (Exception ouch)
-    		        {
-    		        log.warn("Unable to load driver class [{}][{}]", driver, ouch.getMessage());
-    		        }
-                }
 		    return super.insert(
 		        new JdbcResourceEntity(
 		            ogsaid,
@@ -185,7 +175,8 @@ public class JdbcResourceEntity
 		            name,
 		            url,
 		            user,
-		            pass
+		            pass,
+		            driver
 		            )
                 );
             }
@@ -309,6 +300,24 @@ public class JdbcResourceEntity
 	        pass
 	        );
 	    }
+
+    /**
+     * Protected constructor. 
+     *
+     */
+    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+        {
+        super(name);
+        this.ogsaid  = ogsaid  ;
+        this.catalog = catalog ;
+        this.connection = new JdbcConnectionEntity(
+            this,
+            url,
+            user,
+            pass,
+            driver
+            );
+        }
 
     @Override
     public JdbcResource.Schemas schemas()

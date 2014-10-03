@@ -1,5 +1,5 @@
 
-FROM firethorn/tomcat:8.0.9
+FROM firethorn/tomcat:8.0.14
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

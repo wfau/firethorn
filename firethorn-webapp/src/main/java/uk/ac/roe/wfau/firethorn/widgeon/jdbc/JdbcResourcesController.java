@@ -169,11 +169,11 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
             factories().jdbc().resources().create(
                 ogsadai,
                 catalog,
-                driver,
                 name,
                 url,
                 user,
-                pass
+                pass,
+                driver
                 )
             );
         }

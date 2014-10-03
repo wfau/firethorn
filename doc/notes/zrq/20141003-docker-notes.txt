@@ -244,6 +244,8 @@ EOF
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
         
         pushd docker
 
@@ -352,44 +354,6 @@ EOF
 # https://registry.hub.docker.com/_/postgres/
 #[user@desktop]
 
-    docker run --name postgres-meta -d postgres
-
-    docker inspect postgres-meta
-    
-    docker inspect postgres-meta | sed -n '/IPAddress/p'
-    docker inspect postgres-meta | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
-
-    docker_ip()
-        {
-        local name=${1:?}
-        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
-        }
-
-    postgres_ip=$(docker_ip postgres-meta)
-
-
-    #
-    # Login using psql.
-    psql --host ${postgres_ip:?} --port 5432 --dbname postgres --username postgres --password
-
-
-echo 'xyzzy' | md5sum 
-89d447eb9afaeb94e463615e8ded6479
-
-        CREATE ROLE firethorn_role ENCRYPTED PASSWORD 'md589d447eb9afaeb94e463615e8ded6479' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
-
-        CREATE DATABASE firethorn_data OWNER firethorn_role ;
-
-        GRANT ALL PRIVILEGES ON DATABASE firethorn_data TO firethorn_role ;
-
-    psql --host ${postgres_ip:?} --port 5432 --dbname firethorn_data --username firethorn_role --password
-
-
-# -------------------------------------------------------------------------------------------
-# PostgreSQL container.
-# https://registry.hub.docker.com/_/postgres/
-#[user@desktop]
-
     md5pass()
         {
         local pass=${1:?}
@@ -407,70 +371,66 @@ echo 'xyzzy' | md5sum
 
     dbinfo=$(mktemp)
     cat > "${dbinfo:?}" << EOF
-    metadatatype=pgsql
-    metadataport=5432
-    metadatahost=$(docker_ip postgres-meta)
-    metadataname=firethorn_meta_data
-    metadatauser=firethorn_meta_role
-    metadatapass=$(pwgen -s 10 1)
+metadatatype=pgsql
+metadataport=5432
+metadatahost=$(docker_ip postgres-meta)
+metadataname=firethorn_meta_data
+metadatauser=firethorn_meta_role
+metadatapass=$(pwgen -s 10 1)
 
-    userdatatype=pgsql
-    userdataport=5432
-    userdatahost=$(docker_ip postgres-user)
-    userdataname=firethorn_user_data
-    userdatauser=firethorn_user_role
-    userdatapass=$(pwgen -s 10 1)
-    EOF
+userdatatype=pgsql
+userdataport=5432
+userdatahost=$(docker_ip postgres-user)
+userdataname=firethorn_user_data
+userdatauser=firethorn_user_role
+userdatapass=$(pwgen -s 10 1)
+EOF
 
     source "${dbinfo:?}"
 
     dbpass=$(mktemp)
     cat > "${dbpass:?}" << EOF
-    ${metadatahost:?}:*:postgres:postgres:
-    ${userdatahost:?}:*:postgres:postgres:
-    ${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
-    ${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
-    EOF
-
-    #cat "${dbinfo:?}"
-    #cat "${dbpass:?}"
+${metadatahost:?}:*:postgres:postgres:
+${userdatahost:?}:*:postgres:postgres:
+${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
+${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
+EOF
 
     PGPASSFILE=${dbpass:?}
 
     psql --host ${metadatahost:?} --port 5432 --dbname postgres --username postgres << EOF
-
-        CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
-        CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
-
-    EOF
+CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
+EOF
 
     psql --host ${userdatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+EOF
 
-        CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
-        CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+# -------------------------------------------------------------------------------------------
+# Create our FireThorn container.
+#[user@desktop]
 
-    EOF
-
-    ftinfo=$(mktemp)
-    cat > "${ftinfo:?}" << EOF
+    ftprops=$(mktemp)
+    cat > "${ftprops:?}" << EOF
 firethorn.meta.url=jdbc:postgresql://${metadatahost:?}:${metadataport}/${metadataname}
 firethorn.meta.user=${metadatauser:?}
 firethorn.meta.pass=${metadatapass:?}
 firethorn.meta.driver=org.postgresql.Driver
-
 firethorn.user.url=jdbc:postgresql://${userdatahost:?}:${userdataport}/${userdataname}
 firethorn.user.user=${userdatauser:?}
 firethorn.user.pass=${userdatapass:?}
 firethorn.user.driver=org.postgresql.Driver
 EOF
 
-    docker run --detach --volume "${ftinfo:?}:/etc/firethorn.properties:ro" "firethorn/firethorn"
-    
-    docker logs --follow 10209e5c4b61
+    docker run --name firethorn --detach --volume "${ftprops:?}:/etc/firethorn.properties:ro" "firethorn/firethorn"
+    docker logs --follow firethorn
 
 # -----------------------------------------------------
 # Import the JDBC table metadata.
 #[user@desktop]
+
 
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
@@ -483,16 +443,17 @@ EOF
         identity=$(pwgen 16 1)
         community=$(date '+%A')
 
-#
-# Set the Firethorn endpoint URL.
-endpointurl="http://$(docker_ip 10209e5c4b61):8080/firethorn"
+        #
+        # Set the Firethorn endpoint URL.
+        endpointurl="http://$(docker_ip firethorn):8080/firethorn"
 
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
-
         source "${FIRETHORN_TEST:?}/01-02-system-info.sh"
 
-        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'Atlas JDBC conection' 'jdbc:jtds:sqlserver://10.0.0.3:1432/ATLASDR1' 'atlasro' 'atlasropw' '*' 'atlas'
+hostip=172.17.42.1
+hostip=172.17.42.1
 
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'Atlas JDBC conection' "jdbc:jtds:sqlserver://${hostip:?}:1432/ATLASDR1" 'atlasro' 'atlasropw' 'net.sourceforge.jtds.jdbc.Driver' '*' 'atlas'
         source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
         datetime=$(date +%Y%m%d%H%M%S)

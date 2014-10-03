@@ -53,7 +53,7 @@ catch (Exception ouch)
 "servlet": {
     "server" : "<%= application.getServerInfo() %>",
     "context" : "<%= application.getContextPath() %>"
-    }
+    },
 "jdbc": {
     "drivers": [
         <%

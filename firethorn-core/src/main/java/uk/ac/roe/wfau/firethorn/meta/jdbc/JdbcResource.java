@@ -89,7 +89,7 @@ extends BaseResource<JdbcSchema>
          * Create a new {@link JdbcResource}.
          *
          */
-        public JdbcResource create(final String ogsaid, final String driver, final String catalog, final String name, final String url, final String user, final String pass);
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver);
 
         /**
          * Our local {@link JdbcSchema.EntityFactory} implementation.

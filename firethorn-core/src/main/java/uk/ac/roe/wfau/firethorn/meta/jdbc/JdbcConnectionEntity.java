@@ -176,6 +176,15 @@ public class JdbcConnectionEntity
 	    this.parent = parent;
 	    }
 
+    public JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass, final String driver)
+        {
+        this.url    = url ;
+        this.user   = user;
+        this.pass   = pass;
+        this.driver = driver;
+        this.parent = parent;
+        }
+
     @Parent
     protected JdbcResourceEntity parent;
     protected JdbcResourceEntity getParent()
