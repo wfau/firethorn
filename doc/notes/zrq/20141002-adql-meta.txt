@@ -375,7 +375,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.18
+        newversion=1.11.19
 
         #
         # Close the dev branch.
@@ -386,7 +386,7 @@ EOF
         #
         # Pull the latest changes
         hg pull
-        hg update
+        hg update 'default'
 
         #
         # Get the current version.
@@ -407,9 +407,7 @@ EOF
         hg push
 
         #
-        # Update the project version.
-        setversion "${newversion}"
-        hg commit -m "Snapshot [version-$(getversion)]"
+        # Update the version tag.
         hg tag    -f "version-$(getversion)"
         hg push
 
