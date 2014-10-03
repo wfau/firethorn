@@ -164,6 +164,12 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
+     * The full name, including parent table and schema.
+     *
+     */
+    public String fullname();
+
+    /**
      * The {@link BaseColumn} metadata.
      *
      */

@@ -236,13 +236,16 @@ implements AdqlColumn
         return base().alias();
         }
 
-    /**
-     * Copied from BaseColumn.
-     */
     @Override
     public StringBuilder namebuilder()
         {
         return this.table().namebuilder().append(".").append(this.name());
+        }
+
+    @Override
+    public String fullname()
+        {
+        return namebuilder().toString();
         }
 
     @Override
