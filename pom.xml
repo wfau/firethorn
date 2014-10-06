@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.11.18</version>
+    <version project='firethorn'>1.11.18-stv-pyro-sysinfo</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
