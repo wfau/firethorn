@@ -91,7 +91,11 @@ class Sql2Json(object):
             d['firethorn_error_message'] = row.firethorn_error_message
             d['sql_error_message'] = row.sql_error_message
 	    d['query_hash'] = row.query_hash
-	   
+	    d['java_version'] = row.java_version
+	    d['sys_timestamp'] = row.sys_timestamp
+	    d['firethorn_changeset'] = row.firethorn_changeset
+	    d['sys_platform'] = row.sys_platform
+	    
             objects_list.append(d)
             queryrun = row.queryrunID
             
@@ -106,6 +110,12 @@ class Sql2Json(object):
                 sum[queryrun]['firethorn_version'] = row.firethorn_version
                 sum[queryrun]['total_firethorn_querytime'] = 0
                 sum[queryrun]['total_sql_querytime'] = 0
+                sum[queryrun]['java_version'] = row.java_version
+                sum[queryrun]['sys_timestamp'] = row.sys_timestamp
+                sum[queryrun]['firethorn_changeset'] = row.firethorn_changeset
+                sum[queryrun]['sys_platform'] = row.sys_platform
+
+
 	        failed_queries_per_run[queryrun] = []
 
 	    sum[queryrun]['total_queries_run'] = sum[queryrun]['total_queries_run'] + 1

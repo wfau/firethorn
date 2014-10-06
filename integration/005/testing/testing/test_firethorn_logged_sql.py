@@ -25,6 +25,7 @@ try:
     import urllib
     from pyrothorn import firethornEngine
     from pyrothorn import queryEngine
+    from pyrothorn.firethorn_config import web_services_sys_info
     from mssql import sqlEngine
     import config
     import uuid
@@ -69,7 +70,6 @@ class test_firethorn(unittest.TestCase):
     def setUp(self):
         self.use_preset_params = config.use_preset_params
         self.use_cached_firethorn_env = config.use_cached_firethorn_env
-        self.firethorn_version = config.firethorn_version
         self.total_failed = 0
         self.include_neighbours = config.include_neighbour_import
         self.verificationErrors = []
@@ -134,6 +134,11 @@ class test_firethorn(unittest.TestCase):
                         self.import_neighbours(sqlEng, fEng)
             
             self.store_environment_config(fEng, config.stored_env_config)
+            java_version = fEng.getAttribute(web_services_sys_info, "java")["version"]
+            sys_platform = fEng.getAttribute(web_services_sys_info, "system")["platform"]
+            sys_timestamp = fEng.getAttribute(web_services_sys_info, "system")["time"]
+            firethorn_changeset = fEng.getAttribute(web_services_sys_info, "build")["changeset"]
+            firethorn_version = fEng.getAttribute(web_services_sys_info, "build")["version"]
           
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
@@ -171,7 +176,7 @@ class test_firethorn(unittest.TestCase):
                     queryid = None
 	            query_count = 0
 
-                if (query_duplicates_found<=0):
+		if (query_duplicates_found<=0):
 		    sql_duration = 0
 		    firethorn_duration = 0
 		    test_passed = -1
@@ -231,8 +236,8 @@ class test_firethorn(unittest.TestCase):
 		    logging.info("")
 		    logging.info("")
 
-                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8') )
-                    report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
+                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
+                    report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                     reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
 
                 else :
