@@ -1,0 +1,145 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Problems managing user data in postgresql.
+#[user@desktop]
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    username=dave
+    userkey=${HOME:?}/.ssh/zarquan.metagrid.co.uk.pub
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+
+    docker run \
+        --name ramses2 \
+        --expose 1433 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        ssh -v -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL containers.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    md5pass()
+        {
+        local pass=${1:?}
+        echo "${pass:?}" | md5sum | awk '{ print $1 }'
+        }
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    docker run --name postgres-meta -d postgres
+    docker run --name postgres-user -d postgres
+
+    dbinfo=$(mktemp)
+    cat > "${dbinfo:?}" << EOF
+metadatatype=pgsql
+metadataport=5432
+metadatahost=$(docker_ip postgres-meta)
+metadataname=firethorn_meta_data
+metadatauser=firethorn_meta_role
+metadatapass=$(pwgen -s 10 1)
+
+userdatatype=pgsql
+userdataport=5432
+userdatahost=$(docker_ip postgres-user)
+userdataname=firethorn_user_data
+userdatauser=firethorn_user_role
+userdatapass=$(pwgen -s 10 1)
+EOF
+
+    source "${dbinfo:?}"
+
+    dbpass=$(mktemp)
+    cat > "${dbpass:?}" << EOF
+${metadatahost:?}:*:postgres:postgres:
+${userdatahost:?}:*:postgres:postgres:
+${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
+${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
+EOF
+
+    PGPASSFILE=${dbpass:?}
+
+    psql --host ${metadatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
+EOF
+
+    psql --host ${userdatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+EOF
+
+# TODO Set the postgres user password !!!
+
+# -------------------------------------------------------------------------------------------
+# Tweak our firethorn properties.
+#[user@desktop]
+
+# -----------------------------------------------------
+# Update our local properties.
+#[user@desktop]
+
+    cat "${dbinfo:?}"
+
+        ....
+
+    gedit "${HOME}/firethorn.properties" &
+
+        firethorn.meta.url=jdbc:postgresql://xxxxxxxx:xxxx/xxxxxxxx
+        firethorn.meta.driver=org.postgresql.Driver
+        firethorn.meta.user=xxxxxxxx
+        firethorn.meta.pass=xxxxxxxx
+
+        firethorn.user.url=jdbc:postgresql://xxxxxxxx:xxxx/xxxxxxxx
+        firethorn.user.driver=org.postgresql.Driver
+        firethorn.user.user=xxxxxxxx
+        firethorn.user.pass=xxxxxxxx
+
+# -------------------------------------------------------------------------------------------
+# Test FireThorn in Eclipse.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+

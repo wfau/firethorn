@@ -1377,9 +1377,17 @@ implements AdqlQuery, AdqlParserQuery
 
 // TODO
 // Global shared 'default' space.
-            JdbcSchema space = identity.space(true);
+            JdbcSchema space = identity.space(
+                true
+                );
+
             //
             // Create our tables.
+
+//TODO
+//Much better error handling - null pointer if create() fails.
+            
+            
 //TODO
 //Why does the query need to know where the JdbcTable is ?
             log.debug(" Identity space [{}][{}]", space.ident(), space.name());

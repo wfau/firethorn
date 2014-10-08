@@ -1,0 +1,440 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Docker Maven Plugin
+http://www.alexecollins.com/content/docker-maven-plugin/
+
+SSHD in Docker containers, you're doing it wrong!
+https://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
+
+Access Docker Containers via SSH SOCKS proxy
+https://lalyos.github.io/blog/2013/10/06/access-docker-containers-via-internal-ip/
+
+Forward ssh key agent into container
+https://github.com/docker/docker/issues/6396
+
+
+# -----------------------------------------------------
+# Use links to connect containers.
+#
+
+        +-------------+
+        | FireThorn   |
+        |             |
+     - 8080           |
+        |             |
+        |             |
+        |             ---\
+        |             |  |
+        |             ---|--\
+        |             |  |  |
+        |             ---|--|--\
+        |             |  |  |  |
+        |             ---|--|--|--\
+        |             |  |  |  |  |
+        +-------------+  |  |  |  |
+                         |  |  |  |
+    /--------------------/  |  |  |
+    |                       |  |  |
+    |   +-------------+     |  |  |
+    |   | OGSA-DAI    |     |  |  |
+    |   |             |     |  |  |
+    \-- 8080          |     |  |  |
+        |             |     |  |  |
+        |             ------|--|--|--\
+        |             |     |  |  |  |
+        |             ------|--|--|--|--\
+        |             |     |  |  |  |  |
+        +-------------+     |  |  |  |  |
+                            |  |  |  |  |
+    /-----------------------/  |  |  |  |
+    |                          |  |  |  |
+    |   +-------------+        |  |  |  |
+    |   | Metadata    |        |  |  |  |
+    |   |             |        |  |  |  |
+    \- 5432           |        |  |  |  |
+        |             |        |  |  |  |
+        |             |        |  |  |  |
+        |             |        |  |  |  |
+        +-------------+        |  |  |  |
+                               |  |  |  |
+    /--------------------------|--------/
+    |                          |  |  |
+ /-----------------------------/  |  |
+ |  |                             |  |
+ |  |   +-------------+           |  |
+ |  |   | Userdata    |           |  |
+ |  |   |             |           |  |
+ \--\- 5432           |           |  |
+        |             |           |  |
+        |             |           |  |
+        |             |           |  |
+        +-------------+           |  |
+                                  |  |
+    /--------------------------------/
+    |                             |
+ /--------------------------------/
+ |  |
+ |  |   +-------------+
+ |  |   | Atlas       |
+ |  |   |             |
+ \--\- wxyz           |
+        |             |
+        |             -------------------- SQL server
+        |             |
+        +-------------+
+
+# -----------------------------------------------------
+# Use volumes to import FireThorn code tree and webapp.
+#
+
+    firethorn/firethorn
+
+    firethorn/firethorn-maven:
+
+    firethorn/firethorn-webapp:
+
+# -----------------------------------------------------
+# Use volume and env to import local SSH agent connection.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    docker run \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        fedora \
+        bash
+
+    - fails
+
+    docker run \
+        --tty --interactive \
+        --volume "${HOME}/.ssh:/.ssh" \
+        fedora \
+        bash ssh -v threonine.metagrid.co.uk
+
+    - fails
+
+
+#[user@desktop]
+
+    docker run \
+        --tty --interactive \
+        --volume "${HOME}/.ssh:/root/.ssh" \
+        centos \
+        bash
+        
+        yum -y install openssh-clients
+        chown root.root /root/.ssh/config
+        ssh -v threonine.metagrid.co.uk
+
+        Last login: Mon Oct  6 13:01:30 2014 from 172.17.0.10
+
+#[user@desktop]
+
+    docker run \
+        --tty --interactive \
+        --volume "${HOME}/.ssh:/root/.ssh" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        centos \
+        bash
+        
+        yum -y install openssh-clients
+        ssh -v threonine.metagrid.co.uk
+
+        Last login: Mon Oct  6 13:03:06 2014 from 172.17.0.11
+
+#[user@desktop]
+
+    docker run \
+        --tty --interactive \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        centos \
+        bash
+        
+        yum -y install openssh-clients
+        ssh -v Zarquan@threonine.metagrid.co.uk
+
+        - fails
+        debug1: Offering DSA public key: zarquan@shell.sourceforge.net
+        debug2: we sent a publickey packet, wait for reply
+        debug1: channel 1: FORCE input drain
+        debug1: Authentications that can continue: publickey,gssapi-keyex,gssapi-with-mic,password
+
+
+#[user@desktop]
+
+    docker run \
+        --tty --interactive \
+        --volume "${HOME}/.ssh/zarquan.metagrid.co.uk.pub:/identity.pub" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        centos \
+        bash
+        
+        yum -y install openssh-clients
+        ssh -v -i /identity.pub Zarquan@threonine.metagrid.co.uk
+
+#[user@desktop]
+
+    publickey=${HOME:?}/.ssh/zarquan.metagrid.co.uk.pub
+   
+    docker run \
+        --tty --interactive \
+        --volume "${publickey:?}:/tmp/publickey" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        fedora \
+        bash
+        
+        ssh -v -i /tmp/publickey ${username:?}@${hostname:?}
+
+#[user@desktop]
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+    
+    username=dave
+    userkey=${HOME:?}/.ssh/zarquan.metagrid.co.uk.pub
+
+    docker run \
+        --tty --interactive \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --env    "username=${username:?}" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --env    "hostname=${hostname:?}" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        bash 
+
+        ssh -C \
+            -i /tmp/userkey.pub \
+            -L *:1432:ramses2:1433 \
+            -o PasswordAuthentication=no \
+            ${username:?}@${hostname:?}
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+    
+    username=dave
+    userkey=${HOME:?}/.ssh/zarquan.metagrid.co.uk.pub
+
+    docker run \
+        --name ramses2 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        ssh -v -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL containers.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    md5pass()
+        {
+        local pass=${1:?}
+        echo "${pass:?}" | md5sum | awk '{ print $1 }'
+        }
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    docker run --name postgres-meta -d postgres
+    docker run --name postgres-user -d postgres
+
+    dbinfo=$(mktemp)
+    cat > "${dbinfo:?}" << EOF
+metadatatype=pgsql
+metadataport=5432
+metadatahost=$(docker_ip postgres-meta)
+metadataname=firethorn_meta_data
+metadatauser=firethorn_meta_role
+metadatapass=$(pwgen -s 10 1)
+
+userdatatype=pgsql
+userdataport=5432
+userdatahost=$(docker_ip postgres-user)
+userdataname=firethorn_user_data
+userdatauser=firethorn_user_role
+userdatapass=$(pwgen -s 10 1)
+EOF
+
+    source "${dbinfo:?}"
+
+    dbpass=$(mktemp)
+    cat > "${dbpass:?}" << EOF
+${metadatahost:?}:*:postgres:postgres:
+${userdatahost:?}:*:postgres:postgres:
+${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
+${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
+EOF
+
+    PGPASSFILE=${dbpass:?}
+
+    psql --host ${metadatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
+EOF
+
+    psql --host ${userdatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+EOF
+
+# TODO Set the postgres user password !!!
+
+# -------------------------------------------------------------------------------------------
+# Create our FireThorn container.
+#[user@desktop]
+
+    ftprops=$(mktemp)
+    cat > "${ftprops:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://metadata/${metadataname}
+firethorn.meta.user=${metadatauser:?}
+firethorn.meta.pass=${metadatapass:?}
+firethorn.meta.driver=org.postgresql.Driver
+
+firethorn.user.url=jdbc:postgresql://userdata/${userdataname}
+firethorn.user.user=${userdatauser:?}
+firethorn.user.pass=${userdatapass:?}
+firethorn.user.driver=org.postgresql.Driver
+EOF
+
+    docker run \
+        --link ramses2:ramses2 \
+        --link postgres-meta:metadata \
+        --link postgres-user:userdata \
+        --name firethorn \
+        --volume "${ftprops:?}:/etc/firethorn.properties:ro" \
+        "firethorn/firethorn"
+
+# -----------------------------------------------------
+# Import the JDBC table metadata.
+#[user@desktop]
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        #
+        # Set the Firethorn endpoint URL.
+        endpointurl="http://$(docker_ip firethorn):8080/firethorn"
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+        source "${FIRETHORN_TEST:?}/01-02-system-info.sh"
+
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" 'Atlas JDBC conection' "jdbc:jtds:sqlserver://ramses2:1433/ATLASDR1" 'atlasro' 'atlasropw' 'net.sourceforge.jtds.jdbc.Driver' '*' 'atlas'
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+        datetime=$(date +%Y%m%d%H%M%S)
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+        cat "${HOME:?}/firethorn.spaces.${datetime:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Run some local tests.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        #
+        # Error trying to create a user data table on postgresql...
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+    popd
+

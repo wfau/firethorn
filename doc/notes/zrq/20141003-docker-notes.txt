@@ -552,9 +552,6 @@ EOF
     popd
 
 
-
-
-
 # -------------------------------------------------------------------------------------------
 # Test our firethorn image.
 #[user@desktop]
@@ -567,5 +564,10 @@ TODO tomcat manager
 TODO tomcat minimal
 TODO tomcat logs
 TODO tomcat logrotate
-TODO firethorn config
+
+TODO host iptables
+
+
+
+
 

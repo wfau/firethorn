@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,10 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
@@ -38,11 +40,27 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
  *
  */
 @Slf4j
-public class MSSQLMetadataScanner
+public class PGSQLMetadataScanner
     implements JdbcMetadataScanner
     {
+    interface PgSchema extends Schema
+        {
+        public Long oid();
+        }
+    interface PgTable extends Table
+        {
+        public Long oid();
+        }
+    interface PgColumn extends Column
+        {
+        }
+    interface PgType
+        {
+        public Long oid();
+        public String name();
+        }
 
-    public MSSQLMetadataScanner(final JdbcConnector connector)
+    public PGSQLMetadataScanner(final JdbcConnector connector)
         {
         this.connector = connector ;
         }
@@ -74,21 +92,6 @@ public class MSSQLMetadataScanner
     public void handle(SQLException ouch)
         {
         log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
-        if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
-            {
-            log.debug("Fatal error code, closing existing connection");
-            try {
-                connector().reset();
-                }
-            catch (Exception eeek)
-                {
-                //log.warn("SQLException while closing connection [{}][{}][{}]", eeek.getErrorCode(), eeek.getSQLState(), eeek.getMessage());
-                log.warn("Exception while closing connection [{}]", eeek.getMessage());
-                }
-            finally {
-                connection = null ;
-                }
-            }
         }
 
     @Override
@@ -98,56 +101,37 @@ public class MSSQLMetadataScanner
             {
             @Override
             public Iterable<Catalog> select()
-            throws SQLException
+            throws SQLException, MetadataException
                 {
-                /*
-                // https://stackoverflow.com/questions/147659/get-list-of-databases-from-sql-server
-                final Statement statement = connection.createStatement();
-                final ResultSet results = statement.executeQuery(
-                    "SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4"
-                    );
-                 */
-                final ResultSet results = connection().getMetaData().getCatalogs();
+                final String match = connector().catalog().toLowerCase();
                 final List<Catalog> list = new ArrayList<Catalog>();
-                while (results.next())
-                    {
-                    list.add(
-                        catalog(
-                            results
-                            )
-                        );
-                    }
+                list.add(
+                    catalog(
+                        match
+                        )
+                    );
                 return list ;
                 }
 
             @Override
             public Catalog select(final String name)
-            throws SQLException
+            throws SQLException, MetadataException
                 {
-                /*
-                final PreparedStatement statement = connection.prepareStatement(
-                    "SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4 AND name = ?"
-                    );
-                statement.setString(1, name);
-                final ResultSet results = statement.executeQuery();
-                */
-                final ResultSet results = connection().getMetaData().getCatalogs();
-                while (results.next())
+                final String match = connector().catalog().toLowerCase();
+                if (name.toLowerCase().trim().equals(match))
                     {
-                    Catalog catalog = catalog(
-                        results
+                    return catalog(
+                        match
                         );
-                    if (catalog.name().toUpperCase().equals(name.trim().toUpperCase()))
-                        {
-                        return catalog;
-                        }
                     }
-                return null ;
+                else {
+                    return null ;
+                    }
                 }
             };
         }
 
-    protected Catalog catalog(final ResultSet results)
+    protected Catalog catalog(final String name)
     throws SQLException
         {
         return new Catalog()
@@ -155,20 +139,19 @@ public class MSSQLMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                //return _scanner();
-                return MSSQLMetadataScanner.this; 
+                return PGSQLMetadataScanner.this; 
                 }
             protected Catalog catalog()
                 {
                 return this ;
                 }
 
-            protected String name = results.getString("TABLE_CAT");
             @Override
             public String name()
                 {
                 return name;
                 }
+            
             @Override
             public Schemas schemas()
                 {
@@ -178,17 +161,18 @@ public class MSSQLMetadataScanner
                     @Override
                     public Iterable<Schema> select() throws SQLException
                         {
-                        // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
+                        log.debug("Selecting schema for [{}]", catalog().name());
                         final Statement statement = connection().createStatement();
                         final ResultSet results = statement.executeQuery(
-                            "SELECT DISTINCT " +
-                            "  TABLE_SCHEMA " +
-                            "FROM " +
-                            "  {catalog}.INFORMATION_SCHEMA.TABLES"
-                            .replace(
-                                "{catalog}",
-                                catalog().name()
-                                )
+                            " SELECT" +
+                            "    oid," +
+                            "    nspname" +
+                            " FROM" +
+                            "    pg_namespace" +
+                            " WHERE" +
+                            "    nspname NOT LIKE 'pg_%'" +
+                            " AND" +
+                            "    nspname <> 'information_schema'"
                             );
                         final List<Schema> list = new ArrayList<Schema>();
                         while (results.next())
@@ -196,7 +180,12 @@ public class MSSQLMetadataScanner
                             list.add(
                                 schema(
                                     catalog(),
-                                    results
+                                    results.getLong(
+                                        "oid"
+                                        ),
+                                    results.getString(
+                                        "nspname"
+                                        )
                                     )
                                 );
                             }
@@ -204,16 +193,17 @@ public class MSSQLMetadataScanner
                         }
 
                     @Override
-                    public Schema select(String name) throws SQLException
+                    public PgSchema select(String name) throws SQLException
                         {
-                        // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
+                        log.debug("Selecting schema [{}] for [{}]", name, catalog().name());
                         final PreparedStatement statement = connection().prepareStatement(
-                            "SELECT DISTINCT " +
-                            "  TABLE_SCHEMA " +
-                            "FROM " +
-                            "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                    		"WHERE " +
-                    		"  TABLE_SCHEMA = ?"
+                            " SELECT" +
+                            "    oid," +
+                            "    nspname" +
+                            " FROM" +
+                            "    pg_namespace" +
+                            " WHERE" +
+                            "    nspname = ?"
                             );
                         statement.setString(1, name);
                         final ResultSet results = statement.executeQuery();
@@ -221,7 +211,12 @@ public class MSSQLMetadataScanner
                             {
                             return schema(
                                 catalog(),
-                                results
+                                results.getLong(
+                                    "oid"
+                                    ),
+                                results.getString(
+                                    "nspname"
+                                    )
                                 );
                             }
                         else {
@@ -231,22 +226,27 @@ public class MSSQLMetadataScanner
                     };
                 }
 
-            protected Schema schema(final Catalog catalog, final ResultSet results)
+            protected PgSchema schema(final Catalog catalog, final Long oid, final String name)
             throws SQLException
                 {
-                return new Schema()
+                log.debug("schema() [{}][{}][{}]", catalog, oid, name);
+                return new PgSchema()
                     {
                     @Override
                     public Catalog catalog()
                         {
                         return catalog ;
                         }
-                    protected Schema schema()
+                    protected PgSchema schema()
                         {
                         return this ;
                         }
 
-                    protected String name = results.getString("TABLE_SCHEMA");
+                    @Override
+                    public Long oid()
+                        {
+                        return oid;
+                        }
                     @Override
                     public String name()
                         {
@@ -261,16 +261,21 @@ public class MSSQLMetadataScanner
                             public Iterable<Table> select()
                                 throws SQLException
                                 {
-                                // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
-                                    "SELECT DISTINCT " +
-                                    "  TABLE_NAME " +
-                                    "FROM " +
-                                    "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                                    "WHERE " +
-                                    "  TABLE_SCHEMA = ?"
+                                    " SELECT" +
+                                    "    oid," +
+                                    "    relname" +
+                                    " FROM" +
+                                    "    pg_class" +
+                                    " WHERE" +
+                                    "    relkind IN ('r','v')" +
+                                    "AND" +
+                                    "    relnamespace = ?"
                                     );
-                                statement.setString(1, schema().name());
+                                statement.setLong(
+                                    1,
+                                    schema().oid()
+                                    );
                                 final ResultSet results = statement.executeQuery();
                                 final List<Table> list = new ArrayList<Table>();
                                 while (results.next())
@@ -278,7 +283,12 @@ public class MSSQLMetadataScanner
                                     list.add(
                                         table(
                                             schema(),
-                                            results
+                                            results.getLong(
+                                                "oid"
+                                                ),
+                                            results.getString(
+                                                "relname"
+                                                )
                                             )
                                         );
                                     }
@@ -286,28 +296,41 @@ public class MSSQLMetadataScanner
                                 }
 
                             @Override
-                            public Table select(String name)
+                            public PgTable select(String name)
                                 throws SQLException
                                 {
-                                // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
-                                    "SELECT DISTINCT " +
-                                    "  TABLE_NAME " +
-                                    "FROM " +
-                                    "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                                    "WHERE " +
-                                    "  TABLE_SCHEMA = ? " +
-                                    "AND " +
-                                    " TABLE_NAME = ?"
+                                    " SELECT" +
+                                    "    oid," +
+                                    "    relname" +
+                                    " FROM" +
+                                    "    pg_class" +
+                                    " WHERE" +
+                                    "    relkind IN ('r','v')" +
+                                    "AND" +
+                                    "    relnamespace = ?" +
+                                    "AND" +
+                                    "    relname = ?"
                                     );
-                                statement.setString(1, schema().name());
-                                statement.setString(2, name);
+                                statement.setLong(
+                                    1,
+                                    schema().oid()
+                                    );
+                                statement.setString(
+                                    2,
+                                    name
+                                    );
                                 final ResultSet results = statement.executeQuery();
                                 if (results.next())
                                     {
                                     return table(
                                         schema(),
-                                        results
+                                        results.getLong(
+                                            "oid"
+                                            ),
+                                        results.getString(
+                                            "relname"
+                                            )
                                         );
                                     }
                                 else {
@@ -317,27 +340,33 @@ public class MSSQLMetadataScanner
                             };
                         }
 
-                    protected Table table(final Schema schema, final ResultSet results)
+                    protected PgTable table(final Schema schema, final Long oid, final String name)
                     throws SQLException
                         {
-                        return new Table()
+                        log.debug("table() [{}][{}][{}]", schema.name(), oid, name);
+                        return new PgTable()
                             {
                             @Override
                             public Schema schema()
                                 {
                                 return schema;
                                 }
-                            protected Table table()
+                            protected PgTable table()
                                 {
                                 return this ;
                                 }
 
-                            final String name = results.getString("TABLE_NAME");
                             @Override
                             public String name()
                                 {
                                 return name ;
                                 }
+                            @Override
+                            public Long oid()
+                                {
+                                return oid;
+                                }
+
                             @Override
                             public Columns columns()
                                 {
@@ -347,27 +376,27 @@ public class MSSQLMetadataScanner
                                     public Iterable<Column> select()
                                         throws SQLException
                                         {
-                                        // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            "SELECT DISTINCT " +
-                                            "  COLUMN_NAME, " +
-                                            "  DATA_TYPE, " +
-                                            "  NUMERIC_PRECISION, " +
-                                            "  CHARACTER_MAXIMUM_LENGTH " +
-                                            "FROM " +
-                                            "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
-                                            "WHERE " +
-                                            "  TABLE_SCHEMA = ? " +
-                                            "AND " +
-                                            "  TABLE_NAME = ?"
+                                            " SELECT" + 
+                                            "    attname," + 
+                                            "    atttypmod," + 
+                                            "    atttypid," + 
+                                            "    typname" +
+                                            " FROM" + 
+                                            "    pg_attribute" + 
+                                            " JOIN" + 
+                                            "    pg_type" + 
+                                            " ON" + 
+                                            "    pg_attribute.atttypid = pg_type.oid" + 
+                                            " WHERE" + 
+                                            "    atttypid != 0" + 
+                                            " AND" + 
+                                            "    attrelid = ?" + 
+                                            ""
                                             );
-                                        statement.setString(
+                                        statement.setLong(
                                             1,
-                                            schema().name()
-                                            );
-                                        statement.setString(
-                                            2,
-                                            table().name()
+                                            table().oid()
                                             );
                                         final ResultSet results = statement.executeQuery();
                                         final List<Column> list = new ArrayList<Column>();
@@ -376,7 +405,20 @@ public class MSSQLMetadataScanner
                                             list.add(
                                                 column(
                                                     table(),
-                                                    results
+                                                    pgtype(
+                                                        results.getLong(
+                                                            "atttypid"
+                                                            ),
+                                                        results.getString(
+                                                            "typname"
+                                                            )
+                                                        ),
+                                                    results.getString(
+                                                        "attname"
+                                                        ),
+                                                    results.getInt(
+                                                        "atttypmod"
+                                                        )
                                                     )
                                                 );
                                             }
@@ -387,32 +429,32 @@ public class MSSQLMetadataScanner
                                     public Column select(String name)
                                         throws SQLException
                                         {
-                                        // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            "SELECT DISTINCT " +
-                                            "  COLUMN_NAME, " +
-                                            "  DATA_TYPE, " +
-                                            "  NUMERIC_PRECISION, " +
-                                            "  CHARACTER_MAXIMUM_LENGTH " +
-                                            "FROM " +
-                                            "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
-                                            "WHERE " +
-                                            "  TABLE_SCHEMA = ? " +
-                                            "AND " +
-                                            "  TABLE_NAME = ?" +
-                                            "AND " +
-                                            "  COLUMN_NAME = ?"
+                                            " SELECT" + 
+                                            "    attname," + 
+                                            "    atttypmod," + 
+                                            "    atttypid," + 
+                                            "    typname" + 
+                                            " FROM" + 
+                                            "    pg_attribute" + 
+                                            " JOIN" + 
+                                            "    pg_type" + 
+                                            " ON" + 
+                                            "    pg_attribute.atttypid = pg_type.oid" + 
+                                            " WHERE" + 
+                                            "    atttypid != 0" + 
+                                            " AND" + 
+                                            "    attrelid = ?" + 
+                                            " AND" + 
+                                            "    attname = ?" + 
+                                            ""
                                             );
-                                        statement.setString(
+                                        statement.setLong(
                                             1,
-                                            schema().name()
+                                            table().oid()
                                             );
                                         statement.setString(
                                             2,
-                                            table().name()
-                                            );
-                                        statement.setString(
-                                            3,
                                             name
                                             );
                                         final ResultSet results = statement.executeQuery();
@@ -420,7 +462,20 @@ public class MSSQLMetadataScanner
                                             {
                                             return column(
                                                 table(),
-                                                results
+                                                pgtype(
+                                                    results.getLong(
+                                                        "atttypid"
+                                                        ),
+                                                    results.getString(
+                                                        "typname"
+                                                        )
+                                                    ),
+                                                results.getString(
+                                                    "attname"
+                                                    ),
+                                                results.getInt(
+                                                    "atttypmod"
+                                                    )
                                                 );
                                             }
                                         else {
@@ -429,38 +484,18 @@ public class MSSQLMetadataScanner
                                         }
                                     };
                                 }
-                            protected Column column(final Table table, final ResultSet results)
+
+                            protected PgColumn column(final PgTable table, final JdbcColumn.JdbcType type, final String name, final Integer len)
                             throws SQLException
                                 {
-                                final String  name = results.getString("COLUMN_NAME");
-                                final Integer strlen = results.getInt("CHARACTER_MAXIMUM_LENGTH");
-                                final JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
-                                    results.getInt(
-                                        "NUMERIC_PRECISION"
-                                        ),
-                                    results.getString(
-                                        "DATA_TYPE"
-                                        )
-                                    );
-                                log.debug("column() [{}][{}][{}]", name, strlen, type);
-                                return new Column()
+                                log.debug("column() [{}][{}][{}]", name, type, len);
+                                return new PgColumn()
                                     {
                                     @Override
-                                    public Table table()
+                                    public PgTable table()
                                         {
                                         return table ;
                                         }
-/*
- * 
-                                    protected String  name = results.getString("COLUMN_NAME");
-                                    protected Integer size = results.getInt("CHARACTER_MAXIMUM_LENGTH");
-                                    protected JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
-                                        results.getString(
-                                            "DATA_TYPE"
-                                            )
-                                        );
- * 
- */
                                     @Override
                                     public String name()
                                         {
@@ -469,7 +504,7 @@ public class MSSQLMetadataScanner
                                     @Override
                                     public Integer strlen()
                                         {
-                                        return strlen;
+                                        return len;
                                         }
                                     @Override
                                     public JdbcColumn.JdbcType type()
@@ -485,7 +520,6 @@ public class MSSQLMetadataScanner
             };
         }
 
-    
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();
     static {
     
@@ -519,27 +553,15 @@ public class MSSQLMetadataScanner
         typemap.put("uniqueidentifier", JdbcColumn.JdbcType.UNKNOWN); 
 
         };
-    protected static JdbcColumn.JdbcType type(final Integer numlen, final String name)
+
+    protected static JdbcColumn.JdbcType pgtype(final Long oid, final String name)
         {
-        log.debug("type [{}][{}]", numlen, name);
+        log.debug("type [{}][{}]", oid, name);
         JdbcColumn.JdbcType type = typemap.get(
             name
             );
         if (type != null)
             {
-            //
-            // Floating point numeric depends on precision.
-            // http://msdn.microsoft.com/en-gb/library/ms173773.aspx
-            if ((type == JdbcType.REAL) || (type == JdbcType.FLOAT))
-                {
-                if (numlen > 24)
-                    {
-                    type = JdbcType.DOUBLE ;
-                    }
-                else {
-                    type = JdbcType.FLOAT ;
-                    }
-                }
             return type ;
             }
         else {

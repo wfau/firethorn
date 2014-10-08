@@ -87,11 +87,17 @@
         +-->
     <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
+        <!--+
+            | DataSource properties.
+            +-->
         <property name="jdbcUrl"     value="${firethorn.atlas.url}"/>
         <property name="user"        value="${firethorn.atlas.user}"/>
         <property name="password"    value="${firethorn.atlas.pass}"/>
         <property name="driverClass" value="${firethorn.atlas.driver}"/>
 
+        <!--+
+            | C3P0 connection pool.
+            +-->
         <property name="minPoolSize"   value="${firethorn.atlas.c3p0.min.size:5}" />
         <property name="maxPoolSize"   value="${firethorn.atlas.c3p0.max.size:20}" />
         <property name="maxIdleTime"   value="${firethorn.atlas.c3p0.max.idle:300}" />

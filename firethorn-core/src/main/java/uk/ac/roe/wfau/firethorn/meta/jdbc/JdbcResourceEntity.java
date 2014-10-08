@@ -492,9 +492,7 @@ public class JdbcResourceEntity
         log.debug("schemas() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
-        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
-            connection()
-            );
+        JdbcMetadataScanner scanner = connection().scanner();
         //
         // Load our existing schema.
         Map<String, JdbcSchema> existing = new HashMap<String, JdbcSchema>();
@@ -541,6 +539,10 @@ public class JdbcResourceEntity
                     log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
                     scanner.handle(ouch);
                     }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                    }
                 }
             //
             // Scan a specific catalog.
@@ -558,6 +560,10 @@ public class JdbcResourceEntity
                     {
                     log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
                     scanner.handle(ouch);
+                    }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
                     }
                 }
             }

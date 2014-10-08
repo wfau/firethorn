@@ -217,4 +217,5 @@ public enum JdbcProductType
             return UNKNOWN;
             }
         }
+
     }
