@@ -17,7 +17,6 @@ try:
 except ImportError:
     import json
 import numpy
-from helper_functions import html_functions
 import re
 import datetime
 from time import gmtime,  strftime
