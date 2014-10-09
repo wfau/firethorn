@@ -1,0 +1,91 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# Python code to generate neighbour tables for a specific set of archive databases
+# http://redmine.roe.ac.uk/issues/491
+
+
+$ cd hg/integration/005/testing/src/mssql/
+$ python
+
+
+import json
+import sqlEngine
+test_dbserver= "localhost"
+neighbours_query = """
+            SELECT DISTINCT
+                ExternalSurvey.databaseName
+            FROM
+                RequiredNeighbours
+            JOIN
+                ExternalSurvey
+            ON
+                RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+            JOIN
+                ExternalSurveyTable
+            ON
+                RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+            AND
+                RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+            WHERE
+                ExternalSurvey.databaseName!='NONE'
+            ORDER BY
+                ExternalSurvey.databaseName
+                """
+
+
+## create tunnel for connections
+atlasEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1435")        
+vmcEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1434")
+vvvEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1434")
+vhsEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1434")
+vikingEng = sqlEngine.SQLEngine(test_dbserver, "###", "###","1433" )
+videoEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1433")
+wsaEng = sqlEngine.SQLEngine(test_dbserver, "###", "###", "1435")
+ssaEng = sqlEngine.SQLEngine(test_dbserver, "###","###", "1437")
+
+
+
+dblist = [("ATLASDR1",atlasEng), ("VHSDR1",vhsEng), ("VVVDR1",vvvEng), ("VMCDR1", vmcEng), ("VIKINGv20140402",vikingEng), ("VIDEODR2",videoEng), ("UKIDSSDR3PLUS",wsaEng), ("SSA",ssaEng)]
+dbdict = {}
+for (db,dbengine) in dblist:
+    try:
+        neighbour_tables =  [i[0] if i else None for i in dbengine.execute_sql_query(neighbours_query, db)]
+        dbdict[db] = neighbour_tables
+    except Exception as e:
+        print(e)
+        
+
+json_string = json.dumps(dbdict)
+f = open('../../tmp/neighbours.json', 'w')
+print >> f, json_string 
+f.close()
+
+
+print json_string
+'{"VIKINGv20140402": ["BestDR7", "MGC", "SSA", "Stripe82", "TWODFGRS", "TWOMASS", "UKIDSSDR5PLUS", "VSA", "WISE"], "VVVDR1": [], "VHSDR1": ["TWOMASS"], "UKIDSSDR3PLUS": ["BestDR2", "BestDR3", "BestDR5", "FIRST", "GLIMPSE", "IRAS", "MGC", "NVSS", "ROSAT", "SSA", "TWOMASS", "TWOXMM", "WSA"], "ATLASDR1": ["BestDR5", "BestDR7", "BestDR8", "BestDR9", "DENIS", "FIRST", "GALEXGR6", "GLIMPSE", "IRAS", "MGC", "NVSS", "OSA", "ROSAT", "SEGUEDR6", "SSA", "Stripe82", "TWOMASS", "TWOXMM", "VHSDR1", "VIKINGDR2", "WISE"], "VMCDR1": ["EROS"], "VIDEODR2": []}'
+
+
+
+
+
