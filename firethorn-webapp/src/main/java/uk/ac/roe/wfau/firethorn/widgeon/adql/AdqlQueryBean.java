@@ -292,7 +292,15 @@ extends NamedEntityBeanImpl<AdqlQuery>
          */
         public String getDatatable();
 
-        }
+       
+	    /**
+	     * A URL to access a CSV representation of the results.
+	     * @deprecated Use the CSV view of the {@link AdqlTable}
+	     *
+	     */
+	    public String getCSV();
+	
+	    }
 
     /**
      * The {@link AdqlQuery} results.
@@ -340,6 +348,20 @@ extends NamedEntityBeanImpl<AdqlQuery>
                   {
             		  return entity().results().adql().link().concat(
                               AdqlQueryLinkFactory.DATATABLE_NAME
+                           );
+                  }
+            	  else {
+            		  return null ;
+            	  }
+            };
+            
+            @Override
+            public String getCSV()
+                {
+            	  if (entity().results().adql() != null)
+                  {
+            		  return entity().results().adql().link().concat(
+                              AdqlQueryLinkFactory.CSV_NAME
                            );
                   }
             	  else {

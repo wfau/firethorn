@@ -82,6 +82,19 @@ implements AdqlQuery.LinkFactory
      */
     public static final String DATATABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
 
+    /**
+     * The URI path for the CSV representation, [{@value}].
+     *
+     */
+    public static final String CSV_NAME = "/csv";
+    
+    /**
+     * The URI path for the CSV representation, [{@value}].
+     *
+     */
+    public static final String CSV_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + CSV_NAME;
+    
+    
     @Override
     public String link(final AdqlQuery entity)
         {
