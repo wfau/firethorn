@@ -252,7 +252,8 @@ extends AbstractTableController
 	                );
 	            
 	            if (!results.isLast()){
-	                writer.append(",");
+			       	 writer.append(System.getProperty("line.separator"));
+
 	            }
             }
         }

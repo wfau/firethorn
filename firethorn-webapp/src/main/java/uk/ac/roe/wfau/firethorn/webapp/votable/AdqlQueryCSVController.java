@@ -432,8 +432,15 @@ public class AdqlQueryCSVController
         ) throws  IdentifierNotFoundException, IOException {
 
         response.setCharacterEncoding(
-            "UTF-8"
-            );
+                "UTF-8"
+                );
+    	   String headerKey = "Content-Disposition";
+           String headerValue = String.format("attachment; filename=\"%s\"",
+                   "result.csv");
+           response.setContentType("text/csv");
+           response.setHeader(headerKey, headerValue);
+           
+       		
         
 		
 
