@@ -94,6 +94,17 @@ implements AdqlQuery.LinkFactory
      */
     public static final String CSV_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + CSV_NAME;
     
+    /**
+     * The URI path for the HTML representation, [{@value}].
+     *
+     */
+    public static final String HTML_TABLE_NAME = "/html";
+    
+    /**
+     * The URI path for the HTML representation, [{@value}].
+     *
+     */
+    public static final String HTML_TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + HTML_TABLE_NAME;
     
     @Override
     public String link(final AdqlQuery entity)
