@@ -148,8 +148,16 @@ extends BaseTableBean<AdqlTable>
 	     * 
 	     */
 	    public String getCSV();
+	    
+	    /**
+	     * Access to the {@AdqlTable} data in HTML format.
+	     * @return A URL to access the {@AdqlTable} data in HTML format.
+	     * @see AdqlTableHTMLController
+	     * 
+	     */
+	    public String getHTML();
 	    }
-
+	    
     /**
      * Access to the {@AdqlTable} data in different formats.   
      *
@@ -177,6 +185,13 @@ extends BaseTableBean<AdqlTable>
                 {
                 return entity().link().concat(
                     AdqlTableLinkFactory.CSV_NAME
+                    );
+                }
+            @Override
+            public String getHTML()
+                {
+                return entity().link().concat(
+                    AdqlTableLinkFactory.HTML_TABLE_NAME
                     );
                 }
             };

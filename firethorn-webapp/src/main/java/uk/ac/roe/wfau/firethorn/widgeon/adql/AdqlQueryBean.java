@@ -271,7 +271,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
          */
         public String getAdql();
         
-        /**
+		/**
          * A URL to access the {@link JdbcTable} results
          * @deprecated Use the {@link AdqlTable#base()}
          *
@@ -299,6 +299,15 @@ extends NamedEntityBeanImpl<AdqlQuery>
 	     *
 	     */
 	    public String getCSV();
+	
+	 
+	    
+	    /**
+	     * A URL to access a HTML representation of the results.
+	     * @deprecated Use the HTML view of the {@link AdqlTable}
+	     *
+	     */
+	    public String getHTML();
 	
 	    }
 
@@ -362,6 +371,20 @@ extends NamedEntityBeanImpl<AdqlQuery>
                   {
             		  return entity().results().adql().link().concat(
                               AdqlQueryLinkFactory.CSV_NAME
+                           );
+                  }
+            	  else {
+            		  return null ;
+            	  }
+            };
+            
+            @Override
+            public String getHTML()
+                {
+            	  if (entity().results().adql() != null)
+                  {
+            		  return entity().results().adql().link().concat(
+                              AdqlQueryLinkFactory.HTML_TABLE_NAME
                            );
                   }
             	  else {
