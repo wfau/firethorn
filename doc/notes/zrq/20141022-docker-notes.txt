@@ -21,10 +21,6 @@
 #
 
 # -----------------------------------------------------
-# Problems managing user data in postgresql.
-#[user@desktop]
-
-# -----------------------------------------------------
 # Use SSH tunnel to tunnel connection to SQLServer.
 # https://github.com/docker/docker/issues/6396
 #[user@desktop]
@@ -84,6 +80,7 @@ userdatauser=firethorn_user_role
 userdatapass=$(pwgen -s 10 1)
 EOF
 
+    cat    "${dbinfo:?}"
     source "${dbinfo:?}"
 
     dbpass=$(mktemp)
@@ -108,38 +105,87 @@ EOF
 
 # TODO Set the postgres user password !!!
 
-# -------------------------------------------------------------------------------------------
-# Tweak our firethorn properties.
-#[user@desktop]
-
-# -----------------------------------------------------
-# Update our local properties.
-#[user@desktop]
-
-    cat "${dbinfo:?}"
-
-        ....
-
-    gedit "${HOME}/firethorn.properties" &
-
-        firethorn.meta.url=jdbc:postgresql://xxxxxxxx:xxxx/xxxxxxxx
-        firethorn.meta.driver=org.postgresql.Driver
-        firethorn.meta.user=xxxxxxxx
-        firethorn.meta.pass=xxxxxxxx
-
-        firethorn.user.url=jdbc:postgresql://xxxxxxxx:xxxx/xxxxxxxx
-        firethorn.user.driver=org.postgresql.Driver
-        firethorn.user.user=xxxxxxxx
-        firethorn.user.pass=xxxxxxxx
 
 # -------------------------------------------------------------------------------------------
-# Test FireThorn in Eclipse.
+# Build our docker images.
+# Once the images have been stored in the repository, this step is no longer needed.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
-        mvn -P all eclipse:eclipse
+        docker build \
+            --tag firethorn/fedora:20 \
+            docker/fedora/20
+
+        docker build \
+            --tag firethorn/java:1.8.0 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8.0.14 \
+            docker/tomcat/8
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add additional tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    docker tag "firethorn/fedora:20"  "firethorn/fedora:latest"
+
+    docker tag "firethorn/java:1.8.0" "firethorn/java:8"
+    docker tag "firethorn/java:1.8.0" "firethorn/java:latest"
+
+    docker tag "firethorn/tomcat:8.0.14" "firethorn/tomcat:8"
+    docker tag "firethorn/tomcat:8.0.14" "firethorn/tomcat:latest"
+
+# -------------------------------------------------------------------------------------------
+# Push our images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    docker login
+
+        Username: xxxxxxxx
+        Password: xxxxxxxx
+        Email: docker-admin@metagrid.co.uk
+
+    docker push firethorn/fedora:20
+    docker push firethorn/fedora:latest
+
+    docker push firethorn/java:8
+    docker push firethorn/java:1.8.0
+    docker push firethorn/java:latest
+
+    docker push firethorn/tomcat:8
+    docker push firethorn/tomcat:8.0.14
+    docker push firethorn/tomcat:latest
+
+# -------------------------------------------------------------------------------------------
+# Clear local cache.
+#[user@desktop]
+
+    docker stop $(docker ps -aq)
+    docker rm   $(docker ps -aq)
+    docker rmi  $(docker images -q)
+
+# -------------------------------------------------------------------------------------------
+# Test our uploaded images.
+#[user@desktop]
+
+    docker pull firethorn/fedora
+    docker pull firethorn/java
+    docker pull firethorn/tomcat
+
+    docker run firethorn/tomcat
+
+
+
+
 
 
