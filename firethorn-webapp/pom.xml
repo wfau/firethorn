@@ -262,6 +262,29 @@
             </plugin>
                 +-->
 
+            <!--+
+                | Maven Docker plugin.
+                | https://github.com/alexec/docker-maven-plugin
+                +-->
+            <plugin>
+                <groupId>com.alexecollins.docker</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>2.1.0</version>
+                <configuration>
+
+                    <!--host>unix:///var/run/docker.sock</host-->
+                    
+                    <!--+
+                    <username>alexec</username>
+                    <email>alex.e.c@gmail.com</email>
+                        +-->
+
+                    <removeIntermediateImages>true</removeIntermediateImages>
+                    <cache>true</cache>
+
+                </configuration>
+            </plugin>
+
         </plugins>
 
         <resources>

@@ -189,3 +189,96 @@ EOF
 
 
 
+
+
+# -------------------------------------------------------------------------------------------
+# Add Maven plugin to our POM.
+#[user@desktop]
+
+    firethorn-webapp/pom.xml
+
+        <project>
+            ....
+            <build>
+                ....
+                <plugins>
+                    ....
+
+                    <!--+
+                        | Maven Docker plugin.
+                        | https://github.com/alexec/docker-maven-plugin
+                        +-->
+                    <plugin>
+                        <groupId>com.alexecollins.docker</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>2.1.0</version>
+                        <configuration>
+
+                            <!--host>unix:///var/run/docker.sock</host-->
+                            
+                            <!--+
+                            <username>alexec</username>
+                            <email>alex.e.c@gmail.com</email>
+                                +-->
+
+                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <cache>true</cache>
+
+                        </configuration>
+                    </plugin>
+
+                    ....
+                </plugins>
+                ....
+            </build>
+            ....
+        </project>
+
+# -------------------------------------------------------------------------------------------
+# Create our Docker file.
+#[user@desktop]
+
+    firethorn-webapp/src/main/docker/firethorn/Dockerfile
+
+        FROM firethorn/tomcat:8
+        MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+        #
+        # ADD our webapp.
+        ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+
+
+# -------------------------------------------------------------------------------------------
+# Create our plugin config.
+#[user@desktop]
+
+    firethorn-webapp/src/main/docker/firethorn/conf.yml
+
+        #
+        # Additional data require to create the Docker image
+        packaging:
+
+          #
+          # Files to add to the build, usually used with ADD in the Dockerfile
+          add:
+            - target/${project.build.finalName}
+            
+        #
+        # Tag to use for images
+        tag: firethorn/firethorn:${project.version}
+
+# -------------------------------------------------------------------------------------------
+# Enable Maven plugin to connect using HTTP. 
+#[root@desktop]
+
+    vi /etc/sysconfig/docker 
+    
+        -   other_args=""
+        +   other_args="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
+
+    service docker restart
+
+
+
+
+
