@@ -1,0 +1,189 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Patch fist to connect to docker containers
+# https://media-glass.es/2014/08/25/connecting-to-docker-containers/
+#[root@desktop]
+
+    docker run --rm jpetazzo/nsenter cat /nsenter > /tmp/nsenter
+
+    mv /tmp/nsenter /usr/local/bin/
+    chmod 755 /usr/local/bin/nsenter
+
+    curl -o /usr/local/bin/docker-enter https://raw.githubusercontent.com/jpetazzo/nsenter/master/docker-enter 
+    chmod 755 /usr/local/bin/docker-enter
+
+    nsenter -V
+    nsenter --help
+
+# -------------------------------------------------------------------------------------------
+# Create a PostgreSQL container.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    #
+    # Start a Postgresql container
+    docker run postgres
+
+# -------------------------------------------------------------------------------------------
+# Connect to the PostgreSQL container.
+# https://media-glass.es/2014/08/25/connecting-to-docker-containers/
+#[root@desktop]
+
+    #
+    # Get the container id
+    docker ps 
+ 
+        CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+        57512c1b61f3        postgres:latest     /docker-entrypoint.s   34 seconds ago      Up 32 seconds       5432/tcp            drunk_ritchie       
+
+    #
+    # Take a look inside the postgres container
+    docker-enter 57512c1b61f3
+
+        cat $PGDATA/pg_hba.conf
+
+            # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+            # "local" is for Unix domain socket connections only
+            local   all             all                                     trust
+            # IPv4 local connections:
+            host    all             all             127.0.0.1/32            trust
+            # IPv6 local connections:
+            host    all             all             ::1/128                 trust
+            # Allow replication connections from localhost, by a user with the
+            # replication privilege.
+            #local   replication     postgres                                trust
+            #host    replication     postgres        127.0.0.1/32            trust
+            #host    replication     postgres        ::1/128                 trust
+
+            host all all 0.0.0.0/0 trust
+
+    #
+    # The last line disables all security :-(
+    host all all 0.0.0.0/0 trust
+
+    #
+    # Change 'trust' to 'md5' for TCP connections.
+    sed -r '
+        /^host\s+all\s+all/ {
+            s/trust/md5/
+            }
+        ' $PGDATA/pg_hba.conf
+
+    #
+    # Create our database, username and password.
+    if [ ! -n "${config}" ]
+    then
+        echo "ERROR : Missing config param"
+    else
+        echo "DEBUG : Got config param [${config:?}]"
+         
+        if [ ! -e "${config:?}" ]
+        then
+            echo "ERROR : Missing config file [${config:?}]"
+        else 
+            echo "DEBUG : Got config file [${config:?}]"
+            cat "${config:?}"
+
+
+
+
+        fi
+    fi
+
+
+        postgresl --single postgres << EOF
+CREATE ROLE ${pguser:?} ENCRYPTED PASSWORD '$(md5pass ${pgpass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${pgdata:?} OWNER ${pguser:?} ;
+EOF
+
+    fi
+
+    #
+    # Create our database and user.
+
+# -------------------------------------------------------------------------------------------
+# Link a set of containers together
+#[root@desktop]
+
+
+
+    metadata=$(mktemp)
+cat "${metadata:?}" EOF
+database=metadata
+username=xxxxxxxx
+password=xxxxxxxx
+EOF
+
+    userdata=$(mktemp)
+cat "${userdata:?}" EOF
+database=userdata
+username=xxxxxxxx
+password=xxxxxxxx
+EOF
+
+    firethorn=$(mktemp)
+cat "${firethorn:?}" EOF
+EOF
+
+    ogsadai=$(mktemp)
+cat "${ogsadai:?}" EOF
+EOF
+
+    docker run \
+        --detach
+        --volume "${metadata:?}:/database.cfg" \
+        --name "${group:?}_meta" \
+        firethorn/postgres
+
+    docker run \
+        -v "${userdata:?}:/database.cfg" \
+        --name "${group:?}_user" \
+        firethorn/postgres
+
+    docker run \
+        --link "${group:?}_meta:metadata" \
+        --link "${group:?}_user:userdata" \
+        --link "${group:?}_user:wafudata" \
+        firethorn/firethorn:1.11.18-zrq-docker-devops
+
+
+    #
+    # Maven plugin will do this on our local system
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
