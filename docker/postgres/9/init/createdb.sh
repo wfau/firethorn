@@ -18,6 +18,7 @@
 #
 #
 
+echo "--------------------"
 echo "DEBUG : Create database script"
 
 #
@@ -33,19 +34,21 @@ else
     echo "DEBUG : Loading config [${config:?}]"
     source "${config:?}"
 
-    echo "DEBUG : database [{$database:?}]"
-    echo "DEBUG : username [{$username:?}]"
-    echo "DEBUG : password [{$password:?}]"
+    echo "DEBUG :   database [${database:?}]"
+    echo "DEBUG :   username [${username:?}]"
+    echo "DEBUG :   password [${password:?}]"
 
     echo "DEBUG : Creating user role"
-    postgresl --single postgres << EOF
+    
+    postgres --single postgres << EOF
 CREATE ROLE ${username:?} ENCRYPTED PASSWORD '$(md5pass ${password:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
 EOF
 
     echo "DEBUG : Creating database"
-    postgresl --single postgres << EOF
+    postgres --single postgres << EOF
 CREATE DATABASE ${database:?} OWNER ${username:?} ;
 EOF
 fi
 
+echo "--------------------"
 

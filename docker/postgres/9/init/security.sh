@@ -17,15 +17,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+echo "--------------------"
 echo "DEBUG : Security script"
 
 #
 # Change 'trust' to 'md5' for TCP connections.
-echo "DEBUG : Changing 'trust' to 'md5'
-sed -r '
+echo "DEBUG : Changing 'trust' to 'md5'"
+sed -r -i '
     /^host\s+all\s+all/ {
         s/trust/md5/
         }
     ' $PGDATA/pg_hba.conf
 
-
+echo "--------------------"

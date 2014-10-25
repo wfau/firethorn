@@ -149,10 +149,39 @@ EOF
     docker images
 
 # -------------------------------------------------------------------------------------------
-# Check our PostgreSQL container.
+# Test our PostgreSQL container.
 #[user@desktop]
 
     docker run --rm -it firethorn/postgresql:9.3 bash
+
+        ls -al /docker-entrypoint-initdb.d/
+
+            -rw-rw-r--.  1 root root 1502 Oct 25 19:44 createdb.sh
+            -rw-rw-r--.  1 root root  941 Oct 25 19:44 security.sh
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    docker run --rm -it firethorn/postgresql:9.3
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    testdata=$(mktemp)
+cat > "${testdata:?}" << EOF
+database=testdata
+username=$(pwgen 16 1)
+password=$(pwgen 16 1)
+EOF
+
+    docker run \
+        -it --rm \
+        --volume "${testdata:?}:/config" \
+        firethorn/postgresql:9.3
+
+
 
 # -------------------------------------------------------------------------------------------
 # Link a set of containers together
