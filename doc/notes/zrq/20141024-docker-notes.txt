@@ -21,7 +21,7 @@
 #
 
 # -------------------------------------------------------------------------------------------
-# Patch fist to connect to docker containers
+# Patch system to enable connections to docker containers
 # https://media-glass.es/2014/08/25/connecting-to-docker-containers/
 #[root@desktop]
 
@@ -81,96 +81,135 @@
 
     #
     # The last line disables all security :-(
-    host all all 0.0.0.0/0 trust
+    # host all all 0.0.0.0/0 trust
 
-    #
-    # Change 'trust' to 'md5' for TCP connections.
-    sed -r '
-        /^host\s+all\s+all/ {
-            s/trust/md5/
-            }
-        ' $PGDATA/pg_hba.conf
+        #
+        # Change 'trust' to 'md5' for TCP connections.
+        echo "DEBUG : Changing 'trust' to 'md5'
+        sed -r '
+            /^host\s+all\s+all/ {
+                s/trust/md5/
+                }
+            ' $PGDATA/pg_hba.conf
 
-    #
-    # Create our database, username and password.
-    if [ ! -n "${config}" ]
-    then
-        echo "ERROR : Missing config param"
-    else
-        echo "DEBUG : Got config param [${config:?}]"
-         
+        #
+        # Set our config filename.
+        config=${config:=/config}
+             
+        #
+        # Create our user role and database.
         if [ ! -e "${config:?}" ]
         then
             echo "ERROR : Missing config file [${config:?}]"
         else 
-            echo "DEBUG : Got config file [${config:?}]"
-            cat "${config:?}"
+            echo "DEBUG : Loading config [${config:?}]"
+            source "${config:?}"
 
+            echo "DEBUG : database [{$database:?}]"
+            echo "DEBUG : username [{$username:?}]"
+            echo "DEBUG : password [{$password:?}]"
 
-
-
-        fi
-    fi
-
-
-        postgresl --single postgres << EOF
-CREATE ROLE ${pguser:?} ENCRYPTED PASSWORD '$(md5pass ${pgpass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
-CREATE DATABASE ${pgdata:?} OWNER ${pguser:?} ;
+            echo "DEBUG : Creating user role"
+            postgresl --single postgres << EOF
+CREATE ROLE ${username:?} ENCRYPTED PASSWORD '$(md5pass ${password:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
 EOF
 
-    fi
+            echo "DEBUG : Creating database"
+            postgresl --single postgres << EOF
+CREATE DATABASE ${database:?} OWNER ${username:?} ;
+EOF
+        fi
 
-    #
-    # Create our database and user.
+# -------------------------------------------------------------------------------------------
+# Build our docker images.
+# Once the images have been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:20 \
+            docker/fedora/20
+
+        docker build \
+            --tag firethorn/java:1.8.0 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8.0.14 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgresql:9.3 \
+            docker/postgres/9
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Check our PostgreSQL container.
+#[user@desktop]
+
+    docker run --rm -it firethorn/postgresql:9.3 bash
 
 # -------------------------------------------------------------------------------------------
 # Link a set of containers together
 #[root@desktop]
 
 
+    prefix=$(pwgen 4 1)
 
     metadata=$(mktemp)
-cat "${metadata:?}" EOF
+cat > "${metadata:?}" << EOF
 database=metadata
-username=xxxxxxxx
-password=xxxxxxxx
+username=$(pwgen 16 1)
+password=$(pwgen 16 1)
 EOF
 
     userdata=$(mktemp)
-cat "${userdata:?}" EOF
+cat > "${userdata:?}" << EOF
 database=userdata
-username=xxxxxxxx
-password=xxxxxxxx
+username=$(pwgen 16 1)
+password=$(pwgen 16 1)
 EOF
 
     firethorn=$(mktemp)
-cat "${firethorn:?}" EOF
+cat > "${firethorn:?}" << EOF
 EOF
 
     ogsadai=$(mktemp)
-cat "${ogsadai:?}" EOF
+cat > "${ogsadai:?}" << EOF
 EOF
 
     docker run \
-        --detach
-        --volume "${metadata:?}:/database.cfg" \
-        --name "${group:?}_meta" \
+        --detach \
+        --name "${prefix:?}_meta" \
+        --volume "${metadata:?}:/config" \
         firethorn/postgres
 
     docker run \
-        -v "${userdata:?}:/database.cfg" \
-        --name "${group:?}_user" \
+        --detach \
+        --name "${prefix:?}_user" \
+        --volume "${userdata:?}:/config" \
         firethorn/postgres
 
     docker run \
-        --link "${group:?}_meta:metadata" \
-        --link "${group:?}_user:userdata" \
-        --link "${group:?}_user:wafudata" \
+        --name "${prefix:?}_firethorn" \
+        --link "${prefix:?}_meta:metadata" \
+        --link "${prefix:?}_user:userdata" \
+        --link "${prefix:?}_data:wafudata" \
+        --volume "${metadata:?}:/etc/firethorn.properties" \
         firethorn/firethorn:1.11.18-zrq-docker-devops
 
+    docker run \
+        --name "${prefix:?}_firethorn" \
+        --link "${prefix:?}_user:userdata" \
+        --link "${prefix:?}_data:wafudata" \
+        --volume "${metadata:?}:/etc/firethorn.properties" \
+        firethorn/ogsadai:1.11.18-zrq-docker-devops
 
-    #
-    # Maven plugin will do this on our local system
 
 
 
