@@ -18,6 +18,7 @@
 #
 # Additional data require to create the Docker image
 packaging:
+
   #
   # Files to add to the build, usually used with ADD in the Dockerfile
   add:
@@ -26,3 +27,4 @@ packaging:
 #
 # Tag to use for images
 tag: firethorn/firethorn:${project.version}
+
