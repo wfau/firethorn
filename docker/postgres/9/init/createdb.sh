@@ -18,6 +18,7 @@
 #
 #
 
+echo ""
 echo "--------------------"
 echo "DEBUG : Create database script"
 
@@ -36,19 +37,16 @@ else
 
     echo "DEBUG :   database [${database:?}]"
     echo "DEBUG :   username [${username:?}]"
-    echo "DEBUG :   password [${password:?}]"
-
-    echo "DEBUG : Creating user role"
-    
-    postgres --single postgres << EOF
-CREATE ROLE ${username:?} ENCRYPTED PASSWORD '$(md5pass ${password:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
-EOF
+    #echo "DEBUG :   password [${password:?}]"
 
     echo "DEBUG : Creating database"
-    postgres --single postgres << EOF
+    gosu postgres postgres --single postgres << EOF
+CREATE ROLE ${username:?} ENCRYPTED PASSWORD '${password:?}' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
 CREATE DATABASE ${database:?} OWNER ${username:?} ;
 EOF
 fi
 
+echo ""
 echo "--------------------"
+echo ""
 

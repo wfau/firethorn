@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+echo ""
 echo "--------------------"
 echo "DEBUG : Security script"
 
@@ -29,4 +30,7 @@ sed -r -i '
         }
     ' $PGDATA/pg_hba.conf
 
+echo ""
 echo "--------------------"
+echo ""
+

@@ -163,11 +163,21 @@ EOF
 # Test our PostgreSQL container.
 #[user@desktop]
 
-    docker run --rm -it firethorn/postgresql:9.3
+    docker run --rm -it firethorn/postgresql:9.3 bash
+
+        chown -R postgres "$PGDATA"
+        gosu postgres initdb
+
+        gosu postgres postgres --single postgres
+
 
 # -------------------------------------------------------------------------------------------
 # Test our PostgreSQL container.
 #[user@desktop]
+
+        docker build \
+            --tag firethorn/postgresql:9.3 \
+            docker/postgres/9
 
     testdata=$(mktemp)
 cat > "${testdata:?}" << EOF
@@ -177,35 +187,63 @@ password=$(pwgen 16 1)
 EOF
 
     docker run \
-        -it --rm \
         --volume "${testdata:?}:/config" \
         firethorn/postgresql:9.3
 
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
 
+    username=fred
+    userkey=${HOME:?}/.ssh/example.pub
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+
+    docker run \
+        --name "ramses2" \
+        --expose 1433 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        ssh -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
 
 # -------------------------------------------------------------------------------------------
 # Link a set of containers together
 #[root@desktop]
-
 
     prefix=$(pwgen 4 1)
 
     metadata=$(mktemp)
 cat > "${metadata:?}" << EOF
 database=metadata
-username=$(pwgen 16 1)
+username=metadata
 password=$(pwgen 16 1)
 EOF
 
     userdata=$(mktemp)
 cat > "${userdata:?}" << EOF
 database=userdata
-username=$(pwgen 16 1)
+username=userdata
 password=$(pwgen 16 1)
 EOF
 
     firethorn=$(mktemp)
 cat > "${firethorn:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://mdhost:5432/metadata
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${metadata}")
+firethorn.meta.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${metadata}")
+
+firethorn.user.url=jdbc:postgresql://userdata:5432/userdata
+firethorn.user.driver=org.postgresql.Driver
+firethorn.user.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${userdata}")
+firethorn.user.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${userdata}")
 EOF
 
     ogsadai=$(mktemp)
@@ -216,19 +254,19 @@ EOF
         --detach \
         --name "${prefix:?}_meta" \
         --volume "${metadata:?}:/config" \
-        firethorn/postgres
+        firethorn/postgresql:9.3
 
     docker run \
         --detach \
         --name "${prefix:?}_user" \
         --volume "${userdata:?}:/config" \
-        firethorn/postgres
+        firethorn/postgresql:9.3
 
     docker run \
+        --link "ramses2:ramses2" \
         --name "${prefix:?}_firethorn" \
-        --link "${prefix:?}_meta:metadata" \
-        --link "${prefix:?}_user:userdata" \
-        --link "${prefix:?}_data:wafudata" \
+        --link "${prefix:?}_meta:mdhost" \
+        --link "${prefix:?}_user:udhost" \
         --volume "${metadata:?}:/etc/firethorn.properties" \
         firethorn/firethorn:1.11.18-zrq-docker-devops
 
@@ -238,6 +276,7 @@ EOF
         --link "${prefix:?}_data:wafudata" \
         --volume "${metadata:?}:/etc/firethorn.properties" \
         firethorn/ogsadai:1.11.18-zrq-docker-devops
+
 
 
 
