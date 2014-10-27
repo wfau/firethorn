@@ -1,0 +1,148 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+########################################################################################
+### Query Test run #1: All ATLASDR1 queries that do not contain dr8 & dr9 via OGSADAI###
+########################################################################################
+
+(Reason: in previous runs dr9 crossmatches where taking very long time to complete)
+(OGSA-DAI tested via DISTRIBUTED property in firethorn.properties file)
+
+Query run ID: vgHaf--fQmqim6sXMabuNQ
+Started on: 2014-10-26 10:54:13,330 
+Finished on: 2014-10-27 02:48:10,750
+Assertion: Total queries failed: 1761 (out of 2338)
+
+Json summary:
+ {
+ "total_queries_run": 1858, 
+ "average_firethorn_duration": 11.175985245909594, 
+ "total_failed": 1761, 
+ "total_firethorn_querytime": 20764.980586900027, 
+ "java_version": "1.7.0_05", 
+ "total_sql_querytime": 33738.176896699995, 
+ "sys_platform": "Debian GNU/Linux 7 (wheezy)", 
+ "firethorn_changeset": "b3380fea174d", 
+ "firethorn_version": "1.11.18-zrq-sync-bugfix", 
+ "sys_timestamp": "2014-10-26T10:54:12.610Z", 
+ "average_sql_duration": 18.158329869052743, 
+ "query_timestamp": "2014-10-27 02:47:50"
+ }
+
+Notes on run:
+"(out of 2338)" does not match "total_queries_run": 1858, most likely due to duplicates
+Maximum row limit for both direct SQL & Firethorn set to 1000
+Timeout in seconds for Direct SQL: 1000
+Comparison: #rows==#rows
+Any query that contained 'dr8' or 'dr9' was counted as a duplicate
+
+
+Query used to get query list from ramses5: 
+stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%bestdr9%' and query not like'%bestdr8%' and and query not like'%top%' 
+(AFound 2338 matching queries for userinterface)
+
+
+Mysql:
+------
+mysql> use pyrothorn_testing;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> describe queries;
++-------------------------+------------------+------+-----+---------+----------------+
+| Field                   | Type             | Null | Key | Default | Extra          |
++-------------------------+------------------+------+-----+---------+----------------+
+| queryid                 | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| queryrunID              | text             | NO   |     | NULL    |                |
+| query_hash              | text             | NO   |     | NULL    |                |
+| query_count             | int(10) unsigned | NO   |     | NULL    |                |
+| query_timestamp         | varchar(120)     | NO   |     | NULL    |                |
+| query                   | text             | NO   |     | NULL    |                |
+| direct_sql_rows         | int(11)          | NO   |     | NULL    |                |
+| firethorn_sql_rows      | int(11)          | NO   |     | NULL    |                |
+| firethorn_duration      | varchar(60)      | NO   |     | NULL    |                |
+| sql_duration            | varchar(60)      | NO   |     | NULL    |                |
+| test_passed             | tinyint(1)       | NO   |     | NULL    |                |
+| firethorn_version       | varchar(60)      | NO   |     | NULL    |                |
+| firethorn_error_message | text             | NO   |     | NULL    |                |
+| sql_error_message       | text             | NO   |     | NULL    |                |
++-------------------------+------------------+------+-----+---------+----------------+
+14 rows in set (0.00 sec)
+
+
+# Total unique queries
+mysql>  select count(*)  from queries where queryrunID like 'vgHaf--fQmqim6sXMabuNQ';
++----------+
+| count(*) |
++----------+
+|     1858 |
++----------+
+
+1 row in set (0.01 sec)
+
+
+# Number of unique firethorn error messages
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'vgHaf--fQmqim6sXMabuNQ';
++------------------------------------------+
+| count(Distinct(firethorn_error_message)) |
++------------------------------------------+
+|                                       29 |
++------------------------------------------+
+
+1 row in set (0.02 sec)
+
+
+# Total query count (Queries with dr8 & dr9 where skipped and not stored in mysql table)
+mysql> select sum(query_count)  from queries where queryrunID like 'vgHaf--fQmqim6sXMabuNQ';
++------------------+
+| sum(query_count) |
++------------------+
+|             2338 |
++------------------+
+1 row in set (0.07 sec)
+
+
+# Top 5 most popular queries
+mysql> select query_count, query, test_passed  from queries where queryrunID like 'vgHaf--fQmqim6sXMabuNQ' order by query_count desc limit 0,5;
++-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+| query_count |        query                                                                                                                                                                                                                                                                                                                                                                                                                      | test_passed |
++-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+          12 | select 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |           0 |
+|          10 | SELECT  ATLASsource.*,2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)                                                                                                                                                                                                                                                                                               |           0 |
+|           5 | Select DistanceMins   From atlassourcexDR8photoobj as CrossMatch, (Select s.sourceid as id From atlassource as s  Where ra > 0 AND ra < 13.94  AND dec > -12.0 AND dec < -8.5  AND mergedclass = 1  group by s.sourceid) AS T  Where DistanceMins < 2/60.0  AND sdsstype = 3 AND sdssPrimary = 1 AND T.id = CrossMatch.masterObjID                                                                                                                                                                                                                                                                                                                                                                                       |           0 |
+|           4 | SELECT  2 as idnum,sourceid, ra as radeg, dec as deddeg,upetromag, gpetromag, rpetromag, ipetromag,zpetromag, upetromagerr, gpetromagerr, rpetromagerr, ipetromagerr,zpetromagerr,  au, ag, ar, ai, az,2*DEGREES(ASIN(sqrt(power(0.9703310574230128-cx,2)+power(0.18016156879809045-cy,2)+power(-0.1612434436761654-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -9.979077499999999 and dec < -8.5790775 and RA >= 9.807591183502904 and RA <= 11.229094816497096 and ((cx * 0.9703310574230128 + cy * 0.18016156879809045 + cz * -0.1612434436761654 ) >= 0.999925369660452)  and (priorsec=0 or priorsec=framesetid) and gpetromag >0 and rpetromag >0 and ipetromag>0 and zpetromag >0 and mergedclass = 1 |           0 |
+|           4 | SELECT  sourceid, upetromag, gpetromag, rpetromag, ipetromag,zpetromag, upetromagerr, gpetromagerr, rpetromagerr, ipetromagerr,zpetromagerr,  au, ag, ar, ai, az,2*DEGREES(ASIN(sqrt(power(0.831926201173014-cx,2)+power(-0.03577369174865861-cy,2)+power(-0.553731919596938-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -34.323416900000005 and dec < -32.9234169 and RA >= 356.69016528792235 and RA <= 358.38531231207764 and ((cx * 0.831926201173014 + cy * -0.03577369174865861 + cz * -0.553731919596938 ) >= 0.999925369660452)  and (priorsec=0 or priorsec=framesetid) and gpetromag >0 and rpetromag >0 and ipetromag>0 and zpetromag >0                                                          |           0 |
++-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+5 rows in set (0.05 sec)
+
+
+
+
+
+
+ 
+ 
+
+
+
