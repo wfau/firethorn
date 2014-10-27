@@ -106,6 +106,18 @@ implements AdqlQuery.LinkFactory
      */
     public static final String HTML_TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + HTML_TABLE_NAME;
     
+    /**
+     * The URI path for the FITS representation, [{@value}].
+     *
+     */
+    public static final String FITS_NAME = "/fits";
+    
+    /**
+     * The URI path for the FITS representation, [{@value}].
+     *
+     */
+    public static final String FITS_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + FITS_NAME;
+    
     @Override
     public String link(final AdqlQuery entity)
         {
