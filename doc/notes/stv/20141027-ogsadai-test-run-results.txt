@@ -81,14 +81,19 @@ mysql> describe queries;
 | query                   | text             | NO   |     | NULL    |                |
 | direct_sql_rows         | int(11)          | NO   |     | NULL    |                |
 | firethorn_sql_rows      | int(11)          | NO   |     | NULL    |                |
-| firethorn_duration      | varchar(60)      | NO   |     | NULL    |                |
-| sql_duration            | varchar(60)      | NO   |     | NULL    |                |
+| firethorn_duration      | float            | YES  |     | NULL    |                |
+| sql_duration            | float            | YES  |     | NULL    |                |
 | test_passed             | tinyint(1)       | NO   |     | NULL    |                |
 | firethorn_version       | varchar(60)      | NO   |     | NULL    |                |
 | firethorn_error_message | text             | NO   |     | NULL    |                |
 | sql_error_message       | text             | NO   |     | NULL    |                |
+| java_version            | varchar(120)     | NO   |     | NULL    |                |
+| sys_timestamp           | varchar(60)      | NO   |     | NULL    |                |
+| firethorn_changeset     | varchar(60)      | NO   |     | NULL    |                |
+| sys_platform            | varchar(60)      | NO   |     | NULL    |                |
 +-------------------------+------------------+------+-----+---------+----------------+
-14 rows in set (0.00 sec)
+
+18 rows in set (0.00 sec)
 
 
 # Total unique queries
