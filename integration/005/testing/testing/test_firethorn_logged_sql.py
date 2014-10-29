@@ -85,6 +85,7 @@ class test_firethorn(unittest.TestCase):
         
         try:
             queryrunID = ""
+	    logged_queries=[]
             logged_query_sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
             sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
@@ -159,7 +160,6 @@ class test_firethorn(unittest.TestCase):
 	    logging.info("Found " + str(len(logged_queries))  + " available queries for " + config.stored_queries_database)
 	    logging.info("") 		    
 	    continue_from_here_flag = False    
- 
             for query in logged_queries:
 		qEng = queryEngine.QueryEngine()
                 query = query[0].strip()
