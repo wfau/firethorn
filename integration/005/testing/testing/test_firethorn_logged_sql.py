@@ -25,6 +25,7 @@ try:
     import urllib
     from pyrothorn import firethornEngine
     from pyrothorn import queryEngine
+    from pyrothorn.firethorn_config import web_services_sys_info
     from mssql import sqlEngine
     import config
     import uuid
@@ -69,7 +70,6 @@ class test_firethorn(unittest.TestCase):
     def setUp(self):
         self.use_preset_params = config.use_preset_params
         self.use_cached_firethorn_env = config.use_cached_firethorn_env
-        self.firethorn_version = config.firethorn_version
         self.total_failed = 0
         self.include_neighbours = config.include_neighbour_import
         self.verificationErrors = []
@@ -84,8 +84,8 @@ class test_firethorn(unittest.TestCase):
         '''
         
         try:
-            # Set query run ID
-            queryrunID = get_a_uuid() 
+            queryrunID = ""
+	    logged_queries=[]
             logged_query_sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
             sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
             reporting_sqlEng = sqlEngine.SQLEngine(config.reporting_dbserver, config.reporting_dbserver_username, config.reporting_dbserver_password, config.reporting_dbserver_port, "MySQL")
@@ -109,7 +109,8 @@ class test_firethorn(unittest.TestCase):
                                 data = json.load(data_file)
                             if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
                                 fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'] )
-                                logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
+                                queryrunID = data['queryrunID']
+				logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
                                 valid_config_found = True
                             else :
                                 valid_config_found = False
@@ -119,7 +120,8 @@ class test_firethorn(unittest.TestCase):
                         valid_config_found = False     
                         
                     if (valid_config_found==False):  
-                        fEng = pyrothorn.firethornEngine.FirethornEngine()
+                        queryrunID = get_a_uuid() 
+			fEng = pyrothorn.firethornEngine.FirethornEngine()
                         fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
                         if (self.include_neighbours):
                             self.import_neighbours(sqlEng, fEng)
@@ -128,22 +130,38 @@ class test_firethorn(unittest.TestCase):
                             
                 else:
                     fEng = pyrothorn.firethornEngine.FirethornEngine( schema_name=config.schema_name, schema_alias=config.schema_alias )
+		    queryrunID = get_a_uuid() 
                     fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile, config.jdbc_resource_user, config.jdbc_resource_pass)
                     fEng.printClassVars()
                     if (self.include_neighbours):
                         self.import_neighbours(sqlEng, fEng)
             
-            self.store_environment_config(fEng, config.stored_env_config)
-          
+            self.store_environment_config(fEng, config.stored_env_config, queryrunID)
+	    try:
+
+                java_version = fEng.getAttribute(web_services_sys_info, "java")["version"]
+                sys_platform = fEng.getAttribute(web_services_sys_info, "system")["platform"]
+                sys_timestamp = fEng.getAttribute(web_services_sys_info, "system")["time"]
+                firethorn_changeset = fEng.getAttribute(web_services_sys_info, "build")["changeset"]
+                firethorn_version = fEng.getAttribute(web_services_sys_info, "build")["version"]
+            except Exception as e:
+		java_version = ""
+                sys_platform = ""
+                sys_timestamp = ""
+                firethorn_changeset = ""
+                firethorn_version = ""
+
+	        logging.exception(e)
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
+	    #logged_queries_cols = logged_query_sqlEng.execute_sql_query("SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('dbo.webqueries') ", config.stored_queries_database, limit=None)
+	    #logging.info(logged_queries_cols)
 
 	    logging.info("Found " + str(len(logged_queries))  + " available queries for " + config.stored_queries_database)
 	    logging.info("") 		    
-         
+	    continue_from_here_flag = False    
             for query in logged_queries:
-                
-                qEng = queryEngine.QueryEngine()
+		qEng = queryEngine.QueryEngine()
                 query = query[0].strip()
                 querymd5 = self.md5String(query)
                 query_duplicates_found = 0
@@ -156,22 +174,19 @@ class test_firethorn(unittest.TestCase):
 
                 try:
                     if (config.test_is_continuation):
-                        check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "'"
-                    else :
-                        check_duplicate_query = "select count(*), queryid, query_count from queries where queryrunID='" + queryrunID + "' and query_hash='" + querymd5 + "'"
-                   
-		          
-                    query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
-                    query_duplicates_found = query_duplicates_found_row[0]
-                    queryid = query_duplicates_found_row[1]
-                    query_count = query_duplicates_found_row[2]
+                        check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "' and queryrunID='" + queryrunID + "'"		          
+                        query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
+                        query_duplicates_found = query_duplicates_found_row[0]
+                        queryid = query_duplicates_found_row[1]
+                        query_count = query_duplicates_found_row[2]
                 except Exception as e:
                     logging.exception(e)
                     query_duplicates_found = 0
                     queryid = None
 	            query_count = 0
 
-                if (query_duplicates_found<=0):
+		if (query_duplicates_found<=0):
+		    continue_from_here_flag = True
 		    sql_duration = 0
 		    firethorn_duration = 0
 		    test_passed = -1
@@ -231,13 +246,14 @@ class test_firethorn(unittest.TestCase):
 		    logging.info("")
 		    logging.info("")
 
-                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, self.firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8') )
-                    report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
+                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
+                    report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                     reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
 
                 else :
-                    logging.info("Query has been run already..Skipping & updating count")
-                    if (queryid!=None and query_count!=None):
+                    if (queryid!=None and query_count!=None and (continue_from_here_flag==True)):
+			logging.info("Query has been run already..Skipping & updating count")
+
                         update_query = "UPDATE queries SET query_count=" + str(query_count + 1) + " WHERE queryid=" + str(queryid)
                         update_results = reporting_sqlEng.execute_update(update_query, config.reporting_database)
 
@@ -284,7 +300,7 @@ class test_firethorn(unittest.TestCase):
             fEng.import_jdbc_metadoc(fEng.adqlspace, fEng.jdbcspace, i[0], config.jdbcschemaname, config.metadocdirectory + "/" + i[0].upper() + "_TablesSchema.xml" )
       
     
-    def store_environment_config(self, fEng, stored_config_file):
+    def store_environment_config(self, fEng, stored_config_file, queryrunID):
         '''
         
         :param fEng:
@@ -294,7 +310,7 @@ class test_firethorn(unittest.TestCase):
         stored_config['jdbcspace'] = fEng.jdbcspace
         stored_config['adqlspace'] = fEng.adqlspace
         stored_config['query_schema'] = fEng.query_schema
-        
+        stored_config['queryrunID'] = queryrunID
         j = json.dumps(stored_config)
         f = open(stored_config_file,'w')
         print >> f, j

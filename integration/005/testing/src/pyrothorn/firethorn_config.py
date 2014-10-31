@@ -7,6 +7,7 @@ Created on May 3, 2013
 from config import *
 
 web_services_url = "http://" + full_firethorn_host + "/firethorn"
+web_services_sys_info = web_services_url + "/system/info"
 
 ### Query Runtime and Polling Configurations ###
 MAX_FILE_SIZE = 248576000 
