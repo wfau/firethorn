@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>1.11.19</version>
+        <version project='firethorn'>1.11.19-zrq-dqp-switch</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
