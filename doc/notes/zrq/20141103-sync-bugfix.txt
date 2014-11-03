@@ -29,6 +29,8 @@
 
     pushd "${FIRETHORN_CODE:?}"
 
+        source 'bin/util.sh' 
+        
         devbranch=1.11.18-zrq-sync-bugfix
 
         #
