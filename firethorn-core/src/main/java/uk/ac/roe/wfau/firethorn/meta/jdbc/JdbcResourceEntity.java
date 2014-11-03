@@ -150,8 +150,9 @@ public class JdbcResourceEntity
 
 		@Override
         @CreateMethod
-		public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass) {
-            return super.insert(
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
+		    {
+		    return super.insert(
                 new JdbcResourceEntity(
                     ogsaid,
                     catalog,
@@ -162,6 +163,23 @@ public class JdbcResourceEntity
                     )
                 );
 			}
+
+		@Override
+	    @CreateMethod
+	    public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+		    {
+		    return super.insert(
+		        new JdbcResourceEntity(
+		            ogsaid,
+		            catalog,
+		            name,
+		            url,
+		            user,
+		            pass,
+		            driver
+		            )
+                );
+            }
 
         @Autowired
         protected JdbcSchema.EntityFactory schemas;
@@ -282,6 +300,24 @@ public class JdbcResourceEntity
 	        pass
 	        );
 	    }
+
+    /**
+     * Protected constructor. 
+     *
+     */
+    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+        {
+        super(name);
+        this.ogsaid  = ogsaid  ;
+        this.catalog = catalog ;
+        this.connection = new JdbcConnectionEntity(
+            this,
+            url,
+            user,
+            pass,
+            driver
+            );
+        }
 
     @Override
     public JdbcResource.Schemas schemas()
@@ -456,9 +492,7 @@ public class JdbcResourceEntity
         log.debug("schemas() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
-        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
-            connection()
-            );
+        JdbcMetadataScanner scanner = connection().scanner();
         //
         // Load our existing schema.
         Map<String, JdbcSchema> existing = new HashMap<String, JdbcSchema>();
@@ -505,6 +539,10 @@ public class JdbcResourceEntity
                     log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
                     scanner.handle(ouch);
                     }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                    }
                 }
             //
             // Scan a specific catalog.
@@ -522,6 +560,10 @@ public class JdbcResourceEntity
                     {
                     log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
                     scanner.handle(ouch);
+                    }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
                     }
                 }
             }

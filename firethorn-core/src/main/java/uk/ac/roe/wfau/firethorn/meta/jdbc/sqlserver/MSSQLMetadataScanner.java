@@ -78,7 +78,7 @@ public class MSSQLMetadataScanner
             {
             log.debug("Fatal error code, closing existing connection");
             try {
-                connector().close();
+                connector().reset();
                 }
             catch (Exception eeek)
                 {
@@ -172,6 +172,7 @@ public class MSSQLMetadataScanner
             @Override
             public Schemas schemas()
                 {
+                log.debug("schemas() for [{}]", catalog().name());
                 return new Schemas()
                     {
                     @Override

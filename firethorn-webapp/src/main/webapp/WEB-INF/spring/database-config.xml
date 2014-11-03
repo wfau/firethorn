@@ -23,8 +23,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:cxt="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd
         ">
 
     <!--+
@@ -47,9 +50,9 @@
             | http://learningviacode.blogspot.co.uk/2012/08/pooled-data-sources-and-spring-2.html
             | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
-        <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size}" />
-        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size}" />
-        <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle}" />
+        <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:20}" />
+        <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
 
     </bean>
 
@@ -70,9 +73,9 @@
         <!--+
             | C3P0 connection pool.
             +-->
-        <property name="minPoolSize"   value="${firethorn.user.c3p0.min.size}" />
-        <property name="maxPoolSize"   value="${firethorn.user.c3p0.max.size}" />
-        <property name="maxIdleTime"   value="${firethorn.user.c3p0.max.idle}" />
+        <property name="minPoolSize"   value="${firethorn.user.c3p0.min.size:5}" />
+        <property name="maxPoolSize"   value="${firethorn.user.c3p0.max.size:20}" />
+        <property name="maxIdleTime"   value="${firethorn.user.c3p0.max.idle:300}" />
 
     </bean>
 
@@ -81,85 +84,23 @@
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-    <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <property name="jdbcUrl"     value="${firethorn.twomass.url}"/>
-        <property name="user"        value="${firethorn.twomass.user}"/>
-        <property name="password"    value="${firethorn.twomass.pass}"/>
-        <property name="driverClass" value="${firethorn.twomass.driver}"/>
-
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
-
-    </bean>
-        +-->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-    <bean id="RoeTWOXMM" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <property name="jdbcUrl"     value="${firethorn.twoxmm.url}"/>
-        <property name="user"        value="${firethorn.twoxmm.user}"/>
-        <property name="password"    value="${firethorn.twoxmm.pass}"/>
-        <property name="driverClass" value="${firethorn.twoxmm.driver}"/>
-
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
-
-    </bean>
-        +-->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-    <bean id="RoeUKIDSS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <property name="jdbcUrl"     value="${firethorn.ukidss.url}"/>
-        <property name="user"        value="${firethorn.ukidss.user}"/>
-        <property name="password"    value="${firethorn.ukidss.pass}"/>
-        <property name="driverClass" value="${firethorn.ukidss.driver}"/>
-
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
-
-    </bean>
-        +-->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-    <bean id="RoeWFAU" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <property name="jdbcUrl"     value="${firethorn.wfau.url}"/>
-        <property name="user"        value="${firethorn.wfau.user}"/>
-        <property name="password"    value="${firethorn.wfau.pass}"/>
-        <property name="driverClass" value="${firethorn.wfau.driver}"/>
-
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
-
-    </bean>
-        +-->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
+        <!--+
+            | DataSource properties.
+            +-->
         <property name="jdbcUrl"     value="${firethorn.atlas.url}"/>
         <property name="user"        value="${firethorn.atlas.user}"/>
         <property name="password"    value="${firethorn.atlas.pass}"/>
         <property name="driverClass" value="${firethorn.atlas.driver}"/>
 
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
+        <!--+
+            | C3P0 connection pool.
+            +-->
+        <property name="minPoolSize"   value="${firethorn.atlas.c3p0.min.size:5}" />
+        <property name="maxPoolSize"   value="${firethorn.atlas.c3p0.max.size:20}" />
+        <property name="maxIdleTime"   value="${firethorn.atlas.c3p0.max.idle:300}" />
 
     </bean>
 </beans>

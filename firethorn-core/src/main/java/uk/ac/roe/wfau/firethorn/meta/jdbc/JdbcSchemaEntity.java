@@ -343,7 +343,7 @@ public class JdbcSchemaEntity
                 }
             else {
                 throw new EntityNotFoundException(
-                    "Unable to find matching schema [" + catalog + "][" + found  + "]"
+                    "Unable to find matching schema [" + catalog + "][" + schema  + "]"
                     );
                 }
             }
@@ -734,9 +734,8 @@ public class JdbcSchemaEntity
         log.debug("tables() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
-        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
-            resource().connection()
-            );
+        JdbcMetadataScanner scanner = resource().connection().scanner();
+
         //
         // Load our existing tables.
         Map<String, JdbcTable> existing = new HashMap<String, JdbcTable>();
@@ -766,6 +765,10 @@ public class JdbcSchemaEntity
             {
             log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
             scanner.handle(ouch);
+            }
+        catch (MetadataException ouch)
+            {
+            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
             }
         finally {
             scanner.connector().close();

@@ -1,0 +1,156 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Build our base images.
+# Once the images have been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:20 \
+            docker/fedora/20
+
+        docker build \
+            --tag firethorn/java:8 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgres:9 \
+            docker/postgres/9
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Build our webapp image.
+# Once the image has been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+    
+    docker images
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    username=xxxx
+    userkey=${HOME:?}/.ssh/xxxx.pub
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+
+    docker run \
+        --name "ramses2" \
+        --expose 1433 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        firethorn/fedora:20 \
+        ssh -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Link a set of containers together
+#[root@desktop]
+
+    prefix=$(pwgen 4 1)
+
+    metadata=$(mktemp)
+cat > "${metadata:?}" << EOF
+database=metadata
+username=metadata
+password=$(pwgen 16 1)
+EOF
+
+    userdata=$(mktemp)
+cat > "${userdata:?}" << EOF
+database=userdata
+username=userdata
+password=$(pwgen 16 1)
+EOF
+
+    firethorn=$(mktemp)
+cat > "${firethorn:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://mdhost:5432/metadata
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${metadata}")
+firethorn.meta.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${metadata}")
+
+firethorn.user.url=jdbc:postgresql://userdata:5432/userdata
+firethorn.user.driver=org.postgresql.Driver
+firethorn.user.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${userdata}")
+firethorn.user.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${userdata}")
+EOF
+
+    ogsadai=$(mktemp)
+cat > "${ogsadai:?}" << EOF
+EOF
+
+#
+# Fix to allow read access to properties
+chgrp docker "${firethorn:?}"
+chmod a+r    "${firethorn:?}"
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_meta" \
+        --volume "${metadata:?}:/config" \
+        firethorn/postgres:9
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_user" \
+        --volume "${userdata:?}:/config" \
+        firethorn/postgres:9
+
+    docker run \
+        --link "ramses2:ramses2" \
+        --name "${prefix:?}_firethorn" \
+        --link "${prefix:?}_meta:mdhost" \
+        --link "${prefix:?}_user:udhost" \
+        --volume "${firethorn:?}:/etc/firethorn.properties" \
+        firethorn/firethorn:1.11.18-zrq-docker-devops
+
+
+
+

@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-activity-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity client</name>
+    <name>FireThorn OGSA-DAI activity (client)</name>
     <description>
         <![CDATA[
-        Client side components for the FireThorn OGSA-DAI pipeline activity.
+        Client (Firethorn) components for the FireThorn OGSA-DAI activities.
         ]]>
     </description>
     

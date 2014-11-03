@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-metadata-common</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI metadata common</name>
+    <name>FireThorn OGSA-DAI metadata service (common)</name>
     <description>
         <![CDATA[
         Common components for the FireThorn OGSA-DAI metadata service.

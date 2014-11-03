@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI metadata client</name>
+    <name>FireThorn OGSA-DAI metadata service (client)</name>
     <description>
         <![CDATA[
-        Client side components for the FireThorn OGSA-DAI metadata service.
+        Client (OGSA-DAI) components for the FireThorn OGSA-DAI metadata service.
         ]]>
     </description>
     

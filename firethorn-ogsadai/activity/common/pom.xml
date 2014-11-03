@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-activity-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity common</name>
+    <name>FireThorn OGSA-DAI activity (common)</name>
     <description>
         <![CDATA[
-        Common components for the FireThorn OGSA-DAI pipeline activity.
+        Common components for the FireThorn OGSA-DAI activities.
         ]]>
     </description>
     

@@ -100,6 +100,12 @@ public interface JdbcConnector
     public void close();
 
     /**
+     * Reset the database Connection.
+     *
+     */
+    public void reset();
+
+    /**
      * Get a list of catalog names.
      * @throws MetadataException
      *
@@ -163,4 +169,10 @@ public interface JdbcConnector
      */
     public void type(final JdbcProductType type);
 
+    /**
+     * Get the corresponding {@link JdbcMetadataScanner} for this type.
+     * 
+     */
+    public JdbcMetadataScanner scanner();
+    
     }

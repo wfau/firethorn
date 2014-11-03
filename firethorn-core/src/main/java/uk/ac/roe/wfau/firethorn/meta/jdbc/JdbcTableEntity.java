@@ -1030,9 +1030,7 @@ implements JdbcTable
         log.debug("columns() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
-        JdbcMetadataScanner scanner = new MSSQLMetadataScanner(
-            resource().connection()
-            );
+        JdbcMetadataScanner scanner = resource().connection().scanner();
         //
         // Load our existing tables.
         Map<String, JdbcColumn> existing = new HashMap<String, JdbcColumn>();
@@ -1064,6 +1062,10 @@ implements JdbcTable
             {
             log.warn("Exception while fetching table [{}][{}]", this.ident(), ouch.getMessage());
             scanner.handle(ouch);
+            }
+        catch (MetadataException ouch)
+            {
+            log.warn("Exception while fetching table [{}][{}]", this.ident(), ouch.getMessage());
             }
         finally {
             scanner.connector().close();

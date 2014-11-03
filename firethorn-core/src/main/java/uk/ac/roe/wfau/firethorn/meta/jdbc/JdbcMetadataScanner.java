@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+
 
 /**
  * An abstraction of JDBC database metadata.
@@ -36,9 +38,10 @@ public interface JdbcMetadataScanner
     public interface Catalogs
         {
         public Iterable<Catalog> select()
-        throws SQLException;
+        throws SQLException, MetadataException;
+
         public Catalog select(final String name)
-        throws SQLException;
+        throws SQLException, MetadataException;
         }
 
     public interface Catalog

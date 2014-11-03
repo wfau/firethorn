@@ -1,0 +1,211 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Using links to connect containers.
+# We have a problem with callback endpoints.
+# OGSA-DAI needs to call back into FireThorn, so we get a circular dependency.
+#
+
+                +-------------+
+                | FireThorn   |
+                |             |
+         ----- 8080           |
+           /-- 8080           |
+           |    |             |
+           |    |             |
+           |    |             +--\
+           |    |             |  |
+           |    |             +--|--\
+           |    |             |  |  |
+           |    |             +--|--|--\
+           |    |             |  |  |  |
+           |    |             +--|--|--|--\
+           |    |             |  |  |  |  |
+           |    +-------------+  |  |  |  |
+           |                     |  |  |  |
+           \---------------------|--|--|--|--\
+                                 |  |  |  |  |
+           /---------------------/  |  |  |  |
+           |                        |  |  |  |
+           |    +-------------+     |  |  |  |
+           |    | OGSA-DAI    |     |  |  |  |
+           |    |             |     |  |  |  |
+           \-- 8080           +-----|--|--|--/
+                |             |     |  |  |
+                |             +-----|--|--|--\
+                |             |     |  |  |  |
+                |             +-----|--|--|--|--\
+                |             |     |  |  |  |  |
+                +-------------+     |  |  |  |  |
+                                    |  |  |  |  |
+           /------------------------/  |  |  |  |
+           |                           |  |  |  |
+           |    +-------------+        |  |  |  |
+           |    | Metadata    |        |  |  |  |
+           |    |             |        |  |  |  |
+           \-- 5432           |        |  |  |  |
+                |             |        |  |  |  |
+                |             |        |  |  |  |
+                |             |        |  |  |  |
+                +-------------+        |  |  |  |
+                                       |  |  |  |
+           /---------------------------|--------/
+           |                           |  |  |
+        /------------------------------/  |  |
+        |  |                              |  |
+        |  |    +-------------+           |  |
+        |  |    | Userdata    |           |  |
+        |  |    |             |           |  |
+        \--\-- 5432           |           |  |
+                |             |           |  |
+                |             |           |  |
+                |             |           |  |
+                +-------------+           |  |
+                                          |  |
+           /--------------------------------/
+           |                              |
+        /---------------------------------/
+        |  |
+        |  |    +-------------+
+        |  |    | Ramses2     |
+        |  |    |             |
+        \--\-- wxyz           |
+                |             |
+                |             +-----------------> ramses2
+                |             |
+                +-------------+
+
+
+# -----------------------------------------------------
+# Solution #1
+# Add a dynamic endpoint resolver, using Redis service.
+# All of the other containers link to the Redis service.
+# The Redis service contains endpoint properties for each of the other services.
+# What configures the data in the Redis service ?
+# 
+
+
+    class MetadataServiceFactoryImpl
+    implements MetadataServiceFactory
+        {
+
+        /**
+         * Public constructor.
+         *
+         */
+        public MetadataServiceFactoryImpl(final ServiceEndpointResolver resolver)
+            {
+            this.resolver = resolver ;
+            }
+        
+        }
+
+
+    interface ServiceEndpointResolver
+        {
+        public String resolve(final String key);
+        }
+
+    class PropertyEndpointResolverImpl
+    implements ServiceEndpointResolver
+        {
+        public String resolve(final String key)
+            {
+            // Resolve the property from system properties
+            }
+        }
+
+    class RedisEndpointResolverImpl
+    implements ServiceEndpointResolver
+        {
+
+        public RedisEndpointResolverImpl(final ServiceEndpointResolver resolver)
+            {
+            this.resolver = resolver ;
+            }
+
+
+        public RedisEndpointResolverImpl(final ServiceEndpointResolver resolver)
+            {
+            this.resolver = resolver ;
+            }
+
+        public String resolve(final String key)
+            {
+            // Resolve the endpoint from a redis service
+            // Use our own resolver to get the Redis endpoint.
+            }
+        }
+
+# -----------------------------------------------------
+# Solution #2
+# Firethorn calls OGSA-DAI register the callback endpoint.
+# OGSA-DAI inspects the registration request to work out the callback endpoint.
+
+    Simple form is to use a global static map for the endpoints.
+
+
+    interface ServiceEndpointResolver
+        {
+        public String resolve(final String key);
+        }
+
+    class PropertyEndpointResolverImpl
+    implements ServiceEndpointResolver
+        {
+        public String resolve(final String key)
+            {
+            // .. Resolve the property from system properties
+            }
+        }
+
+    class StaticMapEndpointResolverImpl
+    implements ServiceEndpointResolver
+        {
+        private static final Map<String, String> map = new HashMap<String, String>();
+
+        public String register(final String key, final String value)
+            {
+            // .. Save the property in our map
+            }
+        
+        public String resolve(final String key)
+            {
+            // .. Resolve the property from our map
+            }
+        }
+
+    JSP page to register the callback endpoint of the caller.
+
+# -----------------------------------------------------
+# Solution #2
+# OGSA-DAI calls Firethron to register its endpoint.
+# Firethron inspects the registration request to work out the service endpoint.
+
+    As above but the other way round.
+    Advantage is we can have multiple OGSA-DAI workers.
+
+    
+
+
+

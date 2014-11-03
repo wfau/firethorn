@@ -30,6 +30,8 @@ curl \
     --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
     --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
+     | tee query-job.json
+
      | ./pp | tee query-job.json
 
 queryident=$(

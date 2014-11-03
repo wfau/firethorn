@@ -51,6 +51,8 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PGSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**
  * JDBC resource connection details.
@@ -175,6 +177,15 @@ public class JdbcConnectionEntity
 	    this.pass   = pass;
 	    this.parent = parent;
 	    }
+
+    public JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass, final String driver)
+        {
+        this.url    = url ;
+        this.user   = user;
+        this.pass   = pass;
+        this.driver = driver;
+        this.parent = parent;
+        }
 
     @Parent
     protected JdbcResourceEntity parent;
@@ -321,7 +332,7 @@ public class JdbcConnectionEntity
      */
     private synchronized Connection connect()
         {
-        log.debug("connect()");
+        log.debug("connect [{}]", this.url);
 
         if (this.state == State.CLOSED)
             {
@@ -331,13 +342,13 @@ public class JdbcConnectionEntity
 
         if (this.source == null)
             {
-            log.debug("Source is null, updating to INIT");
+            log.debug("Source is null, updating to EMPTY");
             this.state = State.EMPTY;
             }
 
         if (this.state == State.EMPTY)
             {
-            log.debug("State is INIT, initialising DataSource");
+            log.debug("State is EMPTY, initialising DataSource");
             if (this.url == null)
                 {
                 this.state = State.INVALID;
@@ -460,11 +471,14 @@ public class JdbcConnectionEntity
             else {
                 if (this.user != null)
                     {
+                    log.debug("With user/pass");
                     try {
+                        log.debug("connecting ....");
                         final Connection connection = this.source.getConnection(
                             this.user,
                             this.pass
                             );
+                        log.debug(".... connected");
                         state(State.CONNECTED);
                         return connection;
                         }
@@ -477,8 +491,11 @@ public class JdbcConnectionEntity
                         }
                     }
                 else {
+                    log.debug("No auth");
                     try {
+                        log.debug("connecting ....");
                         final Connection connection = this.source.getConnection();
+                        log.debug(".... connected");
                         state(State.CONNECTED);
                         return connection ;
                         }
@@ -497,6 +514,7 @@ public class JdbcConnectionEntity
 
     /**
      * ThreadLocal database Connection.
+     * This is generally a bad idea.
      *
      */
     @Transient
@@ -505,12 +523,14 @@ public class JdbcConnectionEntity
         @Override
         public Connection get()
             {
+            log.debug("get() [{}]", url);
             return super.get();
             }
 
         @Override
         public void set(final Connection connection)
             {
+            log.debug("set() [{}]", url);
             super.set(
                 connection
                 );
@@ -519,21 +539,37 @@ public class JdbcConnectionEntity
         @Override
         protected Connection initialValue()
             {
+            log.debug("initialValue() [{}]", url);
             return connect();
             }
         };
 
     /**
-     * Reset our JDBC DataSource.
+     * Reset our connection.
      *
      */
-    protected synchronized void reset()
+    @Override
+    public synchronized void reset()
         {
-        log.debug("reset()");
-        this.source = null ;
-        this.opens = 0;
-        this.state = State.EMPTY;
-        this.local.remove();
+        log.debug("reset [{}]", this.url);
+        try {
+            final Connection connection = this.local.get();
+            if (connection != null)
+                {
+                connection.close();
+                }
+            }
+        catch (final Throwable ouch)
+            {
+            this.state = State.FAILED;
+            log.error("Error closing database connection [{}]", ouch.getMessage());
+            }
+        finally {
+            this.source = null ;
+            this.opens = 0;
+            this.state = State.EMPTY;
+            this.local.remove();
+            }
         }
 
     @Transient
@@ -546,7 +582,7 @@ public class JdbcConnectionEntity
         synchronized (this.local)
             {
             opens++;
-            log.debug("open [{}]", opens);
+            log.debug("open [{}][{}]", this.url, opens);
             if (opens > 1)
                 {
                 if (DEBUG_NESTED_CONNECTS)
@@ -566,7 +602,7 @@ public class JdbcConnectionEntity
         {
         synchronized (this.local)
             {
-            log.debug("close [{}]", opens);
+            log.debug("close [{}][{}]", this.url, opens);
             opens--;
             if (opens < 0)
                 {
@@ -798,5 +834,29 @@ public class JdbcConnectionEntity
     public void type(final JdbcProductType type)
         {
         this.type = type ;
+        }
+
+    /**
+     * Get the corresponding {@link JdbcMetadataScanner} for this type.
+     * 
+     */
+    public JdbcMetadataScanner scanner()
+        {
+        switch (this.type())
+            {
+            case MSSQL :
+                return new MSSQLMetadataScanner(
+                    this
+                    );
+
+            case PGSQL :
+            return new PGSQLMetadataScanner(
+                this
+                );
+            
+            default : throw new RuntimeException(
+                "Unable to load scanner for connection type [" + this.type + "]"
+                );
+            }
         }
     }

@@ -1,0 +1,284 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    username=dave
+    userkey=${HOME:?}/.ssh/example.pub
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+
+    docker run \
+        --name ramses2 \
+        --expose 1433 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        ssh -v -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL containers.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    md5pass()
+        {
+        local pass=${1:?}
+        echo "${pass:?}" | md5sum | awk '{ print $1 }'
+        }
+
+    docker_ip()
+        {
+        local name=${1:?}
+        docker inspect "${name:?}" | grep IPAddress | awk '{ print $2 }' | tr -d ',"'
+        }
+
+    docker run --name postgres-meta -d postgres
+    docker run --name postgres-user -d postgres
+
+    dbinfo=$(mktemp)
+    cat > "${dbinfo:?}" << EOF
+metadatatype=pgsql
+metadataport=5432
+metadatahost=$(docker_ip postgres-meta)
+metadataname=firethorn_meta_data
+metadatauser=firethorn_meta_role
+metadatapass=$(pwgen -s 10 1)
+
+userdatatype=pgsql
+userdataport=5432
+userdatahost=$(docker_ip postgres-user)
+userdataname=firethorn_user_data
+userdatauser=firethorn_user_role
+userdatapass=$(pwgen -s 10 1)
+EOF
+
+    cat    "${dbinfo:?}"
+    source "${dbinfo:?}"
+
+    dbpass=$(mktemp)
+    cat > "${dbpass:?}" << EOF
+${metadatahost:?}:*:postgres:postgres:
+${userdatahost:?}:*:postgres:postgres:
+${metadatahost:?}:*:${metadataname:?}:${metadatauser:?}:${metadatapass:?}
+${userdatahost:?}:*:${userdataname:?}:${userdatauser:?}:${userdatapass:?}
+EOF
+
+    PGPASSFILE=${dbpass:?}
+
+    psql --host ${metadatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${metadatauser:?} ENCRYPTED PASSWORD '$(md5pass ${metadatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${metadataname:?} OWNER ${metadatauser:?} ;
+EOF
+
+    psql --host ${userdatahost:?} --port 5432 --dbname postgres --username postgres << EOF
+CREATE ROLE ${userdatauser:?} ENCRYPTED PASSWORD '$(md5pass ${userdatapass:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+CREATE DATABASE ${userdataname:?} OWNER ${userdatauser:?} ;
+EOF
+
+# TODO Set the postgres user password !!!
+
+
+# -------------------------------------------------------------------------------------------
+# Build our docker images.
+# Once the images have been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:20 \
+            docker/fedora/20
+
+        docker build \
+            --tag firethorn/java:1.8.0 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8.0.14 \
+            docker/tomcat/8
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add additional tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    docker tag "firethorn/fedora:20"  "firethorn/fedora:latest"
+
+    docker tag "firethorn/java:1.8.0" "firethorn/java:8"
+    docker tag "firethorn/java:1.8.0" "firethorn/java:latest"
+
+    docker tag "firethorn/tomcat:8.0.14" "firethorn/tomcat:8"
+    docker tag "firethorn/tomcat:8.0.14" "firethorn/tomcat:latest"
+
+# -------------------------------------------------------------------------------------------
+# Push our images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    docker login
+
+        Username: xxxxxxxx
+        Password: xxxxxxxx
+        Email: docker-admin@metagrid.co.uk
+
+    docker push firethorn/fedora:20
+    docker push firethorn/fedora:latest
+
+    docker push firethorn/java:8
+    docker push firethorn/java:1.8.0
+    docker push firethorn/java:latest
+
+    docker push firethorn/tomcat:8
+    docker push firethorn/tomcat:8.0.14
+    docker push firethorn/tomcat:latest
+
+# -------------------------------------------------------------------------------------------
+# Clear local cache.
+#[user@desktop]
+
+    docker stop $(docker ps -aq)
+    docker rm   $(docker ps -aq)
+    docker rmi  $(docker images -q)
+
+# -------------------------------------------------------------------------------------------
+# Test our uploaded images.
+#[user@desktop]
+
+    docker pull firethorn/fedora
+    docker pull firethorn/java
+    docker pull firethorn/tomcat
+
+    docker run firethorn/tomcat
+
+
+
+
+
+
+
+
+# -------------------------------------------------------------------------------------------
+# Add Maven plugin to our POM.
+#[user@desktop]
+
+    firethorn-webapp/pom.xml
+
+        <project>
+            ....
+            <build>
+                ....
+                <plugins>
+                    ....
+
+                    <!--+
+                        | Maven Docker plugin.
+                        | https://github.com/alexec/docker-maven-plugin
+                        +-->
+                    <plugin>
+                        <groupId>com.alexecollins.docker</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>2.1.0</version>
+                        <configuration>
+
+                            <!--host>unix:///var/run/docker.sock</host-->
+                            
+                            <!--+
+                            <username>alexec</username>
+                            <email>alex.e.c@gmail.com</email>
+                                +-->
+
+                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <cache>true</cache>
+
+                        </configuration>
+                    </plugin>
+
+                    ....
+                </plugins>
+                ....
+            </build>
+            ....
+        </project>
+
+# -------------------------------------------------------------------------------------------
+# Create our Docker file.
+#[user@desktop]
+
+    firethorn-webapp/src/main/docker/firethorn/Dockerfile
+
+        FROM firethorn/tomcat:8
+        MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+        #
+        # ADD our webapp.
+        ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+
+
+# -------------------------------------------------------------------------------------------
+# Create our plugin config.
+#[user@desktop]
+
+    firethorn-webapp/src/main/docker/firethorn/conf.yml
+
+        #
+        # Additional data require to create the Docker image
+        packaging:
+
+          #
+          # Files to add to the build, usually used with ADD in the Dockerfile
+          add:
+            - target/${project.build.finalName}
+            
+        #
+        # Tag to use for images
+        tag: firethorn/firethorn:${project.version}
+
+# -------------------------------------------------------------------------------------------
+# Enable Maven plugin to connect using HTTP. 
+#[root@desktop]
+
+    vi /etc/sysconfig/docker 
+    
+        -   other_args=""
+        +   other_args="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
+
+    service docker restart
+
+
+
+
+

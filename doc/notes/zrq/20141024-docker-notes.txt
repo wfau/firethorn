@@ -1,0 +1,296 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Patch system to enable connections to docker containers
+# https://media-glass.es/2014/08/25/connecting-to-docker-containers/
+#[root@desktop]
+
+    docker run --rm jpetazzo/nsenter cat /nsenter > /tmp/nsenter
+
+    mv /tmp/nsenter /usr/local/bin/
+    chmod 755 /usr/local/bin/nsenter
+
+    curl -o /usr/local/bin/docker-enter https://raw.githubusercontent.com/jpetazzo/nsenter/master/docker-enter 
+    chmod 755 /usr/local/bin/docker-enter
+
+    nsenter -V
+    nsenter --help
+
+# -------------------------------------------------------------------------------------------
+# Create a PostgreSQL container.
+# https://registry.hub.docker.com/_/postgres/
+#[user@desktop]
+
+    #
+    # Start a Postgresql container
+    docker run postgres
+
+# -------------------------------------------------------------------------------------------
+# Connect to the PostgreSQL container.
+# https://media-glass.es/2014/08/25/connecting-to-docker-containers/
+#[root@desktop]
+
+    #
+    # Get the container id
+    docker ps 
+ 
+        CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+        57512c1b61f3        postgres:latest     /docker-entrypoint.s   34 seconds ago      Up 32 seconds       5432/tcp            drunk_ritchie       
+
+    #
+    # Take a look inside the postgres container
+    docker-enter 57512c1b61f3
+
+        cat $PGDATA/pg_hba.conf
+
+            # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+            # "local" is for Unix domain socket connections only
+            local   all             all                                     trust
+            # IPv4 local connections:
+            host    all             all             127.0.0.1/32            trust
+            # IPv6 local connections:
+            host    all             all             ::1/128                 trust
+            # Allow replication connections from localhost, by a user with the
+            # replication privilege.
+            #local   replication     postgres                                trust
+            #host    replication     postgres        127.0.0.1/32            trust
+            #host    replication     postgres        ::1/128                 trust
+
+            host all all 0.0.0.0/0 trust
+
+    #
+    # The last line disables all security :-(
+    # host all all 0.0.0.0/0 trust
+
+        #
+        # Change 'trust' to 'md5' for TCP connections.
+        echo "DEBUG : Changing 'trust' to 'md5'
+        sed -r '
+            /^host\s+all\s+all/ {
+                s/trust/md5/
+                }
+            ' $PGDATA/pg_hba.conf
+
+        #
+        # Set our config filename.
+        config=${config:=/config}
+             
+        #
+        # Create our user role and database.
+        if [ ! -e "${config:?}" ]
+        then
+            echo "ERROR : Missing config file [${config:?}]"
+        else 
+            echo "DEBUG : Loading config [${config:?}]"
+            source "${config:?}"
+
+            echo "DEBUG : database [{$database:?}]"
+            echo "DEBUG : username [{$username:?}]"
+            echo "DEBUG : password [{$password:?}]"
+
+            echo "DEBUG : Creating user role"
+            postgresl --single postgres << EOF
+CREATE ROLE ${username:?} ENCRYPTED PASSWORD '$(md5pass ${password:?})' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN ;
+EOF
+
+            echo "DEBUG : Creating database"
+            postgresl --single postgres << EOF
+CREATE DATABASE ${database:?} OWNER ${username:?} ;
+EOF
+        fi
+
+# -------------------------------------------------------------------------------------------
+# Build our docker images.
+# Once the images have been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:20 \
+            docker/fedora/20
+
+        docker build \
+            --tag firethorn/java:1.8.0 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8.0.14 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgresql:9.3 \
+            docker/postgres/9
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    docker run --rm -it firethorn/postgresql:9.3 bash
+
+        ls -al /docker-entrypoint-initdb.d/
+
+            -rw-rw-r--.  1 root root 1502 Oct 25 19:44 createdb.sh
+            -rw-rw-r--.  1 root root  941 Oct 25 19:44 security.sh
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    docker run --rm -it firethorn/postgresql:9.3 bash
+
+        chown -R postgres "$PGDATA"
+        gosu postgres initdb
+
+        gosu postgres postgres --single postgres
+
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+        docker build \
+            --tag firethorn/postgresql:9.3 \
+            docker/postgres/9
+
+    testdata=$(mktemp)
+cat > "${testdata:?}" << EOF
+database=testdata
+username=$(pwgen 16 1)
+password=$(pwgen 16 1)
+EOF
+
+    docker run \
+        --volume "${testdata:?}:/config" \
+        firethorn/postgresql:9.3
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+# https://github.com/docker/docker/issues/6396
+#[user@desktop]
+
+    username=fred
+    userkey=${HOME:?}/.ssh/example.pub
+
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keygen -F "${hostname:?}" > "${hostkey:?}"
+
+    docker run \
+        --name "ramses2" \
+        --expose 1433 \
+        --tty --interactive \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userkey:?}:/tmp/userkey.pub" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        fedora \
+        ssh -C -i /tmp/userkey.pub -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -------------------------------------------------------------------------------------------
+# Link a set of containers together
+#[root@desktop]
+
+    prefix=$(pwgen 4 1)
+
+    metadata=$(mktemp)
+cat > "${metadata:?}" << EOF
+database=metadata
+username=metadata
+password=$(pwgen 16 1)
+EOF
+
+    userdata=$(mktemp)
+cat > "${userdata:?}" << EOF
+database=userdata
+username=userdata
+password=$(pwgen 16 1)
+EOF
+
+    firethorn=$(mktemp)
+cat > "${firethorn:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://mdhost:5432/metadata
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${metadata}")
+firethorn.meta.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${metadata}")
+
+firethorn.user.url=jdbc:postgresql://userdata:5432/userdata
+firethorn.user.driver=org.postgresql.Driver
+firethorn.user.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${userdata}")
+firethorn.user.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${userdata}")
+EOF
+
+    ogsadai=$(mktemp)
+cat > "${ogsadai:?}" << EOF
+EOF
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_meta" \
+        --volume "${metadata:?}:/config" \
+        firethorn/postgresql:9.3
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_user" \
+        --volume "${userdata:?}:/config" \
+        firethorn/postgresql:9.3
+
+    docker run \
+        --link "ramses2:ramses2" \
+        --name "${prefix:?}_firethorn" \
+        --link "${prefix:?}_meta:mdhost" \
+        --link "${prefix:?}_user:udhost" \
+        --volume "${metadata:?}:/etc/firethorn.properties" \
+        firethorn/firethorn:1.11.18-zrq-docker-devops
+
+    docker run \
+        --name "${prefix:?}_firethorn" \
+        --link "${prefix:?}_user:userdata" \
+        --link "${prefix:?}_data:wafudata" \
+        --volume "${metadata:?}:/etc/firethorn.properties" \
+        firethorn/ogsadai:1.11.18-zrq-docker-devops
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

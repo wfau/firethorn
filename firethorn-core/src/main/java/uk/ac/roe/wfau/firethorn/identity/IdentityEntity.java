@@ -243,6 +243,7 @@ implements Identity
     @Override
     public JdbcSchema space(final boolean create)
         {
+        log.debug("space(boolean) [{}]", create);
         if ((create) && (this.jdbcschema == null))
             {
             if (community() != null)
