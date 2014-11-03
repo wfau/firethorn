@@ -116,13 +116,13 @@
 
         <!--+
             | FireThorn OGSA-DAI metadata server.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-server</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Servlet libraries.
@@ -271,13 +271,6 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>2.1.0</version>
                 <configuration>
-
-                    <!--host>unix:///var/run/docker.sock</host-->
-                    
-                    <!--+
-                    <username>alexec</username>
-                    <email>alex.e.c@gmail.com</email>
-                        +-->
 
                     <removeIntermediateImages>true</removeIntermediateImages>
                     <cache>true</cache>

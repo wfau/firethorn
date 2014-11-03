@@ -41,7 +41,7 @@
     <name>FireThorn OGSA-DAI activity server</name>
     <description>
         <![CDATA[
-        Server side components for the FireThorn OGSA-DAI pipeline activity.
+        Server (OGSA-DAI) components for the FireThorn OGSA-DAI activities.
         ]]>
     </description>
 

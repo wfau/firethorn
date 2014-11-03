@@ -31,17 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-activity</artifactId>
+        <artifactId>firethorn-ogsadai-discovery</artifactId>
         <version project='firethorn'>1.11.18-zrq-docker-devops</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-activity-common</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>firethorn-ogsadai-discovery-common</artifactId>
+    <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI activity common</name>
+    <name>FireThorn OGSA-DAI service discovery (common)</name>
     <description>
         <![CDATA[
-        Common components for the FireThorn OGSA-DAI activities.
+        Common components for FireThorn <-> OGSA-DAI service discovery.
         ]]>
     </description>
     
@@ -49,6 +49,7 @@
     </properties>
 
     <dependencies>
+
     </dependencies>
 
 </project>

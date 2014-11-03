@@ -31,17 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-metadata</artifactId>
+        <artifactId>firethorn-ogsadai-discovery</artifactId>
         <version project='firethorn'>1.11.18-zrq-docker-devops</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-metadata-server</artifactId>
+    <artifactId>firethorn-ogsadai-discovery-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI metadata service (server)</name>
+    <name>FireThorn OGSA-DAI service discovery (server)</name>
     <description>
         <![CDATA[
-        Server (Firethorn) components for the FireThorn OGSA-DAI metadata service.
+        Server (Firethorn) components for the FireThorn <-> OGSA-DAI service discovery.
         ]]>
     </description>
     

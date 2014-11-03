@@ -1,0 +1,63 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Docker networking
+    https://docs.docker.com/articles/networking/
+
+    Pipework
+    https://github.com/jpetazzo/pipework
+
+    MAC VLANs and Virtual Ethernets
+    http://www.pocketnix.org/posts/Linux%20Networking%3A%20MAC%20VLANs%20and%20Virtual%20Ethernets
+
+    Network playground
+    https://github.com/brandon-rhodes/fopnp/tree/m/playground
+
+    How to setup linkage between docker containers so that restarting won't break it?
+    https://stackoverflow.com/questions/24252598/how-to-setup-linkage-between-docker-containers-so-that-restarting-wont-break-it
+
+    Ambasador pattern
+    https://docs.docker.com/articles/ambassador_pattern_linking/
+
+    Dynamic links
+    https://github.com/docker/docker/issues/7468
+
+    Raw DNS
+    https://github.com/tianon/rawdns
+    https://registry.hub.docker.com/u/tianon/rawdns/
+
+    Grand Ambasador
+    http://www.tech-d.net/2014/08/28/docker-grand-ambassador/
+
+
+
+# -----------------------------------------------------
+# Firethorn callback
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        mvn eclipse:eclipse
+
+    popd

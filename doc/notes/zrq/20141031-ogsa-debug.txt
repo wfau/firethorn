@@ -1,0 +1,89 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+2014-10-31 17:44:29,850 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Pipeline endpoint [http://pyratest1:8080/ogsa-dai/services] 
+2014-10-31 17:44:29,850 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Pipeline [uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient@33133383] 
+2014-10-31 17:44:29,850 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- AdqlQuery executing [6696147] 
+2014-10-31 17:44:29,850 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Mode     [DISTRIBUTED] 
+2014-10-31 17:44:29,851 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Store    [userdata] 
+2014-10-31 17:44:29,851 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Endpoint [http://pyratest1:8080/ogsa-dai/services] 
+2014-10-31 17:44:29,851 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Resource [testdqp] 
+2014-10-31 17:44:29,852 DEBUG [FireThornTaskExecutor-8] [AdqlQueryEntity] -- Table    [FirethornUserdataSHEP011113ALPHA.dbo.JDBC_TABLE_20141031_174427873] 
+
+
+
+    SELECT DISTINCT
+        JDBC_TABLE_6744600.arcfile AS i_name ,
+        JDBC_TABLE_6744600.arcfile AS g_name ,
+        JDBC_TABLE_6744600.filterID AS i_file ,
+        JDBC_TABLE_6744600.filterID AS g_filt
+    FROM
+        JDBC_TABLE_6744551 AS a ,
+        JDBC_TABLE_6744550 AS l  ,
+        JDBC_TABLE_6744560 AS dg  ,
+        JDBC_TABLE_6744560 AS di  ,
+        JDBC_TABLE_6744600 AS mg  ,
+        JDBC_TABLE_6744600 AS mi 
+    WHERE
+        JDBC_TABLE_6744551.frameSetID = JDBC_TABLE_6744550.frameSetID
+    AND
+        JDBC_TABLE_6744550.gmfID = JDBC_TABLE_6744560.multiframeID
+    AND
+        JDBC_TABLE_6744550.imfID = JDBC_TABLE_6744560.multiframeID
+    AND
+        JDBC_TABLE_6744550.geNum = JDBC_TABLE_6744560.extNum
+    AND
+        JDBC_TABLE_6744550.ieNum = JDBC_TABLE_6744560.extNum
+    AND
+        JDBC_TABLE_6744560.multiframeID = JDBC_TABLE_6744600.multiframeID
+    AND
+        JDBC_TABLE_6744560.multiframeID = JDBC_TABLE_6744600.multiframeID
+    AND
+        JDBC_TABLE_6744600.filterID = 2
+    AND
+        JDBC_TABLE_6744600.filterID = 4
+    AND
+        JDBC_TABLE_6744551.gAperMag3 > 0.0
+    AND
+        JDBC_TABLE_6744551.iAperMag3 > 0.0
+    AND
+        JDBC_TABLE_6744551.priOrSec = 0
+    OR
+        JDBC_TABLE_6744551.priOrSec = JDBC_TABLE_6744551.frameSetID
+
+
+    Insert target
+    FirethornUserdataSHEP011113ALPHA.dbo.JDBC_TABLE_20141031_174427873
+
+
+
+
+http://pyratest2:8080/firethorn/adql/query/6696147
+
+
+"input": "SELECT distinct mi.arcfile as i_name, mg.arcfile as g_name, mi.filterID as i_file, mg.filterID as g_filt FROM atlasSource as a, atlasMergeLog as l, multiframeDetector as dg, multiframeDetector as di, multiframe as mg, multiframe as mi WHERE a.framesetid=l.framesetid AND l.gmfid=dg.multiframeid AND l.imfid=di.multiframeid AND l.geNum=dg.extNum AND l.ieNum=di.extNum AND dg.multiframeid=mg.multiframeid AND di.multiframeid=mi.multiframeid AND mi.filterID=2 AND mg.filterID=4 AND a.gAperMag3 > 0.0 AND a.iAperMag3 > 0.0 AND (a.priOrSec=0 OR a.priOrSec=a.frameSetID)",
+"mode": "DISTRIBUTED",
+"adql": "SELECT DISTINCT mi.arcfile AS i_name , mg.arcfile AS g_name , mi.filterID AS i_file , mg.filterID AS g_filt\nFROM atlasSource AS a CROSS JOIN atlasMergeLog AS l CROSS JOIN multiframeDetector AS dg CROSS JOIN multiframeDetector AS di CROSS JOIN multiframe AS mg CROSS JOIN multiframe AS mi\nWHERE a.framesetid = l.framesetid AND l.gmfid = dg.multiframeid AND l.imfid = di.multiframeid AND l.geNum = dg.extNum AND l.ieNum = di.extNum AND dg.multiframeid = mg.multiframeid AND di.multiframeid = mi.multiframeid AND mi.filterID = 2 AND mg.filterID = 4 AND a.gAperMag3 > 0.0 AND a.iAperMag3 > 0.0 AND (a.priOrSec = 0 OR a.priOrSec = a.frameSetID)",
+"osql": "SELECT DISTINCT JDBC_TABLE_6744600.arcfile AS i_name , JDBC_TABLE_6744600.arcfile AS g_name , JDBC_TABLE_6744600.filterID AS i_file , JDBC_TABLE_6744600.filterID AS g_filt\nFROM JDBC_TABLE_6744551 AS a , JDBC_TABLE_6744550 AS l , JDBC_TABLE_6744560 AS dg , JDBC_TABLE_6744560 AS di , JDBC_TABLE_6744600 AS mg , JDBC_TABLE_6744600 AS mi \nWHERE JDBC_TABLE_6744551.frameSetID = JDBC_TABLE_6744550.frameSetID AND JDBC_TABLE_6744550.gmfID = JDBC_TABLE_6744560.multiframeID AND JDBC_TABLE_6744550.imfID = JDBC_TABLE_6744560.multiframeID AND JDBC_TABLE_6744550.geNum = JDBC_TABLE_6744560.extNum AND JDBC_TABLE_6744550.ieNum = JDBC_TABLE_6744560.extNum AND JDBC_TABLE_6744560.multiframeID = JDBC_TABLE_6744600.multiframeID AND JDBC_TABLE_6744560.multiframeID = JDBC_TABLE_6744600.multiframeID AND JDBC_TABLE_6744600.filterID = 2 AND JDBC_TABLE_6744600.filterID = 4 AND JDBC_TABLE_6744551.gAperMag3 > 0.0 AND JDBC_TABLE_6744551.iAperMag3 > 0.0 AND JDBC_TABLE_6744551.priOrSec = 0 OR JDBC_TABLE_6744551.priOrSec = JDBC_TABLE_6744551.frameSetID",
+
