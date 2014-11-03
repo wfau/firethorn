@@ -35,7 +35,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().param(),
+            factories().adql().queries().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    ra,"
@@ -59,7 +59,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().param(),
+            factories().adql().queries().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    *"
@@ -82,7 +82,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().param(),
+            factories().adql().queries().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    twomass.*"

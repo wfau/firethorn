@@ -317,16 +317,18 @@ extends NamedEntity, Job
     public static interface ParamFactory
         {
         /**
-         * The current environment params.
+         * Create a new set of params using the environment settings.
          *
          */
-        public QueryParam param();
+        public QueryParam create();
 
         /**
-         * The current environment params, with a specific level and mode.
+         * Create a new set of params, with a specific mode.
+         * @param level The @{link AdqlQuery.Syntax.Level}.
+         * @param mode  The @{link AdqlQuery.Mode}.
          *
          */
-        public QueryParam param(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
+        public QueryParam create(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
 
         }
 

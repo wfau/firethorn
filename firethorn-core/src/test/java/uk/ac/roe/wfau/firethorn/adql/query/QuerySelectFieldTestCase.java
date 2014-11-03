@@ -35,7 +35,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -58,7 +58,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    date"
                 + " FROM"
@@ -81,7 +81,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    MAX(ra)"
                 + " FROM"
@@ -104,7 +104,7 @@ extends QuerySelectFieldTestBase
       {
       validate(
           this.schema.queries().create(
-              factories().adql().queries().params().param(),
+              factories().adql().queries().params().create(),
               "SELECT"
               + "    *"
               + " FROM"
@@ -192,7 +192,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    ra +  dec as radec"
                 + " FROM"
@@ -215,7 +215,7 @@ extends QuerySelectFieldTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    ra +  dec"
                 + " FROM"
