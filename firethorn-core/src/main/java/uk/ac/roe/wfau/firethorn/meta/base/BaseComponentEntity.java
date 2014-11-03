@@ -347,9 +347,9 @@ implements BaseComponent
      * Check for an existing block, or create a new one.
      *
      */
-    protected Object block()
+    protected Object block(boolean create)
         {
-        log.debug("Checking for existing block [{}]", this.ident());
+        log.debug("Checking for existing block [{}][{}]", this.ident(), this.name());
         synchronized (blocks)
             {
             Object block = blocks.get(
@@ -357,16 +357,20 @@ implements BaseComponent
                 );
             if (block != null)
                 {
-                log.debug("Found existing block [{}][{}]", this.ident(), block);
+                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
                 return block;
                 }
             else {
-                block = new DateTime();
-                log.debug("Adding new block [{}][{}]", this.ident(), block);
-                blocks.put(
-                    this.ident(),
-                    block
-                    );
+                log.debug("No existing block found [{}][{}]", this.ident(), this.name());
+                if (create)
+                    {
+                    block = new DateTime();
+                    log.debug("Adding new block [{}][{}][{}]", this.ident(), this.name(), block);
+                    blocks.put(
+                        this.ident(),
+                        block
+                        );
+                    }
                 return null ;
                 }
             }
@@ -378,7 +382,7 @@ implements BaseComponent
      */
     protected void release()
         {
-        log.debug("Releasing blocks [{}]", this.ident());
+        log.debug("Releasing blocks [{}][{}]", this.ident(), this.name());
         synchronized (blocks)
             {
             Object block = blocks.get(
@@ -386,7 +390,7 @@ implements BaseComponent
                 );
             if (block != null)
                 {
-                log.debug("Found existing block [{}][{}]", this.ident(), block);
+                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
                 log.debug("Removing ....");
                 blocks.remove(this.ident());
                 log.debug("Notifying ....");
@@ -396,7 +400,7 @@ implements BaseComponent
                     }
                 }
             else {
-                log.debug("No blocks found [{}]", this.ident());
+                log.debug("No blocks found [{}][{}]", this.ident(), this.name());
                 }
             }
         }
@@ -464,7 +468,7 @@ implements BaseComponent
         if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
             {
             log.debug("scandate is in the past");
-            Object block = block();
+            Object block = block(true);
             if (block == null)
                 {
                 try {
@@ -482,13 +486,16 @@ implements BaseComponent
                     {
                     try {
                         log.debug("Waiting on block [{}][{}][{}]", this.ident(), this.name(), block);
-                        block.wait(BLOCKING_TIMEOUT);
+                        synchronized (block)
+                            {
+                            block.wait(BLOCKING_TIMEOUT);
+                            }
                         }
                     catch (Exception ouch)
                         {
                         log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), block, ouch.getMessage());
                         }
-                    block = block();
+                    block = block(false);
                     }
                 log.debug("No more blocks [{}][{}]", this.ident(), this.name());
                 }

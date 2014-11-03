@@ -184,13 +184,6 @@ EOF
 
     docker run firethorn/tomcat
 
-
-
-
-
-
-
-
 # -------------------------------------------------------------------------------------------
 # Add Maven plugin to our POM.
 #[user@desktop]
