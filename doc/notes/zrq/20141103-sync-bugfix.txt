@@ -80,7 +80,7 @@
     popd
 
 # -------------------------------------------------------------------------------------------
-# Build our webapp images.
+# Build our Docker webapp images.
 # Once the image has been stored in the repository, this step is no longer needed.
 #[user@desktop]
 
