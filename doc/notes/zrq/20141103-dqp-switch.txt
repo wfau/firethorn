@@ -254,7 +254,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.19
+        #newversion=1.11.20
 
         #
         # Close the dev branch.
