@@ -254,13 +254,6 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         devbranch=$(getversion)
-        newversion=1.11.20
-
-        #
-        # Close the dev branch.
-        hg update "${devbranch:?}"
-        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
-        hg push
 
         #
         # Pull the latest changes
@@ -291,12 +284,20 @@ EOF
         hg push
 
         #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg update 'default'
+        hg push
+
+        #
         # Re-build everything.
         mvn -P all clean install
 
         #
         # Push to our public repositiry.
         ./bin/rsync-repo.sh
+
         
     popd
 
@@ -321,4 +322,61 @@ EOF
 
     popd
 
+# -------------------------------------------------------------------------------------------
+# Build our webapp images.
+# Once the image has been stored in the repository, this step is no longer needed.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add the 'latest' tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
+        docker tag "firethorn/ogsadai:$(getversion)"  "firethorn/ogsadai:latest"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our webapp images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    docker login
+
+        Username: xxxxxxxxx
+        Password: xxxxxxxxx
+        Email:    xxxx@xxxx
+
+
+    docker push firethorn/fedora
+    docker push firethorn/java
+    docker push firethorn/tomcat
+    docker push firethorn/postgres
+
+    docker push firethorn/firethorn
+    docker push firethorn/ogsadai
 
