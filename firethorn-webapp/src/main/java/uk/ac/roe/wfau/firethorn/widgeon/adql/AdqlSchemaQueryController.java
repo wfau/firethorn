@@ -83,6 +83,18 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      */
     public static final String CREATE_STORE = "adql.schema.query.create.store" ;
 
+    /**
+     * MVC property for the {@link AdqlQuery.Mode} mode, [{@value}].
+     *
+     */
+    public static final String CREATE_MODE = "adql.schema.query.create.mode" ;
+
+    /**
+     * MVC property for the {@link AdqlQuery.Syntax.Level} level, [{@value}].
+     *
+     */
+    public static final String CREATE_LEVEL = "adql.schema.query.create.level" ;
+
     @Override
     public AdqlQueryBean bean(final AdqlQuery entity)
         {
@@ -144,6 +156,8 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @param name The {@link AdqlQuery} name, [{@value #CREATE_NAME}].
+     * @param name The {@link AdqlQuery.Mode} mode, [{@value #CREATE_MODE}].
+     * @param name The {@link AdqlQuery.Syntax.Level} level, [{@value #CREATE_LEVEL}].
      * @return An {@link AdqlQueryBean} wrapping the new {@link AdqlQuery}.
      * @todo Rejects duplicate names.
      * 
@@ -156,11 +170,18 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @RequestParam(value=CREATE_QUERY, required=true)
         final String query,
         @RequestParam(value=CREATE_NAME, required=false)
-        final String name
+        final String name,
+        @RequestParam(value=CREATE_MODE, required=false)
+        final AdqlQuery.Mode mode,
+        @RequestParam(value=CREATE_LEVEL, required=false)
+        final AdqlQuery.Syntax.Level level
         ) throws QueryProcessingException {
         return created(
             schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(
+                    level,
+                    mode
+                    ),
                 query,
                 name
                 )

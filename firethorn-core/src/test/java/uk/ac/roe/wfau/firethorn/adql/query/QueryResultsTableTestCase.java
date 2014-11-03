@@ -225,7 +225,7 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    ra,"
                 + "    dec"
@@ -253,7 +253,7 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -275,7 +275,7 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    date as mydate"
                 + " FROM"
@@ -298,7 +298,7 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
                 + "    *"
                 + " FROM"
@@ -384,7 +384,7 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                factories().adql().queries().params().param(),
+                factories().adql().queries().params().create(),
                 "SELECT"
 
                 + "    COUNT(ra),"

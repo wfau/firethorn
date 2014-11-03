@@ -594,7 +594,7 @@ extends TestPropertiesBase
     throws QueryProcessingException
         {
         final AdqlQuery query = testschema().queries().create(
-            factories().queries().params().param(
+            factories().queries().params().create(
                 level,
                 mode
                 ),

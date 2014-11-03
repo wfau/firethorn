@@ -19,13 +19,15 @@
 #
 #
 
-adqltext=${1:?}
+adqlmode=${1:?}
+adqltext=${2:?}
 
 #
 # Create the query.
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
+    --data   "adql.schema.query.create.mode=${adqlmode:?}" \
     --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | ./pp | tee query-job.json

@@ -1,0 +1,324 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Start from the main branch
+        hg update 'default'
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch=$(getversion)-zrq-dqp-switch
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+#
+
+    #
+    # NEW CODE
+    #
+
+# -----------------------------------------------------
+# Clean build of FireThorn
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# Run our OGSA-DAI service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig atlas         firethorn.atlas
+                jdbcconfig userdata      firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        datetime=$(date +%Y%m%d%H%M%S)
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+        cat "${HOME:?}/firethorn.spaces.${datetime:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Create test queries.
+#[user@desktop]
+
+query001=$(mktemp)
+cat > "${query001:?}" << EOF
+    SELECT
+        ra,
+        dec
+    FROM
+        atlas.atlasSource
+    WHERE
+        ra  BETWEEN '56.0' AND '57.9'
+    AND
+        dec BETWEEN '24.0' AND '24.2'
+EOF
+
+query002=$(mktemp)
+cat > "${query002:?}" << EOF
+    SELECT
+        atlasSource.ra  AS atra,
+        atlasSource.dec AS atdec,
+        twomass_psc.ra  AS tmra,
+        twomass_psc.dec AS tmdec
+    FROM
+        atlasSource
+    JOIN
+        atlasSourceXtwomass_psc
+    ON
+        atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+    JOIN
+        twomass.twomass_psc
+    ON
+        twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+    WHERE
+        atlasSource.ra  BETWEEN 180 AND 181
+    AND
+        atlasSource.dec BETWEEN -3 AND -2
+    AND
+        twomass_psc.ra BETWEEN 180 AND 181
+    AND
+        twomass_psc.dec BETWEEN -3 AND -2
+EOF
+
+query003=$(mktemp)
+cat > "${query003:?}" << EOF
+    SELECT TOP 10
+        name
+    FROM
+        atlas.Filter
+EOF
+
+# -----------------------------------------------------
+# Run the test queries.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query002:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query003:?}"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query002:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query003:?}"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query002:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query003:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+        newversion=1.11.20
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Get the current version.
+        oldversion=$(getversion)
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Reset the version.
+        setversion "${oldversion}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Update the version tag.
+        hg tag    -f "version-$(getversion)"
+        hg push
+
+        #
+        # Re-build everything.
+        mvn -P all clean install
+
+        #
+        # Push to our public repositiry.
+        ./bin/rsync-repo.sh
+        
+    popd
+
+# -----------------------------------------------------
+# Close the old branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=1.11.18-zrq-adql-meta
+        
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        hg update 'default'
+
+    popd
+
+

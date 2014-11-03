@@ -19,14 +19,20 @@
 #
 #
 
-adqltext=${1:?}
+adqlmode=${1:?}
+adqlfile=${2:?}
+
+echo "--------"
+cat "${adqlfile:?}"
+echo "--------"
 
 #
 # Create the query.
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
+    --data   "adql.schema.query.create.mode=${adqlmode:?}" \
+    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | ./pp | tee query-job.json
 

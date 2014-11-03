@@ -203,7 +203,7 @@ implements AdqlQuery, AdqlParserQuery
         private String endpoint ;
 
         @Override
-        public AdqlQuery.QueryParam param()
+        public AdqlQuery.QueryParam create()
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -236,7 +236,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        public QueryParam param(final Level level, final Mode mode)
+        public QueryParam create(final Level level, final Mode mode)
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -253,7 +253,7 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public Mode mode()
                     {
-                    return mode;
+                    return (mode != null) ? mode : ParamFactory.this.mode ;
                     }
                 @Override
                 public String store()
@@ -263,7 +263,7 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public Level level()
                     {
-                    return level;
+                    return (level != null) ? level : ParamFactory.this.level ;
                     }
                 };
             }
