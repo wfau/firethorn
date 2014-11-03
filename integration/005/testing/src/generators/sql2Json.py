@@ -81,7 +81,8 @@ class Sql2Json(object):
             d['queryid'] = row.queryid
             d['queryrunID'] = row.queryrunID
             d['query_timestamp'] = row.query_timestamp
-            d['query'] = row.query
+            d['query'] = row.query.decode("ISO-8859-1")
+
             d['direct_sql_rows'] = row.direct_sql_rows
             d['firethorn_sql_rows'] = row.firethorn_sql_rows
             d['firethorn_duration'] = row.firethorn_duration

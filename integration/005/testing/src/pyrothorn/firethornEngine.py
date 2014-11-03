@@ -175,6 +175,7 @@ class FirethornEngine(object):
                                           ])
             c.perform()
             c.close()
+
 	    adqlschema = json.loads(buf.getvalue())[0]["ident"]
             buf.close() 
             
@@ -284,7 +285,7 @@ class FirethornEngine(object):
         :param attr:
         '''
     
-        attr_val = ""
+        attr_val = []
         try :
             req_exc = urllib2.Request( ident, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email, "firethorn.auth.community" :"public (unknown)"})
             response_exc = urllib2.urlopen(req_exc) 

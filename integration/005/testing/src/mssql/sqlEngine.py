@@ -242,7 +242,7 @@ class SQLEngine(object):
         @param database: The Database
         '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
-        response = mydb.execute_update(query.encode('utf-8'), database)
+        response = mydb.execute_update(query, database)
         return response
         
         
@@ -287,7 +287,7 @@ class SQLEngine(object):
         :param params:
         '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
-        res = mydb.execute_insert(qry.encode('utf-8'), database, params)
+        res = mydb.execute_insert(qry, database, params)
         return res
     
 
@@ -299,7 +299,7 @@ class SQLEngine(object):
         :param database:        
         '''
         mydb = DBHelper(self.dbserver, self.dbuser, self.dbpasswd, self.dbport, self.driver)
-        table_data = mydb.execute_query_multiple_rows(qry.encode('utf-8'), database, limit, timeout)
+        table_data = mydb.execute_query_multiple_rows(qry, database, limit, timeout)
         return table_data
         
         
@@ -311,7 +311,7 @@ class SQLEngine(object):
         :param database:
         '''
         mydb = DBHelper(self.dbserver,self.dbuser ,self.dbpasswd, self.dbport, self.driver)
-        table_data = mydb.execute_query_get_cols_rows(qry.encode('utf-8'), database, limit, timeout)
+        table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
         return table_data        
           
  
