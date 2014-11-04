@@ -337,58 +337,70 @@ EOF
         hg push
 
         #
-        # Update the version tag.
-        hg tag    -f "version-$(getversion)"
-        hg push
-
-        #
         # Close the dev branch.
         hg update "${devbranch:?}"
         hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
-        hg update 'default'
         hg push
 
         #
-        # Re-build everything.
-        mvn -P all clean install
+        # Update the version tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
 
-        #
-        # Push to our public repositiry.
-        ./bin/rsync-repo.sh
-
-        
     popd
 
 # -----------------------------------------------------
-# Close the old branch.
+# Increment the main version.
 #[user@desktop]
 
+    newversion=
+    
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
 
     pushd "${FIRETHORN_CODE:?}"
 
-        devbranch=1.11.18-zrq-adql-meta
-        
         #
-        # Close the dev branch.
-        hg update "${devbranch:?}"
-        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
-        hg push
+        # Set the version.
+        setversion "${newversion}"
 
+        #
+        # Update the version tag.
         hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
 
     popd
 
 # -------------------------------------------------------------------------------------------
-# Build our webapp images.
-# Once the image has been stored in the repository, this step is no longer needed.
+# Clean build.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn clean install
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
         pushd firethorn-ogsadai/webapp
             mvn docker:package
