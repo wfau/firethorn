@@ -33,12 +33,12 @@ class QueryEngine(object):
     '''
 
 
-    def __init__(self):
+    def __init__(self, firethorn_mode="DIRECT"):
         '''
         Constructor
         '''
         self.id = 1
-            
+        self.firethorn_mode = firethorn_mode    
             
     def _getRows(self, query_results):
         '''
@@ -79,7 +79,7 @@ class QueryEngine(object):
             if query_name=="":
                 query_name = 'query-' + t.strftime("%y%m%d_%H%M%S")
                      
-            urlenc = { query_name_param : query_name,  query_param : query}
+            urlenc = { query_name_param : query_name,  query_param : query, query_mode_param : self.firethorn_mode}
             data = urllib.urlencode(urlenc)
             request = urllib2.Request(query_space + query_create_uri, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
     

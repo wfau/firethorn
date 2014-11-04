@@ -269,12 +269,12 @@ class FirethornEngine(object):
         '''
         Print out the class (Firethorn environment) variables
         '''
-        logging.info("jdbcspace: " + self.jdbcspace)
-        logging.info("adqlspace: " + self.adqlspace)
-        logging.info("adqlschema: " + self.adqlschema)
-        logging.info("query_schema: " + self.query_schema)
-        logging.info("schema_name: " + self.schema_name)
-        logging.info("schema_alias: " + self.schema_alias)     
+        logging.info("jdbcspace: " + str(self.jdbcspace))
+        logging.info("adqlspace: " + str(self.adqlspace))
+        logging.info("adqlschema: " + str(self.adqlschema))
+        logging.info("query_schema: " + str(self.query_schema))
+        logging.info("schema_name: " + str(self.schema_name))
+        logging.info("schema_alias: " + str(self.schema_alias))     
     
     
     def getAttribute(self, ident, attr):

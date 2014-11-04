@@ -48,6 +48,8 @@ query_limit_rows_param = "adql.query.update.limit.rows"
 query_param = "adql.schema.query.create.query"
 query_status_update = "adql.query.update.status"
 
+query_mode_param = "adql.schema.query.create.name"
+
 schema_create_uri = '/schemas/create'
 table_create_uri = '/tables/create'
 
