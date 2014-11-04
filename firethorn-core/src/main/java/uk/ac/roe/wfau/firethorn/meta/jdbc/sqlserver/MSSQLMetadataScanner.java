@@ -76,7 +76,7 @@ public class MSSQLMetadataScanner
         log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
         if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
             {
-            log.debug("Fatal error code, closing existing connection");
+            log.warn("Fatal error code, closing existing connection");
             try {
                 connector().reset();
                 }
@@ -442,7 +442,7 @@ public class MSSQLMetadataScanner
                                         "DATA_TYPE"
                                         )
                                     );
-                                log.debug("column() [{}][{}][{}]", name, strlen, type);
+                                log.trace("column() [{}][{}][{}]", name, strlen, type);
                                 return new Column()
                                     {
                                     @Override
@@ -521,7 +521,7 @@ public class MSSQLMetadataScanner
         };
     protected static JdbcColumn.JdbcType type(final Integer numlen, final String name)
         {
-        log.debug("type [{}][{}]", numlen, name);
+        log.trace("type [{}][{}]", numlen, name);
         JdbcColumn.JdbcType type = typemap.get(
             name
             );

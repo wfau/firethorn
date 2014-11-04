@@ -742,7 +742,7 @@ public class JdbcSchemaEntity
         Map<String, JdbcTable> matching = new HashMap<String, JdbcTable>();
         for (JdbcTable table : factories().jdbc().tables().select(JdbcSchemaEntity.this))
             {
-            log.debug("Caching existing table [{}]", table.name());
+            log.trace("Caching existing table [{}]", table.name());
             existing.put(
                 table.name(),
                 table
@@ -807,12 +807,12 @@ public class JdbcSchemaEntity
     protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Table table)
         {
         String name = table.name();
-        log.debug("Scanning for table [{}]", name);
+        log.trace("Scanning for table [{}]", name);
         //
         // Check for an existing match.
         if (existing.containsKey(name))
             {
-            log.debug("Found existing table [{}]", name);
+            log.trace("Found existing table [{}]", name);
             matching.put(
                 name,
                 existing.remove(
@@ -823,7 +823,7 @@ public class JdbcSchemaEntity
         //
         // No match, so create a new one.
         else {
-            log.debug("Creating new table [{}]", name);
+            log.trace("Creating new table [{}]", name);
             matching.put(
                 name,
                 factories().jdbc().tables().create(

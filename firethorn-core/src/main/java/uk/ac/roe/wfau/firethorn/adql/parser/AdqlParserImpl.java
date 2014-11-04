@@ -1343,10 +1343,10 @@ implements AdqlParser
     public static MySelectItem wrap(final SelectItem item)
     throws AdqlParserException
         {
-        log.debug("wrap(SelectItem)");
-        log.debug("  alias [{}]", item.getAlias());
-        log.debug("  name  [{}]", item.getName());
-        log.debug("  class [{}]", item.getClass().getName());
+        log.trace("wrap(SelectItem)");
+        log.trace("  alias [{}]", item.getAlias());
+        log.trace("  name  [{}]", item.getName());
+        log.trace("  class [{}]", item.getClass().getName());
         return new MySelectItemWrapper(
             item
             );
@@ -1410,11 +1410,11 @@ implements AdqlParser
     public static MySelectField wrap(final ADQLOperand oper)
     throws AdqlParserException
         {
-        log.debug("wrap(ADQLOperand)");
-        log.debug("  name   [{}]", oper.getName());
-        log.debug("  class  [{}]", oper.getClass().getName());
-        log.debug("  number [{}]", oper.isNumeric());
-        log.debug("  string [{}]", oper.isString());
+        log.trace("wrap(ADQLOperand)");
+        log.trace("  name   [{}]", oper.getName());
+        log.trace("  class  [{}]", oper.getClass().getName());
+        log.trace("  number [{}]", oper.isNumeric());
+        log.trace("  string [{}]", oper.isString());
 
         if (oper instanceof WrappedOperand)
 	        {
@@ -1505,9 +1505,9 @@ implements AdqlParser
     public static MySelectField wrap(final ADQLColumn column)
     throws AdqlParserException
         {
-        log.debug("wrap(ADQLColumn)");
-        log.debug("  name   [{}]", column.getName());
-        log.debug("  class  [{}]", column.getClass().getName());
+        log.trace("wrap(ADQLColumn)");
+        log.trace("  name   [{}]", column.getName());
+        log.trace("  class  [{}]", column.getClass().getName());
         if (column.getDBLink() == null)
             {
             throw new AdqlParserException(
@@ -1533,11 +1533,11 @@ implements AdqlParser
      */
     public static MySelectField wrap(final AdqlColumn column)
         {
-        log.debug("wrap(AdqlColumn)");
-        log.debug("  adql [{}]", column.namebuilder());
-        log.debug("  base [{}]", column.base().namebuilder());
-        log.debug("  root [{}]", column.root().namebuilder());
-        log.debug("  type [{}]", column.meta().adql().type());
+        log.trace("wrap(AdqlColumn)");
+        log.trace("  adql [{}]", column.namebuilder());
+        log.trace("  base [{}]", column.base().namebuilder());
+        log.trace("  root [{}]", column.root().namebuilder());
+        log.trace("  type [{}]", column.meta().adql().type());
         return new MyAdqlColumnWrapper(
             column
             );
@@ -1550,10 +1550,10 @@ implements AdqlParser
     public static MySelectField wrap(final NegativeOperand oper)
     throws AdqlParserException
         {
-        log.debug("wrap(NegativeOperand)");
-        log.debug("  name   [{}]", oper.getName());
-        log.debug("  number [{}]", oper.isNumeric());
-        log.debug("  string [{}]", oper.isString());
+        log.trace("wrap(NegativeOperand)");
+        log.trace("  name   [{}]", oper.getName());
+        log.trace("  number [{}]", oper.isNumeric());
+        log.trace("  string [{}]", oper.isString());
         return new MySelectFieldImpl(
     		oper.getName(),
     		type(
@@ -1694,10 +1694,10 @@ implements AdqlParser
     public static MySelectField wrap(final Operation oper)
     throws AdqlParserException
         {
-        log.debug("wrap(Operation)");
-        log.debug("  name   [{}]", oper.getName());
-        log.debug("  number [{}]", oper.isNumeric());
-        log.debug("  string [{}]", oper.isString());
+        log.trace("wrap(Operation)");
+        log.trace("  name   [{}]", oper.getName());
+        log.trace("  number [{}]", oper.isNumeric());
+        log.trace("  string [{}]", oper.isString());
         return new MySelectFieldImpl(
             "operation",
             type(
@@ -1744,10 +1744,10 @@ implements AdqlParser
     public static MySelectField wrap(final ADQLFunction funct)
     throws ArrayIndexOutOfBoundsException, AdqlParserException
         {
-        log.debug("wrap(ADQLFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
+        log.trace("wrap(ADQLFunction)");
+        log.trace("  name   [{}]", funct.getName());
+        log.trace("  number [{}]", funct.isNumeric());
+        log.trace("  string [{}]", funct.isString());
         if (funct instanceof SQLFunction)
             {
             return wrap((SQLFunction) funct);
@@ -1807,10 +1807,10 @@ implements AdqlParser
     public static MySelectField wrap(final SQLFunction funct)
     throws ArrayIndexOutOfBoundsException, AdqlParserException
         {
-        log.debug("wrap(SQLFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
+        log.trace("wrap(SQLFunction)");
+        log.trace("  name   [{}]", funct.getName());
+        log.trace("  number [{}]", funct.isNumeric());
+        log.trace("  string [{}]", funct.isString());
         switch (funct.getType())
             {
             case COUNT :
@@ -1960,10 +1960,10 @@ implements AdqlParser
     public static MySelectField wrap(final MathFunction funct)
     throws AdqlParserException
         {
-        log.debug("wrap(MathFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
+        log.trace("wrap(MathFunction)");
+        log.trace("  name   [{}]", funct.getName());
+        log.trace("  number [{}]", funct.isNumeric());
+        log.trace("  string [{}]", funct.isString());
 
         switch (funct.getType())
             {
@@ -2029,8 +2029,8 @@ implements AdqlParser
     public static MySelectField wrap(final CastFunction funct)
     throws AdqlParserException
         {
-        log.debug("wrap(castFunction)");
-        log.debug("  name   [{}]", funct.type());
+        log.trace("wrap(castFunction)");
+        log.trace("  name   [{}]", funct.type());
 
         final ADQLOperand inner = funct.oper(); 
         if (inner instanceof ADQLColumn)
@@ -2064,10 +2064,10 @@ implements AdqlParser
      */
     public static MySelectField wrap(final UserDefinedFunction funct)
         {
-	        log.debug("wrap(UserDefinedFunction)");
-	        log.debug("  name   [{}]", funct.getName());
-	        log.debug("  number [{}]", funct.isNumeric());
-	        log.debug("  string [{}]", funct.isString());
+	        log.trace("wrap(UserDefinedFunction)");
+	        log.trace("  name   [{}]", funct.getName());
+	        log.trace("  number [{}]", funct.isNumeric());
+	        log.trace("  string [{}]", funct.isString());
 	        final String name = funct.getName();
 // TODO
 // STRING == WON'T WORK

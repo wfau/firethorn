@@ -319,7 +319,7 @@ implements BaseComponent
      */
     protected ComponentType self()
         {
-        log.debug("Loading proxy for self");
+        log.trace("Loading proxy for self");
         @SuppressWarnings("unchecked")
         final ComponentType entity = (ComponentType) factories().hibernate().session().load(
             this.getClass(),
