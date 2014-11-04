@@ -354,7 +354,7 @@ EOF
 # Increment the main version.
 #[user@desktop]
 
-    newversion=
+    newversion=1.11.21
     
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
@@ -364,6 +364,11 @@ EOF
         #
         # Set the version.
         setversion "${newversion}"
+
+        #
+        # Commit the update.
+        hg commit -m "...."
+        hg push
 
         #
         # Update the version tag.
@@ -426,9 +431,11 @@ EOF
         source "bin/util.sh"
 
         docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
-        docker tag "firethorn/ogsadai:$(getversion)"  "firethorn/ogsadai:latest"
+        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
 
     popd
+
+    docker images
 
 # -------------------------------------------------------------------------------------------
 # Push our webapp images to Docker Hub.
@@ -441,12 +448,16 @@ EOF
         Password: xxxxxxxxx
         Email:    xxxx@xxxx
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    docker push firethorn/fedora
-    docker push firethorn/java
-    docker push firethorn/tomcat
-    docker push firethorn/postgres
+        source "bin/util.sh"
 
-    docker push firethorn/firethorn
-    docker push firethorn/ogsadai
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/firethorn:latest"
+
+        docker push "firethorn/ogsadai:$(getversion)"
+        docker push "firethorn/ogsadai:latest"
+
+    popd
 
