@@ -33,3 +33,15 @@
 
     Last year's capital expenditure on Azure was $4.5 billion - meaning that functionally, only Microsoft, Amazon, and Google can compete at this scale.
     
+    
+
+
+
+Lessons from using Docker to improve web developer productivity
+https://www.youtube.com/watch?v=PBBUnNS4dRw
+
+Running Docker on AWS - AWS
+https://www.youtube.com/watch?v=CBajQEu0jW8
+
+Ending the IaaS PaaS Dichotomy by Craig Mcluckie and Brandon Burns (Google)
+https://www.youtube.com/watch?v=06InE1XTlIo

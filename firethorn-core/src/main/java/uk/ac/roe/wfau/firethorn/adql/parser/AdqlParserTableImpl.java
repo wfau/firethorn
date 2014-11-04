@@ -481,10 +481,10 @@ implements AdqlParserTable
          */
         private AdqlColumnImpl(final AdqlColumn adqlColumn, final String baseName, final String adqlName, final DBTable parent)
             {
-            log.debug("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
-            log.debug("real name [{}]", adqlColumn.name());
-            log.debug("BASE name [{}]", baseName);
-            log.debug("ADQL name [{}]", adqlName);
+            log.trace("AdqlColumnImpl(AdqlColumn, String, String, DBTable)");
+            log.trace("real name [{}]", adqlColumn.name());
+            log.trace("BASE name [{}]", baseName);
+            log.trace("ADQL name [{}]", adqlName);
             this.parent = parent ;
             this.column = adqlColumn ;
             this.baseName = baseName;
@@ -494,9 +494,9 @@ implements AdqlParserTable
         @Override
         public AdqlColumnImpl copy(final String dbName, final String adqlName, final DBTable parent)
             {
-            //log.debug("copy(String, String, DBTable)");
-            //log.debug("DB   name [{}]", dbName);
-            //log.debug("ADQL name [{}]", adqlName);
+            log.trace("copy(String, String, DBTable)");
+            log.trace("DB   name [{}]", dbName);
+            log.trace("ADQL name [{}]", adqlName);
             return AdqlParserTableImpl.this.wrap(
                 this.column,
                 this.baseName,
@@ -520,23 +520,13 @@ implements AdqlParserTable
         @Override
         public String getDBName()
             {
-            log.debug("getDBName() [{}][{}]", this.baseName, this.column.root().name());
+            log.trace("getDBName() [{}][{}]", this.baseName, this.column.root().name());
             String result = this.baseName ;
-/*
-            if (this.baseName != null)
-                {
-                return this.baseName ;
-                }
-            else {
-                return this.column.root().name();
-                //return this.column.root().alias();
-                }
-*/
             if (result == null)
                 {
+                //result = this.column.root().alias();
                 result = this.column.root().name();
                 }
-            log.debug("getDBName() [{}]", result);
             return result ;
             }
 

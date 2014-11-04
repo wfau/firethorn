@@ -96,7 +96,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.transaction.interceptor">
-		<level value="TRACE" />
+		<level value="WARN" />
 	</logger>
 
 	<!--+
@@ -114,9 +114,12 @@
 	    | https://jira.atlassian.com/browse/CONF-4981
 	    | http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367
         | https://forum.hibernate.org/viewtopic.php?p=2404391
+        | https://forum.hibernate.org/viewtopic.php?f=1&t=1030440
+        | https://hibernate.atlassian.net/browse/HHH-1367
 	    +-->
-    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
-        <level value="ERROR" />
+    <logger category="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <!--level value="TRACE" /-->
+        <level value="WARN" />
     </logger>
 
 	<!--+
@@ -135,8 +138,6 @@
 	<logger name="com.mchange.v2.c3p0.impl.C3P0ImplUtils">
 		<level value="WARN" />
 	</logger>
-
-
 
 	<!--+
 	    | StarLink loggers.
@@ -168,8 +169,8 @@
 	<!--+
 	    | Root logger.
 	    +-->
-	<root>
-		<priority value="${root-level:-INFO}" />
+	<root level="DEBUG">
+		<!--priority value="${root-level:-INFO}" /-->
 		<appender-ref ref="console" />
 	</root>
 	
