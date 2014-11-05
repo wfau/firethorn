@@ -61,9 +61,9 @@ catch (Exception ouch)
             {
             Driver driver = drivers.nextElement();
             %>
-            "driver": {
-                "class" : "<%= driver.getClass().getName() %>"
-                }
+            {
+            "class" : "<%= driver.getClass().getName() %>"
+            }<%= (drivers.hasMoreElements()) ? "," : "" %>
             <%
             }
         %>
