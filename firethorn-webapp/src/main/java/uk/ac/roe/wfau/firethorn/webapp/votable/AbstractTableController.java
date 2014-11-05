@@ -171,7 +171,7 @@ extends AbstractController
         String glue = " ";
         for (final BaseColumn<?> column : table.columns().select())
             {
-            log.debug("Column [{}][{}]", column.ident(), column.name());
+            log.trace("Column [{}][{}]", column.ident(), column.name());
             builder.append(
                 glue
                 );
@@ -210,7 +210,7 @@ extends AbstractController
      */
     public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
         {
-    	log.debug("select(StringBuilder, AdqlColumn, JdbcProductType)");
+    	log.trace("select(StringBuilder, AdqlColumn, JdbcProductType)");
         //
         // Postgresql dialect
         if (type == JdbcProductType.PGSQL)

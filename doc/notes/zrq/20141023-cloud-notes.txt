@@ -21,6 +21,7 @@
 #
 
 
+Microsoft
 
     Microsoft “loves Linux” as it makes Azure bigger, better
     http://arstechnica.com/information-technology/2014/10/microsoft-loves-linux-as-it-makes-azure-bigger-better/
@@ -33,15 +34,21 @@
 
     Last year's capital expenditure on Azure was $4.5 billion - meaning that functionally, only Microsoft, Amazon, and Google can compete at this scale.
     
-    
+Docker
+
+    Lessons from using Docker to improve web developer productivity
+    https://www.youtube.com/watch?v=PBBUnNS4dRw
+
+    Running Docker on AWS - AWS
+    https://www.youtube.com/watch?v=CBajQEu0jW8
+
+    Ending the IaaS PaaS Dichotomy by Craig Mcluckie and Brandon Burns (Google)
+    https://www.youtube.com/watch?v=06InE1XTlIo
 
 
+Google
 
-Lessons from using Docker to improve web developer productivity
-https://www.youtube.com/watch?v=PBBUnNS4dRw
+    Firebase
+    http://www.wired.com/2014/11/why-google-acquired-firebase/
 
-Running Docker on AWS - AWS
-https://www.youtube.com/watch?v=CBajQEu0jW8
 
-Ending the IaaS PaaS Dichotomy by Craig Mcluckie and Brandon Burns (Google)
-https://www.youtube.com/watch?v=06InE1XTlIo
