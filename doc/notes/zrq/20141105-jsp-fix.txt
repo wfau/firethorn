@@ -90,7 +90,7 @@
         
         pushd 'firethorn-webapp'
 
-            export MAVEN_OPTS=-Xmx128m
+            MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
         popd
@@ -192,6 +192,8 @@
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
 
         pushd firethorn-ogsadai/webapp
             mvn docker:package
