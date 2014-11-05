@@ -117,9 +117,11 @@
         | https://forum.hibernate.org/viewtopic.php?f=1&t=1030440
         | https://hibernate.atlassian.net/browse/HHH-1367
 	    +-->
-    <logger category="org.hibernate.engine.internal.StatefulPersistenceContext">
-        <!--level value="TRACE" /-->
-        <level value="WARN" />
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer">
+        <level value="ERROR" />
     </logger>
 
 	<!--+

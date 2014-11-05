@@ -1,0 +1,226 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    devname=logging-config
+
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch="$(getversion)-${devname:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Fix the bug ....
+#[user@desktop]
+
+    #
+    #
+    #
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit "firethorn-webapp/src/main/webapp/WEB-INF/classes/logback.xml"
+
+            <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+                <level value="ERROR" />
+            </logger>
+            <logger name="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer">
+                <level value="ERROR" />
+            </logger>
+
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg add
+        hg commit -m "Bug fix in system info JSP page"
+
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Get the main version.
+        hg update 'default'
+        oldversion=$(getversion)
+        newversion=${oldversion:?}
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add the 'latest' tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
+        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Push our webapp images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    docker login
+
+        Username: xxxxxxxxx
+        Password: xxxxxxxxx
+        Email:    xxxx@xxxx
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/firethorn:latest"
+
+        docker push "firethorn/ogsadai:$(getversion)"
+        docker push "firethorn/ogsadai:latest"
+
+    popd
+
