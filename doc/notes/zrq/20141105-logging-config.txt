@@ -76,7 +76,6 @@
                 <level value="ERROR" />
             </logger>
 
-
 # -----------------------------------------------------
 # Commit our changes
 #[user@desktop]
@@ -85,8 +84,9 @@
     pushd "${FIRETHORN_CODE:?}"
 
         hg add
-        hg commit -m "Bug fix in system info JSP page"
-
+        hg commit -m "Bug fix in logged config"
+        hg push
+        
     popd
 
 # -----------------------------------------------------
