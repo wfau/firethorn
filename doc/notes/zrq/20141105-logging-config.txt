@@ -100,6 +100,9 @@
 
         devbranch=$(getversion)
 
+#
+# BUG - problem with added files
+#
         #
         # Pull the latest changes
         hg pull
