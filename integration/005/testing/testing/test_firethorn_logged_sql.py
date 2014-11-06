@@ -187,7 +187,6 @@ class test_firethorn(unittest.TestCase):
                 firethorn_error_message = ""
                 sql_error_message =  ""
                 logging.info("Query : " +  query)
-		self.total_queries = self.total_queries + 1
 		
                 try:
                     if (config.test_is_continuation):
@@ -266,17 +265,23 @@ class test_firethorn(unittest.TestCase):
                     params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
                     report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                     reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
-                    logging.info("Total unique queries: "  + str(self.total_unique_queries))
-                    logging.info("Total failed: " + str(self.total_failed))
-                    logging.info("Coverage percentage: "  + str(self.total_queries/total_available_queries*100) + "%")
-                    logging.info("Success percentage: " +  str(100-((self.total_failed/self.total_unique_queries)*100)) + "%")
+                    self.total_queries = self.total_queries + 1
 
                 else :
                     if (queryid!=None and query_count!=None and (continue_from_here_flag==True)):
 			logging.info("Query has been run already..Skipping & updating count")
-
                         update_query = "UPDATE queries SET query_count=" + str(query_count + 1) + " WHERE queryid=" + str(queryid)
                         update_results = reporting_sqlEng.execute_update(update_query, config.reporting_database)
+                        self.total_queries = self.total_queries + 1
+
+
+                logging.info("Total queries: "  + str(self.total_queries))
+                logging.info("Total unique queries: "  + str(self.total_unique_queries))
+                logging.info("Total failed: " + str(self.total_failed))
+                logging.info("Coverage percentage: "  + str(round((self.total_queries/total_available_queries)*100,2)) + "%")
+                logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
+               
+
         except Exception as e:
             logging.exception(e)    
         
