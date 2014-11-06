@@ -34,7 +34,7 @@
         #
         # Create the new branch name
         source "bin/util.sh"
-        devbranch=$(getversion)-zrq-dqp-switch
+        devbranch=$(getversion)-stv-pyro-logging
 
         #
         # Create the new branch.
