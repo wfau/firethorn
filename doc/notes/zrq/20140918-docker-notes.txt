@@ -1,0 +1,20 @@
+
+2014-04-15
+Red Hat bets on 'Project Atomic' for its container-loaded server future
+http://www.theregister.co.uk/2014/04/15/red_hat_project_atomic_docker/
+
+2014-04-23
+Amazon loads Docker app containerization into its cloud
+http://www.theregister.co.uk/2014/04/23/docker_amazon/
+
+2014-04-24
+Now AWS users get to deploy with Docker, too
+http://www.infoworld.com/article/2607834/amazon-web-services/now-aws-users-get-to-deploy-with-docker--too.html
+
+
+Docker - Amazon EC2
+https://docs.docker.com/installation/amazon/
+
+CoreOS - Amazon EC2
+https://coreos.com/docs/running-coreos/cloud-providers/ec2/
+
