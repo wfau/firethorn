@@ -1,0 +1,77 @@
+Notes from the DAL session on ADQL revision in Banff
+
+Section numbering reflects TAPNotes Note
+
+2.1.1.		The Separator Nonterminal
+Apart from being accepted already as en errata, it may be resolved directly
+due to a grammar change.
+
+2.1.2.		Type System
+Type System will fit into the ADQL specification. Details on types to be discussed.
+Serialization on types like REGION and POINT needs further investigation.
+TAP will point to this type system.
+
+2.1.3.		DATETIME
+skip -> already rejected item
+
+2.1.4.		Empty Coordinate Systems
+Removing coordsystem string identifier from functions. Put it deprecate in 2.1, make people aware it would not be available in the future.
+
+2.1.5.		Explanation of optional features
+Reference TAPRegExt dewcription from ADQL and TAP specifications to clarify the optional features usage.
+Project to move TAPRegExt directly inside the TAP-2.0 specification.
+
+2.2.1.		Simple Crossmatch Function
+Discussion on the meaning of the positional crossmatch wrt the nearest neighbour serach. Currently the proposal is only about syntactical sugar alongside existing ADQL syntax (it can also fit an UDF, e.g.).
+Controversial due to the complexity that can arise from it.
+Move it to ADQL-3.0 plans.
+
+2.2.2.		No Type-based Decay of INTERSECTS
+no objection
+
+2.2.3.		Generalized User Defined Functions
+Up to Markus to try an implementation before putting in into a WD.
+
+2.2.4.		Case-Insensitive String Comparisons
+Limit to LOWER function not to overload indexing, LOWER instead of UPPER because lowercase exists for uppercase, the opposite is not always true.
+Optional -> move to mandatory? Need real verifiers for the top DBMS-es.
+Markus to test it.
+Set it mandatory only if DBMS-es can support it.
+
+2.2.5.		Set Operators
+DB2 (or other DBMS-es) to be added to the check list.
+Optional will fail in terms of interoperability, mandatory risks to break up server side. UNION at least is important and well supported in DBMS-es.
+Issue: Sybase does not support it in sub-queries.
+add it mandatory in 2.1 and improve later in rec 3.0.
+
+2.2.6.		Adding a Boolean Type
+Not NULL allowed may be a problem.
+Requires rewriting queries (e.g. MySQL as usual).
+Needs re-check on CONTAINS and XMATCH functions.
+
+2.2.7.		Casting to Unit
+Restricting to single column could simplify. Casting can make queries more robust.
+Parsers or translation layer should be aware of the units: requires support for VOUnits.
+Optional in 2.1 to test and make it mandatory in 3.0.
+
+2.2.8.		Column References with UCD Patterns
+Error management and requires VOUnits knowledge.
+Some tests already done (L.Michel), is really complicated.
+Stays in the issues for future.
+
+2.2.9.		Modulo operator
+no comment, skipped
+
+2.2.10.		Bitwise operators
+Functions to go optional in 2.1 for mandatory requirement in 3.0.
+Operators require more implementation, but are not otherwise blocking as an additional solution.
+(Vizier used operators. Textbooks use operators.)
+
+2.2.11.		CAST operator
+No need grammar change, only defining the list of type allowed.
+Seems not controversial.
+Optional in 2.1, mandatory if ok in 3.0
+
+2.NN		WITH
+New feature request by G.Lemson.
+There are the same issue as for INTERSECT, EXCEPT.
