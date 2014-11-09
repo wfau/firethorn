@@ -1,0 +1,125 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#################################################
+### Query Test run #1: All UKIDSSDR9 queries  ###
+#################################################
+
+
+Query run ID:  GKZzLNwjQXabweASXfT0lw
+Started on: 2014-11-07 21:49:29,797
+Finished on: 2014-11-09 00:26:54,522
+Assertion: Total queries failed:  4430 (out of 16166)
+Success rate:  67.31%
+Total Queries: 16166
+
+Json Summary:
+-------------
+ {
+ "total_queries_run": 13551, (Unique)
+ "average_firethorn_duration": 12.869382835255713, 
+ "total_failed": 4430, 
+ "total_firethorn_querytime": 174393.00680055018, 
+ "java_version": "", 
+ "total_sql_querytime": 173176.35087989992, 
+ "sys_platform": "", 
+ "firethorn_changeset": "", 
+ "firethorn_version": "", 
+ "sys_timestamp": "", 
+ "average_sql_duration": 12.77959935649767, 
+ "query_timestamp": "2014-11-09 00:22:36"
+ }
+
+Notes on run:
+-------------
+Maximum row limit for both direct SQL & Firethorn set to 1000
+Timeout in seconds for Direct SQL: 1000
+Comparison: #rows==#rows
+
+
+
+
+Mysql:
+------
+mysql> use pyrothorn_testing;
+
+Database changed
+mysql> describe queries;
+
+
+
+# Total unique queries
+mysql> select count(*)  from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw';
++----------+
+| count(*) |
++----------+
+|    13551 |
++----------+
+1 row in set (0.07 sec)
+
+
+# Number of unique firethorn error messages
+mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' and test_passed<1;
++------------------------------------------+
+| count(Distinct(firethorn_error_message)) |
++------------------------------------------+
+|                                      385 |
++------------------------------------------+
+
+
+
+# Top 5 most popular queries
+mysql> select query_count, query, test_passed  from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' order by query_count desc limit 0,5;
++-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+| query_count | query                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | test_passed |
++-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+|         140 | SELECT  sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.9796044216733406-cx,2)+power(8.83778707811599E-4-cy,2)+power(0.200933809930622-cz,2))/2))*60 as distance  FROM lasSource WHERE dec > 11.524904333333334 and dec < 11.658237666666666 and ((RA >= 359.9836201005468 and RA <=360) or (RA >= 0 and RA <= 0.11976198945323814)) and ((cx * 0.9796044216733406 + cy * 8.83778707811599E-4 + cz * 0.200933809930622 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0 |           1 |
+|         105 | SELECT  sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.4889068341683917-cx,2)+power(0.7587730465456335-cy,2)+power(0.4303876988707957-cz,2))/2))*60 as distance  FROM lasSource WHERE dec > 25.425500333333332 and dec < 25.558833666666665 and RA >= 122.72135187204528 and RA <= 122.86914812795472 and ((cx * -0.4889068341683917 + cy * 0.7587730465456335 + cz * 0.4303876988707957 ) >= 0.9999993230724769)                                                                 |           1 |
+|         105 | SELECT  sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.8405676039694232-cx,2)+power(-0.22388287585080252-cy,2)+power(0.4932773672670145-cz,2))/2))*60 as distance  FROM lasSource WHERE dec > 29.48955533333334 and dec < 29.622888666666668 and RA >= 194.83763973694013 and RA <= 194.99102026305988 and ((cx * -0.8405676039694232 + cy * -0.22388287585080252 + cz * 0.4932773672670145 ) >= 0.9999993230724769)                                                              |           1 |
+|         105 | SELECT  sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9196048084450921-cx,2)+power(0.37583543206813-cy,2)+power(0.11434476064441156-cz,2))/2))*60 as distance  FROM lasSource WHERE dec > 6.499166633333333 and dec < 6.632499966666668 and RA >= 22.162342154894958 and RA <= 22.296573845105048 and ((cx * 0.9196048084450921 + cy * 0.37583543206813 + cz * 0.11434476064441156 ) >= 0.9999993230724769)                                                                       |           1 |
+|          95 | SELECT  sourceID, framesetID, RA, Dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(-0.9362163160765321-cx,2)+power(-0.3232452565319383-cy,2)+power(0.13788224556369882-cz,2))/2))*60 as distance  FROM lasSource WHERE dec > 7.858652733333334 and dec < 7.991986066666666 and RA >= 198.98081948511734 and RA <= 199.11546051488264 and ((cx * -0.9362163160765321 + cy * -0.3232452565319383 + cz * 0.13788224556369882 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0                           |           1 |
++-------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+5 rows in set (0.05 sec)
+
+
+
+
+
+Newly Identified Failed queries:
+--------------------------------
+
+
+ 
+Most common errors 
+------------------
+
+
+
+
+
+
+ 
+ 
+
+
+
