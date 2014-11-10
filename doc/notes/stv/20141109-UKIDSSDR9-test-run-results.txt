@@ -125,16 +125,22 @@ mysql> select query_count, query, test_passed  from queries where queryrunID lik
 5 rows in set (0.05 sec)
 
 
-
+# Most Common Error messages
+mysql> select firethorn_error_message, count(firethorn_error_message) AS ct from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' and test_passed<1  group by firethorn_error_message order by ct desc limit 0,5 ;
++-------------------------------------------------------------------------------------------------------------------------------+------+
+| firethorn_error_message                                                                                                       | ct   |
++-------------------------------------------------------------------------------------------------------------------------------+------+
+| PARSE_ERROR -  Encountered "option". Was expecting one of: <EOF> ";" "AND" "OR" "GROUP BY" "HAVING" "ORDER BY"                | 2756 |
+| HTTP Error 500: Internal Server Error                                                                                         |  649 |
+| <urlopen error [Errno 111] Connection refused>                                                                                |  179 |
+| PARSE_ERROR - 3 unresolved identifiers: lasSource [l.1 c.22 - l.1 c.45], ra [l.1 c.52 - l.1 c.54], ra [l.1 c.67 - l.1 c.69] ! |   89 |
+|                                                                                                                               |   82 |
++-------------------------------------------------------------------------------------------------------------------------------+------+
 
 
 Newly Identified Failed queries:
 --------------------------------
 
-
- 
-Most common errors 
-------------------
 
 
 
