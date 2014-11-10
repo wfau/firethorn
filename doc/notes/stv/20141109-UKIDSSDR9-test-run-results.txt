@@ -78,6 +78,29 @@ mysql> select count(*)  from queries where queryrunID like 'GKZzLNwjQXabweASXfT0
 1 row in set (0.07 sec)
 
 
+# Total unique queries NOT containing "DR9" 
+(Reason: The list of available queries was for UKIDSSDR9PLUS but was run on UKIDSSDR3PLUS)
+mysql> select count(*)  from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' and query not like '%DR9%';
++----------+
+| count(*) |
++----------+
+|    12896 |
++----------+
+1 row in set (0.00 sec)
+
+# Number of fails for unique queries NOT containing "DR9" 
+mysql> select count(*)  from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' and query not like '%DR9%' and test_passed<1;
++----------+
+| count(*) |
++----------+
+|     3833 |
++----------+
+1 row in set (0.07 sec)
+
+
+# Success percentage for non DR9 queries = 100-(3833/12896*100) ~= 70%
+
+
 # Number of unique firethorn error messages
 mysql> select count(Distinct(firethorn_error_message)) from queries where queryrunID like 'GKZzLNwjQXabweASXfT0lw' and test_passed<1;
 +------------------------------------------+
