@@ -113,7 +113,7 @@ public class MSSQLMetadataScanner
                     {
                     list.add(
                         catalog(
-                            results
+                    		results.getString("TABLE_CAT")
                             )
                         );
                     }
@@ -135,7 +135,9 @@ public class MSSQLMetadataScanner
                 while (results.next())
                     {
                     Catalog catalog = catalog(
-                        results
+                		results.getString(
+            				"TABLE_CAT"
+            				)
                         );
                     if (catalog.name().toUpperCase().equals(name.trim().toUpperCase()))
                         {
@@ -147,7 +149,7 @@ public class MSSQLMetadataScanner
             };
         }
 
-    protected Catalog catalog(final ResultSet results)
+    protected Catalog catalog(final String name)
     throws SQLException
         {
         return new Catalog()
@@ -163,7 +165,7 @@ public class MSSQLMetadataScanner
                 return this ;
                 }
 
-            protected String name = results.getString("TABLE_CAT");
+            //protected String name = results.getString("TABLE_CAT");
             @Override
             public String name()
                 {
@@ -180,6 +182,7 @@ public class MSSQLMetadataScanner
                         {
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                         final Statement statement = connection().createStatement();
+/*
                         final ResultSet results = statement.executeQuery(
                             "SELECT DISTINCT " +
                             "  TABLE_SCHEMA " +
@@ -190,15 +193,42 @@ public class MSSQLMetadataScanner
                                 catalog().name()
                                 )
                             );
+*/
+                        final ResultSet results = statement.executeQuery(
+                                "SELECT DISTINCT " +
+                                "  SCHEMA_NAME " +
+                                "FROM " +
+                                "  {catalog}.INFORMATION_SCHEMA.SCHEMATA"
+                                .replace(
+                                    "{catalog}",
+                                    catalog().name()
+                                    )
+                                );
+
                         final List<Schema> list = new ArrayList<Schema>();
                         while (results.next())
                             {
-                            list.add(
-                                schema(
-                                    catalog(),
-                                    results
-                                    )
-                                );
+							//
+							// Check for reserved names.
+							final String schemaname = results.getString(
+								"TABLE_SCHEMA"
+								);
+							log.debug("Found schema [{}]", schemaname);
+							if (connector().type().ignore().contains(schemaname))
+								{
+								log.debug(" Ignoring schema [{}]", schemaname);
+								}
+							else {
+								log.debug(" Adding schema [{}]", schemaname);
+	                        	list.add(
+	                                schema(
+	                                    catalog(),
+	                                    results.getString(
+	                                		"TABLE_SCHEMA"
+	                                		)
+	                                    )
+	                                );
+								}
                             }
                         return list ;
                         }
@@ -221,7 +251,9 @@ public class MSSQLMetadataScanner
                             {
                             return schema(
                                 catalog(),
-                                results
+                                results.getString(
+                            		"TABLE_SCHEMA"
+                            		)
                                 );
                             }
                         else {
@@ -231,7 +263,7 @@ public class MSSQLMetadataScanner
                     };
                 }
 
-            protected Schema schema(final Catalog catalog, final ResultSet results)
+            protected Schema schema(final Catalog catalog, final String name)
             throws SQLException
                 {
                 return new Schema()
@@ -246,7 +278,7 @@ public class MSSQLMetadataScanner
                         return this ;
                         }
 
-                    protected String name = results.getString("TABLE_SCHEMA");
+                    //protected String name = results.getString("TABLE_SCHEMA");
                     @Override
                     public String name()
                         {
@@ -278,7 +310,9 @@ public class MSSQLMetadataScanner
                                     list.add(
                                         table(
                                             schema(),
-                                            results
+                                            results.getString(
+                                        		"TABLE_NAME"
+                                        		)
                                             )
                                         );
                                     }
@@ -307,7 +341,9 @@ public class MSSQLMetadataScanner
                                     {
                                     return table(
                                         schema(),
-                                        results
+                                        results.getString(
+                                    		"TABLE_NAME"
+                                    		)
                                         );
                                     }
                                 else {
@@ -317,7 +353,7 @@ public class MSSQLMetadataScanner
                             };
                         }
 
-                    protected Table table(final Schema schema, final ResultSet results)
+                    protected Table table(final Schema schema, final String name)
                     throws SQLException
                         {
                         return new Table()
@@ -332,7 +368,7 @@ public class MSSQLMetadataScanner
                                 return this ;
                                 }
 
-                            final String name = results.getString("TABLE_NAME");
+                            //final String name = results.getString("TABLE_NAME");
                             @Override
                             public String name()
                                 {
