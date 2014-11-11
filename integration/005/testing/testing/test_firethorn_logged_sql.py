@@ -125,8 +125,8 @@ class test_firethorn(unittest.TestCase):
                         queryrunID = get_a_uuid() 
 			fEng = pyrothorn.firethornEngine.FirethornEngine()
                         fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
-                        if (self.include_neighbours):
-                            self.import_neighbours(sqlEng, fEng)
+                    if (self.include_neighbours):
+                        self.import_neighbours(sqlEng, fEng)
                             
                     fEng.printClassVars()
                             
@@ -141,18 +141,17 @@ class test_firethorn(unittest.TestCase):
             self.store_environment_config(fEng, config.stored_env_config, queryrunID)
 	    try:
 
-                java_version = getattr(fEng.getAttribute(web_services_sys_info, "java"),"version")
-                sys_platform = getattr(fEng.getAttribute(web_services_sys_info, "system"),"platform")
-                sys_timestamp = getattr(fEng.getAttribute(web_services_sys_info, "system"),"time")
-                firethorn_changeset = getattr(fEng.getAttribute(web_services_sys_info, "build"),"changeset")
-                firethorn_version = getattr(fEng.getAttribute(web_services_sys_info, "build"),"version")
+                java_version = fEng.getAttribute(web_services_sys_info, "java")["version"]
+                sys_platform = fEng.getAttribute(web_services_sys_info, "system")["platform"]
+                sys_timestamp = fEng.getAttribute(web_services_sys_info, "system")["time"]
+                firethorn_changeset = fEng.getAttribute(web_services_sys_info, "build")["changeset"]
+                firethorn_version = fEng.getAttribute(web_services_sys_info, "build")["version"]
             except Exception as e:
 		java_version = ""
                 sys_platform = ""
                 sys_timestamp = ""
                 firethorn_changeset = ""
                 firethorn_version = ""
-
 	        logging.exception(e)
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
