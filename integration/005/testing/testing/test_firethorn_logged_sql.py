@@ -71,6 +71,8 @@ class test_firethorn(unittest.TestCase):
         self.use_preset_params = config.use_preset_params
         self.use_cached_firethorn_env = config.use_cached_firethorn_env
         self.total_failed = 0
+        self.total_queries = 0
+	self.total_unique_queries = 0
         self.include_neighbours = config.include_neighbour_import
         self.verificationErrors = []
         self.sample_query=config.sample_query
@@ -123,8 +125,8 @@ class test_firethorn(unittest.TestCase):
                         queryrunID = get_a_uuid() 
 			fEng = pyrothorn.firethornEngine.FirethornEngine()
                         fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
-                        if (self.include_neighbours):
-                            self.import_neighbours(sqlEng, fEng)
+                    if (self.include_neighbours):
+                        self.import_neighbours(sqlEng, fEng)
                             
                     fEng.printClassVars()
                             
@@ -150,19 +152,33 @@ class test_firethorn(unittest.TestCase):
                 sys_timestamp = ""
                 firethorn_changeset = ""
                 firethorn_version = ""
-
 	        logging.exception(e)
             logging.info("")
             logged_queries = logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
 	    #logged_queries_cols = logged_query_sqlEng.execute_sql_query("SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('dbo.webqueries') ", config.stored_queries_database, limit=None)
 	    #logging.info(logged_queries_cols)
-
-	    logging.info("Found " + str(len(logged_queries))  + " available queries for " + config.stored_queries_database)
+            total_available_queries = len(logged_queries)
+	    logging.info("Found " + str(total_available_queries)  + " available queries for " + config.stored_queries_database)
 	    logging.info("") 		    
-	    continue_from_here_flag = False    
+	    continue_from_here_flag = False
+
+
+            try:
+                if (config.test_is_continuation):
+                    total_unique_queries_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "'"
+                    self.total_unique_queries = reporting_sqlEng.execute_sql_query(total_unique_queries_qry, config.reporting_database)[0][0]
+                    #total_queries_qry = "select sum(query_count) from queries where  queryrunID='" + queryrunID + "'"
+                    #self.total_queries = reporting_sqlEng.execute_sql_query(total_queries_qry, config.reporting_database)[0][0]
+                    total_failed_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "' and test_passed<=0"
+                    self.total_failed = reporting_sqlEng.execute_sql_query(total_failed_qry, config.reporting_database)[0][0]
+            except Exception as e:
+                self_total_unique_queries = 0
+                self.total_queries = 0
+                self.total_failed = 0            
+
             for query in logged_queries:
 		qEng = queryEngine.QueryEngine()
-                query = query[0].strip()
+                query = str(query[0].strip())
                 querymd5 = self.md5String(query)
                 query_duplicates_found = 0
                 queryid = None
@@ -170,8 +186,7 @@ class test_firethorn(unittest.TestCase):
                 firethorn_error_message = ""
                 sql_error_message =  ""
                 logging.info("Query : " +  query)
-		
-
+		self.total_queries = self.total_queries + 1
                 try:
                     if (config.test_is_continuation):
                         check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "' and queryrunID='" + queryrunID + "'"		          
@@ -195,8 +210,8 @@ class test_firethorn(unittest.TestCase):
                     sql_row_length = -1
 		    firethorn_row_length = -1
 		    sql_error_message = ""
-		    firethorn_error_message = ""	
-		    
+		    firethorn_error_message = ""
+                    self.total_unique_queries = self.total_unique_queries+1
 		    try :
      
                         logging.info("---------------------- Starting Query Test ----------------------")
@@ -246,18 +261,26 @@ class test_firethorn(unittest.TestCase):
 		    logging.info("")
 		    logging.info("")
 
-                    params = (query.encode('utf-8'), queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
+                    params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
                     report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                     reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+                    #self.total_queries = self.total_queries + 1
 
                 else :
                     if (queryid!=None and query_count!=None and (continue_from_here_flag==True)):
 			logging.info("Query has been run already..Skipping & updating count")
-
                         update_query = "UPDATE queries SET query_count=" + str(query_count + 1) + " WHERE queryid=" + str(queryid)
                         update_results = reporting_sqlEng.execute_update(update_query, config.reporting_database)
+                        #self.total_queries = self.total_queries + 1
 
-                        
+
+                logging.info("Total queries: "  + str(self.total_queries))
+                logging.info("Total unique queries: "  + str(self.total_unique_queries))
+                logging.info("Total failed: " + str(self.total_failed))
+                logging.info("Coverage percentage: "  + str(round((float(self.total_queries)/float(total_available_queries))*100,2)) + "%")
+                logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
+               
+
         except Exception as e:
             logging.exception(e)    
         

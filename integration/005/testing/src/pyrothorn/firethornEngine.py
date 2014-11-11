@@ -64,7 +64,6 @@ class FirethornEngine(object):
 	    self.initialise_metadata_import(resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile, jdbc_resource_user, jdbc_resource_pass)
             self.schema_name = self.getAttribute(self.adqlschema, "fullname" )
             self.schema_alias = self.getAttribute(self.adqlschema, "name" )
-
             self.query_schema = self.create_initial_workspace(self.schema_name, self.schema_alias, self.adqlschema)
         except Exception as e:
             logging.exception("Error during pyrothorn initialization")
@@ -132,7 +131,7 @@ class FirethornEngine(object):
         return jdbcspace    
     
 
-    def import_jdbc_metadoc(self, adqlspace="", jdbcspace="", jdbccatalogname='ATLASDR1', jdbcschemaname='dbo',metadocfile=""):
+    def import_jdbc_metadoc(self, adqlspace="", jdbcspace="", jdbccatalogname='', jdbcschemaname='dbo',metadocfile=""):
         '''
          Import a JDBC metadoc
         :param adqlspace:
@@ -175,7 +174,6 @@ class FirethornEngine(object):
                                           ])
             c.perform()
             c.close()
-
 	    adqlschema = json.loads(buf.getvalue())[0]["ident"]
             buf.close() 
             
@@ -270,11 +268,11 @@ class FirethornEngine(object):
         Print out the class (Firethorn environment) variables
         '''
         logging.info("jdbcspace: " + self.jdbcspace)
-        logging.info("adqlspace: " + self.adqlspace)
-        logging.info("adqlschema: " + self.adqlschema)
-        logging.info("query_schema: " + self.query_schema)
-        logging.info("schema_name: " + self.schema_name)
-        logging.info("schema_alias: " + self.schema_alias)     
+        logging.info("adqlspace: " + str(self.adqlspace))
+        logging.info("adqlschema: " + str(self.adqlschema))
+        logging.info("query_schema: " + str(self.query_schema))
+        logging.info("schema_name: " + str(self.schema_name))
+        logging.info("schema_alias: " + str(self.schema_alias))     
     
     
     def getAttribute(self, ident, attr):
