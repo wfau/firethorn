@@ -1,0 +1,278 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Create our container config files.
+#[user@shepseskaf]
+
+    metadata=$(mktemp)
+cat > "${metadata:?}" << EOF
+database=metadata
+username=metadata
+password=secret
+EOF
+
+    userdata=$(mktemp)
+cat > "${userdata:?}" << EOF
+database=userdata
+username=userdata
+password=secret
+EOF
+
+    firethorn=$(mktemp)
+cat > "${firethorn:?}" << EOF
+firethorn.meta.url=jdbc:postgresql://mdhost:5432/metadata
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${metadata}")
+firethorn.meta.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${metadata}")
+
+firethorn.user.url=jdbc:postgresql://udhost:5432/userdata
+firethorn.user.driver=org.postgresql.Driver
+firethorn.user.user=$(sed -n 's/^username=\(.*\)$/\1/p' "${userdata}")
+firethorn.user.pass=$(sed -n 's/^password=\(.*\)$/\1/p' "${userdata}")
+
+firethorn.ogsadai.dqp=testdqp
+firethorn.ogsadai.mode=AUTO
+firethorn.ogsadai.store=userdata
+firethorn.ogsadai.endpoint=http://oghost:8080/ogsadai/services
+EOF
+
+    ogsadai=$(mktemp)
+cat > "${ogsadai:?}" << EOF
+EOF
+
+#
+# Fix to allow container to read properties
+chgrp docker "${firethorn:?}"
+chmod a+r    "${firethorn:?}"
+
+# -------------------------------------------------------------------------------------------
+# Start a set of linked containers together
+#[user@shepseskaf]
+
+    prefix=dmr_test_$(date +%Y%m%d)
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_meta" \
+        --volume "${metadata:?}:/config" \
+        firethorn/postgres:9
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_user" \
+        --volume "${userdata:?}:/config" \
+        firethorn/postgres:9
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_ogsa" \
+        --link "${prefix:?}_user:udhost" \
+        --volume "${ogsadai:?}:/etc/ogsadai.properties" \
+        firethorn/ogsadai
+
+    docker run \
+        --detach \
+        --name "${prefix:?}_fire" \
+        --link "${prefix:?}_meta:mdhost" \
+        --link "${prefix:?}_user:udhost" \
+        --link "${prefix:?}_ogsa:oghost" \
+        --volume "${firethorn:?}:/etc/firethorn.properties" \
+        firethorn/firethorn
+
+# -------------------------------------------------------------------------------------------
+# Watch stdout from the container running firethorn.
+#[user@shepseskaf]
+
+    docker logs -f "${prefix:?}_fire"
+
+# -------------------------------------------------------------------------------------------
+# Start a container running bash.
+# This is a prototype for the commands that will go inside out 'test' container
+#[user@shepseskaf]
+
+    docker run \
+        --rm -i -t \
+        --name "${prefix:?}_test" \
+        --link "${prefix:?}_fire:fthost" \
+        firethorn/fedora bash
+
+# -------------------------------------------------------------------------------------------
+# Inside the test container
+#[root@container]
+
+    yum -y install mercurial
+    yum -y install perl
+    yum -y install perl-JSON        
+    yum -y install curl
+    yum -y install pwgen
+
+    FIRETHORN_BASE=/var/local/firethorn
+
+    mkdir "${FIRETHORN_BASE:?}"
+    pushd "${FIRETHORN_BASE:?}"
+
+        # This gets *everything*, we only need the test scripts
+        hg clone 'http://wfau.metagrid.co.uk/code/firethorn' clone
+
+    popd
+
+    FIRETHORN_CODE="${FIRETHORN_BASE:?}/clone"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    endpointurl=http://fthost:8080/firethorn
+
+    identity=$(pwgen 16 1)
+    community=$(date '+%A')
+
+    source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+#
+# DNS resolver doesn't works for internal addresses
+# You just have to 'know' that from shep ramses2 is 192.168.0.2
+# Looks like we need to copy the hosts file from the docker host
+
+# user@shepseskaf:~$ cat /etc/hosts | grep ramses2
+# 192.168.0.2     ramses2
+
+    #
+    # Create our JdbcResource
+    source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
+        'Atlas JDBC conection' \
+        'jdbc:jtds:sqlserver://192.168.0.2:1433/ATLASDR1' \
+        '#########' \
+        '#########' \
+        'net.sourceforge.jtds.jdbc.Driver' \
+        '*' \
+        'atlas'
+
+    cat > 'firethorn.spaces' << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+    #
+    # Create our AdqlResource
+    source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+    cat >> 'firethorn.spaces' << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+    #
+    # Import the ATLASDR1 metadoc
+    source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" \
+        "${jdbcspace:?}" \
+        "${adqlspace:?}" \
+        'ATLASDR1' \
+        'dbo' \
+        "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+
+    cat >> 'firethorn.spaces' << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+    #
+    # Import the TWOMASS metadoc
+    source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" \
+        "${jdbcspace:?}" \
+        "${adqlspace:?}" \
+        'TWOMASS' \
+        'dbo' \
+        "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+    
+    cat >> 'firethorn.spaces' << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+    #
+    # Load the atlas and twomass identifiers 
+    cat    'firethorn.spaces'
+    source 'firethorn.spaces'
+
+    #
+    # Create a new AdqlResource
+    source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+    #
+    # Import the ATLASDR1 schema.
+    source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+    #
+    # Import the TWOMASS schema.
+    source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+    #
+    # Create our query schema.
+    source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+    #
+    # Run a test query.
+    source "${FIRETHORN_TEST:?}/05-03-execute-query.sh" 'AUTO' "
+        SELECT
+            ra,
+            dec
+        FROM
+            atlasSource
+        WHERE
+            ra  BETWEEN '56.0' AND '57.9'
+        AND
+            dec BETWEEN '24.0' AND '24.2'
+        "
+
+
+
+#
+# We get an error because we haven't configured the OGSA-DAI resource yet.
+2014-11-12 21:20:12,979 DEBUG [FireThornTaskExecutor-1] [PipelineClient] Exception during request processing [{}] 
+uk.org.ogsadai.client.toolkit.exception.ResourceUnknownException: [1415827212951:0] uk.org.ogsadai.RESOURCE_UNKNOWN_ERROR : DataRequestExecutionResource
+
+# -------------------------------------------------------------------------------------------
+# Shutdown our containers
+#[user@shepseskaf]
+
+    **
+    ** This will cause problems if several people are running containers
+    **
+    
+    #
+    # List all our running containers
+    docker ps
+
+    #
+    # List just the docker IDs
+    docker ps -q
+
+    #
+    # Stop all our running containers
+    docker stop $(docker ps -q)
+
+    #
+    # List all our containers
+    docker ps -a
+
+    #
+    # Delete all our containers
+    docker rm $(docker ps -qa)
+
+
+
