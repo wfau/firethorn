@@ -69,7 +69,7 @@ chmod a+r    "${firethorn:?}"
 # Start a set of linked containers together
 #[user@shepseskaf]
 
-    prefix=dmr_test_$(date +%Y%m%d)
+    prefix=$(whoami)_test
 
     docker run \
         --detach \
@@ -238,9 +238,6 @@ EOF
         AND
             dec BETWEEN '24.0' AND '24.2'
         "
-
-
-
 #
 # We get an error because we haven't configured the OGSA-DAI resource yet.
 2014-11-12 21:20:12,979 DEBUG [FireThornTaskExecutor-1] [PipelineClient] Exception during request processing [{}] 
