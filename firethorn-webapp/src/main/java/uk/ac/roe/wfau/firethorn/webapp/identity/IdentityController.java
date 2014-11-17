@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -62,6 +63,12 @@ extends AbstractController
         super();
         }
 
+    /**
+     * MVC property for the {@link Identity}, [{@value}].
+     *
+     */
+    public static final String TARGET_ENTITY = "urn:identity.entity" ;
+    
     /**
      * An {@link EntityBean} wrapper for an {@link Identity}.
      *
@@ -143,6 +150,17 @@ extends AbstractController
                 return null ;
                 }
             }
+
+        /**
+         * Get a URL for the queries owned by this {@Link Identity}
+         * @return A URL for the list of {@link AdqlQuery}s.
+         * @see Identity#queries
+         *
+         */
+        public String getQueries()
+        	{
+        	return entity().link().concat("/queries/select");
+        	}
         }
 
     /**

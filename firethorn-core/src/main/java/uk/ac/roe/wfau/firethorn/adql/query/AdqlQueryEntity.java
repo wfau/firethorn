@@ -107,6 +107,9 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
             ),
         @Index(
             columnList=AdqlQueryEntity.DB_ADQL_SCHEMA_COL
+            ),
+        @Index(
+            columnList=AdqlQueryEntity.DB_GUI_SAVED_COL
             )
         }
     )
@@ -127,6 +130,14 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
         @NamedQuery(
             name  = "AdqlQuery-search-resource.text",
             query = "FROM AdqlQueryEntity WHERE ((schema = :schema) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "AdqlQuery-search-owner-all",
+            query = "FROM AdqlQueryEntity WHERE (owner = :owner) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "AdqlQuery-search-owner-saved",
+            query = "FROM AdqlQueryEntity WHERE ((owner = :owner) AND (saved = :saved)) ORDER BY name asc, ident desc"
             )
         }
      )
@@ -173,6 +184,12 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
     protected static final String DB_OGSADAI_RESOURCE_COL = "ogsadairesource";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_GUI_SAVED_COL = "guisave";
 
     /**
      * Param factory implementation.
@@ -506,6 +523,35 @@ implements AdqlQuery, AdqlParserQuery
                         )
                 );
             }
+
+        @Override
+        public Iterable<AdqlQuery> select(final Identity owner)
+        	{
+            return super.iterable(
+                super.query(
+                    "AdqlQuery-search-owner-all"
+                    ).setEntity(
+                        "owner",
+                        owner
+                    	)
+            	);
+        	}
+
+        @Override
+        public Iterable<AdqlQuery> select(final Identity owner, final Saved saved)
+	    	{
+            return super.iterable(
+        		super.query(
+                    "AdqlQuery-search-owner-saved"
+                    ).setEntity(
+                        "owner",
+                        owner
+                    ).setString(
+                        "saved",
+                        saved.name()
+                    	)
+            	);
+	    	}
         }
 
     /**
@@ -604,6 +650,26 @@ implements AdqlQuery, AdqlParserQuery
          {
          return this.mode;
          }
+
+     /**
+      * The GUI visibility (TEMP|SAVE).
+      *
+      */
+     @Column(
+          name = DB_GUI_SAVED_COL,
+          unique = false,
+          nullable = false,
+          updatable = true
+          )
+      @Enumerated(
+          EnumType.STRING
+          )
+      private Saved saved ;
+      @Override
+      public Saved saved()
+          {
+          return this.saved;
+          }
 
     /**
      * The processed ADQL query.

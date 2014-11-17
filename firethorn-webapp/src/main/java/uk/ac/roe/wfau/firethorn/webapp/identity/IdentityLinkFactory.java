@@ -50,11 +50,17 @@ implements Identity.LinkFactory
     protected static final String BASE_PATH = "/community-member" ;
 
     /**
-     * The URI path for individual columns.
+     * The URI path for individual entities.
      *
      */
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
+    /**
+     * The URI path for identity queries.
+     *
+     */
+    public static final String QUERY_PATH = ENTITY_PATH + "/queries" ;
+    
     @Override
     public String link(final Identity entity)
         {

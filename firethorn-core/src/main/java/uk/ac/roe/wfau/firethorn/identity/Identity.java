@@ -16,6 +16,8 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Saved;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -87,5 +89,30 @@ extends Entity, NamedEntity
      */
     public JdbcSchema space(final boolean create);
 
+    /**
+     * List of queries owned by this identity.
+     * 
+     */
+    public interface Queries
+    	{
+        /**
+         * List of all the queries owned by this identity.
+         * 
+         */
+    	public Iterable<AdqlQuery> select();
+
+    	/**
+         * List of saved (SAVE|TEMP) queries owned by this identity.
+         * 
+         */
+    	public Iterable<AdqlQuery> select(final Saved saved);
+    	}
+    
+    /**
+     * List of queries owned by this identity.
+     * 
+     */
+    public Queries queries();
+    
     }
 

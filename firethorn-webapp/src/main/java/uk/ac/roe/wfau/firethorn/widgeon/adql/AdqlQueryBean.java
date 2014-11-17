@@ -67,7 +67,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
      * @param entity The {@link AdqlQuery} to wrap.
      *
      */
-    protected AdqlQueryBean(final AdqlQuery entity)
+    public AdqlQueryBean(final AdqlQuery entity)
         {
         super(
             AdqlQueryIdentFactory.TYPE_URI,

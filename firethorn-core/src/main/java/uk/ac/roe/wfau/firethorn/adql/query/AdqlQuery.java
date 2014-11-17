@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -456,7 +457,19 @@ extends NamedEntity, Job
          *
          */
         public Limits.Factory limits();
-        
+
+        /**
+         * Select all the queries for an owner.
+         *
+         */
+        public Iterable<AdqlQuery> select(final Identity Owner);
+
+        /**
+         * Select all the queries for an owner.
+         *
+         */
+        public Iterable<AdqlQuery> select(final Identity Owner, final Saved saved);
+
         }
 
     /**
@@ -632,6 +645,32 @@ extends NamedEntity, Job
     public Mode mode();
 
     /**
+     * The UI visibility.
+     *
+     */
+    public enum Saved
+        {
+        /**
+         * Temp query, not saved.
+         *
+         */
+        TEMP(),
+
+        /**
+         * Saved query, visible.
+         *
+         */
+        SAVE();
+
+        }
+
+    /**
+     * The UI visibility.
+     *
+     */
+    public Saved saved();
+    
+    /**
      * The ADQL schema this query applies to.
      *
      */
@@ -766,4 +805,5 @@ extends NamedEntity, Job
      */
     public Results results();
 
+    
     }

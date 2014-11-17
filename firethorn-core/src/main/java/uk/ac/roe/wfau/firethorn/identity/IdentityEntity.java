@@ -32,6 +32,8 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Saved;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -40,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Identity.Queries;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -270,5 +273,28 @@ implements Identity
             }
         return this.jdbcschema;
         }
+
+    @Override
+    public Queries queries()
+    	{
+    	return new Queries()
+    		{
+			@Override
+			public Iterable<AdqlQuery> select()
+				{
+				return factories().queries().factory().select(
+					IdentityEntity.this
+					);
+				}
+			@Override
+			public Iterable<AdqlQuery> select(final Saved saved)
+				{
+				return factories().queries().factory().select(
+					IdentityEntity.this,
+					saved
+					);
+				}
+    		};
+    	}
     }
 
