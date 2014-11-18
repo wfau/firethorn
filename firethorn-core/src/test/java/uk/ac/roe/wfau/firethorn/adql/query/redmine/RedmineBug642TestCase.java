@@ -52,6 +52,6 @@ public class RedmineBug642TestCase
             + " FROM MultiFrame "
             + " WHERE utStart > 0"
                
-            )
+            );
     }
 }
