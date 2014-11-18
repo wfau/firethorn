@@ -27,7 +27,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.23</version>
+        <version project='firethorn'>1.11.23-stv-redmine-junit</version>
     </parent>
 
     <!--groupId>uk.ac.roe.wfau</groupId-->
