@@ -45,10 +45,17 @@ Docker
     Ending the IaaS PaaS Dichotomy by Craig Mcluckie and Brandon Burns (Google)
     https://www.youtube.com/watch?v=06InE1XTlIo
 
+    Docker client on Windows
+    https://ahmetalpbalkan.com/blog/compiling-docker-cli-on-windows/
 
 Google
 
     Firebase
     http://www.wired.com/2014/11/why-google-acquired-firebase/
 
+
+RaspberryPi
+
+    BannanaPi router
+    http://www.bananapi.com/index.php/component/content/article?id=59
 

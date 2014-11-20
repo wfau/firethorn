@@ -763,12 +763,16 @@ public class JdbcSchemaEntity
             }
         catch (SQLException ouch)
             {
-            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
+            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
             scanner.handle(ouch);
             }
         catch (MetadataException ouch)
             {
-            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
+            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
+            }
+        catch (Exception ouch)
+            {
+            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
             }
         finally {
             scanner.connector().close();
@@ -800,6 +804,10 @@ public class JdbcSchemaEntity
                 {
                 log.warn("Exception while fetching schema tables [{}][{}][{}]", this.ident(), schema.name(), ouch.getMessage());
                 schema.catalog().scanner().handle(ouch);
+                }
+            catch (Exception ouch)
+                {
+                log.warn("Exception while fetching schema tables [{}][{}][{}]", this.ident(), schema.name(), ouch.getMessage());
                 }
             }
         }

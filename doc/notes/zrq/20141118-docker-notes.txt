@@ -1,0 +1,151 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------------------------
+# Docker in Docker
+# http://blog.docker.com/2013/09/docker-can-now-run-within-docker/
+
+# ------------------------------------------------------------------
+# Minimal Docker image
+# https://goldmann.pl/blog/2014/03/06/creating-a-minimal-wildfly-docker-image/
+
+
+# ------------------------------------------------------------------
+# Create a minimal CentOS Java container.
+# [root@desktop]
+
+    NAME=java-minmal
+    PRIMARY=java-1.8.0-openjdk-headless
+    BUILDDIR=$(pwd -P)/build
+
+    #
+    # Remove any existing build
+    if [ -e "${BUILDDIR:?}" ]
+    then
+        rm -rf "${BUILDDIR:?}"
+    fi
+
+    #
+    # Install the package(s).
+    yum install \
+      --installroot "${BUILDDIR:?}" \
+      --setopt=override_install_langs=en \
+      --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=base,epel,updates \
+      --releasever=6 \
+      --nogpgcheck \
+      "${PRIMARY:?}" bash
+
+    #
+    # Fedora (needs to run on fedora)
+    # --enablerepo=fedora,updates,updates-testing \
+    # --releasever=20 \
+
+
+    # Clean up the cache and fix the console issue
+    chroot "${BUILDDIR:?}" /bin/bash -x << EOF
+rm -rf /var/cache/yum/*
+rm -rf /dev/console
+ln -s /dev/tty1 /dev/console
+EOF
+
+    #
+    # Import the filesystem into a new Docker image
+    tar -C "${BUILDDIR:?}" -c . | docker import - "${NAME:?}"
+
+    #
+    # Check the size
+    docker images
+
+        REPOSITORY            TAG                         IMAGE ID            CREATED              VIRTUAL SIZE
+        java-minmal           latest                      48bb19a88079        About a minute ago   274.2 MB
+
+
+    #
+    # Test run
+    docker run -i -t java-minmal bash
+
+        openjdk version "1.8.0_25"
+        OpenJDK Runtime Environment (build 1.8.0_25-b17)
+        OpenJDK 64-Bit Server VM (build 25.20-b23, mixed mode)
+
+
+
+# ------------------------------------------------------------------
+# Create a minimal CentOS Tomcat container.
+# [root@desktop]
+
+    NAME=tomcat-minmal
+    BUILDDIR=$(pwd -P)/build
+
+    #
+    # Remove any existing build
+    if [ -e "${BUILDDIR:?}" ]
+    then
+        rm -rf "${BUILDDIR:?}"
+    fi
+
+    #
+    # Install the package and its dependencies.
+    yum install \
+      --installroot "${BUILDDIR:?}" \
+      --setopt=override_install_langs=en \
+      --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=base,epel,updates \
+      --releasever=6 \
+      --nogpgcheck \
+      bash
+
+    yum install \
+      --installroot "${BUILDDIR:?}" \
+      --setopt=override_install_langs=en \
+      --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=base,epel,updates \
+      --releasever=6 \
+      --nogpgcheck \
+      java-1.8.0-openjdk-headless
+
+    yum install \
+      --installroot "${BUILDDIR:?}" \
+      --setopt=override_install_langs=en \
+      --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=base,epel,updates \
+      --releasever=6 \
+      --nogpgcheck \
+      tomcat
+
+
+    # Clean up the cache and fix the console issue
+    chroot "${BUILDDIR:?}" /bin/bash -x << EOF
+rm -rf /var/cache/yum/*
+rm -rf /dev/console
+ln -s /dev/tty1 /dev/console
+EOF
+
+    #
+    # Import the filesystem into a new Docker image
+    tar -C "${BUILDDIR:?}" -c . | docker import - "${NAME:?}"
+
