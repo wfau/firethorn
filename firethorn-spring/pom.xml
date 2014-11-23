@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.24</version>
+        <version project='firethorn'>1.11.24-stv-cds-adql</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
