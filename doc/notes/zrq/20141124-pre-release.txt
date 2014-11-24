@@ -112,16 +112,6 @@
 
     popd
 
-
-
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Clean build
 #[user@desktop]
@@ -132,12 +122,6 @@
         mvn -P all clean install eclipse:eclipse
 
     popd
-
-
-
-
-
-
 
 # -----------------------------------------------------
 # Commit our changes

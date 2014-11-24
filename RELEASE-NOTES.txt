@@ -1,6 +1,184 @@
 Version x.y.z (xxxx-yy-zz)
 -------------------------
 
+    Branch 1.11.25-pre-release         1899:2a1b62201592
+
+    Branch 1.11.24-stv-cds-adql        1900:f4f8e380a0da
+        ####
+
+
+    Branch 1.11.20-stv-pyro-switch     1847:d765e1958c90
+        ####
+
+    Branch 1.11.18-stv-dl-formats      1801:33d61b65b46d
+        ####
+
+
+
+    Branch 1.11.24-arraylist-fix       1896:ed152316c87c (closed)
+
+    Branch 1.11.23-query-owner         1877:7e91738d4550
+
+
+    Branch 1.11.23-stv-redmine-junit
+    1883:fe2aafd94fba (closed)
+        ####
+
+    Branch 1.11.21-sqlserver-meta
+    1872:e76cd2e16865 (closed)
+
+        Fixed bug in MSSQLMetadataScanner
+        Scan failed for empty schema with no tables
+
+        http://redmine.roe.ac.uk/issues/402
+        http://redmine.roe.ac.uk/issues/403
+        http://redmine.roe.ac.uk/issues/551
+
+    Branch 1.11.21-stv-pyro-logging
+    1864:3c4b86c04207 (closed)
+        ####
+
+    Branch 1.11.21-logging-config
+    1852:0efb00bafd8d (closed)
+
+        https://hibernate.atlassian.net/browse/HHH-1367
+        Supress Hibernate warning messages
+
+    Branch 1.11.21-jsp-fix
+    1842:192e76ef42ed (closed)
+
+        Fixed JSON syntax error in system/info
+        
+    Branch 1.11.20-zrq-debug-logging
+    1834:38b901468b83 (closed)
+
+        Reduced verbose logging by a third
+        8332464128 / 2484575796 = 3.35
+        
+    Branch 1.11.19-zrq-dqp-switch
+    1821:70ac9936551c (closed)
+
+        Client control over query mode (AUTO|DIRECT|DISTRIBUTED)
+
+    Branch 1.11.18-zrq-sync-bugfix
+    1825:768dd02bb288 (closed)
+
+        Fix for synchronisation bug
+
+    Branch 1.11.18-zrq-docker-devops
+    1813:aea7c8815f20 (closed)
+
+        Linking Docker containers
+        Experimenting with DiscoveryService
+
+        User data in postgresql
+        PGSQLMetadataScanner implements JdbcMetadataScanner
+** Need to change list to iterator 
+** Need to check fail for empty
+
+    Branch 1.11.18-stv-pyro-sysinfo
+    1806:d8ff54b0394c (closed)
+        ####
+
+    Branch 1.11.18-zrq-adql-meta
+    1769:d8f5c52208fb (closed)
+
+        Added importers to cache AdqlTables and AdqlColumns during import
+        AdqlColumnImporter
+        AdqlTableImporter
+
+    Branch 1.11.17-zrq-dqp-switch
+    1756:66b86bfed26b (closed)
+
+        Server control over query mode (AUTO|DIRECT|DISTRIBUTED)
+        
+    Branch 1.11.15-zrq-sync-bug
+    1740:d44b18ec40f4 (closed)
+
+        Fixed a bug in table metadata scanner
+        Added DQP config for UKIDSSDR3PLUS
+         
+    Branch 1.11.14-zrq-webapp-meta
+    1713:2faaab885f11 (closed)
+
+        Added JSON system information 'page'.
+        /system/info
+        
+    Branch 1.11.13-release
+    1701:17457dbcc6e5
+
+** Not used, needs closing.
+        
+    Branch 1.11.13-zrq-jdbc-meta
+    1705:07b488cdb0ce (closed)
+
+        Improved JdbcSchema and JdbcTable metadata scanning
+
+    Branch 1.11.12-zrq-jdbc-meta
+    1694:465bed4a90a6 (closed)
+
+        Abstract JdbcMetadataScanner interface
+        Concrete MSSQLMetadataScanner implementation
+
+    Branch 1.11.11-zrq-char-debug
+    1685:154a0f0ceafc (closed)
+
+        Errors caused by zero size for name.
+        Failed to create user data table with CHAR(0).
+        Fixed root cause -problem with string array size
+        http://redmine.roe.ac.uk/issues/614
+
+    Branch 1.11.10-zrq-docker-test
+    1675:7396daf59d32 (closed)
+
+        Creating Docker images using docker build
+
+    Branch 1.11.9-zrq-ogsa-meta
+    1659:6a9ea50d7b65 (closed)
+
+        Added interfaces for OgsaService and OgsaResource
+        Refactored OGSA-DAI activities
+
+    Branch 1.11.8-zrq-ogsa-meta
+    1624:f89b05832a89 (closed)
+
+        Preliminary work for OgsaService and OgsaResource
+
+    Branch 1.11.7-release
+    1609:76976d05f007 (closed)
+
+        Pre-release testing
+
+    Branch 1.11.5-stv-python-testing   1550:eedcbb51292e (closed)
+
+    Branch 1.11.5-release
+    1536:0f1a1471868d (closed)
+
+        Pre-release testing
+
+    Branch 1.11.5-zrq-gaia-tap
+    1532:4b88c96db81e (closed)
+
+        Local version of ADQLAsyncQueryActivity with PHASE=RUN
+        to interface with the OGSA-DAI TAP Activity
+
+    Branch 1.11.4-zrq-tableset
+    1521:46e19023d0b9 (closed)
+
+        Populate an IvoaResource from a VOSI tableset document.
+
+    Branch 1.11.3-zrq-community
+    1478:f1ea3f082420 (closed)
+
+        Merging Communtiy membership code from development branch.
+        Merging [branch-1.9.6-zrq-community] into [branch-1.11.3-zrq-community]
+
+    Branch 1.11.2-zrq-merge-test
+    1465:54cd10a44e43 (closed)
+
+        Merging OGSA-DAI DQP code from development branch.
+        Merging [1.9.8-zrq-ogsadai-dqp] into [1.11.2-zrq-merge-test]
+
 
 Version 1.10.9 (2014-05-10)
 -------------------------
