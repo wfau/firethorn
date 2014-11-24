@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 
 import adql.query.IdentifierField;
 import adql.query.from.ADQLJoin;
+import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import cds.utils.TextualSearchList;
 
@@ -112,6 +113,30 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	/* ********************** */
 	/* TABLE ALIAS MANAGEMENT */
 	/* ********************** */
+	
+	/**
+	 * Adds the given table name / alias list to the existing alias list class variables 
+	 * 
+	 * @param tableAliasList	Table alias list.
+	 */
+	public final void putTableAliasList(HashMap<DBTable, ADQLTable> tableAliasList){
+		try {
+		if (tableAliasList!=null){
+				for (Map.Entry<DBTable, ADQLTable> entry : tableAliasList.entrySet()) {
+					DBTable key = entry.getKey(); 
+					ADQLTable value = entry.getValue();
+				    putTableAlias(value.getName(),key.getDBName());
+
+
+
+				}
+			    // ...
+			}
+		} catch (Exception e){
+			System.out.println("Exception caught");
+		}
+		
+	}
 	/**
 	 * Adds the given association between a table name and its alias in a query.
 	 * 

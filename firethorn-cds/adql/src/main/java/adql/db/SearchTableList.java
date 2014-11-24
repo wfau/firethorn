@@ -16,14 +16,13 @@ package adql.db;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
- *                       Astronomisches Rechen Institut (ARI)
+ * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
  */
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import adql.query.IdentifierField;
+
 import adql.query.from.ADQLTable;
 import cds.utils.TextualSearchList;
 
@@ -35,14 +34,15 @@ import cds.utils.TextualSearchList;
  * 	These last information will be used only if the ADQL table name is ambiguous, otherwise all matching elements are returned.
  * </p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.3 (08/2014)
+ * @author Gr&eacute;gory Mantelet (CDS)
+ * @version 09/2011
  */
-public class SearchTableList extends TextualSearchList<DBTable> {
+public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi {
 	private static final long serialVersionUID = 1L;
 
 	/** Indicates whether multiple occurrences are allowed. */
 	private boolean distinct = false;
+
 
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -50,7 +50,7 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	/**
 	 * Void constructor.
 	 */
-	public SearchTableList(){
+	public SearchTableList() {
 		super(new DBTableKeyExtractor());
 	}
 
@@ -59,7 +59,7 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	 * 
 	 * @param collection	Collection of {@link DBTable} to copy.
 	 */
-	public SearchTableList(final Collection<? extends DBTable> collection){
+	public SearchTableList(final Collection<DBTable> collection) {
 		super(collection, new DBTableKeyExtractor());
 	}
 
@@ -68,9 +68,10 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	 * 
 	 * @param initialCapacity	Initial capacity of this list.
 	 */
-	public SearchTableList(final int initialCapacity){
+	public SearchTableList(final int initialCapacity) {
 		super(initialCapacity, new DBTableKeyExtractor());
 	}
+
 
 	/* ******* */
 	/* GETTERS */
@@ -80,7 +81,7 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	 * 
 	 * @return <i>true</i> means that multiple occurrences are allowed, <i>false</i> otherwise.
 	 */
-	public final boolean isDistinct(){
+	public final boolean isDistinct() {
 		return distinct;
 	}
 
@@ -89,7 +90,7 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	 * 
 	 * @param distinct <i>true</i> means that multiple occurrences are allowed, <i>false</i> otherwise.
 	 */
-	public final void setDistinct(final boolean distinct){
+	public final void setDistinct(final boolean distinct) {
 		this.distinct = distinct;
 	}
 
@@ -182,16 +183,18 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 			return tmpResult;
 	}
 
+
 	/* ***************** */
 	/* INHERITED METHODS */
 	/* ***************** */
 	@Override
-	public boolean add(final DBTable item){
+	public boolean add(final DBTable item) {
 		if (distinct && contains(item))
 			return false;
 		else
 			return super.add(item);
 	}
+
 
 	/**
 	 * Lets extracting a key to associate with a given {@link DBTable} instance.
@@ -200,8 +203,7 @@ public class SearchTableList extends TextualSearchList<DBTable> {
 	 * @version 09/2011
 	 */
 	private static class DBTableKeyExtractor implements KeyExtractor<DBTable> {
-		@Override
-		public String getKey(DBTable obj){
+		public String getKey(DBTable obj) {
 			return obj.getADQLName();
 		}
 	}
