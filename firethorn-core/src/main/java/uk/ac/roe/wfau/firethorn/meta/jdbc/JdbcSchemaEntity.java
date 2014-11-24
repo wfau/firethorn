@@ -737,13 +737,13 @@ public class JdbcSchemaEntity
         JdbcMetadataScanner scanner = resource().connection().scanner();
 
         //
-        // Load our existing tables.
-        Map<String, JdbcTable> existing = new HashMap<String, JdbcTable>();
+        // Load our Map of known tables.
+        Map<String, JdbcTable> known = new HashMap<String, JdbcTable>();
         Map<String, JdbcTable> matching = new HashMap<String, JdbcTable>();
         for (JdbcTable table : factories().jdbc().tables().select(JdbcSchemaEntity.this))
             {
-            log.trace("Caching existing table [{}]", table.name());
-            existing.put(
+            log.trace("Caching known table [{}]", table.name());
+            known.put(
                 table.name(),
                 table
                 );
@@ -752,7 +752,7 @@ public class JdbcSchemaEntity
         // Process our tables.
         try {
             scan(
-                existing,
+                known,
                 matching,
                 scanner.catalogs().select(
                     this.catalog()
@@ -778,11 +778,11 @@ public class JdbcSchemaEntity
             scanner.connector().close();
             }
         log.debug("tables() scan done for [{}][{}]", this.ident(), this.namebuilder());
-        log.debug("Existing contains [{}]", existing.size());
-        log.debug("Matching contains [{}]", matching.size());
+        log.debug("Matching tables [{}]", matching.size());
+        log.debug("Listed but not matched [{}]", known.size());
         }
 
-    protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
+    protected void scan(final Map<String, JdbcTable> known, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
         {
         log.debug("scanning schema [{}]", (schema != null) ? schema.name() : null);
         if (schema == null)
@@ -794,7 +794,7 @@ public class JdbcSchemaEntity
                 for (JdbcMetadataScanner.Table table : schema.tables().select())
                     {
                     scan(
-                        existing,
+                        known,
                         matching,
                         table
                         );
@@ -820,7 +820,7 @@ public class JdbcSchemaEntity
         // Check for an existing match.
         if (existing.containsKey(name))
             {
-            log.trace("Found existing table [{}]", name);
+            log.trace("Found matching table [{}]", name);
             matching.put(
                 name,
                 existing.remove(

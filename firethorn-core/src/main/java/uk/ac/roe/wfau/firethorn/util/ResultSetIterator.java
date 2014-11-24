@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * An abstract base class for {@link ResultSet} {@link Iterator}s.
+ * An abstract class to wrap a {@link ResultSet} as an {@link Iterator}.
  * http://stackoverflow.com/a/1870090 
  *
  */
@@ -34,10 +34,63 @@ public abstract class ResultSetIterator<EntityType>
 implements Iterator<EntityType>
     {
     /**
+     * An abstract factory class to wrap a {@link ResultSet} as an {@link Iterable}.
+     * 
+     */
+    public abstract static class Factory<EntityType>
+    implements Iterable<EntityType>
+        {
+        /**
+         * Abstract method to get the next EntityType.
+         *
+         */
+        protected abstract EntityType getNext()
+        throws SQLException; 
+
+        /**
+         * Our target {@link ResultSet}.
+         * 
+         */
+        private ResultSet results ;
+
+        /**
+         * Our target {@link ResultSet}.
+         * 
+         */
+        protected ResultSet results()
+            {
+            return this.results;
+            }
+        
+        /**
+         * Public constructor.
+         * 
+         */
+        public Factory(final ResultSet results)
+            {
+            this.results = results ;
+            }
+        
+        @Override
+        public Iterator<EntityType> iterator()
+            {
+            return new ResultSetIterator<EntityType>(this.results)
+                {
+                @Override
+                protected EntityType getNext()
+                    throws SQLException
+                    {
+                    return Factory.this.getNext();
+                    }
+                };
+            }
+        }
+    
+    /**
      * Abstract method to get the next EntityType.
      *
      */
-    protected abstract EntityType getNext(final ResultSet results)
+    protected abstract EntityType getNext()
     throws SQLException; 
 
     /**
@@ -55,7 +108,16 @@ implements Iterator<EntityType>
         this.results = results ;
         }
 
+    /**
+     * Boolean flag to indicate we have another result.
+     * 
+     */
     private boolean hasNext = false ;
+
+    /**
+     * Boolean flag to indicate we have called {@link ResultSet#next()}.
+     * 
+     */
     private boolean didNext = false ;
     
     @Override
@@ -92,9 +154,7 @@ implements Iterator<EntityType>
 
             if (hasNext == true)
                 {
-                return getNext(
-                    results
-                    );
+                return getNext();
                 }
             else {
                 throw new NoSuchElementException();

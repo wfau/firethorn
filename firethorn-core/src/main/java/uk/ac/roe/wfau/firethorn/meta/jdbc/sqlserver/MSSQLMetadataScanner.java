@@ -21,10 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
+import uk.ac.roe.wfau.firethorn.util.ResultSetFilterator;
+import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
 
 /**
  *
@@ -99,45 +99,29 @@ public class MSSQLMetadataScanner
             public Iterable<Catalog> select()
             throws SQLException
                 {
-                /*
-                // https://stackoverflow.com/questions/147659/get-list-of-databases-from-sql-server
-                final Statement statement = connection.createStatement();
-                final ResultSet results = statement.executeQuery(
-                    "SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4"
-                    );
-                 */
                 final ResultSet results = connection().getMetaData().getCatalogs();
-                final List<Catalog> list = new ArrayList<Catalog>();
-                while (results.next())
+                return new ResultSetIterator.Factory<Catalog>(results)
                     {
-                    list.add(
-                        catalog(
-                    		results.getString("TABLE_CAT")
-                            )
-                        );
-                    }
-                return list ;
+                    @Override
+                    protected Catalog getNext() throws SQLException
+                        {
+                        return catalog(
+                            results.getString(
+                                "TABLE_CAT"
+                                )
+                            );
+                        }
+                    };
                 }
 
             @Override
             public Catalog select(final String name)
             throws SQLException
                 {
-                /*
-                final PreparedStatement statement = connection.prepareStatement(
-                    "SELECT name FROM master.dbo.sysdatabases WHERE dbid > 4 AND name = ?"
-                    );
-                statement.setString(1, name);
-                final ResultSet results = statement.executeQuery();
-                */
-                final ResultSet results = connection().getMetaData().getCatalogs();
-                while (results.next())
+                Iterator<Catalog> catalogs = select().iterator();
+                while (catalogs.hasNext())
                     {
-                    Catalog catalog = catalog(
-                		results.getString(
-            				"TABLE_CAT"
-            				)
-                        );
+                    Catalog catalog = catalogs.next(); 
                     if (catalog.name().toUpperCase().equals(name.trim().toUpperCase()))
                         {
                         return catalog;
@@ -156,7 +140,6 @@ public class MSSQLMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                //return _scanner();
                 return MSSQLMetadataScanner.this; 
                 }
             protected Catalog catalog()
@@ -164,7 +147,6 @@ public class MSSQLMetadataScanner
                 return this ;
                 }
 
-            //protected String name = results.getString("TABLE_CAT");
             @Override
             public String name()
                 {
@@ -182,8 +164,7 @@ public class MSSQLMetadataScanner
                         log.debug("schemas().select() for [{}]", catalog().name());
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                     	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
-                        final Statement statement = connection().createStatement();
-                        final ResultSet results = statement.executeQuery(
+                        final PreparedStatement statement = connection().prepareStatement(
                             (
                     		" SELECT DISTINCT" +
                             "   SCHEMA_NAME" +
@@ -195,31 +176,36 @@ public class MSSQLMetadataScanner
                                 )
                             );
                         log.debug("Statement [{}]", statement.toString());
-
-                        final List<Schema> list = new ArrayList<Schema>();
-                        while (results.next())
-                            {
-							//
-							// Check for reserved names.
-							final String schemaname = results.getString(
-								"SCHEMA_NAME"
-								);
-							log.debug("Found schema [{}]", schemaname);
-							if (connector().type().ignore().contains(schemaname))
-								{
-								log.debug(" Ignoring schema [{}]", schemaname);
-								}
-							else {
-								log.debug(" Adding schema [{}]", schemaname);
-	                        	list.add(
-	                                schema(
-	                                    catalog(),
-	                                    schemaname
-	                                    )
-	                                );
-								}
-                            }
-                        return list ;
+                        return new ResultSetFilterator.Factory<Schema>(
+                            statement.executeQuery()
+                            ){
+                            /**
+                             * Get the next {@link Schema}, skipping reserved names.
+                             *  
+                             */
+                            @Override
+                            protected Schema getNext() throws SQLException
+                                {
+                                //
+                                // Check for reserved names.
+                                final String schemaname = results().getString(
+                                    "SCHEMA_NAME"
+                                    );
+                                log.debug("Found schema [{}]", schemaname);
+                                if (connector().type().ignore().contains(schemaname))
+                                    {
+                                    log.debug(" Ignoring schema [{}]", schemaname);
+                                    return null ;
+                                    }
+                                else {
+                                    log.debug(" Returning schema [{}]", schemaname);
+                                    return schema(
+                                        catalog(),
+                                        schemaname
+                                        );
+                                    }
+                                }
+                            };
                         }
 
                     @Override
@@ -258,6 +244,7 @@ public class MSSQLMetadataScanner
 							if (connector().type().ignore().contains(schemaname))
 								{
 								log.debug(" Ignoring schema [{}]", schemaname);
+								return null ;
 								}
 							else {
 	                        	return schema(
@@ -266,7 +253,9 @@ public class MSSQLMetadataScanner
 	                                );
                             	}
                             }
-                        return null;
+                        else {
+                            return null;
+                            }
                         }
                     };
                 }
@@ -286,7 +275,6 @@ public class MSSQLMetadataScanner
                         return this ;
                         }
 
-                    //protected String name = results.getString("TABLE_SCHEMA");
                     @Override
                     public String name()
                         {
@@ -318,20 +306,20 @@ public class MSSQLMetadataScanner
                                         )
                                     );
                                 statement.setString(1, schema().name());
-                                final ResultSet results = statement.executeQuery();
-                                final List<Table> list = new ArrayList<Table>();
-                                while (results.next())
+                                return new ResultSetIterator.Factory<Table>(statement.executeQuery())
                                     {
-                                    list.add(
-                                        table(
+                                    @Override
+                                    protected Table getNext()
+                                        throws SQLException
+                                        {
+                                        return table(
                                             schema(),
-                                            results.getString(
-                                        		"TABLE_NAME"
-                                        		)
-                                            )
-                                        );
-                                    }
-                                return list ;
+                                            results().getString(
+                                                "TABLE_NAME"
+                                                )
+                                            );
+                                        }
+                                    };
                                 }
 
                             @Override
@@ -396,7 +384,6 @@ public class MSSQLMetadataScanner
                                 return this ;
                                 }
 
-                            //final String name = results.getString("TABLE_NAME");
                             @Override
                             public String name()
                                 {
@@ -441,18 +428,19 @@ public class MSSQLMetadataScanner
                                             table().name()
                                             );
 
-                                        final ResultSet results = statement.executeQuery();
-                                        final List<Column> list = new ArrayList<Column>();
-                                        while (results.next())
-                                            {
-                                            list.add(
-                                                column(
+                                        return new ResultSetIterator.Factory<Column>(
+                                            statement.executeQuery()
+                                            ){
+                                            @Override
+                                            protected Column getNext()
+                                                throws SQLException
+                                                {
+                                                return column(
                                                     table(),
-                                                    results
-                                                    )
-                                                );
-                                            }
-                                        return list ;
+                                                    results()
+                                                    );
+                                                }
+                                            };
                                         }
 
                                     @Override
