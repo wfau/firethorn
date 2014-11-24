@@ -16,21 +16,22 @@ package adql.query;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2013 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 /**
  * Represents an ADQL clause (i.e. SELECT, FROM, WHERE, ...).
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 11/2010
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.2 (12/2013)
  */
-public class ClauseADQL<T extends ADQLObject> extends ADQLList<T> {
+public class ClauseADQL< T extends ADQLObject > extends ADQLList<T> {
 
 	/**
 	 * Builds an anonymous ClauseADQL.
 	 */
-	public ClauseADQL() {
+	public ClauseADQL(){
 		super((String)null);
 	}
 
@@ -39,7 +40,7 @@ public class ClauseADQL<T extends ADQLObject> extends ADQLList<T> {
 	 * 
 	 * @param name	List label.
 	 */
-	public ClauseADQL(String name) {
+	public ClauseADQL(String name){
 		super(name);
 	}
 
@@ -49,14 +50,13 @@ public class ClauseADQL<T extends ADQLObject> extends ADQLList<T> {
 	 * @param toCopy		The ClauseADQL to copy.
 	 * @throws Exception	If there is an unexpected error during the copy.
 	 */
-	public ClauseADQL(ADQLList<T> toCopy) throws Exception {
+	public ClauseADQL(ADQLList<T> toCopy) throws Exception{
 		super(toCopy);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public ADQLObject getCopy() throws Exception {
-		return new ClauseADQL(this);
+	public ADQLObject getCopy() throws Exception{
+		return new ClauseADQL<T>(this);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class ClauseADQL<T extends ADQLObject> extends ADQLList<T> {
 	 * @see adql.query.ADQLList#getPossibleSeparators()
 	 */
 	@Override
-	public String[] getPossibleSeparators() {
+	public String[] getPossibleSeparators(){
 		return new String[]{","};
 	}
 
@@ -75,9 +75,9 @@ public class ClauseADQL<T extends ADQLObject> extends ADQLList<T> {
 	 * @see adql.query.ADQLList#getSeparator(int)
 	 */
 	@Override
-	public String getSeparator(int index) throws ArrayIndexOutOfBoundsException {
+	public String getSeparator(int index) throws ArrayIndexOutOfBoundsException{
 		if (index <= 0 || index > size())
-			throw new ArrayIndexOutOfBoundsException("Impossible to get the separator between the item "+(index-1)+" and "+index+" !");
+			throw new ArrayIndexOutOfBoundsException("Impossible to get the separator between the item " + (index - 1) + " and " + index + " !");
 		else
 			return ",";
 	}

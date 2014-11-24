@@ -16,13 +16,13 @@ package adql.query.operand.function.geometry;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLObject;
-
-import adql.query.operand.ADQLOperand;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.ADQLOperand;
 
 /**
  * <p>It represents the COORDSYS function the ADQL language.</p>
@@ -35,14 +35,13 @@ import adql.query.operand.ADQLColumn;
  * system with GEOCENTER reference position.
  * </i></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 06/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (10/2014)
  */
 public class ExtractCoordSys extends GeometryFunction {
 
 	/** The geometry from which the coordinate system string must be extracted. */
 	protected GeometryValue<GeometryFunction> geomExpr;
-
 
 	/**
 	 * Builds a COORDSYS function.
@@ -61,52 +60,61 @@ public class ExtractCoordSys extends GeometryFunction {
 	 * @throws Exception	If there is an error during the copy.
 	 */
 	@SuppressWarnings("unchecked")
-	public ExtractCoordSys(ExtractCoordSys toCopy) throws Exception {
+	public ExtractCoordSys(ExtractCoordSys toCopy) throws Exception{
 		super();
 		geomExpr = (GeometryValue<GeometryFunction>)(toCopy.geomExpr.getCopy());
 	}
 
-	public ADQLObject getCopy() throws Exception {
+	@Override
+	public ADQLObject getCopy() throws Exception{
 		return new ExtractCoordSys(this);
 	}
 
-	public String getName() {
+	@Override
+	public String getName(){
 		return "COORDSYS";
 	}
 
-	public boolean isNumeric() {
+	@Override
+	public boolean isNumeric(){
 		return false;
 	}
 
-	public boolean isString() {
+	@Override
+	public boolean isString(){
 		return true;
 	}
 
 	@Override
-	public ADQLOperand[] getParameters() {
+	public boolean isGeometry(){
+		return false;
+	}
+
+	@Override
+	public ADQLOperand[] getParameters(){
 		return new ADQLOperand[]{geomExpr.getValue()};
 	}
 
 	@Override
-	public int getNbParameters() {
+	public int getNbParameters(){
 		return 1;
 	}
 
 	@Override
-	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException {
+	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException{
 		if (index == 0)
 			return geomExpr.getValue();
 		else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function "+getName()+" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function " + getName() + " !");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception {
+	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception{
 		if (index == 0){
 			ADQLOperand replaced = geomExpr.getValue();
 			if (replacer == null)
-				throw new NullPointerException("Impossible to remove the only required parameter of the "+getName()+" function !");
+				throw new NullPointerException("Impossible to remove the only required parameter of the " + getName() + " function !");
 			else if (replacer instanceof GeometryValue)
 				geomExpr = (GeometryValue<GeometryFunction>)replacer;
 			else if (replacer instanceof ADQLColumn)
@@ -114,10 +122,10 @@ public class ExtractCoordSys extends GeometryFunction {
 			else if (replacer instanceof GeometryFunction)
 				geomExpr.setGeometry((GeometryFunction)replacer);
 			else
-				throw new Exception("Impossible to replace GeometryValue/Column/GeometryFunction by a "+replacer.getClass().getName()+" ("+replacer.toADQL()+") !");
+				throw new Exception("Impossible to replace GeometryValue/Column/GeometryFunction by a " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 			return replaced;
 		}else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function "+getName()+" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function " + getName() + " !");
 	}
 
 }

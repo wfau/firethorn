@@ -160,4 +160,10 @@ extends ADQLFunction
 				throw new ArrayIndexOutOfBoundsException();
 			}
 		}
+
+	@Override
+	public boolean isGeometry() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	}
