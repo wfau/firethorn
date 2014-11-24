@@ -76,14 +76,13 @@ public class MSSQLMetadataScanner
         log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
         if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
             {
-            log.warn("Fatal error code, closing existing connection");
+            log.warn("Fatal error code, resetting connection");
             try {
                 connector().reset();
                 }
             catch (Exception eeek)
                 {
-                //log.warn("SQLException while closing connection [{}][{}][{}]", eeek.getErrorCode(), eeek.getSQLState(), eeek.getMessage());
-                log.warn("Exception while closing connection [{}]", eeek.getMessage());
+                log.warn("Exception while resetting connection following SQLException [{}]", eeek.getMessage());
                 }
             finally {
                 connection = null ;

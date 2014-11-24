@@ -20,3 +20,18 @@
 #
 #
 
+    release notes
+
+    self
+
+    prefix
+
+    leak fix
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+

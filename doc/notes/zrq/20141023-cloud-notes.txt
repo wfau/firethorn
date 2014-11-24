@@ -45,8 +45,19 @@ Docker
     Ending the IaaS PaaS Dichotomy by Craig Mcluckie and Brandon Burns (Google)
     https://www.youtube.com/watch?v=06InE1XTlIo
 
-    Docker client on Windows
+    Docker (client) on Windows
     https://ahmetalpbalkan.com/blog/compiling-docker-cli-on-windows/
+    Docker (ish) on Windows
+    http://www.zdnet.com/docker-cto-why-microsofts-docker-plans-for-windows-will-matter-to-you-7000035150/
+
+    Docker on Amazon
+    http://www.datacenterknowledge.com/archives/2014/11/17/aws-docker-support-is-major-leap-forward-for-containers/
+    http://www.datacenterknowledge.com/archives/2014/11/13/amazon-intros-docker-container-management-service/
+    http://www.datacenterknowledge.com/archives/2014/11/04/google-brings-containers-cloud-hosted-kubernetes/
+
+    ClusterHQ
+    https://clusterhq.com/
+
 
 Google
 
@@ -54,8 +65,20 @@ Google
     http://www.wired.com/2014/11/why-google-acquired-firebase/
 
 
-RaspberryPi
+Other
 
     BannanaPi router
     http://www.bananapi.com/index.php/component/content/article?id=59
+
+    ElasticSearch
+    http://www.elasticsearch.org/
+    https://docs.clusterhq.com/en/latest/gettingstarted/examples/linking.html
+
+
+    SubUser
+    http://subuser.org/
+
+    Docker-nVidia
+    https://github.com/thewtex/docker-opengl-nvidia/blob/master/Dockerfile
+
 
