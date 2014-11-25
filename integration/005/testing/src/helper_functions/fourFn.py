@@ -181,7 +181,7 @@ multop = mult | div
 expop = Literal( "^" )
 assign = Literal( "=" )
 colon = Literal( ',' )
-ident = Word(alphas, alphas+nums+"_$")
+self = Word(alphas, alphas+nums+"_$")
 fnumber = Combine( Word( "+-"+nums, nums ) + 
                        Optional( point + Optional( Word( nums ) ) ) +
                        Optional( e + Word( "+-"+nums, nums ) ) )
@@ -192,7 +192,7 @@ charn = Combine( Word(alphas) + Optional(Word ( nums )))
 expr = Forward()
 
 
-atom = ( Optional("-") + ( pi | e | fnumber | integer | ident + lpar + expr + rpar | charn  ).setParseAction(pushFirst) | 
+atom = ( Optional("-") + ( pi | e | fnumber | integer | self + lpar + expr + rpar | charn  ).setParseAction(pushFirst) | 
          ( lpar + expr.suppress() + rpar )
        ).setParseAction(pushUMinus) 
         

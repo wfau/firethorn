@@ -1522,13 +1522,13 @@ class Keyword(Token):
          Literal("if") will match the leading C{'if'} in C{'ifAndOnlyIf'}.
          Keyword("if") will not; it will only match the leading C{'if'} in C{'if x=1'}, or C{'if(y==2)'}
        Accepts two optional constructor arguments in addition to the keyword string:
-       C{identChars} is a string of characters that would be valid identifier characters,
+       C{selfChars} is a string of characters that would be valid selfifier characters,
        defaulting to all alphanumerics + "_" and "$"; C{caseless} allows case-insensitive
        matching, default is C{False}.
     """
     DEFAULT_KEYWORD_CHARS = alphanums+"_$"
 
-    def __init__( self, matchString, identChars=DEFAULT_KEYWORD_CHARS, caseless=False ):
+    def __init__( self, matchString, selfChars=DEFAULT_KEYWORD_CHARS, caseless=False ):
         super(Keyword,self).__init__()
         self.match = matchString
         self.matchLen = len(matchString)
@@ -1544,20 +1544,20 @@ class Keyword(Token):
         self.caseless = caseless
         if caseless:
             self.caselessmatch = matchString.upper()
-            identChars = identChars.upper()
-        self.identChars = set(identChars)
+            selfChars = selfChars.upper()
+        self.selfChars = set(selfChars)
 
     def parseImpl( self, instring, loc, doActions=True ):
         if self.caseless:
             if ( (instring[ loc:loc+self.matchLen ].upper() == self.caselessmatch) and
-                 (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen].upper() not in self.identChars) and
-                 (loc == 0 or instring[loc-1].upper() not in self.identChars) ):
+                 (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen].upper() not in self.selfChars) and
+                 (loc == 0 or instring[loc-1].upper() not in self.selfChars) ):
                 return loc+self.matchLen, self.match
         else:
             if (instring[loc] == self.firstMatchChar and
                 (self.matchLen==1 or instring.startswith(self.match,loc)) and
-                (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen] not in self.identChars) and
-                (loc == 0 or instring[loc-1] not in self.identChars) ):
+                (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen] not in self.selfChars) and
+                (loc == 0 or instring[loc-1] not in self.selfChars) ):
                 return loc+self.matchLen, self.match
         #~ raise ParseException( instring, loc, self.errmsg )
         exc = self.myException
@@ -1567,7 +1567,7 @@ class Keyword(Token):
 
     def copy(self):
         c = super(Keyword,self).copy()
-        c.identChars = Keyword.DEFAULT_KEYWORD_CHARS
+        c.selfChars = Keyword.DEFAULT_KEYWORD_CHARS
         return c
 
     def setDefaultKeywordChars( chars ):
@@ -1598,12 +1598,12 @@ class CaselessLiteral(Literal):
         raise exc
 
 class CaselessKeyword(Keyword):
-    def __init__( self, matchString, identChars=Keyword.DEFAULT_KEYWORD_CHARS ):
-        super(CaselessKeyword,self).__init__( matchString, identChars, caseless=True )
+    def __init__( self, matchString, selfChars=Keyword.DEFAULT_KEYWORD_CHARS ):
+        super(CaselessKeyword,self).__init__( matchString, selfChars, caseless=True )
 
     def parseImpl( self, instring, loc, doActions=True ):
         if ( (instring[ loc:loc+self.matchLen ].upper() == self.caselessmatch) and
-             (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen].upper() not in self.identChars) ):
+             (loc >= len(instring)-self.matchLen or instring[loc+self.matchLen].upper() not in self.selfChars) ):
             return loc+self.matchLen, self.match
         #~ raise ParseException( instring, loc, self.errmsg )
         exc = self.myException
@@ -3727,10 +3727,10 @@ if __name__ == "__main__":
     selectToken    = CaselessLiteral( "select" )
     fromToken      = CaselessLiteral( "from" )
 
-    ident          = Word( alphas, alphanums + "_$" )
-    columnName     = delimitedList( ident, ".", combine=True ).setParseAction( upcaseTokens )
+    self          = Word( alphas, alphanums + "_$" )
+    columnName     = delimitedList( self, ".", combine=True ).setParseAction( upcaseTokens )
     columnNameList = Group( delimitedList( columnName ) )#.setName("columns")
-    tableName      = delimitedList( ident, ".", combine=True ).setParseAction( upcaseTokens )
+    tableName      = delimitedList( self, ".", combine=True ).setParseAction( upcaseTokens )
     tableNameList  = Group( delimitedList( tableName ) )#.setName("tables")
     simpleSQL      = ( selectToken + \
                      ( '*' | columnNameList ).setResultsName( "columns" ) + \

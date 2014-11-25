@@ -85,7 +85,7 @@ class QueryEngine(object):
     
             f = urllib2.urlopen(request)
             query_create_result = json.loads(f.read())
-            query_identity = query_create_result["ident"]
+            query_selfity = query_create_result["self"]
             
             # Update query
             urlenc_updt = { query_limit_rows_param : firethorn_limits_rows_absolute}

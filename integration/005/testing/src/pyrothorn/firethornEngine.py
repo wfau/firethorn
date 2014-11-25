@@ -124,7 +124,7 @@ class FirethornEngine(object):
 
             req = urllib2.Request( config.jdbc_creator, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email , "firethorn.auth.community" : "public (unknown)"})
             response = urllib2.urlopen(req)
-            jdbcspace = json.loads(response.read())["ident"]
+            jdbcspace = json.loads(response.read())["self"]
             response.close()
         except Exception as e:
             logging.exception("Error creating jdbc space")
@@ -152,7 +152,7 @@ class FirethornEngine(object):
                                      "jdbc.resource.schema.select.schema" : jdbcschemaname})
             req = urllib2.Request( jdbcspace + "/schemas/select", data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email , "firethorn.auth.community" : "public (unknown)"})
             response = urllib2.urlopen(req)
-            jdbcschemaident = json.loads(response.read())["ident"]
+            jdbcschemaself = json.loads(response.read())["self"]
             response.close()
         except Exception as e:
             logging.exception("Error creating importing jdbc metadoc:  " + jdbcschemaident)
@@ -174,7 +174,7 @@ class FirethornEngine(object):
                                           ])
             c.perform()
             c.close()
-	    adqlschema = json.loads(buf.getvalue())[0]["ident"]
+	    adqlschema = json.loads(buf.getvalue())[0]["self"]
             buf.close() 
             
         except Exception as e:
@@ -201,7 +201,7 @@ class FirethornEngine(object):
                                      "urn:adql.copy.depth": config.adql_copy_depth})
             req = urllib2.Request( config.workspace_creator, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email , "firethorn.auth.community" : "public (unknown)"})
             response = urllib2.urlopen(req)
-            adqlspace = json.loads(response.read())["ident"]
+            adqlspace = json.loads(response.read())["self"]
             response.close()
         except Exception as e:
             logging.exception("Error creating ADQL space")
@@ -220,7 +220,7 @@ class FirethornEngine(object):
             data = urllib.urlencode({config.resource_create_name_params['http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-schema-1.0.json'] : "query_schema"})
             req = urllib2.Request( resource +  config.schema_create_uri, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : config.test_email, "firethorn.auth.community" : "public (unknown)"})
             response = urllib2.urlopen(req) 
-            query_schema = json.loads(response.read())["ident"]
+            query_schema = json.loads(response.read())["self"]
             response.close()
         except Exception as e:
             logging.exception("Error creating query schema")
