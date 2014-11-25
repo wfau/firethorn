@@ -1,8 +1,8 @@
 
     Branch 1.11.25-pre-release         1899:2a1b62201592
+
     Branch 1.11.24-stv-cds-adql        1900:f4f8e380a0da
         ####
-    Branch 1.11.23-query-owner         1877:7e91738d4550
     Branch 1.11.20-stv-pyro-switch     1847:d765e1958c90
         ####
     Branch 1.11.18-stv-dl-formats      1801:33d61b65b46d
@@ -12,11 +12,15 @@
 Version x.y.z (xxxx-yy-zz)
 -------------------------
 
+
     Branch 1.11.24-arraylist-fix
     1896:ed152316c87c (closed)
 
         Reduced memory footprint
         Replaced ArrayList with ResultSetIterator
+
+    Branch 1.11.23-query-owner         1877:7e91738d4550
+
 
     Branch 1.11.23-stv-redmine-junit
     1883:fe2aafd94fba (closed)
