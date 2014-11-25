@@ -254,14 +254,6 @@ EOF
 
     popd
 
-
-
-
-
-
-
-
-
 # -------------------------------------------------------------------------------------------
 # Push our artifacts to our Maven repo.
 #[user@desktop]
@@ -312,6 +304,7 @@ EOF
 
     docker images
 
+TODO
 # -------------------------------------------------------------------------------------------
 # Push our webapp images to Docker Hub.
 # https://docs.docker.com/userguide/dockerhub/

@@ -48,6 +48,7 @@ public interface EntityBean<EntityType extends Entity>
      *
      */
     public URI getSelf();
+    public URI getIdent();
 
     /**
      * Get the Entity type.
