@@ -1,24 +1,22 @@
-Version x.y.z (xxxx-yy-zz)
--------------------------
 
     Branch 1.11.25-pre-release         1899:2a1b62201592
-
     Branch 1.11.24-stv-cds-adql        1900:f4f8e380a0da
         ####
-
-
+    Branch 1.11.23-query-owner         1877:7e91738d4550
     Branch 1.11.20-stv-pyro-switch     1847:d765e1958c90
         ####
-
     Branch 1.11.18-stv-dl-formats      1801:33d61b65b46d
         ####
 
 
+Version x.y.z (xxxx-yy-zz)
+-------------------------
 
-    Branch 1.11.24-arraylist-fix       1896:ed152316c87c (closed)
+    Branch 1.11.24-arraylist-fix
+    1896:ed152316c87c (closed)
 
-    Branch 1.11.23-query-owner         1877:7e91738d4550
-
+        Reduced memory footprint
+        Replaced ArrayList with ResultSetIterator
 
     Branch 1.11.23-stv-redmine-junit
     1883:fe2aafd94fba (closed)
@@ -117,8 +115,8 @@ Version x.y.z (xxxx-yy-zz)
     Branch 1.11.12-zrq-jdbc-meta
     1694:465bed4a90a6 (closed)
 
-        Abstract JdbcMetadataScanner interface
-        Concrete MSSQLMetadataScanner implementation
+        Created JdbcMetadataScanner interface, and MSSQLMetadataScanner implementation
+        http://redmine.roe.ac.uk/issues/406
 
     Branch 1.11.11-zrq-char-debug
     1685:154a0f0ceafc (closed)
