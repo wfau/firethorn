@@ -73,7 +73,7 @@ implements EntityBean<EntityType>
         }
 
     @Override
-    public URI getIdent()
+    public URI getSelf()
         {
         try {
             return new URI(

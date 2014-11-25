@@ -42,7 +42,7 @@ extends ResponseEntity<String>
     public RedirectResponse(final HttpStatus status, final EntityBean<EntityType> bean)
         {
         super(
-            bean.getIdent().toString(),
+            bean.getSelf().toString(),
             new RedirectHeader(
                 bean
                 ),

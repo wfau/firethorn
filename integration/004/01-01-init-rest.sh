@@ -61,10 +61,10 @@ define()
     }
 
 #
-# Function to get the htp ident from a JSON response.
-ident()
+# Function to get the 'self' URL from a JSON response.
+self()
     {
-    ./pp | sed -n 's|^ *"ident" : "\(.*\)"[^"]*|\1|p'
+    ./pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
     }
 
 

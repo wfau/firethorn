@@ -45,7 +45,7 @@ extends HttpHeaders
     public RedirectHeader(final EntityBean<?> bean)
         {
         this(
-            bean.getIdent()
+            bean.getSelf()
             );
         }
 

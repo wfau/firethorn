@@ -38,37 +38,37 @@ public interface EntityBean<EntityType extends Entity>
         }
 
     /**
-     * The wrapped Entity.
+     * Access to the wrapped Entity.
      *
      */
     public EntityType entity();
 
     /**
-     * The Entity URI.
+     * Get the Entity URI.
      *
      */
-    public URI getIdent();
+    public URI getSelf();
 
     /**
-     * The Entity type.
+     * Get the Entity type.
      *
      */
     public URI getType();
 
     /**
-     * The Entity owner.
+     * Get the Entity owner.
      *
      */
     public URI getOwner();
 
     /**
-     * The Entity create date.
+     * Get the Entity create date.
      *
      */
     public String getCreated();
 
     /**
-     * The Entity modified date.
+     * Get the Entity modified date.
      *
      */
     public String getModified();

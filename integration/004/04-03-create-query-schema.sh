@@ -31,7 +31,7 @@ curl \
 
 
 queryschema=$(
-    cat query-schema.json | ident | node
+    cat query-schema.json | self | node
     )
 
 

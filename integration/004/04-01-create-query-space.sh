@@ -30,7 +30,7 @@ curl \
     | ./pp | tee query-space.json
 
 queryspace=$(
-    cat query-space.json | ident | node
+    cat query-space.json | self | node
     )
 
 
