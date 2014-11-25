@@ -57,7 +57,7 @@
     popd
 
 # -----------------------------------------------------
-# Fix the bug ....
+# Clean build
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -66,6 +66,79 @@
         mvn -P all clean install eclipse:eclipse
 
     popd
+
+
+# -----------------------------------------------------
+# New code ....
+#[user@desktop]
+
+    TaggedEntity
+
+        interface Tags tags()
+
+            EntityTag add(Tag)
+            void      del(Tag)
+            Iterable<EntityTag> select
+
+    EntityTag<TagValue>
+
+        TaggedEntity entity()
+        Tag          tag()
+        TagValue     value()
+
+    StringTag
+    extends EntityTag<String>
+
+    Tag
+        Identity owner()
+        String name()
+        String text()
+        String type()
+
+
+    // Tag thing as "saved"
+    thing.tags().add(
+        identity.tags().select(
+            "saved",
+            true
+            )
+        )
+
+    // Get things tagged as "saved"
+    things().select(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+    // Get our saved queries
+    identity.queries().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+
+    // Get our saved tables
+    identity.tables().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+    // Get our saved adql tables
+    identity.tables().adql().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+    // Get our saved jdbc tables
+    identity.tables().jdbc().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
 
 
 
