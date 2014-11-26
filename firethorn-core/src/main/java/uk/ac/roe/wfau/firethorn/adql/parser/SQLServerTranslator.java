@@ -20,15 +20,15 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import adql.db.DBColumn;
 import adql.db.exception.UnresolvedJoin;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
-import adql.query.ClauseConstraints;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
@@ -36,7 +36,6 @@ import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
-import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
@@ -444,12 +443,7 @@ public class SQLServerTranslator
             }
         else if (all.getQuery() != null)
             {
-            try {
-				dbCols = all.getQuery().getFrom().getDBColumns();
-			} catch (UnresolvedJoin e) {
-				// TODO Auto-generated catch block
-				log.error(e.getMessage());
-			}
+            dbCols = all.getQuery().getFrom().getDBColumns();
             final ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
             for(final ADQLTable table : tables)
                 {

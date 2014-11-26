@@ -236,12 +236,7 @@ public class OgsaDQPTranslator
             }
         else if (all.getQuery() != null)
             {
-            try {
-				dbCols = all.getQuery().getFrom().getDBColumns();
-			} catch (UnresolvedJoin e) {
-				// TODO Auto-generated catch block
-				log.error(e.getMessage());
-			}
+            dbCols = all.getQuery().getFrom().getDBColumns();
             final ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
             for(final ADQLTable table : tables)
                 {

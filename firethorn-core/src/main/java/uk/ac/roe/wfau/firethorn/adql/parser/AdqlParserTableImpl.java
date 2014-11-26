@@ -543,10 +543,5 @@ implements AdqlParserTable
                 }
             }
 
-		@Override
-		public DBType getDatatype() {
-			// TODO Auto-generated method stub
-			return null;
-		}
         }
     }
