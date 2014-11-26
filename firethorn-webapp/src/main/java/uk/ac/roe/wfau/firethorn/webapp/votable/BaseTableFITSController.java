@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.votable;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -30,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import net.mar.FITSWriter;
+import net.mar.FormatRS;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
@@ -284,11 +287,39 @@ extends AbstractTableController
                     type
                     )
                 );
+            ResultSetMetaData rsmd=null;
+            if(results.next())
+            {
+            	rsmd=results.getMetaData();
+            }
+            FITSWriter fw=null;
+            
+            FormatRS frs = new FormatRS(); 
+            String [] comments=null;
+            PrintWriter CSVWriter = null;
+            OutputStream CSVOutputStream = null;
+            int noCols;
+            String [] strArray;
+            
+            	try {
+                fw = new FITSWriter("","");
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+            	 File FITSFile = new File("test.fits");
+                 if (FITSFile.exists()) {
+                     FITSFile.delete();
+                 }
 
-        	
-        		SequentialResultSetStarTable t1 = new SequentialResultSetStarTable(results);
-        		writeTableAsFITS(t1, output);
-        		writer.append(output.toString());
+                 fw.setFileName("test.fits");
+                
+            	fw.setRSMD(rsmd);
+                fw.setRS(results);
+                
+        		writer.append(fw.toString());
+        		
+        		fw.close();
         }
 
         catch (final SQLException ouch)
