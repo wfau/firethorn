@@ -1,60 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<DatasetDescription xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1' 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Catalog ID="twomass">
-    <Name>TWOMASS</Name>
-    <Description><![CDATA[]]></Description>
-    <Table ID="twomass_psc">
-      <Name>twomass_psc</Name>
-      <ConeSettings>
-        <RAColName>RA</RAColName>
-	    <DecColName>DEC</DecColName>
-      </ConeSettings>      
-    <Column ID="twomass_psc.cx" indexed="false">
-      <Name>cx</Name>
-      <Datatype>float</Datatype>
-      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
-      <Units></Units>
-         <UCD version="1+">pos.distance;pos.cartesian.x</UCD>
-      <ErrorColumn></ErrorColumn>
-    </Column>
-    <Column ID="twomass_psc.cy" indexed="false">
-      <Name>cy</Name>
-      <Datatype>float</Datatype>
-      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
-      <Units></Units>
-         <UCD version="1+">pos.distance;pos.cartesian.y</UCD>
-      <ErrorColumn></ErrorColumn>
-    </Column>
-    <Column ID="twomass_psc.cz" indexed="false">
-      <Name>cz</Name>
-      <Datatype>float</Datatype>
-      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
-      <Units></Units>
-         <UCD version="1+">pos.distance;pos.cartesian.z</UCD>
-      <ErrorColumn></ErrorColumn>
-    </Column>
-    </Table>
-
-   <Table ID="twomass_pscXBestDR7PhotoObjAll">
-      <Name>twomass_pscXBestDR7PhotoObjAll</Name>
-      <Description><![CDATA[ Cross-neighbours between 2MASS Point Source Catalog and SDSS DR7 sources]]></Description>
-      <Column ID="twomass_pscXBestDR7PhotoObjAll.masterObjID" indexed="true">
-         <Name>masterObjID</Name>
-         <Datatype>long</Datatype>
-         <Description><![CDATA[The unique ID in twomass_psc (=pts_key)]]></Description>
-         <Units> </Units>
-         <UCD version="1+">meta.id;meta.main</UCD>
-         <ErrorColumn></ErrorColumn>
-      </Column>
-      <Column ID="twomass_pscXBestDR7PhotoObjAll.slaveObjID" indexed="true">
-         <Name>slaveObjID</Name>
-         <Datatype>long</Datatype>
-         <Description><![CDATA[The unique ID of the neighbour in BestDR7..PhotoObjAll (=objID)]]></Description>
-         <Units> </Units>
-         <UCD version="1+">meta.id;meta.dataset</UCD>
-         <ErrorColumn></ErrorColumn>
-      </Column>
-   </Table>    
-  </Catalog>
-</DatasetDescription>
+úÏoãóí¬×ëÛŸt­/Ÿg¿çòóßÓß}ûµ¿{ç-ÿï¿Éñë=¿;Ëù·wÏ?û7÷ßÏ³Ûû—ñŸ¿ëï½ÿé7›³Ý÷­÷É»ïyÿÿÿ›ý¯á­ÿû·Ÿ/Í÷ÿ›¯yûô½Ùß÷Û?™·ý÷ç~Í>ë¿·?›Ò{[»ßoùýÏjê»û?ó}¿ÿ{Ÿï3ÿŸàÿýÙÓíSíÚû¾ßóË»×»ÿ·³ý·ùÏ‹ÿvûûïû«sß÷Ûoó÷ñ÷?KÛ³ÚÛþæï«ÿÅç¯³Ë÷÷Æí
+;›Ðûÿ¯ãÛ{û—×ýuûëõßï¯ÿÏýû£o»òË[þŸÏs«ÿ¿¶¿ïÏß«Ïÿïû+{û·w›ÿ«óë·†_‹>Û{Kš»îß»ã¦ùÿg—½ûûÙx÷|;fë~ï6Û-»ýÿ®Ÿïºº{­»ŸÛ?ÿ«;ë3¯·ÓûïýÛ{÷þ?¿7§§ísžÿûûïÿ¯é¿zƒ§Û÷úÿë?ûÿû‡ï{7¯ÿÏ÷›¿ÿÏ—Ï;Ï/ú³6¶û‡Wÿyÿÿ{¹~;ÿþýÙÿ©¯>û±ß÷«/ÿõ¾ûxo¿~ûßÓé³›ïÏ»¯ðû6n÷uë{»ùç?ësŸ9Ÿ¿Ûÿûóž3=ÿ¿ú«ôÿß¾÷ÿ?ÿÛ›qûÿŸŸÓ¾Ûóï7{{¿þÿ³«S½wÇúÏoãóí¨×ëÛŸt­/Ÿg¿eòóßÓß}û±¿;ç-ÿï¿Éqë=¿;Ëñ§wï?û7÷ßÏ³Ûû—ñŸ¿ëï½ÿé7›³Ý÷­÷É;ïyÿÿï›ý¯á©ÿû§/Í÷ÿ›¯yûô½Ùÿ÷Û?·ý÷ç>Í>ë¿·?›Ò{[»ßoùýÏjê»û?ó}¿ÿsŸï3ÿŸàÿýÙ“íSåÚ‡û¾ßóË»×»ÿ·³½·yÏƒÿvûûïû«sß÷Ûoósñó?›³ÚÛ~æï«ÿÄç¯³Ë÷÷Æí
+;›Ðûÿ¯£Û{û—×ýeûëõßï¯ÿÏýû£o»òË[þŸÏs«ÿ¯¶½ïÏß«Ïßïû{+{û·w›«óë·†_‹>Û{Kš³îß«ã¦ñÿg‡½ëûÙx÷|;fë~ï6Û%›ýþ®ßïºº{­»ŸÛ?û«;ë3¯·Óûïý[{ÿî?¿7§£ísžÿ»ûïû¯é¿zƒ§ß÷úÿë?Ûû‡ï{7¯ÿÏ÷›¿ßO—?Ë;Ï/ú³6¶û‡Wÿyÿÿ{¹~9ÿþýÙÿ©¯>û±ß÷«/ÿõ¾ûx/¿~ûßÓé³›ïÏ»¯ðû6j÷uë{«ùç?ës›9¿Û¿ûóž3=ö¿ú«ôÿÞ¾÷ÿ?ÿÛ›qûÿŸŸÓ‰¾Ûóï7{{¿¾ÿ³ëS½wÇúÏoãóì¨×ëÛŸt­/Ÿg¿eòóßÓß}û±¿;ç-ûï·Éqë=¿;Éñ§wÏ?û7óßÏ³Ûû—ñŸ¿ëïÿé7›³Õ÷­÷É;ïyÿ÷ï›ý¯á©ÿû§'Í÷ÿ›¯yûô½Ùß÷Û?™§ý÷çvÍ>ë¿—?›Òk»ßoùýÏjê}ºû?ó}?ÿsŸï3ÿŸàÿýÙ“mSåÚ‡û¾ßóË»×»ÿ·³½·yÏƒÿvzûï»«sÝ÷Ûoósñó?Û³ÚÛ~Æ¯«ÿÄç§³Ëö÷Æí
+;›Ðûÿ¯£Û{û—×ýuúëõßï¯ÿÏýû£o»òË[þŸÏs‹ÿ¯¶½ï‰Ïß?«ÏßÏû{+{û·w?›ªóë·†_‹>Û{Kš³îß»ã¦ùÿg‡½ëûÙx÷|fë~ï6Û%›ùþ®ïºº{­ŸÛ/û«;ë3¯·Óûîù[{÷æ?¯7§£ísžÿ»ûïû©¿zƒ§Û÷úÿk?Û¿ûï{7¯ÿÏ÷›¿ßO—?Ë;Í/ú³6¶û‡Wÿy¿¿{¹~9ÿþ}Ùÿ©~¯>»±ß÷«/ÿõ¾úx/¿~ûßÓá³‹ïÏ»¯ðû6j÷uë{‹Ùç;ës›9¿Û¿ûóž3=ö¿ø«ôÿÜ¾÷ý?ÿÛ›qûÿŸŸÓ‰¾Ûóï5{{¯¾ÿ±«S½wÇúÏoãóì¨×ÿëÛŸt­/Ÿg¿åòóßÓß}û±¿;ç-ûï¿Éqë=½;Éñ§wÏ?û7÷ßÏ³ÛÛ—ñŸ¿ëïÿé7›³Ý÷­÷É;ïyÿ÷ï›ý¯á©ÿû§'Í÷ÿ›¯yûô½Yß÷Û?™§ý÷ç~Í>ë¿·?›Ò{[»ßoùýÏjê»û?ó}¿ÿ{Ÿï3ÿŸàÿýÙÓíSåÚ‡û¾ßóË»Ç»ÿ·³½·ùÏƒÿvzûïû«sÝ÷Ûoósñ÷?Û³ÚÛþæï«ÿÄç¯³Ë÷·Æí
+;›Póÿ¯ãÛ{û—×ýeúëõßï¯ÿÏýû£o»òË[þŸÏs«ÿ¿¶½ïÏß«Ïßïû{+{û·w›ªóë·†_‹>Û{Iš³îß»ã¦ùÿg—½ëûÙx÷|fë~ï6Û%›ýþ®ßïºº{­ŸÛ/û«;ë3¯·Óûîù[{ÿæ?¿7§£ísžÿ»ûïû/©¿zƒ§Û÷úÿë?Û?û‡ï{7¯ÿÏ÷›¿ÿK—?Ï;Í/ú³6¶û‡Wÿyÿÿ{¹~9ÿþýÙÿ©~¯>»±ß÷«/ÿõ¾úx/¿~ûßÓá³›ïÏ»¯ðû6n÷uë{«Ùç;ës›9¿Û¿ûóž3=þ¿ø«ôÿÞ¾÷ý?ÿÛ›qûÿŸŸÓ‰¾Ûóï7{{¯¾ÿ±«S½wÇúÏoãòì¨ÇëÛŸt­/Ÿg¿e²óßÓß=û±¿;ç)ûï·Éqë=½;Éñ§wÏ?û7÷ßÎ³ÛÛ—ñŸ¿ëïÿé7›³Õ÷­wÉ;ïy¾÷ï‹ý¯á©ÿû§#Í÷ÿ›¯yûô½ßÓÛ?™§ý÷ç6Í>ë¿—?›Òk»ßoùýÏjê}ºû?ó}?ÿsŸï3¿ÀÿýÙ“mSåÚ‡û¾ß³É»×»ÿ·³½·yÏƒÿvzûï»«sÝ÷Ûoósñó?›³ÚÛ~Æï«¿Äç¯³Ëö÷Æí
+;›Póÿ¯£Û{û—×ýeúëõßî¯ÿÏýû£o»òË[þŸÏs‹ÿ¯¶½ï‰Ïß«ÏßÍó[+{û·w?›ªóë·†W‹>Û{Iš³îß«ã¦ñÿg‡=ëûÑx÷|fë~ï6Û%›ù~®ïºº{­ŸÛ/û«;ë3®·Óûîy[{÷æ?¯7§£í3žÿ»ûïû©¿zƒ§Û÷úÿk?Û?ûï{7¯ÿÏ÷›¿ßK“?Ë9Í/ú³6¶ûw‡Wÿy¿¿{¹~9ÿþ}Ùÿ©~>»±ß÷«/ÿõ¾úx/¿~û
