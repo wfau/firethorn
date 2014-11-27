@@ -29,7 +29,7 @@ EXPOSE :8080
 
 #
 # Install the Tomcat Native Library
-RUN yum -y install tomcat-native
+# RUN yum -y install tomcat-native
 
 #
 # Create the Tomcat user.

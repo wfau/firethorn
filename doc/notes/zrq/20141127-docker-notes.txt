@@ -1,0 +1,245 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Docker tips and tricks
+    http://nathanleclaire.com/blog/2014/07/12/10-docker-tips-and-tricks-that-will-make-you-sing-a-whale-song-of-joy/
+
+# -----------------------------------------------------
+# Docker from Docker
+#[user@desktop]
+
+    #
+    # Bind mount the docker socket on docker run
+    docker run -it -v /var/run/docker.sock:/var/run/docker.sock firethorn/java bash
+
+    [root@ca981f5c09d0]
+
+        #
+        # Install Docker
+        yum install docker-io
+
+        #
+        # Running ps, we can see our own instance.
+        docker ps
+
+            CONTAINER ID    IMAGE               COMMAND     CREATED              STATUS
+            ca981f5c09d0    firethorn/java:8    "bash"      About a minute ago   Up About a minute
+
+        #
+        # We can run another container from here.
+        docker run -it -v /var/run/docker.sock:/var/run/docker.sock firethorn/java bash
+
+        [root@6e98ca54842e]
+
+            #
+            # Install Docker
+            yum install docker-io
+
+            #
+            # Running ps, we can see both instance.
+            docker ps
+
+                CONTAINER ID    IMAGE               COMMAND     CREATED              STATUS
+                ca981f5c09d0    firethorn/java:8    "bash"      About a minute ago   Up About a minute
+                6e98ca54842e    firethorn/java:8    "bash"      2 minutes ago        Up 2 minutes
+
+
+        #
+        # What is happening is we are running the docker client in each container,
+        # but communicating with the same docker service running on the top level host.
+
+
+# -----------------------------------------------------
+# Docker inspect -f
+#[user@desktop]
+
+
+    did=$(docker run -d firethorn/tomcat)
+
+    #
+    # Single value
+    docker inspect -f '{{.NetworkSettings.IPAddress}}' ${did:?}
+
+        172.17.0.5
+
+    #
+    # Default is a GO serialization
+    docker inspect -f '{{.NetworkSettings}}' ${did:?}
+
+        map[Bridge:docker0 Gateway:172.17.42.1 IPAddress:172.17.0.5 IPPrefixLen:16 MacAddress:02:42:ac:11:00:05 PortMapping:<nil> Ports:map[8080/tcp:<nil>]]
+
+    #
+    # Option to specify JSON serialization
+    docker inspect -f '{{json .NetworkSettings}}' ${did:?}
+
+        {"Bridge":"docker0","Gateway":"172.17.42.1","IPAddress":"172.17.0.5","IPPrefixLen":16,"MacAddress":"02:42:ac:11:00:05","PortMapping":null,"Ports":{"8080/tcp":null}}
+
+    #
+    # Python builtin to pretty print JSON
+    docker inspect -f '{{json .NetworkSettings}}' ${did:?} | python -mjson.tool
+
+        {
+            "Bridge": "docker0", 
+            "Gateway": "172.17.42.1", 
+            "IPAddress": "172.17.0.5", 
+            "IPPrefixLen": 16, 
+            "MacAddress": "02:42:ac:11:00:05", 
+            "PortMapping": null, 
+            "Ports": {
+                "8080/tcp": null
+            }
+        }
+
+# -----------------------------------------------------
+# Use Docker from Docker to create minimal Java image
+#[user@desktop]
+
+    #
+    # Bind mount the docker socket on docker run
+    docker run -it -v /var/run/docker.sock:/var/run/docker.sock firethorn/fedora bash
+
+    [root@6b8d22734e37]
+
+        buildpath=/build
+        buildname=java-minmal
+        packages='bash tar java-1.8.0-openjdk-headless'
+
+        #
+        # Remove any existing build
+        if [ -e "${buildpath:?}" ]
+        then
+            rm -rf "${buildpath:?}"
+        fi
+
+        #
+        # Install Java package(s).
+        yum install \
+          --installroot "${buildpath:?}" \
+          --setopt=override_install_langs=en \
+          --setopt=tsflags=nodocs \
+          --disablerepo=* \
+          --enablerepo=fedora,updates,updates-testing \
+          --releasever=20 \
+          --nogpgcheck \
+          ${packages:?}
+
+        #
+        # Clean up the cache and fix the console issue
+        chroot "${buildpath:?}" /bin/bash -x << EOF
+rm -rf /var/cache/yum/*
+rm -rf /dev/console
+ln -s /dev/tty1 /dev/console
+EOF
+
+        #
+        # Install Docker client in the build container
+        yum -y install docker-io
+        
+        #
+        # Import the filesystem into a new Docker image
+        tar -C "${buildpath:?}" -c . | docker import - "${buildname:?}"
+
+        #
+        # Check the image size
+        docker images
+
+            REPOSITORY            TAG                         IMAGE ID            CREATED             VIRTUAL SIZE
+
+            java-minmal           latest                      4159140f4722        14 seconds ago      329 MB
+            ....
+            firethorn/java        8                           94352ff7bedc        4 weeks ago         928.6 MB
+            firethorn/java        latest                      94352ff7bedc        4 weeks ago         928.6 MB
+
+        #
+        # Tag this image it as our java image
+        docker tag "${buildname:?}"  "firethorn/java:8"
+        docker tag "${buildname:?}"  "firethorn/java:latest"
+
+        #
+        # Exit our build container.
+        exit
+
+# -------------------------------------------------------------------------------------------
+# Build our tomcat image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/tomcat:8 \
+            docker/tomcat/8
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add the 'latest' tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    docker tag "firethorn/tomcat:8"   "firethorn/tomcat:latest"
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Build our webapp images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+        REPOSITORY            TAG       IMAGE ID        CREATED             VIRTUAL SIZE
+        ....
+        firethorn/firethorn   1.11.25   8275d11b3686    13 seconds ago      399.9 MB
+        firethorn/ogsadai     1.11.25   e39325380f19    34 seconds ago      407 MB
+        ....
+        firethorn/firethorn   1.11.23   5acc5466e84f    2 weeks ago         1.012 GB
+        firethorn/ogsadai     1.11.23   1bb1ef6221cf    2 weeks ago         1.019 GB
+        ....
+        firethorn/firethorn   1.11.21   5e072afe2a27    3 weeks ago         1.012 GB
+        firethorn/ogsadai     1.11.21   a3d0ab4a7fff    3 weeks ago         1.019 GB
+
+#
+# Halves the size of our images.
+
+# Bash needed to login to the container.
+# Tar needed to install Tomcat.
+# TODO Use a 'known' version of tomcat from our maven repo.
+# TODO Download and unpack tomcat ourselves
+
+
