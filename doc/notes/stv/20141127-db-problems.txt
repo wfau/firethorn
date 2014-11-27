@@ -1,0 +1,34 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Running integration script for firethorn fails with the following in the log:
+
+
+2014-11-27 18:24:41,006 DEBUG [http-bio-8080-exec-9] [JdbcResourceEntity] Scanning for schema [master.NT AUTHORITY\LOCAL SERVICE] 
+2014-11-27 18:24:41,006 DEBUG [http-bio-8080-exec-9] [JdbcResourceEntity] Creating new schema [master.NT AUTHORITY\LOCAL SERVICE] 
+2014-11-27 18:24:41,120 DEBUG [http-bio-8080-exec-9] [BaseComponentEntity] BaseComponentEntity(CopyDepth, String) 
+2014-11-27 18:24:41,120 DEBUG [http-bio-8080-exec-9] [BaseComponentEntity]   Name  [master.NT_AUTHORITY_LOCAL_SERVICE] 
+2014-11-27 18:24:41,120 DEBUG [http-bio-8080-exec-9] [BaseComponentEntity]   Depth [FULL] 
+2014-11-27 18:24:41,120 DEBUG [http-bio-8080-exec-9] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity] ident[null]]] 
+2014-11-27 18:24:41,532 WARN  [http-bio-8080-exec-9] [SqlExceptionHelper] SQL Error: 2627, SQLState: 23000 
+2014-11-27 18:24:41,532 ERROR [http-bio-8080-exec-9] [SqlExceptionHelper] Violation of UNIQUE KEY constraint 'UK_lf6raalhcjlwwvkfmd0vwjkjk'. Cannot insert duplicate key in object 'dbo.FT011117JdbcSchemaEntity'. The duplicate key value is (master.NT_AUTHORITY_LOCAL_SERVICE, 2818048). 
+
