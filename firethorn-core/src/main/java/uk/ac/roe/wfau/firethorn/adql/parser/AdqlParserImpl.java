@@ -151,17 +151,16 @@ implements AdqlParser
         /**
          * Public constructor.
          *
-         */
+         
         public AdqlQueryFactoryImpl(final boolean unknowns)
             {
             super(unknowns);
-            }
+            }*/
 
         /**
          * Create a SelectItem.
          *
          */
-        @Override
         public SelectItem createSelectItem(final ADQLOperand operand, final String alias, final ADQLQuery parent)
         throws Exception
             {
@@ -169,8 +168,7 @@ implements AdqlParser
             log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
             return super.createSelectItem(
                 operand,
-                alias,
-                parent
+                alias
                 );
             }
 
@@ -277,6 +275,12 @@ implements AdqlParser
                 return null;
                 }
 
+			@Override
+			public boolean isGeometry() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
             }
 
         /**
@@ -290,25 +294,25 @@ implements AdqlParser
             log.debug("createNumericConstant(String)");
             log.debug("  value [{}]", value);
             // Only if in LEGACY or FUTURE mode.
-            if (value.startsWith(HexConstant.PREFIX))
+           /* if (value.startsWith(HexConstant.PREFIX))
                 {
                 return new HexConstant(
                     value,
                     true
                     );
                 }
-            else {
+            else {*/
                 return new NumericConstant(
                     value,
                     true
                     );
                 }
-            }
+           // }
 
         /**
          * A hexadecimal numeric.
          *
-         */
+         
         public static class HexConstant
         extends NumericConstant
         implements ADQLOperand
@@ -316,13 +320,13 @@ implements AdqlParser
             /**
              * Hexadecimal prefix.
              *
-             */
+             
             protected static final String PREFIX = "0x";
 
             /**
              * Create a hex value from a long.
              *
-             */
+             
             public HexConstant(final long value)
                 {
                 super(
@@ -333,7 +337,7 @@ implements AdqlParser
             /**
              * Create a hex value from a String.
              *
-             */
+             
             public HexConstant(final String value, final boolean check)
             throws NumberFormatException
                 {
@@ -346,7 +350,7 @@ implements AdqlParser
             /**
              * Copy a hex value.
              *
-             */
+             
             public HexConstant(final HexConstant origin)
                 {
                 super(
@@ -358,7 +362,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+           
             @Override
             public final void setValue(final double value)
                 {
@@ -396,7 +400,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+            
             public double getDoubleValue()
             throws NumberFormatException
                 {
@@ -408,7 +412,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+            
             public double getDoubleValue(final String value)
             throws NumberFormatException
                 {
@@ -449,7 +453,7 @@ implements AdqlParser
                     this
                     );
                 }
-            }
+            }*/
         }
 
     protected AdqlQuery.Mode mode ;
@@ -473,7 +477,6 @@ implements AdqlParser
         return s2 ;
         }
 
-    @Override
     public void process(final AdqlParserQuery subject)
         {
         //
@@ -684,6 +687,7 @@ implements AdqlParser
         if (level == Level.STRICT)
             {
             final OperationType type = oper.getOperation();
+            /*
             if (type == OperationType.MOD)
                 {
                 throw new AdqlParserException(
@@ -710,7 +714,7 @@ implements AdqlParser
                 throw new AdqlParserException(
                     "Binary XOR operator '^' is not supported in ADQL"
                     );
-                }
+                }*/
             }
         }
 
@@ -897,11 +901,11 @@ implements AdqlParser
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-		if (item.item().isMain()){
+		//if (item.item().isMain()){
 			subject.add(
 				item
 				);
-    		}
+    	//	}
         }
 
     /**
@@ -1590,7 +1594,7 @@ implements AdqlParser
         //
         // Not a floating point number.
         else {
-            final long value = number.getIntegerValue();
+            final long value = Long.parseLong(number.getValue());
             if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
                 {
                 return AdqlColumn.AdqlType.INTEGER;
@@ -1893,7 +1897,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
+            //case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -1909,8 +1913,8 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.AdqlType.DOUBLE;
-            case SIGN:
-            	 return AdqlColumn.AdqlType.INTEGER;
+           // case SIGN:
+            	// return AdqlColumn.AdqlType.INTEGER;
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1991,7 +1995,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
+           // case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -2010,11 +2014,11 @@ implements AdqlParser
                     funct.getName(),
                     AdqlColumn.AdqlType.DOUBLE
                     );
-            case SIGN:
+         /*   case SIGN:
           	  return new MySelectFieldImpl(
                         funct.getName(),
                         AdqlColumn.AdqlType.INTEGER
-                        );
+                        );*/
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"

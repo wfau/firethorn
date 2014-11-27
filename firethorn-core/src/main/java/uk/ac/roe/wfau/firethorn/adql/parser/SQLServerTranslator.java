@@ -22,7 +22,6 @@ import java.util.HashMap;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import adql.db.DBColumn;
 import adql.db.exception.UnresolvedJoin;
@@ -443,7 +442,12 @@ public class SQLServerTranslator
             }
         else if (all.getQuery() != null)
             {
-            dbCols = all.getQuery().getFrom().getDBColumns();
+            try {
+				dbCols = all.getQuery().getFrom().getDBColumns();
+			} catch (UnresolvedJoin e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             final ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
             for(final ADQLTable table : tables)
                 {
