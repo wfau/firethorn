@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import adql.db.DBColumn;
-import adql.db.exception.UnresolvedJoin;
+//import adql.db.exception.UnresolvedJoin;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
@@ -444,7 +444,7 @@ public class SQLServerTranslator
             {
             try {
 				dbCols = all.getQuery().getFrom().getDBColumns();
-			} catch (UnresolvedJoin e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

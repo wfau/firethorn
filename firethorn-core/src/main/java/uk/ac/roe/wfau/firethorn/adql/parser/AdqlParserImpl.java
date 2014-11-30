@@ -168,7 +168,7 @@ implements AdqlParser
             log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
             return super.createSelectItem(
                 operand,
-                alias
+                alias, parent
                 );
             }
 
@@ -275,11 +275,7 @@ implements AdqlParser
                 return null;
                 }
 
-			@Override
-			public boolean isGeometry() {
-				// TODO Auto-generated method stub
-				return false;
-			}
+			
 
             }
 

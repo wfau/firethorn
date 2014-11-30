@@ -513,10 +513,11 @@ extends TestPropertiesBase
         {
         final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
-        while (iter.hasNext())
+        while (iter.hasNext() && i<fields.length)
             {
             final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
+           
             fields[i++].validate(
                 field
                 );
