@@ -1,0 +1,560 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    devname=zrq-jdbcscan-fix
+    newversion=1.11.26
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch="$(getversion)-${devname:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Create test database
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update default
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename=FIRETHORN_TEST_DATA
+                databasepath="${sqshpath:?}"
+
+                databaseuser="${atlasuser:?}"
+                databaselogin="${atlasuser:?}"
+                databasepass="${atlaspass:?}"
+
+                #
+                # Detele existing test database.
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create a new test database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Login to our test database.
+                sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                    USE [FIRETHORN_TEST_DATA]
+                    go
+
+                    /*
+                     * Allow our test user to read the database.
+                     *
+                     */
+                    ALTER ROLE [db_datareader] ADD MEMBER [atlasro]
+                    go
+
+                    /*
+                     * Schema with a space.
+                     *
+                     */
+                    CREATE SCHEMA [schema one]
+                    go
+
+                    GRANT SELECT ON SCHEMA::[schema one] TO [public]
+                    go
+
+                    CREATE TABLE [schema one].[table one]
+                        (
+                        [ident col] INT PRIMARY KEY,
+                        [name  col] VARCHAR(max)
+                        )
+                    go
+
+                    INSERT INTO [schema one].[table one] ([ident col], [name  col]) VALUES(1, 'Francis')
+                    INSERT INTO [schema one].[table one] ([ident col], [name  col]) VALUES(2, 'Albert')
+                    INSERT INTO [schema one].[table one] ([ident col], [name  col]) VALUES(3, 'Augustus')
+                    INSERT INTO [schema one].[table one] ([ident col], [name  col]) VALUES(4, 'Charles')
+                    INSERT INTO [schema one].[table one] ([ident col], [name  col]) VALUES(5, 'Emmanuel')
+                    go
+
+                    SELECT * FROM [schema one].[table one]
+                    go
+
+                    CREATE TABLE [schema one].[table.two]
+                        (
+                        [ident col] INT PRIMARY KEY,
+                        [name  col] VARCHAR(max)
+                        )
+                    go
+
+                    INSERT INTO [schema one].[table.two] ([ident col], [name  col]) VALUES(1, 'Francis')
+                    INSERT INTO [schema one].[table.two] ([ident col], [name  col]) VALUES(2, 'Albert')
+                    INSERT INTO [schema one].[table.two] ([ident col], [name  col]) VALUES(3, 'Augustus')
+                    INSERT INTO [schema one].[table.two] ([ident col], [name  col]) VALUES(4, 'Charles')
+                    INSERT INTO [schema one].[table.two] ([ident col], [name  col]) VALUES(5, 'Emmanuel')
+                    go
+
+                    SELECT * FROM [schema one].[table.two]
+                    go
+
+                    /*
+                     * Schema with a dot.
+                     *
+                     */
+                    CREATE SCHEMA [schema.two]
+                    go
+
+                    GRANT SELECT ON SCHEMA::[schema.two] TO [public]
+                    go
+
+                    CREATE TABLE [schema.two].[table one]
+                        (
+                        [ident col] INT PRIMARY KEY,
+                        [name  col] VARCHAR(max)
+                        )
+                    go
+
+                    INSERT INTO [schema.two].[table one] ([ident col], [name  col]) VALUES(1, 'Francis')
+                    INSERT INTO [schema.two].[table one] ([ident col], [name  col]) VALUES(2, 'Albert')
+                    INSERT INTO [schema.two].[table one] ([ident col], [name  col]) VALUES(3, 'Augustus')
+                    INSERT INTO [schema.two].[table one] ([ident col], [name  col]) VALUES(4, 'Charles')
+                    INSERT INTO [schema.two].[table one] ([ident col], [name  col]) VALUES(5, 'Emmanuel')
+                    go
+
+                    SELECT * FROM [schema.two].[table one]
+                    go
+
+                    CREATE TABLE [schema.two].[table.two]
+                        (
+                        [ident col] INT PRIMARY KEY,
+                        [name  col] VARCHAR(max)
+                        )
+                    go
+
+                    INSERT INTO [schema.two].[table.two] ([ident col], [name  col]) VALUES(1, 'Francis')
+                    INSERT INTO [schema.two].[table.two] ([ident col], [name  col]) VALUES(2, 'Albert')
+                    INSERT INTO [schema.two].[table.two] ([ident col], [name  col]) VALUES(3, 'Augustus')
+                    INSERT INTO [schema.two].[table.two] ([ident col], [name  col]) VALUES(4, 'Charles')
+                    INSERT INTO [schema.two].[table.two] ([ident col], [name  col]) VALUES(5, 'Emmanuel')
+                    go
+
+                    SELECT * FROM [schema.two].[table.two]
+                    go
+
+                quit
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Fix the bug ....
+#[user@desktop]
+
+    #
+    # Eclipse
+    #
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# Run our OGSA-DAI service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig atlas         firethorn.atlas
+                jdbcconfig userdata      firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        datetime=$(date +%Y%m%d%H%M%S)
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
+        cat "${HOME:?}/firethorn.spaces.${datetime:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Create test queries.
+#[user@desktop]
+
+query001=$(mktemp)
+cat > "${query001:?}" << EOF
+    SELECT
+        ra,
+        dec
+    FROM
+        atlas.atlasSource
+    WHERE
+        ra  BETWEEN '56.0' AND '57.9'
+    AND
+        dec BETWEEN '24.0' AND '24.2'
+EOF
+
+query002=$(mktemp)
+cat > "${query002:?}" << EOF
+    SELECT
+        atlasSource.ra  AS atra,
+        atlasSource.dec AS atdec,
+        twomass_psc.ra  AS tmra,
+        twomass_psc.dec AS tmdec
+    FROM
+        atlasSource
+    JOIN
+        atlasSourceXtwomass_psc
+    ON
+        atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID
+    JOIN
+        twomass.twomass_psc
+    ON
+        twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+    WHERE
+        atlasSource.ra  BETWEEN 180 AND 181
+    AND
+        atlasSource.dec BETWEEN -3 AND -2
+    AND
+        twomass_psc.ra BETWEEN 180 AND 181
+    AND
+        twomass_psc.dec BETWEEN -3 AND -2
+EOF
+
+query003=$(mktemp)
+cat > "${query003:?}" << EOF
+    SELECT TOP 10
+        name
+    FROM
+        atlas.Filter
+EOF
+
+# -----------------------------------------------------
+# Run the test queries.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.spaces"
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query002:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'AUTO' "${query003:?}"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query002:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query003:?}"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query001:?}"
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query002:?}"
+        #source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DISTRIBUTED' "${query003:?}"
+
+    popd
+
+
+
+
+
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg add
+        hg commit -m "Bug [668] fixed and tested"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Get the main version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add the 'latest' tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
+        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Push our webapp images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    docker login
+
+        Username: xxxxxxxxx
+        Password: xxxxxxxxx
+        Email:    xxxx@xxxx
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/firethorn:latest"
+
+        docker push "firethorn/ogsadai:$(getversion)"
+        docker push "firethorn/ogsadai:latest"
+
+    popd
+

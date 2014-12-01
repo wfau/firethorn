@@ -284,11 +284,10 @@ extends TestPropertiesBase
      * 
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The JdbcResource to load the JdbcSchema from.
-     * @param name The name for both the AdqlSchema and JdbcSchema.
+     * @param name The name for both the AdqlSchema and JdbcSchema catalog.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
-     */
     protected AdqlSchema testSchema(AdqlResource parent, JdbcResource source, String name)
     throws NameNotFoundException
         {
@@ -296,20 +295,21 @@ extends TestPropertiesBase
             parent, 
             source,
             name,
-            name
+            name,
+            DEFAULT_JDBC_SCHEMA
             );
         }
+     */
 
     /**
      * Load a {@link IvoaSchema} into an {@link AdqlResource}.
      * 
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The IvoaResource to load the IvoaSchema from.
-     * @param name The name for both the AdqlSchema and JdbcSchema.
+     * @param name The name for both the AdqlSchema and IvoaSchema.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
-     */
     protected AdqlSchema testSchema(AdqlResource parent, IvoaResource source, String name)
     throws NameNotFoundException
         {
@@ -317,9 +317,11 @@ extends TestPropertiesBase
             parent, 
             source,
             name,
-            name
+            name,
+            DEFAULT_IVOA_SCHEMA
             );
         }
+     */
     
     /**
      * Load a {@link JdbcSchema} into an {@link AdqlResource}.
@@ -327,12 +329,13 @@ extends TestPropertiesBase
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The JdbcResource to load the JdbcSchema from.
      * @param adql The name for the AdqlSchema.
-     * @param jdbc The name for the JdbcSchema.
+     * @param catalog The JdbcSchema catalog name.
+     * @param schema  The JdbcSchema schema name.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
      */
-    protected AdqlSchema testSchema(AdqlResource parent, JdbcResource source, String adql, String jdbc)
+    protected AdqlSchema testSchema(final AdqlResource parent, final JdbcResource source, final String adql, final String catalog, final String schema)
     throws NameNotFoundException
         {
         AdqlSchema found = testspace().schemas().search(adql); 
@@ -345,7 +348,8 @@ extends TestPropertiesBase
                     parent,
                     source,
                     adql,
-                    jdbc
+                    catalog,
+                    schema
                     )
                 );
             }
@@ -358,12 +362,12 @@ extends TestPropertiesBase
      * @param parent The AdqlResource to load the AdqlSchema from.
      * @param source The IvoaResource to load the IvoaSchema from.
      * @param adql The name for the AdqlSchema.
-     * @param jdbc The name for the JdbcSchema.
+     * @param schema  The IvoaSchema schema name.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
      */
-    protected AdqlSchema testSchema(AdqlResource parent, IvoaResource source, String adql, String jdbc)
+    protected AdqlSchema testSchema(final AdqlResource parent, final IvoaResource source, final String adql, final String schema)
     throws NameNotFoundException
         {
         AdqlSchema found = testspace().schemas().search(adql); 
@@ -376,7 +380,7 @@ extends TestPropertiesBase
                     parent,
                     source,
                     adql,
-                    jdbc
+                    schema
                     )
                 );
             }
@@ -388,13 +392,14 @@ extends TestPropertiesBase
      * 
      * @param parent The AdqlResource to load the AdqlSchema into.
      * @param source The JdbcResource to load the JdbcSchema from.
-     * @param adql The name for the AdqlSchema.
-     * @param jdbc The name for the JdbcSchema.
+     * @param adql The AdqlSchema name.
+     * @param catalog The JdbcSchema catalog name.
+     * @param schema  The JdbcSchema schema name.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
      */
-    private AdqlSchema adqlSchema(AdqlResource parent, JdbcResource source, String adql, String jdbc)
+    private AdqlSchema adqlSchema(final AdqlResource parent, final JdbcResource source, final String adql, final String catalog, final String schema)
     throws NameNotFoundException
         {
         AdqlSchema found = parent.schemas().search(
@@ -406,8 +411,8 @@ extends TestPropertiesBase
                 BaseComponent.CopyDepth.THIN,        
                 adql,
                 source.schemas().select(
-                    jdbc,
-                    "dbo"
+                    catalog,
+                    schema
                     )
                 );
             }
@@ -420,12 +425,12 @@ extends TestPropertiesBase
      * @param parent The AdqlResource to load the AdqlSchema into.
      * @param source The IvoaResource to load the IvoaSchema from.
      * @param adql The name for the AdqlSchema.
-     * @param jdbc The name for the IvoaSchema.
+     * @param schema  The IvoaSchema schema name.
      * @return The AdqlSchema.
      * @throws NameNotFoundException
      *
      */
-    private AdqlSchema adqlSchema(AdqlResource parent, IvoaResource source, String adql, String ivoa)
+    private AdqlSchema adqlSchema(final AdqlResource parent, final IvoaResource source, final String adql, final String schema)
     throws NameNotFoundException
         {
         AdqlSchema found = parent.schemas().search(
@@ -437,7 +442,7 @@ extends TestPropertiesBase
                 BaseComponent.CopyDepth.THIN,        
                 adql,
                 source.schemas().select(
-                    ivoa
+                    schema
                     )
                 );
             }

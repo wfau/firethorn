@@ -51,7 +51,7 @@ extends AtlasQueryTestBase
         JdbcResource jdbcspace = jdbcResource(
             "atlas.jdbc.resource"
             );
-        testSchema(adqlspace, jdbcspace, "local_twomass", "TWOMASS");
+        testSchema(adqlspace, jdbcspace, "local_twomass", "TWOMASS", "dbo");
         }
 
     /**
@@ -73,9 +73,7 @@ extends AtlasQueryTestBase
             "twomass.adql.resource",
             "twomass.adql.resource"
             );
-
-        testSchema(adqlspace, jdbcspace, "remote_twomass", "TWOMASS");
-
+        testSchema(adqlspace, jdbcspace, "remote_twomass", "TWOMASS", "dbo");
         }
     }
 

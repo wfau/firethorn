@@ -72,7 +72,6 @@
 # Docker inspect -f
 #[user@desktop]
 
-
     did=$(docker run -d firethorn/tomcat)
 
     #
@@ -147,7 +146,7 @@
         chroot "${buildpath:?}" /bin/bash -x << EOF
 rm -rf /var/cache/yum/*
 rm -rf /dev/console
-ln -s /dev/tty1 /dev/console
+ln -s  /dev/tty1 /dev/console
 EOF
 
         #
@@ -240,6 +239,15 @@ EOF
 # Bash needed to login to the container.
 # Tar needed to install Tomcat.
 # TODO Use a 'known' version of tomcat from our maven repo.
-# TODO Download and unpack tomcat ourselves
+
+# TODO can we download and unpack tomcat ourselves ?
+# TODO can we add the tomcat zip as a Maven dependency ?
+
+# -------------------------------------------------------------------------------------------
+#
+
+    #
+    # Docker layers cost
+    # https://medium.com/@vaceletm/docker-layers-cost-b28cb13cb627
 
 
