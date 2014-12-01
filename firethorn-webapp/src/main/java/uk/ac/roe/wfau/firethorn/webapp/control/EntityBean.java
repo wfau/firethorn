@@ -47,7 +47,14 @@ public interface EntityBean<EntityType extends Entity>
      * The Entity URI.
      *
      */
+    @Deprecated
     public URI getIdent();
+
+    /**
+     * The Entity URI.
+     *
+     */
+    public URI getSelf();
 
     /**
      * The Entity type.

@@ -31,7 +31,7 @@ curl \
      | ./pp | tee query-job.json
 
 queryident=$(
-    cat query-job.json | ident | node
+    cat query-job.json | self | node
     )
 
 #

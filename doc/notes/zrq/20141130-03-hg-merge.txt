@@ -1,0 +1,155 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # newversion=xxxx
+    #
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    echo "newversion [${newversion:?}]"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Get the old version.
+        oldversion=$(getversion)
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Add the 'latest' tags.
+# Future version of docker will support multiple build tags.
+# https://github.com/docker/docker/issues/863
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
+        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
+
+    popd
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Push our webapp images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/firethorn:latest"
+
+        docker push "firethorn/ogsadai:$(getversion)"
+        docker push "firethorn/ogsadai:latest"
+
+    popd
+

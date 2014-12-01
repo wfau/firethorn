@@ -1,0 +1,82 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Add the self/ident changes on a separate branch.
+
+# -----------------------------------------------------
+# Close the old branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+
+        oldbranch=1.11.25-zrq-ident-self
+
+        hg update "${oldbranch:?}" 
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-self-ident
+    copy/paste 20141130-01-hg-branch.txt
+
+# -----------------------------------------------------
+# Add the Java changes
+#[user@desktop]
+
+    #
+    # Eclipse
+    #
+
+# -----------------------------------------------------
+# Run our basic tests.
+#[user@desktop]
+
+    copy/paste 20141130-02-gnome-tests.txt
+
+# -----------------------------------------------------
+# Commit our changes.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg commit -m "Added both ident and self to JSON"
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Merge our changes.
+#[user@desktop]
+
+    newversion=1.11.27
+    copy/paste 20141130-03-hg-merge.txt
+
+

@@ -31,7 +31,7 @@ curl \
     | ./pp | tee base-schema.json
 
 baseschema=$(
-    cat base-schema.json | ident
+    cat base-schema.json | self
     )
 
 curl \
@@ -45,6 +45,6 @@ curl \
 
 
 queryschema=$(
-    cat query-schema.json | ident | node
+    cat query-schema.json | self | node
     )
 

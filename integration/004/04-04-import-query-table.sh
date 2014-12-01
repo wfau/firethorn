@@ -34,7 +34,7 @@ curl \
     | ./pp | tee base-schema.json
 
 baseschema=$(
-    cat base-schema.json | ident | node
+    cat base-schema.json | self | node
     )
 
 curl \
@@ -45,7 +45,7 @@ curl \
     | ./pp | tee base-table.json
 
 basetable=$(
-    cat base-table.json | ident
+    cat base-table.json | self
     )
 
 curl \
@@ -58,6 +58,6 @@ curl \
     | ./pp | tee query-table.json
 
 querytable=$(
-    cat query-table.json | ident | node
+    cat query-table.json | self | node
     )
 
