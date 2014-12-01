@@ -25,9 +25,7 @@
     self
 
     prefix
-
-    leak fix
-
+    
 # -----------------------------------------------------
 # Create a new development branch.
 #[user@desktop]

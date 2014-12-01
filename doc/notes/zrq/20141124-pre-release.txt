@@ -1,0 +1,187 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    devname=pre-release
+    newversion=1.11.26
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch="$(getversion)-${devname:?}"
+
+        #
+        # Create the new branch.
+        hg update 'default'
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Update our dependencies
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all versions:display-dependency-updates
+
+[INFO]   commons-codec:commons-codec .............................. 1.9 -> 1.10 - done
+[INFO]   joda-time:joda-time ....................................... 2.4 -> 2.5 - done
+[INFO]   junit:junit ...................................... 4.11 -> 4.12-beta-3 - skip
+[INFO]   org.apache.httpcomponents:httpclient .............. 4.3.4 -> 4.4-beta1 - skip
+
+[INFO]   mysql:mysql-connector-java .......................... 5.1.33 -> 5.1.34 - done
+[INFO]   org.liquibase:liquibase-core .......................... 3.0.1 -> 3.3.0 - skip
+
+[INFO]   commons-httpclient:commons-httpclient ............ 3.1 -> 3.1.SONATYPE - skip
+[INFO]   javax.inject:javax.inject ............................. 1 -> 1.0-PFD-1 - skip
+[INFO]   org.apache.httpcomponents:httpclient .............. 4.3.4 -> 4.4-beta1 - skip
+
+[INFO]   com.fasterxml.jackson.core:jackson-core ............... 2.4.2 -> 2.4.3 - done
+[INFO]   com.fasterxml.jackson.core:jackson-databind ........... 2.4.2 -> 2.4.3 - done
+[INFO]   org.aspectj:aspectjrt ................................. 1.8.2 -> 1.8.4 - done
+[INFO]   org.aspectj:aspectjweaver ............................. 1.8.2 -> 1.8.4 - done
+[INFO]   org.hibernate:hibernate-entitymanager ..... 4.3.6.Final -> 4.3.7.Final - done
+[INFO]   org.hibernate:hibernate-validator ........ 5.1.2.Final -> 5.2.0.Alpha1 - skip
+[INFO]   org.springframework:spring-aop ........ 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-aspects .... 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-beans ...... 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-context-support ...
+[INFO]                                           4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-core ....... 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-instrument ...
+[INFO]                                           4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-orm ........ 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-test ....... 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-web ........ 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+[INFO]   org.springframework:spring-webmvc ..... 4.1.0.RELEASE -> 4.1.2.RELEASE - done
+
+        mvn -P all versions:display-plugin-updates
+
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg add
+        hg commit -m "Replaced ArrayList with ResultSetIterator"
+
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Get the main version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        #
+        # Merge the dev branch.
+        hg update 'default'
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+

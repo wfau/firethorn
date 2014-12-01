@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.27</version>
+        <version project='firethorn'>1.11.28</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -49,11 +49,11 @@
 
     <properties>
 
-		<spring.version>4.1.0.RELEASE</spring.version>
-        <hibernate.version>4.3.6.Final</hibernate.version>
-		<aspectj.version>1.8.2</aspectj.version>
+		<spring.version>4.1.2.RELEASE</spring.version>
+        <hibernate.version>4.3.7.Final</hibernate.version>
+		<aspectj.version>1.8.4</aspectj.version>
 
-        <jackson.version> 2.4.2</jackson.version>
+        <jackson.version> 2.4.3</jackson.version>
 
     </properties>
 

@@ -33,7 +33,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.27</version>
+        <version project='firethorn'>1.11.28</version>
     </parent>
 
     <artifactId>firethorn-webapp</artifactId>
@@ -265,18 +265,15 @@
             <!--+
                 | Maven Docker plugin.
                 | https://github.com/alexec/docker-maven-plugin
-                +-->
             <plugin>
                 <groupId>com.alexecollins.docker</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>2.1.0</version>
                 <configuration>
-
                     <removeIntermediateImages>true</removeIntermediateImages>
                     <cache>true</cache>
-
                 </configuration>
             </plugin>
+                +-->
 
         </plugins>
 
