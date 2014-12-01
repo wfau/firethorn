@@ -67,7 +67,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg commit -m "Added both ident and self to JSON"
+        hg add
+        hg commit -m "Added self to JSON and updated integration tests"
         hg push
 
     popd
