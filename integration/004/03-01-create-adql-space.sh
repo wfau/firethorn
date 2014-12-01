@@ -30,7 +30,7 @@ curl \
     | ./pp | tee adql-space.json
 
 adqlspace=$(
-    cat adql-space.json | ident | node
+    cat adql-space.json | self | node
     )
 
 

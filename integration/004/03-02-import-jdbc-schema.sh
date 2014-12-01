@@ -32,7 +32,7 @@ curl \
     | ./pp | tee jdbc-schema.json
 
 jdbcschemaident=$(
-    cat jdbc-schema.json | ident
+    cat jdbc-schema.json | self
     )
 
 curl \
@@ -45,7 +45,7 @@ curl \
     | ./pp | tee adql-schema.json
 
 adqlschema=$(
-    cat adql-schema.json | ident | node
+    cat adql-schema.json | self | node
     )
 
 

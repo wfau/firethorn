@@ -43,7 +43,7 @@ curl \
     | ./pp | tee jdbc-space.json
 
 jdbcspace=$(
-    cat jdbc-space.json | ident | node
+    cat jdbc-space.json | self | node
     )
 
 

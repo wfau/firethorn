@@ -62,9 +62,9 @@ define()
 
 #
 # Function to get the htp ident from a JSON response.
-ident()
+self()
     {
-    ./pp | sed -n 's|^ *"ident" : "\(.*\)"[^"]*|\1|p'
+    ./pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
     }
 
 

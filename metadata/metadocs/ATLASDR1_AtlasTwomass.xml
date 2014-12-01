@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1.1'
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Catalog>
+   <Name>ATLASDR1</Name>
+   <Description></Description>
+
+   <Table ID="atlasSourceXtwomass_psc">
+      <Name>atlasSourceXtwomass_psc</Name>
+      <Description><![CDATA[ Cross-neighbours between atlas and twomass_psc]]></Description>
+      <Column ID="atlasSourceXtwomass_psc.masterObjID" indexed="true">
+         <Name>masterObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID in atlasSource (=sourceID)]]></Description>
+         <Units> </Units>
+         <UCD version="1">ID_MAIN</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="atlasSourceXtwomass_psc.slaveObjID" indexed="true">
+         <Name>slaveObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID of the neighbour in TWOMASS..twomass_psc (=pts_key)]]></Description>
+         <Units> </Units>
+         <UCD version="1">ID_CATALOG</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="atlasSourceXtwomass_psc.distanceMins" indexed="false">
+         <Name>distanceMins</Name>
+         <Datatype>float</Datatype>
+         <Description><![CDATA[Angular separation between neighbours]]></Description>
+         <Units>arcminutes</Units>
+         <UCD version="1">POS_ANG_DIST_GENERAL</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>
+
+   <Table ID="atlasSourceXtwomass_xsc">
+      <Name>atlasSourceXtwomass_xsc</Name>
+      <Description><![CDATA[ Cross-neighbours between atlas and twomass_xsc]]></Description>
+      <Column ID="atlasSourceXtwomass_xsc.masterObjID" indexed="true">
+         <Name>masterObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID in atlasSource (=sourceID)]]></Description>
+         <Units> </Units>
+         <UCD version="1">ID_MAIN</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="atlasSourceXtwomass_xsc.slaveObjID" indexed="true">
+         <Name>slaveObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID of the neighbour in TWOMASS..twomass_xsc (=ext_key)]]></Description>
+         <Units> </Units>
+         <UCD version="1">ID_CATALOG</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="atlasSourceXtwomass_xsc.distanceMins" indexed="false">
+         <Name>distanceMins</Name>
+         <Datatype>float</Datatype>
+         <Description><![CDATA[Angular separation between neighbours]]></Description>
+         <Units>arcminutes</Units>
+         <UCD version="1">POS_ANG_DIST_GENERAL</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>
+   </Catalog>
+</DatasetDescription>
+
