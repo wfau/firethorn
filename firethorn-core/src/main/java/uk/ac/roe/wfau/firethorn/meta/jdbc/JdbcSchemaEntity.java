@@ -83,8 +83,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
+                JdbcSchemaEntity.DB_JDBC_CATALOG_COL,
+                JdbcSchemaEntity.DB_JDBC_SCHEMA_COL,
+                JdbcSchemaEntity.DB_PARENT_COL
                 }
             )
         }
@@ -285,19 +286,32 @@ public class JdbcSchemaEntity
         @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
             {
-            return this.create(
-                parent,
-                catalog,
-                schema,
-                names.fullname(
+            log.debug("JdbcSchema create(JdbcResource, String, String)");
+            log.debug("  Parent  [{}]", parent.ident());
+            log.debug("  Catalog [{}]", catalog);
+            log.debug("  Schema  [{}]", schema);
+
+            if ("FIRETHORN_TEST_DATA".equals(catalog))
+                {
+                log.debug("FIRETHORN_TEST_DATA");
+                }
+            
+            return this.insert(
+                new JdbcSchemaEntity(
+                    parent,
                     catalog,
-                    schema
+                    schema,
+                    names.fullname(
+                        catalog,
+                        schema
+                        )
                     )
                 );
             }
 
+        /*
         @CreateMethod
-        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
+        protected JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
             return this.insert(
                 new JdbcSchemaEntity(
@@ -308,6 +322,7 @@ public class JdbcSchemaEntity
                     )
                 );
             }
+         */
 
         @Override
         @SelectMethod
@@ -326,12 +341,18 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws EntityNotFoundException
+        throws NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
+
+            if ("FIRETHORN_TEST_DATA".equals(catalog))
+                {
+                log.debug("FIRETHORN_TEST_DATA");
+                }
+            
             final JdbcSchema found = search(
                 parent,
                 catalog,
@@ -342,7 +363,7 @@ public class JdbcSchemaEntity
                 return found ;
                 }
             else {
-                throw new EntityNotFoundException(
+                throw new NameNotFoundException(
                     "Unable to find matching schema [" + catalog + "][" + schema  + "]"
                     );
                 }
@@ -352,7 +373,7 @@ public class JdbcSchemaEntity
         @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
             {
-            log.debug("JdbcSchema select(JdbcResource, String, String)");
+            log.debug("JdbcSchema search(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
@@ -543,6 +564,12 @@ public class JdbcSchemaEntity
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
         super(resource, name);
+        log.debug("JdbcSchemaEntity(JdbcResource, String, String, String)");
+        log.debug("   JdbcResource [{}]", resource.name());
+        log.debug("   Catalog [{}]", catalog);
+        log.debug("   Schema  [{}]", schema);
+        log.debug("   Name    [{}]", name);
+
         this.resource = resource;
         this.catalog  = catalog ;
         this.schema   = schema  ;
@@ -611,7 +638,7 @@ public class JdbcSchemaEntity
     @Override
     public JdbcSchema.Tables tables()
         {
-        log.debug("tables() for [{}][{}]", ident(), namebuilder());
+        log.debug("tables() for [{}][{}][{}]", ident(), catalog(), schema());
         scantest();
         return new JdbcSchema.Tables()
             {
@@ -731,7 +758,7 @@ public class JdbcSchemaEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("tables() scan for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("tables() scan for [{}][{}][{}]", ident(), catalog(), schema());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();

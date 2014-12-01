@@ -77,7 +77,7 @@ extends AbstractQueryTestBase
             "urn:vizier.adql.resource"
             );
 
-        testSchema(adqlspace, ivoaspace, "vizls");
+        testSchema(adqlspace, ivoaspace, "vizls", "vizls");
 
         }
     }

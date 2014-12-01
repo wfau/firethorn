@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query.atlas ;
+package uk.ac.roe.wfau.firethorn.adql.query.test ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
@@ -32,43 +33,36 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  */
 @Slf4j
 @Ignore
-public abstract class AtlasQueryTestBase
-extends AbstractQueryTestBase
+public abstract class TestDataTestBase
+extends AtlasQueryTestBase
     {
 
-    protected static final String ATLAS_VERSION = "ATLASDR1" ;
-
     /**
-     * Load our resources.
+     * Load our test resources.
+     * Relies on the test database FIRETHORN_TEST_DATA being present.
      *
-     */
     @Before
-    public void loadAtlasResources()
+     */
+    public void loadTestResources()
     throws Exception
         {
-        log.debug("loadAtlasResources()");
-
-        replace(
-            "{ATLAS_VERSION}",
-            ATLAS_VERSION
-            );
-
         JdbcResource jdbcspace = jdbcResource(
-            "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
-            "*",
-            "spring:RoeATLAS"
+            "atlas.jdbc.resource"
             );
 
         AdqlResource adqlspace = adqlResource(
-            "atlas.adql.resource",
             "atlas.adql.resource"
             );
 
-        testSchema(adqlspace, jdbcspace, ATLAS_VERSION, ATLAS_VERSION, "dbo");
-        testSchema(adqlspace, jdbcspace, "ROSAT",       "ROSAT",       "dbo");
-        testSchema(adqlspace, jdbcspace, "BestDR9",     "BestDR9",     "dbo");
-        testSchema(adqlspace, jdbcspace, "TWOMASS",     "TWOMASS",     "dbo");
-
+        testSchema(
+            adqlspace,
+            jdbcspace,
+            "schema one", "FIRETHORN_TEST_DATA", "schema one"
+            );
+        testSchema(
+            adqlspace,
+            jdbcspace,
+            "schema.two", "FIRETHORN_TEST_DATA", "schema.two"
+            );
         }
     }
