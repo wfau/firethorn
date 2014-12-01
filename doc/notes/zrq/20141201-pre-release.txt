@@ -25,7 +25,7 @@
 # Merge the old branch.
 #[user@desktop]
 
-    newversion=1.11.27
+    newversion=1.11.28
     oldbranch=1.11.25-pre-release
 
     source "${HOME:?}/firethorn.settings"
@@ -37,4 +37,10 @@
     popd
 
     copy/paste 20141130-03-hg-merge.txt
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    ....
 

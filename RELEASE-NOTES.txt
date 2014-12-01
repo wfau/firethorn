@@ -1,5 +1,4 @@
 
-    Branch 1.11.25-pre-release         1899:2a1b62201592
 
     Branch 1.11.24-stv-cds-adql        1900:f4f8e380a0da
         ####
@@ -12,6 +11,28 @@
 Version x.y.z (xxxx-yy-zz)
 -------------------------
 
+    1.11.26-zrq-self-ident
+    1927:8bd5d0c78247 (closed)
+
+        Added self to JSON output
+        http://redmine.roe.ac.uk/issues/671
+        
+    1.11.25-zrq-ident-self
+    1922:e1b6729acc34 (closed)
+
+        -- Closed, not used
+
+    1.11.25-zrq-jdbcscan-fix
+    1920:939b2ec6403d (closed)
+
+        JdbcResouce schema scan failed if it found a schema with a space in the name.
+        http://redmine.roe.ac.uk/issues/668
+        
+    1.11.25-pre-release
+    1931:37b41efb9ad7 (closed)
+
+        Dependencies update
+        RELEASE notes update
 
     Branch 1.11.24-arraylist-fix
     1896:ed152316c87c (closed)
@@ -19,8 +40,10 @@ Version x.y.z (xxxx-yy-zz)
         Reduced memory footprint
         Replaced ArrayList with ResultSetIterator
 
-    Branch 1.11.23-query-owner         1877:7e91738d4550
+    Branch 1.11.23-query-owner
+    1877:7e91738d4550
 
+        -- Still active
 
     Branch 1.11.23-stv-redmine-junit
     1883:fe2aafd94fba (closed)
