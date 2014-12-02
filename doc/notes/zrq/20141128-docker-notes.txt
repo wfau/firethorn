@@ -42,7 +42,7 @@ RUN yum -y install eclipse-jdt
 
 #
 # Add our user
-RUN useradd --uid=500 --home "/home/Albert" "Albert"
+RUN useradd --uid=500 "Albert"
 USER Albert
 
 ENV  HOME /home/Albert
@@ -61,4 +61,5 @@ EOF
        -e DISPLAY=$DISPLAY \
        -v /tmp/.X11-unix:/tmp/.X11-unix \
        albert eclipse
+
 

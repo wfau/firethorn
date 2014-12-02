@@ -59,6 +59,22 @@ Docker
     https://clusterhq.com/
 
 
+Rocket
+
+    Like Docker, only simpler
+    http://www.wired.com/2014/12/google-others-eye-new-alternative-docker-cloud-computings-next-big-thing/
+
+    CoreOS announces Docker competitor
+    http://tech.slashdot.org/story/14/12/02/0148213/coreos-announces-competitor-to-docker
+
+        The updates problem
+        http://tech.slashdot.org/comments.pl?sid=6261907&cid=48505379
+
+        The Ruby on Rails weeny
+        http://tech.slashdot.org/comments.pl?sid=6261907&cid=48504227
+
+
+
 Google
 
     Firebase
