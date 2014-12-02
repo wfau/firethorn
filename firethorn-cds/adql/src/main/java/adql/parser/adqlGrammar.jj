@@ -510,6 +510,7 @@ TOKEN : {
 |	< MINUS: "-" >
 |	< ASTERISK: "*" >
 |	< DIVIDE: "/" >
+|	< MODULO: "%" >
 }
 
 
