@@ -6,10 +6,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Vector;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import adql.db.DBChecker;
+import adql.db.DBChecker.SearchTableHandler;
+import adql.db.DBTable;
+import adql.db.SearchColumnList;
 import adql.db.exception.UnresolvedIdentifiersException;
 import adql.parser.ADQLQueryFactory.JoinType;
 import adql.parser.IdentifierItems.IdentifierItem;
+import adql.query.ADQLObject;
 import adql.query.ADQLOrder;
 import adql.query.ADQLQuery;
 import adql.query.ClauseADQL;
@@ -26,6 +37,7 @@ import adql.query.constraint.ComparisonOperator;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.constraint.In;
 import adql.query.from.ADQLJoin;
+import adql.query.from.ADQLTable;
 import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
@@ -484,9 +496,45 @@ public class ADQLParser implements ADQLParserConstants {
 				jj_consume_token(-1);
 				throw new ParseException();
 		}
+		
+		  ADQLQuery parentQuery = null;
+		    // Create Column list and alias map from the query stack data
+		    Stack<ADQLQuery> stackq = stackQuery;
+		    DBChecker qCheck = (DBChecker ) queryChecker;
+		    SearchColumnList allfromlist =  new SearchColumnList();
+		        HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+
+		        for(ADQLQuery o : stackq){
+		                        //ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
+		                        SearchTableHandler sHandler = new SearchTableHandler();
+
+		                        sHandler.search(o.getFrom());
+		                        for(ADQLObject result : sHandler){
+		                                try{
+		                                        ADQLTable table = (ADQLTable)result;
+		                                        // resolve the table:
+		                                        DBTable dbTable = null;
+		                                        if (table.isSubQuery()){
+		                                                dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
+		                                        }else{
+		                                                dbTable = qCheck.resolveTable(table);
+		                                                if (table.hasAlias())
+		                                                        dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
+		                                        }
+		                                        // link with the matched DBTable:
+		                                        table.setDBLink(dbTable);
+		                                        mapTables.put(dbTable, table);
+		                                        allfromlist.addAll(table.getDBColumns());
+
+		                                }catch(ParseException pe){
+		                                        System.out.println("Parse Exception caught ");
+		                                }
+		                        }
+
+		                }
 		// check the query:
 		if (queryChecker != null)
-			queryChecker.check(q);
+			queryChecker.check(q, allfromlist, mapTables );
 
 		{
 			if (true)

@@ -118,7 +118,7 @@ implements AdqlParser
         //
         // Create our ADQL parser.
         this.parser = new ADQLParser(
-            new MyQueryChecker(
+            new DBChecker(
                 new MySearchTableList(
                     schema.resource(),
                     factory,

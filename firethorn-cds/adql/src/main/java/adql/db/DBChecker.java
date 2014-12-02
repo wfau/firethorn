@@ -83,6 +83,15 @@ public class DBChecker implements QueryChecker {
 	public DBChecker(){
 		lstTables = new SearchTableList();
 	}
+	
+	
+	/**
+	 * Builds a {@link DBChecker} with a given list of tables.
+	 */
+	public DBChecker(SearchTableApi mylstTables){
+		lstTables = mylstTables;
+	}
+
 
 	/**
 	 * Builds a {@link DBChecker} with the given list of tables.

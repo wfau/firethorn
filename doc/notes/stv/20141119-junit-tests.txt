@@ -262,107 +262,476 @@ uk.ac.roe.wfau.firethorn.adql.query.atlas
 uk.ac.roe.wfau.firethorn.adql.query.atlas.UserFunctionTestCase
 test001(uk.ac.roe.wfau.firethorn.adql.query.atlas.UserFunctionTestCase)
 org.junit.ComparisonFailure: expected:<select top 5 [atlasdr1.dbo.fhms(atlasdr1.dbo.atlassource.ra)as fhms,atlasdr1.]dbo.fdms(atlasdr1.db...> but was:<select top 5 [dbo.fhms(atlasdr1.dbo.atlassource.ra)as fhms,]dbo.fdms(atlasdr1.db...>
-
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:582)
+	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:614)
+	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:622)
+	at uk.ac.roe.wfau.firethorn.adql.query.atlas.UserFunctionTestCase.test001(UserFunctionTestCase.java:45)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:72)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:81)
+	at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:72)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:216)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:82)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:60)
+	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:67)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:162)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
 
 test002(uk.ac.roe.wfau.firethorn.adql.query.atlas.UserFunctionTestCase)
 org.junit.ComparisonFailure: expected:<select top 5 [atlasdr1.dbo.fhms(atlasdr1.dbo.atlassource.ra)as fra,atlasdr1.]dbo.fdms(atlasdr1.db...> but was:<select top 5 [dbo.fhms(atlasdr1.dbo.atlassource.ra)as fra,]dbo.fdms(atlasdr1.db...>
-	
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
 uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase
 test0101(uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase)
-java.lang.ArrayIndexOutOfBoundsException: 10
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:520)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:609)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:621)
-	at uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase.test0101(UserQueriesTestCase.java:43)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 
 test0401(uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase)
-java.lang.ArrayIndexOutOfBoundsException: 32
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:520)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:609)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:621)
-	at uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase.test0401(UserQueriesTestCase.java:273)
-
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:743)
+	a
 
 test0501(uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase)
-java.lang.ArrayIndexOutOfBoundsException: 7
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:520)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:609)
-	at uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.validate(AbstractQueryTestBase.java:621)
-	at uk.ac.roe.wfau.firethorn.adql.query.atlas.UserQueriesTestCase.test0501(UserQueriesTestCase.java:459)
-
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+	a
 
 uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase
+test010S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test011S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+	
+
+test012S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<....atlasmergelog.genum[ + ]atlasdr1.dbo.atlasme...> but was:<....atlasmergelog.genum[+]atlasdr1.dbo.atlasme...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	)
+
+test013S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<....atlasmergelog.genum[ + ]atlasdr1.dbo.atlasme...> but was:<....atlasmergelog.genum[+]atlasdr1.dbo.atlasme...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test014S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+test015S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<....atlasmergelog.genum[ + atlasdr1.dbo.atlasmergelog.renum + ]1 as mysum from atla...> but was:<....atlasmergelog.genum[+atlasdr1.dbo.atlasmergelog.renum+]1 as mysum from atla...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+test016S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test017S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<....atlasmergelog.genum[ + atlasdr1.dbo.atlasmergelog.renum + ]1.0 as mysum from at...> but was:<....atlasmergelog.genum[+atlasdr1.dbo.atlasmergelog.renum+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
 test018S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
+	at org.junit.Assert.fail(Assert.java:88)
+
 
 test019S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 	
+
+test020S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test021S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test022S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.extnum[ + ]atlasdr1.dbo.atlasde...> but was:<...tlasdetection.extnum[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+test023S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.extnum[ + ]atlasdr1.dbo.atlasde...> but was:<...tlasdetection.extnum[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+test024S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+test025S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.extnum[ + atlasdr1.dbo.atlasdetection.class + ]1 as mysum from atla...> but was:<...tlasdetection.extnum[+atlasdr1.dbo.atlasdetection.class+]1 as mysum from atla...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test026S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test027S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.extnum[ + atlasdr1.dbo.atlasdetection.class + ]1.0 as mysum from at...> but was:<...tlasdetection.extnum[+atlasdr1.dbo.atlasdetection.class+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
 
 test028S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
+	at org.junit.Assert.fail(Assert.java:88)
+
 
 test029S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test030S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test031S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test032S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.aprof2[ + ]atlasdr1.dbo.atlasde...> but was:<...tlasdetection.aprof2[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+test033S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.aprof2[ + ]atlasdr1.dbo.atlasde...> but was:<...tlasdetection.aprof2[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test034S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test035S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.aprof2[ + atlasdr1.dbo.atlasdetection.aprof3 + ]1 as mysum from atla...> but was:<...tlasdetection.aprof2[+atlasdr1.dbo.atlasdetection.aprof3+]1 as mysum from atla...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test036S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test037S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.aprof2[ + atlasdr1.dbo.atlasdetection.aprof3 + ]1.0 as mysum from at...> but was:<...tlasdetection.aprof2[+atlasdr1.dbo.atlasdetection.aprof3+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
 	
 
 test038S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 
 
 test039S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 	
+
+test040S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test041S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+test042S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...atlasdetection.objid[ + ]atlasdr1.dbo.atlasde...> but was:<...atlasdetection.objid[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test043S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...atlasdetection.objid[ + ]atlasdr1.dbo.atlasde...> but was:<...atlasdetection.objid[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test044S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test045S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...atlasdetection.objid[ + atlasdr1.dbo.atlasdetection.multiframeid + ]1 as mysum from atla...> but was:<...atlasdetection.objid[+atlasdr1.dbo.atlasdetection.multiframeid+]1 as mysum from atla...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test046S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test047S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...atlasdetection.objid[ + atlasdr1.dbo.atlasdetection.multiframeid + ]1.0 as mysum from at...> but was:<...atlasdetection.objid[+atlasdr1.dbo.atlasdetection.multiframeid+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
 
 test048S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 
 
 test049S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test050S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+test051S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+test052S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.isomag[ + ]atlasdr1.dbo.atlasde...> but was:<...tlasdetection.isomag[+]atlasdr1.dbo.atlasde...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test054S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test055S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.isomag[ + atlasdr1.dbo.atlasdetection.isoflux + ]1 as mysum from atla...> but was:<...tlasdetection.isomag[+atlasdr1.dbo.atlasdetection.isoflux+]1 as mysum from atla...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test056S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test057S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.isomag[ + atlasdr1.dbo.atlasdetection.isoflux + ]1.0 as mysum from at...> but was:<...tlasdetection.isomag[+atlasdr1.dbo.atlasdetection.isoflux+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+test058S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test059S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...tlasdetection.isomag[ + atlasdr1.dbo.atlasdetection.isoflux + ]1.0 as mysum from at...> but was:<...tlasdetection.isomag[+atlasdr1.dbo.atlasdetection.isoflux+]1.0 as mysum from at...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test060S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test061S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[(+)]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test062S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...s.dbo.twomass_psc.ra[ + ]twomass.dbo.twomass_...> but was:<...s.dbo.twomass_psc.ra[+]twomass.dbo.twomass_...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test063S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...s.dbo.twomass_psc.ra[ + ]twomass.dbo.twomass_...> but was:<...s.dbo.twomass_psc.ra[+]twomass.dbo.twomass_...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test064S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test065S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...s.dbo.twomass_psc.ra[ + twomass.dbo.twomass_psc.dec + ]1 as mysum from twom...> but was:<...s.dbo.twomass_psc.ra[+twomass.dbo.twomass_psc.dec+]1 as mysum from twom...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test066S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test067S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
+org.junit.ComparisonFailure: expected:<...s.dbo.twomass_psc.ra[ + twomass.dbo.twomass_psc.dec + ]1.0 as mysum from tw...> but was:<...s.dbo.twomass_psc.ra[+twomass.dbo.twomass_psc.dec+]1.0 as mysum from tw...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
 
 test068S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
 
 test069S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
+	at org.junit.Assert.fail(Assert.java:88)
+
+
 uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase
+test010(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
+org.junit.ComparisonFailure: expected:<[]decBase> but was:<[-]decBase>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test005L(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 94.  Encountered: "%" (37), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3R_127(ADQLParser.java:5263)
+	at adql.parser.ADQLParser.jj_3R_77(ADQLParser.java:5315)
+	at adql.parser.ADQLParser.jj_3R_56(ADQLParser.java:5222)
+	at adql.parser.ADQLParser.jj_3R_36(ADQLParser.java:5249)
+	at adql.parser.ADQLParser.jj_3R_21(ADQLParser.java:5239)
+	at adql.parser.ADQLParser.jj_3R_43(ADQLParser.java:5496)
+	at adql.parser.ADQLParser.jj_3R_25(ADQLParser.java:5570)
+	at adql.parser.ADQLParser.jj_3_12(ADQLParser.java:5599)
+	at adql.parser.ADQLParser.jj_2_12(ADQLParser.java:3366)
+	at adql.parser.ADQLParser.Constraint(ADQLParser.java:2031)
+	at adql.parser.ADQLParser.ConditionsList(ADQLParser.java:1968)
+	at adql.parser.ADQLParser.Where(ADQLParser.java:836)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:561)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+	
+
+
+
 test005S(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
+adql.parser.TokenMgrError: Lexical error at line 1, column 94.  Encountered: "%" (37), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	
+
 
 
 test006L(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
-java.lang.ArrayIndexOutOfBoundsException: 2
-	
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
 test006a(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
-java.lang.ArrayIndexOutOfBoundsException: 2
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
 
 
 test008L(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugsTestCase)
-org.junit.ComparisonFailure: expected:<...bours.masterobjid - [sources.ident] < 1000000> but was:<...bours.masterobjid - [atlasdr1.dbo.atlassource.sourceid] < 1000000>
+org.junit.ComparisonFailure: expected:<...ours,(select top 10 [atlasdr1.dbo.atlassource.sourceid as ident from atlasdr1.dbo.atlassource)as sources where neighbours.masterobjid - ]sources.ident < 1000...> but was:<...ours,(select top 10 [sourceid as ident from atlassource)as sources where neighbours.masterobjid-]sources.ident < 1000...>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	
+
+uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase
+test001(uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase)
+org.junit.ComparisonFailure: expected:<...o.atlassource where([atlasdr1.dbo.atlassource.ra > 180 and atlasdr1.dbo.atlassource.ra < 181)and(atlasdr1.dbo.atlassource.dec > -3 and(atlasdr1.dbo.atlassource.dec < -2 or atlasdr1.dbo.atlassource.dec < -3]))> but was:<...o.atlassource where([(atlasdr1.dbo.atlassource.ra > 180 and atlasdr1.dbo.atlassource.ra < 181))and((atlasdr1.dbo.atlassource.dec > -3 and((atlasdr1.dbo.atlassource.dec < -2 or atlasdr1.dbo.atlassource.dec < -3))]))>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test002(uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase)
+org.junit.ComparisonFailure: expected:<...o.atlassource where([atlasdr1.dbo.atlassource.ra > 180 and atlasdr1.dbo.atlassource.ra < 181)and((atlasdr1.dbo.atlassource.dec > -3 and atlasdr1.dbo.atlassource.dec < -2)or atlasdr1.dbo.atlassource.dec < -3])> but was:<...o.atlassource where([(atlasdr1.dbo.atlassource.ra > 180 and atlasdr1.dbo.atlassource.ra < 181))and((((atlasdr1.dbo.atlassource.dec > -3 and atlasdr1.dbo.atlassource.dec < -2))or atlasdr1.dbo.atlassource.dec < -3)])>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+test003(uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase)
+org.junit.ComparisonFailure: expected:<....atlassource where(([atlasdr1.dbo.atlassource.ra > 180)and(atlasdr1.dbo.atlassource.ra < 181))and((atlasdr1.dbo.atlassource.dec > -3)and((atlasdr1.dbo.atlassource.dec < -2)or(atlasdr1.dbo.atlassource.dec < -3])))> but was:<....atlassource where(([((atlasdr1.dbo.atlassource.ra > 180))and((atlasdr1.dbo.atlassource.ra < 181))))and((((atlasdr1.dbo.atlassource.dec > -3))and((((atlasdr1.dbo.atlassource.dec < -2))or((atlasdr1.dbo.atlassource.dec < -3)))])))>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase
+test001(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test002(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test003(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test004(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+test005(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+	at org.junit.Assert.fail(Assert.java:88)
+
+
+uk.ac.roe.wfau.firethorn.adql.query.atlas.AggregateFunctionTestCase
+test003S(uk.ac.roe.wfau.firethorn.adql.query.atlas.AggregateFunctionTestCase)
+org.junit.ComparisonFailure: expected:<[]SUM> but was:<[-]SUM>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
+
+uk.ac.roe.wfau.firethorn.adql.query.atlas.ColumnTypeTestCase
+test001S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ColumnTypeTestCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
 	
 
 uk.ac.roe.wfau.firethorn.adql.query.atlas.NestedQueryTestCase
 test000S(uk.ac.roe.wfau.firethorn.adql.query.atlas.NestedQueryTestCase)
-org.junit.ComparisonFailure: expected:<...sdssprimary = 1 and [nested.]id = crossmatch.mast...> but was:<...sdssprimary = 1 and [atlasdr1.dbo.atlassource.source]id = crossmatch.mast...>
-	
+org.junit.ComparisonFailure: expected:<...eid as id from atlas[dr1.dbo.atlassource as source where source.ra between 182 and 184 and source.dec between -1 and -3 and source.mergedclass = 1 group by source.sourceid)as nested where crossmatch.distancemins < 2 / ]60.0 and crossmatch....> but was:<...eid as id from atlas[source as source where source.ra between 182 and 184 and source.dec between -1 and -3 and mergedclass = 1 group by source.sourceid)as nested where crossmatch.distancemins < 2/]60.0 and crossmatch....>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+
 
 test001S(uk.ac.roe.wfau.firethorn.adql.query.atlas.NestedQueryTestCase)
-org.junit.ComparisonFailure: expected:<select [crossmatch.distancemins as distancemins from(select top 10000 atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid as masterobjid,atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid as slaveobjid,atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins,atlasdr1.dbo.atlassourcexdr7photoobj.sdsstype as sdsstype,atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary as sdssprimary from atlasdr1.dbo.atlassourcexdr7photoobj where atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary = 1)as crossmatch where crossmatch.distancemins < 2 / 60.0 and crossmatch].sdsstype = 3> but was:<select [atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins from(select top 10000 atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins,atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid as masterobjid,atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary as sdssprimary,atlasdr1.dbo.atlassourcexdr7photoobj.sdsstype as sdsstype,atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid as slaveobjid from atlasdr1.dbo.atlassourcexdr7photoobj where atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary = 1)as crossmatch where atlasdr1.dbo.atlassourcexdr7photoobj.distancemins < 2 / 60.0 and atlasdr1.dbo.atlassourcexdr7photoobj].sdsstype = 3>
-	
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+
+
 test002S(uk.ac.roe.wfau.firethorn.adql.query.atlas.NestedQueryTestCase)
 java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
 
+
 uk.ac.roe.wfau.firethorn.adql.query.atlas.SubqueryInSelectTestCase
 test000(uk.ac.roe.wfau.firethorn.adql.query.atlas.SubqueryInSelectTestCase)
-org.junit.ComparisonFailure: expected:<...sdssprimary = 1 and [subquery.]id = crossmatch.mast...> but was:<...sdssprimary = 1 and [atlasdr1.dbo.atlassource.source]id = crossmatch.mast...>
-	
+org.junit.ComparisonFailure: expected:<... crossmatch,(select [atlasdr1.dbo.atlassource.sourceid as id from atlasdr1.dbo.atlassource where atlasdr1.dbo.atlassource.ra between 182 and 184 and atlasdr1.dbo.atlassource.dec between -1 and -3 and atlasdr1.dbo.atlassource.mergedclass = 1 group by atlasdr1.dbo.atlassource.sourceid)as subquery where crossmatch.distancemins < 2 / ]60.0 and crossmatch....> but was:<... crossmatch,(select [sourceid as id from atlassource where ra between 182 and 184 and dec between -1 and -3 and mergedclass = 1 group by sourceid)as subquery where crossmatch.distancemins < 2/]60.0 and crossmatch....>
+
 
 test001(uk.ac.roe.wfau.firethorn.adql.query.atlas.SubqueryInSelectTestCase)
-org.junit.ComparisonFailure: expected:<select [crossmatch.distancemins as distancemins from(select top 10000 atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid as masterobjid,atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid as slaveobjid,atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins,atlasdr1.dbo.atlassourcexdr7photoobj.sdsstype as sdsstype,atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary as sdssprimary from atlasdr1.dbo.atlassourcexdr7photoobj where atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary = 1)as crossmatch where crossmatch.distancemins < 2 / 60.0 and crossmatch].sdsstype = 3> but was:<select [atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins from(select top 10000 atlasdr1.dbo.atlassourcexdr7photoobj.distancemins as distancemins,atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid as masterobjid,atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary as sdssprimary,atlasdr1.dbo.atlassourcexdr7photoobj.sdsstype as sdsstype,atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid as slaveobjid from atlasdr1.dbo.atlassourcexdr7photoobj where atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary = 1)as crossmatch where atlasdr1.dbo.atlassourcexdr7photoobj.distancemins < 2 / 60.0 and atlasdr1.dbo.atlassourcexdr7photoobj].sdsstype = 3>
+java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
 
 
 test002(uk.ac.roe.wfau.firethorn.adql.query.atlas.SubqueryInSelectTestCase)
@@ -370,143 +739,194 @@ java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
 	
 
 uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase
+test001L(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 150.  Encountered: " " (32), after : "|"
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3R_24(ADQLParser.java:3738)
+	at adql.parser.ADQLParser.jj_3_11(ADQLParser.java:3557)
+	at adql.parser.ADQLParser.jj_3R_35(ADQLParser.java:3573)
+	at adql.parser.ADQLParser.jj_3R_27(ADQLParser.java:3666)
+	at adql.parser.ADQLParser.jj_3R_126(ADQLParser.java:4242)
+	at adql.parser.ADQLParser.jj_3R_76(ADQLParser.java:4393)
+	at adql.parser.ADQLParser.jj_3R_55(ADQLParser.java:3551)
+	at adql.parser.ADQLParser.jj_3R_35(ADQLParser.java:3575)
+	at adql.parser.ADQLParser.jj_3R_27(ADQLParser.java:3666)
+	at adql.parser.ADQLParser.jj_3R_44(ADQLParser.java:5474)
+	at adql.parser.ADQLParser.jj_3R_25(ADQLParser.java:5572)
+	at adql.parser.ADQLParser.jj_3_12(ADQLParser.java:5599)
+	at adql.parser.ADQLParser.jj_2_12(ADQLParser.java:3366)
+	at adql.parser.ADQLParser.Constraint(ADQLParser.java:2031)
+	at adql.parser.ADQLParser.ConditionsList(ADQLParser.java:2007)
+	at adql.parser.ADQLParser.Where(ADQLParser.java:836)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:561)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+
+
+
 test001S(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
+adql.parser.TokenMgrError: Lexical error at line 1, column 150.  Encountered: " " (32), after : "|"
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3R_24(ADQLParser.java:3738)
+	at adql.parser.ADQLParser.jj_3_11(ADQLParser.java:3557)
+	at adql.parser.ADQLParser.jj_3R_35(ADQLParser.java:3573)
+	at adql.parser.ADQLParser.jj_3R_27(ADQLParser.java:3666)
+	at adql.parser.ADQLParser.jj_3R_126(ADQLParser.java:4242)
+	at adql.parser.ADQLParser.jj_3R_76(ADQLParser.java:4393)
+	at adql.parser.ADQLParser.jj_3R_55(ADQLParser.java:3551)
+	at adql.parser.ADQLParser.jj_3R_35(ADQLParser.java:3575)
+	at adql.parser.ADQLParser.jj_3R_27(ADQLParser.java:3666)
+	at adql.parser.ADQLParser.jj_3R_44(ADQLParser.java:5474)
+	at adql.parser.ADQLParser.jj_3R_25(ADQLParser.java:5572)
+	at adql.parser.ADQLParser.jj_3_12(ADQLParser.java:5599)
+	at adql.parser.ADQLParser.jj_2_12(ADQLParser.java:3366)
+	at adql.parser.ADQLParser.Constraint(ADQLParser.java:2031)
+	at adql.parser.ADQLParser.ConditionsList(ADQLParser.java:2007)
+	at adql.parser.ADQLParser.Where(ADQLParser.java:836)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:561)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+	
+
+
+
+test002L(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 23.  Encountered: " " (32), after : "|"
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3_1(ADQLParser.java:5684)
+	at adql.parser.ADQLParser.jj_2_1(ADQLParser.java:3234)
+	at adql.parser.ADQLParser.SelectItem(ADQLParser.java:679)
+	at adql.parser.ADQLParser.Select(ADQLParser.java:648)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:557)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+
+
+
+
+test003L(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 22.  Encountered: "&" (38), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3_1(ADQLParser.java:5684)
+	at adql.parser.ADQLParser.jj_2_1(ADQLParser.java:3234)
+	at adql.parser.ADQLParser.SelectItem(ADQLParser.java:679)
+	at adql.parser.ADQLParser.Select(ADQLParser.java:648)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:557)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+
+
+test004L(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 22.  Encountered: "^" (94), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3_1(ADQLParser.java:5684)
+	at adql.parser.ADQLParser.jj_2_1(ADQLParser.java:3234)
+	at adql.parser.ADQLParser.SelectItem(ADQLParser.java:679)
+	at adql.parser.ADQLParser.Select(ADQLParser.java:648)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:557)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
+
+
+test005D(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+adql.parser.TokenMgrError: Lexical error at line 1, column 22.  Encountered: "&" (38), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3_1(ADQLParser.java:5684)
+	at adql.parser.ADQLParser.jj_2_1(ADQLParser.java:3234)
+	at adql.parser.ADQLParser.SelectItem(ADQLParser.java:679)
+	at adql.parser.ADQLParser.Select(ADQLParser.java:648)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:557)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
 
 
 test005H(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+adql.parser.TokenMgrError: Lexical error at line 1, column 22.  Encountered: "&" (38), after : ""
+	at adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1829)
+	at adql.parser.ADQLParser.jj_scan_token(ADQLParser.java:5867)
+	at adql.parser.ADQLParser.jj_3_1(ADQLParser.java:5684)
+	at adql.parser.ADQLParser.jj_2_1(ADQLParser.java:3234)
+	at adql.parser.ADQLParser.SelectItem(ADQLParser.java:679)
+	at adql.parser.ADQLParser.Select(ADQLParser.java:648)
+	at adql.parser.ADQLParser.QueryExpression(ADQLParser.java:557)
+	at adql.parser.ADQLParser.Query(ADQLParser.java:486)
+	at adql.parser.ADQLParser.parseQuery(ADQLParser.java:309)
 
+
+
+uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticOperatorCase
+test007(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticOperatorCase)
+org.junit.ComparisonFailure: expected:<[umgPnt]> but was:<[(umgPnt)]>
+
+
+test001S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticOperatorCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+	
+test003S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticOperatorCase)
+org.junit.ComparisonFailure: expected:<[SUM]> but was:<[+]>
+
+test005S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticOperatorCase)
+org.junit.ComparisonFailure: expected:<[umgPnt]> but was:<[(umgPnt)]>
+	
 
 uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase
+test000SB(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+java.lang.NullPointerException
+	at adql.query.SelectItem.toADQL(SelectItem.java:201)
+	at adql.query.ClauseSelect.toADQL(ClauseSelect.java:278)
+	at adql.query.ADQLQuery.toADQL(ADQLQuery.java:413)
+
+
+
+test004SA(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+java.lang.ArrayIndexOutOfBoundsException: No 1-th parameter for the function "ROUND" (nb required params = 2) !
+	at adql.query.operand.function.MathFunction.getParameter(MathFunction.java:177)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:516)
+	at adql.translator.JDBCTranslator.translate(JDBCTranslator.java:726)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:314)
+	at adql.translator.JDBCTranslator.translate(JDBCTranslator.java:605)
+
+
+
+test005SA(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+java.lang.ArrayIndexOutOfBoundsException: No 1-th parameter for the function "TRUNCATE" (nb required params = 2) !
+	at adql.query.operand.function.MathFunction.getParameter(MathFunction.java:177)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:521)
+	at adql.translator.JDBCTranslator.translate(JDBCTranslator.java:726)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:314)
+	at adql.translator.JDBCTranslator.translate(JDBCTranslator.java:605)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:229)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:205)
+	at uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator.translate(SQLServerTranslator.java:118)
+
+
 test007L(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
+java.lang.NullPointerException
+	at adql.query.SelectItem.toADQL(SelectItem.java:201)
+	at adql.query.ClauseSelect.toADQL(ClauseSelect.java:278)
+	at adql.query.ADQLQuery.toADQL(ADQLQuery.java:413)
+
 
 
 test008L(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
- 
- 
-Redmine package:
-----------------
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug465TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug465TestCase)
-org.junit.ComparisonFailure: expected:<[sourceID]> but was:<[dist]>
+java.lang.NullPointerException
+	at adql.query.SelectItem.toADQL(SelectItem.java:201)
+	at adql.query.ClauseSelect.toADQL(ClauseSelect.java:278)
+	at adql.query.ADQLQuery.toADQL(ADQLQuery.java:413)
 
 
-test002(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug465TestCase)
-org.junit.ComparisonFailure: expected:<[sourceID]> but was:<[aG]>
-	
+test06SA(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+java.lang.NullPointerException
+	at adql.query.SelectItem.toADQL(SelectItem.java:201)
+	at adql.query.ClauseSelect.toADQL(ClauseSelect.java:278)
+	at adql.query.ADQLQuery.toADQL(ADQLQuery.java:413)
 
-test003(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug465TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-test004(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug465TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug619TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug619TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug495TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug495TestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug657TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug657TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug444TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug444TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug612TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug612TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug631TestCase
-test004(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug631TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug642TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug642TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug661TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug661TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug610TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug610TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug628TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug628TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug439TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug439TestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug621TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug621TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug640TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug640TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug613TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug613TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-	
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug632TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug632TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug618TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug618TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug662TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug662TestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug629TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug629TestCase)
-java.lang.AssertionError: expected:<VALID> but was:<PARSE_ERROR>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug630TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug630TestCase)
-java.lang.AssertionError: expected:<PARSE_ERROR> but was:<VALID>
-
-
-uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug454TestCase
-test001(uk.ac.roe.wfau.firethorn.adql.query.redmine.RedmineBug454TestCase)
-org.junit.ComparisonFailure: expected:<[unknown]> but was:<[3000]>
 
 
 
