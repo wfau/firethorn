@@ -49,7 +49,11 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.HashMap;
+import adql.db.DBChecker;
+import adql.db.DBChecker.SearchTableHandler;
+import adql.db.DBTable;
+import adql.db.SearchColumnList;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -508,6 +512,16 @@ TOKEN : {
 |	< DIVIDE: "/" >
 }
 
+
+/* ******************** */
+/* Binary operators     */
+/* ******************** */
+TOKEN : {
+	< BIT_AND: "&" >
+|	< BIT_OR:  "|" >
+|	< BIT_XOR: "^" >
+}
+
 /* ******************** */
 /* Comparison operators */
 /* ******************** */
@@ -692,10 +706,44 @@ TOKEN : {
 ADQLQuery Query(): {ADQLQuery q = null;}{
 	q=QueryExpression() (<EOF> | <EOQ>)
 	{
+		  	ADQLQuery parentQuery = null;
+		    // Create Column list and alias map from the query stack data
+		    Stack<ADQLQuery> stackq = stackQuery;
+		    DBChecker qCheck = (DBChecker ) queryChecker;
+		    SearchColumnList allfromlist =  new SearchColumnList();
+	        HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+
+	        for(ADQLQuery o : stackq){
+		        //ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
+		        SearchTableHandler sHandler = new SearchTableHandler();
+
+		        sHandler.search(o.getFrom());
+		        for(ADQLObject result : sHandler){
+		         	try{
+		                ADQLTable table = (ADQLTable)result;
+		                // resolve the table:
+		                DBTable dbTable = null;
+		                if (table.isSubQuery()){
+		                    dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
+		                } else {
+		                    dbTable = qCheck.resolveTable(table);
+		                    if (table.hasAlias())
+		                            dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
+		                }
+		                // link with the matched DBTable:
+		                table.setDBLink(dbTable);
+		                mapTables.put(dbTable, table);
+		                allfromlist.addAll(table.getDBColumns());
+
+		                } catch(ParseException pe) {
+		                        System.out.println("Parse Exception caught ");
+		                }
+          	 	 }
+
+		 	}
 		// check the query:
 		if (queryChecker != null)
-			queryChecker.check(q);
-			
+			queryChecker.check(q, allfromlist, mapTables );
 		return q;
 	}
 }
@@ -1114,7 +1162,8 @@ ADQLOperand StringFactor(): {ADQLOperand op;} {
 GeometryValue<GeometryFunction> GeometryExpression(): {ADQLColumn col = null; GeometryFunction gf = null;} {
 	(col=Column() | gf=GeometryValueFunction())
 	{
-		if (col != null){		  	col.setExpectedType('G');
+		if (col != null){
+		  	col.setExpectedType('G');
 			return new GeometryValue<GeometryFunction>(col);
 		}else
 			return new GeometryValue<GeometryFunction>(gf);
@@ -1287,7 +1336,8 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 				{
 					if (p1 != null)
 						gvp1 = new GeometryValue<PointFunction>(p1);
-					else{						col1.setExpectedType('G');
+					else{
+						col1.setExpectedType('G');
 						gvp1 = new GeometryValue<PointFunction>(col1);
 					}
 				}
@@ -1296,7 +1346,8 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 				{
 					if (p2 != null)
 						gvp2 = new GeometryValue<PointFunction>(p2);
-					else{						col2.setExpectedType('G');
+					else{
+						col2.setExpectedType('G');
 						gvp2 = new GeometryValue<PointFunction>(col2);
 					}
 				} 
