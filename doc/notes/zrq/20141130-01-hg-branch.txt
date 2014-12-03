@@ -20,7 +20,10 @@
 #
 #
 
-    devname=zrq-xxxx-xxxx
+    # Requires the new branch name
+    # devname=zrq-xxxx-xxxx
+
+    echo "devname [${devname:?}]"
 
 # -----------------------------------------------------
 # Create a new development branch.
