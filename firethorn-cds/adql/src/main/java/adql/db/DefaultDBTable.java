@@ -16,7 +16,8 @@ package adql.db;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import java.util.Collection;
@@ -26,8 +27,8 @@ import java.util.Iterator;
 /**
  * Default implementation of {@link DBTable}.
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 08/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (09/2014)
  */
 public class DefaultDBTable implements DBTable {
 
@@ -39,8 +40,7 @@ public class DefaultDBTable implements DBTable {
 	protected String adqlSchemaName = null;
 	protected String adqlName = null;
 
-	protected HashMap<String, DBColumn> columns = new HashMap<String, DBColumn>();
-
+	protected HashMap<String,DBColumn> columns = new HashMap<String,DBColumn>();
 
 	/**
 	 * <p>Builds a default {@link DBTable} with the given DB name.</p>
@@ -111,9 +111,7 @@ public class DefaultDBTable implements DBTable {
 	 * @param dbName		Database table name.
 	 * @param adqlName		Table name used in ADQL queries.
 	 */
-	public DefaultDBTable(final String dbCatName, final String adqlCatName
-			, final String dbSchemName, final String adqlSchemName
-			, final String dbName, final String adqlName){
+	public DefaultDBTable(final String dbCatName, final String adqlCatName, final String dbSchemName, final String adqlSchemName, final String dbName, final String adqlName){
 
 		if (dbName == null || dbName.length() == 0)
 			throw new NullPointerException("Missing DB name !");
@@ -128,40 +126,46 @@ public class DefaultDBTable implements DBTable {
 		adqlCatalogName = adqlCatName;
 	}
 
-	public final String getDBName() {
+	@Override
+	public final String getDBName(){
 		return dbName;
 	}
 
-	public final String getDBSchemaName() {
+	@Override
+	public final String getDBSchemaName(){
 		return dbSchemaName;
 	}
 
-	public final String getDBCatalogName() {
+	@Override
+	public final String getDBCatalogName(){
 		return dbCatalogName;
 	}
 
-	public final String getADQLName() {
+	@Override
+	public final String getADQLName(){
 		return adqlName;
 	}
 
 	public void setADQLName(final String name){
-		adqlName = (name != null)?name:dbName;
+		adqlName = (name != null) ? name : dbName;
 	}
 
-	public final String getADQLSchemaName() {
+	@Override
+	public final String getADQLSchemaName(){
 		return adqlSchemaName;
 	}
 
 	public void setADQLSchemaName(final String name){
-		adqlSchemaName = (name != null)?name:dbSchemaName;
+		adqlSchemaName = (name != null) ? name : dbSchemaName;
 	}
 
-	public final String getADQLCatalogName() {
+	@Override
+	public final String getADQLCatalogName(){
 		return adqlCatalogName;
 	}
 
 	public void setADQLCatalogName(final String name){
-		adqlName = (name != null)?null:dbName;
+		adqlName = (name != null) ? null : dbName;
 	}
 
 	/**
@@ -170,7 +174,8 @@ public class DefaultDBTable implements DBTable {
 	 * 
 	 * @see adql.db.DBTable#getColumn(java.lang.String, boolean)
 	 */
-	public DBColumn getColumn(String colName, boolean byAdqlName) {
+	@Override
+	public DBColumn getColumn(String colName, boolean byAdqlName){
 		if (byAdqlName)
 			return columns.get(colName);
 		else{
@@ -182,11 +187,12 @@ public class DefaultDBTable implements DBTable {
 		}
 	}
 
-	public boolean hasColumn(String colName, boolean byAdqlName) {
+	public boolean hasColumn(String colName, boolean byAdqlName){
 		return (getColumn(colName, byAdqlName) != null);
 	}
 
-	public Iterator<DBColumn> iterator() {
+	@Override
+	public Iterator<DBColumn> iterator(){
 		return columns.values().iterator();
 	}
 
@@ -209,43 +215,91 @@ public class DefaultDBTable implements DBTable {
 	 * 
 	 * @return	A String array of 3 items: [0]=catalog, [1]=schema, [0]=table.
 	 */
-	public static final String[] splitTableName(final String table) {
-		String[] splitRes = new String[]{null, null, null};
+	public static final String[] splitTableName(final String table){
+		String[] splitRes = new String[]{null,null,null};
 
 		if (table == null || table.trim().length() == 0)
 			return splitRes;
 
 		String[] names = table.trim().split("\\.");
 		switch(names.length){
-		case 1:
-			splitRes[2] = table.trim();
-			break;
-		case 2:
-			splitRes[2] = names[1].trim();
-			splitRes[1] = names[0].trim();
-			break;
-		case 3:
-			splitRes[2] = names[2].trim();
-			splitRes[1] = names[1].trim();
-			splitRes[0] = names[0].trim();
-			break;
-		default:
-			splitRes[2] = names[names.length-1].trim();
-			splitRes[1] = names[names.length-2].trim();
-			StringBuffer buff = new StringBuffer(names[0].trim());
-			for(int i=1; i<names.length-2; i++)
-				buff.append('.').append(names[i].trim());
-			splitRes[0] = buff.toString();
+			case 1:
+				splitRes[2] = table.trim();
+				break;
+			case 2:
+				splitRes[2] = names[1].trim();
+				splitRes[1] = names[0].trim();
+				break;
+			case 3:
+				splitRes[2] = names[2].trim();
+				splitRes[1] = names[1].trim();
+				splitRes[0] = names[0].trim();
+				break;
+			default:
+				splitRes[2] = names[names.length - 1].trim();
+				splitRes[1] = names[names.length - 2].trim();
+				StringBuffer buff = new StringBuffer(names[0].trim());
+				for(int i = 1; i < names.length - 2; i++)
+					buff.append('.').append(names[i].trim());
+				splitRes[0] = buff.toString();
 		}
 
 		return splitRes;
 	}
 
-	public DBTable copy(final String dbName, final String adqlName) {
-		DefaultDBTable copy = new DefaultDBTable(dbName, adqlName);
-		for(DBColumn col : this)
-			copy.addColumn(col.copy(col.getDBName(), col.getADQLName(), copy));
-		return copy;
+	/**
+	 * <p>Join the last 3 items of the given string array with a dot ('.').
+	 * These three parts should be: [0]=catalog name, [1]=schema name, [2]=table name.</p>
+	 * 
+	 * <p>
+	 * 	If the array contains less than 3 items, all the given items will be though joined.
+	 * 	However, if it contains more than 3 items, only the three last items will be.
+	 * </p>
+	 * 
+	 * <p>A null item will be written as an empty string (string of length 0 ; "").</p>
+	 * 
+	 * <p>
+	 * 	In the case the first and the third items are not null, but the second is null, the final string will contain in the middle two dots.
+	 * 	Example: if the array is {"cat", NULL, "table"}, then the joined string will be: "cat..table".
+	 * </p>
+	 * 
+	 * @param nameParts	String items to join.
+	 * 
+	 * @return	A string joining the 3 last string items of the given array,
+	 *        	or an empty string if the given array is NULL.
+	 * 
+	 * @since 1.3
+	 */
+	public static final String joinTableName(final String[] nameParts){
+		if (nameParts == null)
+			return "";
+
+		StringBuffer str = new StringBuffer();
+		boolean empty = true;
+		for(int i = (nameParts.length <= 3) ? 0 : (nameParts.length - 3); i < nameParts.length; i++){
+			if (!empty)
+				str.append('.');
+
+			String part = (nameParts[i] == null) ? null : nameParts[i].trim();
+			if (part != null && part.length() > 0){
+				str.append(part);
+				empty = false;
+			}
+		}
+		return str.toString();
 	}
 
+	@Override
+	public DBTable copy(String dbName, String adqlName){
+		dbName = (dbName == null) ? joinTableName(new String[]{dbCatalogName,dbSchemaName,this.dbName}) : dbName;
+		adqlName = (adqlName == null) ? joinTableName(new String[]{adqlCatalogName,adqlSchemaName,this.adqlName}) : adqlName;
+		DefaultDBTable copy = new DefaultDBTable(dbName, adqlName);
+		for(DBColumn col : this){
+			if (col instanceof DBCommonColumn)
+				copy.addColumn(new DBCommonColumn((DBCommonColumn)col, col.getDBName(), col.getADQLName()));
+			else
+				copy.addColumn(col.copy(col.getDBName(), col.getADQLName(), copy));
+		}
+		return copy;
+	}
 }

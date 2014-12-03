@@ -16,13 +16,13 @@ package adql.query.operand.function.geometry;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLObject;
-
-import adql.query.operand.ADQLOperand;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.ADQLOperand;
 
 /**
  * <p>It represents the COORD1 and the COORD2 functions of the ADQL language.</p>
@@ -35,8 +35,8 @@ import adql.query.operand.ADQLColumn;
  * system with GEOCENTER reference position.
  * </i></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 06/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (10/2014)
  */
 public class ExtractCoord extends GeometryFunction {
 
@@ -46,7 +46,6 @@ public class ExtractCoord extends GeometryFunction {
 	/** The point from which the coordinate must be extracted. */
 	protected GeometryValue<PointFunction> point;
 
-
 	/**
 	 * Builds a COORD1 or a COORD2 function with the given point (a POINT function or a column which contains a POINT function).
 	 * 
@@ -55,14 +54,14 @@ public class ExtractCoord extends GeometryFunction {
 	 * @throws ArrayIndexOutOfBoundsException	If the given index is different from 1 and 2.
 	 * @throws NullPointerException				If the given geometry is <i>null</i>.
 	 */
-	public ExtractCoord(int indiceCoord, GeometryValue<PointFunction> p) throws ArrayIndexOutOfBoundsException, NullPointerException {
+	public ExtractCoord(int indiceCoord, GeometryValue<PointFunction> p) throws ArrayIndexOutOfBoundsException, NullPointerException{
 		super();
 		if (indiceCoord <= 0 || indiceCoord > 2)
 			throw new ArrayIndexOutOfBoundsException("Impossible to extract another coordinate that the two first: only COORD1 and COORD2 exists in ADQL !");
 		indCoord = indiceCoord;
 
-		if (p==null)
-			throw new NullPointerException("Impossible to build a COORD"+indCoord+" function without a point (a POINT function or a column which contains a POINT function) !");
+		if (p == null)
+			throw new NullPointerException("Impossible to build a COORD" + indCoord + " function without a point (a POINT function or a column which contains a POINT function) !");
 		point = p;
 	}
 
@@ -73,52 +72,61 @@ public class ExtractCoord extends GeometryFunction {
 	 * @throws Exception	If there is an error during the copy.
 	 */
 	@SuppressWarnings("unchecked")
-	public ExtractCoord(ExtractCoord toCopy) throws Exception {
+	public ExtractCoord(ExtractCoord toCopy) throws Exception{
 		super();
 		indCoord = toCopy.indCoord;
 		point = (GeometryValue<PointFunction>)(toCopy.point.getCopy());
 	}
 
-	public String getName() {
-		return "COORD"+indCoord;
+	@Override
+	public String getName(){
+		return "COORD" + indCoord;
 	}
 
-	public ADQLObject getCopy() throws Exception {
+	@Override
+	public ADQLObject getCopy() throws Exception{
 		return new ExtractCoord(this);
 	}
 
-	public boolean isNumeric() {
+	@Override
+	public boolean isNumeric(){
 		return true;
 	}
 
-	public boolean isString() {
+	@Override
+	public boolean isString(){
 		return false;
 	}
 
 	@Override
-	public ADQLOperand[] getParameters() {
+	public boolean isGeometry(){
+		return false;
+	}
+
+	@Override
+	public ADQLOperand[] getParameters(){
 		return new ADQLOperand[]{point.getValue()};
 	}
 
 	@Override
-	public int getNbParameters() {
+	public int getNbParameters(){
 		return 1;
 	}
 
 	@Override
-	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException {
+	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException{
 		if (index == 0)
 			return point.getValue();
 		else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception {
+	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception{
 		if (index == 0){
 			if (replacer == null)
-				throw new NullPointerException("Impossible to remove the only required parameter of the function "+getName()+" !");
+				throw new NullPointerException("Impossible to remove the only required parameter of the function " + getName() + " !");
 			ADQLOperand replaced = point.getValue();
 			if (replacer instanceof GeometryValue)
 				point = (GeometryValue<PointFunction>)replacer;
@@ -127,10 +135,10 @@ public class ExtractCoord extends GeometryFunction {
 			else if (replacer instanceof PointFunction)
 				point.setGeometry((PointFunction)replacer);
 			else
-				throw new Exception("Impossible to replace GeometryValue/Column/PointFunction by a "+replacer.getClass().getName()+" ("+replacer.toADQL()+") !");
+				throw new Exception("Impossible to replace GeometryValue/Column/PointFunction by a " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 			return replaced;
 		}else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 	}
 
 }

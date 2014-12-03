@@ -16,13 +16,13 @@ package adql.query.operand.function.geometry;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLObject;
-
-import adql.query.operand.ADQLOperand;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.ADQLOperand;
 
 /**
  * <p>It represents the INTERSECTS function of the ADQL language.</p>
@@ -42,8 +42,8 @@ import adql.query.operand.ADQLColumn;
  * If it can not do so, it SHOULD throw an error message, to be defined by the service making use of ADQL.</li></ul>
  * </b></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 06/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (10/2014)
  */
 public class IntersectsFunction extends GeometryFunction {
 
@@ -53,7 +53,6 @@ public class IntersectsFunction extends GeometryFunction {
 	/** The second geometry. */
 	private GeometryValue<GeometryFunction> rightParam;
 
-
 	/**
 	 * Builds an INTERSECTS function.
 	 * 
@@ -61,7 +60,7 @@ public class IntersectsFunction extends GeometryFunction {
 	 * @param param2				The second geometry.
 	 * @throws NullPointerException	If there is an error with at least one of the parameters.
 	 */
-	public IntersectsFunction(GeometryValue<GeometryFunction> param1, GeometryValue<GeometryFunction> param2) throws NullPointerException {
+	public IntersectsFunction(GeometryValue<GeometryFunction> param1, GeometryValue<GeometryFunction> param2) throws NullPointerException{
 		super();
 		if (param1 == null || param2 == null)
 			throw new NullPointerException("An INTERSECTS function must have two parameters different from NULL !");
@@ -77,39 +76,48 @@ public class IntersectsFunction extends GeometryFunction {
 	 * @throws Exception	If there is an error during the copy.
 	 */
 	@SuppressWarnings("unchecked")
-	public IntersectsFunction(IntersectsFunction toCopy) throws Exception {
+	public IntersectsFunction(IntersectsFunction toCopy) throws Exception{
 		super();
 		leftParam = (GeometryValue<GeometryFunction>)(toCopy.leftParam.getCopy());
 		rightParam = (GeometryValue<GeometryFunction>)(toCopy.rightParam.getCopy());
 	}
 
-	public ADQLObject getCopy() throws Exception {
+	@Override
+	public ADQLObject getCopy() throws Exception{
 		return new IntersectsFunction(this);
 	}
 
-	public String getName() {
+	@Override
+	public String getName(){
 		return "INTERSECTS";
 	}
 
-	public boolean isNumeric() {
+	@Override
+	public boolean isNumeric(){
 		return true;
 	}
 
-	public boolean isString() {
+	@Override
+	public boolean isString(){
+		return false;
+	}
+
+	@Override
+	public boolean isGeometry(){
 		return false;
 	}
 
 	/**
 	 * @return The leftParam.
 	 */
-	public final GeometryValue<GeometryFunction> getLeftParam() {
+	public final GeometryValue<GeometryFunction> getLeftParam(){
 		return leftParam;
 	}
 
 	/**
 	 * @param leftParam The leftParam to set.
 	 */
-	public final void setLeftParam(GeometryValue<GeometryFunction> leftParam) {
+	public final void setLeftParam(GeometryValue<GeometryFunction> leftParam){
 		if (leftParam != null)
 			this.leftParam = leftParam;
 	}
@@ -117,45 +125,45 @@ public class IntersectsFunction extends GeometryFunction {
 	/**
 	 * @return The rightParam.
 	 */
-	public final GeometryValue<GeometryFunction> getRightParam() {
+	public final GeometryValue<GeometryFunction> getRightParam(){
 		return rightParam;
 	}
 
 	/**
 	 * @param rightParam The rightParam to set.
 	 */
-	public final void setRightParam(GeometryValue<GeometryFunction> rightParam) {
+	public final void setRightParam(GeometryValue<GeometryFunction> rightParam){
 		if (rightParam != null)
 			this.rightParam = rightParam;
 	}
 
 	@Override
-	public ADQLOperand[] getParameters() {
-		return new ADQLOperand[]{leftParam, rightParam};
+	public ADQLOperand[] getParameters(){
+		return new ADQLOperand[]{leftParam,rightParam};
 	}
 
 	@Override
-	public int getNbParameters() {
+	public int getNbParameters(){
 		return 2;
 	}
 
 	@Override
-	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException {
+	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException{
 		if (index == 0)
 			return leftParam.getValue();
 		else if (index == 1)
 			return rightParam.getValue();
 		else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception {
+	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception{
 		if (replacer == null)
-			throw new NullPointerException("Impossible to remove one parameter from a "+getName()+" function !");
+			throw new NullPointerException("Impossible to remove one parameter from a " + getName() + " function !");
 		else if (!(replacer instanceof GeometryValue || replacer instanceof ADQLColumn || replacer instanceof GeometryFunction))
-			throw new Exception("Impossible to replace a GeometryValue/Column/GeometryFunction by a "+replacer.getClass().getName()+" ("+replacer.toADQL()+") !");
+			throw new Exception("Impossible to replace a GeometryValue/Column/GeometryFunction by a " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 
 		ADQLOperand replaced = null;
 		if (index == 0){
@@ -175,7 +183,7 @@ public class IntersectsFunction extends GeometryFunction {
 			else if (replacer instanceof GeometryFunction)
 				rightParam.setGeometry((GeometryFunction)replacer);
 		}else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 		return replaced;
 	}
 

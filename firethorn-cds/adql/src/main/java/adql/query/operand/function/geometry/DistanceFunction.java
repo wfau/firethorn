@@ -16,13 +16,13 @@ package adql.query.operand.function.geometry;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLObject;
-
-import adql.query.operand.ADQLOperand;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.ADQLOperand;
 
 /**
  * <p>It represents the DISTANCE function of the ADQL language.</p>
@@ -34,8 +34,8 @@ import adql.query.operand.ADQLColumn;
  * In this example the function computes the distance between two points of coordinates (25, -19.5) and (25.4, -20) both expressed according to the ICRS
  * coordinate system with GEOCENTER reference position.</i></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 06/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (10/2014)
  */
 public class DistanceFunction extends GeometryFunction {
 
@@ -45,7 +45,6 @@ public class DistanceFunction extends GeometryFunction {
 	/** The second point. */
 	private GeometryValue<PointFunction> p2;
 
-
 	/**
 	 * Builds a DISTANCE function.
 	 * 
@@ -53,7 +52,7 @@ public class DistanceFunction extends GeometryFunction {
 	 * @param point2				The second point.
 	 * @throws NullPointerException	If one of the parameters are incorrect.
 	 */
-	public DistanceFunction(GeometryValue<PointFunction> point1, GeometryValue<PointFunction> point2) throws NullPointerException {
+	public DistanceFunction(GeometryValue<PointFunction> point1, GeometryValue<PointFunction> point2) throws NullPointerException{
 		super();
 		if (point1 == null || point2 == null)
 			throw new NullPointerException("All parameters of the DISTANCE function must be different from null !");
@@ -69,30 +68,39 @@ public class DistanceFunction extends GeometryFunction {
 	 * @throws Exception	If there is an error during the copy.
 	 */
 	@SuppressWarnings("unchecked")
-	public DistanceFunction(DistanceFunction toCopy) throws Exception {
+	public DistanceFunction(DistanceFunction toCopy) throws Exception{
 		super(toCopy);
 		p1 = (GeometryValue<PointFunction>)(toCopy.p1.getCopy());
 		p2 = (GeometryValue<PointFunction>)(toCopy.p2.getCopy());
 	}
 
 	@Override
-	public void setCoordinateSystem(ADQLOperand coordSys) throws UnsupportedOperationException {
+	public void setCoordinateSystem(ADQLOperand coordSys) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException("A DISTANCE function is not associated to a coordinate system !");
 	}
 
-	public ADQLObject getCopy() throws Exception {
+	@Override
+	public ADQLObject getCopy() throws Exception{
 		return new DistanceFunction(this);
 	}
 
-	public String getName() {
+	@Override
+	public String getName(){
 		return "DISTANCE";
 	}
 
-	public boolean isNumeric() {
+	@Override
+	public boolean isNumeric(){
 		return true;
 	}
 
-	public boolean isString() {
+	@Override
+	public boolean isString(){
+		return false;
+	}
+
+	@Override
+	public boolean isGeometry(){
 		return false;
 	}
 
@@ -101,7 +109,7 @@ public class DistanceFunction extends GeometryFunction {
 	 * 
 	 * @return A point.
 	 */
-	public final GeometryValue<PointFunction> getP1() {
+	public final GeometryValue<PointFunction> getP1(){
 		return p1;
 	}
 
@@ -110,7 +118,7 @@ public class DistanceFunction extends GeometryFunction {
 	 * 
 	 * @param p1 A point.
 	 */
-	public final void setP1(GeometryValue<PointFunction> p1) {
+	public final void setP1(GeometryValue<PointFunction> p1){
 		this.p1 = p1;
 	}
 
@@ -119,7 +127,7 @@ public class DistanceFunction extends GeometryFunction {
 	 * 
 	 * @return A point.
 	 */
-	public final GeometryValue<PointFunction> getP2() {
+	public final GeometryValue<PointFunction> getP2(){
 		return p2;
 	}
 
@@ -128,59 +136,59 @@ public class DistanceFunction extends GeometryFunction {
 	 * 
 	 * @param p2 A point.
 	 */
-	public final void setP2(GeometryValue<PointFunction> p2) {
+	public final void setP2(GeometryValue<PointFunction> p2){
 		this.p2 = p2;
 	}
 
 	@Override
-	public ADQLOperand[] getParameters() {
-		return new ADQLOperand[]{p1.getValue(), p2.getValue()};
+	public ADQLOperand[] getParameters(){
+		return new ADQLOperand[]{p1.getValue(),p2.getValue()};
 	}
 
 	@Override
-	public int getNbParameters() {
+	public int getNbParameters(){
 		return 2;
 	}
 
 	@Override
-	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException {
+	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException{
 		switch(index){
-		case 0:
-			return p1.getValue();
-		case 1:
-			return p2.getValue();
-		default:
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			case 0:
+				return p1.getValue();
+			case 1:
+				return p2.getValue();
+			default:
+				throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception {
+	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception{
 		if (replacer == null)
-			throw new NullPointerException("Impossible to remove a parameter from the function "+getName()+" !");
+			throw new NullPointerException("Impossible to remove a parameter from the function " + getName() + " !");
 		else if (!(replacer instanceof GeometryValue || replacer instanceof ADQLColumn || replacer instanceof PointFunction))
-			throw new Exception("Impossible to replace a GeometryValue/Column/PointFunction by "+replacer.getClass().getName()+" ("+replacer.toADQL()+") !");
+			throw new Exception("Impossible to replace a GeometryValue/Column/PointFunction by " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 
 		ADQLOperand replaced = null;
 		GeometryValue<PointFunction> toUpdate = null;
 		switch(index){
-		case 0:
-			replaced = p1.getValue();
-			if (replacer instanceof GeometryValue)
-				p1 = (GeometryValue<PointFunction>)replacer;
-			else
-				toUpdate = p1;
-			break;
-		case 1:
-			replaced = p2.getValue();
-			if (replacer instanceof GeometryValue)
-				p2 = (GeometryValue<PointFunction>)replacer;
-			else
-				toUpdate = p2;
-			break;
-		default:
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			case 0:
+				replaced = p1.getValue();
+				if (replacer instanceof GeometryValue)
+					p1 = (GeometryValue<PointFunction>)replacer;
+				else
+					toUpdate = p1;
+				break;
+			case 1:
+				replaced = p2.getValue();
+				if (replacer instanceof GeometryValue)
+					p2 = (GeometryValue<PointFunction>)replacer;
+				else
+					toUpdate = p2;
+				break;
+			default:
+				throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 		}
 
 		if (toUpdate != null){

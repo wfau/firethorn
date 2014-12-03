@@ -16,7 +16,8 @@ package cds.utils;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import java.util.ArrayList;
@@ -37,21 +38,20 @@ import java.util.HashMap;
  * <p><b><u>WARNING:</u> The extracted key MUST be CASE-SENSITIVE and UNIQUE !</b></p>
  * 
  * @param <E>	Type of object to manage in this list.
- * @author 		Gr&eacute;gory Mantelet (CDS)
- * @version 	09/2011
+ * @author 		Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 	1.1 (11/2013)
  */
-public class TextualSearchList<E> extends ArrayList<E> {
+public class TextualSearchList< E > extends ArrayList<E> {
 	private static final long serialVersionUID = 1L;
 
 	/** Object to use to extract an unique textual string. */
 	public final KeyExtractor<E> keyExtractor;
 
 	/** Map which associates objects of type E with its textual string (case-sensitive). */
-	protected final HashMap<String, ArrayList<E>> csMap;
+	protected final HashMap<String,ArrayList<E>> csMap;
 
 	/** Map which associates objects of type E with their lower-case textual string. */
-	protected final HashMap<String, ArrayList<E>> ncsMap;
-
+	protected final HashMap<String,ArrayList<E>> ncsMap;
 
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -65,7 +65,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @see #TextualSearchList(KeyExtractor)
 	 */
-	public TextualSearchList() {
+	public TextualSearchList(){
 		this(new DefaultKeyExtractor<E>());
 	}
 
@@ -76,11 +76,11 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @see ArrayList#ArrayList()
 	 */
-	public TextualSearchList(final KeyExtractor<E> keyExtractor) {
+	public TextualSearchList(final KeyExtractor<E> keyExtractor){
 		super();
 		this.keyExtractor = keyExtractor;
-		csMap = new HashMap<String, ArrayList<E>>();
-		ncsMap = new HashMap<String, ArrayList<E>>();
+		csMap = new HashMap<String,ArrayList<E>>();
+		ncsMap = new HashMap<String,ArrayList<E>>();
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @see #TextualSearchList(int, KeyExtractor)
 	 */
-	public TextualSearchList(int initialCapacity) {
+	public TextualSearchList(int initialCapacity){
 		this(initialCapacity, new DefaultKeyExtractor<E>());
 	}
 
@@ -106,11 +106,11 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @see ArrayList#ArrayList(int)
 	 */
-	public TextualSearchList(final int initialCapacity, final KeyExtractor<E> keyExtractor) {
+	public TextualSearchList(final int initialCapacity, final KeyExtractor<E> keyExtractor){
 		super(initialCapacity);
 		this.keyExtractor = keyExtractor;
-		csMap = new HashMap<String, ArrayList<E>>(initialCapacity);
-		ncsMap = new HashMap<String, ArrayList<E>>(initialCapacity);
+		csMap = new HashMap<String,ArrayList<E>>(initialCapacity);
+		ncsMap = new HashMap<String,ArrayList<E>>(initialCapacity);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @param c	Collection to copy into this list.
 	 */
-	public TextualSearchList(Collection<? extends E> c) {
+	public TextualSearchList(Collection<? extends E> c){
 		this(c, new DefaultKeyExtractor<E>());
 	}
 
@@ -134,11 +134,36 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @see #addAll(Collection)
 	 */
-	public TextualSearchList(Collection<? extends E> c, final KeyExtractor<E> keyExtractor) {
+	public TextualSearchList(Collection<? extends E> c, final KeyExtractor<E> keyExtractor){
 		this.keyExtractor = keyExtractor;
-		csMap = new HashMap<String, ArrayList<E>>(c.size());
-		ncsMap = new HashMap<String, ArrayList<E>>(c.size());
+		csMap = new HashMap<String,ArrayList<E>>(c.size());
+		ncsMap = new HashMap<String,ArrayList<E>>(c.size());
 		addAll(c);
+	}
+
+	/**
+	 * Returns true if this list contains the specified element.
+	 * More formally, returns true if and only if this list contains at least one element
+	 * e such that (keyExtractor.getKey(o).equals(keyExtractor.getKey(e))).
+	 * 
+	 * @see java.util.ArrayList#contains(java.lang.Object)
+	 * @see #getKey(Object)
+	 * 
+	 * @since 1.1
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean contains(Object o){
+		try{
+			if (o == null)
+				return false;
+			else{
+				E object = (E)o;
+				return !get(getKey(object)).isEmpty();
+			}
+		}catch(Exception e){
+			return false;
+		}
 	}
 
 	/**
@@ -160,6 +185,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @return		All the objects whose the key is the same as the given one.
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<E> get(final String key, final boolean caseSensitive){
 		if (key == null)
 			return new ArrayList<E>(0);
@@ -168,7 +194,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 		if (founds == null)
 			return new ArrayList<E>(0);
 		else
-			return founds;
+			return (ArrayList<E>)founds.clone();
 	}
 
 	/**
@@ -181,7 +207,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @throws NullPointerException		If the given object or its extracted key is <code>null</code>.
 	 * @throws IllegalArgumentException	If the extracted key is already used by another object in this list.
 	 */
-	private final String getKey(final E value) throws NullPointerException, IllegalArgumentException {
+	private final String getKey(final E value) throws NullPointerException, IllegalArgumentException{
 		String key = keyExtractor.getKey(value);
 		if (key == null)
 			throw new NullPointerException("Null keys are not allowed in a TextualSearchList !");
@@ -210,7 +236,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @param <E>	The type of objects managed in the given map.
 	 */
-	private static final <E> void putIntoMap(final HashMap<String, ArrayList<E>> map, final String key, final E value){
+	private static final < E > void putIntoMap(final HashMap<String,ArrayList<E>> map, final String key, final E value){
 		ArrayList<E> lst = map.get(key);
 		if (lst == null){
 			lst = new ArrayList<E>();
@@ -231,7 +257,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @see java.util.ArrayList#add(java.lang.Object)
 	 */
 	@Override
-	public boolean add(E obj) throws NullPointerException, IllegalArgumentException {
+	public boolean add(E obj) throws NullPointerException, IllegalArgumentException{
 		if (obj == null)
 			throw new NullPointerException("Null objects are not allowed in a TextualSearchList !");
 
@@ -259,7 +285,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @see java.util.ArrayList#add(int, java.lang.Object)
 	 */
 	@Override
-	public void add(int index, E obj) throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException {
+	public void add(int index, E obj) throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException{
 		if (obj == null)
 			throw new NullPointerException("Null objects are not allowed in a TextualSearchList !");
 
@@ -286,7 +312,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @see #add(Object)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends E> c) throws NullPointerException, IllegalArgumentException {
+	public boolean addAll(Collection<? extends E> c) throws NullPointerException, IllegalArgumentException{
 		if (c == null)
 			return false;
 
@@ -313,7 +339,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @see #add(int, Object)
 	 */
 	@Override
-	public boolean addAll(int index, Collection<? extends E> c) throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException {
+	public boolean addAll(int index, Collection<? extends E> c) throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException{
 		if (c == null)
 			return false;
 
@@ -342,7 +368,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @see java.util.ArrayList#set(int, java.lang.Object)
 	 */
 	@Override
-	public E set(int index, E obj) throws NullPointerException, IllegalArgumentException {
+	public E set(int index, E obj) throws NullPointerException, IllegalArgumentException{
 		if (obj == null)
 			throw new NullPointerException("Null objects are not allowed in a TextualSearchList !");
 
@@ -364,7 +390,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	}
 
 	@Override
-	public void clear() {
+	public void clear(){
 		super.clear();
 		csMap.clear();
 		ncsMap.clear();
@@ -392,7 +418,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * 
 	 * @param <E>	The type of objects managed in the given map.
 	 */
-	private static final <E> void removeFromMap(final HashMap<String, ArrayList<E>> map, final String key, final E value){
+	private static final < E > void removeFromMap(final HashMap<String,ArrayList<E>> map, final String key, final E value){
 		ArrayList<E> lst = map.get(key);
 		if (lst != null){
 			lst.remove(value);
@@ -402,7 +428,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	}
 
 	@Override
-	public E remove(int index) {
+	public E remove(int index){
 		E removed = super.remove(index);
 		if (removed != null){
 			String key = keyExtractor.getKey(removed);
@@ -413,7 +439,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean remove(Object obj) {
+	public boolean remove(Object obj){
 		boolean removed = super.remove(obj);
 		if (removed){
 			String key = keyExtractor.getKey((E)obj);
@@ -423,17 +449,13 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	}
 
 	@Override
-	protected void removeRange(int fromIndex, int toIndex) throws IndexOutOfBoundsException {
+	protected void removeRange(int fromIndex, int toIndex) throws IndexOutOfBoundsException{
 		if (fromIndex < 0 || fromIndex >= size() || toIndex < 0 || toIndex >= size() || fromIndex > toIndex)
-			throw new IndexOutOfBoundsException("Incorrect range indexes: from "+fromIndex+" to "+toIndex+" !");
+			throw new IndexOutOfBoundsException("Incorrect range indexes: from " + fromIndex + " to " + toIndex + " !");
 
-		for(int i=fromIndex; i<toIndex; i++)
+		for(int i = fromIndex; i < toIndex; i++)
 			remove(i);
 	}
-
-
-
-
 
 	/* ************************************************ */
 	/* KEY_EXTRACTOR INTERFACE & DEFAULT IMPLEMENTATION */
@@ -445,7 +467,7 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @param <E>	Type of object from which a textual key must be extracted.
 	 * @see TextualSearchList
 	 */
-	public static interface KeyExtractor<E> {
+	public static interface KeyExtractor< E > {
 		/**
 		 * Extracts an UNIQUE textual key (case-sensitive) from the given object.
 		 * @param obj	Object from which a textual key must be extracted.
@@ -461,7 +483,8 @@ public class TextualSearchList<E> extends ArrayList<E> {
 	 * @author Gr&eacute;gory Mantelet (CDS)
 	 * @param <E>	Type of object from which a textual key must be extracted.
 	 */
-	protected static class DefaultKeyExtractor<E> implements KeyExtractor<E> {
+	protected static class DefaultKeyExtractor< E > implements KeyExtractor<E> {
+		@Override
 		public String getKey(final E obj){
 			return obj.toString();
 		}
