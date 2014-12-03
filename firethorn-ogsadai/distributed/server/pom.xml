@@ -35,13 +35,13 @@
         <version project='firethorn'>1.11.28-zrq-ogsadai-dqp</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-distributed-client</artifactId>
+    <artifactId>firethorn-ogsadai-distributed-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed query processor (client)</name>
+    <name>FireThorn OGSA-DAI distributed query processor (server)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
+        Server (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>
