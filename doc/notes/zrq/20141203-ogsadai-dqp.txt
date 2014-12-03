@@ -55,21 +55,46 @@
 
                 gedit pom.xml &
 
-                mkdir src
-                pushd src
+                mkdir client
+                pushd client
 
-                    svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/main      main
+                    gedit pom.xml &
 
-                    mvn clean install
+                    mkdir src
+                    pushd src
 
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/main main
+                        #mvn clean install
 
+                    popd
+                    pushd src
+
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/test/unit test
+                        #mvn clean install
+
+                    popd
                 popd
-                pushd src
 
-                    svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/test/unit test
+                mkdir server
+                pushd server
 
+                    gedit pom.xml &
 
+                    mkdir src
+                    pushd src
+
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/main main
+                        #mvn clean install
+
+                    popd
+                    pushd src
+
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/test/unit test
+                        #mvn clean install
+
+                    popd
                 popd
+
             popd
         popd
     popd
