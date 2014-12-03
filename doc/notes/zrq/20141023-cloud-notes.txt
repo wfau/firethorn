@@ -59,6 +59,27 @@ Docker
     https://clusterhq.com/
 
 
+    Docker, Part 2: Whoa! Spontaneous industry standard! How did they do THAT?
+    http://www.theregister.co.uk/2014/12/01/docker_part_2_the_libcontainer_evolution/
+    Part 3: Docker vs hypervisor in tech tussle SMACKDOWN
+    http://www.theregister.co.uk/2014/12/02/docker_part_3_containers_versus_hypervisors/
+
+    CONTAINER WARS: CoreOS blasts Rocket rival at Docker
+    http://www.theregister.co.uk/2014/12/01/coreos_rocket_announcement/
+
+    Docker vs KVM
+    http://www.theregister.co.uk/2014/08/18/docker_kicks_kvms_butt_in_ibm_tests/
+
+    Docker Hadoop (YARN)   
+    http://www.theregister.co.uk/2014/05/02/docker_hadoop/
+
+    Hadoop NextGen MapReduce (YARN)
+    https://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html
+
+    Docker's killer feature - robust API
+    https://www.joyent.com/blog/dockers-killer-feature
+
+
 Rocket
 
     Like Docker, only simpler
