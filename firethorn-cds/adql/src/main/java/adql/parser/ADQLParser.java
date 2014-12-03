@@ -4790,7 +4790,7 @@ public class ADQLParser implements ADQLParserConstants {
 
   /** Constructor with InputStream. */
   public ADQLParser(java.io.InputStream stream) {
-     this(stream, "");
+     this(stream, (String)null);
   }
   /** Constructor with InputStream and supplied encoding */
   public ADQLParser(java.io.InputStream stream, String encoding) {
