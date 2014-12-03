@@ -68,8 +68,13 @@
 
                     popd
 
+#
+# Temp fix for one class.
+mkdir -p src/test/java/uk/org/ogsadai/client/toolkit/activities/test
+cp /var/local/projects/edinburgh/ogsa-dai/code/ogsa-dai/trunk/core/client/src/test/unit/java/uk/org/ogsadai/client/toolkit/activities/test/SingleOutputTestActivity.java \
+src/test/java/uk/org/ogsadai/client/toolkit/activities/test
+
                     mvn clean install
-                    mvn clean install test
 
                 popd
 
