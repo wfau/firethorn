@@ -29,7 +29,7 @@ target
 .classpath
 .settings
 .factorypath
-.recommendations
+.recommenders
 .metadata
 
 # Java core dumps
