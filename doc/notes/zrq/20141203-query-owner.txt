@@ -1,0 +1,402 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    //
+    // Heading towards entity with properties.
+    // Heading towards Drupal CCK.
+    //
+    
+    TaggedEntity
+    extends Entity
+
+        interface Tags tags()
+
+            EntityTag add(Tag)
+            void      del(Tag)
+            Iterable<EntityTag> select
+
+    EntityTag<V>
+    extends Entity
+        
+        TaggedEntity entity()
+        Tag          tag()
+        V            value()
+
+    Tag
+    extends Entity
+    
+
+
+    VoidEntityTag
+    extends EntityTag<Void>
+
+
+    StringEntityTag
+    extends EntityTag<String>
+
+    DateEntityTag
+    extends EntityTag<DateTime>
+
+
+    // Create a new empty tag
+    identity.tags().create(
+        Void.class,
+        "mytag"
+        )
+
+    // Get one of my tags
+    identity.tags().select(
+        "mytag"
+        )
+
+    // Get a global tags
+    global.tags().select(
+        identity,
+        "mytag"
+        )
+
+    
+
+    // Create a new String tag called 'alias'
+    identity.tags().create(
+        String.class,
+        "alias"
+        )
+
+    // Tag something as "saved"
+    thing.tags().add(
+        Void.class,
+        "saved"
+        )
+
+    // Tag something with an "alias"
+    thing.tags().add(
+        String.class,
+        "alias",
+        "value"
+        )
+
+    // Tag something with a "size"
+    thing.tags().add(
+        Float.class,
+        "size",
+        2.1
+        )
+
+    // Tag something with a "date"
+    thing.tags().add(
+        DateTime.class,
+        "publish date",
+        new DateTime()
+        )
+
+
+
+
+
+
+
+    // Get my things tagged as "saved"
+    identity.things().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+    // Get my tagged queries
+    identity.queries().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+    // Get my tagged adql tables
+    identity.tables().adql().search(
+        identity.tags().select(
+            "saved"
+            )
+        )
+
+
+    //
+    // Nice ... but is this 'saved' ?
+    //
+
+    saved implies user data space.
+    ** user space quotas **
+    ** user access permissions **
+    being able to re-use in another query
+    data lifetime
+    data permissions
+
+
+
+    Saving something .. puts it 'somewhere'
+    
+    All queries are always stored - my history 
+    For some results .. save means put somewhere
+
+    All queries are saved.
+    Queries can be 'tagged' to add them to 'collections'
+    Adding a tag adds the query to a collection.
+
+    Results need to go into a 'workspace' (AdqlResource and AdqlSchema).
+    By default everything goes in a workspace associated with a user session (GUI interaction).
+
+    My history (grouped by date)
+        queries    - AdqlQueries
+        workspaces - AdqlResources
+
+    Tag a query  - adds it to a collection of things tagged with that tag
+    Save a table   - sets the lifetime to max, adds it to a workspace (default of the current workspace)
+    Delete a table - deletes the data, drops the JDBC table, flags the JdbcTable as DELETED
+
+
+
+    Queries are applied to workspaces.
+
+        To do stuff, create a workspace.
+        Add tables and schema from other resources.
+        Run a query on the workspace.
+        Results go in a schema called 'results' (option to select/create a different destination when they submit the query).
+        
+        Archived query has pointers back to the original set of resources, schemas and tables used when the query was executed.
+        We currently only store resources not imported schema and table names.
+
+        Tag the query to find it again.
+        Simple named tags, or string value.
+
+            tag:interesting
+            tag:collection 'interesting'
+
+        Find by tag
+
+            <EntityType> search(Tag tag)
+            <EntityType> search(Tag tag, String value)
+
+
+        Copy/repeat queries from history
+
+            * we can always re-create the data by running the query again,
+            * which means that archiving the query properly is important
+
+            * if we remove or rename things, that breaks the query
+            * we need to store a list of the everything used by the query and what they were called
+            * in the end - do we end up storing the parse tree ?
+
+            * query sources
+
+                [resource][catalog.schema][table][column] AS [catalog.schema][table][column]
+                [resource][catalog.schema][table][column] AS [catalog.schema][table][column]
+                [resource][catalog.schema][table][column] AS [catalog.schema][table][column]
+
+                [JdbcColumn] AS [String.String][String][String] - to match the query
+                [IvoaColumn] AS [String.String][String][String] - to match the query
+
+            * that gives us the real original data
+            * what if we want to run the abstracted query using updated Adql resources
+
+                [AdqlResource][String.String][String][String] - to match the workspace
+                [AdqlResource][String.String][String][String] - to match the workspace
+
+            * combining them
+
+                [JdbcColumn] AS [AdqlResource][String.String][String][String] - to match either
+                [IvoaColumn] AS [AdqlResource][String.String][String][String] - to match either
+
+
+            Can't run a query again.
+            But we can run a clone.
+            
+                Copy using the original metadata :
+
+                    Using references to the original datasets.
+
+                    This will try to use the original datasets,
+                    even the metadata for a table or catalog has been
+                    changed since the original query was run.
+
+                    if the original workspace contained
+                        BEST-DR4 as 'best'
+
+                    but the workspace has since been upadted to use
+                        BEST-DR8 as 'best'
+
+                    a copy based on the original metadata will try to use
+                        BEST-DR4
+
+
+                Copy using the current metadata :
+
+                    Using the current metadata.
+
+                    If the metadata for a table or catalog has been changed,
+                    this will use the data pointed to by the new metadata.
+
+                    if the original workspace contained
+                        BEST-DR4 as 'best'
+
+                    but the workspace has since been upadted to use
+                        BEST-DR8 as 'best'
+
+                    a copy based on the current metadata data will try to use
+                        BEST-DR8 as 'best'
+
+
+        Save a table to a workspace/schema to keep it for later.
+        
+            Save in [workspace][schema] (auto complete combo box)
+            Sets the lifetime to MAX for that user ?
+
+    My history 
+
+        Queries queries()
+            Iterable<AdqlQuery> search(Identity owner, DateTime start, DateTime end)
+
+        Workspaces workspaces()
+            Iterable<AdqlResource> search(Identity owner, DateTime start, DateTime end)
+
+    My workspaces (named)
+
+        Iterable<AdqlResource> select(Identity owner, String name) // Is it possible to have two with the same name ?
+        Iterable<AdqlResource> search(Identity owner, LikePattern pattern)
+        
+        A workspace becomes a (container) node in a VOSpace tree.
+        A table can be a node in a VOSpace tree ?
+
+    My data space
+
+        Iterable<VOSNode> select(Identity owner, String name)
+        Iterable<VOSNode> search(Identity owner, Like   like)
+
+
+    EntitySearchCriteria
+        Tag tag
+        Like name
+        Like text
+        DateRange created
+            DateTime    start
+            DateTime    end
+        DateRange modified
+            DateTime    start
+            DateTime    end
+        Integer limit 
+        SortOrder IDENT|NAME|CREATED|MODIFIED
+
+    ---------------------------------------------------------------------------------------------------------------------
+
+    Tag
+    extends NamedEntity
+        name
+        text
+        owner
+        created
+        modified
+
+    TagValue<V>
+        Tag tag
+        <V> value
+
+    VoidTagValue
+    extends TagValue<Void>
+
+    StringTagValue
+    extends TagValue<String>
+
+    ---- ----
+
+    EntityTag<V>
+    extends TagValue<V>, Entity
+        
+        TaggedEntity entity()
+
+
+    TaggedEntity
+    extends Entity
+
+        interface Tags tags()
+
+            EntityTag create(Tag tag)
+            void      delete(Tag tag)
+            Iterable<EntityTag> select()
+            Iterable<EntityTag> select(Tag tag)
+
+    VoidEntityTag
+    extends EntityTag<Void>
+
+    StringEntityTag
+    extends EntityTag<String>
+
+    DateEntityTag
+    extends EntityTag<DateTime>
+
+    ---- ----
+
+    Hide things by marking them as not active ?
+
+    Entity
+        Active Boolean
+
+    ---- ----
+
+    SearchCriteria
+        Active Boolean
+        TagValue<V>
+            Tag tag
+            <V> value
+        Like name
+        Like text
+        DateRange created
+            DateTime    before
+            DateTime    after
+        DateRange modified
+            DateTime    before
+            DateTime    after
+        Integer limit 
+        Sort IDENT|NAME|CREATED|MODIFIED
+
+    ---- ----
+
+    Queries are always saved - because of history
+    Access through 'my queries'
+
+        My queries
+
+            AdqlQuery identity.queries().select(Identifier ident)
+
+            Iterable<AdqlQuery> identity.queries().search(SearchCriteria search)
+
+    ---- ----
+
+    Workspaces are always saved - because of history
+    Access through 'my workspaces'
+
+        My workspaces
+
+            AdqlResource identity.workspaces().create(String name)
+            AdqlResource identity.workspaces().select(Identifier ident)
+
+            Iterable<AdqlResource> identity.workspaces().search(SearchCriteria search)
+
+
+
