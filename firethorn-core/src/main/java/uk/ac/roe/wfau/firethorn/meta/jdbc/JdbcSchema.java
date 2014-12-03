@@ -25,7 +25,6 @@ import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -150,7 +149,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NameNotFoundException;
+        throws EntityNotFoundException;
 
         /**
          * Search for a {@link JdbcSchema} based on catalog and schema name.

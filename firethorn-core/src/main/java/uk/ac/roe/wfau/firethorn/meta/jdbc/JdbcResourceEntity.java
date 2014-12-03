@@ -387,22 +387,11 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String catalog, final String schema)
             throws NameNotFoundException
                 {
-                if ("FIRETHORN_TEST_DATA".equals(catalog))
-                    {
-                    log.debug("FIRETHORN_TEST_DATA");
-                    }
-/*
                 return select(
                     factories().jdbc().schemas().names().fullname(
                         catalog,
                         schema
                         )
-                    );
- */
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    catalog,
-                    schema
                     );
                 }
 
@@ -497,33 +486,6 @@ public class JdbcResourceEntity
             );
         }
 
-    private String keyname(final JdbcSchema schema )
-        {
-        return keyname(
-            schema.catalog(),
-            schema.schema()
-            );
-        }
-
-    private String keyname(final JdbcMetadataScanner.Schema schema)
-        {
-        return keyname(
-            schema.catalog().name(),
-            schema.name()
-            );
-        }
-
-    private String keyname(final String catalog, final String schema)
-        {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append(catalog);
-        builder.append("}{");
-        builder.append(schema);
-        builder.append("}");
-        return builder.toString();
-        }
-    
     @Override
     protected void scanimpl()
         {
@@ -532,17 +494,14 @@ public class JdbcResourceEntity
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = connection().scanner();
         //
-        // Load our Map of known schema.
-        Map<String, JdbcSchema> known = new HashMap<String, JdbcSchema>();
+        // Load our existing schema.
+        Map<String, JdbcSchema> existing = new HashMap<String, JdbcSchema>();
         Map<String, JdbcSchema> matching = new HashMap<String, JdbcSchema>();
         for (JdbcSchema schema : factories().jdbc().schemas().select(JdbcResourceEntity.this))
             {
-            final String key = keyname(
-                schema
-                );
-            log.debug("Caching known schema [{}]", key);
-            known.put(
-                key,
+            log.debug("Caching existing schema [{}]", schema.name());
+            existing.put(
+                schema.name(),
                 schema
                 );
             }
@@ -569,7 +528,7 @@ public class JdbcResourceEntity
                     for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
                         {
                         scan(
-                            known,
+                            existing,
                             matching,
                             catalog
                             );
@@ -590,7 +549,7 @@ public class JdbcResourceEntity
             else {
                 try {
                     scan(
-                        known,
+                        existing,
                         matching,
                         scanner.catalogs().select(
                             this.catalog
@@ -612,11 +571,11 @@ public class JdbcResourceEntity
             scanner.connector().close();
             }
         log.debug("schemas() scan done for [{}][{}]", this.ident(), this.namebuilder());
-        log.debug("Matching schemas [{}]", matching.size());
-        log.debug("Listed but not matched [{}]", known.size());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
         }
     
-    protected void scan(final Map<String, JdbcSchema> known, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Catalog catalog)
+    protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Catalog catalog)
         {
         if (catalog == null)
             {
@@ -628,7 +587,7 @@ public class JdbcResourceEntity
                 for (JdbcMetadataScanner.Schema schema : catalog.schemas().select())
                     {
                     scan(
-                        known,
+                        existing,
                         matching,
                         schema
                         );                
@@ -644,30 +603,26 @@ public class JdbcResourceEntity
 
     protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Schema schema)
         {
-        final String key = keyname(
-            schema
-            );
-        log.debug("Scanning for schema [{}][{}]", schema.catalog(), schema.name());
-        log.debug("Scanning for schema [{}]", key);
+        String name = schema.catalog().name() + "." + schema.name() ;
+        log.debug("Scanning for schema [{}]", name);
         //
         // Check for an existing match.
-        if (existing.containsKey(key))
+        if (existing.containsKey(name))
             {
-            log.debug("Found matching schema [{}]", key);
+            log.debug("Found existing schema [{}]", name);
             matching.put(
-                key,
+                name,
                 existing.remove(
-                    key
+                    name
                     )
                 );            
             }
         //
         // No match, so create a new one.
         else {
-            log.debug("Creating new schema [{}][{}]", schema.catalog(), schema.name());
-            log.debug("Cacheing new schema [{}]", key);
+            log.debug("Creating new schema [{}]", name);
             matching.put(
-                key,
+                name,
                 factories().jdbc().schemas().create(
                     JdbcResourceEntity.this,
                     schema.catalog().name(),

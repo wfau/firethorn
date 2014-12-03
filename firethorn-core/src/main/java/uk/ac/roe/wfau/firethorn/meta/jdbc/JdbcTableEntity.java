@@ -1032,13 +1032,13 @@ implements JdbcTable
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();
         //
-        // Load our Map of known columns.
-        Map<String, JdbcColumn> known = new HashMap<String, JdbcColumn>();
+        // Load our existing tables.
+        Map<String, JdbcColumn> existing = new HashMap<String, JdbcColumn>();
         Map<String, JdbcColumn> matching = new HashMap<String, JdbcColumn>();
         for (JdbcColumn column : factories().jdbc().columns().select(JdbcTableEntity.this))
             {
-            log.debug("Caching known column [{}]", column.name());
-            known.put(
+            log.debug("Caching existing column [{}]", column.name());
+            existing.put(
                 column.name(),
                 column
                 );
@@ -1047,7 +1047,7 @@ implements JdbcTable
         // Process our columns.
         try {
             scan(
-                known,
+                existing,
                 matching,
                 scanner.catalogs().select(
                     schema().catalog()
@@ -1071,11 +1071,11 @@ implements JdbcTable
             scanner.connector().close();
             }
         log.debug("columns() scan done for [{}][{}]", this.ident(), this.namebuilder());
-        log.debug("Matching columns [{}]", matching.size());
-        log.debug("Listed but not matched [{}]", known.size());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
         }
 
-    protected void scan(final Map<String, JdbcColumn> known, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Table table)
+    protected void scan(final Map<String, JdbcColumn> existing, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Table table)
         {
         log.debug("scanning table [{}]", (table != null) ? table.name() : null);
         if (table == null)
@@ -1087,7 +1087,7 @@ implements JdbcTable
                 for (JdbcMetadataScanner.Column column : table.columns().select())
                     {
                     scan(
-                        known,
+                        existing,
                         matching,
                         column
                         );

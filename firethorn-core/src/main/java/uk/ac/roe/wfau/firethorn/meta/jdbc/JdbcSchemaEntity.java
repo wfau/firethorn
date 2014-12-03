@@ -83,9 +83,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                JdbcSchemaEntity.DB_JDBC_CATALOG_COL,
-                JdbcSchemaEntity.DB_JDBC_SCHEMA_COL,
-                JdbcSchemaEntity.DB_PARENT_COL
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
                 }
             )
         }
@@ -286,32 +285,19 @@ public class JdbcSchemaEntity
         @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
             {
-            log.debug("JdbcSchema create(JdbcResource, String, String)");
-            log.debug("  Parent  [{}]", parent.ident());
-            log.debug("  Catalog [{}]", catalog);
-            log.debug("  Schema  [{}]", schema);
-
-            if ("FIRETHORN_TEST_DATA".equals(catalog))
-                {
-                log.debug("FIRETHORN_TEST_DATA");
-                }
-            
-            return this.insert(
-                new JdbcSchemaEntity(
-                    parent,
+            return this.create(
+                parent,
+                catalog,
+                schema,
+                names.fullname(
                     catalog,
-                    schema,
-                    names.fullname(
-                        catalog,
-                        schema
-                        )
+                    schema
                     )
                 );
             }
 
-        /*
         @CreateMethod
-        protected JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
+        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
             return this.insert(
                 new JdbcSchemaEntity(
@@ -322,7 +308,6 @@ public class JdbcSchemaEntity
                     )
                 );
             }
-         */
 
         @Override
         @SelectMethod
@@ -341,18 +326,12 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NameNotFoundException
+        throws EntityNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
-
-            if ("FIRETHORN_TEST_DATA".equals(catalog))
-                {
-                log.debug("FIRETHORN_TEST_DATA");
-                }
-            
             final JdbcSchema found = search(
                 parent,
                 catalog,
@@ -363,7 +342,7 @@ public class JdbcSchemaEntity
                 return found ;
                 }
             else {
-                throw new NameNotFoundException(
+                throw new EntityNotFoundException(
                     "Unable to find matching schema [" + catalog + "][" + schema  + "]"
                     );
                 }
@@ -373,7 +352,7 @@ public class JdbcSchemaEntity
         @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
             {
-            log.debug("JdbcSchema search(JdbcResource, String, String)");
+            log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
@@ -564,12 +543,6 @@ public class JdbcSchemaEntity
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
         super(resource, name);
-        log.debug("JdbcSchemaEntity(JdbcResource, String, String, String)");
-        log.debug("   JdbcResource [{}]", resource.name());
-        log.debug("   Catalog [{}]", catalog);
-        log.debug("   Schema  [{}]", schema);
-        log.debug("   Name    [{}]", name);
-
         this.resource = resource;
         this.catalog  = catalog ;
         this.schema   = schema  ;
@@ -638,7 +611,7 @@ public class JdbcSchemaEntity
     @Override
     public JdbcSchema.Tables tables()
         {
-        log.debug("tables() for [{}][{}][{}]", ident(), catalog(), schema());
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
         scantest();
         return new JdbcSchema.Tables()
             {
@@ -758,19 +731,19 @@ public class JdbcSchemaEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("tables() scan for [{}][{}][{}]", ident(), catalog(), schema());
+        log.debug("tables() scan for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();
 
         //
-        // Load our Map of known tables.
-        Map<String, JdbcTable> known = new HashMap<String, JdbcTable>();
+        // Load our existing tables.
+        Map<String, JdbcTable> existing = new HashMap<String, JdbcTable>();
         Map<String, JdbcTable> matching = new HashMap<String, JdbcTable>();
         for (JdbcTable table : factories().jdbc().tables().select(JdbcSchemaEntity.this))
             {
-            log.trace("Caching known table [{}]", table.name());
-            known.put(
+            log.trace("Caching existing table [{}]", table.name());
+            existing.put(
                 table.name(),
                 table
                 );
@@ -779,7 +752,7 @@ public class JdbcSchemaEntity
         // Process our tables.
         try {
             scan(
-                known,
+                existing,
                 matching,
                 scanner.catalogs().select(
                     this.catalog()
@@ -790,26 +763,22 @@ public class JdbcSchemaEntity
             }
         catch (SQLException ouch)
             {
-            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
+            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
             scanner.handle(ouch);
             }
         catch (MetadataException ouch)
             {
-            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
-            }
-        catch (Exception ouch)
-            {
-            log.warn("Exception while fetching schema tables [{}][{}]", this.ident(), ouch.getMessage());
+            log.warn("Exception while fetching schema [{}][{}]", this.ident(), ouch.getMessage());
             }
         finally {
             scanner.connector().close();
             }
         log.debug("tables() scan done for [{}][{}]", this.ident(), this.namebuilder());
-        log.debug("Matching tables [{}]", matching.size());
-        log.debug("Listed but not matched [{}]", known.size());
+        log.debug("Existing contains [{}]", existing.size());
+        log.debug("Matching contains [{}]", matching.size());
         }
 
-    protected void scan(final Map<String, JdbcTable> known, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
+    protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
         {
         log.debug("scanning schema [{}]", (schema != null) ? schema.name() : null);
         if (schema == null)
@@ -821,7 +790,7 @@ public class JdbcSchemaEntity
                 for (JdbcMetadataScanner.Table table : schema.tables().select())
                     {
                     scan(
-                        known,
+                        existing,
                         matching,
                         table
                         );
@@ -831,10 +800,6 @@ public class JdbcSchemaEntity
                 {
                 log.warn("Exception while fetching schema tables [{}][{}][{}]", this.ident(), schema.name(), ouch.getMessage());
                 schema.catalog().scanner().handle(ouch);
-                }
-            catch (Exception ouch)
-                {
-                log.warn("Exception while fetching schema tables [{}][{}][{}]", this.ident(), schema.name(), ouch.getMessage());
                 }
             }
         }
@@ -847,7 +812,7 @@ public class JdbcSchemaEntity
         // Check for an existing match.
         if (existing.containsKey(name))
             {
-            log.trace("Found matching table [{}]", name);
+            log.trace("Found existing table [{}]", name);
             matching.put(
                 name,
                 existing.remove(
