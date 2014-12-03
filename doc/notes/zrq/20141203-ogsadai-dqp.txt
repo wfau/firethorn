@@ -62,10 +62,8 @@
 
                     mkdir src
                     pushd src
-
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/main main
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/test/unit test
-
                     popd
 
 #
@@ -85,18 +83,24 @@ src/test/java/uk/org/ogsadai/client/toolkit/activities/test
 
                     mkdir src
                     pushd src
-
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/main main
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/test/unit test
                     popd
 
+#
+# Two files missing from main build.
+# Suggests we should use extensions/basic/server
+/var/local/projects/edinburgh/ogsa-dai/code/ogsa-dai/trunk/extensions/basic/server/src/main/java/uk/org/ogsadai/activity/block/HeadActivity.java
+/var/local/projects/edinburgh/ogsa-dai/code/ogsa-dai/trunk/extensions/basic/server/src/main/java/uk/org/ogsadai/activity/block/MismatchedInputGranularityException.java
+
+HeadActivity suggests TOP is implemented ?
+
+
                     mvn clean install
-                    mvn clean install test
 
                 popd
 
                 mvn clean install
-                mvn clean install test
 
             popd
         popd
