@@ -23,8 +23,8 @@ import java.util.HashMap;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
-
 import adql.db.DBColumn;
+import adql.db.DBTable;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
@@ -38,7 +38,7 @@ import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
-import adql.query.operand.function.CastFunction;
+//import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
@@ -306,19 +306,19 @@ public class SQLServerTranslator
     public String translate(final ADQLFunction function)
     throws TranslationException
 		{
-    	if (function instanceof CastFunction)
+    	/*if (function instanceof CastFunction)
     		{
     		return translate(
 				(CastFunction) function
 				);
     		}
-    	else {
+    	else {*/
     		return super.translate(
 				function
 				);
-    		}
+    		//}
 		}
-
+/*
     public String translate(final CastFunction function)
     throws TranslationException
     	{
@@ -339,7 +339,7 @@ public class SQLServerTranslator
 
         return builder.toString();
     	}
-    
+    */
     /**
      * Override the PostgreSQLTranslator method ...
      *
@@ -488,7 +488,9 @@ public class SQLServerTranslator
             }
         }
 
-    /**
+  
+
+	/**
      * Replacement for the PostgreSQLTranslator method.
      *
      *

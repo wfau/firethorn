@@ -65,7 +65,7 @@ import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
-import adql.query.operand.function.CastFunction;
+//import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
@@ -151,11 +151,11 @@ implements AdqlParser
         /**
          * Public constructor.
          *
-         */
+         
         public AdqlQueryFactoryImpl(final boolean unknowns)
             {
             super(unknowns);
-            }
+            }*/
 
         /**
          * Create a SelectItem.
@@ -277,6 +277,12 @@ implements AdqlParser
                 return null;
                 }
 
+			@Override
+			public boolean isGeometry() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
             }
 
         /**
@@ -287,28 +293,29 @@ implements AdqlParser
         public NumericConstant createNumericConstant(final String value)
         throws NumberFormatException
             {
+        	
             log.debug("createNumericConstant(String)");
             log.debug("  value [{}]", value);
             // Only if in LEGACY or FUTURE mode.
-            if (value.startsWith(HexConstant.PREFIX))
+            /* if (value.startsWith(HexConstant.PREFIX))
                 {
                 return new HexConstant(
                     value,
                     true
                     );
                 }
-            else {
+            else {*/
                 return new NumericConstant(
                     value,
                     true
                     );
                 }
-            }
+           // }
 
         /**
          * A hexadecimal numeric.
          *
-         */
+         
         public static class HexConstant
         extends NumericConstant
         implements ADQLOperand
@@ -316,13 +323,13 @@ implements AdqlParser
             /**
              * Hexadecimal prefix.
              *
-             */
+            
             protected static final String PREFIX = "0x";
 
             /**
              * Create a hex value from a long.
              *
-             */
+            
             public HexConstant(final long value)
                 {
                 super(
@@ -333,7 +340,7 @@ implements AdqlParser
             /**
              * Create a hex value from a String.
              *
-             */
+             *
             public HexConstant(final String value, final boolean check)
             throws NumberFormatException
                 {
@@ -346,7 +353,7 @@ implements AdqlParser
             /**
              * Copy a hex value.
              *
-             */
+            
             public HexConstant(final HexConstant origin)
                 {
                 super(
@@ -358,7 +365,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+            
             @Override
             public final void setValue(final double value)
                 {
@@ -396,7 +403,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+           
             public double getDoubleValue()
             throws NumberFormatException
                 {
@@ -408,7 +415,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-             */
+           
             public double getDoubleValue(final String value)
             throws NumberFormatException
                 {
@@ -449,7 +456,7 @@ implements AdqlParser
                     this
                     );
                 }
-            }
+            } */ 
         }
 
     protected AdqlQuery.Mode mode ;
@@ -683,6 +690,8 @@ implements AdqlParser
         {
         if (level == Level.STRICT)
             {
+        	/*
+            }
             final OperationType type = oper.getOperation();
             if (type == OperationType.MOD)
                 {
@@ -710,7 +719,7 @@ implements AdqlParser
                 throw new AdqlParserException(
                     "Binary XOR operator '^' is not supported in ADQL"
                     );
-                }
+                }*/
             }
         }
 
@@ -897,11 +906,11 @@ implements AdqlParser
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-		if (item.item().isMain()){
+		//if (item.item().isMain()){
 			subject.add(
 				item
 				);
-    		}
+    	//	}
         }
 
     /**
@@ -1590,14 +1599,14 @@ implements AdqlParser
         //
         // Not a floating point number.
         else {
-            final long value = number.getIntegerValue();
-            if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
-                {
-                return AdqlColumn.AdqlType.INTEGER;
-                }
-            else {
+         //   final long value = number.getIntegerValue();
+        //    if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
+            //    {
+          //      return AdqlColumn.AdqlType.INTEGER;
+          //      }
+         //   else {
                 return AdqlColumn.AdqlType.LONG;
-                }
+           //     }
             }
         }
 
@@ -1722,10 +1731,10 @@ implements AdqlParser
             {
             return type((MathFunction) funct);
             }
-        else if (funct instanceof CastFunction)
-	        {
-	        return type((CastFunction) funct);
-	        }
+      //  else if (funct instanceof CastFunction)
+	   //     {
+	  //      return type((CastFunction) funct);
+	   //     }
         else if (funct instanceof UserDefinedFunction)
             {
             return type((UserDefinedFunction) funct);
@@ -1756,10 +1765,10 @@ implements AdqlParser
             {
             return wrap((MathFunction) funct);
             }
-        else if (funct instanceof CastFunction)
-	        {
-	        return wrap((CastFunction) funct);
-	        }
+       // else if (funct instanceof CastFunction)
+	   //     {
+	    //    return wrap((CastFunction) funct);
+	   //     }
         else if (funct instanceof UserDefinedFunction)
             {
             return wrap((UserDefinedFunction) funct);
@@ -1893,7 +1902,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
+           // case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -1909,8 +1918,8 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.AdqlType.DOUBLE;
-            case SIGN:
-            	 return AdqlColumn.AdqlType.INTEGER;
+            //case SIGN:
+            //	 return AdqlColumn.AdqlType.INTEGER;
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1921,7 +1930,7 @@ implements AdqlParser
     /**
      * Get the type of a CastFunction.
      *
-     */
+     
     public static AdqlColumn.AdqlType type(final CastFunction funct)
     throws AdqlParserException
         {
@@ -1951,7 +1960,7 @@ implements AdqlParser
                     "Unknown CastFunction type [" + funct.type() + "]"
                     );
         	}
-        }
+        }*/
 
     /**
      * Wrap a MathFunction.
@@ -1991,7 +2000,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
+          //  case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -2010,11 +2019,11 @@ implements AdqlParser
                     funct.getName(),
                     AdqlColumn.AdqlType.DOUBLE
                     );
-            case SIGN:
-          	  return new MySelectFieldImpl(
-                        funct.getName(),
-                        AdqlColumn.AdqlType.INTEGER
-                        );
+           //case SIGN:
+          	//  return new MySelectFieldImpl(
+           //             funct.getName(),
+            //            AdqlColumn.AdqlType.INTEGER
+            //            );
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -2025,7 +2034,7 @@ implements AdqlParser
     /**
      * Wrap a CastFunction.
      *
-     */
+     
     public static MySelectField wrap(final CastFunction funct)
     throws AdqlParserException
         {
@@ -2057,7 +2066,7 @@ implements AdqlParser
                 );
         	}
         
-        }
+        }*/
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *
@@ -2097,3 +2106,4 @@ implements AdqlParser
 	        }
         }
     }
+
