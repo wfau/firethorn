@@ -38,7 +38,7 @@ import cds.utils.TextualSearchList;
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
  * @version 1.3 (08/2014)
  */
-public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi {
+public class SearchTableList extends TextualSearchList<DBTable> {
 	private static final long serialVersionUID = 1L;
 
 	/** Indicates whether multiple occurrences are allowed. */

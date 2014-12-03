@@ -29,6 +29,8 @@ target
 .classpath
 .settings
 .factorypath
+.recommendations
+.metadata
 
 # Java core dumps
 hs_err_*.log

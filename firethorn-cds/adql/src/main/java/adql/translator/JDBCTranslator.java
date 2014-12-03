@@ -22,6 +22,8 @@ package adql.translator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import tap.data.DataReadException;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;

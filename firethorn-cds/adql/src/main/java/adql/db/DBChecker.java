@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -100,7 +99,7 @@ import adql.search.SimpleSearchHandler;
 public class DBChecker implements QueryChecker {
 
 	/** List of all available tables ({@link DBTable}). */
-	protected SearchTableApi lstTables;
+	protected SearchTableList lstTables;
 
 	/** <p>List of all allowed geometrical functions (i.e. CONTAINS, REGION, POINT, COORD2, ...).</p>
 	 * <p>
@@ -569,7 +568,7 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
 	 */
 	protected DBTable resolveTable(final ADQLTable table) throws ParseException{
-		List<DBTable> tables  = lstTables.search(table);
+		ArrayList<DBTable> tables = lstTables.search(table);
 
 		// good if only one table has been found:
 		if (tables.size() == 1)
