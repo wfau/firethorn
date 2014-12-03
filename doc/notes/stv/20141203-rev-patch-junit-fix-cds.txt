@@ -38,7 +38,7 @@ test005S(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugTestCase)
 
 http://wfau.metagrid.co.uk/code/firethorn/rev/686a81136048
 FIXES
-test008S(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+test04SB(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
 
 
 
