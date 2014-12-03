@@ -25,11 +25,74 @@
 #[user@desktop]
 
     devname=zrq-ogsadai-dqp
-    copy/paste 20141130-01-hg-branch.txt
+    
+    # Copy paste instructions
+    gedit 'doc/notes/zrq/20141130-01-hg-branch.txt' &
 
-# -----------------------------------------------------
-# Add the code changes
+
+# -------------------------------------------------------------------------------------------
+# Create the new Maven project.
 #[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai
+
+            gedit pom.xml &
+
+                <modules>
+                    <module>depends</module>
+            +       <module>distributed</module>
+                    <module>activity</module>
+                    <module>metadata</module>
+                    <module>webapp</module>
+                </modules>
+
+
+            mkdir distributed
+            pushd distributed
+
+                gedit pom.xml &
+
+                mkdir src
+                pushd src
+
+                    svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/main      main
+
+                    mvn clean install
+
+
+                popd
+                pushd src
+
+                    svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/test/unit test
+
+
+                popd
+            popd
+        popd
+    popd
+
+
+
+
+
+    [ERROR] package org.antlr.runtime.tree does not exist
+
+    [ERROR] package uk.org.ogsadai.tuple.converters does not exist
+    [ERROR] package uk.org.ogsadai.context does not exist
+
+    [ERROR] Compilation failure: cannot find symbol
+    [ERROR] symbol:   class TypeConversionException
+    [ERROR] location: package uk.org.ogsadai.tuple
+
+    [ERROR] Compilation failure: cannot find symbol
+    [ERROR] symbol:   class Null
+    [ERROR] location: package uk.org.ogsadai.tuple
+
+
+
 
 
 

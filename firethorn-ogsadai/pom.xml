@@ -56,6 +56,7 @@
         +-->
     <modules>
         <module>depends</module>
+        <module>distributed</module>
         <module>activity</module>
         <module>metadata</module>
         <module>webapp</module>

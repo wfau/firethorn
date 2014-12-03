@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | Maven parent project.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn-ogsadai</artifactId>
+        <version project='firethorn'>1.11.28-zrq-ogsadai-dqp</version>
+    </parent>
+
+    <artifactId>firethorn-ogsadai-distributed</artifactId>
+    <packaging>jar</packaging>
+
+    <name>FireThorn OGSA-DAI distributed query processor (server)</name>
+    <description>
+        <![CDATA[
+        Server (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
+        Based on a clone of the OGSA-DAI code in svn.
+        ]]>
+    </description>
+
+    <properties>
+
+    </properties>
+
+    <dependencies>
+
+        <!--+
+            | OGSA-DAI 3rd party dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-depends</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+        <dependency>
+            <groupId></groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+            +-->
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlrworks</artifactId>
+            <!--version>1.5</version-->
+            <version>1.5</version>
+        </dependency>
+
+        <!--+
+        <dependency>
+            <groupId></groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0-2</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jung-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jung-graph-impl</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>easymock</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>collections-generic</artifactId>
+            <version>4.01</version>
+        </dependency>
+        
+        <dependency>
+            <groupId></groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId></groupId>
+            <artifactId>spring-asm</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>spring-core</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+            +-->
+
+        <!--+
+            | OGSA-DAI dependencies.
+ogsadai.basic.client.lib.dir=../../../ogsa-dai/trunk/extensions/basic/client/build/lib
+ogsadai.basic.server.lib.dir=../../../ogsa-dai/trunk/extensions/basic/server/build/lib
+ogsadai.dqp.bindings.lib.dir=../../../ogsa-dai/trunk/extensions/dqp/bindings/build/lib
+ogsadai.dqp.client.lib.dir=../../../ogsa-dai/trunk/extensions/dqp/client/build/lib
+            +-->
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-common</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+
+        <!--+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-relational-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-relational-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-astro-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+            +-->
+
+        <!--+
+            | The StarLink VOTAble library, used by our TAP client Activity. 
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-votable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-table</artifactId>
+        </dependency>
+            +-->
+
+	    <!--+
+	        | The Apache HttpComponent libraries, used by our TAP client Activity. 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+	        +-->
+
+    </dependencies>
+
+    <build>
+
+        <testResources>
+
+            <!--+
+                | Test configuration files.
+                +-->
+    		<testResource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</testResource>
+
+        </testResources>
+
+    </build>
+
+</project>
+
+
