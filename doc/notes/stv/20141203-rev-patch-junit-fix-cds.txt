@@ -1,0 +1,47 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+###################
+## REV/FIX pairs ##
+###################
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/7acedfd37cb5
+FIXES
+test001S(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+
+------------------------------------------------------------
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/5e5206c8b3fc
+FIXES
+test005S(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugTestCase)
+
+------------------------------------------------------------
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/686a81136048
+FIXES
+test008S(uk.ac.roe.wfau.firethorn.adql.query.atlas.MathFunctionTestCase)
+
+
+
+
+
+

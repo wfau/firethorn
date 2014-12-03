@@ -177,7 +177,7 @@ public class MathFunctionTestCase
         {
         validate(
             Level.STRICT,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT TOP 5" +
             "    round(ra)" +
@@ -225,7 +225,7 @@ public class MathFunctionTestCase
         {
         validate(
             Level.STRICT,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT TOP 5" +
             "    truncate(ra)" +
@@ -272,7 +272,7 @@ public class MathFunctionTestCase
         {
         validate(
             Level.STRICT,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT" +
             "    rand()" +
@@ -314,12 +314,13 @@ public class MathFunctionTestCase
      * TODO
      *
      */
+    @Test
     public void test007S()
     throws QueryProcessingException
         {
         validate(
             Level.STRICT,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT" +
             "    sign(ra)" +
@@ -366,7 +367,7 @@ public class MathFunctionTestCase
         {
         validate(
             Level.STRICT,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT" +
             "    square(ra)" +
