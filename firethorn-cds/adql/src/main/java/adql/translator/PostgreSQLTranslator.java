@@ -20,6 +20,7 @@ package adql.translator;
  *                       Astronomisches Rechen Institut (ARI)
  */
 
+import adql.db.DBTable;
 import adql.db.DBType;
 import adql.db.DBType.DBDatatype;
 import adql.db.STCS.Region;
@@ -101,6 +102,27 @@ public class PostgreSQLTranslator extends JDBCTranslator {
 	@Override
 	public boolean isCaseSensitive(final IdentifierField field){
 		return field == null ? false : field.isCaseSensitive(caseSensitivity);
+	}
+	
+	/**
+	 * Appends the full name of the given table to the given StringBuffer.
+	 * 
+	 * @param str		The string buffer.
+	 * @param dbTable	The table whose the full name must be appended.
+	 * 
+	 * @return			The string buffer + full table name.
+	 */
+	public final StringBuffer appendFullDBName(final StringBuffer str, final DBTable dbTable){
+		if (dbTable != null){
+			if (dbTable.getDBCatalogName() != null)
+				appendIdentifier(str, dbTable.getDBCatalogName(), IdentifierField.CATALOG).append('.');
+
+			if (dbTable.getDBSchemaName() != null)
+				appendIdentifier(str, dbTable.getDBSchemaName(), IdentifierField.SCHEMA).append('.');
+
+			appendIdentifier(str, dbTable.getDBName(), IdentifierField.TABLE);
+		}
+		return str;
 	}
 
 	@Override
