@@ -161,7 +161,6 @@ implements AdqlParser
          * Create a SelectItem.
          *
          */
-        @Override
         public SelectItem createSelectItem(final ADQLOperand operand, final String alias, final ADQLQuery parent)
         throws Exception
             {
@@ -169,8 +168,7 @@ implements AdqlParser
             log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
             return super.createSelectItem(
                 operand,
-                alias,
-                parent
+                alias
                 );
             }
 
