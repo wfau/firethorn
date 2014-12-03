@@ -36,7 +36,7 @@
     </parent>
 
     <artifactId>firethorn-ogsadai-distributed</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>FireThorn OGSA-DAI distributed query processor</name>
     <description>

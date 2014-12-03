@@ -63,16 +63,14 @@
                     mkdir src
                     pushd src
 
-                        #svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/main main
-                        mvn clean install
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/main main
+                        svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/test/unit test
 
                     popd
-                    pushd src
 
-                        #svn checkout http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk/extensions/dqp/client/src/test/unit test
-                        mvn clean install test
+                    mvn clean install
+                    mvn clean install test
 
-                    popd
                 popd
 
                 mkdir server
@@ -84,16 +82,16 @@
                     pushd src
 
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/main main
-                        #mvn clean install
-
-                    popd
-                    pushd src
-
                         svn checkout http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server/src/test/unit test
-                        #mvn clean install
-
                     popd
+
+                    mvn clean install
+                    mvn clean install test
+
                 popd
+
+                mvn clean install
+                mvn clean install test
 
             popd
         popd

@@ -75,20 +75,17 @@
         </dependency>
             +-->
 
+        <!--+
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlrworks</artifactId>
-            <!--version>1.5</version-->
             <version>1.5</version>
         </dependency>
-
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>1.6</version>
         </dependency>
-
-        <!--+
         <dependency>
             <groupId></groupId>
             <artifactId>jaxb-api</artifactId>
@@ -205,12 +202,14 @@ ogsadai.dqp.client.lib.dir=../../../ogsa-dai/trunk/extensions/dqp/client/build/l
 
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-common</artifactId>
+            <artifactId>ogsadai-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
+
+        <!--+
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-client</artifactId>
+            <artifactId>ogsadai-common</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
         <dependency>
@@ -230,7 +229,6 @@ ogsadai.dqp.client.lib.dir=../../../ogsa-dai/trunk/extensions/dqp/client/build/l
             <version>${ogsadai.version}</version>
         </dependency>
 
-        <!--+
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-server</artifactId>
