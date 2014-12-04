@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-distributed</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI distributed query processor</name>
+    <name>FireThorn OGSA-DAI distributed queries</name>
     <description>
         <![CDATA[
         Components for the FireThorn OGSA-DAI distributed query processor.

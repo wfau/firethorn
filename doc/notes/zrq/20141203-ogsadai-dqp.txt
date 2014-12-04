@@ -29,6 +29,16 @@
     # Copy paste instructions
     gedit 'doc/notes/zrq/20141130-01-hg-branch.txt' &
 
+# -----------------------------------------------------
+# Build our OGSA-DAI project.
+#[user@desktop]
+
+    OGSADAI_REV=HEAD
+
+    source "${HOME:?}/firethorn.settings"
+    source "${HOME?}/ogsadai.settings"
+    source "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai/bin/ogsadai-build.sh"
+
 
 # -------------------------------------------------------------------------------------------
 # Create the new Maven project.

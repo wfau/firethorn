@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-distributed-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed query processor (client)</name>
+    <name>FireThorn OGSA-DAI distributed queries (client)</name>
     <description>
         <![CDATA[
         Client (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.

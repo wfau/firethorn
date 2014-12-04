@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-depends</artifactId>
     <packaging>pom</packaging>
 
-    <name>Dependencies for OGSA-DAI components</name>
+    <name>Firethorn OGSA-DAI dependencies</name>
     <description>
         <![CDATA[
         3rd party dependencies for FireThorn OGSA-DAI components.
