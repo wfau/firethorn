@@ -1510,7 +1510,7 @@ public class ADQLParser implements ADQLParserConstants {
 
   final public ADQLOperand NumericTerm() throws ParseException {
                             Token sign=null; ADQLOperand leftOp, rightOp=null;
-    leftOp = Factor();
+    leftOp = BinaryExpression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ASTERISK:
     case DIVIDE:
@@ -1548,6 +1548,46 @@ public class ADQLParser implements ADQLParserConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public ADQLOperand BinaryExpression() throws ParseException {
+                                 Token sign=null; ADQLOperand leftOp, rightOp=null;
+    leftOp = Factor();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case BIT_AND:
+    case BIT_OR:
+    case BIT_XOR:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case BIT_AND:
+        sign = jj_consume_token(BIT_AND);
+        break;
+      case BIT_OR:
+        sign = jj_consume_token(BIT_OR);
+        break;
+      case BIT_XOR:
+        sign = jj_consume_token(BIT_XOR);
+        break;
+      default:
+        jj_la1[54] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      rightOp = BinaryExpression();
+      break;
+    default:
+      jj_la1[55] = jj_gen;
+      ;
+    }
+        if (sign == null)
+                {if (true) return leftOp;}
+        else{
+                try{
+                        {if (true) return queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);}
+                }catch(Exception ex){
+                        {if (true) throw generateParseException(ex);}
+                }
+        }
+    throw new Error("Missing return statement in function");
+  }
+
   final public ADQLOperand Factor() throws ParseException {
                        boolean negative = false;; ADQLOperand op;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1562,13 +1602,13 @@ public class ADQLParser implements ADQLParserConstants {
                                     negative = true;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[56] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[55] = jj_gen;
+      jj_la1[57] = jj_gen;
       ;
     }
     if (jj_2_10(2)) {
@@ -1590,7 +1630,7 @@ public class ADQLParser implements ADQLParserConstants {
         op = NumericValueExpressionPrimary();
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[58] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1617,7 +1657,7 @@ public class ADQLParser implements ADQLParserConstants {
         ;
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         break label_9;
       }
       jj_consume_token(CONCAT);
@@ -1644,7 +1684,7 @@ public class ADQLParser implements ADQLParserConstants {
       op = ExtractCoordSys();
       break;
     default:
-      jj_la1[58] = jj_gen;
+      jj_la1[60] = jj_gen;
       if (jj_2_11(2)) {
         op = UserDefinedFunction();
                                                   ((UserDefinedFunction)op).setExpectedType('S');
@@ -1657,7 +1697,7 @@ public class ADQLParser implements ADQLParserConstants {
           op = StringValueExpressionPrimary();
           break;
         default:
-          jj_la1[59] = jj_gen;
+          jj_la1[61] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1683,7 +1723,7 @@ public class ADQLParser implements ADQLParserConstants {
       gf = GeometryValueFunction();
       break;
     default:
-      jj_la1[60] = jj_gen;
+      jj_la1[62] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1707,7 +1747,7 @@ public class ADQLParser implements ADQLParserConstants {
                         notOp = true;
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[63] = jj_gen;
         ;
       }
       constraint = Constraint();
@@ -1725,7 +1765,7 @@ public class ADQLParser implements ADQLParserConstants {
           ;
           break;
         default:
-          jj_la1[62] = jj_gen;
+          jj_la1[64] = jj_gen;
           break label_10;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1736,7 +1776,7 @@ public class ADQLParser implements ADQLParserConstants {
           op = jj_consume_token(OR);
           break;
         default:
-          jj_la1[63] = jj_gen;
+          jj_la1[65] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1746,7 +1786,7 @@ public class ADQLParser implements ADQLParserConstants {
                                 notOp = true;
           break;
         default:
-          jj_la1[64] = jj_gen;
+          jj_la1[66] = jj_gen;
           ;
         }
         constraint = Constraint();
@@ -1781,7 +1821,7 @@ public class ADQLParser implements ADQLParserConstants {
         jj_consume_token(RIGHT_PAR);
         break;
       default:
-        jj_la1[65] = jj_gen;
+        jj_la1[67] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1800,7 +1840,7 @@ public class ADQLParser implements ADQLParserConstants {
                                                     {if (true) return queryFactory.createExists(q);}
         break;
       default:
-        jj_la1[70] = jj_gen;
+        jj_la1[72] = jj_gen;
         if (jj_2_14(2147483647)) {
           column = Column();
           jj_consume_token(IS);
@@ -1809,7 +1849,7 @@ public class ADQLParser implements ADQLParserConstants {
             notToken = jj_consume_token(NOT);
             break;
           default:
-            jj_la1[66] = jj_gen;
+            jj_la1[68] = jj_gen;
             ;
           }
           jj_consume_token(NULL);
@@ -1821,7 +1861,7 @@ public class ADQLParser implements ADQLParserConstants {
             notToken = jj_consume_token(NOT);
             break;
           default:
-            jj_la1[67] = jj_gen;
+            jj_la1[69] = jj_gen;
             ;
           }
           jj_consume_token(LIKE);
@@ -1893,7 +1933,7 @@ public class ADQLParser implements ADQLParserConstants {
               constraint = ComparisonEnd(op);
               break;
             default:
-              jj_la1[68] = jj_gen;
+              jj_la1[70] = jj_gen;
               if (jj_2_13(2)) {
                 constraint = BetweenEnd(op);
               } else {
@@ -1903,7 +1943,7 @@ public class ADQLParser implements ADQLParserConstants {
                   constraint = InEnd(op);
                   break;
                 default:
-                  jj_la1[69] = jj_gen;
+                  jj_la1[71] = jj_gen;
                   jj_consume_token(-1);
                   throw new ParseException();
                 }
@@ -1911,7 +1951,7 @@ public class ADQLParser implements ADQLParserConstants {
             }
             break;
           default:
-            jj_la1[71] = jj_gen;
+            jj_la1[73] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -1946,7 +1986,7 @@ public class ADQLParser implements ADQLParserConstants {
       comp = jj_consume_token(GREATER_EQUAL_THAN);
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1966,7 +2006,7 @@ public class ADQLParser implements ADQLParserConstants {
       notToken = jj_consume_token(NOT);
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[75] = jj_gen;
       ;
     }
     jj_consume_token(BETWEEN);
@@ -1988,7 +2028,7 @@ public class ADQLParser implements ADQLParserConstants {
       not = jj_consume_token(NOT);
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[76] = jj_gen;
       ;
     }
     jj_consume_token(IN);
@@ -2007,7 +2047,7 @@ public class ADQLParser implements ADQLParserConstants {
             ;
             break;
           default:
-            jj_la1[75] = jj_gen;
+            jj_la1[77] = jj_gen;
             break label_11;
           }
           jj_consume_token(COMMA);
@@ -2017,7 +2057,7 @@ public class ADQLParser implements ADQLParserConstants {
         jj_consume_token(RIGHT_PAR);
         break;
       default:
-        jj_la1[76] = jj_gen;
+        jj_la1[78] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2053,7 +2093,7 @@ public class ADQLParser implements ADQLParserConstants {
           distinct = jj_consume_token(QUANTIFIER);
           break;
         default:
-          jj_la1[77] = jj_gen;
+          jj_la1[79] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2116,7 +2156,7 @@ public class ADQLParser implements ADQLParserConstants {
           op = ValueExpression();
           break;
         default:
-          jj_la1[78] = jj_gen;
+          jj_la1[80] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2141,7 +2181,7 @@ public class ADQLParser implements ADQLParserConstants {
           fct = jj_consume_token(SUM);
           break;
         default:
-          jj_la1[79] = jj_gen;
+          jj_la1[81] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2151,7 +2191,7 @@ public class ADQLParser implements ADQLParserConstants {
           distinct = jj_consume_token(QUANTIFIER);
           break;
         default:
-          jj_la1[80] = jj_gen;
+          jj_la1[82] = jj_gen;
           ;
         }
         op = ValueExpression();
@@ -2159,7 +2199,7 @@ public class ADQLParser implements ADQLParserConstants {
                           funct = queryFactory.createSQLFunction(SQLFunctionType.valueOf(fct.image.toUpperCase()), op, distinct != null && distinct.image.equalsIgnoreCase("distinct"));
         break;
       default:
-        jj_la1[81] = jj_gen;
+        jj_la1[83] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2196,7 +2236,7 @@ public class ADQLParser implements ADQLParserConstants {
           t = jj_consume_token(INTERSECTS);
           break;
         default:
-          jj_la1[82] = jj_gen;
+          jj_la1[84] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2231,7 +2271,7 @@ public class ADQLParser implements ADQLParserConstants {
                                                                                                                 col1.setExpectedType('G'); gf = queryFactory.createCoord1(col1);
           break;
         default:
-          jj_la1[83] = jj_gen;
+          jj_la1[85] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2251,7 +2291,7 @@ public class ADQLParser implements ADQLParserConstants {
                                                                                                                 col1.setExpectedType('G'); gf = queryFactory.createCoord2(col1);
           break;
         default:
-          jj_la1[84] = jj_gen;
+          jj_la1[86] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2269,7 +2309,7 @@ public class ADQLParser implements ADQLParserConstants {
           col1 = Column();
           break;
         default:
-          jj_la1[85] = jj_gen;
+          jj_la1[87] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2289,7 +2329,7 @@ public class ADQLParser implements ADQLParserConstants {
           col2 = Column();
           break;
         default:
-          jj_la1[86] = jj_gen;
+          jj_la1[88] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2303,7 +2343,7 @@ public class ADQLParser implements ADQLParserConstants {
                                  gf = queryFactory.createDistance(gvp1, gvp2);
         break;
       default:
-        jj_la1[87] = jj_gen;
+        jj_la1[89] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2380,7 +2420,7 @@ public class ADQLParser implements ADQLParserConstants {
             ;
             break;
           default:
-            jj_la1[88] = jj_gen;
+            jj_la1[90] = jj_gen;
             break label_12;
           }
           jj_consume_token(COMMA);
@@ -2398,7 +2438,7 @@ public class ADQLParser implements ADQLParserConstants {
                                                                            gf = queryFactory.createRegion(op);
         break;
       default:
-        jj_la1[89] = jj_gen;
+        jj_la1[91] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2487,7 +2527,7 @@ public class ADQLParser implements ADQLParserConstants {
                                       ((UserDefinedFunction)fct).setExpectedType('N');
       break;
     default:
-      jj_la1[90] = jj_gen;
+      jj_la1[92] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2632,7 +2672,7 @@ public class ADQLParser implements ADQLParserConstants {
           param1 = NumericExpression();
           break;
         default:
-          jj_la1[91] = jj_gen;
+          jj_la1[93] = jj_gen;
           ;
         }
         jj_consume_token(RIGHT_PAR);
@@ -2648,7 +2688,7 @@ public class ADQLParser implements ADQLParserConstants {
                                                                                                             param2 = queryFactory.createNumericConstant(integerValue);
           break;
         default:
-          jj_la1[92] = jj_gen;
+          jj_la1[94] = jj_gen;
           ;
         }
         jj_consume_token(RIGHT_PAR);
@@ -2670,13 +2710,13 @@ public class ADQLParser implements ADQLParserConstants {
                                                                                                                param2 = queryFactory.createNumericConstant(integerValue);
           break;
         default:
-          jj_la1[93] = jj_gen;
+          jj_la1[95] = jj_gen;
           ;
         }
         jj_consume_token(RIGHT_PAR);
         break;
       default:
-        jj_la1[94] = jj_gen;
+        jj_la1[96] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2744,7 +2784,7 @@ public class ADQLParser implements ADQLParserConstants {
       jj_consume_token(RIGHT_PAR);
       break;
     default:
-      jj_la1[95] = jj_gen;
+      jj_la1[97] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2826,7 +2866,7 @@ public class ADQLParser implements ADQLParserConstants {
           ;
           break;
         default:
-          jj_la1[96] = jj_gen;
+          jj_la1[98] = jj_gen;
           break label_13;
         }
         jj_consume_token(COMMA);
@@ -2835,7 +2875,7 @@ public class ADQLParser implements ADQLParserConstants {
       }
       break;
     default:
-      jj_la1[97] = jj_gen;
+      jj_la1[99] = jj_gen;
       ;
     }
     jj_consume_token(RIGHT_PAR);
@@ -2978,41 +3018,36 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_55() {
-    if (jj_3R_76()) return true;
+  private boolean jj_3R_47() {
+    if (jj_scan_token(CONCAT)) return true;
+    if (jj_3R_35()) return true;
     return false;
   }
 
-  private boolean jj_3_11() {
-    if (jj_3R_24()) return true;
+  private boolean jj_3R_177() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_195()) return true;
     return false;
   }
 
-  private boolean jj_3R_54() {
-    if (jj_3R_75()) return true;
+  private boolean jj_3R_176() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_195()) return true;
     return false;
   }
 
-  private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_54()) {
-    jj_scanpos = xsp;
-    if (jj_3_11()) {
-    jj_scanpos = xsp;
-    if (jj_3R_55()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_125() {
-    if (jj_3R_46()) return true;
+  private boolean jj_3R_27() {
+    if (jj_3R_35()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_148()) { jj_scanpos = xsp; break; }
+      if (jj_3R_47()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  private boolean jj_3R_73() {
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -3036,36 +3071,32 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_47() {
-    if (jj_scan_token(CONCAT)) return true;
-    if (jj_3R_35()) return true;
+  private boolean jj_3_10() {
+    if (jj_3R_23()) return true;
     return false;
   }
 
-  private boolean jj_3R_176() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_193()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_175() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_193()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    if (jj_3R_35()) return true;
+  private boolean jj_3R_52() {
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_47()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_scan_token(8)) {
+    jj_scanpos = xsp;
+    if (jj_3R_73()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_73() {
-    if (jj_scan_token(MINUS)) return true;
+  private boolean jj_3R_194() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(13)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(14)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(15)) return true;
+    }
+    }
+    if (jj_3R_160()) return true;
     return false;
   }
 
@@ -3084,22 +3115,19 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_52() {
+  private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(8)) {
+    if (jj_3R_52()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) {
     jj_scanpos = xsp;
-    if (jj_3R_73()) return true;
+    if (jj_3R_53()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_170() {
+  private boolean jj_3R_171() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(10)) {
@@ -3113,23 +3141,6 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_34() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_52()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_114() {
-    if (jj_scan_token(FULL)) return true;
-    return false;
-  }
-
   private boolean jj_3R_24() {
     if (jj_scan_token(REGULAR_IDENTIFIER)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
@@ -3140,50 +3151,21 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_174() {
+  private boolean jj_3R_175() {
     if (jj_3R_110()) return true;
     return false;
   }
 
-  private boolean jj_3R_158() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(8)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(9)) return true;
-    }
-    if (jj_3R_110()) return true;
+  private boolean jj_3R_114() {
+    if (jj_scan_token(FULL)) return true;
     return false;
   }
 
-  private boolean jj_3R_19() {
+  private boolean jj_3R_160() {
     if (jj_3R_34()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(8)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(9)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(10)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(11)) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_3R_35()) return true;
-    if (jj_scan_token(CONCAT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_137() {
-    if (jj_3R_34()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_170()) jj_scanpos = xsp;
+    if (jj_3R_194()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3219,11 +3201,6 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
   private boolean jj_3R_98() {
     if (jj_scan_token(ATAN2)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
@@ -3231,11 +3208,6 @@ public class ADQLParser implements ADQLParserConstants {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_110()) return true;
     if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3_8() {
-    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -3247,6 +3219,34 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
+  private boolean jj_3R_158() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(8)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(9)) return true;
+    }
+    if (jj_3R_110()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_3R_34()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(8)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(9)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(10)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(11)) return true;
+    }
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_96() {
     if (jj_scan_token(ASIN)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
@@ -3255,37 +3255,11 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3_7() {
-    if (jj_scan_token(REGULAR_IDENTIFIER)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_117() {
-    if (jj_scan_token(FULL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_6() {
-    if (jj_scan_token(LEFT_PAR)) return true;
-    return false;
-  }
-
   private boolean jj_3R_95() {
     if (jj_scan_token(ACOS)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
     if (jj_3R_110()) return true;
     if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(67)) {
-    jj_scanpos = xsp;
-    if (jj_3R_20()) return true;
-    }
     return false;
   }
 
@@ -3317,6 +3291,171 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
+  private boolean jj_3R_20() {
+    if (jj_3R_35()) return true;
+    if (jj_scan_token(CONCAT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_94() {
+    if (jj_scan_token(TRUNCATE)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_177()) jj_scanpos = xsp;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_93() {
+    if (jj_scan_token(SQRT)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_137() {
+    if (jj_3R_160()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_171()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_92() {
+    if (jj_scan_token(ROUND)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_176()) jj_scanpos = xsp;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_91() {
+    if (jj_scan_token(RAND)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_175()) jj_scanpos = xsp;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_90() {
+    if (jj_scan_token(RADIANS)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_89() {
+    if (jj_scan_token(POWER)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3_9() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_88() {
+    if (jj_scan_token(SIGN)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3_8() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_87() {
+    if (jj_scan_token(SQUARE)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_86() {
+    if (jj_scan_token(PI)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_scan_token(REGULAR_IDENTIFIER)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_117() {
+    if (jj_scan_token(FULL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_85() {
+    if (jj_scan_token(MOD)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    if (jj_scan_token(LEFT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_84() {
+    if (jj_scan_token(LOG10)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(67)) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_83() {
+    if (jj_scan_token(LOG)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_scan_token(FLOOR)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
   private boolean jj_3_4() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3337,176 +3476,6 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_94() {
-    if (jj_scan_token(TRUNCATE)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_176()) jj_scanpos = xsp;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_69() {
-    if (jj_3R_34()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_93() {
-    if (jj_scan_token(SQRT)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_68() {
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_92() {
-    if (jj_scan_token(ROUND)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_175()) jj_scanpos = xsp;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_67() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_110() {
-    if (jj_3R_137()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_158()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_91() {
-    if (jj_scan_token(RAND)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_174()) jj_scanpos = xsp;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_66() {
-    if (jj_3R_111()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_90() {
-    if (jj_scan_token(RADIANS)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_65() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_89() {
-    if (jj_scan_token(POWER)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_64() {
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_46()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_scan_token(SIGN)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_3R_27()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_87() {
-    if (jj_scan_token(SQUARE)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_86() {
-    if (jj_scan_token(PI)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_3R_110()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_85() {
-    if (jj_scan_token(MOD)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_84() {
-    if (jj_scan_token(LOG10)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_113() {
-    if (jj_scan_token(RIGHT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_83() {
-    if (jj_scan_token(LOG)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_82() {
-    if (jj_scan_token(FLOOR)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
   private boolean jj_3R_81() {
     if (jj_scan_token(EXP)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
@@ -3523,6 +3492,11 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
+  private boolean jj_3R_69() {
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
   private boolean jj_3R_79() {
     if (jj_scan_token(CEILING)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
@@ -3531,10 +3505,21 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_128() {
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_27()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
+  private boolean jj_3R_68() {
+    if (jj_3R_35()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_110() {
+    if (jj_3R_137()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_158()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3546,41 +3531,35 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_127() {
-    if (jj_3R_21()) return true;
+  private boolean jj_3R_66() {
+    if (jj_3R_111()) return true;
     return false;
   }
 
-  private boolean jj_3R_46() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_62()) {
-    jj_scanpos = xsp;
-    if (jj_3R_63()) {
-    jj_scanpos = xsp;
-    if (jj_3R_64()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) {
-    jj_scanpos = xsp;
-    if (jj_3R_66()) {
-    jj_scanpos = xsp;
-    if (jj_3R_67()) {
-    jj_scanpos = xsp;
-    if (jj_3R_68()) {
-    jj_scanpos = xsp;
-    if (jj_3R_69()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
+  private boolean jj_3R_65() {
+    if (jj_3R_24()) return true;
     return false;
   }
 
-  private boolean jj_3R_126() {
-    if (jj_3R_22()) return true;
+  private boolean jj_3R_64() {
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_46()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_3R_110()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_113() {
+    if (jj_scan_token(RIGHT)) return true;
     return false;
   }
 
@@ -3639,9 +3618,9 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_123() {
+  private boolean jj_3R_128() {
     if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_110()) return true;
+    if (jj_3R_27()) return true;
     if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
@@ -3651,26 +3630,13 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_122() {
-    if (jj_3R_145()) return true;
-    return false;
-  }
-
   private boolean jj_3R_40() {
     if (jj_3R_59()) return true;
     return false;
   }
 
-  private boolean jj_3R_76() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_126()) {
-    jj_scanpos = xsp;
-    if (jj_3R_127()) {
-    jj_scanpos = xsp;
-    if (jj_3R_128()) return true;
-    }
-    }
+  private boolean jj_3R_127() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -3679,23 +3645,41 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_121() {
-    if (jj_3R_21()) return true;
+  private boolean jj_3R_46() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_62()) {
+    jj_scanpos = xsp;
+    if (jj_3R_63()) {
+    jj_scanpos = xsp;
+    if (jj_3R_64()) {
+    jj_scanpos = xsp;
+    if (jj_3R_65()) {
+    jj_scanpos = xsp;
+    if (jj_3R_66()) {
+    jj_scanpos = xsp;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
+    if (jj_3R_68()) {
+    jj_scanpos = xsp;
+    if (jj_3R_69()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
     return false;
   }
 
-  private boolean jj_3R_116() {
-    if (jj_scan_token(RIGHT)) return true;
+  private boolean jj_3R_126() {
+    if (jj_3R_22()) return true;
     return false;
   }
 
   private boolean jj_3R_38() {
     if (jj_3R_57()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_120() {
-    if (jj_3R_144()) return true;
     return false;
   }
 
@@ -3715,9 +3699,91 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_203() {
+  private boolean jj_3R_123() {
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_122() {
+    if (jj_3R_145()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_76() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_126()) {
+    jj_scanpos = xsp;
+    if (jj_3R_127()) {
+    jj_scanpos = xsp;
+    if (jj_3R_128()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_121() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_116() {
+    if (jj_scan_token(RIGHT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_120() {
+    if (jj_3R_144()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_75() {
+    if (jj_scan_token(COORDSYS)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_124()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_181() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_174() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_179() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_205() {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_143() {
+    if (jj_scan_token(REGION)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_27()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_161() {
+    if (jj_scan_token(POINT)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_172()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
 
@@ -3742,25 +3808,6 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_75() {
-    if (jj_scan_token(COORDSYS)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_124()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_180() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_173() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    return false;
-  }
-
   private boolean jj_3R_70() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3776,12 +3823,7 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_178() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_199() {
+  private boolean jj_3R_201() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(8)) {
@@ -3791,19 +3833,35 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_193() {
+  private boolean jj_3R_195() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_199()) jj_scanpos = xsp;
+    if (jj_3R_201()) jj_scanpos = xsp;
     if (jj_scan_token(UNSIGNED_INTEGER)) return true;
     return false;
   }
 
-  private boolean jj_3R_143() {
-    if (jj_scan_token(REGION)) return true;
+  private boolean jj_3R_142() {
+    if (jj_scan_token(POLYGON)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_27()) return true;
+    if (jj_3R_172()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_174()) { jj_scanpos = xsp; break; }
+    }
     if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_141() {
+    if (jj_3R_161()) return true;
     return false;
   }
 
@@ -3817,12 +3875,22 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_160() {
-    if (jj_scan_token(POINT)) return true;
+  private boolean jj_3R_140() {
+    if (jj_scan_token(CIRCLE)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_171()) return true;
-    if (jj_scan_token(COMMA)) return true;
     if (jj_3R_172()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_139() {
+    if (jj_scan_token(CENTROID)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_124()) return true;
     if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
@@ -3843,33 +3911,14 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_142() {
-    if (jj_scan_token(POLYGON)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_171()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_173()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_202() {
+  private boolean jj_3R_204() {
     if (jj_scan_token(USING)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
     if (jj_3R_14()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_203()) { jj_scanpos = xsp; break; }
+      if (jj_3R_205()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
@@ -3877,11 +3926,6 @@ public class ADQLParser implements ADQLParserConstants {
 
   private boolean jj_3R_115() {
     if (jj_scan_token(LEFT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_141() {
-    if (jj_3R_160()) return true;
     return false;
   }
 
@@ -3900,9 +3944,28 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_201() {
+  private boolean jj_3R_203() {
     if (jj_scan_token(ON)) return true;
-    if (jj_3R_165()) return true;
+    if (jj_3R_166()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_138() {
+    if (jj_scan_token(BOX)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_172()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_173()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_110()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_185() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -3921,23 +3984,8 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_140() {
-    if (jj_scan_token(CIRCLE)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_171()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_139() {
-    if (jj_scan_token(CENTROID)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_124()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
+  private boolean jj_3R_186() {
+    if (jj_3R_46()) return true;
     return false;
   }
 
@@ -3958,66 +4006,14 @@ public class ADQLParser implements ADQLParserConstants {
     if (jj_scan_token(JOIN)) return true;
     if (jj_3R_51()) return true;
     xsp = jj_scanpos;
-    if (jj_3R_201()) {
+    if (jj_3R_203()) {
     jj_scanpos = xsp;
-    if (jj_3R_202()) return true;
+    if (jj_3R_204()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_32() {
-    if (jj_scan_token(NATURAL)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_49()) jj_scanpos = xsp;
-    if (jj_scan_token(JOIN)) return true;
-    if (jj_3R_51()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_138() {
-    if (jj_scan_token(BOX)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_171()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_172()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_110()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_184() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_194() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(26)) jj_scanpos = xsp;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_185() {
-    if (jj_3R_46()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_192() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(49)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(50)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_182() {
+  private boolean jj_3R_183() {
     if (jj_3R_21()) return true;
     return false;
   }
@@ -4044,23 +4040,56 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_183() {
-    if (jj_3R_160()) return true;
+  private boolean jj_3R_184() {
+    if (jj_3R_161()) return true;
     return false;
   }
 
-  private boolean jj_3R_179() {
-    if (jj_3R_160()) return true;
+  private boolean jj_3R_180() {
+    if (jj_3R_161()) return true;
     return false;
   }
 
-  private boolean jj_3R_177() {
-    if (jj_3R_160()) return true;
+  private boolean jj_3R_32() {
+    if (jj_scan_token(NATURAL)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_49()) jj_scanpos = xsp;
+    if (jj_scan_token(JOIN)) return true;
+    if (jj_3R_51()) return true;
     return false;
   }
 
-  private boolean jj_3R_171() {
+  private boolean jj_3R_178() {
+    if (jj_3R_161()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_172() {
     if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_196() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(26)) jj_scanpos = xsp;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_182() {
+    if (jj_3R_161()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_193() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(49)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(50)) return true;
+    }
     return false;
   }
 
@@ -4074,30 +4103,78 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_200() {
+  private boolean jj_3R_107() {
+    if (jj_scan_token(DISTANCE)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_182()) {
+    jj_scanpos = xsp;
+    if (jj_3R_183()) return true;
+    }
+    if (jj_scan_token(COMMA)) return true;
+    xsp = jj_scanpos;
+    if (jj_3R_184()) {
+    jj_scanpos = xsp;
+    if (jj_3R_185()) return true;
+    }
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_202() {
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_181() {
-    if (jj_3R_160()) return true;
+  private boolean jj_3R_106() {
+    if (jj_scan_token(COORD2)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_180()) {
+    jj_scanpos = xsp;
+    if (jj_3R_181()) return true;
+    }
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_105() {
+    if (jj_scan_token(COORD1)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_178()) {
+    jj_scanpos = xsp;
+    if (jj_3R_179()) return true;
+    }
+    if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
 
   private boolean jj_3R_119() {
     if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_195()) return true;
+    if (jj_3R_197()) return true;
     if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
 
-  private boolean jj_3R_195() {
+  private boolean jj_3R_104() {
+    if (jj_scan_token(AREA)) return true;
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_124()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_197() {
     if (jj_3R_72()) return true;
     Token xsp;
-    if (jj_3R_200()) return true;
+    if (jj_3R_202()) return true;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_200()) { jj_scanpos = xsp; break; }
+      if (jj_3R_202()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -4111,7 +4188,7 @@ public class ADQLParser implements ADQLParserConstants {
     if (jj_3R_77()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_194()) jj_scanpos = xsp;
+    if (jj_3R_196()) jj_scanpos = xsp;
     return false;
   }
 
@@ -4122,68 +4199,6 @@ public class ADQLParser implements ADQLParserConstants {
       xsp = jj_scanpos;
       if (jj_3_3()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_3R_16()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(26)) jj_scanpos = xsp;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_107() {
-    if (jj_scan_token(DISTANCE)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_181()) {
-    jj_scanpos = xsp;
-    if (jj_3R_182()) return true;
-    }
-    if (jj_scan_token(COMMA)) return true;
-    xsp = jj_scanpos;
-    if (jj_3R_183()) {
-    jj_scanpos = xsp;
-    if (jj_3R_184()) return true;
-    }
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_106() {
-    if (jj_scan_token(COORD2)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_179()) {
-    jj_scanpos = xsp;
-    if (jj_3R_180()) return true;
-    }
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_105() {
-    if (jj_scan_token(COORD1)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_177()) {
-    jj_scanpos = xsp;
-    if (jj_3R_178()) return true;
-    }
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_104() {
-    if (jj_scan_token(AREA)) return true;
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_124()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
 
@@ -4202,6 +4217,21 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
+  private boolean jj_3_2() {
+    if (jj_3R_16()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(26)) jj_scanpos = xsp;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_159() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_46()) return true;
+    return false;
+  }
+
   private boolean jj_3R_72() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4212,29 +4242,6 @@ public class ADQLParser implements ADQLParserConstants {
     if (jj_3R_119()) return true;
     }
     }
-    return false;
-  }
-
-  private boolean jj_3R_159() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_46()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_191() {
-    if (jj_3R_36()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_168() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_191()) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(107)) return true;
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_192()) jj_scanpos = xsp;
     return false;
   }
 
@@ -4257,7 +4264,7 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_162() {
+  private boolean jj_3R_163() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(51)) {
@@ -4278,14 +4285,14 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_172() {
+  private boolean jj_3R_173() {
     if (jj_3R_110()) return true;
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_110()) return true;
     return false;
   }
 
-  private boolean jj_3R_161() {
+  private boolean jj_3R_162() {
     if (jj_scan_token(COUNT)) return true;
     if (jj_scan_token(LEFT_PAR)) return true;
     Token xsp;
@@ -4294,21 +4301,48 @@ public class ADQLParser implements ADQLParserConstants {
     xsp = jj_scanpos;
     if (jj_scan_token(10)) {
     jj_scanpos = xsp;
-    if (jj_3R_185()) return true;
+    if (jj_3R_186()) return true;
     }
     if (jj_scan_token(RIGHT_PAR)) return true;
     return false;
   }
 
-  private boolean jj_3R_190() {
+  private boolean jj_3R_192() {
     if (jj_3R_36()) return true;
     return false;
   }
 
-  private boolean jj_3R_166() {
+  private boolean jj_3R_169() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_190()) {
+    if (jj_3R_192()) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(107)) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_193()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_145() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_162()) {
+    jj_scanpos = xsp;
+    if (jj_3R_163()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_191() {
+    if (jj_3R_36()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_167() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_191()) {
     jj_scanpos = xsp;
     if (jj_scan_token(107)) return true;
     }
@@ -4321,38 +4355,8 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_145() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_161()) {
-    jj_scanpos = xsp;
-    if (jj_3R_162()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_21() {
     if (jj_3R_36()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_36() {
-    if (jj_3R_14()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_56()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_130() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_129() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -4386,23 +4390,23 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_77() {
+  private boolean jj_3R_36() {
     if (jj_3R_14()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_129()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_130()) jj_scanpos = xsp;
+    if (jj_3R_56()) jj_scanpos = xsp;
     return false;
   }
 
-  private boolean jj_3R_29() {
-    if (jj_scan_token(DELIMITED_IDENTIFIER)) return true;
+  private boolean jj_3R_130() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
-  private boolean jj_3R_28() {
-    if (jj_scan_token(REGULAR_IDENTIFIER)) return true;
+  private boolean jj_3R_129() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -4427,13 +4431,13 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_14() {
+  private boolean jj_3R_77() {
+    if (jj_3R_14()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) return true;
-    }
+    if (jj_3R_129()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_130()) jj_scanpos = xsp;
     return false;
   }
 
@@ -4443,6 +4447,11 @@ public class ADQLParser implements ADQLParserConstants {
     xsp = jj_scanpos;
     if (jj_scan_token(39)) jj_scanpos = xsp;
     if (jj_scan_token(LIKE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_scan_token(DELIMITED_IDENTIFIER)) return true;
     return false;
   }
 
@@ -4480,20 +4489,8 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_169() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_168()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_157() {
-    if (jj_scan_token(ORDER_BY)) return true;
-    if (jj_3R_168()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_169()) { jj_scanpos = xsp; break; }
-    }
+  private boolean jj_3R_28() {
+    if (jj_scan_token(REGULAR_IDENTIFIER)) return true;
     return false;
   }
 
@@ -4521,12 +4518,6 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_156() {
-    if (jj_scan_token(HAVING)) return true;
-    if (jj_3R_165()) return true;
-    return false;
-  }
-
   private boolean jj_3R_43() {
     if (jj_3R_21()) return true;
     if (jj_scan_token(IS)) return true;
@@ -4537,9 +4528,13 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_167() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_166()) return true;
+  private boolean jj_3R_14() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_28()) {
+    jj_scanpos = xsp;
+    if (jj_3R_29()) return true;
+    }
     return false;
   }
 
@@ -4549,32 +4544,26 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_186() {
-    if (jj_scan_token(AS)) return true;
-    if (jj_3R_14()) return true;
+  private boolean jj_3R_170() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_169()) return true;
     return false;
   }
 
-  private boolean jj_3R_155() {
-    if (jj_scan_token(GROUP_BY)) return true;
-    if (jj_3R_166()) return true;
+  private boolean jj_3R_157() {
+    if (jj_scan_token(ORDER_BY)) return true;
+    if (jj_3R_169()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_167()) { jj_scanpos = xsp; break; }
+      if (jj_3R_170()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  private boolean jj_3R_153() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_51()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_154() {
-    if (jj_scan_token(WHERE)) return true;
-    if (jj_3R_165()) return true;
+  private boolean jj_3R_156() {
+    if (jj_scan_token(HAVING)) return true;
+    if (jj_3R_166()) return true;
     return false;
   }
 
@@ -4594,9 +4583,76 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
+  private boolean jj_3R_168() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_167()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_187() {
+    if (jj_scan_token(AS)) return true;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_155() {
+    if (jj_scan_token(GROUP_BY)) return true;
+    if (jj_3R_167()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_168()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_153() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_51()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_154() {
+    if (jj_scan_token(WHERE)) return true;
+    if (jj_3R_166()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_199() {
+    if (jj_scan_token(LEFT_PAR)) return true;
+    if (jj_3R_166()) return true;
+    if (jj_scan_token(RIGHT_PAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_198() {
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
   private boolean jj_3R_30() {
     if (jj_3R_14()) return true;
     if (jj_scan_token(DOT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_189() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_198()) {
+    jj_scanpos = xsp;
+    if (jj_3R_199()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_200() {
+    if (jj_scan_token(NOT)) return true;
     return false;
   }
 
@@ -4611,16 +4667,24 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3_12() {
-    if (jj_3R_25()) return true;
+  private boolean jj_3R_190() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(37)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(38)) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_200()) jj_scanpos = xsp;
+    if (jj_3R_189()) return true;
     return false;
   }
 
-  private boolean jj_3R_164() {
+  private boolean jj_3R_165() {
     if (jj_3R_46()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_186()) jj_scanpos = xsp;
+    if (jj_3R_187()) jj_scanpos = xsp;
     return false;
   }
 
@@ -4633,59 +4697,36 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_197() {
-    if (jj_scan_token(LEFT_PAR)) return true;
-    if (jj_3R_165()) return true;
-    if (jj_scan_token(RIGHT_PAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_196() {
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_188() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_196()) {
-    jj_scanpos = xsp;
-    if (jj_3R_197()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_198() {
-    if (jj_scan_token(NOT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_189() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(37)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(38)) return true;
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_198()) jj_scanpos = xsp;
-    if (jj_3R_188()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_163() {
-    if (jj_scan_token(ASTERISK)) return true;
-    return false;
-  }
-
   private boolean jj_3R_148() {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_46()) return true;
     return false;
   }
 
-  private boolean jj_3R_187() {
+  private boolean jj_3R_188() {
     if (jj_scan_token(NOT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_147() {
+    if (jj_3R_111()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_164() {
+    if (jj_scan_token(ASTERISK)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_166() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_188()) jj_scanpos = xsp;
+    if (jj_3R_189()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_190()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -4702,11 +4743,11 @@ public class ADQLParser implements ADQLParserConstants {
   private boolean jj_3R_151() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_163()) {
+    if (jj_3R_164()) {
     jj_scanpos = xsp;
     if (jj_3_1()) {
     jj_scanpos = xsp;
-    if (jj_3R_164()) return true;
+    if (jj_3R_165()) return true;
     }
     }
     return false;
@@ -4718,19 +4759,50 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_147() {
-    if (jj_3R_111()) return true;
+  private boolean jj_3R_146() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
-  private boolean jj_3R_165() {
+  private boolean jj_3R_53() {
+    if (jj_3R_74()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_124() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_187()) jj_scanpos = xsp;
-    if (jj_3R_188()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_189()) { jj_scanpos = xsp; break; }
+    if (jj_3R_146()) {
+    jj_scanpos = xsp;
+    if (jj_3R_147()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_3R_76()) return true;
+    return false;
+  }
+
+  private boolean jj_3_11() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    if (jj_3R_75()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_54()) {
+    jj_scanpos = xsp;
+    if (jj_3_11()) {
+    jj_scanpos = xsp;
+    if (jj_3R_55()) return true;
+    }
     }
     return false;
   }
@@ -4761,22 +4833,12 @@ public class ADQLParser implements ADQLParserConstants {
     return false;
   }
 
-  private boolean jj_3R_146() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_53() {
-    if (jj_3R_74()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_124() {
+  private boolean jj_3R_125() {
+    if (jj_3R_46()) return true;
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_146()) {
-    jj_scanpos = xsp;
-    if (jj_3R_147()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_148()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -4792,7 +4854,7 @@ public class ADQLParser implements ADQLParserConstants {
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[98];
+  final private int[] jj_la1 = new int[100];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -4804,16 +4866,16 @@ public class ADQLParser implements ADQLParserConstants {
       jj_la1_init_3();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x41,0x0,0x0,0x0,0x0,0x800000,0x1000000,0x20,0x0,0x0,0x4000000,0x400,0x304,0x20,0x20,0x20,0x0,0x10,0x10,0x10,0x0,0x0,0x0,0x0,0x4000000,0x4000000,0x4000000,0x0,0x4,0xd8000000,0xc0000000,0x20000000,0xd0000000,0xd0000000,0xc0000000,0x20000000,0xd0000000,0xd0000000,0x20,0x0,0xd8000000,0x0,0x0,0x0,0x300,0x300,0x4,0x4,0x0,0x304,0x300,0x300,0x1c00,0x1c00,0x300,0x300,0x4,0x80,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x3f0000,0x0,0x0,0x304,0x3f0000,0x0,0x0,0x20,0x4,0x800000,0x704,0x0,0x800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x304,0x20,0x20,0x0,0x0,0x20,0x304,};
+      jj_la1_0 = new int[] {0x41,0x0,0x0,0x0,0x0,0x800000,0x1000000,0x20,0x0,0x0,0x4000000,0x400,0x304,0x20,0x20,0x20,0x0,0x10,0x10,0x10,0x0,0x0,0x0,0x0,0x4000000,0x4000000,0x4000000,0x0,0x4,0xd8000000,0xc0000000,0x20000000,0xd0000000,0xd0000000,0xc0000000,0x20000000,0xd0000000,0xd0000000,0x20,0x0,0xd8000000,0x0,0x0,0x0,0x300,0x300,0x4,0x4,0x0,0x304,0x300,0x300,0x1c00,0x1c00,0xe000,0xe000,0x300,0x300,0x4,0x80,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x3f0000,0x0,0x0,0x304,0x3f0000,0x0,0x0,0x20,0x4,0x800000,0x704,0x0,0x800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x304,0x20,0x20,0x0,0x0,0x20,0x304,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x10,0x4000,0x8000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfff80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000,0x60000,0x0,0x0,0x0,0x0,0x0,0x3,0x1,0x0,0x1,0x1,0x1,0x0,0x1,0x1,0x0,0xc,0x3,0x0,0x0,0x0,0x0,0x0,0xf80000,0x0,0x3f000000,0xc0f80000,0x0,0x0,0x0,0x0,0x0,0x0,0xf80000,0x0,0x0,0x0,0x3f000000,0x80,0x60,0x60,0x80,0x0,0x80,0x80,0x0,0x1080,0x2000,0xfff80000,0x0,0x80,0x80,0x0,0x0,0x0,0xfff80000,0x780000,0x0,0xf80000,0xc0000000,0x8000000,0x8000000,0x8000000,0x8000000,0xc0000000,0x0,0x3f000000,0xc0000000,0xc0f80000,0x0,0x0,0x0,0x0,0x0,0xfff80000,};
+      jj_la1_1 = new int[] {0x0,0x10,0x4000,0x8000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfff80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000,0x60000,0x0,0x0,0x0,0x0,0x0,0x3,0x1,0x0,0x1,0x1,0x1,0x0,0x1,0x1,0x0,0xc,0x3,0x0,0x0,0x0,0x0,0x0,0xf80000,0x0,0x3f000000,0xc0f80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf80000,0x0,0x0,0x0,0x3f000000,0x80,0x60,0x60,0x80,0x0,0x80,0x80,0x0,0x1080,0x2000,0xfff80000,0x0,0x80,0x80,0x0,0x0,0x0,0xfff80000,0x780000,0x0,0xf80000,0xc0000000,0x8000000,0x8000000,0x8000000,0x8000000,0xc0000000,0x0,0x3f000000,0xc0000000,0xc0f80000,0x0,0x0,0x0,0x0,0x0,0xfff80000,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3ffffff7,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x17,0x0,0x0,0x3ffffff7,0x3ffffff7,0x0,0x0,0x3fffe0,0x3fc00000,0x0,0x3fffffff,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3ffffff7,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x17,0x0,0x0,0x3ffffff7,0x3ffffff7,0x0,0x0,0x3fffe0,0x3fc00000,0x0,0x3fffffff,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0xc0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x8c0,0x8c0,0x0,0x0,0x0,0xc0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x4e00,0xc00,0x0,0x0,0x4ec0,0xc8,0x0,0x4ec0,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec0,0x0,0x0,0xc8,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0x0,0xc0,0xc0,0xc0,0xc0,0x0,0x0,0x0,0x80,0x4ec0,0x0,0x0,0x0,0x0,0x0,0x4ec8,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0xc0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x8c0,0x8c0,0x0,0x0,0x0,0xc0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x4e00,0xc00,0x0,0x0,0x4ec0,0xc8,0x0,0x4ec0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec0,0x0,0x0,0xc8,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0x0,0x0,0x0,0x4ec8,0x0,0x0,0x0,0x0,0xc0,0xc0,0xc0,0xc0,0x0,0x0,0x0,0x80,0x4ec0,0x0,0x0,0x0,0x0,0x0,0x4ec8,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[16];
   private boolean jj_rescan = false;
@@ -4830,7 +4892,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4845,7 +4907,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4856,7 +4918,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4867,7 +4929,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4877,7 +4939,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4887,7 +4949,7 @@ public class ADQLParser implements ADQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 98; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 100; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -5007,7 +5069,7 @@ public class ADQLParser implements ADQLParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 98; i++) {
+    for (int i = 0; i < 100; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
