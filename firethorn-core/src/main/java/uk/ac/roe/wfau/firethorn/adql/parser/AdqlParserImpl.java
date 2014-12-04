@@ -65,7 +65,7 @@ import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
-//import adql.query.operand.function.CastFunction;
+import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
@@ -295,25 +295,25 @@ implements AdqlParser
             log.debug("createNumericConstant(String)");
             log.debug("  value [{}]", value);
             // Only if in LEGACY or FUTURE mode.
-            /* if (value.startsWith(HexConstant.PREFIX))
+            if (value.startsWith(HexConstant.PREFIX))
                 {
                 return new HexConstant(
                     value,
                     true
                     );
                 }
-            else {*/
+            else {
                 return new NumericConstant(
                     value,
                     true
                     );
                 }
-           // }
+            }
 
         /**
          * A hexadecimal numeric.
          *
-         
+         */
         public static class HexConstant
         extends NumericConstant
         implements ADQLOperand
@@ -321,13 +321,13 @@ implements AdqlParser
             /**
              * Hexadecimal prefix.
              *
-            
+             */
             protected static final String PREFIX = "0x";
 
             /**
              * Create a hex value from a long.
              *
-            
+             */
             public HexConstant(final long value)
                 {
                 super(
@@ -338,7 +338,7 @@ implements AdqlParser
             /**
              * Create a hex value from a String.
              *
-             *
+             */
             public HexConstant(final String value, final boolean check)
             throws NumberFormatException
                 {
@@ -351,7 +351,7 @@ implements AdqlParser
             /**
              * Copy a hex value.
              *
-            
+             */
             public HexConstant(final HexConstant origin)
                 {
                 super(
@@ -363,7 +363,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-            
+             */
             @Override
             public final void setValue(final double value)
                 {
@@ -401,7 +401,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-           
+             */
             public double getDoubleValue()
             throws NumberFormatException
                 {
@@ -413,7 +413,7 @@ implements AdqlParser
             /**
              * Warning - there may be rounding errors.
              *
-           
+             */
             public double getDoubleValue(final String value)
             throws NumberFormatException
                 {
@@ -454,7 +454,7 @@ implements AdqlParser
                     this
                     );
                 }
-            } */ 
+            }  
         }
 
     protected AdqlQuery.Mode mode ;
@@ -1729,10 +1729,10 @@ implements AdqlParser
             {
             return type((MathFunction) funct);
             }
-      //  else if (funct instanceof CastFunction)
-	   //     {
-	  //      return type((CastFunction) funct);
-	   //     }
+        else if (funct instanceof CastFunction)
+	        {
+	        return type((CastFunction) funct);
+	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return type((UserDefinedFunction) funct);
@@ -1763,10 +1763,10 @@ implements AdqlParser
             {
             return wrap((MathFunction) funct);
             }
-       // else if (funct instanceof CastFunction)
-	   //     {
-	    //    return wrap((CastFunction) funct);
-	   //     }
+        else if (funct instanceof CastFunction)
+	        {
+	        return wrap((CastFunction) funct);
+	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return wrap((UserDefinedFunction) funct);
@@ -1928,7 +1928,7 @@ implements AdqlParser
     /**
      * Get the type of a CastFunction.
      *
-     
+     */
     public static AdqlColumn.AdqlType type(final CastFunction funct)
     throws AdqlParserException
         {
@@ -1958,7 +1958,7 @@ implements AdqlParser
                     "Unknown CastFunction type [" + funct.type() + "]"
                     );
         	}
-        }*/
+        }
 
     /**
      * Wrap a MathFunction.
@@ -2032,7 +2032,7 @@ implements AdqlParser
     /**
      * Wrap a CastFunction.
      *
-     
+     */
     public static MySelectField wrap(final CastFunction funct)
     throws AdqlParserException
         {
@@ -2064,7 +2064,7 @@ implements AdqlParser
                 );
         	}
         
-        }*/
+        }
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *
