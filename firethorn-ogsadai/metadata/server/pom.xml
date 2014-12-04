@@ -32,11 +32,11 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>1.11.28</version>
+        <version project='firethorn'>1.11.29</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-server</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>FireThorn OGSA-DAI metadata service (server)</name>
     <description>
@@ -49,66 +49,9 @@
     </properties>
 
     <dependencies>
-
-        <!--+
-            | FireThorn core components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-core</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-
-        <!--+
-            | FireThorn metadata components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-metadata-common</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | FireThorn logging dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | FireThorn testing dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
     <build>
-
-        <testResources>
-
-            <!--+
-                | Test configuration files.
-                +-->
-    		<testResource>
-    			<directory>${basedir}/src/test/conf</directory>
-                <includes>
-                    <include>*.properties</include>
-                    <include>*.xml</include>
-                </includes>
-    		</testResource>
-
-        </testResources>
-
     </build>
 
 </project>

@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>1.11.28</version>
+        <version project='firethorn'>1.11.29</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-common</artifactId>
@@ -49,7 +49,6 @@
     </properties>
 
     <dependencies>
-
     </dependencies>
 
 </project>

@@ -33,3 +33,6 @@ target
 # Java core dumps
 hs_err_*.log
 
+#
+# SVN version control
+*/.svn

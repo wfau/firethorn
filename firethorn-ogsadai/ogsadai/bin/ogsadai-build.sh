@@ -409,6 +409,10 @@ else
                 'src/extensions/basic/client/build/lib/ogsadai-basic-client-4.2.jar'
 
             mvninstall \
+                'ogsadai-basic-server' \
+                'src/extensions/basic/server/build/lib/ogsadai-basic-server-4.2.jar'
+
+            mvninstall \
                 'ogsadai-astro-client' \
                 'src/extensions/astro/client/build/lib/ogsadai-astro-client-4.2.jar'
 
@@ -423,6 +427,14 @@ else
             mvninstall \
                 'ogsadai-relational-server' \
                 'src/extensions/relational/server/build/lib/ogsadai-relational-server-4.2.jar'
+
+            mvninstall \
+                'ogsadai-dqp-client' \
+                'src/extensions/dqp/client/build/lib/ogsadai-dqp-client-4.2.jar'
+
+            mvninstall \
+                'ogsadai-dqp-bindings' \
+                'src/extensions/dqp/bindings/build/lib/ogsadai-dqp-jaxb-bindings-4.2.jar'
 
         popd
     popd

@@ -37,7 +37,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.28</version>
+        <version project='firethorn'>1.11.29</version>
     </parent>
 
     <artifactId>firethorn-ogsadai</artifactId>
@@ -56,6 +56,7 @@
         +-->
     <modules>
         <module>depends</module>
+        <module>distributed</module>
         <module>activity</module>
         <module>metadata</module>
         <module>webapp</module>

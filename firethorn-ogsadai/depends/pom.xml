@@ -32,13 +32,13 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.28</version>
+        <version project='firethorn'>1.11.29</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-depends</artifactId>
     <packaging>pom</packaging>
 
-    <name>Dependencies for OGSA-DAI components</name>
+    <name>Firethorn OGSA-DAI dependencies</name>
     <description>
         <![CDATA[
         3rd party dependencies for FireThorn OGSA-DAI components.
