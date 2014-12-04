@@ -58,13 +58,22 @@
         </dependency>
 
         <!--+
-            | Common metadata classes.
+            | Firethorn metadata components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-common</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
+        </dependency>
+
+        <!--+
+            | Firethorn DQP components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-server</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+
@@ -108,11 +117,14 @@
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-dqp-server</artifactId>
             <version>${ogsadai.version}</version>
-        </dependency>
+        </dependency-->
+        <!--+
+            | The astro-server jar contains the metadata service interfaces.
+            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>

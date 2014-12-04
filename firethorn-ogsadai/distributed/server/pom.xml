@@ -62,13 +62,18 @@
         </dependency>
 
         <!--+
-            | Firethorn DQP component.
+            | Firethorn DQP client.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-distributed-client</artifactId>
+            <artifactId>firethorn-ogsadai-dqp-client</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-dqp-bindings</artifactId>
+            <version>${ogsadai.version}</version>
         </dependency>
 
         <!--+
@@ -136,16 +141,6 @@
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-dqp-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-dqp-bindings</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
 

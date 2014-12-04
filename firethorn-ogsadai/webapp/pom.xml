@@ -71,7 +71,7 @@
             +-->
 
         <!--+
-            | Our metadata client components.
+            | Our metadata components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -83,16 +83,16 @@
                     | https://jira.codehaus.org/browse/MNG-3832
                     | Ignore the warnings, fixed in latest Maven.
                     | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                    +-->
                 <exclusion>
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                    +-->
             </exclusions>
         </dependency>
 
         <!--+
-            | Our activities server components.
+            | Our Activity components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -104,16 +104,16 @@
                     | https://jira.codehaus.org/browse/MNG-3832
                     | Ignore the warnings, fixed in latest Maven.
                     | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                    +-->
                 <exclusion>
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                    +-->
             </exclusions>
         </dependency>
 
         <!--+
-            | Our DQP server components.
+            | Our DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -125,11 +125,11 @@
                     | https://jira.codehaus.org/browse/MNG-3832
                     | Ignore the warnings, fixed in latest Maven.
                     | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                    +-->
                 <exclusion>
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                    +-->
             </exclusions>
         </dependency>
 
@@ -202,7 +202,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <!--+
-                        | Exclude the original DQP jars.
+                        | Exclude the conflicting jars from the original WAR.
                         | https://maven.apache.org/plugins/maven-war-plugin/overlays.html
                         +-->
                     <overlays>
@@ -210,9 +210,27 @@
                             <groupId>uk.org.ogsadai</groupId>
                             <artifactId>ogsadai-jersey-webapp</artifactId>
                             <excludes>
+                                <exclude>WEB-INF/lib/ogsadai-common-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-client-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-server-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-clientserver-4.2.jar</exclude>
+
+                                <exclude>WEB-INF/lib/ogsadai-astro-client-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-astro-server-4.2.jar</exclude>
+
+                                <exclude>WEB-INF/lib/ogsadai-basic-client-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-basic-server-4.2.jar</exclude>
+
+                                <exclude>WEB-INF/lib/ogsadai-relational-client-4.2.jar</exclude>
+                                    <exclude>WEB-INF/lib/ogsadai-relational-server-4.2.jar</exclude>
+
                                 <exclude>WEB-INF/lib/ogsadai-dqp-client-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-dqp-server-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-dqp-jaxb-bindings-4.2.jar</exclude>
+
+                                <exclude>WEB-INF/lib/org.springframework.*</exclude>
+
+
                             </excludes>
                         </overlay>
                     </overlays>
