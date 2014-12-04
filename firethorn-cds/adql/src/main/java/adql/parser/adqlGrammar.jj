@@ -1073,8 +1073,9 @@ ADQLOperand NumericExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=n
 	}
 }
 
+
 ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
-	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE>) rightOp=NumericTerm())?)
+	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
 	{
 	if (sign == null)
 		return leftOp;
