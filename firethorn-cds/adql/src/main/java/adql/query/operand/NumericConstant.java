@@ -30,7 +30,7 @@ import adql.query.NullADQLIterator;
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
  * @version 1.3 (10/2014)
  */
-public final class NumericConstant implements ADQLOperand {
+public class NumericConstant implements ADQLOperand {
 
 	private String value;
 
