@@ -689,7 +689,6 @@ implements AdqlParser
         if (level == Level.STRICT)
             {
         	
-            }
             final OperationType type = oper.getOperation();
             if (type == OperationType.MOD)
                 {

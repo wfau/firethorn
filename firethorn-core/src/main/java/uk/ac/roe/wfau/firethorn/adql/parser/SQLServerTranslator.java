@@ -39,6 +39,7 @@ import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.CastFunction;
 //import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
@@ -307,19 +308,19 @@ public class SQLServerTranslator
     public String translate(final ADQLFunction function)
     throws TranslationException
 		{
-    	/*if (function instanceof CastFunction)
+    	if (function instanceof CastFunction)
     		{
     		return translate(
 				(CastFunction) function
 				);
     		}
-    	else {*/
+    	else {
     		return super.translate(
 				function
 				);
-    		//}
+    		}
 		}
-/*
+
     public String translate(final CastFunction function)
     throws TranslationException
     	{
@@ -340,7 +341,7 @@ public class SQLServerTranslator
 
         return builder.toString();
     	}
-    */
+   
     /**
      * Override the PostgreSQLTranslator method ...
      *
