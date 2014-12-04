@@ -664,6 +664,7 @@
                     <archiveClasses>true</archiveClasses>
         
                     <archive>
+
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>

@@ -31,11 +31,11 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-distributed</artifactId>
+        <artifactId>firethorn-ogsadai-dqp</artifactId>
         <version project='firethorn'>1.11.28-zrq-ogsadai-dqp</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-distributed-server</artifactId>
+    <artifactId>firethorn-ogsadai-dqp-server</artifactId>
     <packaging>jar</packaging>
 
     <name>FireThorn OGSA-DAI distributed queries (server)</name>

@@ -35,7 +35,7 @@
         <version project='firethorn'>1.11.28-zrq-ogsadai-dqp</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-distributed</artifactId>
+    <artifactId>firethorn-ogsadai-dqp</artifactId>
     <packaging>pom</packaging>
 
     <name>FireThorn OGSA-DAI distributed queries</name>

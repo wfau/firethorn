@@ -51,7 +51,7 @@
     <dependencies>
 
         <!--+
-            | Core OGSA-DAI webapp.
+            | Core OGSA-DAI webapp overlay.
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
@@ -62,12 +62,13 @@
 
         <!--+
             | Our astro server components.
-            +-->
+            | This is already part of the webapp.
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-astro-server</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | Our metadata client components.
@@ -77,23 +78,16 @@
             <artifactId>firethorn-ogsadai-metadata-client</artifactId>
             <version>${project.version}</version>
             <exclusions>
+                <!--+
+                    | Exclude all transitive dependencies.
+                    | https://jira.codehaus.org/browse/MNG-3832
+                    | Ignore the warnings, fixed in latest Maven.
+                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
+                    +-->
                 <exclusion>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>firethorn-ogsadai-depends</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-clientserver</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-dqp-server</artifactId>
-                </exclusion>
-
             </exclusions>
         </dependency>
 
@@ -105,30 +99,36 @@
             <artifactId>firethorn-ogsadai-activity-server</artifactId>
             <version>${project.version}</version>
             <exclusions>
+                <!--+
+                    | Exclude all transitive dependencies.
+                    | https://jira.codehaus.org/browse/MNG-3832
+                    | Ignore the warnings, fixed in latest Maven.
+                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
+                    +-->
                 <exclusion>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>firethorn-ogsadai-depends</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
+            </exclusions>
+        </dependency>
 
+        <!--+
+            | Our DQP server components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-server</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <!--+
+                    | Exclude all transitive dependencies.
+                    | https://jira.codehaus.org/browse/MNG-3832
+                    | Ignore the warnings, fixed in latest Maven.
+                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
+                    +-->
                 <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-clientserver</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-relational-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.org.ogsadai</groupId>
-                    <artifactId>ogsadai-relational-server</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -193,8 +193,31 @@
     </dependencies>
 
     <build>
-
         <plugins>
+
+            <!--+
+                | Maven WAR plugin.
+                +-->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!--+
+                        | Exclude the original DQP jars.
+                        | https://maven.apache.org/plugins/maven-war-plugin/overlays.html
+                        +-->
+                    <overlays>
+                        <overlay>
+                            <groupId>uk.org.ogsadai</groupId>
+                            <artifactId>ogsadai-jersey-webapp</artifactId>
+                            <excludes>
+                                <exclude>WEB-INF/lib/ogsadai-dqp-client-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-dqp-server-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-dqp-jaxb-bindings-4.2.jar</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
 
             <!--+
                 | Tomcat 6 plugin.
