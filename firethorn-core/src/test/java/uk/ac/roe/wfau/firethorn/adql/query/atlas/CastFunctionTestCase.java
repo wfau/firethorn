@@ -210,7 +210,7 @@ extends AtlasQueryTestBase
 
             new ExpectedField[] {
                 new ExpectedField("binsize",  AdqlColumn.AdqlType.LONG,    0),
-                new ExpectedField("binvalue", AdqlColumn.AdqlType.INTEGER, 0),
+                new ExpectedField("binvalue", AdqlColumn.AdqlType.LONG, 0),
                 }
             );
         }

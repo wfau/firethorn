@@ -46,7 +46,7 @@ test001(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
 test002(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
 test003(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
 test004(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
-
+test005(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase) *
 
 
 
