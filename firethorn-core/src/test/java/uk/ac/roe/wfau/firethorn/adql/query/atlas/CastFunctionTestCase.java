@@ -139,8 +139,8 @@ extends AtlasQueryTestBase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) AS rasixth," +
-            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec * 6  AS INT) AS decsixth" +
+            "    CAST(({ATLAS_VERSION}.dbo.atlassource.ra*6) AS INT) AS rasixth," +
+            "    CAST({ATLAS_VERSION}.dbo.atlassource.dec*6  AS INT) AS decsixth" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
 
@@ -202,11 +202,11 @@ extends AtlasQueryTestBase
 
             " SELECT TOP 5" +
             "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS binsize," +
-            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6) AS binvalue" +
+            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra*6) AS INT) / 6) AS binvalue" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource" +
             " GROUP BY" +
-            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6)",
+            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra*6) AS INT) / 6)",
 
             new ExpectedField[] {
                 new ExpectedField("binsize",  AdqlColumn.AdqlType.LONG,    0),
