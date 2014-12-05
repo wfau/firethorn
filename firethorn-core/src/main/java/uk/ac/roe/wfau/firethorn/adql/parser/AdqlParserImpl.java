@@ -454,7 +454,7 @@ implements AdqlParser
                     this
                     );
                 }
-            }  
+            }
         }
 
     protected AdqlQuery.Mode mode ;
@@ -1596,14 +1596,14 @@ implements AdqlParser
         //
         // Not a floating point number.
         else {
-         //   final long value = number.getIntegerValue();
-        //    if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
-            //    {
-          //      return AdqlColumn.AdqlType.INTEGER;
-          //      }
-         //   else {
+            final long value = number.getIntegerValue();
+            if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
+                {
+                return AdqlColumn.AdqlType.INTEGER;
+                }
+            else {
                 return AdqlColumn.AdqlType.LONG;
-           //     }
+                }
             }
         }
 
@@ -1899,7 +1899,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-           // case SQUARE:
+            case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -1915,8 +1915,8 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.AdqlType.DOUBLE;
-            //case SIGN:
-            //	 return AdqlColumn.AdqlType.INTEGER;
+            case SIGN:
+            	 return AdqlColumn.AdqlType.INTEGER;
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1997,7 +1997,7 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-          //  case SQUARE:
+            case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -2016,11 +2016,11 @@ implements AdqlParser
                     funct.getName(),
                     AdqlColumn.AdqlType.DOUBLE
                     );
-           //case SIGN:
-          	//  return new MySelectFieldImpl(
-           //             funct.getName(),
-            //            AdqlColumn.AdqlType.INTEGER
-            //            );
+            case SIGN:
+          	  return new MySelectFieldImpl(
+                        funct.getName(),
+                        AdqlColumn.AdqlType.INTEGER
+                        );
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
