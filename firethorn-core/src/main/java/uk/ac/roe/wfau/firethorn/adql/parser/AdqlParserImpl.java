@@ -291,7 +291,6 @@ implements AdqlParser
         public NumericConstant createNumericConstant(final String value)
         throws NumberFormatException
             {
-        	
             log.debug("createNumericConstant(String)");
             log.debug("  value [{}]", value);
             // Only if in LEGACY or FUTURE mode.
@@ -688,7 +687,6 @@ implements AdqlParser
         {
         if (level == Level.STRICT)
             {
-        	
             final OperationType type = oper.getOperation();
             if (type == OperationType.MOD)
                 {
