@@ -49,5 +49,14 @@ test004(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase)
 test005(uk.ac.roe.wfau.firethorn.adql.query.atlas.CastFunctionTestCase) *
 
 
+------------------------------------------------------------
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/90a3a28e4f9f
+FIXES
+test010(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugTestCase)
+
+
+
+
 
 
