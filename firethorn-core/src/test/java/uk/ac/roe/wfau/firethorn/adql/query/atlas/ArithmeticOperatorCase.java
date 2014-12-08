@@ -66,7 +66,7 @@ public class ArithmeticOperatorCase
                 new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("MULT",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("DIV",    AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );

@@ -550,8 +550,8 @@ extends TestPropertiesBase
         final String s6 = s5.replaceAll(" *, *", ",");
         final String s7 = s6.replaceAll(" *\\( *", "(");
         final String s8 = s7.replaceAll(" *\\) *", ")");
-
-        return s8;
+        final String s9 = s8.replaceAll("\\s+","");
+        return s9;
         }
 
     private Map<String, String> replacements = new HashMap<String, String>(); 

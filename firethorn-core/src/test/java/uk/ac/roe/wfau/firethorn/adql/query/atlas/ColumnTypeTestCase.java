@@ -70,7 +70,7 @@ public class ColumnTypeTestCase
                 new ExpectedField("uClass", AdqlColumn.AdqlType.SHORT,   0),
                 new ExpectedField("SUM",    AdqlColumn.AdqlType.INTEGER, 0),
                 new ExpectedField("SUB",    AdqlColumn.AdqlType.LONG,    0),
-                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT,   0),
+                new ExpectedField("MULT",    AdqlColumn.AdqlType.FLOAT,   0),
                 new ExpectedField("DIV",    AdqlColumn.AdqlType.DOUBLE,  0)
                 }
             );
