@@ -61,7 +61,7 @@ public class ColumnTypeTestCase
             "    {ATLAS_VERSION}.dbo.atlassource.uclass AS uclass," +
             "    {ATLAS_VERSION}.dbo.atlassource.uclass + {ATLAS_VERSION}.dbo.atlassource.cueventid  AS SUM," +
             "    {ATLAS_VERSION}.dbo.atlassource.uclass - {ATLAS_VERSION}.dbo.atlassource.framesetid AS SUB," +
-            "    {ATLAS_VERSION}.dbo.atlassource.uclass * {ATLAS_VERSION}.dbo.atlassource.umgpnt     AS MUL," +
+            "    {ATLAS_VERSION}.dbo.atlassource.uclass * {ATLAS_VERSION}.dbo.atlassource.umgpnt     AS MULT," +
             "    {ATLAS_VERSION}.dbo.atlassource.uclass / {ATLAS_VERSION}.dbo.atlassource.lambda     AS DIV" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource",
