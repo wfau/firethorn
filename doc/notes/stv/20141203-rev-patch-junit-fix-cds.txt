@@ -55,6 +55,11 @@ http://wfau.metagrid.co.uk/code/firethorn/rev/90a3a28e4f9f
 FIXES
 test010(uk.ac.roe.wfau.firethorn.adql.query.atlas.QueryBugTestCase)
 
+------------------------------------------------------------
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/414aa8b06b71
+FIXES
+test041S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 
 
 

@@ -27,11 +27,7 @@ adql/db/DBChecker.java
 adql/db/SearchColumnList.java
 
 adql/parser/ADQLQueryFactory.java
-
-adql/query/operand/NegativeOperand.java
-adql/query/operand/Operation.java
 adql/query/operand/StringConstant.java
-adql/query/operand/WrappedOperand.java
 adql/query/ADQLQuery.java
 
 adql/query/ClauseSelect.java
