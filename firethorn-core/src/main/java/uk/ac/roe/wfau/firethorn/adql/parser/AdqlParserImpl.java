@@ -151,11 +151,11 @@ implements AdqlParser
         /**
          * Public constructor.
          *
-         
+         */
         public AdqlQueryFactoryImpl(final boolean unknowns)
             {
             super(unknowns);
-            }*/
+            }
 
         /**
          * Create a SelectItem.
