@@ -550,17 +550,13 @@ public class SQLServerTranslator
 
         if (list instanceof ConstraintsGroup)
             {
-            builder.append(
-                '('
-                );
+          
             builder.append(
                 super.getDefaultADQLList(
                     list
                     )
                 );
-            builder.append(
-                ')'
-                );
+            
             }
         else {
             builder.append(
