@@ -61,6 +61,13 @@ http://wfau.metagrid.co.uk/code/firethorn/rev/414aa8b06b71
 FIXES
 test041S(uk.ac.roe.wfau.firethorn.adql.query.atlas.ArithmeticExpressionTestCase)
 
+------------------------------------------------------------
+
+http://wfau.metagrid.co.uk/code/firethorn/rev/52fc62e522eb
+FIXES
+(*)(uk.ac.roe.wfau.firethorn.adql.query.atlas.BinaryOperatorTestCase)
+
+
 
 
 
