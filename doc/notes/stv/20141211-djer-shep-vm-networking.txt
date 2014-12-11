@@ -1,0 +1,148 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Issue: 
+------
+Networking update on Friday Dec 5th left osa.roe.ac.uk and shepseskaf.roe.ac.uk services unavailable
+Unable to ssh into VM's:
+"nc: getaddrinfo: Name or service not known
+ssh_exchange_identification: Connection closed by remote host"
+
+
+Fix:
+-----
+Add the VM IPs to the  /etc/hosts file on djer:
+
+# Firethorn VMs
+192.168.122.2   pyracantha
+192.168.122.3   coccinea
+192.168.122.4   malus
+192.168.122.5   pyrus
+
+Add the VM IPs to the  /etc/hosts file on shepseskaf:
+# VM's
+192.168.122.2   pyratest1
+192.168.122.3   pyratest2
+192.168.122.4   pyratest3
+
+
+Restart firethorn & ogsadai services on VMs (coccinea, pyracantha, pyratest1, pyratest2):
+./shutdown.sh 
+./startup.sh 
+
+
+Note: Shepseskaf firethorn service still not working, reporting following error in log:
+
+Detector@3cc472f2 -- APPARENT DEADLOCK!!! Complete Status: 
+	Managed Threads: 3
+	Active Threads: 3
+	Active Tasks: 
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@33ecbf12 (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2)
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7bf4515f (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1)
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@650a738c (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0)
+	Pending Tasks: 
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@11282027
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@6156e93d
+Pool thread stack traces:
+	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2,5,main]
+		java.lang.Thread.sleep(Native Method)
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805)
+		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1,5,main]
+		java.lang.Thread.sleep(Native Method)
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805)
+		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0,5,main]
+		java.lang.Thread.sleep(Native Method)
+		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805)
+		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+
+ 
+2014-12-10 11:25:29,657 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] Task com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@33ecbf12 (in deadlocked PoolThread) failed to complete in maximum time 60000ms. Trying interrupt(). 
+2014-12-10 11:25:29,658 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] Task com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7bf4515f (in deadlocked PoolThread) failed to complete in maximum time 60000ms. Trying interrupt(). 
+2014-12-10 11:25:29,658 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] Task com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@650a738c (in deadlocked PoolThread) failed to complete in maximum time 60000ms. Trying interrupt(). 
+2014-12-10 11:25:30,804 WARN  [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool@6a0605f5 -- Thread unexpectedly interrupted while performing an acquisition attempt. 
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method) ~[na:1.7.0_05]
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547) [c3p0-0.9.1.2.jar:0.9.1.2]
+2014-12-10 11:25:30,804 WARN  [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool@6a0605f5 -- Thread unexpectedly interrupted while performing an acquisition attempt. 
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method) ~[na:1.7.0_05]
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547) [c3p0-0.9.1.2.jar:0.9.1.2]
+2014-12-10 11:25:30,805 WARN  [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool@6a0605f5 -- Thread unexpectedly interrupted while performing an acquisition attempt. 
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method) ~[na:1.7.0_05]
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1805) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547) [c3p0-0.9.1.2.jar:0.9.1.2]
+2014-12-10 11:26:01,799 WARN  [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@47ff54cd] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@6156e93d -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30). Last acquisition attempt exception:  
+java.sql.SQLException: Network error IOException: No route to host
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:436) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.Driver.connect(Driver.java:184) ~[jtds-1.3.1.jar:1.3.1]
+	at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.async.ThreadPerTaskAsynchronousRunner$TaskThread.run(ThreadPerTaskAsynchronousRunner.java:255) [c3p0-0.9.1.2.jar:0.9.1.2]
+Caused by: java.net.NoRouteToHostException: No route to host
+	at java.net.PlainSocketImpl.socketConnect(Native Method) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182) ~[na:1.7.0_05]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:391) ~[na:1.7.0_05]
+	at java.net.Socket.connect(Socket.java:579) ~[na:1.7.0_05]
+	at net.sourceforge.jtds.jdbc.SharedSocket.createSocketForJDBC3(SharedSocket.java:288) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.SharedSocket.<init>(SharedSocket.java:251) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:331) ~[jtds-1.3.1.jar:1.3.1]
+	... 9 common frames omitted
+2014-12-10 11:26:01,801 WARN  [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@47ff54cd] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@11282027 -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30). Last acquisition attempt exception:  
+java.sql.SQLException: Network error IOException: No route to host
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:436) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.Driver.connect(Driver.java:184) ~[jtds-1.3.1.jar:1.3.1]
+	at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	at com.mchange.v2.async.ThreadPerTaskAsynchronousRunner$TaskThread.run(ThreadPerTaskAsynchronousRunner.java:255) [c3p0-0.9.1.2.jar:0.9.1.2]
+Caused by: java.net.NoRouteToHostException: No route to host
+	at java.net.PlainSocketImpl.socketConnect(Native Method) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200) ~[na:1.7.0_05]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182) ~[na:1.7.0_05]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:391) ~[na:1.7.0_05]
+	at java.net.Socket.connect(Socket.java:579) ~[na:1.7.0_05]
+	at net.sourceforge.jtds.jdbc.SharedSocket.createSocketForJDBC3(SharedSocket.java:288) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.SharedSocket.<init>(SharedSocket.java:251) ~[jtds-1.3.1.jar:1.3.1]
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:331) ~[jtds-1.3.1.jar:1.3.1]
+	... 9 common frames omitted
+2014-12-10 11:26:01,803 WARN  [localhost-startStop-1] [JdbcServicesImpl] HHH000342: Could not obtain connection to query metadata : Connections could not be acquired from the underlying database! 
+2014-12-10 11:26:01,806 WARN  [localhost-startStop-1] [XmlWebApplicationContext] Exception encountered during context initialization - cancelling refresh attempt 
+
+
+
