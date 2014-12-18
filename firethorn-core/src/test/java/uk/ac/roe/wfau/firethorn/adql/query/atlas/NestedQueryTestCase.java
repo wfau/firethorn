@@ -110,7 +110,6 @@ extends AtlasQueryTestBase
                 }
             );
         }
-
     /**
      * Test query Subquery in From - returns 2876 rows"
      *
@@ -148,11 +147,11 @@ extends AtlasQueryTestBase
             " FROM" +
             "    (" +
             "    SELECT TOP 10000" +
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID," +
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID," +
             "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins," +
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID," +
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary," +
             "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType," +
-            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary" +
+            "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID" +
             "    FROM" +
             "        {ATLAS_VERSION}.dbo.atlasSourceXDR7PhotoObj" +
             "    WHERE" +

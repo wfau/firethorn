@@ -148,11 +148,11 @@ extends AtlasQueryTestBase
             " FROM" +
             "    (" +
             "    SELECT TOP 10000" +
-            "        atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid  AS masterobjid," +
-            "        atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid   AS slaveobjid," +
             "        atlasdr1.dbo.atlassourcexdr7photoobj.distancemins AS distancemins," +
+            "        atlasdr1.dbo.atlassourcexdr7photoobj.masterobjid  AS masterobjid," +
+            "        atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary  AS sdssprimary," +
             "        atlasdr1.dbo.atlassourcexdr7photoobj.sdsstype     AS sdsstype," +
-            "        atlasdr1.dbo.atlassourcexdr7photoobj.sdssprimary  AS sdssprimary" +
+            "        atlasdr1.dbo.atlassourcexdr7photoobj.slaveobjid   AS slaveobjid" +
             "    FROM" +
             "        atlasdr1.dbo.atlassourcexdr7photoobj" +
             "    WHERE" +

@@ -522,9 +522,11 @@ extends TestPropertiesBase
             {
             final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
-            fields[i++].validate(
-                field
-                );
+            if ((i+1)<=fields.length){
+	            fields[i++].validate(
+	                field
+	                );
+	            }
             }
         assertEquals(
             i,
