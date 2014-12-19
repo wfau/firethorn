@@ -42,7 +42,7 @@ public class RedmineBug625TestCase
         {
         validate(
             Level.LEGACY,
-            State.PARSE_ERROR,
+            State.VALID,
 
             "SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec  "
             + " FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x "
