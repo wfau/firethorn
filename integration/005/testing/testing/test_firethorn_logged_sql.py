@@ -99,7 +99,7 @@ class test_firethorn(unittest.TestCase):
             if (self.use_preset_params):
                 fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.query_schema, config.schema_name, config.schema_alias)
                 fEng.printClassVars()
-                
+                queryrunID = get_a_uuid()                
             else:
                 
                 if (self.use_cached_firethorn_env):
