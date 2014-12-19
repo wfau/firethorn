@@ -22,15 +22,9 @@
 
 
 #############################################################################
-### Query Test run #1: All ATLASDR1 queries that do not contain dr8 & dr9 ###
+### Query Test run #1: All ATLAS% queries stored on Ramses5               ###
 #############################################################################
 
-(Reason: in previous runs dr9 crossmatches where taking very long time to complete)
-
-Query run ID: 
-Started on: 2014-12-08 
-Finished on: 2014-12-09 
-Assertion: Total queries failed: 113 (out of 2645)
 
 Json Summary:
 "No ID": {"total_queries_run": 2794, "average_firethorn_duration": 16.689895188879735, "total_failed": 329, "total_firethorn_querytime": 46631.56715772998, "java_version": "1.7.0_05", "total_sql_querytime": 142781.71314549996, "sys_platform": "Debian GNU/Linux 7 (wheezy)", "firethorn_changeset": "a0e65c608e9e", "firethorn_version": "1.11.28", "sys_timestamp": "2014-12-15T19:51:11.339Z", "average_sql_duration": 51.1029753562992, "query_timestamp": "2014-12-18 02:38:26"}
