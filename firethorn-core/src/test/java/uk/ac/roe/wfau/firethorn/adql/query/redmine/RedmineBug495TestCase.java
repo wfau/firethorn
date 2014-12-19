@@ -44,7 +44,7 @@ public class RedmineBug495TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             " SELECT TOP 5" +
             "    COUNT(ra) AS binsize," +

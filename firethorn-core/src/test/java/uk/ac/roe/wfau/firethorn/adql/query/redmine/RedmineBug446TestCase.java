@@ -47,7 +47,7 @@ public class RedmineBug446TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             " SELECT" +
             "    ROUND(l*6.0,0)/6.0 AS lon," +
