@@ -1,0 +1,87 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Testing DNS resolution from ROE servers
+#[user@djer]
+
+    host fenrir
+    fenrir.roe.ac.uk has address 129.215.175.108
+
+    host djer
+    djer.roe.ac.uk has address 129.215.175.114
+
+    host shepseskaf
+    shepseskaf.roe.ac.uk has address 129.215.175.117
+
+    host coccinea
+    Host coccinea not found: 3(NXDOMAIN)
+
+    host pyracantha
+    Host pyracantha not found: 3(NXDOMAIN)
+
+    host pyrus
+    Host pyrus not found: 3(NXDOMAIN)
+
+    host malus
+    Host malus not found: 3(NXDOMAIN)
+
+    host pyratest1
+    Host pyratest1 not found: 3(NXDOMAIN)
+
+    host pyratest2
+    Host pyratest2 not found: 3(NXDOMAIN)
+
+    host pyratest3
+    Host pyratest3 not found: 3(NXDOMAIN)
+
+# -----------------------------------------------------
+# Testing DNS resolution from ROE servers
+#[user@shepseskaf]
+
+    host fenrir
+    fenrir.roe.ac.uk has address 129.215.175.108
+
+    host shepseskaf
+    shepseskaf.roe.ac.uk has address 129.215.175.117
+
+    host coccinea
+    Host coccinea not found: 3(NXDOMAIN)
+
+    host pyracantha
+    Host pyracantha not found: 3(NXDOMAIN)
+
+    host pyrus
+    Host pyrus not found: 3(NXDOMAIN)
+
+    host malus
+    Host malus not found: 3(NXDOMAIN)
+
+    host pyratest1
+    Host pyratest1 not found: 3(NXDOMAIN)
+
+    host pyratest2
+    Host pyratest2 not found: 3(NXDOMAIN)
+
+    host pyratest3
+    Host pyratest3 not found: 3(NXDOMAIN)
+
