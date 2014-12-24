@@ -36,15 +36,6 @@ public interface OgsaIvoaResource
     extends Entity.IdentFactory<OgsaIvoaResource>
         {
         }
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-     */
-    public static interface NameFactory
-    extends NamedEntity.NameFactory<OgsaIvoaResource>
-        {
-        }
     
     /**
      * {@link Entity.LinkFactory} interface.
@@ -63,48 +54,38 @@ public interface OgsaIvoaResource
     extends Entity.EntityFactory<OgsaIvoaResource>
         {
         /**
-         * Select all the resources.
+         * Select all the {@link OgsaIvoaResource}(s).
          * @return An {@link Iterable} set of {@link OgsaIvoaResource}(s). 
          *
          */
         public Iterable<OgsaIvoaResource> select();
 
         /**
-         * Select the {@link OgsaIvoaResource}(s) provided by a {@link OgsaService}.
-         * @param service The parent service.
+         * Select the {@link OgsaIvoaResource}(s) for a {@link OgsaService}.
+         * @param service The parent {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
          *
          */
         public Iterable<OgsaIvoaResource> select(final OgsaService service);
 
         /**
-         * Create a new {@link OgsaIvoaResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link IvoaResource}.
+        * Select the {@link OgsaIvoaResource}(s) for an {@link OgsaService} and {@link IvoaResource}.
+        * @param service The parent {@link OgsaService}.
+        * @param source  The source {@link IvoaResource}.
+        * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+        *
+        */
+       public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+
+        /**
+         * Create a new {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The parent {@link OgsaService}.
+         * @param source  The source {@link IvoaResource}.
          * @return A new {@link OgsaIvoaResource}.
          *
          */
         public OgsaIvoaResource create(final OgsaService service, final IvoaResource source);
 
-        /**
-         * Create a new {@link OgsaIvoaResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link IvoaResource}.
-         * @param name The resource name.
-         * @return A new {@link OgsaIvoaResource}.
-         *
-         */
-        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name);
-
-        /**
-         * Select the {@link OgsaIvoaResource}(s) for a {@link IvoaResource}.
-         * @param service The parent {@link OgsaService}.
-         * @param source  The source {@link IvoaResource}.
-         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
-         *
-         */
-        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
-        
         }
     
     /**

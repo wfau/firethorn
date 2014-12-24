@@ -37,6 +37,7 @@ import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
@@ -67,6 +68,10 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
             name  = "OgsaService-select-all",
             query = "FROM OgsaServiceEntity ORDER BY name asc, ident desc"
             ),
+        @NamedQuery(
+            name  = "OgsaService-select-status",
+            query = "FROM OgsaServiceEntity WHERE status = :status ORDER BY name asc, ident desc"
+            )
         }
     )
 public class OgsaServiceEntity
@@ -96,6 +101,7 @@ public class OgsaServiceEntity
      *
      */
     protected static final String DB_SERVICE_STATUS_COL = "status";
+
     
     /**
      * Protected constructor. 
@@ -113,7 +119,7 @@ public class OgsaServiceEntity
      * @throws NameFormatException
      *
      */
-    public OgsaServiceEntity(final String endpoint, final String name) throws NameFormatException
+    public OgsaServiceEntity(final String name, final String endpoint) throws NameFormatException
         {
         super(
             name
@@ -175,57 +181,6 @@ public class OgsaServiceEntity
         return factories().ogsa().services().links().link(
             this
             );
-        }
-
-    @Override
-    public Resources resources()
-        {
-        return new Resources()
-            {
-            @Override
-            public Iterable<OgsaBaseResource> select()
-                {
-                return factories().ogsa().resources().base().select(
-                    OgsaServiceEntity.this
-                    );
-                }
-
-            @Override
-            public OgsaJdbcResource create(final JdbcResource source)
-                {
-                return factories().ogsa().resources().jdbc().create(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public OgsaIvoaResource create(final IvoaResource source)
-                {
-                return factories().ogsa().resources().ivoa().create(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public Iterable<OgsaJdbcResource> select(final JdbcResource source)
-                {
-                return factories().ogsa().resources().jdbc().select(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public Iterable<OgsaIvoaResource> select(final IvoaResource source)
-                {
-                return factories().ogsa().resources().ivoa().select(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-            };
         }
 
     @Override
@@ -297,5 +252,71 @@ public class OgsaServiceEntity
             this.http = HttpStatus.BAD_REQUEST;
             }
         return this.http ;
+        }
+
+    @Override
+    public OgsaIvoaResources ivoa()
+        {
+        return new OgsaIvoaResources()
+            {
+            @Override
+            public OgsaIvoaResource create(IvoaResource source)
+                {
+                return factories().ogsa().factories().ivoa().create(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select()
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    OgsaServiceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select(IvoaResource source)
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+            };
+        }
+
+    @Override
+    public OgsaJdbcResources jdbc()
+        {
+        return new OgsaJdbcResources()
+            {
+            @Override
+            public OgsaJdbcResource create(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().create(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select()
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    OgsaServiceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+            };
         }
     }

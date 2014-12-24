@@ -80,18 +80,14 @@ implements OgsaJdbcResource
     /**
      *
      * Public constructor.
-     * @param name The resource name.
      * @param service The parent {@link OgsaService}
      * @param source  The source {@link JdbcResource}
-     * @throws NameFormatException
      *
      */
-    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source, final String name)
-    throws NameFormatException
+    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source)
         {
         super(
-            service,
-            name
+            service
             );
         this.source = source  ;
         }
@@ -116,7 +112,7 @@ implements OgsaJdbcResource
     @Override
     public String link()
         {
-        return factories().ogsa().resources().jdbc().links().link(
+        return factories().ogsa().factories().jdbc().links().link(
             this
             );
         }

@@ -36,6 +36,24 @@ public interface OgsaService
     {
 
     /**
+     * An endpoint URL factory.
+     * 
+     */
+    public static interface EndpointFactory
+        {
+        /**
+         * Generate a new service endpoint URL.
+         * @param proto The endpoint URL protocol {http|https}.
+         * @param host  The endpoint URL host {localhost}.
+         * @param port  The endpoint URL port {8080}.
+         * @param path  The endpoint URL path {ogsadai}.
+         * @return A new service endpoint URL.
+         * 
+         */
+        public String endpoint(final String proto, final String host, final String port, final String path);
+        }
+
+    /**
      * {@link Entity.IdentFactory} interface.
      *
      */
@@ -78,15 +96,15 @@ public interface OgsaService
         public Iterable<OgsaService> select();
 
         /**
-         * Create a new service.
-         * @return A new {@link OgsaService}.
+         * Select all the services with a particurlar status.
+         * @return An {@link Iterable} set of {@link OgsaService}(s). 
          *
          */
-        public OgsaService create();
+        public Iterable<OgsaService> select(final Status status);
 
         /**
          * Create a new service.
-         * @param endpoint The OGSA-DAI web-service endpoint URL.
+         * @param endpoint The web-service endpoint URL.
          * @return A new {@link OgsaService}.
          *
          */
@@ -94,15 +112,50 @@ public interface OgsaService
 
         /**
          * Create a new service.
-         * @param name The OGSA-DAI web-service name.
-         * @param endpoint The OGSA-DAI web-service endpoint URL.
+         * @param name     The web-service name.
+         * @param endpoint The web-service endpoint URL.
          * @return A new {@link OgsaService}.
          *
          */
         public OgsaService create(final String name, final String endpoint);
 
+        /**
+         * Create a new service.
+         * @param proto The web-service endpoint URL protocol {http|https}.
+         * @param host  The web-service endpoint URL host {localhost}.
+         * @param port  The web-service endpoint URL port {8080}.
+         * @param path  The web-service endpoint URL path {ogsadai}.
+         * @return A new {@link OgsaService}.
+         *
+         */
+        public OgsaService create(final String proto, final String host, final String port, final String path);
+
+        /**
+         * Create a new service.
+         * @param name  The web-service name.
+         * @param proto The web-service endpoint URL protocol {http|https}.
+         * @param host  The web-service endpoint URL host {localhost}.
+         * @param port  The web-service endpoint URL port {8080}.
+         * @param path  The web-service endpoint URL path {ogsadai}.
+         * @return A new {@link OgsaService}.
+         *
+         */
+        public OgsaService create(final String name, final String proto, final String host, final String port, final String path);
+
         }
 
+    /**
+     * Enum for the OGSA-DAI web-service status.
+     * 
+     */
+    public enum Status
+        {
+        ACTIVE(),
+        INACTIVE(),
+        ERROR(),
+        UNKNOWN();
+        } 
+    
     /**
      * The OGSA-DAI service endpoint URL.
      * @return The endpoint URL.
@@ -141,44 +194,26 @@ public interface OgsaService
     public HttpStatus ping();
 
     /**
-     * Access to the {@link OgsaBaseResource}(s) provided by this {@link OgsaService}.
+     * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.
      *
      */
-    interface Resources
+    interface OgsaIvoaResources
         {
-        /**
-         * Select the {@link OgsaBaseResource}(s) provided by this {@link OgsaService}.
-         * @return An {@link Iterable} list of {@link OgsaBaseResource}(s).
-         *
-         */
-        public Iterable<OgsaBaseResource> select();
 
         /**
-         * Create a new {@link OgsaJdbcResource}.
-         * @param source The corresponding {@link JdbcResource}. 
-         * @return A new {@link OgsaJdbcResource}.
-         *
-         */
-        public OgsaJdbcResource create(final JdbcResource source);
-
-        /**
-         * Create a new {@link OgsaIvoaResource}.
-         * @param source The corresponding {@link IvoaResource}. 
-         * @return A new {@link OgsaIvoaResource}.
+         * Create a new {@link OgsaIvoaResource} for an {@link IvoaResource}.
          *
          */
         public OgsaIvoaResource create(final IvoaResource source);
 
         /**
-         * Select a list of the {@link OgsaBaseResource}(s) for a {@link JdbcResource}.
-         * @return An {@link Iterable} list of {@link OgsaBaseResource}(s).
+         * List all the {@link OgsaIvoaResource}(s) for this {@link OgsaService}.
          *
          */
-        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+        public Iterable<OgsaIvoaResource> select();
 
         /**
-         * Select a list of the {@link OgsaBaseResource}(s) for a {@link JdbcResource}.
-         * @return An {@link Iterable} list of {@link OgsaBaseResource}(s).
+         * List all the {@link OgsaIvoaResource}(s) for an {@link IvoaResource}.
          *
          */
         public Iterable<OgsaIvoaResource> select(final IvoaResource source);
@@ -186,22 +221,42 @@ public interface OgsaService
         }
 
     /**
-     * Access to the {@link OgsaBaseResource}(s) provided by this {@link OgsaService}.
+     * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.
      *
      */
-    public Resources resources();
+    public OgsaIvoaResources ivoa();
 
     /**
-     * OGSA-DAI service status.
+     * Access to the {@link OgsaJdbcResource}(s) provided by this {@link OgsaService}.
      *
-    public static enum Status
-        {
-        CREATED(),
-        ONLINE(),
-        OFFLINE(),
-        UNKNOWN();
-        }
      */
+    interface OgsaJdbcResources
+        {
 
+        /**
+         * Create a new {@link OgsaJdbcResource} for an {@link JdbcResource}.
+         *
+         */
+        public OgsaJdbcResource create(final JdbcResource source);
+
+        /**
+         * List all the {@link OgsaJdbcResource}(s) for this {@link OgsaService}.
+         *
+         */
+        public Iterable<OgsaJdbcResource> select();
+
+        /**
+         * List all the {@link OgsaJdbcResource}(s) for an {@link JdbcResource}.
+         *
+         */
+        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+
+        }
+
+    /**
+     * Access to the {@link OgsaJdbcResource}(s) provided by this {@link OgsaService}.
+     *
+     */
+    public OgsaJdbcResources jdbc();
 
     }

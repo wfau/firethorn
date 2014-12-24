@@ -45,14 +45,8 @@ public interface OgsaFactories
      * Our resource factories.
      * 
      */
-    public interface Resources
+    public interface Factories
         {
-        /**
-         * Our {@link OgsaBaseResource} factory.
-         * 
-         */
-        public OgsaBaseResource.EntityFactory base();
-
         /**
          * Our {@link OgsaJdbcResource} factory.
          * 
@@ -70,6 +64,6 @@ public interface OgsaFactories
      * Our resource factories.
      * 
      */
-    public Resources resources();
+    public Factories factories();
     
     }

@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -26,50 +25,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
  *
  */
 public interface OgsaBaseResource
-    extends NamedEntity
+    extends Entity
     {
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory<OgsaBaseResource>
-        {
-        }
-
-    /**
-     * {@link Entity.LinkFactory} interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<OgsaBaseResource>
-        {
-
-        }
-
-    /**
-     * {@link Entity.EntityFactory} interface.
-     *
-     */
-    public static interface EntityFactory
-    extends Entity.EntityFactory<OgsaBaseResource>
-        {
-        /**
-         * Select all the {@link OgsaBaseResource}(s).
-         * @return An {@link Iterable} set of {@link OgsaBaseResource}(s). 
-         *
-         */
-        public Iterable<OgsaBaseResource> select();
-
-        /**
-         * Select the {@link OgsaBaseResource}(s) provided by a {@link OgsaService}.
-         * @param service The parent service.
-         * @return An {@link Iterable} list of {@link OgsaBaseResource}(s).
-         *
-         */
-        public Iterable<OgsaBaseResource> select(final OgsaService service);
-
-        }
 
     /**
      * The parent {@link OgsaService}.
@@ -100,7 +57,8 @@ public interface OgsaBaseResource
         {
         CREATED(),
         ACTIVE(),
-        FAILED(),
+        INACTIVE(),
+        ERROR(),
         UNKNOWN();
         }
 

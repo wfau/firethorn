@@ -30,8 +30,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 
 /**
  *
@@ -45,7 +44,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class OgsaBaseResourceEntity
-extends AbstractNamedEntity
+extends AbstractEntity
 implements OgsaBaseResource
     {
     /**
@@ -78,17 +77,12 @@ implements OgsaBaseResource
     /**
     *
     * Protected constructor.
-    * @param name The resource name.
-    * @param service The parent {@link OgsaService}
-    * @throws NameFormatException
+    * @param service The parent {@link OgsaService}.
     *
     */
-   protected OgsaBaseResourceEntity(final OgsaService service, final String name)
-   throws NameFormatException
+   protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(
-           name
-           );
+       super();
        this.service = service ;
        }
 
@@ -134,7 +128,7 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   private Status status = Status.CREATED ;
+   private Status status = Status.UNKNOWN ;
    @Override
    public Status status()
        {

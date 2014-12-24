@@ -1,0 +1,136 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    
+
+        OgsaService
+            {
+            Status status() {ACTIVE|INACTIVE|ERROR|UNKNOWN}
+            Status ping()
+
+            String version()
+            String endpoint()
+
+            
+            Factory
+                {
+                OgsaService create(String endpoint)
+                OgsaService create(String host, String port, String path)
+
+                Iterable<OgsaService> select()
+                Iterable<OgsaService> select(Status status)
+                }
+
+            AdqlNodes adql()
+                {
+                OgsaAdqlNode create(AdqlQuery query)
+                Iterable<OgsaAdqlNode> select()
+                }
+
+            IvoaNodes ivoa()
+                {
+                OgsaIvoaNode create(IvoaResource ivoa)
+                Iterable<OgsaIvoaNode> select()
+                }
+
+            JdbcNodes jdbc()
+                {
+                OgsaJdbcNode create(JdbcResource jdbc)
+                Iterable<OgsaJdbcNode?> select()
+                }
+            }
+
+        AdqlWorkspace
+            {
+            OgsaAdqlNodes nodes()
+                {
+                OgsaAdqlNode create(OgsaService service)
+                Iterable<OgsaAdqlNode> select()
+                Iterable<OgsaAdqlNode> select(OgsaService service)
+                }
+            }
+
+        IvoaService
+            {
+            OgsaIvoaNodes nodes()
+                {
+                OgsaIvoaNode create(OgsaService service)
+                Iterable<OgsaIvoaNode> select()
+                Iterable<OgsaIvoaNode> select(OgsaService service)
+                }
+            }
+
+        JdbcService
+            {
+            OgsaJdbcNodes nodes()
+                {
+                OgsaJdbcNode create(OgsaService service)
+                Iterable<OgsaJdbcNode> select()
+                Iterable<OgsaJdbcNode> select(OgsaService service)
+                }
+            }
+
+        OgsaBaseNode
+            {
+            String ogsaid()
+            Status status() {ACTIVE|INACTIVE|ERROR|UNKNOWN}
+            Status ping()
+            }
+
+        OgsaAdqlNode
+        extends OgsaBaseNode
+            {
+            }
+
+        OgsaIvoaNode
+        extends OgsaBaseNode
+            {
+            }
+
+        OgsaJdbcNode
+        extends OgsaBaseNode
+            {
+            }
+
+
+
+
+
+
+        Link OGSA-DAI service(s) to the FireThorn service(s)    
+
+        POST to {ogsadai}/firethorn/register
+            endpoint = http://ww.xx.yy.zz:8080/firethorn/
+
+        POST to {firethorn}/ogsa/services/create
+            endpoint = http://ww.xx.yy.zz:abcd/efghijk/
+            endpoint = (default) http://ww.xx.yy.zz:8080/firethorn/
+
+
+
+
+
+
+
+
+
+

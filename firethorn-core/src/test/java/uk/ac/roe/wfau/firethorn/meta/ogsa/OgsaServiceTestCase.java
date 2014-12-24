@@ -33,28 +33,6 @@ public class OgsaServiceTestCase
 extends TestBase
     {
     @Test
-    public void testCreate001()
-    throws Exception
-        {
-        final OgsaService created = factories().ogsa().services().create();
-        assertNotNull(
-            created
-            );
-        assertNotNull(
-            created.ident()
-            );
-        assertNotNull(
-            created.name()
-            );
-        assertNotNull(
-            created.owner()
-            );
-        assertNull(
-            created.endpoint()
-            );
-        }
-
-    @Test
     public void testCreate002()
     throws Exception
         {
@@ -84,8 +62,8 @@ extends TestBase
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8080/example",
-            "test.service"
+            "test.service",
+            "http://localhost:8080/example"
             );
         assertNotNull(
             created
@@ -110,7 +88,9 @@ extends TestBase
     public void testCreate004()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create();
+        final OgsaService created = factories().ogsa().services().create(
+            "http://localhost:8080/example"
+            );
         assertNotNull(
             created
             );
@@ -150,7 +130,7 @@ extends TestBase
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8081/albert"
+            "http://localhost:8080/example"
             );
         assertNotNull(
             created

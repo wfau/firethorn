@@ -42,13 +42,6 @@ implements OgsaJdbcResource.EntityFactory
         }
 
     @Autowired
-    private OgsaJdbcResource.NameFactory names;
-    public OgsaJdbcResource.NameFactory names()
-        {
-        return this.names;
-        }
-
-    @Autowired
     private OgsaJdbcResource.IdentFactory idents;
     @Override
     public OgsaJdbcResource.IdentFactory idents()
@@ -103,21 +96,7 @@ implements OgsaJdbcResource.EntityFactory
         return super.insert(
             new OgsaJdbcResourceEntity(
                 service,
-                source,
-                names.name()
-                )
-            );
-        }
-
-    @Override
-    @CreateMethod
-    public OgsaJdbcResource create(final OgsaService service, final JdbcResource source, final String name)
-        {
-        return super.insert(
-            new OgsaJdbcResourceEntity(
-                service,
-                source,
-                name
+                source
                 )
             );
         }

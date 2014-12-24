@@ -42,13 +42,6 @@ implements OgsaIvoaResource.EntityFactory
         }
 
     @Autowired
-    private OgsaIvoaResource.NameFactory names;
-    public OgsaIvoaResource.NameFactory names()
-        {
-        return this.names;
-        }
-
-    @Autowired
     private OgsaIvoaResource.IdentFactory idents;
     @Override
     public OgsaIvoaResource.IdentFactory idents()
@@ -103,22 +96,9 @@ implements OgsaIvoaResource.EntityFactory
         return super.insert(
             new OgsaIvoaResourceEntity(
                 service,
-                source,
-                names.name()
+                source
                 )
             );
         }
 
-    @Override
-    @CreateMethod
-    public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name)
-        {
-        return super.insert(
-            new OgsaIvoaResourceEntity(
-                service,
-                source,
-                name
-                )
-            );
-        }
     }

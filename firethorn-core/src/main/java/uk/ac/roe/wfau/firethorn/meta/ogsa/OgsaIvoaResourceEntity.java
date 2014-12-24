@@ -78,18 +78,14 @@ public class OgsaIvoaResourceEntity
    /**
      *
      * Public constructor.
-     * @param name The resource name.
      * @param service The parent {@link OgsaService}
      * @param source  The source {@link IvoaResource}
-     * @throws NameFormatException
      *
      */
-    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source, final String name)
-    throws NameFormatException
+    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source)
         {
         super(
-            service,
-            name
+            service
             );
         this.source = source  ;
         }
@@ -114,7 +110,7 @@ public class OgsaIvoaResourceEntity
     @Override
     public String link()
         {
-        return factories().ogsa().resources().ivoa().links().link(
+        return factories().ogsa().factories().ivoa().links().link(
             this
             );
         }

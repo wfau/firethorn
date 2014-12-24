@@ -118,7 +118,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
             ),
         @NamedQuery(
             name  = "AdqlQuery-select-schema",
-            query = "FROM AdqlQueryEntity WHERE schema= :schema ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE schema = :schema ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "AdqlQuery-select-schema.name",
