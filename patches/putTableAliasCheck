@@ -1,0 +1,262 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417624939 -7200
+#      Wed Dec 03 18:42:19 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID 4f2309d0c5f7100e719ca9929ad8b6f04fd0a783
+# Parent  b84f79b732a3f2bc41a61519c09c36b8eafc7685
+Additional check(), putTableAlias() functions [CDS-Patch]
+
+diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/DBChecker.java
+--- a/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:42:19 2014 +0200
+@@ -420,6 +420,109 @@
+ 			throw errors;
+ 	}
+ 
++	public void check(final ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
++		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
++		HashMap<DBTable, ADQLTable> mapTables = _mapTables;
++		ISearchHandler sHandler;
++		stackColumnList.putTableAliasList(mapTables);
++		// Check the existence of all tables:
++		sHandler = new SearchTableHandler();
++		sHandler.search(query.getFrom());
++		for(ADQLObject result : sHandler){
++			try{
++				ADQLTable table = (ADQLTable)result;
++				// resolve the table:
++				DBTable dbTable = null;
++				if (table.isSubQuery()){
++					dbTable = generateDBTable(table.getSubQuery(), table.getAlias());
++				}else{
++					dbTable = resolveTable(table);
++					if (table.hasAlias())
++						dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
++				}
++				// link with the matched DBTable:
++				table.setDBLink(dbTable);
++				mapTables.put(dbTable, table);
++			}catch(ParseException pe){
++				errors.addException(pe);
++			}
++		}
++
++		// Attach table information on wildcards with the syntax "{tableName}.*" of the SELECT clause:
++		sHandler = new SearchWildCardHandler();
++		sHandler.search(query.getSelect());
++		for(ADQLObject result : sHandler){
++			try{
++				SelectAllColumns wildcard = (SelectAllColumns)result;
++				ADQLTable table = wildcard.getAdqlTable();
++				DBTable dbTable = null;
++				// First, try to resolve the table by table alias:
++				if (table.getTableName() != null && table.getSchemaName() == null){
++					ArrayList<ADQLTable> tables = query.getFrom().getTablesByAlias(table.getTableName(), table.isCaseSensitive(IdentifierField.TABLE));
++					if (tables.size() == 1)
++						dbTable = tables.get(0).getDBLink();
++				}
++				// Then try to resolve the table reference by table name:
++				if (dbTable == null)
++					dbTable = resolveTable(table);
++
++				//			table.setDBLink(dbTable);
++				wildcard.setAdqlTable(mapTables.get(dbTable));
++			}catch(ParseException pe){
++				errors.addException(pe);
++			}
++		}
++
++		SearchColumnList list = query.getFrom().getDBColumns();
++
++		/* DEBUG
++		System.out.println("\n*** FROM COLUMNS ***");
++		for(DBColumn dbCol : list){
++			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
++		}
++		System.out.println();
++		*/
++		// Check the existence of all columns:
++		sHandler = new SearchColumnHandler();  
++	
++		sHandler.search(query);
++		for(ADQLObject result : sHandler){
++			try{
++				ADQLColumn adqlColumn = (ADQLColumn)result;
++				// resolve the column:
++				DBColumn dbColumn = resolveColumn(adqlColumn, list, stackColumnList);
++				// link with the matched DBColumn:
++				adqlColumn.setDBLink(dbColumn);
++				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
++			}catch(ParseException pe){
++				errors.addException(pe);
++			}
++		}
++
++		// Check the correctness of all column references:
++		sHandler = new SearchColReferenceHandler();
++		sHandler.search(query);
++		ClauseSelect select = query.getSelect();
++		for(ADQLObject result : sHandler){
++			try{
++				ColumnReference colRef = (ColumnReference)result;
++				// resolve the column reference:
++				DBColumn dbColumn = checkColumnReference(colRef, select, list);
++				// link with the matched DBColumn:
++				colRef.setDBLink(dbColumn);
++				if (dbColumn != null)
++					colRef.setAdqlTable(mapTables.get(dbColumn.getTable()));
++			}catch(ParseException pe){
++				errors.addException(pe);
++			}
++		}
++
++		// Throw all errors if any:
++		if (errors.getNbErrors() > 0)
++			throw errors;
++	}
++
++	
+ 	/* ************************************************ */
+ 	/* CHECKING METHODS FOR DB ITEMS (TABLES & COLUMNS) */
+ 	/* ************************************************ */
+@@ -691,6 +794,47 @@
+ 	}
+ 
+ 	/**
++	 * Resolves the given column, that's to say searches for the corresponding {@link DBColumn}.
++	 * 
++	 * @param column		The column to resolve.
++	 * @param dbColumns		List of all available {@link DBColumn}s.
++	 * 
++	 * @return				The corresponding {@link DBColumn} if found, <i>null</i> otherwise.
++	 * 
++	 * @throws ParseException	An {@link UnresolvedColumnException} if the given column can't be resolved
++	 * 							or an {@link UnresolvedTableException} if its table reference can't be resolved.
++	 */
++	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns, final SearchColumnList stackColumnList) throws ParseException {
++		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
++
++		// good if only one column has been found:
++		if (foundColumns.size() == 1)
++			return foundColumns.get(0);
++		// but if more than one: ambiguous table reference !
++		else if (foundColumns.size() > 1){
++			if (column.getTableName() == null)
++				throw new UnresolvedColumnException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":(foundColumns.get(0).getTable().getADQLName()+"."+foundColumns.get(0).getADQLName()), (foundColumns.get(1).getTable()==null)?"<NULL>":(foundColumns.get(1).getTable().getADQLName()+"."+foundColumns.get(1).getADQLName()));
++			else
++				throw new UnresolvedTableException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":foundColumns.get(0).getTable().getADQLName(), (foundColumns.get(1).getTable()==null)?"<NULL>":foundColumns.get(1).getTable().getADQLName());
++		}// otherwise (no match): unknown column ! Check stack column list
++		else{
++			ArrayList<DBColumn> foundColumnsFromStack = stackColumnList.search(column);
++			if (foundColumnsFromStack.size() == 1)
++				return foundColumnsFromStack.get(0);
++			// but if more than one: ambiguous table reference !
++			else if (foundColumnsFromStack.size() > 1){
++				if (column.getTableName() == null)
++					throw new UnresolvedColumnException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(0).getTable().getADQLName()+"."+foundColumnsFromStack.get(0).getADQLName()), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(1).getTable().getADQLName()+"."+foundColumnsFromStack.get(1).getADQLName()));
++		else
++					throw new UnresolvedTableException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":foundColumnsFromStack.get(0).getTable().getADQLName(), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":foundColumnsFromStack.get(1).getTable().getADQLName());
++			} else // otherwise (no match): unknown column !
++			throw new UnresolvedColumnException(column);
++		
++		
++		}
++	}
++	
++	/**
+ 	 * Check whether the given column reference corresponds to a selected item (column or an expression with an alias)
+ 	 * or to an existing column.
+ 	 * 
+@@ -732,7 +876,7 @@
+ 			}
+ 
+ 			// check the corresponding column:
+-			return resolveColumn(col, dbColumns, null);
++			return resolveColumn(col, dbColumns, new Stack<SearchColumnList>());
+ 		}
+ 	}
+ 
+@@ -1456,4 +1600,6 @@
+ 		protected abstract int compare(final S searchItem, final T arrayItem);
+ 	}
+ 
++	
++
+ }
+diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java
+--- a/firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java	Wed Dec 03 18:42:19 2014 +0200
+@@ -29,6 +29,7 @@
+ 
+ import adql.query.IdentifierField;
+ import adql.query.from.ADQLJoin;
++import adql.query.from.ADQLTable;
+ import adql.query.operand.ADQLColumn;
+ import cds.utils.TextualSearchList;
+ 
+@@ -130,6 +131,31 @@
+ 			aliases.add(tableAlias);
+ 		}
+ 	}
++	
++
++	/**
++	 * Adds the given table name / alias list to the existing alias list class variables 
++	 * 
++	 * @param tableAliasList	Table alias list.
++	 */
++	public final void putTableAliasList(HashMap<DBTable, ADQLTable> tableAliasList){
++		try {
++		if (tableAliasList!=null){
++				for (Map.Entry<DBTable, ADQLTable> entry : tableAliasList.entrySet()) {
++					DBTable key = entry.getKey(); 
++					ADQLTable value = entry.getValue();
++				    putTableAlias(value.getName(),key.getDBName());
++
++
++
++				}
++			    // ...
++			}
++		} catch (Exception e){
++			System.out.println("Exception caught");
++		}
++		
++	}
+ 
+ 	/**
+ 	 * Removes the given alias from this list.
+diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java
+--- a/firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java	Wed Dec 03 18:42:19 2014 +0200
+@@ -20,8 +20,13 @@
+  *                       Astronomisches Rechen Institut (ARI)
+  */
+ 
++import java.util.HashMap;
++
+ import adql.db.DBChecker;
++import adql.db.DBTable;
++import adql.db.SearchColumnList;
+ import adql.query.ADQLQuery;
++import adql.query.from.ADQLTable;
+ 
+ /**
+  * <p>Used at the end of the parsing of each ADQL query by the {@link adql.parser.ADQLParser}, to check the generated {@link ADQLQuery} object.</p>
+@@ -49,4 +54,15 @@
+ 	 */
+ 	public void check(ADQLQuery query) throws ParseException;
+ 
++	/**
++	 * <p>Checks (non-recursively in sub-queries) the given {@link ADQLQuery}.</p>
++	 * <p>If the query is correct, nothing happens. However at the first detected error, a {@link ParseException} is thrown.</p>
++	 * 
++	 * @param query				The query to check.
++	 * @param stackColumnList	A list of columns to check, based on higher level query info
++	 * @param _mapTables		A HashMap of table-alias associations
++	 * @throws ParseException	If the given query is not correct.
++	 */
++	public void check(ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException;
++
+ }
