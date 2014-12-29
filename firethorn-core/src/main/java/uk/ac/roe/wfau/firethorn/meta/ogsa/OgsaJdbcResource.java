@@ -95,4 +95,11 @@ public interface OgsaJdbcResource
      */
     public JdbcResource source();
 
+    /**
+     * Initialise the OGSA-DAI resource, creating a new one if needed.
+     * @return The resource status.
+     *  
+     */
+    public Status init();
+    
     }

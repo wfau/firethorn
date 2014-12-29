@@ -115,10 +115,4 @@ public class OgsaIvoaResourceEntity
             );
         }
 
-    @Override
-    public Status ping()
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
     }

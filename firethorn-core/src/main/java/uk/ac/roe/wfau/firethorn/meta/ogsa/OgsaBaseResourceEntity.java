@@ -82,7 +82,8 @@ implements OgsaBaseResource
     */
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super();
+       super(true);
+       this.status  = Status.CREATED ;
        this.service = service ;
        }
 
@@ -116,7 +117,12 @@ implements OgsaBaseResource
    @Override
    public String ogsaid()
        {
-       return ogsaid;
+       return this.ogsaid;
+       }
+   protected String ogsaid(String value)
+       {
+       this.ogsaid = value ;
+       return this.ogsaid;
        }
 
    @Column(
@@ -132,6 +138,11 @@ implements OgsaBaseResource
    @Override
    public Status status()
        {
+       return this.status;
+       }
+   protected Status status(Status value)
+       {
+       this.status = value ;
        return this.status;
        }
     }

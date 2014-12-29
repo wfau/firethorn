@@ -50,7 +50,7 @@ public interface OgsaService
          * @return A new service endpoint URL.
          * 
          */
-        public String endpoint(final String proto, final String host, final String port, final String path);
+        public String endpoint(final String proto, final String host, final Integer port, final String path);
         }
 
     /**
@@ -128,7 +128,7 @@ public interface OgsaService
          * @return A new {@link OgsaService}.
          *
          */
-        public OgsaService create(final String proto, final String host, final String port, final String path);
+        public OgsaService create(final String proto, final String host, final Integer port, final String path);
 
         /**
          * Create a new service.
@@ -140,7 +140,7 @@ public interface OgsaService
          * @return A new {@link OgsaService}.
          *
          */
-        public OgsaService create(final String name, final String proto, final String host, final String port, final String path);
+        public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path);
 
         }
 

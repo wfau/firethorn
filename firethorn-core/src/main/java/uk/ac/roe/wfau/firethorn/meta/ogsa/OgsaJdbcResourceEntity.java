@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -31,6 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
 /**
  *
@@ -118,9 +125,94 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public Status ping()
+    public Status init()
         {
-        // TODO Auto-generated method stub
-        return null;
+        //
+        // If the status is CREATED.
+        if (status() == Status.CREATED)
+            {
+            //
+            // If we already have an ODSA-DAI resource ID.
+            if (ogsaid() != null)
+                {
+                return null ;
+                }
+            //
+            // If we don't have an ODSA-DAI resource ID.
+            else {
+                return create() ;
+                }
+            }
+        else {
+            return status() ;
+            }
+        }
+
+    
+    private Status create()
+        {
+        JdbcCreateResourceWorkflow workflow = null;
+        try
+            {
+            workflow = new JdbcCreateResourceWorkflow(
+                new URL(
+                    service().endpoint()
+                    )
+                );
+            }
+        catch (MalformedURLException ouch)
+            {
+            }
+
+        final CreateResourceResult created = workflow.execute(
+            new JdbcCreateResourceWorkflow.Param()
+                {
+                @Override
+                public String jdbcurl()
+                    {
+                    return source.connection().uri();
+                    }
+                @Override
+                public String username()
+                    {
+                    return source.connection().user();
+                    }
+                @Override
+                public String password()
+                    {
+                    return source.connection().pass();
+                    }
+                @Override
+                public String driver()
+                    {
+                    return source.connection().driver();
+                    }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
+                }
+            );
+
+        log.debug("Status  [{}]", created.status());
+        log.debug("Request [{}]", created.request());
+        log.debug("Created [{}]", created.resource());
+
+        if (created.status() == WorkflowResult.Status.COMPLETED)
+            {
+            ogsaid(
+                created.resource().toString()
+                );
+            return status(
+                Status.CREATED
+                );
+            }
+
+        else {
+            return status(
+                Status.ERROR
+                );
+            }
         }
     }

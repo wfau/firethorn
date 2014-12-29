@@ -105,7 +105,7 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
 
     @Override
     @CreateMethod
-    public OgsaService create(final String proto, final String host, final String port, final String path)
+    public OgsaService create(final String proto, final String host, final Integer port, final String path)
         {
         return this.create(
             endpoint(
@@ -119,7 +119,7 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
 
     @Override
     @CreateMethod
-    public OgsaService create(final String name, final String proto, final String host, final String port, final String path)
+    public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path)
         {
         return this.create(
             name,
@@ -139,48 +139,48 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
     private String DEFAULT_HOST ;
     
     @Value("${ogsadai.endpoint.port:8080}")
-    private String DEFAULT_PORT ;
+    private Integer DEFAULT_PORT ;
 
     @Value("${ogsadai.endpoint.path:ogsadai}")
     private String DEFAULT_PATH ;
 
     @Override
-    public String endpoint(final String proto, final String host, final String port, final String path)
+    public String endpoint(final String proto, final String host, final Integer port, final String path)
         {
-        final String endpoint = "{proto}://{host}:{port}/{path}";
+        String endpoint = "{proto}://{host}:{port}/{path}";
 
         if (proto != null)
             {
-            endpoint.replace("{proto}", proto.trim());
+            endpoint = endpoint.replace("{proto}", proto.trim());
             }
         else {
-            endpoint.replace("{proto}", DEFAULT_PROTO);
+            endpoint = endpoint.replace("{proto}", DEFAULT_PROTO);
             }
+
         if (host != null)
             {
-            endpoint.replace("{host}", host.trim());
+            endpoint = endpoint.replace("{host}", host.trim());
             }
         else {
-            endpoint.replace("{host}", DEFAULT_HOST);
+            endpoint = endpoint.replace("{host}", DEFAULT_HOST);
             }
 
         if (port != null)
             {
-            endpoint.replace("{port}", port.trim());
+            endpoint = endpoint.replace("{port}", port.toString());
             }
         else {
-            endpoint.replace("{port}", DEFAULT_PORT);
+            endpoint = endpoint.replace("{port}", DEFAULT_PORT.toString());
             }
 
         if (path != null)
             {
-            endpoint.replace("{path}", path.trim());
+            endpoint = endpoint.replace("{path}", path.trim());
             }
         else {
-            endpoint.replace("{path}", DEFAULT_PATH);
+            endpoint = endpoint.replace("{path}", DEFAULT_PATH);
             }
 
         return endpoint;
         }
-
     }

@@ -42,44 +42,30 @@
     # Eclipse
     #
 
-# -----------------------------------------------------
-# Run our basic tests.
-#[user@desktop]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
 
-        # Copy/paste
-        gedit 'doc/notes/zrq/20141130-02-gnome-tests.txt' &
 
-    popd
 
-# -----------------------------------------------------
-# Commit our changes.
-#[user@desktop]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
 
-        hg add
-        hg commit -m "...."
-        hg push
 
-    popd
 
-# -----------------------------------------------------
-# Merge our changes.
-#[user@desktop]
 
-    newversion=1.11.27
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
 
-        # Copy/paste
-        gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &
 
-    popd
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

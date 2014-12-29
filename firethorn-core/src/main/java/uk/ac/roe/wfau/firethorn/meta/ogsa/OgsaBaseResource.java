@@ -69,11 +69,4 @@ public interface OgsaBaseResource
      */
     public Status status();
 
-    /**
-     * Check the resource status.
-     * @return The resource status.
-     *
-     */
-    public Status ping();
-    
     }
