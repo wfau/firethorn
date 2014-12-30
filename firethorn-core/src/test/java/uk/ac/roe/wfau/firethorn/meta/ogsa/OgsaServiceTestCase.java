@@ -27,11 +27,15 @@ import org.springframework.http.HttpStatus;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
- *
+ * Tests for {@link OgsaService} entity classes.
+ * 
  */
 public class OgsaServiceTestCase
 extends TestBase
     {
+
+    public static final String EXAMPLE_ENDPOINT = "http://localhost:8080/example" ;
+    
     @Test
     public void testCreate001()
     throws Exception
@@ -49,13 +53,14 @@ extends TestBase
             created.ident()
             );
         assertNotNull(
-            created.name()
-            );
-        assertNotNull(
             created.owner()
             );
         assertEquals(
-            "http://localhost:8080/example",
+            EXAMPLE_ENDPOINT,
+            created.name()
+            );
+        assertEquals(
+            EXAMPLE_ENDPOINT,
             created.endpoint()
             );
         }
@@ -65,7 +70,7 @@ extends TestBase
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8080/example"
+            EXAMPLE_ENDPOINT
             );
         assertNotNull(
             created
@@ -74,13 +79,14 @@ extends TestBase
             created.ident()
             );
         assertNotNull(
-            created.name()
-            );
-        assertNotNull(
             created.owner()
             );
         assertEquals(
-            "http://localhost:8080/example",
+            EXAMPLE_ENDPOINT,
+            created.name()
+            );
+        assertEquals(
+            EXAMPLE_ENDPOINT,
             created.endpoint()
             );
         }
@@ -102,15 +108,15 @@ extends TestBase
         assertNotNull(
             created.ident()
             );
-        assertEquals(
-            "test.service",
-            created.name()
-            );
         assertNotNull(
             created.owner()
             );
         assertEquals(
-            "http://localhost:8080/example",
+            "test.service",
+            created.name()
+            );
+        assertEquals(
+            EXAMPLE_ENDPOINT,
             created.endpoint()
             );
         }
@@ -121,7 +127,7 @@ extends TestBase
         {
         final OgsaService created = factories().ogsa().services().create(
             "test.service",
-            "http://localhost:8080/example"
+            EXAMPLE_ENDPOINT
             );
         assertNotNull(
             created
@@ -129,15 +135,15 @@ extends TestBase
         assertNotNull(
             created.ident()
             );
-        assertEquals(
-            "test.service",
-            created.name()
-            );
         assertNotNull(
             created.owner()
             );
         assertEquals(
-            "http://localhost:8080/example",
+            "test.service",
+            created.name()
+            );
+        assertEquals(
+            EXAMPLE_ENDPOINT,
             created.endpoint()
             );
         }
@@ -152,18 +158,6 @@ extends TestBase
             8080,
             "example"
             );
-        assertNotNull(
-            created
-            );
-        assertNotNull(
-            created.ident()
-            );
-        assertNotNull(
-            created.name()
-            );
-        assertNotNull(
-            created.owner()
-            );
         final OgsaService selected = factories().ogsa().services().select(
             created.ident()
             );
@@ -182,6 +176,10 @@ extends TestBase
         assertEquals(
             created.hashCode(),
             selected.hashCode()
+            );
+        assertEquals(
+            created.endpoint(),
+            selected.endpoint()
             );
         }
 
@@ -190,19 +188,7 @@ extends TestBase
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8080/example"
-            );
-        assertNotNull(
-            created
-            );
-        assertNotNull(
-            created.ident()
-            );
-        assertNotNull(
-            created.name()
-            );
-        assertNotNull(
-            created.owner()
+            EXAMPLE_ENDPOINT
             );
         final OgsaService selected = factories().ogsa().services().select(
             created.ident()
@@ -223,14 +209,20 @@ extends TestBase
             created.hashCode(),
             selected.hashCode()
             );
+        assertEquals(
+            created.endpoint(),
+            selected.endpoint()
+            );
         }
     
     @Test
-    public void testPing000()
+    public void testServiceLive000()
     throws Exception
         {
         final OgsaService created = factories().ogsa().services().create(
-            "http://localhost:8081/albert"
+            config().property(
+                "firethorn.ogsadai.endpoint"
+                )
             );
         assertNotNull(
             created

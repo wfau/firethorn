@@ -28,6 +28,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
     /**
      * Basic test configuration.
+     * @todo Replace this with a non-Spring properties file.
      *
      */
     @Configuration

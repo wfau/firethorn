@@ -17,12 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa ;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
@@ -33,46 +28,34 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class OgsaJdbcResourceTestCase
 extends TestBase
     {
-        
-    @Test
-    public void testPing000()
-    throws Exception
-        {
-        final OgsaService service = factories().ogsa().services().create(
-            "http://localhost:8081/albert"
-            );
-        assertNotNull(
-            service
-            );
-        assertNull(
-            service.http()
-            );
-        assertEquals(
-            HttpStatus.OK,
-            service.ping()
-            );
-        assertEquals(
-            HttpStatus.OK,
-            service.http()
-            );
-        }
+
     
     @Test
-    public void testCreate001()
+    public void testInit001()
     throws Exception
         {
         final OgsaService service = factories().ogsa().services().create(
-            "http://localhost:8081/albert/services"
+            config().property(
+                "firethorn.ogsadai.endpoint"
+                )
             );
 
         JdbcResource resource = factories().jdbc().resources().create(
             "ogsa-id",
             "ATLASDR1",
             "atlas",
-            "jdbc:jtds:sqlserver://localhost:1432/ATLASDR1",
-            "user",
-            "pass",
-            "net.sourceforge.jtds.jdbc.Driver"
+            config().property(
+                "firethorn.atlas.url"
+                ),
+            config().property(
+                "firethorn.atlas.user"
+                ),
+            config().property(
+                "firethorn.atlas.pass"
+                ),
+            config().property(
+                "firethorn.atlas.driver"
+                )
             );
         
         OgsaJdbcResource created = service.jdbc().create(
@@ -84,21 +67,31 @@ extends TestBase
         }
 
     @Test
-    public void testCreate002()
+    public void testInit002()
     throws Exception
         {
         final OgsaService service = factories().ogsa().services().create(
-            "http://localhost:8081/albert/services"
+            config().property(
+                "firethorn.ogsadai.endpoint"
+                )
             );
 
         JdbcResource resource = factories().jdbc().resources().create(
             "ogsa-id",
             "ATLASDR1",
             "atlas",
-            "jdbc:jtds:sqlserver://localhost:1432/ATLASDR1",
-            "user",
-            "pass",
-            "net.sourceforge.jtds.jdbc.Driver"
+            config().property(
+                "firethorn.atlas.url"
+                ),
+            config().property(
+                "firethorn.atlas.user"
+                ),
+            config().property(
+                "firethorn.atlas.pass"
+                ),
+            config().property(
+                "firethorn.atlas.driver"
+                )
             );
         
         OgsaJdbcResource created = service.jdbc().create(
@@ -108,16 +101,6 @@ extends TestBase
         created.init();
         created.init();
         
-        }
-
-    @Test
-    public void testCreate003()
-    throws Exception
-        {
-        for (int i = 0 ; i < 10 ; i++)
-            {
-            testCreate002();
-            }
         }
     }
 

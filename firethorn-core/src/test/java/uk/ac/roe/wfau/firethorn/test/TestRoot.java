@@ -17,7 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
+import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +29,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -36,6 +44,9 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  * Base class for tests.
  * Using SpringJUnit4ClassRunner to support @Autowired annotations.
  * This class does not handle transactions.
+ * 
+    loader = AnnotationConfigContextLoader.class,
+ * 
  *
  */
 @Slf4j
@@ -68,20 +79,6 @@ public abstract class TestRoot
     public ComponentFactories factories()
         {
         return this.factories;
-        }
-
-    @Before
-    public void before()
-    throws Exception
-        {
-        log.debug("before()");
-        }
-
-    @After
-    public void after()
-    throws Exception
-        {
-        log.debug("after()");
         }
 
     public void flush()
@@ -178,14 +175,97 @@ public abstract class TestRoot
         }
 
     /**
-     * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
-     * @throws Exception
+     * Test configuration.
      *
-    @Test
-    public void empty()
-    throws Exception
+    @Configuration
+    @ComponentScan("uk.ac.roe.wfau.firethorn")
+    @PropertySource("file:${user.home}/firethorn.properties")
+    public static class TestConfig
         {
+        @Autowired
+        private Environment environment ;
+        public String property(final String name)
+            {
+            return environment.getProperty(
+                name
+                );
+            }
         }
      */
+
+    /**
+     * Test configuration.
+     *
+     */
+    public static interface TestConfig
+        {
+        /**
+         * Read a test configuration property.
+         * @param key The property key.
+         * @return The property value.
+         *
+         */
+        public String property(final String key);
+        }
+    
+    /**
+     * Local properties file.
+     *
+     */
+    private final Properties props = new Properties();
+
+    /**
+     * Local properties file.
+     *
+     */
+    public static final String CONFIG_PATH = "user.home" ;
+
+    /**
+     * Local properties file.
+     *
+     */
+    public static final String CONFIG_FILE = "firethorn.properties" ;
+
+    @Before
+    public void before()
+    throws Exception
+        {
+        log.debug("Before ----");
+        this.props.load(
+            new FileInputStream(
+                new File(
+                    System.getProperty(
+                        CONFIG_PATH
+                        ),
+                    CONFIG_FILE
+                    )
+                )
+            );
+        }
+    
+    @After
+    public void after()
+    throws Exception
+        {
+        log.debug("After ----");
+        }
+    
+    /**
+     * Test configuration.
+     *
+     */
+    public TestConfig config()
+        {
+        return new TestConfig()
+            {
+            @Override
+            public String property(String key)
+                {
+                return props.getProperty(
+                    key
+                    );
+                }
+            };
+        }
     }
 
