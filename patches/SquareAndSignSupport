@@ -7,9 +7,9 @@
 # Parent  5e5206c8b3fc77227d5b17503839e4f982388225
 SQUARE & SIGN Support [CDS-Patch]
 
-diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java	Wed Dec 03 22:07:16 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java	Wed Dec 03 23:01:22 2014 +0200
+diff -r 5e5206c8b3fc -r 686a81136048 adql/parser/ADQLParser.java
+--- a/adql/parser/ADQLParser.java	Wed Dec 03 22:07:16 2014 +0200
++++ b/adql/parser/ADQLParser.java	Wed Dec 03 23:01:22 2014 +0200
 @@ -647,6 +647,8 @@
          case MOD:
          case PI:
@@ -1916,9 +1916,9 @@ diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parse
        if (la1tokens[i]) {
          jj_expentry = new int[1];
          jj_expentry[0] = i;
-diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java	Wed Dec 03 22:07:16 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java	Wed Dec 03 23:01:22 2014 +0200
+diff -r 5e5206c8b3fc -r 686a81136048 adql/parser/ADQLParserConstants.java
+--- a/adql/parser/ADQLParserConstants.java	Wed Dec 03 22:07:16 2014 +0200
++++ b/adql/parser/ADQLParserConstants.java	Wed Dec 03 23:01:22 2014 +0200
 @@ -165,47 +165,51 @@
    /** RegularExpression Id. */
    int POWER = 78;
@@ -2020,9 +2020,9 @@ diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parse
      "\"\\\"\"",
      "<REGULAR_IDENTIFIER>",
      "<Letter>",
-diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 22:07:16 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 23:01:22 2014 +0200
+diff -r 5e5206c8b3fc -r 686a81136048 adql/parser/ADQLParserTokenManager.java
+--- a/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 22:07:16 2014 +0200
++++ b/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 23:01:22 2014 +0200
 @@ -50,7 +50,7 @@
     switch(curChar)
     {
@@ -3087,9 +3087,9 @@ diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parse
           }
           break;
         case 2:
-diff -r 5e5206c8b3fc -r 686a81136048 firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
---- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 22:07:16 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 23:01:22 2014 +0200
+diff -r 5e5206c8b3fc -r 686a81136048 adql/parser/adqlGrammar.jj
+--- a/adql/parser/adqlGrammar.jj	Wed Dec 03 22:07:16 2014 +0200
++++ b/adql/parser/adqlGrammar.jj	Wed Dec 03 23:01:22 2014 +0200
 @@ -629,6 +629,8 @@
  |	< MOD: "MOD" >
  |	< PI: "PI" >

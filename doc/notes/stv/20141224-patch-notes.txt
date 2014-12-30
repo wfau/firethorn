@@ -20,13 +20,24 @@
 #
 #
 
-
+## Get copy of github CDS code
 svn co https://github.com/gmantele/taplib
 
+## Create patch directory
 mkdir ~/hg/patches
 cd ~/hg/patches
+
+## Create patches
+## Example: 
 hg export -o InitialGrammarFile_1 -r fa5bcfd32bfc
+
+
+# Replace our firethorn-cds path to match something Gregory will be able to run as a patch
+grep -rl 'firethorn-cds' ./ | xargs sed -i -e 's/firethorn-cds\/adql\/src\/main\/java\///g'
  
+
+# CD to directory to which we want to patch 
+patch -Np2 -d .  < ~/hg/patches/InitialGrammarFile_1
 
 
 

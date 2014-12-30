@@ -7,9 +7,9 @@
 # Parent  65b854cbf712ebcd8d75cba41d324e2538adead2
 % Operator support [CDS-Patch]
 
-diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java	Wed Dec 03 20:54:03 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java	Wed Dec 03 22:07:16 2014 +0200
+diff -r 65b854cbf712 -r 5e5206c8b3fc adql/parser/ADQLParser.java
+--- a/adql/parser/ADQLParser.java	Wed Dec 03 20:54:03 2014 +0200
++++ b/adql/parser/ADQLParser.java	Wed Dec 03 22:07:16 2014 +0200
 @@ -2930,18 +2930,6 @@
      finally { jj_save(15, xla); }
    }
@@ -317,9 +317,9 @@ diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parse
        if (la1tokens[i]) {
          jj_expentry = new int[1];
          jj_expentry[0] = i;
-diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java	Wed Dec 03 20:54:03 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java	Wed Dec 03 22:07:16 2014 +0200
+diff -r 65b854cbf712 -r 5e5206c8b3fc adql/parser/ADQLParserConstants.java
+--- a/adql/parser/ADQLParserConstants.java	Wed Dec 03 20:54:03 2014 +0200
++++ b/adql/parser/ADQLParserConstants.java	Wed Dec 03 22:07:16 2014 +0200
 @@ -31,179 +31,181 @@
    /** RegularExpression Id. */
    int DIVIDE = 11;
@@ -615,9 +615,9 @@ diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parse
      "\"\\\"\"",
      "<REGULAR_IDENTIFIER>",
      "<Letter>",
-diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 20:54:03 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 22:07:16 2014 +0200
+diff -r 65b854cbf712 -r 5e5206c8b3fc adql/parser/ADQLParserTokenManager.java
+--- a/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 20:54:03 2014 +0200
++++ b/adql/parser/ADQLParserTokenManager.java	Wed Dec 03 22:07:16 2014 +0200
 @@ -50,7 +50,7 @@
     switch(curChar)
     {
@@ -2214,9 +2214,9 @@ diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parse
           }
           break;
         case 2:
-diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
---- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 20:54:03 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 22:07:16 2014 +0200
+diff -r 65b854cbf712 -r 5e5206c8b3fc adql/parser/adqlGrammar.jj
+--- a/adql/parser/adqlGrammar.jj	Wed Dec 03 20:54:03 2014 +0200
++++ b/adql/parser/adqlGrammar.jj	Wed Dec 03 22:07:16 2014 +0200
 @@ -506,6 +506,7 @@
  |	< MINUS: "-" >
  |	< ASTERISK: "*" >
@@ -2225,9 +2225,9 @@ diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/parse
  }
  
  /* ******************** */
-diff -r 65b854cbf712 -r 5e5206c8b3fc firethorn-cds/adql/src/main/java/adql/query/operand/OperationType.java
---- a/firethorn-cds/adql/src/main/java/adql/query/operand/OperationType.java	Wed Dec 03 20:54:03 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/query/operand/OperationType.java	Wed Dec 03 22:07:16 2014 +0200
+diff -r 65b854cbf712 -r 5e5206c8b3fc adql/query/operand/OperationType.java
+--- a/adql/query/operand/OperationType.java	Wed Dec 03 20:54:03 2014 +0200
++++ b/adql/query/operand/OperationType.java	Wed Dec 03 22:07:16 2014 +0200
 @@ -28,10 +28,10 @@
   * @see Operation
   */

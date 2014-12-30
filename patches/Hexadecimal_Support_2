@@ -1,0 +1,39 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417650035 -7200
+#      Thu Dec 04 01:40:35 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID fd800478ee494bbcd6228feb07676538c61ee4d9
+# Parent  c9d8a7239b53a5dbc73ac61dbf5e1c1103a39842
+HEX Support [CDS-Patch]
+ 
+diff -r c9d8a7239b53 -r fd800478ee49 adql/parser/adqlGrammar.jj
+--- a/adql/parser/adqlGrammar.jj	Thu Dec 04 01:20:29 2014 +0200
++++ b/adql/parser/adqlGrammar.jj	Thu Dec 04 01:40:35 2014 +0200
+@@ -688,6 +688,16 @@
+ |	< #DIGIT: ["0"-"9"] >
+ }
+ 
++/* *************** */
++/* Hexadecimal numbers */
++/* *************** */
++TOKEN : {
++	< HEX_PREFIX: "0x" >
++|	< HEX_INTEGER: (<HEX_PREFIX>(<HEX_DIGIT>)+) >
++|	< #HEX_DIGIT: ["0"-"9","a"-"f","A"-"F"] >
++}
++
++
+ 							/* ########## */
+ 							/* # SYNTAX # */
+ 							/* ########## */
+@@ -985,7 +995,8 @@
+ String UnsignedNumeric(): {Token t;} {
+ 	(t=<SCIENTIFIC_NUMBER>
+ 	| t=<UNSIGNED_FLOAT>
+-	| t=<UNSIGNED_INTEGER>)
++	| t=<UNSIGNED_INTEGER>
++	| t=<HEX_INTEGER>)
+ 	{return t.image;}
+ }
+ 

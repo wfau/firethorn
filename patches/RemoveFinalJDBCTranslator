@@ -7,9 +7,9 @@
 # Parent  d9d9f7503165aa87eac82bd159dd70cccbecec78
 Remove final from some CDS classes where needed for override [CDS-Patch]
 
-diff -r d9d9f7503165 -r ff3ba2bc9b0e firethorn-cds/adql/src/main/java/adql/db/DBChecker.java
---- a/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:03:49 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:05:45 2014 +0200
+diff -r d9d9f7503165 -r ff3ba2bc9b0e adql/db/DBChecker.java
+--- a/adql/db/DBChecker.java	Wed Dec 03 18:03:49 2014 +0200
++++ b/adql/db/DBChecker.java	Wed Dec 03 18:05:45 2014 +0200
 @@ -364,7 +364,7 @@
  	 * @see #check(ADQLQuery, Stack)
  	 */
@@ -19,9 +19,9 @@ diff -r d9d9f7503165 -r ff3ba2bc9b0e firethorn-cds/adql/src/main/java/adql/db/DB
  		check(query, null);
  	}
  
-diff -r d9d9f7503165 -r ff3ba2bc9b0e firethorn-cds/adql/src/main/java/adql/translator/JDBCTranslator.java
---- a/firethorn-cds/adql/src/main/java/adql/translator/JDBCTranslator.java	Wed Dec 03 18:03:49 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/translator/JDBCTranslator.java	Wed Dec 03 18:05:45 2014 +0200
+diff -r d9d9f7503165 -r ff3ba2bc9b0e adql/translator/JDBCTranslator.java
+--- a/adql/translator/JDBCTranslator.java	Wed Dec 03 18:03:49 2014 +0200
++++ b/adql/translator/JDBCTranslator.java	Wed Dec 03 18:05:45 2014 +0200
 @@ -742,7 +742,7 @@
  	 * 
  	 * @throws TranslationException	If there is an error during the translation.

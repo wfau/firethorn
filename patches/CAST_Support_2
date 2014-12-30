@@ -1,0 +1,216 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417739828 -7200
+#      Fri Dec 05 02:37:08 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID adb1aeb5a87369f090df1a4cd065c1afd1c95d5b
+# Parent  7716fa5f3734da15feac906ce56cbacf08cedaf5
+CAST() Support (2)[CDS-Patch]
+
+diff -r 7716fa5f3734 -r adb1aeb5a873 adql/query/operand/function/CastFunction.java
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/adql/query/operand/function/CastFunction.java	Fri Dec 05 02:37:08 2014 +0200
+@@ -0,0 +1,169 @@
++/**
++ * 
++ */
++package adql.query.operand.function;
++
++import adql.parser.Token;
++import adql.query.ADQLObject;
++import adql.query.operand.ADQLColumn;
++import adql.query.operand.ADQLOperand;
++
++/**
++ * @author Zarquan
++ *
++ */
++public class CastFunction
++extends ADQLFunction
++	{
++
++	private CastFunctionType type ;
++	public CastFunctionType type()
++		{
++		return this.type ;
++		}
++
++	private ADQLOperand oper;
++	public ADQLOperand oper()
++		{
++		return this.oper;
++		}
++	
++	/**
++	 * Public constructor.
++	 * 
++	 */
++	public CastFunction(final Token type, final ADQLOperand oper)
++		{
++		this(
++			CastFunctionType.type(
++				type
++				),
++			oper
++			);
++		}
++
++	/**
++	 * Public constructor.
++	 * 
++	 */
++	public CastFunction(final CastFunctionType type, final ADQLOperand oper)
++		{
++		this.type = type ;
++		this.oper = oper ;
++		}
++	
++	/**
++	 * Public constructor.
++	 * 
++	 */
++	public CastFunction(final CastFunction that)
++	throws Exception 
++		{
++		this.type = that.type();
++		this.oper = (ADQLOperand) that.oper().getCopy();
++		}
++	
++	@Override
++	public boolean isNumeric()
++		{
++		switch(this.type)
++			{
++			case SHORT:
++			case SMALLINT:
++			case INT:
++			case INTEGER:
++			case LONG:
++			case BIGINT:
++			case FLOAT:
++			case DOUBLE:
++				return true ;
++			default :
++				return false ;
++			}
++		}
++
++	@Override
++	public boolean isString()
++		{
++		switch(this.type)
++			{
++			default :
++				return false ;
++			}
++		}
++
++	@Override
++	public String getName()
++		{
++		if (oper instanceof ADQLColumn)
++			{
++			return oper.getName();
++			}
++		else {
++			return "CASTED";
++			}
++		}
++
++	@Override
++	public ADQLObject getCopy()
++	throws Exception
++		{
++		return new CastFunction(
++			this
++			);
++		}
++
++	@Override
++	public int getNbParameters()
++		{
++		return 1;
++		}
++
++	@Override
++	public ADQLOperand[] getParameters()
++		{
++		if (this.oper != null)
++			{
++			return new ADQLOperand[]{
++				this.oper
++				};
++			}
++		else {
++			return new ADQLOperand[0];
++			}
++		}
++
++	@Override
++	public ADQLOperand getParameter(final int index)
++	throws ArrayIndexOutOfBoundsException
++		{
++		switch(index)
++			{
++			case 0:
++				return this.oper;
++			default :
++				throw new ArrayIndexOutOfBoundsException();
++			}
++		}
++
++	@Override
++	public ADQLOperand setParameter(final int index, final ADQLOperand next)
++	throws ArrayIndexOutOfBoundsException
++		{
++		switch(index)
++			{
++			case 0:
++				final ADQLOperand prev = this.oper ;
++				this.oper = next;
++				return prev;
++			default :
++				throw new ArrayIndexOutOfBoundsException();
++			}
++		}
++
++	@Override
++	public boolean isGeometry() {
++		// TODO Auto-generated method stub
++		return false;
++	}
++	}
+diff -r 7716fa5f3734 -r adb1aeb5a873 adql/query/operand/function/CastFunctionType.java
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/adql/query/operand/function/CastFunctionType.java	Fri Dec 05 02:37:08 2014 +0200
+@@ -0,0 +1,30 @@
++/**
++ * 
++ */
++package adql.query.operand.function;
++
++import adql.parser.Token;
++
++/**
++ * @author Zarquan
++ *
++ */
++public enum CastFunctionType
++	{
++	SHORT,
++	SMALLINT,
++	INT,
++	INTEGER,
++	BIGINT,
++	LONG,
++	FLOAT,
++	DOUBLE
++	;
++	
++	public static CastFunctionType type(final Token token)
++		{
++		return valueOf(
++			token.image.toUpperCase()
++			);
++		}
++	}

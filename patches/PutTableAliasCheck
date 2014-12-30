@@ -7,9 +7,9 @@
 # Parent  b84f79b732a3f2bc41a61519c09c36b8eafc7685
 Additional check(), putTableAlias() functions [CDS-Patch]
 
-diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/DBChecker.java
---- a/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:18:39 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/db/DBChecker.java	Wed Dec 03 18:42:19 2014 +0200
+diff -r b84f79b732a3 -r 4f2309d0c5f7 adql/db/DBChecker.java
+--- a/adql/db/DBChecker.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/adql/db/DBChecker.java	Wed Dec 03 18:42:19 2014 +0200
 @@ -420,6 +420,109 @@
  			throw errors;
  	}
@@ -184,9 +184,9 @@ diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/DB
 +	
 +
  }
-diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java
---- a/firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java	Wed Dec 03 18:18:39 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/db/SearchColumnList.java	Wed Dec 03 18:42:19 2014 +0200
+diff -r b84f79b732a3 -r 4f2309d0c5f7 adql/db/SearchColumnList.java
+--- a/adql/db/SearchColumnList.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/adql/db/SearchColumnList.java	Wed Dec 03 18:42:19 2014 +0200
 @@ -29,6 +29,7 @@
  
  import adql.query.IdentifierField;
@@ -227,9 +227,9 @@ diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/db/Se
  
  	/**
  	 * Removes the given alias from this list.
-diff -r b84f79b732a3 -r 4f2309d0c5f7 firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java
---- a/firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java	Wed Dec 03 18:18:39 2014 +0200
-+++ b/firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java	Wed Dec 03 18:42:19 2014 +0200
+diff -r b84f79b732a3 -r 4f2309d0c5f7 adql/parser/QueryChecker.java
+--- a/adql/parser/QueryChecker.java	Wed Dec 03 18:18:39 2014 +0200
++++ b/adql/parser/QueryChecker.java	Wed Dec 03 18:42:19 2014 +0200
 @@ -20,8 +20,13 @@
   *                       Astronomisches Rechen Institut (ARI)
   */
