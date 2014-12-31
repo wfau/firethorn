@@ -113,13 +113,13 @@ extends BaseComponent
         }
 
     /**
-     * The {@link BaseTable} this table is derived from.
+     * The next {@link BaseTable} this table is derived from.
      *
      */
     public BaseTable<?, ?> base();
 
     /**
-     * The root of the chain that this table is derived from.
+     * The root {@link BaseTable} this table is derived from.
      *
      */
     public BaseTable<?, ?> root();

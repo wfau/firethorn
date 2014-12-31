@@ -147,7 +147,7 @@ extends TestBase
             created.endpoint()
             );
         }
-    
+
     @Test
     public void testCreateSelect001()
     throws Exception
@@ -214,16 +214,40 @@ extends TestBase
             selected.endpoint()
             );
         }
-    
+
     @Test
-    public void testServiceLive000()
+    public void testPrimary001()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().primary();
+        assertNotNull(
+            created
+            );
+        assertNotNull(
+            created.ident()
+            );
+        assertNotNull(
+            created.owner()
+            );
+        assertEquals(
             config().property(
                 "firethorn.ogsadai.endpoint"
-                )
+                ),
+            created.name()
             );
+        assertEquals(
+            config().property(
+                "firethorn.ogsadai.endpoint"
+                ),
+            created.endpoint()
+            );
+        }
+
+    @Test
+    public void testPrimary002()
+    throws Exception
+        {
+        final OgsaService created = factories().ogsa().services().primary();
         assertNotNull(
             created
             );
