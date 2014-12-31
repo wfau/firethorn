@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 
 /**
  *
@@ -143,18 +144,6 @@ extends BaseComponent
     public interface Metadata
         {
         /**
-         * The resource name.
-         * 
-        public String name();
-         */
-
-        /**
-         * The resource description.
-         * 
-        public String text();
-         */
-
-        /**
          * The OGSA-DAI metadata.
          * 
          */
@@ -164,12 +153,14 @@ extends BaseComponent
              * Get the OGSA-DAI resource ID.
              *
              */
+            @Deprecated
             public String id();
             }
         /**
          * The OGSA-DAI metadata.
          * 
          */
+        @Deprecated
         public Ogsa ogsa();
         }
 
@@ -178,5 +169,26 @@ extends BaseComponent
      *
      */
     public BaseResource.Metadata meta();
+
+    /**
+     * Interface to access the {@link OgsaBaseResource} OGSA-DAI resources.
+     * @todo Move this to RootResource rather than BaseResource.
+     * 
+     */
+    public interface OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaBaseResource} OGSA-DAI resource.
+         * 
+         */
+        public OgsaBaseResource primary();
+        }
+
+    /**
+     * Access the {@link OgsaBaseResource} OGSA-DAI resources.
+     * @todo Move this to RootResource rather than BaseResource.
+     * 
+     */
+    public OgsaBaseResources ogsa();
     
     }

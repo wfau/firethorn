@@ -24,6 +24,9 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource.OgsaBaseResources;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
  *
@@ -103,6 +106,7 @@ extends BaseResource<JdbcSchema>
          * @todo Move this to a data space interface.
          *
          */
+        @Deprecated
         public JdbcResource userdata();
 
         }
@@ -233,4 +237,31 @@ extends BaseResource<JdbcSchema>
     @Override
     public JdbcResource.Metadata meta();
     
+    /**
+     * Interface to access the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * 
+     */
+    public interface OgsaJdbcResources
+    extends OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaJdbcResource} OGSA-DAI resource.
+         * 
+         */
+        public OgsaJdbcResource primary();
+        
+        /**
+         * Select all the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
+         * 
+         */
+        public Iterable<OgsaJdbcResource> select();
+
+        }
+
+    /**
+     * Access the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * 
+     */
+    public OgsaJdbcResources ogsa();
+
     }

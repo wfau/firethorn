@@ -87,6 +87,12 @@ public interface OgsaService
     public static interface EntityFactory
     extends Entity.EntityFactory<OgsaService>
         {
+        /**
+         * Select the primary service.
+         * @return The primary {@link OgsaService}. 
+         *
+         */
+        public OgsaService primary();
 
         /**
          * Select all the services.
@@ -234,7 +240,7 @@ public interface OgsaService
         {
 
         /**
-         * Create a new {@link OgsaJdbcResource} for an {@link JdbcResource}.
+         * Create a new {@link OgsaJdbcResource} for a {@link JdbcResource}.
          *
          */
         public OgsaJdbcResource create(final JdbcResource source);
@@ -246,10 +252,16 @@ public interface OgsaService
         public Iterable<OgsaJdbcResource> select();
 
         /**
-         * List all the {@link OgsaJdbcResource}(s) for an {@link JdbcResource}.
+         * List all the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
          *
          */
         public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+
+        /**
+         * Get the primary {@link OgsaJdbcResource} for a {@link JdbcResource}.
+         *
+         */
+        public OgsaJdbcResource primary(final JdbcResource source);
 
         }
 

@@ -102,5 +102,40 @@ extends TestBase
         target.create();
         
         }
+
+    @Test
+    public void testCreate003()
+    throws Exception
+        {
+        final OgsaService service = factories().ogsa().services().primary();
+
+        final JdbcResource resource = factories().jdbc().resources().create(
+            "ogsa-id",
+            "ATLASDR1",
+            "atlas",
+            config().property(
+                "firethorn.atlas.url"
+                ),
+            config().property(
+                "firethorn.atlas.user"
+                ),
+            config().property(
+                "firethorn.atlas.pass"
+                ),
+            config().property(
+                "firethorn.atlas.driver"
+                )
+            );
+        
+        final OgsaJdbcResource target = service.jdbc().create(
+            resource
+            );
+
+        target.create();
+        target.create();
+        
+        }
+    
+    
     }
 

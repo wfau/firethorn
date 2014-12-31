@@ -80,7 +80,30 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
                     )
             );
         }
-    
+
+    @Value("${firethorn.ogsadai.endpoint}")
+    private String endpoint ;
+
+    @Override
+    @CreateMethod
+    public OgsaService primary()
+        {
+        // Really really simple - just get the first.
+        OgsaService found = super.first(
+            super.query(
+                "OgsaService-select-all"
+                )
+            );
+        // If we don't have one, create one.
+        if (found == null)
+            {
+            found = create(
+                endpoint
+                );   
+            }
+        return found ;
+        }
+
     @Override
     @CreateMethod
     public OgsaService create(final String endpoint)

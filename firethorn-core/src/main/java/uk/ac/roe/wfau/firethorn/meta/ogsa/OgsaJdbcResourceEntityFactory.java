@@ -74,10 +74,27 @@ implements OgsaJdbcResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaJdbcResource-select-service"
-                )
+                ).setEntity(
+                    "service",
+                    service
+                    )
             );
         }
 
+    @Override
+    @SelectMethod
+    public Iterable<OgsaJdbcResource> select(JdbcResource source)
+        {
+        return super.iterable(
+            super.query(
+                "OgsaJdbcResource-select-source"
+                ).setEntity(
+                    "source",
+                    source
+                    )
+            );
+        }
+    
     @Override
     @SelectMethod
     public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source)
@@ -85,7 +102,13 @@ implements OgsaJdbcResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaJdbcResource-select-service-source"
-                )
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
+                    )
             );
         }
 
@@ -99,5 +122,42 @@ implements OgsaJdbcResource.EntityFactory
                 source
                 )
             );
+        }
+
+    @Override
+    @CreateMethod
+    public OgsaJdbcResource primary(JdbcResource source)
+        {
+        return this.primary(
+            factories().ogsa().services().primary(),
+            source
+            );
+        }
+
+    @Override
+    @CreateMethod
+    public OgsaJdbcResource primary(OgsaService service, JdbcResource source)
+        {
+        // Really really simple - just get the first. 
+        OgsaJdbcResource found = super.first(
+            super.query(
+                "OgsaJdbcResource-select-service-source"
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
+                    )
+            );
+        // If we don't have one, create one.
+        if (found == null)
+            {
+            found = create(
+                service,
+                source
+                );
+            }
+        return found ;
         }
     }

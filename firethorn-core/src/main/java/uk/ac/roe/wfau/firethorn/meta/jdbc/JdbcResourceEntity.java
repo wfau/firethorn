@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
  *
@@ -702,6 +703,29 @@ public class JdbcResourceEntity
             public Ogsa ogsa()
                 {
                 return ogsameta();
+                }
+            };
+        }
+
+    @Override
+    public OgsaJdbcResources ogsa()
+        {
+        return new OgsaJdbcResources()
+            {
+            @Override
+            public OgsaJdbcResource primary()
+                {
+                return factories().ogsa().factories().jdbc().primary(
+                    JdbcResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select()
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    JdbcResourceEntity.this
+                    );
                 }
             };
         }

@@ -727,7 +727,7 @@ implements AdqlQuery, AdqlParserQuery
         nullable = true,
         updatable = true
         )
-    private String resource ;
+    private String ogsaid ;
 
     protected void params(final AdqlQuery.QueryParam params)
         {
@@ -1012,7 +1012,7 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our primary resource.
-                    this.resource = primary().meta().ogsa().id();
+                    this.ogsaid = primary().meta().ogsa().id();
                     }
                 else if (this.mode == Mode.DISTRIBUTED)
                     {
@@ -1022,7 +1022,7 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our DQP resource.
-                    this.resource = this.dqp;
+                    this.ogsaid = this.dqp;
                     }
                 else {
                     log.debug("Processing as [DIRECT] query");
@@ -1034,7 +1034,7 @@ implements AdqlQuery, AdqlParserQuery
                         //
                         // Use our primary resource.
                         this.mode = Mode.DIRECT;
-                        this.resource = primary().meta().ogsa().id();
+                        this.ogsaid = primary().meta().ogsa().id();
                         }
                     else {
                         //
@@ -1046,7 +1046,7 @@ implements AdqlQuery, AdqlParserQuery
                         //
                         // Use our DQP resource.
                         this.mode = Mode.DISTRIBUTED;
-                        this.resource = this.dqp;
+                        this.ogsaid = this.dqp;
                         }
                     }
                 //
@@ -1169,7 +1169,7 @@ implements AdqlQuery, AdqlParserQuery
                     // TODO - Check for valid resource ident in prepare().
                     // TODO - Make the target ogsa resource a property. 
                     //final String source = ((mode() == Mode.DIRECT) ? primary().meta().ogsa().id() : params().dqp());
-                    log.debug("-- Resource [{}]", AdqlQueryEntity.this.resource);
+                    log.debug("-- Resource [{}]", AdqlQueryEntity.this.ogsaid);
                     final String tablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
                     log.debug("-- Table    [{}]", tablename);
     
@@ -1179,7 +1179,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public String source()
                                 {
-                                return AdqlQueryEntity.this.resource ;
+                                return AdqlQueryEntity.this.ogsaid ;
                                 }
                             @Override
                             public String query()

@@ -316,6 +316,15 @@ public class OgsaServiceEntity
                     source
                     );
                 }
+
+            @Override
+            public OgsaJdbcResource primary(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().primary(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
             };
         }
     }

@@ -57,6 +57,18 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
             name  = "OgsaJdbcResource-select-all",
             query = "FROM OgsaJdbcResourceEntity ORDER BY name asc, ident desc"
             ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-service",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-source",
+            query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-service-source",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY name asc, ident desc"
+            )
         }
     )
 public class OgsaJdbcResourceEntity

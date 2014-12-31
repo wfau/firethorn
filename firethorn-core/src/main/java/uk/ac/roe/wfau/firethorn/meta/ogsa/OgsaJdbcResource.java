@@ -63,16 +63,24 @@ public interface OgsaJdbcResource
 
         /**
          * Select the {@link OgsaJdbcResource}(s) for a {@link OgsaService}.
-         * @param service The parent {@link OgsaService} service.
+         * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
          *
          */
         public Iterable<OgsaJdbcResource> select(final OgsaService service);
 
         /**
+         * Select all the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
+         * @param source The {@link JdbcResource} resource.
+         * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+         *
+         */
+        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+
+        /**
         * Select the {@link OgsaJdbcResource}(s) for an {@link OgsaService} and {@link JdbcResource}.
-        * @param service The parent {@link OgsaService}.
-        * @param source  The source {@link JdbcResource}.
+        * @param service The {@link OgsaService}.
+        * @param source  The {@link JdbcResource}.
         * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
         *
         */
@@ -80,13 +88,30 @@ public interface OgsaJdbcResource
 
         /**
          * Create a new {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}..
-         * @param service The parent {@link OgsaService}.
-         * @param source  The source {@link JdbcResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link JdbcResource}.
          * @return A new {@link OgsaJdbcResource}.
          *
          */
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource source);
-        
+
+        /**
+         * Select the primary {@link OgsaJdbcResource} for a {@link JdbcResource}.
+         * @param source The {@link JdbcResource} resource.
+         * @return The primary {@link OgsaJdbcResource}.
+         *
+         */
+        public OgsaJdbcResource primary(final JdbcResource source);
+
+        /**
+         * Select the primary {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link JdbcResource}.
+         * @return The primary {@link OgsaJdbcResource}.
+         *
+         */
+        public OgsaJdbcResource primary(final OgsaService service, final JdbcResource source);
+
         }
     
     /**
