@@ -31,7 +31,7 @@ extends TestBase
     {
     
     @Test
-    public void testInit001()
+    public void testCreate001()
     throws Exception
         {
         final OgsaService service = factories().ogsa().services().create(
@@ -40,7 +40,7 @@ extends TestBase
                 )
             );
 
-        JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             "ogsa-id",
             "ATLASDR1",
             "atlas",
@@ -58,16 +58,16 @@ extends TestBase
                 )
             );
         
-        OgsaJdbcResource created = service.jdbc().create(
+        final OgsaJdbcResource target = service.jdbc().create(
             resource
             );
 
-        created.create();
+        target.create();
         
         }
 
     @Test
-    public void testInit002()
+    public void testCreate002()
     throws Exception
         {
         final OgsaService service = factories().ogsa().services().create(
@@ -76,7 +76,7 @@ extends TestBase
                 )
             );
 
-        JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             "ogsa-id",
             "ATLASDR1",
             "atlas",
@@ -94,12 +94,12 @@ extends TestBase
                 )
             );
         
-        OgsaJdbcResource created = service.jdbc().create(
+        final OgsaJdbcResource target = service.jdbc().create(
             resource
             );
 
-        created.create();
-        created.create();
+        target.create();
+        target.create();
         
         }
     }

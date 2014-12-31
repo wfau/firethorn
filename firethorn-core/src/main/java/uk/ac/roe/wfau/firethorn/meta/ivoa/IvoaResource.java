@@ -79,6 +79,7 @@ extends BaseResource<IvoaSchema>
          * @todo - move to services
          *
          */
+        @Deprecated
         public IvoaSchema.EntityFactory schemas();
 
         }
