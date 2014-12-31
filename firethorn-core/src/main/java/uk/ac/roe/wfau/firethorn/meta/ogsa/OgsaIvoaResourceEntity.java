@@ -30,16 +30,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
-
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
 /**
  *
@@ -58,6 +53,18 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
         @NamedQuery(
             name  = "OgsaIvoaResource-select-all",
             query = "FROM OgsaIvoaResourceEntity ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-service",
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-source",
+            query = "FROM OgsaIvoaResourceEntity WHERE source = :source ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-service-source",
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND source = :source ORDER BY name asc, ident desc"
             ),
         }
     )

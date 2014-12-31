@@ -63,20 +63,28 @@ public interface OgsaIvoaResource
 
         /**
          * Select the {@link OgsaIvoaResource}(s) for a {@link OgsaService}.
-         * @param service The parent {@link OgsaService} service.
+         * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
          *
          */
         public Iterable<OgsaIvoaResource> select(final OgsaService service);
 
         /**
-        * Select the {@link OgsaIvoaResource}(s) for an {@link OgsaService} and {@link IvoaResource}.
-        * @param service The parent {@link OgsaService}.
-        * @param source  The source {@link IvoaResource}.
-        * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
-        *
-        */
-       public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+         * Select the {@link OgsaIvoaResource}(s) for an {@link IvoaResource}.
+         * @param source  The {@link IvoaResource}.
+         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         *
+         */
+        public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+
+        /**
+         * Select the {@link OgsaIvoaResource}(s) for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link IvoaResource}.
+         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         *
+         */
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
 
         /**
          * Create a new {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
@@ -86,6 +94,23 @@ public interface OgsaIvoaResource
          *
          */
         public OgsaIvoaResource create(final OgsaService service, final IvoaResource source);
+
+        /**
+         * Select the primary {@link OgsaIvoaResource} for a {@link IvoaResource}.
+         * @param source The {@link IvoaResource} resource.
+         * @return The primary {@link OgsaIvoaResource}.
+         *
+         */
+        public OgsaIvoaResource primary(final IvoaResource source);
+
+        /**
+         * Select the primary {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link IvoaResource}.
+         * @return The primary {@link OgsaIvoaResource}.
+         *
+         */
+        public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source);
 
         }
     

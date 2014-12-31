@@ -284,4 +284,11 @@ implements AdqlResource
                 }
             };
         }
+
+    @Override
+    public uk.ac.roe.wfau.firethorn.meta.base.BaseResource.OgsaBaseResources ogsa()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
     }

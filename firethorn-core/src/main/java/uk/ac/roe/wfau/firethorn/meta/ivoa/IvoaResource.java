@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 
 /**
  *
@@ -180,5 +181,32 @@ extends BaseResource<IvoaSchema>
 
     @Override
     public IvoaResource.Metadata meta();
+
+    /**
+     * Interface to access the {@link OgsaIvoaResource} OGSA-DAI resources.
+     * 
+     */
+    public interface OgsaIvoaResources
+    extends OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaIvoaResource} OGSA-DAI resource.
+         * 
+         */
+        public OgsaIvoaResource primary();
+        
+        /**
+         * Select all the {@link OgsaIvoaResource} OGSA-DAI resources for this {@link IvoaResource}.
+         * 
+         */
+        public Iterable<OgsaIvoaResource> select();
+
+        }
+
+    /**
+     * Access the {@link OgsaIvoaResource} OGSA-DAI resources.
+     * 
+     */
+    public OgsaIvoaResources ogsa();
     
     }

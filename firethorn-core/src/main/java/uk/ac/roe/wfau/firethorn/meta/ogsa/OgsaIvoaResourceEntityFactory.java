@@ -74,7 +74,23 @@ implements OgsaIvoaResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaIvoaResource-select-service"
-                )
+                ).setEntity(
+                    "service",
+                    service
+                    )
+            );
+        }
+
+    @Override
+    public Iterable<OgsaIvoaResource> select(IvoaResource source)
+        {
+        return super.iterable(
+            super.query(
+                "OgsaIvoaResource-select-source"
+                ).setEntity(
+                    "source",
+                    source
+                    )
             );
         }
 
@@ -85,7 +101,13 @@ implements OgsaIvoaResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaIvoaResource-select-service-source"
-                )
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
+                    )
             );
         }
 
@@ -101,4 +123,40 @@ implements OgsaIvoaResource.EntityFactory
             );
         }
 
+    @Override
+    @CreateMethod
+    public OgsaIvoaResource primary(IvoaResource source)
+        {
+        return this.primary(
+            factories().ogsa().services().primary(),
+            source
+            );
+        }
+
+    @Override
+    @CreateMethod
+    public OgsaIvoaResource primary(OgsaService service, IvoaResource source)
+        {
+        // Really really simple - just get the first. 
+        OgsaIvoaResource found = super.first(
+            super.query(
+                "OgsaIvoaResource-select-service-source"
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
+                    )
+            );
+        // If we don't have one, create one.
+        if (found == null)
+            {
+            found = create(
+                service,
+                source
+                );
+            }
+        return found ;
+        }
     }
