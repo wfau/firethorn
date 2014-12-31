@@ -31,24 +31,6 @@ extends BaseComponent
     {
 
     /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<ResourceType extends BaseResource<?>>
-    extends Entity.IdentFactory<ResourceType>
-        {
-        }
-     */
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<ResourceType extends BaseResource<?>>
-    extends NamedEntity.NameFactory<ResourceType>
-        {
-        }
-     */
-    
-    /**
      * {@link Entity.LinkFactory} interface.
      *
      */
