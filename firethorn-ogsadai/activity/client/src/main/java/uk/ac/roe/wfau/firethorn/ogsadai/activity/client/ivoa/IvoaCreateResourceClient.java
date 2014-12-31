@@ -58,7 +58,7 @@ extends BaseActivity implements Activity
         public Boolean quickstart();
         
         /**
-         * The UWS service interval, as an Integer.
+         * The UWS service poll interval, as an Integer.
          *
          */
         public Integer interval();

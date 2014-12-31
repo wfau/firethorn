@@ -23,12 +23,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
+ * Tests for {@link OgsaJdbcResource} connections.
  *
  */
 public class OgsaJdbcResourceTestCase
 extends TestBase
     {
-
     
     @Test
     public void testInit001()
@@ -62,7 +62,7 @@ extends TestBase
             resource
             );
 
-        created.init();
+        created.create();
         
         }
 
@@ -98,8 +98,8 @@ extends TestBase
             resource
             );
 
-        created.init();
-        created.init();
+        created.create();
+        created.create();
         
         }
     }

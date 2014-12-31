@@ -121,10 +121,10 @@ extends BaseResource<IvoaSchema>
          * The resource endpoint URL.
          *
          */
-        public String url();
+        public String endpoint();
 
         /**
-         * Get the service capabilities.
+         * Get the endpoint capabilities.
          * 
          */
 
@@ -140,7 +140,7 @@ extends BaseResource<IvoaSchema>
          * Add a new service Endpoint.
          * 
          */
-        public Endpoint create(final String url);
+        public Endpoint create(final String endpoint);
 
         /**
          * Select a list of the service Endpoint(s).

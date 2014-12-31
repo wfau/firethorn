@@ -77,7 +77,7 @@ implements IvoaResource.Endpoint
         )
     private String url;
     @Override
-    public String url()
+    public String endpoint()
         {
         return this.url;
         }

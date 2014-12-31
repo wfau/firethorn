@@ -43,7 +43,9 @@ extends IvoaResourceTestBase
                 )
             );
         final CreateResourceResult ivoadata = ivoacreator.execute(
-            source
+            new IvoaCreateResourceWorkflow.SimpleParam(
+                source.endpoint()
+                )
             );
         assertNotNull(
             ivoadata

@@ -125,94 +125,88 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public Status init()
+    public Status create()
         {
         //
-        // If the status is CREATED.
-        if (status() == Status.CREATED)
+        // If we already have an ODSA-DAI resource ID.
+        if (ogsaid() != null)
             {
-            //
-            // If we already have an ODSA-DAI resource ID.
-            if (ogsaid() != null)
-                {
-                return null ;
-                }
-            //
-            // If we don't have an ODSA-DAI resource ID.
-            else {
-                return create() ;
-                }
-            }
-        else {
             return status() ;
             }
+        //
+        // If we don't have an ODSA-DAI resource ID.
+        else {
+            JdbcCreateResourceWorkflow workflow = null;
+            try {
+                workflow = new JdbcCreateResourceWorkflow(
+                    service().endpoint()
+                    );
+                }
+            catch (MalformedURLException ouch)
+                {
+                return status(
+                    Status.ERROR
+                    );
+                }
+
+            final CreateResourceResult response = workflow.execute(
+                new JdbcCreateResourceWorkflow.Param()
+                    {
+                    @Override
+                    public String jdbcurl()
+                        {
+                        return source.connection().uri();
+                        }
+                    @Override
+                    public String username()
+                        {
+                        return source.connection().user();
+                        }
+                    @Override
+                    public String password()
+                        {
+                        return source.connection().pass();
+                        }
+                    @Override
+                    public String driver()
+                        {
+                        return source.connection().driver();
+                        }
+                    @Override
+                    public boolean writable()
+                        {
+                        return false;
+                        }
+                    }
+                );
+
+            log.debug("Status  [{}]", response.status());
+            log.debug("Created [{}]", response.resource());
+    
+            if (response.status() == WorkflowResult.Status.COMPLETED)
+                {
+                ogsaid(
+                    response.resource().toString()
+                    );
+                return status(
+                    Status.ACTIVE
+                    );
+                }
+    
+            else {
+                return status(
+                    Status.ERROR
+                    );
+                }
+            }
         }
 
-    
-    private Status create()
+    @Override
+    public Status release()
         {
-        JdbcCreateResourceWorkflow workflow = null;
-        try
-            {
-            workflow = new JdbcCreateResourceWorkflow(
-                new URL(
-                    service().endpoint()
-                    )
-                );
-            }
-        catch (MalformedURLException ouch)
-            {
-            }
-
-        final CreateResourceResult created = workflow.execute(
-            new JdbcCreateResourceWorkflow.Param()
-                {
-                @Override
-                public String jdbcurl()
-                    {
-                    return source.connection().uri();
-                    }
-                @Override
-                public String username()
-                    {
-                    return source.connection().user();
-                    }
-                @Override
-                public String password()
-                    {
-                    return source.connection().pass();
-                    }
-                @Override
-                public String driver()
-                    {
-                    return source.connection().driver();
-                    }
-                @Override
-                public boolean writable()
-                    {
-                    return false;
-                    }
-                }
+        throw new UnsupportedOperationException(
+            "Release not implemented yet"
             );
-
-        log.debug("Status  [{}]", created.status());
-        log.debug("Request [{}]", created.request());
-        log.debug("Created [{}]", created.resource());
-
-        if (created.status() == WorkflowResult.Status.COMPLETED)
-            {
-            ogsaid(
-                created.resource().toString()
-                );
-            return status(
-                Status.CREATED
-                );
-            }
-
-        else {
-            return status(
-                Status.ERROR
-                );
-            }
         }
     }
+        
