@@ -193,27 +193,6 @@ extends BaseResource<JdbcSchema>
     public void catalog(final String catalog);
 
     /**
-     * Get the JDBC type for an ADQL type.
-     * Do we need this here ?
-     *
-    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type);
-     */
-
-    /**
-     * Get the JDBC size/precision for an ADQL type.
-     * Do we need this here ?
-     *
-    public Integer jdbcsize(final AdqlColumn.OldAdqlType type);
-     */
-
-    /**
-     * Get the JDBC size/precision for a JDBC type.
-     * Do we need this here ?
-     *
-    public Integer jdbcsize(final JdbcColumn.OldJdbcType type);
-     */
-
-    /**
      * The {@link JdbcResource} metadata.
      *
      */
@@ -221,14 +200,14 @@ extends BaseResource<JdbcSchema>
     extends BaseResource.Metadata
         {
         /**
-         * The JDBC metadata.
+         * JDBC specific metadata.
          * 
          */
         public interface Jdbc
-            {
-            }
+            {}
+
         /**
-         * The JDBC metadata.
+         * Access to the JDBC specific metadata.
          * 
          */
         public Jdbc jdbc();
@@ -238,7 +217,7 @@ extends BaseResource<JdbcSchema>
     public JdbcResource.Metadata meta();
     
     /**
-     * Interface to access the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * Interface to access the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
      * 
      */
     public interface OgsaJdbcResources
@@ -259,7 +238,7 @@ extends BaseResource<JdbcSchema>
         }
 
     /**
-     * Access the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources.
      * 
      */
     public OgsaJdbcResources ogsa();
