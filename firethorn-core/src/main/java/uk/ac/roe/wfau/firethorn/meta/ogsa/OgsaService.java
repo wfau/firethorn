@@ -102,7 +102,7 @@ public interface OgsaService
         public Iterable<OgsaService> select();
 
         /**
-         * Select all the services with a particurlar status.
+         * Select all the services with a particular status.
          * @return An {@link Iterable} set of {@link OgsaService}(s). 
          *
          */
@@ -110,7 +110,7 @@ public interface OgsaService
 
         /**
          * Create a new service.
-         * @param endpoint The web-service endpoint URL.
+         * @param endpoint The service endpoint URL.
          * @return A new {@link OgsaService}.
          *
          */
@@ -118,8 +118,8 @@ public interface OgsaService
 
         /**
          * Create a new service.
-         * @param name     The web-service name.
-         * @param endpoint The web-service endpoint URL.
+         * @param name     The service name.
+         * @param endpoint The service endpoint URL.
          * @return A new {@link OgsaService}.
          *
          */
@@ -127,10 +127,10 @@ public interface OgsaService
 
         /**
          * Create a new service.
-         * @param proto The web-service endpoint URL protocol {http|https}.
-         * @param host  The web-service endpoint URL host {localhost}.
-         * @param port  The web-service endpoint URL port {8080}.
-         * @param path  The web-service endpoint URL path {ogsadai}.
+         * @param proto The service endpoint URL protocol {http|https}.
+         * @param host  The service endpoint URL host {localhost}.
+         * @param port  The service endpoint URL port {8080}.
+         * @param path  The service endpoint URL path {ogsadai}.
          * @return A new {@link OgsaService}.
          *
          */
@@ -138,11 +138,11 @@ public interface OgsaService
 
         /**
          * Create a new service.
-         * @param name  The web-service name.
-         * @param proto The web-service endpoint URL protocol {http|https}.
-         * @param host  The web-service endpoint URL host {localhost}.
-         * @param port  The web-service endpoint URL port {8080}.
-         * @param path  The web-service endpoint URL path {ogsadai}.
+         * @param name  The service name.
+         * @param proto The service endpoint URL protocol {http|https}.
+         * @param host  The service endpoint URL host {localhost}.
+         * @param port  The service endpoint URL port {8080}.
+         * @param path  The service endpoint URL path {ogsadai}.
          * @return A new {@link OgsaService}.
          *
          */
@@ -151,7 +151,7 @@ public interface OgsaService
         }
 
     /**
-     * Enum for the OGSA-DAI web-service status.
+     * Enum for the service status.
      * 
      */
     public enum Status
@@ -161,7 +161,19 @@ public interface OgsaService
         ERROR(),
         UNKNOWN();
         } 
-    
+
+    /**
+     * Get the service status.
+     * 
+     */
+    public Status status();
+
+    /**
+     * Set the service status.
+     * 
+     */
+    public Status status(final Status status);
+
     /**
      * The OGSA-DAI service endpoint URL.
      * @return The endpoint URL.
@@ -186,15 +198,15 @@ public interface OgsaService
     public String version();
 
     /**
-     * Get the service status.
-     * @return The service status.
+     * Get the latest HTTP status code.
+     * @return The HTTP status code.
      *
      */
     public HttpStatus http();
 
     /**
-     * Check the service status.
-     * @return The service status.
+     * Check the HTTP status.
+     * @return The HTTP status code.
      *
      */
     public HttpStatus ping();

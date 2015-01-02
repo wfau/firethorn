@@ -55,19 +55,19 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
         {
         @NamedQuery(
             name  = "OgsaJdbcResource-select-all",
-            query = "FROM OgsaJdbcResourceEntity ORDER BY name asc, ident desc"
+            query = "FROM OgsaJdbcResourceEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY name asc, ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-source",
-            query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY name asc, ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service-source",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY name asc, ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
             )
         }
     )
@@ -137,7 +137,7 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public Status create()
+    public Status connect()
         {
         //
         // If we already have an ODSA-DAI resource ID.

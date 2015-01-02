@@ -125,7 +125,7 @@ public interface OgsaJdbcResource
      * @return The resource status.
      *  
      */
-    public Status create();
+    public Status connect();
 
     /**
      * Release the OGSA-DAI resource.

@@ -388,18 +388,6 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String catalog, final String schema)
             throws NameNotFoundException
                 {
-                if ("FIRETHORN_TEST_DATA".equals(catalog))
-                    {
-                    log.debug("FIRETHORN_TEST_DATA");
-                    }
-/*
-                return select(
-                    factories().jdbc().schemas().names().fullname(
-                        catalog,
-                        schema
-                        )
-                    );
- */
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,
                     catalog,
@@ -430,9 +418,8 @@ public class JdbcResourceEntity
                     }
                 catch (final MetadataException ouch)
                     {
-                    log.warn("Exception trying to access JDBC metadata");
-                    throw new EntityServiceException(
-                        "Exception trying to access JDBC metadata",
+                    throw new EntityNotFoundException(
+                        "Unable to load JDBC metadata",
                         ouch
                         );
                     }

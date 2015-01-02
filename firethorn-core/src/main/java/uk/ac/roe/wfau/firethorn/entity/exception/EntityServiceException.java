@@ -32,25 +32,25 @@ public class EntityServiceException
     extends FirethornUncheckedException
     {
     /**
-     * Serialzable version UID.
+     * Generated serialzable version UID.
      *
      */
     private static final long serialVersionUID = 3260535328135842568L;
 
     /**
-     * Public constructor.
+     * Protected constructor.
      *
      */
-    public EntityServiceException()
+    protected EntityServiceException()
         {
         super();
         }
 
     /**
-     * Public constructor.
+     * Protected constructor.
      *
      */
-    public EntityServiceException(final String message)
+    protected EntityServiceException(final String message)
         {
         super(
             message
@@ -58,10 +58,10 @@ public class EntityServiceException
         }
 
     /**
-     * Public constructor.
+     * Protected constructor.
      *
      */
-    public EntityServiceException(final Throwable cause)
+    protected EntityServiceException(final Throwable cause)
         {
         super(
             cause
@@ -69,10 +69,10 @@ public class EntityServiceException
         }
 
     /**
-     * Public constructor.
+     * Protected constructor.
      *
      */
-    public EntityServiceException(final String message, final Throwable cause)
+    protected EntityServiceException(final String message, final Throwable cause)
         {
         super(
             message,

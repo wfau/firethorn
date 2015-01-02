@@ -34,11 +34,7 @@ extends TestBase
     public void testCreate001()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().create(
-            config().property(
-                "firethorn.ogsadai.endpoint"
-                )
-            );
+        final OgsaService service = factories().ogsa().services().primary();
 
         final IvoaResource resource = factories().ivoa().resources().create(
             "ogsa:ident",
@@ -61,11 +57,7 @@ extends TestBase
     public void testCreate002()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().create(
-            config().property(
-                "firethorn.ogsadai.endpoint"
-                )
-            );
+        final OgsaService service = factories().ogsa().services().primary();
 
         final IvoaResource resource = factories().ivoa().resources().create(
             "ogsa:ident",

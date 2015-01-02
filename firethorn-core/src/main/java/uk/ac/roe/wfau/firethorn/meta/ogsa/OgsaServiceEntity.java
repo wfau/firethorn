@@ -101,6 +101,11 @@ public class OgsaServiceEntity
      */
     protected static final String DB_SERVICE_STATUS_COL = "status";
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_HTTP_STATUS_COL = "http";
     
     /**
      * Protected constructor. 
@@ -116,6 +121,7 @@ public class OgsaServiceEntity
      * @param name The service name.
      * @param endpoint The service endpoint.
      * @throws NameFormatException
+     * @todo Start status as CREATED, explicitly set to ACTIVE.
      *
      */
     public OgsaServiceEntity(final String name, final String endpoint) throws NameFormatException
@@ -123,9 +129,36 @@ public class OgsaServiceEntity
         super(
             name
             );
+        this.status = Status.ACTIVE;
         this.endpoint = endpoint; 
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_SERVICE_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Status status ;
+    @Override
+    public Status status()
+        {
+        return this.status ;
+        }
+    @Override
+    public Status status(final Status value)
+        {
+        this.status = value ;
+        return this.status ;
+        }
+
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -157,9 +190,12 @@ public class OgsaServiceEntity
         {
         return this.version;
         }
-
+   
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = DB_SERVICE_STATUS_COL,
+        name = DB_HTTP_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true

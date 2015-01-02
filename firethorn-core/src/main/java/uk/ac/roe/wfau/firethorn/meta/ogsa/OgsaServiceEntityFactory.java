@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -24,12 +26,14 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService.Status;
 
 /**
  * {@link OgsaService.EntityFactory} implementation.
  *
  */
+@Slf4j
 @Repository
 public class OgsaServiceEntityFactory
 extends AbstractEntityFactory<OgsaService>
@@ -88,20 +92,50 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
     @CreateMethod
     public OgsaService primary()
         {
-        // Really really simple - just get the first.
-        OgsaService found = super.first(
+        log.debug("primary()");
+        // Really really simple - just get the first ACTIVE service.
+        OgsaService service = super.first(
             super.query(
-                "OgsaService-select-all"
-                )
+                "OgsaService-select-status"
+                ).setString(
+                    "status",
+                    OgsaService.Status.ACTIVE.name()
+                    )
             );
-        // If we don't have one, create one.
-        if (found == null)
+
+        // If we don't have an ACTIVE service, create a new one.
+        // Bug - this can create multiple broken services.
+        if (service == null)
             {
-            found = create(
-                endpoint
-                );   
+            log.debug("No primary OgsaService found - creating a new one");
+            if (endpoint == null)
+                {
+                throw new PrimaryServiceException(
+                    "Primary OGSA-DAI service endpoint is null"
+                    ); 
+                }
+            else {
+                try {
+                    service = create(
+                        endpoint
+                        );   
+                    }
+                catch (Exception ouch)
+                    {
+                    throw new PrimaryServiceException(
+                        "Unable to create primary OGSA-DAI service",
+                        ouch
+                        ); 
+                    }
+                if (service.status() != Status.ACTIVE)
+                    {
+                    throw new PrimaryServiceException(
+                        "Unable to create ACTIVE OGSA-DAI service"
+                        ); 
+                    }
+                }
             }
-        return found ;
+        return service ;
         }
 
     @Override
@@ -205,5 +239,37 @@ implements OgsaService.EntityFactory, OgsaService.EndpointFactory
             }
 
         return endpoint;
+        }
+
+    
+    public static class PrimaryServiceException
+    extends EntityServiceException
+        {
+        /**
+         * Generated serialzable version UID.
+         *
+         */
+        private static final long serialVersionUID = 8735295340800854889L;
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected PrimaryServiceException(final String message)
+            {
+            super(message);
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected PrimaryServiceException(final String message, final Throwable cause)
+            {
+            super(
+                message,
+                cause
+                );
+            }
         }
     }
