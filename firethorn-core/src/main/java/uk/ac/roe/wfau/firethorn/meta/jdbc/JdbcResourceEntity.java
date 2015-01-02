@@ -635,7 +635,7 @@ public class JdbcResourceEntity
         final String key = keyname(
             schema
             );
-        log.debug("Scanning for schema [{}][{}]", schema.catalog(), schema.name());
+        log.debug("Scanning for schema [{}][{}]", schema.catalog().name(), schema.name());
         log.debug("Scanning for schema [{}]", key);
         //
         // Check for an existing match.
@@ -652,7 +652,7 @@ public class JdbcResourceEntity
         //
         // No match, so create a new one.
         else {
-            log.debug("Creating new schema [{}][{}]", schema.catalog(), schema.name());
+            log.debug("Creating new schema [{}][{}]", schema.catalog().name(), schema.name());
             log.debug("Cacheing new schema [{}]", key);
             matching.put(
                 key,

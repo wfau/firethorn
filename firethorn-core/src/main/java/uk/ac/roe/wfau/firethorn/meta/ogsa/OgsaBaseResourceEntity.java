@@ -113,7 +113,7 @@ implements OgsaBaseResource
        nullable = true,
        updatable = true
        )
-   private String ogsaid;
+   protected String ogsaid;
    @Override
    public String ogsaid()
        {

@@ -137,79 +137,90 @@ implements OgsaJdbcResource
         }
 
     @Override
+    public String ogsaid()
+        {
+        if (this.ogsaid == null)
+            {
+            this.init();
+            }
+        return this.ogsaid;
+        }
+
+    @Override
     public Status connect()
         {
-        //
-        // If we already have an ODSA-DAI resource ID.
-        if (ogsaid() != null)
+        if (this.ogsaid != null)
             {
             return status() ;
             }
-        //
-        // If we don't have an ODSA-DAI resource ID.
         else {
-            JdbcCreateResourceWorkflow workflow = null;
-            try {
-                workflow = new JdbcCreateResourceWorkflow(
-                    service().endpoint()
-                    );
-                }
-            catch (MalformedURLException ouch)
-                {
-                return status(
-                    Status.ERROR
-                    );
-                }
-
-            final CreateResourceResult response = workflow.execute(
-                new JdbcCreateResourceWorkflow.Param()
-                    {
-                    @Override
-                    public String jdbcurl()
-                        {
-                        return source.connection().uri();
-                        }
-                    @Override
-                    public String username()
-                        {
-                        return source.connection().user();
-                        }
-                    @Override
-                    public String password()
-                        {
-                        return source.connection().pass();
-                        }
-                    @Override
-                    public String driver()
-                        {
-                        return source.connection().driver();
-                        }
-                    @Override
-                    public boolean writable()
-                        {
-                        return false;
-                        }
-                    }
+            return this.init();
+            }
+        }
+        
+    protected Status init()
+        {
+        JdbcCreateResourceWorkflow workflow = null;
+        try {
+            workflow = new JdbcCreateResourceWorkflow(
+                service().endpoint()
                 );
+            }
+        catch (MalformedURLException ouch)
+            {
+            return status(
+                Status.ERROR
+                );
+            }
 
-            log.debug("Status  [{}]", response.status());
-            log.debug("Created [{}]", response.resource());
-    
-            if (response.status() == WorkflowResult.Status.COMPLETED)
+        final CreateResourceResult response = workflow.execute(
+            new JdbcCreateResourceWorkflow.Param()
                 {
-                ogsaid(
-                    response.resource().toString()
-                    );
-                return status(
-                    Status.ACTIVE
-                    );
+                @Override
+                public String jdbcurl()
+                    {
+                    return source.connection().uri();
+                    }
+                @Override
+                public String username()
+                    {
+                    return source.connection().user();
+                    }
+                @Override
+                public String password()
+                    {
+                    return source.connection().pass();
+                    }
+                @Override
+                public String driver()
+                    {
+                    return source.connection().driver();
+                    }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
                 }
-    
-            else {
-                return status(
-                    Status.ERROR
-                    );
-                }
+            );
+
+        log.debug("Status  [{}]", response.status());
+        log.debug("Created [{}]", response.resource());
+
+        if (response.status() == WorkflowResult.Status.COMPLETED)
+            {
+            ogsaid(
+                response.resource().toString()
+                );
+            return status(
+                Status.ACTIVE
+                );
+            }
+
+        else {
+            return status(
+                Status.ERROR
+                );
             }
         }
 

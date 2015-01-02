@@ -32,7 +32,8 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
 /**
- *
+ * Base class for tests using the TWOMAss dataset.
+ * @todo refactor all the tests to use test data databases.
  *
  */
 @Slf4j
@@ -56,11 +57,22 @@ extends TestBase
         //
         // Create our JDBC resources.
         this.twomass = factories().jdbc().resources().create(
-            "twomass",
+            "ogsa-id",
             "TWOMASS",
             "twomass",
-            "spring:RoeTWOMASS"
-            );
+            config().property(
+                "firethorn.twomass.url"
+                ),
+            config().property(
+                "firethorn.twomass.user"
+                ),
+            config().property(
+                "firethorn.twomass.pass"
+                ),
+            config().property(
+                "firethorn.twomass.driver"
+                )
+        );
         //
         // Create our ADQL workspace.
         this.workspace = factories().adql().resources().create(

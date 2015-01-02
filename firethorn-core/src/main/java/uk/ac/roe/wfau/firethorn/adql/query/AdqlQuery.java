@@ -96,28 +96,8 @@ extends NamedEntity, Job
         public interface Factory
             {
             /**
-             * Create a new Limits using the default settings. 
-             * @return A new Limits object.
-             *
-            public Limits create();
-             */
-
-            /**
-             * Create a new Limits using the values from another Limits. 
-             * @return A new Limits object.
-             *
-            public Limits create(final Limits origin);
-             */
-            
-            /**
-             * Create a new Limits using specific settings. 
-             * @return A new Limits object.
-             *
-            public Limits create(final Long rows, final Long cell, final Long time);
-             */
-            
-            /**
              * The default system limits, used if no other limits are defined.
+             * @return A new Limits based on the system defaults.
              * 
              */
             public Limits defaults();
@@ -683,11 +663,6 @@ extends NamedEntity, Job
      */
     public interface SelectField
         {
-        /**
-         * The original SelectItem.
-         *
-        public abstract SelectItem item();
-         */
 
         /**
          * The field name.
@@ -707,30 +682,12 @@ extends NamedEntity, Job
          */
         public abstract AdqlColumn.AdqlType type();
 
-        /**
-         * The ADQL column.
-         *
-        public abstract AdqlColumn adql();
-         */
-
-        /**
-         * The JDBC column.
-         *
-        public abstract JdbcColumn jdbc();
-         */
-
-        /**
-         * The root column.
-         *
-        public abstract BaseColumn<?> root();
-         */
-
         }
 
     /**
-     * A list of the SELECT fields.
-     * The list is only generated when an input query is parsed.
-     * The list is not saved in the database.
+     * A list of the SELECT fields used in this query.
+     * ** The list is only generated when an input query is parsed.
+     * ** The list is NOT saved in the database.
      *
      */
     public Iterable<SelectField> fields();

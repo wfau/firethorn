@@ -95,6 +95,7 @@ extends TestRoot
     /**
      * Initialise our {@link Operation} and {@link Identity}.
      * http://stackoverflow.com/questions/6076599/what-order-are-the-junit-before-after-called
+     * @todo Why does this need to be final ?
      *
      */
     @Before
