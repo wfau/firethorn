@@ -153,22 +153,22 @@ extends BaseComponent
     public BaseResource.Metadata meta();
 
     /**
-     * Interface to access the {@link OgsaBaseResource} OGSA-DAI resources.
+     * Interface to access the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
      * @todo Move this to RootResource rather than BaseResource.
      * 
      */
     public interface OgsaBaseResources
         {
         /**
-         * Select the primary {@link OgsaBaseResource} OGSA-DAI resource.
+         * Select the primary {@link OgsaBaseResource} OGSA-DAI resource for this {@link BaseResource}.
          * 
          */
         public OgsaBaseResource primary();
         }
 
     /**
-     * Access the {@link OgsaBaseResource} OGSA-DAI resources.
-     * @todo Move this to RootResource rather than BaseResource.
+     * Access to the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
+     * @todo Move this to {@link RootResource} rather than {@link BaseResource}.
      * 
      */
     public OgsaBaseResources ogsa();

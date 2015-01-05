@@ -651,7 +651,7 @@ extends NamedEntity, Job
     public Iterable<BaseResource<?>> resources();
 
     /**
-     * The primary resource used by the query.
+     * Select the primary resource used by this query.
      * @todo rename to resource()
      *
      */

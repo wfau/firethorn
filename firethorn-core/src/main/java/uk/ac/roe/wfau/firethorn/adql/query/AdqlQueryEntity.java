@@ -1168,6 +1168,7 @@ implements AdqlQuery, AdqlParserQuery
                     log.debug("-- Endpoint [{}]", params().endpoint());
     
                     // Get the OGSA-DAI ident from our primary resource.
+                    // Fails for DISTRIBUTED, needs to create a new DQP.
                     final String source = primary().ogsa().primary().ogsaid();
                     log.debug("-- Resource [{}]", primary().name());
                     log.debug("-- Resource [{}]", source );
