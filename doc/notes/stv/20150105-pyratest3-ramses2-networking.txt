@@ -1,0 +1,35 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ [JdbcResourceEntity] Exception while fetching JDBC catalogs [20644015][The operating system returned error 64(The specified network name is no longer available.) to SQL Server during a read at offset 0x00000046e04000 in file '\\ramses6\O\UKIDSSDR3PLUS\PrimaryFileGroup3.mdf'. Additional messages in the SQL Server error log and system event log may provide more detail. This is a severe system-level error condition that threatens database integrity and must be corrected immediately. Complete a full database consistency check (DBCC CHECKDB). This error can be caused by many factors; for more information, see SQL Server Books Online.] 
+2015-01-05 21:52:59,561 DEBUG [http-bio-8080-exec-8] [MSSQLMetadataScanner] SQLException [823][S1000][The operating system returned error 64(The specified network name is no longer available.) to SQL Server during a read at offset 0x00000046e04000 in file '\\ramses6\O\UKIDSSDR3PLUS\PrimaryFileGroup3.mdf'. Additional messages in the SQL Server error log and system event log may provide more detail. This is a severe system-level error condition that threatens database integrity and must be corrected immediately. Complete a full database consistency check (DBCC CHECKDB). This error can be caused by many factors; for more information, see SQL Server Books Online.] 
+
+
+
+
+
+ [OperationInterceptor] Operation [21241078][http://pyratest2:8080/firethorn/jdbc/resource/20644009/schemas/select] 
+2015-01-05 21:42:17,624 DEBUG [http-bio-8080-exec-1] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+2015-01-05 21:42:17,624 DEBUG [http-bio-8080-exec-1] [OperationInterceptor] Operation threw an exception 
+2015-01-05 21:42:17,624 DEBUG [http-bio-8080-exec-1] [OperationInterceptor]  type [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionFailedException] 
+2015-01-05 21:42:17,624 DEBUG [http-bio-8080-exec-1] [OperationInterceptor]  text [java.sql.SQLException: I/O Error: GSS Failed: Invalid name provided (Mechanism level: Cannot locate default realm)] 
+
