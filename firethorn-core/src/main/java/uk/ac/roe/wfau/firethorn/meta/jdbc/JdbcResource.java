@@ -69,24 +69,30 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url)
          *
          */
         public JdbcResource create(final String ogsaid, final String name, final String url);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, catalog)
          *
          */
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, user, pass)
+         * @todo Re-order the params (name, url, catalog, user, pass)
          *
          */
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, driver, user, pass)
+         * @todo Re-order the params (name, url, driver, catalog, user, pass)
          *
          */
         public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver);
