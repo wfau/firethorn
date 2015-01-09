@@ -151,7 +151,6 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_ROWID_COL  = "rowid";
 
     protected static final String DB_INPUT_ADQL_COL  = "inputadql";
-    //protected static final String DB_INPUT_MODE_COL  = "inputmode";
 
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
@@ -223,11 +222,6 @@ implements AdqlQuery, AdqlParserQuery
                     return ParamFactory.this.mode;
                     }
                 @Override
-                public String store()
-                    {
-                    return ParamFactory.this.store;
-                    }
-                @Override
                 public Level level()
                     {
                     return ParamFactory.this.level;
@@ -254,11 +248,6 @@ implements AdqlQuery, AdqlParserQuery
                 public Mode mode()
                     {
                     return (mode != null) ? mode : ParamFactory.this.mode ;
-                    }
-                @Override
-                public String store()
-                    {
-                    return ParamFactory.this.store;
                     }
                 @Override
                 public Level level()
@@ -331,37 +320,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         return factories().queries();
         }
-
-    /**
-     * Resolver implementation.
-     *
-    @Repository
-    public static class Resolver
-    extends AbstractEntityFactory<AdqlQuery>
-    implements AdqlQuery.Resolver
-        {
-        @Override
-        public Class<?> etype()
-            {
-            return AdqlQueryEntity.class ;
-            }
-
-        @Autowired
-        private AdqlQuery.IdentFactory idents;
-        @Override
-        public AdqlQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-        @Autowired
-        private AdqlQuery.LinkFactory links;
-        @Override
-        public AdqlQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-        }
-     */
 
     /**
      * Factory implementation.
@@ -705,14 +663,17 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String dqp ;
 
-    @Column(
+/*
+ * 
         name = DB_OGSADAI_STORE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
     private String store ;
-
+ *
+ */
+ 
     @Column(
         name = DB_OGSADAI_ENDPOINT_COL,
         unique = false,
@@ -721,7 +682,8 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
-/*    
+/*
+ *     
     @Column(
         name = DB_OGSADAI_RESOURCE_COL,
         unique = false,
@@ -729,13 +691,13 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String ogsaid ;
+ *     
  */
     
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.mode     = params.mode();
-        this.store    = params.store();
         this.level    = params.level();
         this.endpoint = params.endpoint();
         }
@@ -759,11 +721,6 @@ implements AdqlQuery, AdqlParserQuery
             public Mode mode()
                 {
                 return AdqlQueryEntity.this.mode;
-                }
-            @Override
-            public String store()
-                {
-                return AdqlQueryEntity.this.store;
                 }
             @Override
             public AdqlQuery.Syntax.Level level()
@@ -1135,6 +1092,10 @@ implements AdqlQuery, AdqlParserQuery
         try {
             this.timings().querystart();
 
+            //
+            // Create the JdbcTable at this point ?
+            //
+            
             Status result = services().executor().status(
                 ident(),
                 Status.RUNNING
@@ -1164,17 +1125,19 @@ implements AdqlQuery, AdqlParserQuery
     
                     log.debug("-- AdqlQuery executing [{}]", ident());
                     log.debug("-- Mode     [{}]", query.mode());
-                    log.debug("-- Store    [{}]", params().store());
                     log.debug("-- Endpoint [{}]", params().endpoint());
     
                     // Get the OGSA-DAI ident from our primary resource.
                     // Fails for DISTRIBUTED, needs to create a new DQP.
                     final String source = primary().ogsa().primary().ogsaid();
-                    log.debug("-- Resource [{}]", primary().name());
-                    log.debug("-- Resource [{}]", source );
+                    log.debug("-- Query source [{}]", primary().name());
+                    log.debug("-- Query source [{}]", source );
 
-                    final String tablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
-                    log.debug("-- Table    [{}]", tablename);
+                    final String ogtablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
+                    log.debug("-- User table   [{}]", ogtablename);
+                    final String ogresource = AdqlQueryEntity.this.jdbctable.resource().ogsa().primary().ogsaid() ;
+                    log.debug("-- User store   [{}]", AdqlQueryEntity.this.jdbctable.resource().name());
+                    log.debug("-- User store   [{}]", ogresource);
     
                     final PipelineResult frog = pipeline.execute(
                         new PipelineParam()
@@ -1194,14 +1157,14 @@ implements AdqlQuery, AdqlParserQuery
                                 {
                                 return new JdbcInsertDataClient.Param()
                                     {
-                                    public String store()
+                                    public String ogsaid()
                                         {
-                                        return params().store();
+                                        return ogresource;
                                         }
                                     @Override
                                     public String table()
                                         {
-                                        return tablename;
+                                        return ogtablename;
                                         }
                                     @Override
                                     public Integer first()
@@ -1378,27 +1341,20 @@ implements AdqlQuery, AdqlParserQuery
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-// TODO
-// Global shared 'default' space.
             JdbcSchema space = identity.space(
                 true
                 );
-
-            //
-            // Create our tables.
-
-//TODO
-//Much better error handling - null pointer if create() fails.
-            
-            
-//TODO
-//Why does the query need to know where the JdbcTable is ?
             log.debug(" Identity space [{}][{}]", space.ident(), space.name());
+
+//TODO
+// Much better error handling - null pointer if create() fails.
+            
             this.jdbctable = space.tables().create(
                 this
                 );
 //TODO
 // Should this be FULL or THIN ?
+// Can the ADQL table be created without the JdbcTable underneath ?             
             this.adqltable = this.schema().tables().create(
                 this
                 );

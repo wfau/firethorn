@@ -220,7 +220,7 @@ public class JdbcResourceEntity
          * The default 'userdata' JDBC catalog.
          *
          */
-        @Value("${firethorn.user.cat:userdata}")
+        @Value("${firethorn.user.cat}")
         public String udcat;
 
         /**
@@ -275,7 +275,7 @@ public class JdbcResourceEntity
                 userdata = this.create(
                     "NOID",
                     udcat,
-                    "Userdata",
+                    "Userdata resource",
                     udurl,
                     uduser,
                     udpass,

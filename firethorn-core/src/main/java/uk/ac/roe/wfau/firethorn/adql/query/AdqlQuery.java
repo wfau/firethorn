@@ -277,12 +277,6 @@ extends NamedEntity, Job
         public Mode mode();
 
         /**
-         * The user data store name.
-         *
-         */
-        public String store();
-
-        /**
          * The ADQL parser level.
          *
          */

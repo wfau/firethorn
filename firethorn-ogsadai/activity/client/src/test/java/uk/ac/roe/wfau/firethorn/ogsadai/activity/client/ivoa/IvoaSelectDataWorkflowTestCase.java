@@ -150,7 +150,7 @@ extends IvoaResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return userdata.resource().toString();
                             }
@@ -167,7 +167,7 @@ extends IvoaResourceTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return userdata.resource().toString();
                             }

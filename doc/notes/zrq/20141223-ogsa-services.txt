@@ -139,7 +139,7 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Create test queries.
+# Run the test queries.
 #[user@desktop]
 
 query001=$(mktemp)
@@ -148,11 +148,11 @@ cat > "${query001:?}" << EOF
         ra,
         dec
     FROM
-        atlas.atlasSource
+        atlasSource
     WHERE
-        ra  BETWEEN '56.0' AND '57.9'
+        ra  BETWEEN  57.0 AND  57.9
     AND
-        dec BETWEEN '24.0' AND '24.2'
+        dec BETWEEN -27.9 AND -27.0
 EOF
 
 query002=$(mktemp)
@@ -190,9 +190,6 @@ cat > "${query003:?}" << EOF
         atlas.Filter
 EOF
 
-# -----------------------------------------------------
-# Run the test queries.
-#[user@desktop]
 
     source "${HOME:?}/firethorn.spaces"
     source "${HOME:?}/firethorn.settings"
@@ -233,8 +230,121 @@ EOF
 
 
 
+# -----------------------------------------------------
+# Modify metadata
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to our metadata database.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
 
+            /*
+             * Get a list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadataZRQ%'
+            ORDER BY 
+                name
+            go
 
+            ....
+            FirethornMetadataZRQ20150102DEV
+            FirethornMetadataZRQ20150102DEV_log
+
+            /*
+             * Select our metadata database.
+             *
+             */
+            use [FirethornMetadataZRQ20150102DEV]
+            go
+
+
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT DISTINCT
+                TABLE_NAME
+            FROM
+                FirethornMetadataZRQ20150102DEV.INFORMATION_SCHEMA.TABLES
+            ORDER BY
+                TABLE_NAME
+            go
+
+                ....
+                FT011129AdqlColumnEntity
+                FT011129AdqlQueryEntity
+                FT011129AdqlQueryJoinToBaseResource
+                FT011129AdqlResourceEntity
+                FT011129AdqlSchemaEntity
+                FT011129AdqlTableEntity
+                FT011129AuthenticationEntity
+                FT011129CommunityEntity
+                FT011129ConfigProperty
+                FT011129IdentityEntity
+                FT011129IvoaColumnEntity
+                FT011129IvoaEndpointEntity
+                FT011129IvoaResourceEntity
+                FT011129IvoaSchemaEntity
+                FT011129IvoaTableEntity
+                FT011129JdbcColumnEntity
+                FT011129JdbcResourceEntity
+                FT011129JdbcSchemaEntity
+                FT011129JdbcTableEntity
+                FT011129JobEntity
+                FT011129OgsaIvoaResource
+                FT011129OgsaJdbcResource
+                FT011129OgsaServiceEntity
+                FT011129OperationEntity
+
+            /*
+             * Get a list of JdbcResources.
+             *
+             */
+            SELECT
+                ident,
+                name,
+                jdbcurl,
+                jdbccatalog
+
+            FROM
+                FT011129JdbcResourceEntity
+            ORDER BY
+                ident
+            go
+
+
+                3407872
+                Userdata
+                jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataZRQ20150102DEV
+                FirethornUserdataZRQ20150102DEV
+
+                3407873
+                Atlas JDBC conection
+                jdbc:jtds:sqlserver://localhost:1432/ATLASDR1
+                *
+
+                3866624
+                Atlas JDBC conection
+                jdbc:jtds:sqlserver://localhost:1432/ATLASDR1
+                *
 
 
