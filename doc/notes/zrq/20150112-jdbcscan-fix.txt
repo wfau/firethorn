@@ -386,12 +386,12 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
+        mvn -P all clean install eclipse:eclipse
 
     popd
 
 # -------------------------------------------------------------------------------------------
-# Push our artifacts to our Maven repo.
+# Push build artifacts to our Maven repo.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -401,12 +401,9 @@ EOF
 
     popd
 
-
-
-
-
-
-
+# -----------------------------------------------------
+# Mercurial graph ...
+#
 
                                      |
                                 
@@ -438,11 +435,6 @@ EOF
                                |     |   |
                                |     +---/ zrq dev
                                |     |
-                         |     |     |
-         1.11.28-beta-02 +     |     |
-                         |     |     |
-         1.11.28-release \-----+     |
-                               |     |
                                |     |
                    bug 683 fix +     |
                                |     |
@@ -452,8 +444,135 @@ EOF
 
                                   1.11.28
 
+# -----------------------------------------------------
+# Create a new release branch.
+#[user@desktop]
 
-
+    releasebase=5de1cc9f8258
     releasebranch=1.11.28-release
-    releaseversion=1.11.28-beta-02
+    releaseversion=1.11.28-release-beta-01
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Update to the base changeset.
+        hg update "${releasebase:?}"
+
+        #
+        # Create the new branch.
+        hg branch "${releasebranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${releaseversion:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${releasebranch:?}]"
+        hg push --new-branch
+
+        #
+        # Update the branch tag.
+        hg tag -f "version-${releaseversion:?}"
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        datetime=$(date +%Y%m%d%H%M%S)
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+    popd
+
+    #
+    # Success :-)
+    #
+
+
+# -------------------------------------------------------------------------------------------
+# Push build artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------------------
+# Mercurial graph ...
+#
+
+                               |     |     |
+     1.11.28-release-beta-01 --+     |     |
+                               |     |     |
+                               |     |     |
+               1.11.28-release \-----+     |
+                                     |     |
+                                     |     |
+                                     |     |
+                 issue 683 bug fix --+     |
+                                     |     |
+                       zrq-issue-683 \-----+
+                                           |
+                                           |
+
+                                        1.11.28
+
+
+
 
