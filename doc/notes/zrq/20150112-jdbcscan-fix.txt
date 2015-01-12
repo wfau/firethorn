@@ -1,0 +1,459 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Issue : Fix List<Catalog> in metadata scanner
+    http://redmine.roe.ac.uk/issues/683
+
+    Bug found in metadata scanning found in version 1.11.28 deployed on shep/pyratest.
+    Version 1.11.28 was intended to be a release version.
+
+    Version, 1.11.29, has significant changes and is not a release candidate.
+
+    Creating a new patch version, 1.11.28-beta, to fix the metadata scanner.
+
+
+# -----------------------------------------------------
+# Check the deployed version on shep/pyratest.
+#[user@shep]
+
+    curl 'http://pyratest2:8080/firethorn/system/info'
+
+        {
+        "java": {
+            "name" : "Java HotSpot(TM) 64-Bit Server VM",
+            "build" : "23.1-b03",
+            "version" : "1.7.0_05",
+            "memory" : {
+                "total" : 129761280,
+                "free" : 43024952,
+                "max" : 129761280
+                }
+            },
+        "build": {
+            "name" : "firethorn-core",
+            "version" : "1.11.28",
+            "timestamp" : "1417420911872",
+            "changeset" : "a0e65c608e9e"
+            },
+        "system": {
+            "time" : "2015-01-12T15:38:31.351Z",
+            "name" : "Linux",
+            "arch" : "amd64",
+            "version"  : "3.2.0-4-amd64",
+            "platform" : "Debian GNU/Linux 7 (wheezy)"
+            },
+        "servlet": {
+            "server" : "Apache Tomcat/7.0.40",
+            "context" : "/firethorn"
+            },
+        "jdbc": {
+            "drivers": [
+                
+                    {
+                    "class" : "sun.jdbc.odbc.JdbcOdbcDriver"
+                    },
+                    
+                    {
+                    "class" : "net.sourceforge.jtds.jdbc.Driver"
+                    }
+                    
+                ]
+            }
+        }
+
+# -----------------------------------------------------
+# Check the origin of the changeset in Mercurial.
+#[user@shep]
+
+
+    http://wfau.metagrid.co.uk/code/firethorn/graph/a0e65c608e9e
+
+# -----------------------------------------------------
+# Check the origin of the changeset in Mercurial.
+#[user@shep]
+
+    devname=zrq-issue-683
+    changeset=a0e65c608e9e
+
+# -----------------------------------------------------
+# Keep a copy of the code change.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+            pushd src/main/java/uk/ac/roe/wfau/firethorn/meta/jdbc/sqlserver
+            
+                cp MSSQLMetadataScanner.java MSSQLMetadataScanner.copy 
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Revert to the original changeset.
+        hg update "${changeset:?}"
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch="$(getversion)-${devname:?}"
+
+        #
+        # Create the new branch.
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        datetime=$(date +%Y%m%d%H%M%S)
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+    popd
+
+# -----------------------------------------------------
+# Fails almost immediately
+#
+
+    2015-01-12 17:14:56,816 DEBUG [http-bio-8080-exec-5] [MSSQLMetadataScanner]  Ignoring schema [db_denydatawriter] 
+    2015-01-12 17:14:56,816 DEBUG [http-bio-8080-exec-5] [JdbcResourceEntity] Scanning catalog [ATLASv20130304] 
+    2015-01-12 17:14:56,816 DEBUG [http-bio-8080-exec-5] [MSSQLMetadataScanner] schemas() for [ATLASv20130304] 
+    2015-01-12 17:14:56,816 DEBUG [http-bio-8080-exec-5] [MSSQLMetadataScanner] schemas().select() for [ATLASv20130304] 
+    2015-01-12 17:14:56,817 DEBUG [http-bio-8080-exec-5] [MSSQLMetadataScanner] Statement [com.mchange.v2.c3p0.impl.NewProxyPreparedStatement@564ad05e] 
+    2015-01-12 17:14:58,357 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [4587520][ATLASv20130304][Invalid state, the Connection object is closed.] 
+    2015-01-12 17:14:58,358 DEBUG [http-bio-8080-exec-5] [MSSQLMetadataScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
+    2015-01-12 17:14:58,358 WARN  [http-bio-8080-exec-5] [MSSQLMetadataScanner] Fatal error code, resetting connection 
+    2015-01-12 17:14:58,358 DEBUG [http-bio-8080-exec-5] [JdbcConnectionEntity] reset [spring:RoeATLAS] 
+    2015-01-12 17:14:58,358 DEBUG [http-bio-8080-exec-5] [JdbcConnectionEntity] get() [spring:RoeATLAS] 
+    2015-01-12 17:14:58,358 INFO  [http-bio-8080-exec-5] [NewPooledConnection] [c3p0] The following Exceptions occurred while trying to clean up a Connection's stranded resources: 
+    2015-01-12 17:14:58,371 INFO  [http-bio-8080-exec-5] [NewPooledConnection] [c3p0 -- conection resource close Exception] 
+    java.sql.SQLException: Invalid state, the Connection object is closed.
+	    at net.sourceforge.jtds.jdbc.TdsCore.checkOpen(TdsCore.java:481) ~[jtds-1.3.1.jar:1.3.1]
+	    at net.sourceforge.jtds.jdbc.TdsCore.clearResponseQueue(TdsCore.java:767) ~[jtds-1.3.1.jar:1.3.1]
+	    at net.sourceforge.jtds.jdbc.JtdsStatement.reset(JtdsStatement.java:722) ~[jtds-1.3.1.jar:1.3.1]
+	    at net.sourceforge.jtds.jdbc.JtdsStatement.close(JtdsStatement.java:966) ~[jtds-1.3.1.jar:1.3.1]
+	    at net.sourceforge.jtds.jdbc.JtdsPreparedStatement.close(JtdsPreparedStatement.java:707) ~[jtds-1.3.1.jar:1.3.1]
+	    at com.mchange.v2.c3p0.impl.NewPooledConnection.cleanupUncachedStatements(NewPooledConnection.java:651) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	    at com.mchange.v2.c3p0.impl.NewPooledConnection.markClosedProxyConnection(NewPooledConnection.java:346) ~[c3p0-0.9.1.2.jar:0.9.1.2]
+	    at com.mchange.v2.c3p0.impl.NewProxyConnection.close(NewProxyConnection.java:1246) [c3p0-0.9.1.2.jar:0.9.1.2]
+	    at uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.reset(JdbcConnectionEntity.java:559) [firethorn-core-1.11.28-zrq-issue-683.jar:1.11.28-zrq-issue-683]
+	    at uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner.handle(MSSQLMetadataScanner.java:81) [firethorn-core-1.11.28-zrq-issue-683.jar:1.11.28-zrq-issue-683]
+
+# -----------------------------------------------------
+# Apply the the code change.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+            pushd src/main/java/uk/ac/roe/wfau/firethorn/meta/jdbc/sqlserver
+
+                #
+                # Check the changes are correct.
+                diff MSSQLMetadataScanner.java MSSQLMetadataScanner.copy 
+
+                #
+                # Apply the diff as a patch.
+                diff -c MSSQLMetadataScanner.java MSSQLMetadataScanner.copy | patch
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        datetime=$(date +%Y%m%d%H%M%S)
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat > "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_TablesSchema.xml"
+        cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+    popd
+
+    #
+    # Success :-)
+    #
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg commit -m "Bug [683] fixed and tested"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.11.30
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        devbranch=$(getversion)
+
+        #
+        # Pull the latest changes
+        hg pull
+
+        #
+        # Start on the main branch
+        hg update 'default'
+
+        #
+        # Get the main version.
+        oldversion=$(getversion)
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+
+
+
+
+
+
+
+                                     |
+                                
+                                  1.11.30
+                                
+                                     |
+                               /-----+
+                               |     |
+                               |     +-------------------- zrq dev
+                               |     |
+                               |
+                               |  1.11.29
+                               |
+                               |     |
+                               |     +---\
+                               |     |   |
+                               |     |   |
+                               |     +---/ zrq dev
+                               |     |
+                               |     +-------------------- stv dev
+                               |     |
+                               |     +---\
+                               |     |   |
+                               |     |   |
+                               |     +---/ zrq dev
+                               |     |
+                               |     +---\
+                               |     |   |
+                               |     |   |
+                               |     +---/ zrq dev
+                               |     |
+                         |     |     |
+         1.11.28-beta-02 +     |     |
+                         |     |     |
+         1.11.28-release \-----+     |
+                               |     |
+                               |     |
+                   bug 683 fix +     |
+                               |     |
+                 zrq-issue-683 \-----+
+                                     |
+                                     |
+
+                                  1.11.28
+
+
+
+    releasebranch=1.11.28-release
+    releaseversion=1.11.28-beta-02
+
