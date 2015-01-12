@@ -450,7 +450,7 @@ EOF
 
     releasebase=5de1cc9f8258
     releasebranch=1.11.28-release
-    releaseversion=1.11.28-beta-01
+    releaseversion=1.11.28-release-beta-01
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -466,7 +466,7 @@ EOF
         #
         # Set the project version.
         source 'bin/util.sh'
-        setversion "${releasebranch:?}"
+        setversion "${releaseversion:?}"
 
         #
         # Commit and push the new branch.
@@ -557,21 +557,21 @@ EOF
 # Mercurial graph ...
 #
 
+                               |     |     |
+     1.11.28-release-beta-01 --+     |     |
+                               |     |     |
+                               |     |     |
+               1.11.28-release \-----+     |
+                                     |     |
+                                     |     |
+                                     |     |
+                 issue 683 bug fix --+     |
+                                     |     |
+                       zrq-issue-683 \-----+
+                                           |
+                                           |
 
-                               |     |
-                         |     |     |
-         1.11.28-beta-02 +     |     |
-                         |     |     |
-         1.11.28-release \-----+     |
-                               |     |
-                               |     |
-                   bug 683 fix +     |
-                               |     |
-                 zrq-issue-683 \-----+
-                                     |
-                                     |
-
-                                  1.11.28
+                                        1.11.28
 
 
 
