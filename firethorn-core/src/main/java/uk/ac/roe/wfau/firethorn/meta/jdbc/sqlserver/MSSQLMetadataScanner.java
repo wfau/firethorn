@@ -21,8 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -99,19 +101,30 @@ public class MSSQLMetadataScanner
             public Iterable<Catalog> select()
             throws SQLException
                 {
-                final ResultSet results = connection().getMetaData().getCatalogs();
-                return new ResultSetIterator.Factory<Catalog>(results)
+                // Bug fix.
+                // A fatal error accessing a broken catalog can cause the database driver to close the connection, breaking the ResultSet in the process.
+                // To mitigate the side effects we transfer the list of catalogs to a local List.
+                final List<Catalog> list = new ArrayList<Catalog>();
+                final ResultSet rset = connection().getMetaData().getCatalogs();
+                final Iterable<Catalog> iter = new ResultSetIterator.Factory<Catalog>(rset)
                     {
                     @Override
                     protected Catalog getNext() throws SQLException
                         {
                         return catalog(
-                            results.getString(
+                            rset.getString(
                                 "TABLE_CAT"
                                 )
                             );
                         }
                     };
+                for (Catalog catalog : iter)
+                    {
+                    list.add(
+                        catalog
+                        );
+                    }
+                return list ;
                 }
 
             @Override
