@@ -83,14 +83,12 @@
 
 # -----------------------------------------------------
 # Check the origin of the changeset in Mercurial.
-#[user@shep]
 
 
     http://wfau.metagrid.co.uk/code/firethorn/graph/a0e65c608e9e
 
 # -----------------------------------------------------
 # Check the origin of the changeset in Mercurial.
-#[user@shep]
 
     devname=zrq-issue-683
     changeset=a0e65c608e9e
