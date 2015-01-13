@@ -61,6 +61,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -336,9 +337,23 @@ implements JdbcTable
             // Add the select fields.
             for (final AdqlQuery.SelectField field : query.fields())
                 {
+                String name = field.name();
+                if (name == null)
+                    {
+                    log.warn("Null field name [{}]", field.name());
+                    continue;
+                    }
+                
+                AdqlColumn.AdqlType atype = field.type();
+                if (atype == null)
+                    {
+                    log.warn("Null field type [{}]", field.name());
+                    continue;
+                    }
+                
                 table.columns().create(
-                    field.name(),
-                    field.type().jdbctype(),
+                    name,
+                    atype.jdbctype(),
                     field.arraysize()
                     );
                 }

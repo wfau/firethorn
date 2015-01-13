@@ -1050,6 +1050,14 @@ public class VosiTableSetReader
                             );
                         }
                     //
+                    // Check type != null.
+                    else if (dtype == null)
+                        {
+                        throw new XMLReaderException(
+                            "Column type required"
+                            );
+                        }
+                    //
                     // Process our end element.
                     done(
                         events

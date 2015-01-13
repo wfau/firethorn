@@ -133,7 +133,20 @@ extends TestPropertiesBase
         {
         return ivoa.get(tag);
         }
+
+    /**
+     * Save an {@link IvoaResource}.
+     * 
+     */
+    protected void ivoaResource(final String tag, final IvoaResource resource)
+        {
+        ivoa.put(
+            tag,
+            resource
+            );
+        }
     
+
     /**
      * Load an {@link AdqlResource}.
      * 

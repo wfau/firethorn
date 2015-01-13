@@ -28,12 +28,15 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import lombok.extern.slf4j.Slf4j;
+
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -144,6 +147,7 @@ extends BaseComponentEntity<ColumnType>
     @Override
     public abstract BaseColumn<?> root();
 
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -156,14 +160,34 @@ extends BaseComponentEntity<ColumnType>
     @Enumerated(
         EnumType.STRING
         )
-    protected AdqlColumn.AdqlType adqltype ;
+    private AdqlColumn.AdqlType adqltype ;
     protected AdqlColumn.AdqlType adqltype()
         {
         return this.adqltype;
         }
     protected void adqltype(final AdqlColumn.AdqlType type)
         {
-        this.adqltype = type;
+        if (type == null)
+            {
+            log.error("null column type");            
+            }
+        else {
+            this.adqltype = type;
+            }
+        }
+    protected void adqltype(final String type)
+        {
+        if (type == null)
+            {
+            log.error("null column type name");            
+            }
+        else {
+            adqltype(
+                AdqlColumn.AdqlType.ename(
+                    type
+                    )
+                );
+            }
         }
 
     @Basic(
@@ -175,14 +199,20 @@ extends BaseComponentEntity<ColumnType>
         nullable = true,
         updatable = true
         )
-    protected Integer adqlsize ;
+    private Integer adqlsize ;
     protected Integer adqlsize()
         {
         return this.adqlsize ;
         }
     protected void adqlsize(final Integer size)
         {
-        this.adqlsize = size;
+        if (size != null)
+            {
+            this.adqlsize = size;
+            }
+        else {
+            this.adqlsize = AdqlColumn.NON_ARRAY_SIZE ;
+            }
         }
 
     @Basic(
@@ -227,6 +257,7 @@ extends BaseComponentEntity<ColumnType>
             );
         }
 
+    /*
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -247,7 +278,8 @@ extends BaseComponentEntity<ColumnType>
             value
             );
         }
-    
+    */
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -331,12 +363,12 @@ extends BaseComponentEntity<ColumnType>
             @Override
             public String dtype()
                 {
-                return adqldtype();
+                return adqltype().name();
                 }
             @Override
             public void dtype(final String dtype)
                 {
-                adqldtype(
+                adqltype(
                     dtype
                     );
                 }
