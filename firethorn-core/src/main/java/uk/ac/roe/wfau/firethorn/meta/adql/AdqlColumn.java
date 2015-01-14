@@ -18,9 +18,14 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
@@ -276,6 +281,7 @@ extends BaseColumn<AdqlColumn>
      * Plus DATE, TIME and TIMESTAMP.
      *
      */
+    @Slf4j
     public enum AdqlType
         {
         ARRAY(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-array-1.0.json",     "array",         null,      true),
@@ -348,8 +354,13 @@ extends BaseColumn<AdqlColumn>
             {
             switch (jdbc)
                 {
-                case CHAR    :
+                case CHAR  :
+                case NCHAR :
+                case NCLOB :
                 case VARCHAR :
+                case LONGVARCHAR :
+                case NVARCHAR :
+                case LONGNVARCHAR :
                     return AdqlColumn.AdqlType.CHAR;
 
                 case ARRAY :
@@ -382,27 +393,25 @@ extends BaseColumn<AdqlColumn>
                 case TINYINT :
                     return AdqlColumn.AdqlType.BYTE;
 
-                case BINARY :
+
                 case BLOB :
+                case BINARY :
+                case VARBINARY :
+                case LONGVARBINARY :
+                    return AdqlColumn.AdqlType.BYTE;
+
                 case CLOB :
                 case DATALINK :
                 case DECIMAL :
                 case DISTINCT :
                 case JAVA_OBJECT :
-                case LONGNVARCHAR :
-                case LONGVARBINARY :
-                case LONGVARCHAR :
-                case NCHAR :
-                case NCLOB :
                 case NULL :
                 case NUMERIC :
-                case NVARCHAR :
                 case OTHER :
                 case REF :
                 case ROWID :
                 case SQLXML :
                 case STRUCT :
-                case VARBINARY :
                 case UNKNOWN :
                     return AdqlColumn.AdqlType.UNKNOWN ;
 
@@ -410,22 +419,93 @@ extends BaseColumn<AdqlColumn>
                     return AdqlColumn.AdqlType.UNKNOWN;
                 }
             }
-        
+
         /**
-         * Resolve a {@link AdqlColumn.AdqlType} name into a {@link AdqlColumn.AdqlType}.
+         * Our dictionary of {@link AdqlColumn.AdqlType}s.
          *
          */
-        @Deprecated
-        public static AdqlColumn.AdqlType ename(final String ename)
-            {
-            if (ename != null)
+        private static final Map<String, AdqlType> map = new HashMap<String, AdqlType>();
+        static {
+            //
+            // Add all the standard names. 
+            for (AdqlType type : AdqlType.values())
                 {
-                return AdqlColumn.AdqlType.valueOf(
-                    ename.trim().toUpperCase()
+                map.put(
+                    type.name(),
+                    type
                     );
                 }
+            //
+            // Add the extra names.
+            map.put(
+                "BIGINT",
+                AdqlType.LONG
+                );
+
+            map.put(
+                "NCHAR",
+                AdqlType.CHAR
+                );
+            map.put(
+                "NCLOB",
+                AdqlType.CHAR
+                );
+            map.put(
+                "NCLOB",
+                AdqlType.CHAR
+                );
+            map.put(
+                "VARCHAR",
+                AdqlType.CHAR
+                );
+            map.put(
+                "LONGVARCHAR",
+                AdqlType.CHAR
+                );
+            map.put(
+                "NVARCHAR",
+                AdqlType.CHAR
+                );
+            map.put(
+                "LONGNVARCHAR",
+                AdqlType.CHAR
+                );
+
+            map.put(
+                "BLOB",
+                AdqlType.BYTE
+                );
+            map.put(
+                "BINARY",
+                AdqlType.BYTE
+                );
+            map.put(
+                "VARBINARY",
+                AdqlType.BYTE
+                );
+            map.put(
+                "LONGVARBINARY",
+                AdqlType.BYTE
+                );
+            
+            }
+
+        /**
+         * Resolve a {@link String} into a {@link AdqlColumn.AdqlType}.
+         *
+         */
+        public static AdqlType resolve(final String name)
+            {
+            log.debug("resolve(String) [{}]", name);
+            final AdqlType type = map.get(
+                name
+                );
+            if (type != null)
+                {
+                return type ;
+                }
             else {
-                return null ;
+                return AdqlType.UNKNOWN;
                 }
             }
         }
@@ -480,6 +560,12 @@ extends BaseColumn<AdqlColumn>
             public void type(final AdqlColumn.AdqlType type);
 
             /**
+             * Set the ADQL type.
+             *
+             */
+            public void type(final String dtype);
+
+            /**
              * The ADQL units.
              *
              */
@@ -506,14 +592,8 @@ extends BaseColumn<AdqlColumn>
             /**
              * The ADQL dtype.
              *
-             */
             public String dtype();
-
-            /**
-             * Set the ADQL dtype.
-             *
              */
-            public void dtype(final String dtype);
 
             /**
              * The column UCD.

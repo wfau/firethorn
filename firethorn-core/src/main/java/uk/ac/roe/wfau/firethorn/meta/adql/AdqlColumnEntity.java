@@ -484,17 +484,6 @@ public class AdqlColumnEntity
             }
         }
 
-    protected String adqldtype()
-        {
-        if (this.adqldtype() != null)
-            {
-            return this.adqldtype() ;
-            }
-        else {
-            return base().meta().adql().dtype();
-            }
-        }
-
     protected String adqlucd()
         {
         if (this.adqlucd != null)

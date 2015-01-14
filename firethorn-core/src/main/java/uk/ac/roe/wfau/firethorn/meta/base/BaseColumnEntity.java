@@ -177,17 +177,11 @@ extends BaseComponentEntity<ColumnType>
         }
     protected void adqltype(final String type)
         {
-        if (type == null)
-            {
-            log.error("null column type name");            
-            }
-        else {
-            adqltype(
-                AdqlColumn.AdqlType.ename(
-                    type
-                    )
-                );
-            }
+        adqltype(
+            AdqlColumn.AdqlType.resolve(
+                type
+                )
+            );
         }
 
     @Basic(
@@ -333,6 +327,13 @@ extends BaseComponentEntity<ColumnType>
                     type
                     );
                 }
+            @Override
+            public void type(final String dtype)
+                {
+                adqltype(
+                    dtype
+                    );
+                }
 
             @Override
             public String units()
@@ -357,19 +358,6 @@ extends BaseComponentEntity<ColumnType>
                 {
                 adqlutype(
                     utype
-                    );
-                }
-
-            @Override
-            public String dtype()
-                {
-                return adqltype().name();
-                }
-            @Override
-            public void dtype(final String dtype)
-                {
-                adqltype(
-                    dtype
                     );
                 }
 

@@ -337,23 +337,28 @@ implements JdbcTable
             // Add the select fields.
             for (final AdqlQuery.SelectField field : query.fields())
                 {
-                String name = field.name();
+                final String name = field.name();
                 if (name == null)
                     {
                     log.warn("Null field name [{}]", field.name());
                     continue;
                     }
                 
-                AdqlColumn.AdqlType atype = field.type();
-                if (atype == null)
+                final AdqlColumn.AdqlType type = field.type();
+                if (type == null)
                     {
                     log.warn("Null field type [{}]", field.name());
+                    continue;
+                    }
+                if (type == AdqlColumn.AdqlType.UNKNOWN)
+                    {
+                    log.warn("Unknown field type [{}]", field.name());
                     continue;
                     }
                 
                 table.columns().create(
                     name,
-                    atype.jdbctype(),
+                    type.jdbctype(),
                     field.arraysize()
                     );
                 }

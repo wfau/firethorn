@@ -410,9 +410,9 @@ public class IvoaColumnEntity
     @Override
     protected AdqlColumn.AdqlType adqltype()
         {
-        if (this.adqltype() != null)
+        if (super.adqltype() != null)
             {
-            return this.adqltype();
+            return super.adqltype();
             }
         else {
             return this.ivoatype;
@@ -485,6 +485,12 @@ public class IvoaColumnEntity
                 }
 
             @Override
+            public AdqlColumn.AdqlType type()
+                {
+                return IvoaColumnEntity.this.ivoatype();
+                }
+
+            @Override
             public String title()
                 {
                 return IvoaColumnEntity.this.name();
@@ -500,12 +506,6 @@ public class IvoaColumnEntity
             public String utype()
                 {
                 return IvoaColumnEntity.this.adqlutype();
-                }
-
-            @Override
-            public String dtype()
-                {
-                return IvoaColumnEntity.this.adqltype().name();
                 }
 
             @Override
@@ -568,7 +568,7 @@ public class IvoaColumnEntity
     public void update(IvoaColumn.Metadata.Ivoa update)
         {
         this.adqltype(
-            update.dtype()
+            update.type()
             );
         this.adqlsize(
             update.arraysize()

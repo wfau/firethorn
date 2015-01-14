@@ -96,11 +96,16 @@ extends AbstractQueryTestBase
             " FROM" + 
             "    gaia.twomass_psc",
 
-            "",
+            " SELECT" + 
+            "     TOP 123" + 
+            "     public.twomass_psc.ra   as ra," + 
+            "     public.twomass_psc.decl as decl" + 
+            " FROM" + 
+            "    public.twomass_psc",
 
             new ExpectedField[] {
-                new ExpectedField("ra",   AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("decl", AdqlColumn.AdqlType.FLOAT, 0)
+                new ExpectedField("ra",   AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("decl", AdqlColumn.AdqlType.DOUBLE, 0)
                 }
             );
         }

@@ -147,6 +147,12 @@ extends BaseColumn<IvoaColumn>
             public String name();
 
             /**
+             * The column {@link AdqlColumn.AdqlType}.
+             * 
+             */
+            public AdqlColumn.AdqlType type();
+
+            /**
              * The column title.
              * 
              */
@@ -157,18 +163,6 @@ extends BaseColumn<IvoaColumn>
              * 
              */
             public String text();
-
-            /**
-             * The column uType.
-             * 
-             */
-            public String utype();
-
-            /**
-             * The column dType.
-             * 
-             */
-            public String dtype();
 
             /**
              * The column units.
@@ -187,6 +181,12 @@ extends BaseColumn<IvoaColumn>
              * 
              */
             public String ucd();
+
+            /**
+             * The column uType.
+             * 
+             */
+            public String utype();
 
             }
 
