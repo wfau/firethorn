@@ -1,7 +1,6 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g 2011-11-03 11:20:25
+package uk.org.ogsadai.parser.sql92query;
 
-package uk.org.ogsadai.parser.sql92query; 
-
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g 2010-09-09 10:42:37
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -9,12 +8,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import org.antlr.runtime.debug.*;
+import java.io.IOException;
 
 import org.antlr.runtime.tree.*;
 
-public class SQL92QueryParser extends Parser {
+public class SQL92QueryParser extends DebugParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STATEMENT", "QUERY", "SETOP", "ORDER", "SELECT_LIST", "FROM_LIST", "WHERE", "GROUP_BY", "HAVING", "RELATION", "COLUMN", "FUNCTION", "NOT", "SET", "TABLECOLUMN", "RIGHT_OUTER_JOIN", "LEFT_OUTER_JOIN", "FULL_OUTER_JOIN", "JOIN", "IS_NULL", "UNION", "EXCEPT", "UNION_ALL", "EXCEPT_ALL", "INTERSECT", "BOUND", "CAST", "ASC", "DESC", "LIMIT", "INT", "ID", "FLOAT", "NUMERIC", "STRING", "WS", "';'", "'LIMIT'", "'UNION'", "'ALL'", "'EXCEPT'", "'INTERSECT'", "'SELECT'", "'FROM'", "'WHERE'", "'GROUP BY'", "'HAVING'", "'DISTINCT'", "'('", "')'", "'*'", "','", "'CAST'", "'AS'", "'ORDER'", "'BY'", "'DESC'", "'ASC'", "'.'", "'DATE'", "'TIMESTAMP'", "'TIME'", "'INTERVAL'", "'YEAR'", "'MONTH'", "'DAY'", "'HOUR'", "'MINUTE'", "'SECOND'", "'+'", "'-'", "'/'", "'NULL'", "'TRUE'", "'FALSE'", "'||'", "'RIGHT'", "'OUTER'", "'JOIN'", "'LEFT'", "'FULL'", "'INNER'", "'ON'", "'OR'", "'AND'", "'NOT'", "'IS'", "'IN'", "'BETWEEN'", "'EXISTS'", "'='", "'<>'", "'!='", "'<'", "'>'", "'>='", "'<='", "'SOME'", "'ANY'", "'LIKE'", "'DEFAULT'", "'@'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STATEMENT", "QUERY", "SETOP", "ORDER", "SELECT_LIST", "FROM_LIST", "WHERE", "GROUP_BY", "HAVING", "RELATION", "COLUMN", "FUNCTION", "NOT", "SET", "TABLECOLUMN", "RIGHT_OUTER_JOIN", "LEFT_OUTER_JOIN", "FULL_OUTER_JOIN", "JOIN", "IS_NULL", "UNION", "EXCEPT", "UNION_ALL", "EXCEPT_ALL", "INTERSECT", "BOUND", "CAST", "ID", "INT", "FLOAT", "NUMERIC", "STRING", "WS", "';'", "'UNION'", "'ALL'", "'EXCEPT'", "'INTERSECT'", "'SELECT'", "'FROM'", "'WHERE'", "'GROUP BY'", "'HAVING'", "'DISTINCT'", "'('", "')'", "'*'", "','", "'CAST'", "'AS'", "'ORDER'", "'BY'", "'.'", "'DATE'", "'TIMESTAMP'", "'TIME'", "'INTERVAL'", "'YEAR'", "'MONTH'", "'DAY'", "'HOUR'", "'MINUTE'", "'SECOND'", "'+'", "'-'", "'/'", "'NULL'", "'TRUE'", "'FALSE'", "'||'", "'RIGHT'", "'OUTER'", "'JOIN'", "'LEFT'", "'FULL'", "'INNER'", "'ON'", "'OR'", "'AND'", "'NOT'", "'IS'", "'IN'", "'BETWEEN'", "'EXISTS'", "'='", "'<>'", "'!='", "'<'", "'>'", "'>='", "'<='", "'SOME'", "'ANY'", "'LIKE'", "'DEFAULT'", "'@'"
     };
     public static final int CAST=30;
     public static final int FUNCTION=15;
@@ -40,10 +41,9 @@ public class SQL92QueryParser extends Parser {
     public static final int T__80=80;
     public static final int T__81=81;
     public static final int T__82=82;
-    public static final int ASC=31;
     public static final int T__83=83;
-    public static final int INT=34;
-    public static final int NUMERIC=37;
+    public static final int INT=32;
+    public static final int NUMERIC=34;
     public static final int T__85=85;
     public static final int T__84=84;
     public static final int T__87=87;
@@ -51,7 +51,7 @@ public class SQL92QueryParser extends Parser {
     public static final int T__89=89;
     public static final int T__88=88;
     public static final int INTERSECT=28;
-    public static final int WS=39;
+    public static final int WS=36;
     public static final int T__71=71;
     public static final int T__72=72;
     public static final int T__70=70;
@@ -75,10 +75,9 @@ public class SQL92QueryParser extends Parser {
     public static final int T__62=62;
     public static final int T__63=63;
     public static final int ORDER=7;
-    public static final int LIMIT=33;
     public static final int LEFT_OUTER_JOIN=20;
-    public static final int FLOAT=36;
-    public static final int ID=35;
+    public static final int FLOAT=33;
+    public static final int ID=31;
     public static final int T__61=61;
     public static final int T__60=60;
     public static final int T__55=55;
@@ -90,10 +89,7 @@ public class SQL92QueryParser extends Parser {
     public static final int T__53=53;
     public static final int T__54=54;
     public static final int T__59=59;
-    public static final int T__103=103;
     public static final int RIGHT_OUTER_JOIN=19;
-    public static final int T__104=104;
-    public static final int T__105=105;
     public static final int COLUMN=14;
     public static final int T__50=50;
     public static final int T__42=42;
@@ -108,48 +104,136 @@ public class SQL92QueryParser extends Parser {
     public static final int T__49=49;
     public static final int RELATION=13;
     public static final int SET=17;
-    public static final int T__102=102;
     public static final int HAVING=12;
-    public static final int T__101=101;
-    public static final int T__100=100;
     public static final int JOIN=22;
     public static final int UNION=24;
     public static final int UNION_ALL=26;
     public static final int FROM_LIST=9;
     public static final int GROUP_BY=11;
-    public static final int DESC=32;
-    public static final int STRING=38;
+    public static final int T__37=37;
+    public static final int T__38=38;
+    public static final int T__39=39;
+    public static final int STRING=35;
 
     // delegates
     // delegators
 
-
+    public static final String[] ruleNames = new String[] {
+        "invalidRule", "synpred130_SQL92Query", "synpred28_SQL92Query", 
+        "synpred41_SQL92Query", "table_function", "synpred12_SQL92Query", 
+        "synpred37_SQL92Query", "null_predicate", "synpred114_SQL92Query", 
+        "synpred7_SQL92Query", "synpred126_SQL92Query", "synpred3_SQL92Query", 
+        "synpred74_SQL92Query", "synpred20_SQL92Query", "synpred107_SQL92Query", 
+        "synpred101_SQL92Query", "synpred45_SQL92Query", "synpred122_SQL92Query", 
+        "synpred27_SQL92Query", "function", "table_name", "join_type", "synpred42_SQL92Query", 
+        "synpred23_SQL92Query", "search_condition", "synpred1_SQL92Query", 
+        "synpred19_SQL92Query", "synpred88_SQL92Query", "synpred68_SQL92Query", 
+        "synpred90_SQL92Query", "synpred62_SQL92Query", "synpred124_SQL92Query", 
+        "synpred104_SQL92Query", "synpred63_SQL92Query", "synpred73_SQL92Query", 
+        "synpred44_SQL92Query", "statement", "synpred86_SQL92Query", "set_quantifier", 
+        "synpred55_SQL92Query", "boolean_term", "synpred79_SQL92Query", 
+        "synpred110_SQL92Query", "synpred4_SQL92Query", "relation", "synpred120_SQL92Query", 
+        "synpred25_SQL92Query", "synpred100_SQL92Query", "synpred36_SQL92Query", 
+        "synpred80_SQL92Query", "synpred132_SQL92Query", "synpred83_SQL92Query", 
+        "exists_predicate", "sort_specification", "synpred18_SQL92Query", 
+        "synpred116_SQL92Query", "synpred127_SQL92Query", "synpred99_SQL92Query", 
+        "numeric_primary", "between_predicate", "synpred50_SQL92Query", 
+        "synpred61_SQL92Query", "bind_table", "row_value", "synpred81_SQL92Query", 
+        "synpred117_SQL92Query", "sub_query", "synpred30_SQL92Query", "synpred38_SQL92Query", 
+        "synpred121_SQL92Query", "table", "synpred54_SQL92Query", "synpred47_SQL92Query", 
+        "synpred131_SQL92Query", "synpred6_SQL92Query", "synpred119_SQL92Query", 
+        "synpred94_SQL92Query", "synpred118_SQL92Query", "synpred112_SQL92Query", 
+        "synpred85_SQL92Query", "synpred115_SQL92Query", "synpred24_SQL92Query", 
+        "synpred106_SQL92Query", "synpred84_SQL92Query", "synpred9_SQL92Query", 
+        "synpred89_SQL92Query", "synpred78_SQL92Query", "value_expression", 
+        "select_list", "synpred108_SQL92Query", "like_predicate", "synpred128_SQL92Query", 
+        "synpred113_SQL92Query", "synpred13_SQL92Query", "column_list", 
+        "reserved_word_column_name", "string_value_expression", "synpred17_SQL92Query", 
+        "synpred72_SQL92Query", "table_function_param", "synpred49_SQL92Query", 
+        "synpred26_SQL92Query", "synpred77_SQL92Query", "synpred75_SQL92Query", 
+        "in_predicate", "synpred60_SQL92Query", "synpred34_SQL92Query", 
+        "synpred109_SQL92Query", "synpred21_SQL92Query", "synpred16_SQL92Query", 
+        "synpred71_SQL92Query", "synpred43_SQL92Query", "predicate", "synpred33_SQL92Query", 
+        "synpred97_SQL92Query", "synpred15_SQL92Query", "query", "synpred129_SQL92Query", 
+        "synpred66_SQL92Query", "comparison_predicate", "synpred5_SQL92Query", 
+        "synpred123_SQL92Query", "synpred96_SQL92Query", "synpred40_SQL92Query", 
+        "synpred76_SQL92Query", "synpred53_SQL92Query", "synpred92_SQL92Query", 
+        "literal", "synpred46_SQL92Query", "synpred103_SQL92Query", "derived_column", 
+        "synpred133_SQL92Query", "synpred93_SQL92Query", "synpred125_SQL92Query", 
+        "synpred87_SQL92Query", "synpred67_SQL92Query", "correlation_specification", 
+        "non_join_table", "synpred102_SQL92Query", "table_expression", "synpred65_SQL92Query", 
+        "numeric_value_expression", "synpred48_SQL92Query", "order_by", 
+        "interval", "synpred91_SQL92Query", "column_name", "synpred39_SQL92Query", 
+        "synpred82_SQL92Query", "in_predicate_tail", "synpred10_SQL92Query", 
+        "synpred11_SQL92Query", "synpred95_SQL92Query", "synpred51_SQL92Query", 
+        "synpred2_SQL92Query", "value_expression_primary", "synpred59_SQL92Query", 
+        "synpred56_SQL92Query", "synpred134_SQL92Query", "query_expression", 
+        "synpred105_SQL92Query", "factor", "synpred69_SQL92Query", "synpred64_SQL92Query", 
+        "synpred22_SQL92Query", "synpred70_SQL92Query", "boolean_primary", 
+        "synpred57_SQL92Query", "synpred111_SQL92Query", "boolean_factor", 
+        "datetime", "synpred98_SQL92Query", "synpred14_SQL92Query", "synpred29_SQL92Query", 
+        "table_reference", "table_function_subquery", "synpred35_SQL92Query", 
+        "synpred58_SQL92Query", "boolean_test", "set_op", "synpred52_SQL92Query", 
+        "synpred8_SQL92Query", "synpred31_SQL92Query", "synpred32_SQL92Query"
+    };
+     
+        public int ruleLevel = 0;
+        public int getRuleLevel() { return ruleLevel; }
+        public void incRuleLevel() { ruleLevel++; }
+        public void decRuleLevel() { ruleLevel--; }
         public SQL92QueryParser(TokenStream input) {
-            this(input, new RecognizerSharedState());
+            this(input, DebugEventSocketProxy.DEFAULT_DEBUGGER_PORT, new RecognizerSharedState());
         }
-        public SQL92QueryParser(TokenStream input, RecognizerSharedState state) {
+        public SQL92QueryParser(TokenStream input, int port, RecognizerSharedState state) {
             super(input, state);
-             
+            DebugEventSocketProxy proxy =
+                new DebugEventSocketProxy(this,port,adaptor);
+            setDebugListener(proxy);
+            setTokenStream(new DebugTokenStream(input,proxy));
+            try {
+                proxy.handshake();
+            }
+            catch (IOException ioe) {
+                reportError(ioe);
+            }
+            TreeAdaptor adap = new CommonTreeAdaptor();
+            setTreeAdaptor(adap);
+            proxy.setTreeAdaptor(adap);
         }
-        
-    protected TreeAdaptor adaptor = new CommonTreeAdaptor();
+    public SQL92QueryParser(TokenStream input, DebugEventListener dbg) {
+        super(input, dbg);
 
+         
+        TreeAdaptor adap = new CommonTreeAdaptor();
+        setTreeAdaptor(adap);
+
+    }
+    protected boolean evalPredicate(boolean result, String predicate) {
+        dbg.semanticPredicate(result, predicate);
+        return result;
+    }
+
+    protected DebugTreeAdaptor adaptor;
     public void setTreeAdaptor(TreeAdaptor adaptor) {
-        this.adaptor = adaptor;
+        this.adaptor = new DebugTreeAdaptor(dbg,adaptor);
+
     }
     public TreeAdaptor getTreeAdaptor() {
         return adaptor;
     }
 
+
     public String[] getTokenNames() { return SQL92QueryParser.tokenNames; }
-    public String getGrammarFileName() { return "/Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g"; }
+    public String getGrammarFileName() { return "C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g"; }
 
 
-    protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow) throws RecognitionException {
+    protected void mismatch(IntStream input, int ttype, BitSet follow)
+        throws RecognitionException
+    { 
         throw new MismatchedTokenException(ttype, input);
     }
 
-    public Object recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
+    public void recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
         throws RecognitionException
     {
         throw re;
@@ -162,51 +246,65 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "statement"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:95:1: statement : query_expression ( order_by )? ( limit )? ( ';' )? EOF -> ^( STATEMENT query_expression ( order_by )? ( limit )? ) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:87:1: statement : query_expression ( order_by )? ( ';' )? EOF -> ^( STATEMENT query_expression ( order_by )? ) ;
     public final SQL92QueryParser.statement_return statement() throws RecognitionException {
         SQL92QueryParser.statement_return retval = new SQL92QueryParser.statement_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal4=null;
-        Token EOF5=null;
+        Token char_literal3=null;
+        Token EOF4=null;
         SQL92QueryParser.query_expression_return query_expression1 = null;
 
         SQL92QueryParser.order_by_return order_by2 = null;
 
-        SQL92QueryParser.limit_return limit3 = null;
 
-
-        CommonTree char_literal4_tree=null;
-        CommonTree EOF5_tree=null;
-        RewriteRuleTokenStream stream_40=new RewriteRuleTokenStream(adaptor,"token 40");
+        CommonTree char_literal3_tree=null;
+        CommonTree EOF4_tree=null;
         RewriteRuleTokenStream stream_EOF=new RewriteRuleTokenStream(adaptor,"token EOF");
-        RewriteRuleSubtreeStream stream_limit=new RewriteRuleSubtreeStream(adaptor,"rule limit");
+        RewriteRuleTokenStream stream_37=new RewriteRuleTokenStream(adaptor,"token 37");
         RewriteRuleSubtreeStream stream_query_expression=new RewriteRuleSubtreeStream(adaptor,"rule query_expression");
         RewriteRuleSubtreeStream stream_order_by=new RewriteRuleSubtreeStream(adaptor,"rule order_by");
+        try { dbg.enterRule(getGrammarFileName(), "statement");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(87, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:5: ( query_expression ( order_by )? ( limit )? ( ';' )? EOF -> ^( STATEMENT query_expression ( order_by )? ( limit )? ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:9: query_expression ( order_by )? ( limit )? ( ';' )? EOF
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:2: ( query_expression ( order_by )? ( ';' )? EOF -> ^( STATEMENT query_expression ( order_by )? ) )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:4: query_expression ( order_by )? ( ';' )? EOF
             {
-            pushFollow(FOLLOW_query_expression_in_statement315);
+            dbg.location(88,4);
+            pushFollow(FOLLOW_query_expression_in_statement183);
             query_expression1=query_expression();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_query_expression.add(query_expression1.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:26: ( order_by )?
+            dbg.location(88,21);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:21: ( order_by )?
             int alt1=2;
+            try { dbg.enterSubRule(1);
+            try { dbg.enterDecision(1);
+
             int LA1_0 = input.LA(1);
 
-            if ( (LA1_0==58) ) {
+            if ( (LA1_0==54) ) {
                 alt1=1;
             }
+            } finally {dbg.exitDecision(1);}
+
             switch (alt1) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: order_by
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: order_by
                     {
-                    pushFollow(FOLLOW_order_by_in_statement317);
+                    dbg.location(88,21);
+                    pushFollow(FOLLOW_order_by_in_statement185);
                     order_by2=order_by();
 
                     state._fsp--;
@@ -217,57 +315,46 @@ public class SQL92QueryParser extends Parser {
                     break;
 
             }
+            } finally {dbg.exitSubRule(1);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:36: ( limit )?
+            dbg.location(88,31);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:31: ( ';' )?
             int alt2=2;
+            try { dbg.enterSubRule(2);
+            try { dbg.enterDecision(2);
+
             int LA2_0 = input.LA(1);
 
-            if ( (LA2_0==41) ) {
+            if ( (LA2_0==37) ) {
                 alt2=1;
             }
+            } finally {dbg.exitDecision(2);}
+
             switch (alt2) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: limit
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: ';'
                     {
-                    pushFollow(FOLLOW_limit_in_statement320);
-                    limit3=limit();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_limit.add(limit3.getTree());
-
-                    }
-                    break;
-
-            }
-
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:43: ( ';' )?
-            int alt3=2;
-            int LA3_0 = input.LA(1);
-
-            if ( (LA3_0==40) ) {
-                alt3=1;
-            }
-            switch (alt3) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: ';'
-                    {
-                    char_literal4=(Token)match(input,40,FOLLOW_40_in_statement323); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_40.add(char_literal4);
+                    dbg.location(88,31);
+                    char_literal3=(Token)match(input,37,FOLLOW_37_in_statement188); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_37.add(char_literal3);
 
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(2);}
 
-            EOF5=(Token)match(input,EOF,FOLLOW_EOF_in_statement326); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_EOF.add(EOF5);
+            dbg.location(88,36);
+            EOF4=(Token)match(input,EOF,FOLLOW_EOF_in_statement191); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_EOF.add(EOF4);
 
 
 
             // AST REWRITE
-            // elements: limit, order_by, query_expression
+            // elements: order_by, query_expression
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -278,26 +365,25 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 96:52: -> ^( STATEMENT query_expression ( order_by )? ( limit )? )
+            // 88:40: -> ^( STATEMENT query_expression ( order_by )? )
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:55: ^( STATEMENT query_expression ( order_by )? ( limit )? )
+                dbg.location(88,43);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:43: ^( STATEMENT query_expression ( order_by )? )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(88,45);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(STATEMENT, "STATEMENT"), root_1);
 
+                dbg.location(88,55);
                 adaptor.addChild(root_1, stream_query_expression.nextTree());
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:84: ( order_by )?
+                dbg.location(88,72);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:72: ( order_by )?
                 if ( stream_order_by.hasNext() ) {
+                    dbg.location(88,72);
                     adaptor.addChild(root_1, stream_order_by.nextTree());
 
                 }
                 stream_order_by.reset();
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:96:94: ( limit )?
-                if ( stream_limit.hasNext() ) {
-                    adaptor.addChild(root_1, stream_limit.nextTree());
-
-                }
-                stream_limit.reset();
 
                 adaptor.addChild(root_0, root_1);
                 }
@@ -323,91 +409,18 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(88, 82);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "statement");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "statement"
-
-    public static class limit_return extends ParserRuleReturnScope {
-        CommonTree tree;
-        public Object getTree() { return tree; }
-    };
-
-    // $ANTLR start "limit"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:99:1: limit : 'LIMIT' INT -> ^( LIMIT INT ) ;
-    public final SQL92QueryParser.limit_return limit() throws RecognitionException {
-        SQL92QueryParser.limit_return retval = new SQL92QueryParser.limit_return();
-        retval.start = input.LT(1);
-
-        CommonTree root_0 = null;
-
-        Token string_literal6=null;
-        Token INT7=null;
-
-        CommonTree string_literal6_tree=null;
-        CommonTree INT7_tree=null;
-        RewriteRuleTokenStream stream_INT=new RewriteRuleTokenStream(adaptor,"token INT");
-        RewriteRuleTokenStream stream_41=new RewriteRuleTokenStream(adaptor,"token 41");
-
-        try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:100:5: ( 'LIMIT' INT -> ^( LIMIT INT ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:100:7: 'LIMIT' INT
-            {
-            string_literal6=(Token)match(input,41,FOLLOW_41_in_limit363); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_41.add(string_literal6);
-
-            INT7=(Token)match(input,INT,FOLLOW_INT_in_limit365); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_INT.add(INT7);
-
-
-
-            // AST REWRITE
-            // elements: INT
-            // token labels: 
-            // rule labels: retval
-            // token list labels: 
-            // rule list labels: 
-            // wildcard labels: 
-            if ( state.backtracking==0 ) {
-            retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-
-            root_0 = (CommonTree)adaptor.nil();
-            // 100:19: -> ^( LIMIT INT )
-            {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:100:22: ^( LIMIT INT )
-                {
-                CommonTree root_1 = (CommonTree)adaptor.nil();
-                root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(LIMIT, "LIMIT"), root_1);
-
-                adaptor.addChild(root_1, stream_INT.nextNode());
-
-                adaptor.addChild(root_0, root_1);
-                }
-
-            }
-
-            retval.tree = root_0;}
-            }
-
-            retval.stop = input.LT(-1);
-
-            if ( state.backtracking==0 ) {
-
-            retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-            adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-            }
-        }
-
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            throw re;
-        }
-        finally {
-        }
-        return retval;
-    }
-    // $ANTLR end "limit"
 
     public static class query_expression_return extends ParserRuleReturnScope {
         CommonTree tree;
@@ -415,68 +428,88 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "query_expression"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:102:1: query_expression : query ( set_op query )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:89:1: query_expression : query ( set_op query )* ;
     public final SQL92QueryParser.query_expression_return query_expression() throws RecognitionException {
         SQL92QueryParser.query_expression_return retval = new SQL92QueryParser.query_expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.query_return query8 = null;
+        SQL92QueryParser.query_return query5 = null;
 
-        SQL92QueryParser.set_op_return set_op9 = null;
+        SQL92QueryParser.set_op_return set_op6 = null;
 
-        SQL92QueryParser.query_return query10 = null;
+        SQL92QueryParser.query_return query7 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "query_expression");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(89, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:103:5: ( query ( set_op query )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:103:9: query ( set_op query )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:91:2: ( query ( set_op query )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:91:4: query ( set_op query )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_query_in_query_expression391);
-            query8=query();
+            dbg.location(91,4);
+            pushFollow(FOLLOW_query_in_query_expression211);
+            query5=query();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, query8.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:103:15: ( set_op query )*
-            loop4:
-            do {
-                int alt4=2;
-                int LA4_0 = input.LA(1);
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, query5.getTree());
+            dbg.location(91,10);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:91:10: ( set_op query )*
+            try { dbg.enterSubRule(3);
 
-                if ( (LA4_0==42||(LA4_0>=44 && LA4_0<=45)) ) {
-                    alt4=1;
+            loop3:
+            do {
+                int alt3=2;
+                try { dbg.enterDecision(3);
+
+                int LA3_0 = input.LA(1);
+
+                if ( (LA3_0==38||(LA3_0>=40 && LA3_0<=41)) ) {
+                    alt3=1;
                 }
 
 
-                switch (alt4) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:103:16: set_op query
-                    {
-                    pushFollow(FOLLOW_set_op_in_query_expression394);
-                    set_op9=set_op();
+                } finally {dbg.exitDecision(3);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(set_op9.getTree(), root_0);
-                    pushFollow(FOLLOW_query_in_query_expression397);
-                    query10=query();
+                switch (alt3) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, query10.getTree());
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:91:11: set_op query
+            	    {
+            	    dbg.location(91,17);
+            	    pushFollow(FOLLOW_set_op_in_query_expression214);
+            	    set_op6=set_op();
 
-                    }
-                    break;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(set_op6.getTree(), root_0);
+            	    dbg.location(91,19);
+            	    pushFollow(FOLLOW_query_in_query_expression217);
+            	    query7=query();
 
-                default :
-                    break loop4;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, query7.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop3;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(3);}
 
 
             }
@@ -497,6 +530,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(92, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "query_expression");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "query_expression"
@@ -507,97 +549,113 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "set_op"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:105:1: set_op : ( 'UNION' 'ALL' -> ^( UNION_ALL ) | 'UNION' -> ^( UNION ) | 'EXCEPT' 'ALL' -> ^( EXCEPT_ALL ) | 'EXCEPT' -> ^( EXCEPT ) | 'INTERSECT' -> ^( INTERSECT ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:96:1: set_op : ( 'UNION' 'ALL' -> ^( UNION_ALL ) | 'UNION' -> ^( UNION ) | 'EXCEPT' 'ALL' -> ^( EXCEPT_ALL ) | 'EXCEPT' -> ^( EXCEPT ) | 'INTERSECT' -> ^( INTERSECT ) );
     public final SQL92QueryParser.set_op_return set_op() throws RecognitionException {
         SQL92QueryParser.set_op_return retval = new SQL92QueryParser.set_op_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
+        Token string_literal8=null;
+        Token string_literal9=null;
+        Token string_literal10=null;
         Token string_literal11=null;
         Token string_literal12=null;
         Token string_literal13=null;
         Token string_literal14=null;
-        Token string_literal15=null;
-        Token string_literal16=null;
-        Token string_literal17=null;
 
+        CommonTree string_literal8_tree=null;
+        CommonTree string_literal9_tree=null;
+        CommonTree string_literal10_tree=null;
         CommonTree string_literal11_tree=null;
         CommonTree string_literal12_tree=null;
         CommonTree string_literal13_tree=null;
         CommonTree string_literal14_tree=null;
-        CommonTree string_literal15_tree=null;
-        CommonTree string_literal16_tree=null;
-        CommonTree string_literal17_tree=null;
-        RewriteRuleTokenStream stream_45=new RewriteRuleTokenStream(adaptor,"token 45");
-        RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
-        RewriteRuleTokenStream stream_44=new RewriteRuleTokenStream(adaptor,"token 44");
-        RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
+        RewriteRuleTokenStream stream_41=new RewriteRuleTokenStream(adaptor,"token 41");
+        RewriteRuleTokenStream stream_40=new RewriteRuleTokenStream(adaptor,"token 40");
+        RewriteRuleTokenStream stream_39=new RewriteRuleTokenStream(adaptor,"token 39");
+        RewriteRuleTokenStream stream_38=new RewriteRuleTokenStream(adaptor,"token 38");
+
+        try { dbg.enterRule(getGrammarFileName(), "set_op");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(96, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:106:5: ( 'UNION' 'ALL' -> ^( UNION_ALL ) | 'UNION' -> ^( UNION ) | 'EXCEPT' 'ALL' -> ^( EXCEPT_ALL ) | 'EXCEPT' -> ^( EXCEPT ) | 'INTERSECT' -> ^( INTERSECT ) )
-            int alt5=5;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:96:8: ( 'UNION' 'ALL' -> ^( UNION_ALL ) | 'UNION' -> ^( UNION ) | 'EXCEPT' 'ALL' -> ^( EXCEPT_ALL ) | 'EXCEPT' -> ^( EXCEPT ) | 'INTERSECT' -> ^( INTERSECT ) )
+            int alt4=5;
+            try { dbg.enterDecision(4);
+
             switch ( input.LA(1) ) {
-            case 42:
+            case 38:
                 {
-                int LA5_1 = input.LA(2);
+                int LA4_1 = input.LA(2);
 
-                if ( (LA5_1==43) ) {
-                    alt5=1;
+                if ( (LA4_1==39) ) {
+                    alt4=1;
                 }
-                else if ( (LA5_1==46||LA5_1==52) ) {
-                    alt5=2;
+                else if ( (LA4_1==42||LA4_1==48) ) {
+                    alt4=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 5, 1, input);
+                        new NoViableAltException("", 4, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
-            case 44:
+            case 40:
                 {
-                int LA5_2 = input.LA(2);
+                int LA4_2 = input.LA(2);
 
-                if ( (LA5_2==43) ) {
-                    alt5=3;
+                if ( (LA4_2==39) ) {
+                    alt4=3;
                 }
-                else if ( (LA5_2==46||LA5_2==52) ) {
-                    alt5=4;
+                else if ( (LA4_2==42||LA4_2==48) ) {
+                    alt4=4;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 5, 2, input);
+                        new NoViableAltException("", 4, 2, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
-            case 45:
+            case 41:
                 {
-                alt5=5;
+                alt4=5;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 5, 0, input);
+                    new NoViableAltException("", 4, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt5) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:106:9: 'UNION' 'ALL'
-                    {
-                    string_literal11=(Token)match(input,42,FOLLOW_42_in_set_op419); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_42.add(string_literal11);
+            } finally {dbg.exitDecision(4);}
 
-                    string_literal12=(Token)match(input,43,FOLLOW_43_in_set_op421); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_43.add(string_literal12);
+            switch (alt4) {
+                case 1 :
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:96:10: 'UNION' 'ALL'
+                    {
+                    dbg.location(96,10);
+                    string_literal8=(Token)match(input,38,FOLLOW_38_in_set_op231); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_38.add(string_literal8);
+
+                    dbg.location(96,18);
+                    string_literal9=(Token)match(input,39,FOLLOW_39_in_set_op233); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_39.add(string_literal9);
 
 
 
@@ -613,11 +671,13 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 106:23: -> ^( UNION_ALL )
+                    // 96:24: -> ^( UNION_ALL )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:106:26: ^( UNION_ALL )
+                        dbg.location(96,27);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:96:27: ^( UNION_ALL )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(96,29);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(UNION_ALL, "UNION_ALL"), root_1);
 
                         adaptor.addChild(root_0, root_1);
@@ -629,10 +689,13 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:107:9: 'UNION'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:97:4: 'UNION'
                     {
-                    string_literal13=(Token)match(input,42,FOLLOW_42_in_set_op437); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_42.add(string_literal13);
+                    dbg.location(97,4);
+                    string_literal10=(Token)match(input,38,FOLLOW_38_in_set_op244); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_38.add(string_literal10);
 
 
 
@@ -648,11 +711,13 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 107:17: -> ^( UNION )
+                    // 97:12: -> ^( UNION )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:107:20: ^( UNION )
+                        dbg.location(97,15);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:97:15: ^( UNION )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(97,17);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(UNION, "UNION"), root_1);
 
                         adaptor.addChild(root_0, root_1);
@@ -664,13 +729,17 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:108:9: 'EXCEPT' 'ALL'
-                    {
-                    string_literal14=(Token)match(input,44,FOLLOW_44_in_set_op453); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_44.add(string_literal14);
+                    dbg.enterAlt(3);
 
-                    string_literal15=(Token)match(input,43,FOLLOW_43_in_set_op455); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_43.add(string_literal15);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:98:4: 'EXCEPT' 'ALL'
+                    {
+                    dbg.location(98,4);
+                    string_literal11=(Token)match(input,40,FOLLOW_40_in_set_op255); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_40.add(string_literal11);
+
+                    dbg.location(98,13);
+                    string_literal12=(Token)match(input,39,FOLLOW_39_in_set_op257); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_39.add(string_literal12);
 
 
 
@@ -686,11 +755,13 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 108:24: -> ^( EXCEPT_ALL )
+                    // 98:19: -> ^( EXCEPT_ALL )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:108:27: ^( EXCEPT_ALL )
+                        dbg.location(98,22);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:98:22: ^( EXCEPT_ALL )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(98,24);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(EXCEPT_ALL, "EXCEPT_ALL"), root_1);
 
                         adaptor.addChild(root_0, root_1);
@@ -702,10 +773,13 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:109:9: 'EXCEPT'
+                    dbg.enterAlt(4);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:99:4: 'EXCEPT'
                     {
-                    string_literal16=(Token)match(input,44,FOLLOW_44_in_set_op471); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_44.add(string_literal16);
+                    dbg.location(99,4);
+                    string_literal13=(Token)match(input,40,FOLLOW_40_in_set_op268); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_40.add(string_literal13);
 
 
 
@@ -721,11 +795,13 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 109:18: -> ^( EXCEPT )
+                    // 99:13: -> ^( EXCEPT )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:109:21: ^( EXCEPT )
+                        dbg.location(99,16);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:99:16: ^( EXCEPT )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(99,18);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(EXCEPT, "EXCEPT"), root_1);
 
                         adaptor.addChild(root_0, root_1);
@@ -737,10 +813,13 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:110:9: 'INTERSECT'
+                    dbg.enterAlt(5);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:100:4: 'INTERSECT'
                     {
-                    string_literal17=(Token)match(input,45,FOLLOW_45_in_set_op487); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_45.add(string_literal17);
+                    dbg.location(100,4);
+                    string_literal14=(Token)match(input,41,FOLLOW_41_in_set_op279); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_41.add(string_literal14);
 
 
 
@@ -756,11 +835,13 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 110:21: -> ^( INTERSECT )
+                    // 100:16: -> ^( INTERSECT )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:110:24: ^( INTERSECT )
+                        dbg.location(100,19);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:100:19: ^( INTERSECT )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(100,21);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(INTERSECT, "INTERSECT"), root_1);
 
                         adaptor.addChild(root_0, root_1);
@@ -789,6 +870,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(101, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "set_op");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "set_op"
@@ -799,140 +889,179 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "query"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:112:1: query : ( sub_query | 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )? -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:104:1: query : ( sub_query | 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )? -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? ) );
     public final SQL92QueryParser.query_return query() throws RecognitionException {
         SQL92QueryParser.query_return retval = new SQL92QueryParser.query_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
+        Token string_literal16=null;
         Token string_literal19=null;
+        Token string_literal21=null;
         Token string_literal22=null;
         Token string_literal24=null;
-        Token string_literal25=null;
-        Token string_literal27=null;
         SQL92QueryParser.search_condition_return s1 = null;
 
         SQL92QueryParser.search_condition_return s2 = null;
 
-        SQL92QueryParser.sub_query_return sub_query18 = null;
+        SQL92QueryParser.sub_query_return sub_query15 = null;
 
-        SQL92QueryParser.set_quantifier_return set_quantifier20 = null;
+        SQL92QueryParser.set_quantifier_return set_quantifier17 = null;
 
-        SQL92QueryParser.select_list_return select_list21 = null;
+        SQL92QueryParser.select_list_return select_list18 = null;
 
-        SQL92QueryParser.table_expression_return table_expression23 = null;
+        SQL92QueryParser.table_expression_return table_expression20 = null;
 
-        SQL92QueryParser.column_list_return column_list26 = null;
+        SQL92QueryParser.column_list_return column_list23 = null;
 
 
+        CommonTree string_literal16_tree=null;
         CommonTree string_literal19_tree=null;
+        CommonTree string_literal21_tree=null;
         CommonTree string_literal22_tree=null;
         CommonTree string_literal24_tree=null;
-        CommonTree string_literal25_tree=null;
-        CommonTree string_literal27_tree=null;
-        RewriteRuleTokenStream stream_49=new RewriteRuleTokenStream(adaptor,"token 49");
-        RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
-        RewriteRuleTokenStream stream_47=new RewriteRuleTokenStream(adaptor,"token 47");
+        RewriteRuleTokenStream stream_45=new RewriteRuleTokenStream(adaptor,"token 45");
+        RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
+        RewriteRuleTokenStream stream_44=new RewriteRuleTokenStream(adaptor,"token 44");
+        RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
         RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
-        RewriteRuleTokenStream stream_50=new RewriteRuleTokenStream(adaptor,"token 50");
         RewriteRuleSubtreeStream stream_select_list=new RewriteRuleSubtreeStream(adaptor,"rule select_list");
         RewriteRuleSubtreeStream stream_set_quantifier=new RewriteRuleSubtreeStream(adaptor,"rule set_quantifier");
         RewriteRuleSubtreeStream stream_column_list=new RewriteRuleSubtreeStream(adaptor,"rule column_list");
         RewriteRuleSubtreeStream stream_search_condition=new RewriteRuleSubtreeStream(adaptor,"rule search_condition");
         RewriteRuleSubtreeStream stream_table_expression=new RewriteRuleSubtreeStream(adaptor,"rule table_expression");
-        try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:113:5: ( sub_query | 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )? -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? ) )
-            int alt10=2;
-            int LA10_0 = input.LA(1);
+        try { dbg.enterRule(getGrammarFileName(), "query");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(104, 1);
 
-            if ( (LA10_0==52) ) {
-                alt10=1;
+        try {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:105:2: ( sub_query | 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )? -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? ) )
+            int alt9=2;
+            try { dbg.enterDecision(9);
+
+            int LA9_0 = input.LA(1);
+
+            if ( (LA9_0==48) ) {
+                alt9=1;
             }
-            else if ( (LA10_0==46) ) {
-                alt10=2;
+            else if ( (LA9_0==42) ) {
+                alt9=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 10, 0, input);
+                    new NoViableAltException("", 9, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt10) {
+            } finally {dbg.exitDecision(9);}
+
+            switch (alt9) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:113:9: sub_query
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:105:4: sub_query
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_sub_query_in_query514);
-                    sub_query18=sub_query();
+                    dbg.location(105,4);
+                    pushFollow(FOLLOW_sub_query_in_query300);
+                    sub_query15=sub_query();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query18.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query15.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:9: 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )?
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:4: 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )?
                     {
-                    string_literal19=(Token)match(input,46,FOLLOW_46_in_query524); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_46.add(string_literal19);
+                    dbg.location(106,4);
+                    string_literal16=(Token)match(input,42,FOLLOW_42_in_query305); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_42.add(string_literal16);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:18: ( set_quantifier )?
-                    int alt6=2;
-                    int LA6_0 = input.LA(1);
+                    dbg.location(106,13);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:13: ( set_quantifier )?
+                    int alt5=2;
+                    try { dbg.enterSubRule(5);
+                    try { dbg.enterDecision(5);
 
-                    if ( (LA6_0==43||LA6_0==51) ) {
-                        alt6=1;
+                    int LA5_0 = input.LA(1);
+
+                    if ( (LA5_0==39||LA5_0==47) ) {
+                        alt5=1;
                     }
-                    switch (alt6) {
+                    } finally {dbg.exitDecision(5);}
+
+                    switch (alt5) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: set_quantifier
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: set_quantifier
                             {
-                            pushFollow(FOLLOW_set_quantifier_in_query526);
-                            set_quantifier20=set_quantifier();
+                            dbg.location(106,13);
+                            pushFollow(FOLLOW_set_quantifier_in_query307);
+                            set_quantifier17=set_quantifier();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_set_quantifier.add(set_quantifier20.getTree());
+                            if ( state.backtracking==0 ) stream_set_quantifier.add(set_quantifier17.getTree());
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(5);}
 
-                    pushFollow(FOLLOW_select_list_in_query529);
-                    select_list21=select_list();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_select_list.add(select_list21.getTree());
-                    string_literal22=(Token)match(input,47,FOLLOW_47_in_query531); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_47.add(string_literal22);
-
-                    pushFollow(FOLLOW_table_expression_in_query533);
-                    table_expression23=table_expression();
+                    dbg.location(106,29);
+                    pushFollow(FOLLOW_select_list_in_query310);
+                    select_list18=select_list();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_expression.add(table_expression23.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:70: ( 'WHERE' s1= search_condition )?
-                    int alt7=2;
-                    int LA7_0 = input.LA(1);
+                    if ( state.backtracking==0 ) stream_select_list.add(select_list18.getTree());
+                    dbg.location(106,41);
+                    string_literal19=(Token)match(input,43,FOLLOW_43_in_query312); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_43.add(string_literal19);
 
-                    if ( (LA7_0==48) ) {
-                        alt7=1;
+                    dbg.location(106,48);
+                    pushFollow(FOLLOW_table_expression_in_query314);
+                    table_expression20=table_expression();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_table_expression.add(table_expression20.getTree());
+                    dbg.location(106,65);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:65: ( 'WHERE' s1= search_condition )?
+                    int alt6=2;
+                    try { dbg.enterSubRule(6);
+                    try { dbg.enterDecision(6);
+
+                    int LA6_0 = input.LA(1);
+
+                    if ( (LA6_0==44) ) {
+                        alt6=1;
                     }
-                    switch (alt7) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:71: 'WHERE' s1= search_condition
-                            {
-                            string_literal24=(Token)match(input,48,FOLLOW_48_in_query536); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_48.add(string_literal24);
+                    } finally {dbg.exitDecision(6);}
 
-                            pushFollow(FOLLOW_search_condition_in_query540);
+                    switch (alt6) {
+                        case 1 :
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:66: 'WHERE' s1= search_condition
+                            {
+                            dbg.location(106,66);
+                            string_literal21=(Token)match(input,44,FOLLOW_44_in_query317); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_44.add(string_literal21);
+
+                            dbg.location(106,76);
+                            pushFollow(FOLLOW_search_condition_in_query321);
                             s1=search_condition();
 
                             state._fsp--;
@@ -943,48 +1072,70 @@ public class SQL92QueryParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(6);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:101: ( 'GROUP BY' column_list )?
-                    int alt8=2;
-                    int LA8_0 = input.LA(1);
+                    dbg.location(106,96);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:96: ( 'GROUP BY' column_list )?
+                    int alt7=2;
+                    try { dbg.enterSubRule(7);
+                    try { dbg.enterDecision(7);
 
-                    if ( (LA8_0==49) ) {
-                        alt8=1;
+                    int LA7_0 = input.LA(1);
+
+                    if ( (LA7_0==45) ) {
+                        alt7=1;
                     }
-                    switch (alt8) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:102: 'GROUP BY' column_list
-                            {
-                            string_literal25=(Token)match(input,49,FOLLOW_49_in_query545); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_49.add(string_literal25);
+                    } finally {dbg.exitDecision(7);}
 
-                            pushFollow(FOLLOW_column_list_in_query547);
-                            column_list26=column_list();
+                    switch (alt7) {
+                        case 1 :
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:97: 'GROUP BY' column_list
+                            {
+                            dbg.location(106,97);
+                            string_literal22=(Token)match(input,45,FOLLOW_45_in_query326); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_45.add(string_literal22);
+
+                            dbg.location(106,108);
+                            pushFollow(FOLLOW_column_list_in_query328);
+                            column_list23=column_list();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_column_list.add(column_list26.getTree());
+                            if ( state.backtracking==0 ) stream_column_list.add(column_list23.getTree());
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(7);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:127: ( 'HAVING' s2= search_condition )?
-                    int alt9=2;
-                    int LA9_0 = input.LA(1);
+                    dbg.location(106,122);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:122: ( 'HAVING' s2= search_condition )?
+                    int alt8=2;
+                    try { dbg.enterSubRule(8);
+                    try { dbg.enterDecision(8);
 
-                    if ( (LA9_0==50) ) {
-                        alt9=1;
+                    int LA8_0 = input.LA(1);
+
+                    if ( (LA8_0==46) ) {
+                        alt8=1;
                     }
-                    switch (alt9) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:114:128: 'HAVING' s2= search_condition
-                            {
-                            string_literal27=(Token)match(input,50,FOLLOW_50_in_query552); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_50.add(string_literal27);
+                    } finally {dbg.exitDecision(8);}
 
-                            pushFollow(FOLLOW_search_condition_in_query556);
+                    switch (alt8) {
+                        case 1 :
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:123: 'HAVING' s2= search_condition
+                            {
+                            dbg.location(106,123);
+                            string_literal24=(Token)match(input,46,FOLLOW_46_in_query333); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_46.add(string_literal24);
+
+                            dbg.location(106,134);
+                            pushFollow(FOLLOW_search_condition_in_query337);
                             s2=search_condition();
 
                             state._fsp--;
@@ -995,11 +1146,12 @@ public class SQL92QueryParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(8);}
 
 
 
                     // AST REWRITE
-                    // elements: column_list, s2, set_quantifier, table_expression, select_list, s1
+                    // elements: s1, select_list, set_quantifier, table_expression, s2, column_list
                     // token labels: 
                     // rule labels: retval, s2, s1
                     // token list labels: 
@@ -1012,44 +1164,58 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_s1=new RewriteRuleSubtreeStream(adaptor,"rule s1",s1!=null?s1.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 115:13: -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? )
+                    // 107:5: -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:16: ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? )
+                        dbg.location(107,8);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:8: ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(107,10);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:24: ^( SELECT_LIST ( set_quantifier )? select_list )
+                        dbg.location(107,16);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:16: ^( SELECT_LIST ( set_quantifier )? select_list )
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
+                        dbg.location(107,18);
                         root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(SELECT_LIST, "SELECT_LIST"), root_2);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:38: ( set_quantifier )?
+                        dbg.location(107,30);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:30: ( set_quantifier )?
                         if ( stream_set_quantifier.hasNext() ) {
+                            dbg.location(107,30);
                             adaptor.addChild(root_2, stream_set_quantifier.nextTree());
 
                         }
                         stream_set_quantifier.reset();
+                        dbg.location(107,46);
                         adaptor.addChild(root_2, stream_select_list.nextTree());
 
                         adaptor.addChild(root_1, root_2);
                         }
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:67: ^( FROM_LIST table_expression )
+                        dbg.location(107,59);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:59: ^( FROM_LIST table_expression )
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
+                        dbg.location(107,61);
                         root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(FROM_LIST, "FROM_LIST"), root_2);
 
+                        dbg.location(107,71);
                         adaptor.addChild(root_2, stream_table_expression.nextTree());
 
                         adaptor.addChild(root_1, root_2);
                         }
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:97: ( ^( WHERE $s1) )?
+                        dbg.location(107,89);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:89: ( ^( WHERE $s1) )?
                         if ( stream_s1.hasNext() ) {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:97: ^( WHERE $s1)
+                            dbg.location(107,89);
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:89: ^( WHERE $s1)
                             {
                             CommonTree root_2 = (CommonTree)adaptor.nil();
+                            dbg.location(107,91);
                             root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(WHERE, "WHERE"), root_2);
 
+                            dbg.location(107,97);
                             adaptor.addChild(root_2, stream_s1.nextTree());
 
                             adaptor.addChild(root_1, root_2);
@@ -1057,13 +1223,17 @@ public class SQL92QueryParser extends Parser {
 
                         }
                         stream_s1.reset();
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:111: ( ^( GROUP_BY column_list ) )?
+                        dbg.location(107,103);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:103: ( ^( GROUP_BY column_list ) )?
                         if ( stream_column_list.hasNext() ) {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:111: ^( GROUP_BY column_list )
+                            dbg.location(107,103);
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:103: ^( GROUP_BY column_list )
                             {
                             CommonTree root_2 = (CommonTree)adaptor.nil();
+                            dbg.location(107,105);
                             root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(GROUP_BY, "GROUP_BY"), root_2);
 
+                            dbg.location(107,114);
                             adaptor.addChild(root_2, stream_column_list.nextTree());
 
                             adaptor.addChild(root_1, root_2);
@@ -1071,13 +1241,17 @@ public class SQL92QueryParser extends Parser {
 
                         }
                         stream_column_list.reset();
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:136: ( ^( HAVING $s2) )?
+                        dbg.location(107,128);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:128: ( ^( HAVING $s2) )?
                         if ( stream_s2.hasNext() ) {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:115:136: ^( HAVING $s2)
+                            dbg.location(107,128);
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:107:128: ^( HAVING $s2)
                             {
                             CommonTree root_2 = (CommonTree)adaptor.nil();
+                            dbg.location(107,130);
                             root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(HAVING, "HAVING"), root_2);
 
+                            dbg.location(107,137);
                             adaptor.addChild(root_2, stream_s2.nextTree());
 
                             adaptor.addChild(root_1, root_2);
@@ -1112,6 +1286,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(108, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "query");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "query"
@@ -1122,32 +1305,41 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "set_quantifier"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:118:1: set_quantifier : ( 'DISTINCT' | 'ALL' );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:109:1: set_quantifier : ( 'DISTINCT' | 'ALL' );
     public final SQL92QueryParser.set_quantifier_return set_quantifier() throws RecognitionException {
         SQL92QueryParser.set_quantifier_return retval = new SQL92QueryParser.set_quantifier_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token set28=null;
+        Token set25=null;
 
-        CommonTree set28_tree=null;
+        CommonTree set25_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "set_quantifier");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(109, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:119:5: ( 'DISTINCT' | 'ALL' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:110:2: ( 'DISTINCT' | 'ALL' )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            set28=(Token)input.LT(1);
-            if ( input.LA(1)==43||input.LA(1)==51 ) {
+            dbg.location(110,2);
+            set25=(Token)input.LT(1);
+            if ( input.LA(1)==39||input.LA(1)==47 ) {
                 input.consume();
-                if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set28));
+                if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set25));
                 state.errorRecovery=false;state.failed=false;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 MismatchedSetException mse = new MismatchedSetException(null,input);
+                dbg.recognitionException(mse);
                 throw mse;
             }
 
@@ -1170,6 +1362,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(110, 22);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "set_quantifier");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "set_quantifier"
@@ -1180,35 +1381,45 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "sub_query"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:121:1: sub_query : '(' query_expression ')' ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:111:1: sub_query : '(' query_expression ')' ;
     public final SQL92QueryParser.sub_query_return sub_query() throws RecognitionException {
         SQL92QueryParser.sub_query_return retval = new SQL92QueryParser.sub_query_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal29=null;
-        Token char_literal31=null;
-        SQL92QueryParser.query_expression_return query_expression30 = null;
+        Token char_literal26=null;
+        Token char_literal28=null;
+        SQL92QueryParser.query_expression_return query_expression27 = null;
 
 
-        CommonTree char_literal29_tree=null;
-        CommonTree char_literal31_tree=null;
+        CommonTree char_literal26_tree=null;
+        CommonTree char_literal28_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "sub_query");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(111, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:122:5: ( '(' query_expression ')' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:122:9: '(' query_expression ')'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:112:2: ( '(' query_expression ')' )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:112:4: '(' query_expression ')'
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            char_literal29=(Token)match(input,52,FOLLOW_52_in_sub_query659); if (state.failed) return retval;
-            pushFollow(FOLLOW_query_expression_in_sub_query662);
-            query_expression30=query_expression();
+            dbg.location(112,7);
+            char_literal26=(Token)match(input,48,FOLLOW_48_in_sub_query409); if (state.failed) return retval;
+            dbg.location(112,9);
+            pushFollow(FOLLOW_query_expression_in_sub_query412);
+            query_expression27=query_expression();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, query_expression30.getTree());
-            char_literal31=(Token)match(input,53,FOLLOW_53_in_sub_query664); if (state.failed) return retval;
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, query_expression27.getTree());
+            dbg.location(112,29);
+            char_literal28=(Token)match(input,49,FOLLOW_49_in_sub_query414); if (state.failed) return retval;
 
             }
 
@@ -1228,6 +1439,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(112, 30);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "sub_query");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "sub_query"
@@ -1238,53 +1458,66 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "select_list"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:124:1: select_list : ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' derived_column )* );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:114:1: select_list : ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' derived_column )* );
     public final SQL92QueryParser.select_list_return select_list() throws RecognitionException {
         SQL92QueryParser.select_list_return retval = new SQL92QueryParser.select_list_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal32=null;
-        Token char_literal34=null;
-        SQL92QueryParser.derived_column_return derived_column33 = null;
+        Token char_literal29=null;
+        Token char_literal31=null;
+        SQL92QueryParser.derived_column_return derived_column30 = null;
 
-        SQL92QueryParser.derived_column_return derived_column35 = null;
+        SQL92QueryParser.derived_column_return derived_column32 = null;
 
 
-        CommonTree char_literal32_tree=null;
-        CommonTree char_literal34_tree=null;
-        RewriteRuleTokenStream stream_54=new RewriteRuleTokenStream(adaptor,"token 54");
+        CommonTree char_literal29_tree=null;
+        CommonTree char_literal31_tree=null;
+        RewriteRuleTokenStream stream_50=new RewriteRuleTokenStream(adaptor,"token 50");
+
+        try { dbg.enterRule(getGrammarFileName(), "select_list");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(114, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:125:5: ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' derived_column )* )
-            int alt12=2;
-            int LA12_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:115:2: ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' derived_column )* )
+            int alt11=2;
+            try { dbg.enterDecision(11);
 
-            if ( (LA12_0==54) ) {
-                alt12=1;
+            int LA11_0 = input.LA(1);
+
+            if ( (LA11_0==50) ) {
+                alt11=1;
             }
-            else if ( ((LA12_0>=INT && LA12_0<=STRING)||LA12_0==52||LA12_0==56||(LA12_0>=63 && LA12_0<=74)||(LA12_0>=76 && LA12_0<=78)) ) {
-                alt12=2;
+            else if ( ((LA11_0>=ID && LA11_0<=STRING)||LA11_0==48||LA11_0==52||(LA11_0>=57 && LA11_0<=68)||(LA11_0>=70 && LA11_0<=72)) ) {
+                alt11=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 12, 0, input);
+                    new NoViableAltException("", 11, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt12) {
+            } finally {dbg.exitDecision(11);}
+
+            switch (alt11) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:125:9: '*'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:115:4: '*'
                     {
-                    char_literal32=(Token)match(input,54,FOLLOW_54_in_select_list683); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_54.add(char_literal32);
+                    dbg.location(115,4);
+                    char_literal29=(Token)match(input,50,FOLLOW_50_in_select_list424); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_50.add(char_literal29);
 
 
 
                     // AST REWRITE
-                    // elements: 54
+                    // elements: 50
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1295,14 +1528,17 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 125:13: -> ^( COLUMN '*' )
+                    // 115:8: -> ^( COLUMN '*' )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:125:16: ^( COLUMN '*' )
+                        dbg.location(115,11);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:115:11: ^( COLUMN '*' )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(115,13);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(COLUMN, "COLUMN"), root_1);
 
-                        adaptor.addChild(root_1, stream_54.nextNode());
+                        dbg.location(115,20);
+                        adaptor.addChild(root_1, stream_50.nextNode());
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -1313,46 +1549,61 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:126:9: derived_column ( ',' derived_column )*
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:116:5: derived_column ( ',' derived_column )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_derived_column_in_select_list701);
-                    derived_column33=derived_column();
+                    dbg.location(116,5);
+                    pushFollow(FOLLOW_derived_column_in_select_list438);
+                    derived_column30=derived_column();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column33.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:126:24: ( ',' derived_column )*
-                    loop11:
-                    do {
-                        int alt11=2;
-                        int LA11_0 = input.LA(1);
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column30.getTree());
+                    dbg.location(116,20);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:116:20: ( ',' derived_column )*
+                    try { dbg.enterSubRule(10);
 
-                        if ( (LA11_0==55) ) {
-                            alt11=1;
+                    loop10:
+                    do {
+                        int alt10=2;
+                        try { dbg.enterDecision(10);
+
+                        int LA10_0 = input.LA(1);
+
+                        if ( (LA10_0==51) ) {
+                            alt10=1;
                         }
 
 
-                        switch (alt11) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:126:25: ',' derived_column
-                            {
-                            char_literal34=(Token)match(input,55,FOLLOW_55_in_select_list704); if (state.failed) return retval;
-                            pushFollow(FOLLOW_derived_column_in_select_list707);
-                            derived_column35=derived_column();
+                        } finally {dbg.exitDecision(10);}
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column35.getTree());
+                        switch (alt10) {
+                    	case 1 :
+                    	    dbg.enterAlt(1);
 
-                            }
-                            break;
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:116:21: ',' derived_column
+                    	    {
+                    	    dbg.location(116,24);
+                    	    char_literal31=(Token)match(input,51,FOLLOW_51_in_select_list441); if (state.failed) return retval;
+                    	    dbg.location(116,26);
+                    	    pushFollow(FOLLOW_derived_column_in_select_list444);
+                    	    derived_column32=derived_column();
 
-                        default :
-                            break loop11;
+                    	    state._fsp--;
+                    	    if (state.failed) return retval;
+                    	    if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column32.getTree());
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop10;
                         }
                     } while (true);
+                    } finally {dbg.exitSubRule(10);}
 
 
                     }
@@ -1375,6 +1626,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(116, 42);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "select_list");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "select_list"
@@ -1385,7 +1645,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "derived_column"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:128:1: derived_column : ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:118:1: derived_column : ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) );
     public final SQL92QueryParser.derived_column_return derived_column() throws RecognitionException {
         SQL92QueryParser.derived_column_return retval = new SQL92QueryParser.derived_column_return();
         retval.start = input.LT(1);
@@ -1394,96 +1654,131 @@ public class SQL92QueryParser extends Parser {
 
         Token id1=null;
         Token id2=null;
+        Token string_literal33=null;
+        Token string_literal35=null;
         Token string_literal36=null;
         Token string_literal38=null;
-        Token string_literal39=null;
-        Token string_literal41=null;
-        Token ID42=null;
-        SQL92QueryParser.value_expression_return value_expression37 = null;
+        Token ID39=null;
+        SQL92QueryParser.value_expression_return value_expression34 = null;
 
-        SQL92QueryParser.value_expression_return value_expression40 = null;
+        SQL92QueryParser.value_expression_return value_expression37 = null;
 
 
         CommonTree id1_tree=null;
         CommonTree id2_tree=null;
+        CommonTree string_literal33_tree=null;
+        CommonTree string_literal35_tree=null;
         CommonTree string_literal36_tree=null;
         CommonTree string_literal38_tree=null;
-        CommonTree string_literal39_tree=null;
-        CommonTree string_literal41_tree=null;
-        CommonTree ID42_tree=null;
-        RewriteRuleTokenStream stream_57=new RewriteRuleTokenStream(adaptor,"token 57");
-        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
+        CommonTree ID39_tree=null;
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
+        RewriteRuleTokenStream stream_52=new RewriteRuleTokenStream(adaptor,"token 52");
+        RewriteRuleTokenStream stream_53=new RewriteRuleTokenStream(adaptor,"token 53");
         RewriteRuleSubtreeStream stream_value_expression=new RewriteRuleSubtreeStream(adaptor,"rule value_expression");
-        try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:5: ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) )
-            int alt17=2;
-            int LA17_0 = input.LA(1);
+        try { dbg.enterRule(getGrammarFileName(), "derived_column");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(118, 1);
 
-            if ( (LA17_0==56) ) {
-                alt17=1;
+        try {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:2: ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) )
+            int alt16=2;
+            try { dbg.enterDecision(16);
+
+            int LA16_0 = input.LA(1);
+
+            if ( (LA16_0==52) ) {
+                alt16=1;
             }
-            else if ( ((LA17_0>=INT && LA17_0<=STRING)||LA17_0==52||(LA17_0>=63 && LA17_0<=74)||(LA17_0>=76 && LA17_0<=78)) ) {
-                alt17=2;
+            else if ( ((LA16_0>=ID && LA16_0<=STRING)||LA16_0==48||(LA16_0>=57 && LA16_0<=68)||(LA16_0>=70 && LA16_0<=72)) ) {
+                alt16=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 17, 0, input);
+                    new NoViableAltException("", 16, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt17) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:9: 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )?
-                    {
-                    string_literal36=(Token)match(input,56,FOLLOW_56_in_derived_column727); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_56.add(string_literal36);
+            } finally {dbg.exitDecision(16);}
 
-                    pushFollow(FOLLOW_value_expression_in_derived_column729);
-                    value_expression37=value_expression();
+            switch (alt16) {
+                case 1 :
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:4: 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )?
+                    {
+                    dbg.location(119,4);
+                    string_literal33=(Token)match(input,52,FOLLOW_52_in_derived_column456); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_52.add(string_literal33);
+
+                    dbg.location(119,11);
+                    pushFollow(FOLLOW_value_expression_in_derived_column458);
+                    value_expression34=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression37.getTree());
-                    string_literal38=(Token)match(input,57,FOLLOW_57_in_derived_column731); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_57.add(string_literal38);
+                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression34.getTree());
+                    dbg.location(119,28);
+                    string_literal35=(Token)match(input,53,FOLLOW_53_in_derived_column460); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_53.add(string_literal35);
 
-                    id1=(Token)match(input,ID,FOLLOW_ID_in_derived_column735); if (state.failed) return retval; 
+                    dbg.location(119,36);
+                    id1=(Token)match(input,ID,FOLLOW_ID_in_derived_column464); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(id1);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:45: ( ( 'AS' )? id2= ID )?
-                    int alt14=2;
-                    int LA14_0 = input.LA(1);
+                    dbg.location(119,40);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:40: ( ( 'AS' )? id2= ID )?
+                    int alt13=2;
+                    try { dbg.enterSubRule(13);
+                    try { dbg.enterDecision(13);
 
-                    if ( (LA14_0==ID||LA14_0==57) ) {
-                        alt14=1;
+                    int LA13_0 = input.LA(1);
+
+                    if ( (LA13_0==ID||LA13_0==53) ) {
+                        alt13=1;
                     }
-                    switch (alt14) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:46: ( 'AS' )? id2= ID
-                            {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:46: ( 'AS' )?
-                            int alt13=2;
-                            int LA13_0 = input.LA(1);
+                    } finally {dbg.exitDecision(13);}
 
-                            if ( (LA13_0==57) ) {
-                                alt13=1;
+                    switch (alt13) {
+                        case 1 :
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:41: ( 'AS' )? id2= ID
+                            {
+                            dbg.location(119,41);
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:41: ( 'AS' )?
+                            int alt12=2;
+                            try { dbg.enterSubRule(12);
+                            try { dbg.enterDecision(12);
+
+                            int LA12_0 = input.LA(1);
+
+                            if ( (LA12_0==53) ) {
+                                alt12=1;
                             }
-                            switch (alt13) {
+                            } finally {dbg.exitDecision(12);}
+
+                            switch (alt12) {
                                 case 1 :
-                                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'AS'
+                                    dbg.enterAlt(1);
+
+                                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'AS'
                                     {
-                                    string_literal39=(Token)match(input,57,FOLLOW_57_in_derived_column738); if (state.failed) return retval; 
-                                    if ( state.backtracking==0 ) stream_57.add(string_literal39);
+                                    dbg.location(119,41);
+                                    string_literal36=(Token)match(input,53,FOLLOW_53_in_derived_column467); if (state.failed) return retval; 
+                                    if ( state.backtracking==0 ) stream_53.add(string_literal36);
 
 
                                     }
                                     break;
 
                             }
+                            } finally {dbg.exitSubRule(12);}
 
-                            id2=(Token)match(input,ID,FOLLOW_ID_in_derived_column743); if (state.failed) return retval; 
+                            dbg.location(119,50);
+                            id2=(Token)match(input,ID,FOLLOW_ID_in_derived_column472); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ID.add(id2);
 
 
@@ -1491,11 +1786,12 @@ public class SQL92QueryParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(13);}
 
 
 
                     // AST REWRITE
-                    // elements: id2, value_expression, id1
+                    // elements: id2, id1, value_expression
                     // token labels: id2, id1
                     // rule labels: retval
                     // token list labels: 
@@ -1508,25 +1804,33 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 129:61: -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
+                    // 119:56: -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:64: ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
+                        dbg.location(119,59);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:59: ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(119,61);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(COLUMN, "COLUMN"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:73: ^( CAST value_expression $id1)
+                        dbg.location(119,68);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:68: ^( CAST value_expression $id1)
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
+                        dbg.location(119,70);
                         root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(CAST, "CAST"), root_2);
 
+                        dbg.location(119,75);
                         adaptor.addChild(root_2, stream_value_expression.nextTree());
+                        dbg.location(119,92);
                         adaptor.addChild(root_2, stream_id1.nextNode());
 
                         adaptor.addChild(root_1, root_2);
                         }
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:129:103: ( $id2)?
+                        dbg.location(119,98);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:98: ( $id2)?
                         if ( stream_id2.hasNext() ) {
+                            dbg.location(119,98);
                             adaptor.addChild(root_1, stream_id2.nextNode());
 
                         }
@@ -1541,58 +1845,81 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:9: value_expression ( ( 'AS' )? ID )?
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:4: value_expression ( ( 'AS' )? ID )?
                     {
-                    pushFollow(FOLLOW_value_expression_in_derived_column774);
-                    value_expression40=value_expression();
+                    dbg.location(120,4);
+                    pushFollow(FOLLOW_value_expression_in_derived_column498);
+                    value_expression37=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression40.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:26: ( ( 'AS' )? ID )?
-                    int alt16=2;
-                    int LA16_0 = input.LA(1);
+                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression37.getTree());
+                    dbg.location(120,21);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:21: ( ( 'AS' )? ID )?
+                    int alt15=2;
+                    try { dbg.enterSubRule(15);
+                    try { dbg.enterDecision(15);
 
-                    if ( (LA16_0==ID||LA16_0==57) ) {
-                        alt16=1;
+                    int LA15_0 = input.LA(1);
+
+                    if ( (LA15_0==ID||LA15_0==53) ) {
+                        alt15=1;
                     }
-                    switch (alt16) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:27: ( 'AS' )? ID
-                            {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:27: ( 'AS' )?
-                            int alt15=2;
-                            int LA15_0 = input.LA(1);
+                    } finally {dbg.exitDecision(15);}
 
-                            if ( (LA15_0==57) ) {
-                                alt15=1;
+                    switch (alt15) {
+                        case 1 :
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:22: ( 'AS' )? ID
+                            {
+                            dbg.location(120,22);
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:22: ( 'AS' )?
+                            int alt14=2;
+                            try { dbg.enterSubRule(14);
+                            try { dbg.enterDecision(14);
+
+                            int LA14_0 = input.LA(1);
+
+                            if ( (LA14_0==53) ) {
+                                alt14=1;
                             }
-                            switch (alt15) {
+                            } finally {dbg.exitDecision(14);}
+
+                            switch (alt14) {
                                 case 1 :
-                                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'AS'
+                                    dbg.enterAlt(1);
+
+                                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'AS'
                                     {
-                                    string_literal41=(Token)match(input,57,FOLLOW_57_in_derived_column777); if (state.failed) return retval; 
-                                    if ( state.backtracking==0 ) stream_57.add(string_literal41);
+                                    dbg.location(120,22);
+                                    string_literal38=(Token)match(input,53,FOLLOW_53_in_derived_column501); if (state.failed) return retval; 
+                                    if ( state.backtracking==0 ) stream_53.add(string_literal38);
 
 
                                     }
                                     break;
 
                             }
+                            } finally {dbg.exitSubRule(14);}
 
-                            ID42=(Token)match(input,ID,FOLLOW_ID_in_derived_column780); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_ID.add(ID42);
+                            dbg.location(120,28);
+                            ID39=(Token)match(input,ID,FOLLOW_ID_in_derived_column504); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_ID.add(ID39);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(15);}
 
 
 
                     // AST REWRITE
-                    // elements: ID, value_expression
+                    // elements: value_expression, ID
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1603,16 +1930,21 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 130:38: -> ^( COLUMN value_expression ( ID )? )
+                    // 120:33: -> ^( COLUMN value_expression ( ID )? )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:41: ^( COLUMN value_expression ( ID )? )
+                        dbg.location(120,36);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:36: ^( COLUMN value_expression ( ID )? )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(120,38);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(COLUMN, "COLUMN"), root_1);
 
+                        dbg.location(120,45);
                         adaptor.addChild(root_1, stream_value_expression.nextTree());
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:130:67: ( ID )?
+                        dbg.location(120,62);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:62: ( ID )?
                         if ( stream_ID.hasNext() ) {
+                            dbg.location(120,62);
                             adaptor.addChild(root_1, stream_ID.nextNode());
 
                         }
@@ -1644,6 +1976,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(121, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "derived_column");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "derived_column"
@@ -1654,81 +1995,103 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "order_by"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:132:1: order_by : 'ORDER' 'BY' ordered_sort_spec ( ',' ordered_sort_spec )* -> ^( ORDER ( ordered_sort_spec )+ ) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:123:1: order_by : 'ORDER' 'BY' sort_specification ( ',' sort_specification )* -> ^( ORDER ( sort_specification )+ ) ;
     public final SQL92QueryParser.order_by_return order_by() throws RecognitionException {
         SQL92QueryParser.order_by_return retval = new SQL92QueryParser.order_by_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal43=null;
-        Token string_literal44=null;
-        Token char_literal46=null;
-        SQL92QueryParser.ordered_sort_spec_return ordered_sort_spec45 = null;
+        Token string_literal40=null;
+        Token string_literal41=null;
+        Token char_literal43=null;
+        SQL92QueryParser.sort_specification_return sort_specification42 = null;
 
-        SQL92QueryParser.ordered_sort_spec_return ordered_sort_spec47 = null;
+        SQL92QueryParser.sort_specification_return sort_specification44 = null;
 
 
-        CommonTree string_literal43_tree=null;
-        CommonTree string_literal44_tree=null;
-        CommonTree char_literal46_tree=null;
-        RewriteRuleTokenStream stream_59=new RewriteRuleTokenStream(adaptor,"token 59");
-        RewriteRuleTokenStream stream_58=new RewriteRuleTokenStream(adaptor,"token 58");
+        CommonTree string_literal40_tree=null;
+        CommonTree string_literal41_tree=null;
+        CommonTree char_literal43_tree=null;
         RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
-        RewriteRuleSubtreeStream stream_ordered_sort_spec=new RewriteRuleSubtreeStream(adaptor,"rule ordered_sort_spec");
+        RewriteRuleTokenStream stream_51=new RewriteRuleTokenStream(adaptor,"token 51");
+        RewriteRuleTokenStream stream_54=new RewriteRuleTokenStream(adaptor,"token 54");
+        RewriteRuleSubtreeStream stream_sort_specification=new RewriteRuleSubtreeStream(adaptor,"rule sort_specification");
+        try { dbg.enterRule(getGrammarFileName(), "order_by");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(123, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:133:5: ( 'ORDER' 'BY' ordered_sort_spec ( ',' ordered_sort_spec )* -> ^( ORDER ( ordered_sort_spec )+ ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:133:9: 'ORDER' 'BY' ordered_sort_spec ( ',' ordered_sort_spec )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:124:2: ( 'ORDER' 'BY' sort_specification ( ',' sort_specification )* -> ^( ORDER ( sort_specification )+ ) )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:124:4: 'ORDER' 'BY' sort_specification ( ',' sort_specification )*
             {
-            string_literal43=(Token)match(input,58,FOLLOW_58_in_order_by814); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_58.add(string_literal43);
+            dbg.location(124,4);
+            string_literal40=(Token)match(input,54,FOLLOW_54_in_order_by529); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_54.add(string_literal40);
 
-            string_literal44=(Token)match(input,59,FOLLOW_59_in_order_by816); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_59.add(string_literal44);
+            dbg.location(124,12);
+            string_literal41=(Token)match(input,55,FOLLOW_55_in_order_by531); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_55.add(string_literal41);
 
-            pushFollow(FOLLOW_ordered_sort_spec_in_order_by818);
-            ordered_sort_spec45=ordered_sort_spec();
+            dbg.location(124,17);
+            pushFollow(FOLLOW_sort_specification_in_order_by533);
+            sort_specification42=sort_specification();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec45.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:133:40: ( ',' ordered_sort_spec )*
-            loop18:
-            do {
-                int alt18=2;
-                int LA18_0 = input.LA(1);
+            if ( state.backtracking==0 ) stream_sort_specification.add(sort_specification42.getTree());
+            dbg.location(124,36);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:124:36: ( ',' sort_specification )*
+            try { dbg.enterSubRule(17);
 
-                if ( (LA18_0==55) ) {
-                    alt18=1;
+            loop17:
+            do {
+                int alt17=2;
+                try { dbg.enterDecision(17);
+
+                int LA17_0 = input.LA(1);
+
+                if ( (LA17_0==51) ) {
+                    alt17=1;
                 }
 
 
-                switch (alt18) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:133:41: ',' ordered_sort_spec
-                    {
-                    char_literal46=(Token)match(input,55,FOLLOW_55_in_order_by821); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_55.add(char_literal46);
+                } finally {dbg.exitDecision(17);}
 
-                    pushFollow(FOLLOW_ordered_sort_spec_in_order_by823);
-                    ordered_sort_spec47=ordered_sort_spec();
+                switch (alt17) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec47.getTree());
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:124:37: ',' sort_specification
+            	    {
+            	    dbg.location(124,37);
+            	    char_literal43=(Token)match(input,51,FOLLOW_51_in_order_by536); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_51.add(char_literal43);
 
-                    }
-                    break;
+            	    dbg.location(124,41);
+            	    pushFollow(FOLLOW_sort_specification_in_order_by538);
+            	    sort_specification44=sort_specification();
 
-                default :
-                    break loop18;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_sort_specification.add(sort_specification44.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop17;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(17);}
 
 
 
             // AST REWRITE
-            // elements: ordered_sort_spec
+            // elements: sort_specification
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1739,21 +2102,25 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 133:65: -> ^( ORDER ( ordered_sort_spec )+ )
+            // 124:62: -> ^( ORDER ( sort_specification )+ )
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:133:68: ^( ORDER ( ordered_sort_spec )+ )
+                dbg.location(124,65);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:124:65: ^( ORDER ( sort_specification )+ )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(124,67);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(ORDER, "ORDER"), root_1);
 
-                if ( !(stream_ordered_sort_spec.hasNext()) ) {
+                dbg.location(124,73);
+                if ( !(stream_sort_specification.hasNext()) ) {
                     throw new RewriteEarlyExitException();
                 }
-                while ( stream_ordered_sort_spec.hasNext() ) {
-                    adaptor.addChild(root_1, stream_ordered_sort_spec.nextTree());
+                while ( stream_sort_specification.hasNext() ) {
+                    dbg.location(124,73);
+                    adaptor.addChild(root_1, stream_sort_specification.nextTree());
 
                 }
-                stream_ordered_sort_spec.reset();
+                stream_sort_specification.reset();
 
                 adaptor.addChild(root_0, root_1);
                 }
@@ -1779,134 +2146,164 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(124, 93);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "order_by");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "order_by"
 
-    public static class sort_spec_return extends ParserRuleReturnScope {
+    public static class sort_specification_return extends ParserRuleReturnScope {
         CommonTree tree;
         public Object getTree() { return tree; }
     };
 
-    // $ANTLR start "sort_spec"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:135:1: sort_spec : ( column_name | INT | reserved_word_column_name );
-    public final SQL92QueryParser.sort_spec_return sort_spec() throws RecognitionException {
-        SQL92QueryParser.sort_spec_return retval = new SQL92QueryParser.sort_spec_return();
+    // $ANTLR start "sort_specification"
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:125:1: sort_specification : ( column_name | INT | reserved_word_column_name );
+    public final SQL92QueryParser.sort_specification_return sort_specification() throws RecognitionException {
+        SQL92QueryParser.sort_specification_return retval = new SQL92QueryParser.sort_specification_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token INT49=null;
-        SQL92QueryParser.column_name_return column_name48 = null;
+        Token INT46=null;
+        SQL92QueryParser.column_name_return column_name45 = null;
 
-        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name50 = null;
+        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name47 = null;
 
 
-        CommonTree INT49_tree=null;
+        CommonTree INT46_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "sort_specification");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(125, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:136:5: ( column_name | INT | reserved_word_column_name )
-            int alt19=3;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:126:2: ( column_name | INT | reserved_word_column_name )
+            int alt18=3;
+            try { dbg.enterDecision(18);
+
             switch ( input.LA(1) ) {
             case ID:
                 {
-                int LA19_1 = input.LA(2);
+                int LA18_1 = input.LA(2);
 
-                if ( (LA19_1==62) ) {
-                    int LA19_4 = input.LA(3);
+                if ( (LA18_1==56) ) {
+                    int LA18_4 = input.LA(3);
 
-                    if ( (LA19_4==ID) ) {
-                        alt19=1;
+                    if ( ((LA18_4>=57 && LA18_4<=66)) ) {
+                        alt18=3;
                     }
-                    else if ( ((LA19_4>=63 && LA19_4<=72)) ) {
-                        alt19=3;
+                    else if ( (LA18_4==ID) ) {
+                        alt18=1;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 19, 4, input);
+                            new NoViableAltException("", 18, 4, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
-                else if ( (LA19_1==EOF||(LA19_1>=40 && LA19_1<=41)||LA19_1==55||(LA19_1>=60 && LA19_1<=61)) ) {
-                    alt19=1;
+                else if ( (LA18_1==EOF||LA18_1==37||LA18_1==51) ) {
+                    alt18=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 19, 1, input);
+                        new NoViableAltException("", 18, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
             case INT:
                 {
-                alt19=2;
+                alt18=2;
                 }
                 break;
+            case 57:
+            case 58:
+            case 59:
+            case 60:
+            case 61:
+            case 62:
             case 63:
             case 64:
             case 65:
             case 66:
-            case 67:
-            case 68:
-            case 69:
-            case 70:
-            case 71:
-            case 72:
                 {
-                alt19=3;
+                alt18=3;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 19, 0, input);
+                    new NoViableAltException("", 18, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt19) {
+            } finally {dbg.exitDecision(18);}
+
+            switch (alt18) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:136:9: column_name
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:126:4: column_name
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_name_in_sort_spec852);
-                    column_name48=column_name();
+                    dbg.location(126,4);
+                    pushFollow(FOLLOW_column_name_in_sort_specification557);
+                    column_name45=column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name48.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name45.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:136:23: INT
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:126:18: INT
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    INT49=(Token)match(input,INT,FOLLOW_INT_in_sort_spec856); if (state.failed) return retval;
+                    dbg.location(126,18);
+                    INT46=(Token)match(input,INT,FOLLOW_INT_in_sort_specification561); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    INT49_tree = (CommonTree)adaptor.create(INT49);
-                    adaptor.addChild(root_0, INT49_tree);
+                    INT46_tree = (CommonTree)adaptor.create(INT46);
+                    adaptor.addChild(root_0, INT46_tree);
                     }
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:136:29: reserved_word_column_name
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:126:24: reserved_word_column_name
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_reserved_word_column_name_in_sort_spec860);
-                    reserved_word_column_name50=reserved_word_column_name();
+                    dbg.location(126,24);
+                    pushFollow(FOLLOW_reserved_word_column_name_in_sort_specification565);
+                    reserved_word_column_name47=reserved_word_column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name50.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name47.getTree());
 
                     }
                     break;
@@ -1928,164 +2325,18 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
-        return retval;
-    }
-    // $ANTLR end "sort_spec"
+        dbg.location(127, 2);
 
-    public static class ordered_sort_spec_return extends ParserRuleReturnScope {
-        CommonTree tree;
-        public Object getTree() { return tree; }
-    };
-
-    // $ANTLR start "ordered_sort_spec"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:138:1: ordered_sort_spec : ( sort_spec 'DESC' -> ^( DESC sort_spec ) | sort_spec ( 'ASC' )? -> ^( ASC sort_spec ) );
-    public final SQL92QueryParser.ordered_sort_spec_return ordered_sort_spec() throws RecognitionException {
-        SQL92QueryParser.ordered_sort_spec_return retval = new SQL92QueryParser.ordered_sort_spec_return();
-        retval.start = input.LT(1);
-
-        CommonTree root_0 = null;
-
-        Token string_literal52=null;
-        Token string_literal54=null;
-        SQL92QueryParser.sort_spec_return sort_spec51 = null;
-
-        SQL92QueryParser.sort_spec_return sort_spec53 = null;
-
-
-        CommonTree string_literal52_tree=null;
-        CommonTree string_literal54_tree=null;
-        RewriteRuleTokenStream stream_60=new RewriteRuleTokenStream(adaptor,"token 60");
-        RewriteRuleTokenStream stream_61=new RewriteRuleTokenStream(adaptor,"token 61");
-        RewriteRuleSubtreeStream stream_sort_spec=new RewriteRuleSubtreeStream(adaptor,"rule sort_spec");
-        try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:139:5: ( sort_spec 'DESC' -> ^( DESC sort_spec ) | sort_spec ( 'ASC' )? -> ^( ASC sort_spec ) )
-            int alt21=2;
-            alt21 = dfa21.predict(input);
-            switch (alt21) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:139:9: sort_spec 'DESC'
-                    {
-                    pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec878);
-                    sort_spec51=sort_spec();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec51.getTree());
-                    string_literal52=(Token)match(input,60,FOLLOW_60_in_ordered_sort_spec880); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_60.add(string_literal52);
-
-
-
-                    // AST REWRITE
-                    // elements: sort_spec
-                    // token labels: 
-                    // rule labels: retval
-                    // token list labels: 
-                    // rule list labels: 
-                    // wildcard labels: 
-                    if ( state.backtracking==0 ) {
-                    retval.tree = root_0;
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-
-                    root_0 = (CommonTree)adaptor.nil();
-                    // 139:26: -> ^( DESC sort_spec )
-                    {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:139:29: ^( DESC sort_spec )
-                        {
-                        CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(DESC, "DESC"), root_1);
-
-                        adaptor.addChild(root_1, stream_sort_spec.nextTree());
-
-                        adaptor.addChild(root_0, root_1);
-                        }
-
-                    }
-
-                    retval.tree = root_0;}
-                    }
-                    break;
-                case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:140:9: sort_spec ( 'ASC' )?
-                    {
-                    pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec898);
-                    sort_spec53=sort_spec();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec53.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:140:19: ( 'ASC' )?
-                    int alt20=2;
-                    int LA20_0 = input.LA(1);
-
-                    if ( (LA20_0==61) ) {
-                        alt20=1;
-                    }
-                    switch (alt20) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'ASC'
-                            {
-                            string_literal54=(Token)match(input,61,FOLLOW_61_in_ordered_sort_spec900); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_61.add(string_literal54);
-
-
-                            }
-                            break;
-
-                    }
-
-
-
-                    // AST REWRITE
-                    // elements: sort_spec
-                    // token labels: 
-                    // rule labels: retval
-                    // token list labels: 
-                    // rule list labels: 
-                    // wildcard labels: 
-                    if ( state.backtracking==0 ) {
-                    retval.tree = root_0;
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-
-                    root_0 = (CommonTree)adaptor.nil();
-                    // 140:26: -> ^( ASC sort_spec )
-                    {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:140:29: ^( ASC sort_spec )
-                        {
-                        CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(ASC, "ASC"), root_1);
-
-                        adaptor.addChild(root_1, stream_sort_spec.nextTree());
-
-                        adaptor.addChild(root_0, root_1);
-                        }
-
-                    }
-
-                    retval.tree = root_0;}
-                    }
-                    break;
-
-            }
-            retval.stop = input.LT(-1);
-
-            if ( state.backtracking==0 ) {
-
-            retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-            adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-            }
-        }
-
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            throw re;
         }
         finally {
+            dbg.exitRule(getGrammarFileName(), "sort_specification");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
         }
+
         return retval;
     }
-    // $ANTLR end "ordered_sort_spec"
+    // $ANTLR end "sort_specification"
 
     public static class reserved_word_column_name_return extends ParserRuleReturnScope {
         CommonTree tree;
@@ -2093,7 +2344,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "reserved_word_column_name"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:142:1: reserved_word_column_name : (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:129:1: reserved_word_column_name : (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) ;
     public final SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name() throws RecognitionException {
         SQL92QueryParser.reserved_word_column_name_return retval = new SQL92QueryParser.reserved_word_column_name_return();
         retval.start = input.LT(1);
@@ -2102,210 +2353,266 @@ public class SQL92QueryParser extends Parser {
 
         Token tableid=null;
         Token s=null;
-        Token char_literal55=null;
+        Token char_literal48=null;
 
         CommonTree tableid_tree=null;
         CommonTree s_tree=null;
-        CommonTree char_literal55_tree=null;
-        RewriteRuleTokenStream stream_67=new RewriteRuleTokenStream(adaptor,"token 67");
+        CommonTree char_literal48_tree=null;
         RewriteRuleTokenStream stream_66=new RewriteRuleTokenStream(adaptor,"token 66");
-        RewriteRuleTokenStream stream_69=new RewriteRuleTokenStream(adaptor,"token 69");
-        RewriteRuleTokenStream stream_68=new RewriteRuleTokenStream(adaptor,"token 68");
+        RewriteRuleTokenStream stream_59=new RewriteRuleTokenStream(adaptor,"token 59");
+        RewriteRuleTokenStream stream_58=new RewriteRuleTokenStream(adaptor,"token 58");
+        RewriteRuleTokenStream stream_57=new RewriteRuleTokenStream(adaptor,"token 57");
+        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
         RewriteRuleTokenStream stream_64=new RewriteRuleTokenStream(adaptor,"token 64");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_70=new RewriteRuleTokenStream(adaptor,"token 70");
         RewriteRuleTokenStream stream_65=new RewriteRuleTokenStream(adaptor,"token 65");
-        RewriteRuleTokenStream stream_71=new RewriteRuleTokenStream(adaptor,"token 71");
         RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
-        RewriteRuleTokenStream stream_72=new RewriteRuleTokenStream(adaptor,"token 72");
         RewriteRuleTokenStream stream_63=new RewriteRuleTokenStream(adaptor,"token 63");
+        RewriteRuleTokenStream stream_60=new RewriteRuleTokenStream(adaptor,"token 60");
+        RewriteRuleTokenStream stream_61=new RewriteRuleTokenStream(adaptor,"token 61");
+
+        try { dbg.enterRule(getGrammarFileName(), "reserved_word_column_name");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(129, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:5: ( (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:9: (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
-            {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:9: (tableid= ID '.' )?
-            int alt22=2;
-            int LA22_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:2: ( (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
+            dbg.enterAlt(1);
 
-            if ( (LA22_0==ID) ) {
-                alt22=1;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:4: (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
+            {
+            dbg.location(130,4);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:4: (tableid= ID '.' )?
+            int alt19=2;
+            try { dbg.enterSubRule(19);
+            try { dbg.enterDecision(19);
+
+            int LA19_0 = input.LA(1);
+
+            if ( (LA19_0==ID) ) {
+                alt19=1;
             }
-            switch (alt22) {
+            } finally {dbg.exitDecision(19);}
+
+            switch (alt19) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:10: tableid= ID '.'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:5: tableid= ID '.'
                     {
-                    tableid=(Token)match(input,ID,FOLLOW_ID_in_reserved_word_column_name930); if (state.failed) return retval; 
+                    dbg.location(130,12);
+                    tableid=(Token)match(input,ID,FOLLOW_ID_in_reserved_word_column_name579); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-                    char_literal55=(Token)match(input,62,FOLLOW_62_in_reserved_word_column_name931); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_62.add(char_literal55);
+                    dbg.location(130,15);
+                    char_literal48=(Token)match(input,56,FOLLOW_56_in_reserved_word_column_name580); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_56.add(char_literal48);
 
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(19);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:25: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
-            int alt23=10;
+            dbg.location(130,20);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:20: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
+            int alt20=10;
+            try { dbg.enterSubRule(20);
+            try { dbg.enterDecision(20);
+
             switch ( input.LA(1) ) {
+            case 57:
+                {
+                alt20=1;
+                }
+                break;
+            case 58:
+                {
+                alt20=2;
+                }
+                break;
+            case 59:
+                {
+                alt20=3;
+                }
+                break;
+            case 60:
+                {
+                alt20=4;
+                }
+                break;
+            case 61:
+                {
+                alt20=5;
+                }
+                break;
+            case 62:
+                {
+                alt20=6;
+                }
+                break;
             case 63:
                 {
-                alt23=1;
+                alt20=7;
                 }
                 break;
             case 64:
                 {
-                alt23=2;
+                alt20=8;
                 }
                 break;
             case 65:
                 {
-                alt23=3;
+                alt20=9;
                 }
                 break;
             case 66:
                 {
-                alt23=4;
-                }
-                break;
-            case 67:
-                {
-                alt23=5;
-                }
-                break;
-            case 68:
-                {
-                alt23=6;
-                }
-                break;
-            case 69:
-                {
-                alt23=7;
-                }
-                break;
-            case 70:
-                {
-                alt23=8;
-                }
-                break;
-            case 71:
-                {
-                alt23=9;
-                }
-                break;
-            case 72:
-                {
-                alt23=10;
+                alt20=10;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 23, 0, input);
+                    new NoViableAltException("", 20, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt23) {
+            } finally {dbg.exitDecision(20);}
+
+            switch (alt20) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:26: s= 'DATE'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:21: s= 'DATE'
                     {
-                    s=(Token)match(input,63,FOLLOW_63_in_reserved_word_column_name937); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_63.add(s);
+                    dbg.location(130,22);
+                    s=(Token)match(input,57,FOLLOW_57_in_reserved_word_column_name586); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_57.add(s);
 
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:37: s= 'TIMESTAMP'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:32: s= 'TIMESTAMP'
                     {
-                    s=(Token)match(input,64,FOLLOW_64_in_reserved_word_column_name943); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_64.add(s);
+                    dbg.location(130,33);
+                    s=(Token)match(input,58,FOLLOW_58_in_reserved_word_column_name592); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_58.add(s);
 
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:53: s= 'TIME'
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:48: s= 'TIME'
                     {
-                    s=(Token)match(input,65,FOLLOW_65_in_reserved_word_column_name949); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_65.add(s);
+                    dbg.location(130,49);
+                    s=(Token)match(input,59,FOLLOW_59_in_reserved_word_column_name598); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_59.add(s);
 
 
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:64: s= 'INTERVAL'
+                    dbg.enterAlt(4);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:59: s= 'INTERVAL'
                     {
-                    s=(Token)match(input,66,FOLLOW_66_in_reserved_word_column_name955); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_66.add(s);
+                    dbg.location(130,60);
+                    s=(Token)match(input,60,FOLLOW_60_in_reserved_word_column_name604); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_60.add(s);
 
 
                     }
                     break;
                 case 5 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:79: s= 'YEAR'
+                    dbg.enterAlt(5);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:74: s= 'YEAR'
                     {
-                    s=(Token)match(input,67,FOLLOW_67_in_reserved_word_column_name961); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_67.add(s);
+                    dbg.location(130,75);
+                    s=(Token)match(input,61,FOLLOW_61_in_reserved_word_column_name610); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_61.add(s);
 
 
                     }
                     break;
                 case 6 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:90: s= 'MONTH'
+                    dbg.enterAlt(6);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:85: s= 'MONTH'
                     {
-                    s=(Token)match(input,68,FOLLOW_68_in_reserved_word_column_name967); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_68.add(s);
+                    dbg.location(130,86);
+                    s=(Token)match(input,62,FOLLOW_62_in_reserved_word_column_name616); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_62.add(s);
 
 
                     }
                     break;
                 case 7 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:102: s= 'DAY'
+                    dbg.enterAlt(7);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:97: s= 'DAY'
                     {
-                    s=(Token)match(input,69,FOLLOW_69_in_reserved_word_column_name973); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_69.add(s);
+                    dbg.location(130,98);
+                    s=(Token)match(input,63,FOLLOW_63_in_reserved_word_column_name622); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_63.add(s);
 
 
                     }
                     break;
                 case 8 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:112: s= 'HOUR'
+                    dbg.enterAlt(8);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:107: s= 'HOUR'
                     {
-                    s=(Token)match(input,70,FOLLOW_70_in_reserved_word_column_name979); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_70.add(s);
+                    dbg.location(130,108);
+                    s=(Token)match(input,64,FOLLOW_64_in_reserved_word_column_name628); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_64.add(s);
 
 
                     }
                     break;
                 case 9 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:123: s= 'MINUTE'
+                    dbg.enterAlt(9);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:118: s= 'MINUTE'
                     {
-                    s=(Token)match(input,71,FOLLOW_71_in_reserved_word_column_name985); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_71.add(s);
+                    dbg.location(130,119);
+                    s=(Token)match(input,65,FOLLOW_65_in_reserved_word_column_name634); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_65.add(s);
 
 
                     }
                     break;
                 case 10 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:143:136: s= 'SECOND'
+                    dbg.enterAlt(10);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:131: s= 'SECOND'
                     {
-                    s=(Token)match(input,72,FOLLOW_72_in_reserved_word_column_name991); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_72.add(s);
+                    dbg.location(130,132);
+                    s=(Token)match(input,66,FOLLOW_66_in_reserved_word_column_name640); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_66.add(s);
 
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(20);}
 
 
 
             // AST REWRITE
-            // elements: s, tableid
+            // elements: tableid, s
             // token labels: tableid, s
             // rule labels: retval
             // token list labels: 
@@ -2318,19 +2625,24 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 144:13: -> ^( TABLECOLUMN ( $tableid)? $s)
+            // 131:4: -> ^( TABLECOLUMN ( $tableid)? $s)
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:144:16: ^( TABLECOLUMN ( $tableid)? $s)
+                dbg.location(131,7);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:131:7: ^( TABLECOLUMN ( $tableid)? $s)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(131,9);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(TABLECOLUMN, "TABLECOLUMN"), root_1);
 
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:144:30: ( $tableid)?
+                dbg.location(131,21);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:131:21: ( $tableid)?
                 if ( stream_tableid.hasNext() ) {
+                    dbg.location(131,21);
                     adaptor.addChild(root_1, stream_tableid.nextNode());
 
                 }
                 stream_tableid.reset();
+                dbg.location(131,31);
                 adaptor.addChild(root_1, stream_s.nextNode());
 
                 adaptor.addChild(root_0, root_1);
@@ -2357,6 +2669,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(132, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "reserved_word_column_name");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "reserved_word_column_name"
@@ -2367,80 +2688,94 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "value_expression"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:146:1: value_expression : ( string_value_expression | numeric_value_expression );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:134:1: value_expression : ( string_value_expression | numeric_value_expression );
     public final SQL92QueryParser.value_expression_return value_expression() throws RecognitionException {
         SQL92QueryParser.value_expression_return retval = new SQL92QueryParser.value_expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.string_value_expression_return string_value_expression56 = null;
+        SQL92QueryParser.string_value_expression_return string_value_expression49 = null;
 
-        SQL92QueryParser.numeric_value_expression_return numeric_value_expression57 = null;
+        SQL92QueryParser.numeric_value_expression_return numeric_value_expression50 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "value_expression");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(134, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:147:5: ( string_value_expression | numeric_value_expression )
-            int alt24=2;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:135:2: ( string_value_expression | numeric_value_expression )
+            int alt21=2;
+            try { dbg.enterDecision(21);
+
             switch ( input.LA(1) ) {
             case ID:
                 {
                 switch ( input.LA(2) ) {
-                case 62:
+                case 56:
                     {
-                    int LA24_4 = input.LA(3);
+                    int LA21_4 = input.LA(3);
 
-                    if ( (LA24_4==ID) ) {
-                        int LA24_6 = input.LA(4);
+                    if ( ((LA21_4>=57 && LA21_4<=66)) ) {
+                        alt21=2;
+                    }
+                    else if ( (LA21_4==ID) ) {
+                        int LA21_6 = input.LA(4);
 
-                        if ( (LA24_6==EOF||(LA24_6>=INT && LA24_6<=STRING)||(LA24_6>=40 && LA24_6<=42)||(LA24_6>=44 && LA24_6<=45)||(LA24_6>=47 && LA24_6<=50)||(LA24_6>=52 && LA24_6<=55)||(LA24_6>=57 && LA24_6<=58)||(LA24_6>=63 && LA24_6<=78)||LA24_6==80||(LA24_6>=82 && LA24_6<=85)||(LA24_6>=87 && LA24_6<=100)||(LA24_6>=103 && LA24_6<=105)) ) {
-                            alt24=2;
+                        if ( (LA21_6==73) ) {
+                            alt21=1;
                         }
-                        else if ( (LA24_6==79) ) {
-                            alt24=1;
+                        else if ( (LA21_6==EOF||(LA21_6>=ID && LA21_6<=STRING)||(LA21_6>=37 && LA21_6<=38)||(LA21_6>=40 && LA21_6<=41)||(LA21_6>=43 && LA21_6<=46)||(LA21_6>=48 && LA21_6<=51)||(LA21_6>=53 && LA21_6<=54)||(LA21_6>=57 && LA21_6<=72)||LA21_6==74||(LA21_6>=76 && LA21_6<=79)||(LA21_6>=81 && LA21_6<=94)||(LA21_6>=97 && LA21_6<=99)) ) {
+                            alt21=2;
                         }
                         else {
                             if (state.backtracking>0) {state.failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("", 24, 6, input);
+                                new NoViableAltException("", 21, 6, input);
 
+                            dbg.recognitionException(nvae);
                             throw nvae;
                         }
-                    }
-                    else if ( ((LA24_4>=63 && LA24_4<=72)) ) {
-                        alt24=2;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 24, 4, input);
+                            new NoViableAltException("", 21, 4, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                     }
                     break;
                 case EOF:
-                case INT:
                 case ID:
+                case INT:
                 case FLOAT:
                 case NUMERIC:
                 case STRING:
+                case 37:
+                case 38:
                 case 40:
                 case 41:
-                case 42:
+                case 43:
                 case 44:
                 case 45:
-                case 47:
+                case 46:
                 case 48:
                 case 49:
                 case 50:
-                case 52:
+                case 51:
                 case 53:
                 case 54:
-                case 55:
                 case 57:
                 case 58:
+                case 59:
+                case 60:
+                case 61:
+                case 62:
                 case 63:
                 case 64:
                 case 65:
@@ -2451,17 +2786,17 @@ public class SQL92QueryParser extends Parser {
                 case 70:
                 case 71:
                 case 72:
-                case 73:
                 case 74:
-                case 75:
                 case 76:
                 case 77:
                 case 78:
-                case 80:
+                case 79:
+                case 81:
                 case 82:
                 case 83:
                 case 84:
                 case 85:
+                case 86:
                 case 87:
                 case 88:
                 case 89:
@@ -2470,29 +2805,24 @@ public class SQL92QueryParser extends Parser {
                 case 92:
                 case 93:
                 case 94:
-                case 95:
-                case 96:
                 case 97:
                 case 98:
                 case 99:
-                case 100:
-                case 103:
-                case 104:
-                case 105:
                     {
-                    alt24=2;
+                    alt21=2;
                     }
                     break;
-                case 79:
+                case 73:
                     {
-                    alt24=1;
+                    alt21=1;
                     }
                     break;
                 default:
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 24, 1, input);
+                        new NoViableAltException("", 21, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
 
@@ -2500,19 +2830,20 @@ public class SQL92QueryParser extends Parser {
                 break;
             case STRING:
                 {
-                int LA24_2 = input.LA(2);
+                int LA21_2 = input.LA(2);
 
-                if ( (LA24_2==79) ) {
-                    alt24=1;
+                if ( (LA21_2==73) ) {
+                    alt21=1;
                 }
-                else if ( (LA24_2==EOF||(LA24_2>=INT && LA24_2<=STRING)||(LA24_2>=40 && LA24_2<=42)||(LA24_2>=44 && LA24_2<=45)||(LA24_2>=47 && LA24_2<=50)||(LA24_2>=52 && LA24_2<=55)||(LA24_2>=57 && LA24_2<=58)||(LA24_2>=63 && LA24_2<=78)||LA24_2==80||(LA24_2>=82 && LA24_2<=85)||(LA24_2>=87 && LA24_2<=100)||(LA24_2>=103 && LA24_2<=105)) ) {
-                    alt24=2;
+                else if ( (LA21_2==EOF||(LA21_2>=ID && LA21_2<=STRING)||(LA21_2>=37 && LA21_2<=38)||(LA21_2>=40 && LA21_2<=41)||(LA21_2>=43 && LA21_2<=46)||(LA21_2>=48 && LA21_2<=51)||(LA21_2>=53 && LA21_2<=54)||(LA21_2>=57 && LA21_2<=72)||LA21_2==74||(LA21_2>=76 && LA21_2<=79)||(LA21_2>=81 && LA21_2<=94)||(LA21_2>=97 && LA21_2<=99)) ) {
+                    alt21=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 24, 2, input);
+                        new NoViableAltException("", 21, 2, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
@@ -2520,60 +2851,69 @@ public class SQL92QueryParser extends Parser {
             case INT:
             case FLOAT:
             case NUMERIC:
-            case 52:
+            case 48:
+            case 57:
+            case 58:
+            case 59:
+            case 60:
+            case 61:
+            case 62:
             case 63:
             case 64:
             case 65:
             case 66:
             case 67:
             case 68:
-            case 69:
             case 70:
             case 71:
             case 72:
-            case 73:
-            case 74:
-            case 76:
-            case 77:
-            case 78:
                 {
-                alt24=2;
+                alt21=2;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 24, 0, input);
+                    new NoViableAltException("", 21, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt24) {
+            } finally {dbg.exitDecision(21);}
+
+            switch (alt21) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:147:9: string_value_expression
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:135:4: string_value_expression
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_string_value_expression_in_value_expression1037);
-                    string_value_expression56=string_value_expression();
+                    dbg.location(135,4);
+                    pushFollow(FOLLOW_string_value_expression_in_value_expression671);
+                    string_value_expression49=string_value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, string_value_expression56.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, string_value_expression49.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:148:9: numeric_value_expression
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:136:4: numeric_value_expression
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_numeric_value_expression_in_value_expression1047);
-                    numeric_value_expression57=numeric_value_expression();
+                    dbg.location(136,4);
+                    pushFollow(FOLLOW_numeric_value_expression_in_value_expression676);
+                    numeric_value_expression50=numeric_value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_value_expression57.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_value_expression50.getTree());
 
                     }
                     break;
@@ -2595,6 +2935,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(137, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "value_expression");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "value_expression"
@@ -2605,69 +2954,97 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "numeric_value_expression"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:150:1: numeric_value_expression : factor ( ( '+' | '-' ) factor )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:138:1: numeric_value_expression : factor ( ( '+' | '-' ) factor )* ;
     public final SQL92QueryParser.numeric_value_expression_return numeric_value_expression() throws RecognitionException {
         SQL92QueryParser.numeric_value_expression_return retval = new SQL92QueryParser.numeric_value_expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token set59=null;
-        SQL92QueryParser.factor_return factor58 = null;
+        Token set52=null;
+        SQL92QueryParser.factor_return factor51 = null;
 
-        SQL92QueryParser.factor_return factor60 = null;
+        SQL92QueryParser.factor_return factor53 = null;
 
 
-        CommonTree set59_tree=null;
+        CommonTree set52_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "numeric_value_expression");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(138, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:5: ( factor ( ( '+' | '-' ) factor )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:9: factor ( ( '+' | '-' ) factor )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:2: ( factor ( ( '+' | '-' ) factor )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:5: factor ( ( '+' | '-' ) factor )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_factor_in_numeric_value_expression1066);
-            factor58=factor();
+            dbg.location(139,5);
+            pushFollow(FOLLOW_factor_in_numeric_value_expression688);
+            factor51=factor();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, factor58.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:16: ( ( '+' | '-' ) factor )*
-            loop25:
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, factor51.getTree());
+            dbg.location(139,12);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:12: ( ( '+' | '-' ) factor )*
+            try { dbg.enterSubRule(22);
+
+            loop22:
             do {
-                int alt25=2;
-                alt25 = dfa25.predict(input);
-                switch (alt25) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:17: ( '+' | '-' ) factor
-                    {
-                    set59=(Token)input.LT(1);
-                    set59=(Token)input.LT(1);
-                    if ( (input.LA(1)>=73 && input.LA(1)<=74) ) {
-                        input.consume();
-                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set59), root_0);
-                        state.errorRecovery=false;state.failed=false;
-                    }
-                    else {
-                        if (state.backtracking>0) {state.failed=true; return retval;}
-                        MismatchedSetException mse = new MismatchedSetException(null,input);
-                        throw mse;
-                    }
+                int alt22=2;
+                try { dbg.enterDecision(22);
 
-                    pushFollow(FOLLOW_factor_in_numeric_value_expression1076);
-                    factor60=factor();
+                try {
+                    isCyclicDecision = true;
+                    alt22 = dfa22.predict(input);
+                }
+                catch (NoViableAltException nvae) {
+                    dbg.recognitionException(nvae);
+                    throw nvae;
+                }
+                } finally {dbg.exitDecision(22);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, factor60.getTree());
+                switch (alt22) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    }
-                    break;
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:13: ( '+' | '-' ) factor
+            	    {
+            	    dbg.location(139,13);
+            	    set52=(Token)input.LT(1);
+            	    set52=(Token)input.LT(1);
+            	    if ( (input.LA(1)>=67 && input.LA(1)<=68) ) {
+            	        input.consume();
+            	        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set52), root_0);
+            	        state.errorRecovery=false;state.failed=false;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return retval;}
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        dbg.recognitionException(mse);
+            	        throw mse;
+            	    }
 
-                default :
-                    break loop25;
+            	    dbg.location(139,24);
+            	    pushFollow(FOLLOW_factor_in_numeric_value_expression698);
+            	    factor53=factor();
+
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, factor53.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop22;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(22);}
 
 
             }
@@ -2688,6 +3065,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(139, 33);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "numeric_value_expression");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "numeric_value_expression"
@@ -2698,75 +3084,96 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "factor"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:153:1: factor : numeric_primary ( ( '*' | '/' ) numeric_primary )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:141:1: factor : numeric_primary ( ( '*' | '/' ) numeric_primary )* ;
     public final SQL92QueryParser.factor_return factor() throws RecognitionException {
         SQL92QueryParser.factor_return retval = new SQL92QueryParser.factor_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token set62=null;
-        SQL92QueryParser.numeric_primary_return numeric_primary61 = null;
+        Token set55=null;
+        SQL92QueryParser.numeric_primary_return numeric_primary54 = null;
 
-        SQL92QueryParser.numeric_primary_return numeric_primary63 = null;
+        SQL92QueryParser.numeric_primary_return numeric_primary56 = null;
 
 
-        CommonTree set62_tree=null;
+        CommonTree set55_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "factor");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(141, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:154:5: ( numeric_primary ( ( '*' | '/' ) numeric_primary )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:154:9: numeric_primary ( ( '*' | '/' ) numeric_primary )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:141:8: ( numeric_primary ( ( '*' | '/' ) numeric_primary )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:141:10: numeric_primary ( ( '*' | '/' ) numeric_primary )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_numeric_primary_in_factor1098);
-            numeric_primary61=numeric_primary();
+            dbg.location(141,10);
+            pushFollow(FOLLOW_numeric_primary_in_factor710);
+            numeric_primary54=numeric_primary();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary61.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:154:25: ( ( '*' | '/' ) numeric_primary )*
-            loop26:
-            do {
-                int alt26=2;
-                int LA26_0 = input.LA(1);
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary54.getTree());
+            dbg.location(141,26);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:141:26: ( ( '*' | '/' ) numeric_primary )*
+            try { dbg.enterSubRule(23);
 
-                if ( (LA26_0==54||LA26_0==75) ) {
-                    alt26=1;
+            loop23:
+            do {
+                int alt23=2;
+                try { dbg.enterDecision(23);
+
+                int LA23_0 = input.LA(1);
+
+                if ( (LA23_0==50||LA23_0==69) ) {
+                    alt23=1;
                 }
 
 
-                switch (alt26) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:154:26: ( '*' | '/' ) numeric_primary
-                    {
-                    set62=(Token)input.LT(1);
-                    set62=(Token)input.LT(1);
-                    if ( input.LA(1)==54||input.LA(1)==75 ) {
-                        input.consume();
-                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set62), root_0);
-                        state.errorRecovery=false;state.failed=false;
-                    }
-                    else {
-                        if (state.backtracking>0) {state.failed=true; return retval;}
-                        MismatchedSetException mse = new MismatchedSetException(null,input);
-                        throw mse;
-                    }
+                } finally {dbg.exitDecision(23);}
 
-                    pushFollow(FOLLOW_numeric_primary_in_factor1108);
-                    numeric_primary63=numeric_primary();
+                switch (alt23) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary63.getTree());
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:141:27: ( '*' | '/' ) numeric_primary
+            	    {
+            	    dbg.location(141,27);
+            	    set55=(Token)input.LT(1);
+            	    set55=(Token)input.LT(1);
+            	    if ( input.LA(1)==50||input.LA(1)==69 ) {
+            	        input.consume();
+            	        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set55), root_0);
+            	        state.errorRecovery=false;state.failed=false;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return retval;}
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        dbg.recognitionException(mse);
+            	        throw mse;
+            	    }
 
-                    }
-                    break;
+            	    dbg.location(141,38);
+            	    pushFollow(FOLLOW_numeric_primary_in_factor720);
+            	    numeric_primary56=numeric_primary();
 
-                default :
-                    break loop26;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary56.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop23;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(23);}
 
 
             }
@@ -2787,6 +3194,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(141, 55);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "factor");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "factor"
@@ -2797,69 +3213,90 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "numeric_primary"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:156:1: numeric_primary : ( '+' | '-' )? value_expression_primary ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:143:1: numeric_primary : ( '+' | '-' )? value_expression_primary ;
     public final SQL92QueryParser.numeric_primary_return numeric_primary() throws RecognitionException {
         SQL92QueryParser.numeric_primary_return retval = new SQL92QueryParser.numeric_primary_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal64=null;
-        Token char_literal65=null;
-        SQL92QueryParser.value_expression_primary_return value_expression_primary66 = null;
+        Token char_literal57=null;
+        Token char_literal58=null;
+        SQL92QueryParser.value_expression_primary_return value_expression_primary59 = null;
 
 
-        CommonTree char_literal64_tree=null;
-        CommonTree char_literal65_tree=null;
+        CommonTree char_literal57_tree=null;
+        CommonTree char_literal58_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "numeric_primary");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(143, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:157:5: ( ( '+' | '-' )? value_expression_primary )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:157:9: ( '+' | '-' )? value_expression_primary
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:2: ( ( '+' | '-' )? value_expression_primary )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:5: ( '+' | '-' )? value_expression_primary
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:157:9: ( '+' | '-' )?
-            int alt27=3;
-            int LA27_0 = input.LA(1);
+            dbg.location(144,5);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:5: ( '+' | '-' )?
+            int alt24=3;
+            try { dbg.enterSubRule(24);
+            try { dbg.enterDecision(24);
 
-            if ( (LA27_0==73) ) {
-                alt27=1;
+            int LA24_0 = input.LA(1);
+
+            if ( (LA24_0==67) ) {
+                alt24=1;
             }
-            else if ( (LA27_0==74) ) {
-                alt27=2;
+            else if ( (LA24_0==68) ) {
+                alt24=2;
             }
-            switch (alt27) {
+            } finally {dbg.exitDecision(24);}
+
+            switch (alt24) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:157:10: '+'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:6: '+'
                     {
-                    char_literal64=(Token)match(input,73,FOLLOW_73_in_numeric_primary1129); if (state.failed) return retval;
+                    dbg.location(144,9);
+                    char_literal57=(Token)match(input,67,FOLLOW_67_in_numeric_primary733); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    char_literal64_tree = (CommonTree)adaptor.create(char_literal64);
-                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal64_tree, root_0);
+                    char_literal57_tree = (CommonTree)adaptor.create(char_literal57);
+                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal57_tree, root_0);
                     }
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:157:15: '-'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:11: '-'
                     {
-                    char_literal65=(Token)match(input,74,FOLLOW_74_in_numeric_primary1132); if (state.failed) return retval;
+                    dbg.location(144,14);
+                    char_literal58=(Token)match(input,68,FOLLOW_68_in_numeric_primary736); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    char_literal65_tree = (CommonTree)adaptor.create(char_literal65);
-                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal65_tree, root_0);
+                    char_literal58_tree = (CommonTree)adaptor.create(char_literal58);
+                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal58_tree, root_0);
                     }
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(24);}
 
-            pushFollow(FOLLOW_value_expression_primary_in_numeric_primary1137);
-            value_expression_primary66=value_expression_primary();
+            dbg.location(144,18);
+            pushFollow(FOLLOW_value_expression_primary_in_numeric_primary741);
+            value_expression_primary59=value_expression_primary();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression_primary66.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression_primary59.getTree());
 
             }
 
@@ -2879,6 +3316,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(144, 42);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "numeric_primary");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "numeric_primary"
@@ -2889,103 +3335,136 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "value_expression_primary"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:159:1: value_expression_primary : ( '(' value_expression ')' | function | column_name | literal | sub_query );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:145:1: value_expression_primary : ( '(' value_expression ')' | function | column_name | literal | sub_query );
     public final SQL92QueryParser.value_expression_primary_return value_expression_primary() throws RecognitionException {
         SQL92QueryParser.value_expression_primary_return retval = new SQL92QueryParser.value_expression_primary_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal67=null;
-        Token char_literal69=null;
-        SQL92QueryParser.value_expression_return value_expression68 = null;
+        Token char_literal60=null;
+        Token char_literal62=null;
+        SQL92QueryParser.value_expression_return value_expression61 = null;
 
-        SQL92QueryParser.function_return function70 = null;
+        SQL92QueryParser.function_return function63 = null;
 
-        SQL92QueryParser.column_name_return column_name71 = null;
+        SQL92QueryParser.column_name_return column_name64 = null;
 
-        SQL92QueryParser.literal_return literal72 = null;
+        SQL92QueryParser.literal_return literal65 = null;
 
-        SQL92QueryParser.sub_query_return sub_query73 = null;
+        SQL92QueryParser.sub_query_return sub_query66 = null;
 
 
-        CommonTree char_literal67_tree=null;
-        CommonTree char_literal69_tree=null;
+        CommonTree char_literal60_tree=null;
+        CommonTree char_literal62_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "value_expression_primary");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(145, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:160:5: ( '(' value_expression ')' | function | column_name | literal | sub_query )
-            int alt28=5;
-            alt28 = dfa28.predict(input);
-            switch (alt28) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:146:2: ( '(' value_expression ')' | function | column_name | literal | sub_query )
+            int alt25=5;
+            try { dbg.enterDecision(25);
+
+            try {
+                isCyclicDecision = true;
+                alt25 = dfa25.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(25);}
+
+            switch (alt25) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:160:9: '(' value_expression ')'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:146:4: '(' value_expression ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    char_literal67=(Token)match(input,52,FOLLOW_52_in_value_expression_primary1157); if (state.failed) return retval;
-                    pushFollow(FOLLOW_value_expression_in_value_expression_primary1160);
-                    value_expression68=value_expression();
+                    dbg.location(146,7);
+                    char_literal60=(Token)match(input,48,FOLLOW_48_in_value_expression_primary751); if (state.failed) return retval;
+                    dbg.location(146,9);
+                    pushFollow(FOLLOW_value_expression_in_value_expression_primary754);
+                    value_expression61=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression68.getTree());
-                    char_literal69=(Token)match(input,53,FOLLOW_53_in_value_expression_primary1162); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression61.getTree());
+                    dbg.location(146,29);
+                    char_literal62=(Token)match(input,49,FOLLOW_49_in_value_expression_primary756); if (state.failed) return retval;
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:161:9: function
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:147:5: function
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_function_in_value_expression_primary1173);
-                    function70=function();
+                    dbg.location(147,5);
+                    pushFollow(FOLLOW_function_in_value_expression_primary763);
+                    function63=function();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, function70.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, function63.getTree());
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:162:9: column_name
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:148:5: column_name
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_name_in_value_expression_primary1183);
-                    column_name71=column_name();
+                    dbg.location(148,5);
+                    pushFollow(FOLLOW_column_name_in_value_expression_primary769);
+                    column_name64=column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name71.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name64.getTree());
 
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:163:9: literal
+                    dbg.enterAlt(4);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:149:5: literal
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_literal_in_value_expression_primary1193);
-                    literal72=literal();
+                    dbg.location(149,5);
+                    pushFollow(FOLLOW_literal_in_value_expression_primary775);
+                    literal65=literal();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal72.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal65.getTree());
 
                     }
                     break;
                 case 5 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:164:9: sub_query
+                    dbg.enterAlt(5);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:150:5: sub_query
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_sub_query_in_value_expression_primary1203);
-                    sub_query73=sub_query();
+                    dbg.location(150,5);
+                    pushFollow(FOLLOW_sub_query_in_value_expression_primary781);
+                    sub_query66=sub_query();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query73.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query66.getTree());
 
                     }
                     break;
@@ -3007,6 +3486,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(151, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "value_expression_primary");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "value_expression_primary"
@@ -3017,153 +3505,196 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "literal"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:166:1: literal : ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:1: literal : ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' );
     public final SQL92QueryParser.literal_return literal() throws RecognitionException {
         SQL92QueryParser.literal_return retval = new SQL92QueryParser.literal_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token INT74=null;
-        Token FLOAT75=null;
-        Token NUMERIC76=null;
-        Token STRING77=null;
-        Token string_literal80=null;
-        Token string_literal81=null;
-        Token string_literal82=null;
-        SQL92QueryParser.datetime_return datetime78 = null;
+        Token INT67=null;
+        Token FLOAT68=null;
+        Token NUMERIC69=null;
+        Token STRING70=null;
+        Token string_literal73=null;
+        Token string_literal74=null;
+        Token string_literal75=null;
+        SQL92QueryParser.datetime_return datetime71 = null;
 
-        SQL92QueryParser.interval_return interval79 = null;
+        SQL92QueryParser.interval_return interval72 = null;
 
 
-        CommonTree INT74_tree=null;
-        CommonTree FLOAT75_tree=null;
-        CommonTree NUMERIC76_tree=null;
-        CommonTree STRING77_tree=null;
-        CommonTree string_literal80_tree=null;
-        CommonTree string_literal81_tree=null;
-        CommonTree string_literal82_tree=null;
+        CommonTree INT67_tree=null;
+        CommonTree FLOAT68_tree=null;
+        CommonTree NUMERIC69_tree=null;
+        CommonTree STRING70_tree=null;
+        CommonTree string_literal73_tree=null;
+        CommonTree string_literal74_tree=null;
+        CommonTree string_literal75_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "literal");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(153, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:5: ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' )
-            int alt29=9;
-            alt29 = dfa29.predict(input);
-            switch (alt29) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:9: ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' )
+            int alt26=9;
+            try { dbg.enterDecision(26);
+
+            try {
+                isCyclicDecision = true;
+                alt26 = dfa26.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(26);}
+
+            switch (alt26) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:9: INT
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:11: INT
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    INT74=(Token)match(input,INT,FOLLOW_INT_in_literal1221); if (state.failed) return retval;
+                    dbg.location(153,11);
+                    INT67=(Token)match(input,INT,FOLLOW_INT_in_literal791); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    INT74_tree = (CommonTree)adaptor.create(INT74);
-                    adaptor.addChild(root_0, INT74_tree);
+                    INT67_tree = (CommonTree)adaptor.create(INT67);
+                    adaptor.addChild(root_0, INT67_tree);
                     }
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:15: FLOAT
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:17: FLOAT
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    FLOAT75=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_literal1225); if (state.failed) return retval;
+                    dbg.location(153,17);
+                    FLOAT68=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_literal795); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    FLOAT75_tree = (CommonTree)adaptor.create(FLOAT75);
-                    adaptor.addChild(root_0, FLOAT75_tree);
+                    FLOAT68_tree = (CommonTree)adaptor.create(FLOAT68);
+                    adaptor.addChild(root_0, FLOAT68_tree);
                     }
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:23: NUMERIC
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:25: NUMERIC
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    NUMERIC76=(Token)match(input,NUMERIC,FOLLOW_NUMERIC_in_literal1229); if (state.failed) return retval;
+                    dbg.location(153,25);
+                    NUMERIC69=(Token)match(input,NUMERIC,FOLLOW_NUMERIC_in_literal799); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    NUMERIC76_tree = (CommonTree)adaptor.create(NUMERIC76);
-                    adaptor.addChild(root_0, NUMERIC76_tree);
+                    NUMERIC69_tree = (CommonTree)adaptor.create(NUMERIC69);
+                    adaptor.addChild(root_0, NUMERIC69_tree);
                     }
 
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:33: STRING
+                    dbg.enterAlt(4);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:35: STRING
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    STRING77=(Token)match(input,STRING,FOLLOW_STRING_in_literal1233); if (state.failed) return retval;
+                    dbg.location(153,35);
+                    STRING70=(Token)match(input,STRING,FOLLOW_STRING_in_literal803); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    STRING77_tree = (CommonTree)adaptor.create(STRING77);
-                    adaptor.addChild(root_0, STRING77_tree);
+                    STRING70_tree = (CommonTree)adaptor.create(STRING70);
+                    adaptor.addChild(root_0, STRING70_tree);
                     }
 
                     }
                     break;
                 case 5 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:42: datetime
+                    dbg.enterAlt(5);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:44: datetime
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_datetime_in_literal1237);
-                    datetime78=datetime();
+                    dbg.location(153,44);
+                    pushFollow(FOLLOW_datetime_in_literal807);
+                    datetime71=datetime();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, datetime78.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, datetime71.getTree());
 
                     }
                     break;
                 case 6 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:53: interval
+                    dbg.enterAlt(6);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:55: interval
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_interval_in_literal1241);
-                    interval79=interval();
+                    dbg.location(153,55);
+                    pushFollow(FOLLOW_interval_in_literal811);
+                    interval72=interval();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, interval79.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, interval72.getTree());
 
                     }
                     break;
                 case 7 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:64: 'NULL'
+                    dbg.enterAlt(7);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:66: 'NULL'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal80=(Token)match(input,76,FOLLOW_76_in_literal1245); if (state.failed) return retval;
+                    dbg.location(153,66);
+                    string_literal73=(Token)match(input,70,FOLLOW_70_in_literal815); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal80_tree = (CommonTree)adaptor.create(string_literal80);
-                    adaptor.addChild(root_0, string_literal80_tree);
+                    string_literal73_tree = (CommonTree)adaptor.create(string_literal73);
+                    adaptor.addChild(root_0, string_literal73_tree);
                     }
 
                     }
                     break;
                 case 8 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:73: 'TRUE'
+                    dbg.enterAlt(8);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:75: 'TRUE'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal81=(Token)match(input,77,FOLLOW_77_in_literal1249); if (state.failed) return retval;
+                    dbg.location(153,75);
+                    string_literal74=(Token)match(input,71,FOLLOW_71_in_literal819); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal81_tree = (CommonTree)adaptor.create(string_literal81);
-                    adaptor.addChild(root_0, string_literal81_tree);
+                    string_literal74_tree = (CommonTree)adaptor.create(string_literal74);
+                    adaptor.addChild(root_0, string_literal74_tree);
                     }
 
                     }
                     break;
                 case 9 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:167:82: 'FALSE'
+                    dbg.enterAlt(9);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:84: 'FALSE'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal82=(Token)match(input,78,FOLLOW_78_in_literal1253); if (state.failed) return retval;
+                    dbg.location(153,84);
+                    string_literal75=(Token)match(input,72,FOLLOW_72_in_literal823); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal82_tree = (CommonTree)adaptor.create(string_literal82);
-                    adaptor.addChild(root_0, string_literal82_tree);
+                    string_literal75_tree = (CommonTree)adaptor.create(string_literal75);
+                    adaptor.addChild(root_0, string_literal75_tree);
                     }
 
                     }
@@ -3186,6 +3717,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(153, 91);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "literal");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "literal"
@@ -3196,7 +3736,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "datetime"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:169:1: datetime : ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING | (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' ) -> ^( TABLECOLUMN ( $tableid)? $s) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:154:1: datetime : ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING | (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' ) -> ^( TABLECOLUMN ( $tableid)? $s) );
     public final SQL92QueryParser.datetime_return datetime() throws RecognitionException {
         SQL92QueryParser.datetime_return retval = new SQL92QueryParser.datetime_return();
         retval.start = input.LT(1);
@@ -3205,125 +3745,138 @@ public class SQL92QueryParser extends Parser {
 
         Token tableid=null;
         Token s=null;
-        Token set83=null;
-        Token STRING84=null;
-        Token char_literal85=null;
+        Token set76=null;
+        Token STRING77=null;
+        Token char_literal78=null;
 
         CommonTree tableid_tree=null;
         CommonTree s_tree=null;
-        CommonTree set83_tree=null;
-        CommonTree STRING84_tree=null;
-        CommonTree char_literal85_tree=null;
-        RewriteRuleTokenStream stream_64=new RewriteRuleTokenStream(adaptor,"token 64");
+        CommonTree set76_tree=null;
+        CommonTree STRING77_tree=null;
+        CommonTree char_literal78_tree=null;
+        RewriteRuleTokenStream stream_59=new RewriteRuleTokenStream(adaptor,"token 59");
+        RewriteRuleTokenStream stream_58=new RewriteRuleTokenStream(adaptor,"token 58");
+        RewriteRuleTokenStream stream_57=new RewriteRuleTokenStream(adaptor,"token 57");
+        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_65=new RewriteRuleTokenStream(adaptor,"token 65");
-        RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
-        RewriteRuleTokenStream stream_63=new RewriteRuleTokenStream(adaptor,"token 63");
+
+        try { dbg.enterRule(getGrammarFileName(), "datetime");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(154, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:170:5: ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING | (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
-            int alt32=2;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:155:2: ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING | (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
+            int alt29=2;
+            try { dbg.enterDecision(29);
+
             switch ( input.LA(1) ) {
-            case 63:
+            case 57:
                 {
-                int LA32_1 = input.LA(2);
+                int LA29_1 = input.LA(2);
 
-                if ( (LA32_1==STRING) ) {
-                    int LA32_5 = input.LA(3);
+                if ( (LA29_1==STRING) ) {
+                    int LA29_5 = input.LA(3);
 
-                    if ( (synpred58_SQL92Query()) ) {
-                        alt32=1;
+                    if ( (synpred55_SQL92Query()) ) {
+                        alt29=1;
                     }
                     else if ( (true) ) {
-                        alt32=2;
+                        alt29=2;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 32, 5, input);
+                            new NoViableAltException("", 29, 5, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
-                else if ( (LA32_1==EOF||(LA32_1>=INT && LA32_1<=NUMERIC)||(LA32_1>=40 && LA32_1<=42)||(LA32_1>=44 && LA32_1<=45)||(LA32_1>=47 && LA32_1<=50)||(LA32_1>=52 && LA32_1<=55)||(LA32_1>=57 && LA32_1<=58)||(LA32_1>=63 && LA32_1<=78)||LA32_1==80||(LA32_1>=82 && LA32_1<=85)||(LA32_1>=87 && LA32_1<=100)||(LA32_1>=103 && LA32_1<=105)) ) {
-                    alt32=2;
+                else if ( (LA29_1==EOF||(LA29_1>=ID && LA29_1<=NUMERIC)||(LA29_1>=37 && LA29_1<=38)||(LA29_1>=40 && LA29_1<=41)||(LA29_1>=43 && LA29_1<=46)||(LA29_1>=48 && LA29_1<=51)||(LA29_1>=53 && LA29_1<=54)||(LA29_1>=57 && LA29_1<=72)||LA29_1==74||(LA29_1>=76 && LA29_1<=79)||(LA29_1>=81 && LA29_1<=94)||(LA29_1>=97 && LA29_1<=99)) ) {
+                    alt29=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 32, 1, input);
+                        new NoViableAltException("", 29, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
             case ID:
                 {
-                alt32=2;
+                alt29=2;
                 }
                 break;
-            case 64:
+            case 58:
                 {
-                int LA32_3 = input.LA(2);
+                int LA29_3 = input.LA(2);
 
-                if ( (LA32_3==STRING) ) {
-                    int LA32_5 = input.LA(3);
+                if ( (LA29_3==STRING) ) {
+                    int LA29_5 = input.LA(3);
 
-                    if ( (synpred58_SQL92Query()) ) {
-                        alt32=1;
+                    if ( (synpred55_SQL92Query()) ) {
+                        alt29=1;
                     }
                     else if ( (true) ) {
-                        alt32=2;
+                        alt29=2;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 32, 5, input);
+                            new NoViableAltException("", 29, 5, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
-                else if ( (LA32_3==EOF||(LA32_3>=INT && LA32_3<=NUMERIC)||(LA32_3>=40 && LA32_3<=42)||(LA32_3>=44 && LA32_3<=45)||(LA32_3>=47 && LA32_3<=50)||(LA32_3>=52 && LA32_3<=55)||(LA32_3>=57 && LA32_3<=58)||(LA32_3>=63 && LA32_3<=78)||LA32_3==80||(LA32_3>=82 && LA32_3<=85)||(LA32_3>=87 && LA32_3<=100)||(LA32_3>=103 && LA32_3<=105)) ) {
-                    alt32=2;
+                else if ( (LA29_3==EOF||(LA29_3>=ID && LA29_3<=NUMERIC)||(LA29_3>=37 && LA29_3<=38)||(LA29_3>=40 && LA29_3<=41)||(LA29_3>=43 && LA29_3<=46)||(LA29_3>=48 && LA29_3<=51)||(LA29_3>=53 && LA29_3<=54)||(LA29_3>=57 && LA29_3<=72)||LA29_3==74||(LA29_3>=76 && LA29_3<=79)||(LA29_3>=81 && LA29_3<=94)||(LA29_3>=97 && LA29_3<=99)) ) {
+                    alt29=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 32, 3, input);
+                        new NoViableAltException("", 29, 3, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
-            case 65:
+            case 59:
                 {
-                int LA32_4 = input.LA(2);
+                int LA29_4 = input.LA(2);
 
-                if ( (LA32_4==STRING) ) {
-                    int LA32_5 = input.LA(3);
+                if ( (LA29_4==STRING) ) {
+                    int LA29_5 = input.LA(3);
 
-                    if ( (synpred58_SQL92Query()) ) {
-                        alt32=1;
+                    if ( (synpred55_SQL92Query()) ) {
+                        alt29=1;
                     }
                     else if ( (true) ) {
-                        alt32=2;
+                        alt29=2;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 32, 5, input);
+                            new NoViableAltException("", 29, 5, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
-                else if ( (LA32_4==EOF||(LA32_4>=INT && LA32_4<=NUMERIC)||(LA32_4>=40 && LA32_4<=42)||(LA32_4>=44 && LA32_4<=45)||(LA32_4>=47 && LA32_4<=50)||(LA32_4>=52 && LA32_4<=55)||(LA32_4>=57 && LA32_4<=58)||(LA32_4>=63 && LA32_4<=78)||LA32_4==80||(LA32_4>=82 && LA32_4<=85)||(LA32_4>=87 && LA32_4<=100)||(LA32_4>=103 && LA32_4<=105)) ) {
-                    alt32=2;
+                else if ( (LA29_4==EOF||(LA29_4>=ID && LA29_4<=NUMERIC)||(LA29_4>=37 && LA29_4<=38)||(LA29_4>=40 && LA29_4<=41)||(LA29_4>=43 && LA29_4<=46)||(LA29_4>=48 && LA29_4<=51)||(LA29_4>=53 && LA29_4<=54)||(LA29_4>=57 && LA29_4<=72)||LA29_4==74||(LA29_4>=76 && LA29_4<=79)||(LA29_4>=81 && LA29_4<=94)||(LA29_4>=97 && LA29_4<=99)) ) {
+                    alt29=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 32, 4, input);
+                        new NoViableAltException("", 29, 4, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
@@ -3331,125 +3884,163 @@ public class SQL92QueryParser extends Parser {
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 32, 0, input);
+                    new NoViableAltException("", 29, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt32) {
+            } finally {dbg.exitDecision(29);}
+
+            switch (alt29) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:170:9: ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:155:4: ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    set83=(Token)input.LT(1);
-                    set83=(Token)input.LT(1);
-                    if ( (input.LA(1)>=63 && input.LA(1)<=65) ) {
+                    dbg.location(155,4);
+                    set76=(Token)input.LT(1);
+                    set76=(Token)input.LT(1);
+                    if ( (input.LA(1)>=57 && input.LA(1)<=59) ) {
                         input.consume();
-                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set83), root_0);
+                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set76), root_0);
                         state.errorRecovery=false;state.failed=false;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
+                        dbg.recognitionException(mse);
                         throw mse;
                     }
 
-                    STRING84=(Token)match(input,STRING,FOLLOW_STRING_in_datetime1284); if (state.failed) return retval;
+                    dbg.location(155,37);
+                    STRING77=(Token)match(input,STRING,FOLLOW_STRING_in_datetime844); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    STRING84_tree = (CommonTree)adaptor.create(STRING84);
-                    adaptor.addChild(root_0, STRING84_tree);
+                    STRING77_tree = (CommonTree)adaptor.create(STRING77);
+                    adaptor.addChild(root_0, STRING77_tree);
                     }
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:9: (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' )
-                    {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:9: (tableid= ID '.' )?
-                    int alt30=2;
-                    int LA30_0 = input.LA(1);
+                    dbg.enterAlt(2);
 
-                    if ( (LA30_0==ID) ) {
-                        alt30=1;
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:5: (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' )
+                    {
+                    dbg.location(156,5);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:5: (tableid= ID '.' )?
+                    int alt27=2;
+                    try { dbg.enterSubRule(27);
+                    try { dbg.enterDecision(27);
+
+                    int LA27_0 = input.LA(1);
+
+                    if ( (LA27_0==ID) ) {
+                        alt27=1;
                     }
-                    switch (alt30) {
+                    } finally {dbg.exitDecision(27);}
+
+                    switch (alt27) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:10: tableid= ID '.'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:6: tableid= ID '.'
                             {
-                            tableid=(Token)match(input,ID,FOLLOW_ID_in_datetime1297); if (state.failed) return retval; 
+                            dbg.location(156,13);
+                            tableid=(Token)match(input,ID,FOLLOW_ID_in_datetime853); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-                            char_literal85=(Token)match(input,62,FOLLOW_62_in_datetime1298); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_62.add(char_literal85);
+                            dbg.location(156,16);
+                            char_literal78=(Token)match(input,56,FOLLOW_56_in_datetime854); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_56.add(char_literal78);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(27);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:25: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' )
-                    int alt31=3;
+                    dbg.location(156,21);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:21: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' )
+                    int alt28=3;
+                    try { dbg.enterSubRule(28);
+                    try { dbg.enterDecision(28);
+
                     switch ( input.LA(1) ) {
-                    case 63:
+                    case 57:
                         {
-                        alt31=1;
+                        alt28=1;
                         }
                         break;
-                    case 64:
+                    case 58:
                         {
-                        alt31=2;
+                        alt28=2;
                         }
                         break;
-                    case 65:
+                    case 59:
                         {
-                        alt31=3;
+                        alt28=3;
                         }
                         break;
                     default:
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 31, 0, input);
+                            new NoViableAltException("", 28, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
 
-                    switch (alt31) {
+                    } finally {dbg.exitDecision(28);}
+
+                    switch (alt28) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:26: s= 'DATE'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:22: s= 'DATE'
                             {
-                            s=(Token)match(input,63,FOLLOW_63_in_datetime1304); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_63.add(s);
+                            dbg.location(156,23);
+                            s=(Token)match(input,57,FOLLOW_57_in_datetime860); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_57.add(s);
 
 
                             }
                             break;
                         case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:37: s= 'TIMESTAMP'
+                            dbg.enterAlt(2);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:33: s= 'TIMESTAMP'
                             {
-                            s=(Token)match(input,64,FOLLOW_64_in_datetime1310); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_64.add(s);
+                            dbg.location(156,34);
+                            s=(Token)match(input,58,FOLLOW_58_in_datetime866); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_58.add(s);
 
 
                             }
                             break;
                         case 3 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:53: s= 'TIME'
+                            dbg.enterAlt(3);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:49: s= 'TIME'
                             {
-                            s=(Token)match(input,65,FOLLOW_65_in_datetime1316); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_65.add(s);
+                            dbg.location(156,50);
+                            s=(Token)match(input,59,FOLLOW_59_in_datetime872); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_59.add(s);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(28);}
 
 
 
                     // AST REWRITE
-                    // elements: s, tableid
+                    // elements: tableid, s
                     // token labels: tableid, s
                     // rule labels: retval
                     // token list labels: 
@@ -3462,19 +4053,24 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 171:63: -> ^( TABLECOLUMN ( $tableid)? $s)
+                    // 156:59: -> ^( TABLECOLUMN ( $tableid)? $s)
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:66: ^( TABLECOLUMN ( $tableid)? $s)
+                        dbg.location(156,62);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:62: ^( TABLECOLUMN ( $tableid)? $s)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(156,64);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(TABLECOLUMN, "TABLECOLUMN"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:171:80: ( $tableid)?
+                        dbg.location(156,76);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:76: ( $tableid)?
                         if ( stream_tableid.hasNext() ) {
+                            dbg.location(156,76);
                             adaptor.addChild(root_1, stream_tableid.nextNode());
 
                         }
                         stream_tableid.reset();
+                        dbg.location(156,86);
                         adaptor.addChild(root_1, stream_s.nextNode());
 
                         adaptor.addChild(root_0, root_1);
@@ -3503,6 +4099,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(157, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "datetime");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "datetime"
@@ -3513,7 +4118,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "interval"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:173:1: interval : ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:158:1: interval : ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) );
     public final SQL92QueryParser.interval_return interval() throws RecognitionException {
         SQL92QueryParser.interval_return retval = new SQL92QueryParser.interval_return();
         retval.start = input.LT(1);
@@ -3522,56 +4127,78 @@ public class SQL92QueryParser extends Parser {
 
         Token tableid=null;
         Token s=null;
-        Token string_literal86=null;
-        Token STRING87=null;
-        Token set88=null;
-        Token char_literal89=null;
+        Token string_literal79=null;
+        Token STRING80=null;
+        Token set81=null;
+        Token char_literal82=null;
 
         CommonTree tableid_tree=null;
         CommonTree s_tree=null;
-        CommonTree string_literal86_tree=null;
-        CommonTree STRING87_tree=null;
-        CommonTree set88_tree=null;
-        CommonTree char_literal89_tree=null;
-        RewriteRuleTokenStream stream_67=new RewriteRuleTokenStream(adaptor,"token 67");
+        CommonTree string_literal79_tree=null;
+        CommonTree STRING80_tree=null;
+        CommonTree set81_tree=null;
+        CommonTree char_literal82_tree=null;
         RewriteRuleTokenStream stream_66=new RewriteRuleTokenStream(adaptor,"token 66");
-        RewriteRuleTokenStream stream_69=new RewriteRuleTokenStream(adaptor,"token 69");
-        RewriteRuleTokenStream stream_68=new RewriteRuleTokenStream(adaptor,"token 68");
+        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
+        RewriteRuleTokenStream stream_64=new RewriteRuleTokenStream(adaptor,"token 64");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_70=new RewriteRuleTokenStream(adaptor,"token 70");
-        RewriteRuleTokenStream stream_71=new RewriteRuleTokenStream(adaptor,"token 71");
+        RewriteRuleTokenStream stream_65=new RewriteRuleTokenStream(adaptor,"token 65");
         RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
-        RewriteRuleTokenStream stream_72=new RewriteRuleTokenStream(adaptor,"token 72");
+        RewriteRuleTokenStream stream_63=new RewriteRuleTokenStream(adaptor,"token 63");
+        RewriteRuleTokenStream stream_60=new RewriteRuleTokenStream(adaptor,"token 60");
+        RewriteRuleTokenStream stream_61=new RewriteRuleTokenStream(adaptor,"token 61");
+
+        try { dbg.enterRule(getGrammarFileName(), "interval");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(158, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:174:5: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
-            int alt35=2;
-            alt35 = dfa35.predict(input);
-            switch (alt35) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:159:2: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
+            int alt32=2;
+            try { dbg.enterDecision(32);
+
+            try {
+                isCyclicDecision = true;
+                alt32 = dfa32.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(32);}
+
+            switch (alt32) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:174:9: 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' )
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:159:4: 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' )
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal86=(Token)match(input,66,FOLLOW_66_in_interval1348); if (state.failed) return retval;
+                    dbg.location(159,14);
+                    string_literal79=(Token)match(input,60,FOLLOW_60_in_interval896); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal86_tree = (CommonTree)adaptor.create(string_literal86);
-                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal86_tree, root_0);
+                    string_literal79_tree = (CommonTree)adaptor.create(string_literal79);
+                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal79_tree, root_0);
                     }
-                    STRING87=(Token)match(input,STRING,FOLLOW_STRING_in_interval1351); if (state.failed) return retval;
+                    dbg.location(159,16);
+                    STRING80=(Token)match(input,STRING,FOLLOW_STRING_in_interval899); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    STRING87_tree = (CommonTree)adaptor.create(STRING87);
-                    adaptor.addChild(root_0, STRING87_tree);
+                    STRING80_tree = (CommonTree)adaptor.create(STRING80);
+                    adaptor.addChild(root_0, STRING80_tree);
                     }
-                    set88=(Token)input.LT(1);
-                    if ( (input.LA(1)>=67 && input.LA(1)<=72) ) {
+                    dbg.location(159,23);
+                    set81=(Token)input.LT(1);
+                    if ( (input.LA(1)>=61 && input.LA(1)<=66) ) {
                         input.consume();
-                        if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set88));
+                        if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set81));
                         state.errorRecovery=false;state.failed=false;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
+                        dbg.recognitionException(mse);
                         throw mse;
                     }
 
@@ -3579,148 +4206,190 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:9: (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
-                    {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:9: (tableid= ID '.' )?
-                    int alt33=2;
-                    int LA33_0 = input.LA(1);
+                    dbg.enterAlt(2);
 
-                    if ( (LA33_0==ID) ) {
-                        alt33=1;
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:4: (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
+                    {
+                    dbg.location(160,4);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:4: (tableid= ID '.' )?
+                    int alt30=2;
+                    try { dbg.enterSubRule(30);
+                    try { dbg.enterDecision(30);
+
+                    int LA30_0 = input.LA(1);
+
+                    if ( (LA30_0==ID) ) {
+                        alt30=1;
                     }
-                    switch (alt33) {
+                    } finally {dbg.exitDecision(30);}
+
+                    switch (alt30) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:10: tableid= ID '.'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:5: tableid= ID '.'
                             {
-                            tableid=(Token)match(input,ID,FOLLOW_ID_in_interval1388); if (state.failed) return retval; 
+                            dbg.location(160,12);
+                            tableid=(Token)match(input,ID,FOLLOW_ID_in_interval931); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-                            char_literal89=(Token)match(input,62,FOLLOW_62_in_interval1389); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_62.add(char_literal89);
+                            dbg.location(160,15);
+                            char_literal82=(Token)match(input,56,FOLLOW_56_in_interval932); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_56.add(char_literal82);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(30);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:25: (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
-                    int alt34=7;
+                    dbg.location(160,20);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:20: (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
+                    int alt31=7;
+                    try { dbg.enterSubRule(31);
+                    try { dbg.enterDecision(31);
+
                     switch ( input.LA(1) ) {
+                    case 60:
+                        {
+                        alt31=1;
+                        }
+                        break;
+                    case 61:
+                        {
+                        alt31=2;
+                        }
+                        break;
+                    case 62:
+                        {
+                        alt31=3;
+                        }
+                        break;
+                    case 63:
+                        {
+                        alt31=4;
+                        }
+                        break;
+                    case 64:
+                        {
+                        alt31=5;
+                        }
+                        break;
+                    case 65:
+                        {
+                        alt31=6;
+                        }
+                        break;
                     case 66:
                         {
-                        alt34=1;
-                        }
-                        break;
-                    case 67:
-                        {
-                        alt34=2;
-                        }
-                        break;
-                    case 68:
-                        {
-                        alt34=3;
-                        }
-                        break;
-                    case 69:
-                        {
-                        alt34=4;
-                        }
-                        break;
-                    case 70:
-                        {
-                        alt34=5;
-                        }
-                        break;
-                    case 71:
-                        {
-                        alt34=6;
-                        }
-                        break;
-                    case 72:
-                        {
-                        alt34=7;
+                        alt31=7;
                         }
                         break;
                     default:
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 34, 0, input);
+                            new NoViableAltException("", 31, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
 
-                    switch (alt34) {
+                    } finally {dbg.exitDecision(31);}
+
+                    switch (alt31) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:26: s= 'INTERVAL'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:21: s= 'INTERVAL'
                             {
-                            s=(Token)match(input,66,FOLLOW_66_in_interval1395); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_66.add(s);
+                            dbg.location(160,22);
+                            s=(Token)match(input,60,FOLLOW_60_in_interval938); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_60.add(s);
 
 
                             }
                             break;
                         case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:41: s= 'YEAR'
+                            dbg.enterAlt(2);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:36: s= 'YEAR'
                             {
-                            s=(Token)match(input,67,FOLLOW_67_in_interval1401); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_67.add(s);
+                            dbg.location(160,37);
+                            s=(Token)match(input,61,FOLLOW_61_in_interval944); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_61.add(s);
 
 
                             }
                             break;
                         case 3 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:52: s= 'MONTH'
+                            dbg.enterAlt(3);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:47: s= 'MONTH'
                             {
-                            s=(Token)match(input,68,FOLLOW_68_in_interval1407); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_68.add(s);
+                            dbg.location(160,48);
+                            s=(Token)match(input,62,FOLLOW_62_in_interval950); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_62.add(s);
 
 
                             }
                             break;
                         case 4 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:64: s= 'DAY'
+                            dbg.enterAlt(4);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:59: s= 'DAY'
                             {
-                            s=(Token)match(input,69,FOLLOW_69_in_interval1413); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_69.add(s);
+                            dbg.location(160,60);
+                            s=(Token)match(input,63,FOLLOW_63_in_interval956); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_63.add(s);
 
 
                             }
                             break;
                         case 5 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:74: s= 'HOUR'
+                            dbg.enterAlt(5);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:69: s= 'HOUR'
                             {
-                            s=(Token)match(input,70,FOLLOW_70_in_interval1419); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_70.add(s);
+                            dbg.location(160,70);
+                            s=(Token)match(input,64,FOLLOW_64_in_interval962); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_64.add(s);
 
 
                             }
                             break;
                         case 6 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:85: s= 'MINUTE'
+                            dbg.enterAlt(6);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:80: s= 'MINUTE'
                             {
-                            s=(Token)match(input,71,FOLLOW_71_in_interval1425); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_71.add(s);
+                            dbg.location(160,81);
+                            s=(Token)match(input,65,FOLLOW_65_in_interval968); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_65.add(s);
 
 
                             }
                             break;
                         case 7 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:98: s= 'SECOND'
+                            dbg.enterAlt(7);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:93: s= 'SECOND'
                             {
-                            s=(Token)match(input,72,FOLLOW_72_in_interval1431); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_72.add(s);
+                            dbg.location(160,94);
+                            s=(Token)match(input,66,FOLLOW_66_in_interval974); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_66.add(s);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(31);}
 
 
 
                     // AST REWRITE
-                    // elements: s, tableid
+                    // elements: tableid, s
                     // token labels: tableid, s
                     // rule labels: retval
                     // token list labels: 
@@ -3733,19 +4402,24 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 175:110: -> ^( TABLECOLUMN ( $tableid)? $s)
+                    // 160:105: -> ^( TABLECOLUMN ( $tableid)? $s)
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:113: ^( TABLECOLUMN ( $tableid)? $s)
+                        dbg.location(160,108);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:108: ^( TABLECOLUMN ( $tableid)? $s)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(160,110);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(TABLECOLUMN, "TABLECOLUMN"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:175:127: ( $tableid)?
+                        dbg.location(160,122);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:122: ( $tableid)?
                         if ( stream_tableid.hasNext() ) {
+                            dbg.location(160,122);
                             adaptor.addChild(root_1, stream_tableid.nextNode());
 
                         }
                         stream_tableid.reset();
+                        dbg.location(160,132);
                         adaptor.addChild(root_1, stream_s.nextNode());
 
                         adaptor.addChild(root_0, root_1);
@@ -3774,6 +4448,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(161, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "interval");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "interval"
@@ -3784,7 +4467,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "function"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:177:1: function : ( (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')' -> ^( FUNCTION $name ( value_expression )* ) | (name= ID ) '(' '*' ')' -> ^( FUNCTION $name '*' ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:1: function : ( (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')' -> ^( FUNCTION $name ( value_expression )* ) | (name= ID ) '(' '*' ')' -> ^( FUNCTION $name '*' ) );
     public final SQL92QueryParser.function_return function() throws RecognitionException {
         SQL92QueryParser.function_return retval = new SQL92QueryParser.function_return();
         retval.start = input.LT(1);
@@ -3792,149 +4475,191 @@ public class SQL92QueryParser extends Parser {
         CommonTree root_0 = null;
 
         Token name=null;
+        Token char_literal83=null;
+        Token char_literal85=null;
+        Token char_literal87=null;
+        Token char_literal88=null;
+        Token char_literal89=null;
         Token char_literal90=null;
-        Token char_literal92=null;
-        Token char_literal94=null;
-        Token char_literal95=null;
-        Token char_literal96=null;
-        Token char_literal97=null;
-        SQL92QueryParser.value_expression_return value_expression91 = null;
+        SQL92QueryParser.value_expression_return value_expression84 = null;
 
-        SQL92QueryParser.value_expression_return value_expression93 = null;
+        SQL92QueryParser.value_expression_return value_expression86 = null;
 
 
         CommonTree name_tree=null;
+        CommonTree char_literal83_tree=null;
+        CommonTree char_literal85_tree=null;
+        CommonTree char_literal87_tree=null;
+        CommonTree char_literal88_tree=null;
+        CommonTree char_literal89_tree=null;
         CommonTree char_literal90_tree=null;
-        CommonTree char_literal92_tree=null;
-        CommonTree char_literal94_tree=null;
-        CommonTree char_literal95_tree=null;
-        CommonTree char_literal96_tree=null;
-        CommonTree char_literal97_tree=null;
-        RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
+        RewriteRuleTokenStream stream_49=new RewriteRuleTokenStream(adaptor,"token 49");
+        RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
+        RewriteRuleTokenStream stream_51=new RewriteRuleTokenStream(adaptor,"token 51");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_52=new RewriteRuleTokenStream(adaptor,"token 52");
-        RewriteRuleTokenStream stream_53=new RewriteRuleTokenStream(adaptor,"token 53");
-        RewriteRuleTokenStream stream_54=new RewriteRuleTokenStream(adaptor,"token 54");
+        RewriteRuleTokenStream stream_50=new RewriteRuleTokenStream(adaptor,"token 50");
         RewriteRuleSubtreeStream stream_value_expression=new RewriteRuleSubtreeStream(adaptor,"rule value_expression");
+        try { dbg.enterRule(getGrammarFileName(), "function");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(163, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:5: ( (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')' -> ^( FUNCTION $name ( value_expression )* ) | (name= ID ) '(' '*' ')' -> ^( FUNCTION $name '*' ) )
-            int alt38=2;
-            int LA38_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:9: ( (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')' -> ^( FUNCTION $name ( value_expression )* ) | (name= ID ) '(' '*' ')' -> ^( FUNCTION $name '*' ) )
+            int alt35=2;
+            try { dbg.enterDecision(35);
 
-            if ( (LA38_0==ID) ) {
-                int LA38_1 = input.LA(2);
+            int LA35_0 = input.LA(1);
 
-                if ( (LA38_1==52) ) {
-                    int LA38_2 = input.LA(3);
+            if ( (LA35_0==ID) ) {
+                int LA35_1 = input.LA(2);
 
-                    if ( (LA38_2==54) ) {
-                        alt38=2;
+                if ( (LA35_1==48) ) {
+                    int LA35_2 = input.LA(3);
+
+                    if ( (LA35_2==50) ) {
+                        alt35=2;
                     }
-                    else if ( ((LA38_2>=INT && LA38_2<=STRING)||(LA38_2>=52 && LA38_2<=53)||LA38_2==55||(LA38_2>=63 && LA38_2<=74)||(LA38_2>=76 && LA38_2<=78)) ) {
-                        alt38=1;
+                    else if ( ((LA35_2>=ID && LA35_2<=STRING)||(LA35_2>=48 && LA35_2<=49)||LA35_2==51||(LA35_2>=57 && LA35_2<=68)||(LA35_2>=70 && LA35_2<=72)) ) {
+                        alt35=1;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 38, 2, input);
+                            new NoViableAltException("", 35, 2, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 38, 1, input);
+                        new NoViableAltException("", 35, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 38, 0, input);
+                    new NoViableAltException("", 35, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt38) {
+            } finally {dbg.exitDecision(35);}
+
+            switch (alt35) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:9: (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:11: (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')'
                     {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:9: (name= ID )
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:10: name= ID
+                    dbg.location(163,11);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:11: (name= ID )
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:12: name= ID
                     {
-                    name=(Token)match(input,ID,FOLLOW_ID_in_function1469); if (state.failed) return retval; 
+                    dbg.location(163,16);
+                    name=(Token)match(input,ID,FOLLOW_ID_in_function1002); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(name);
 
 
                     }
 
-                    char_literal90=(Token)match(input,52,FOLLOW_52_in_function1472); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_52.add(char_literal90);
+                    dbg.location(163,21);
+                    char_literal83=(Token)match(input,48,FOLLOW_48_in_function1005); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_48.add(char_literal83);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:23: ( value_expression )?
-                    int alt36=2;
-                    int LA36_0 = input.LA(1);
+                    dbg.location(163,25);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:25: ( value_expression )?
+                    int alt33=2;
+                    try { dbg.enterSubRule(33);
+                    try { dbg.enterDecision(33);
 
-                    if ( ((LA36_0>=INT && LA36_0<=STRING)||LA36_0==52||(LA36_0>=63 && LA36_0<=74)||(LA36_0>=76 && LA36_0<=78)) ) {
-                        alt36=1;
+                    int LA33_0 = input.LA(1);
+
+                    if ( ((LA33_0>=ID && LA33_0<=STRING)||LA33_0==48||(LA33_0>=57 && LA33_0<=68)||(LA33_0>=70 && LA33_0<=72)) ) {
+                        alt33=1;
                     }
-                    switch (alt36) {
+                    } finally {dbg.exitDecision(33);}
+
+                    switch (alt33) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: value_expression
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: value_expression
                             {
-                            pushFollow(FOLLOW_value_expression_in_function1474);
-                            value_expression91=value_expression();
+                            dbg.location(163,25);
+                            pushFollow(FOLLOW_value_expression_in_function1007);
+                            value_expression84=value_expression();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_value_expression.add(value_expression91.getTree());
+                            if ( state.backtracking==0 ) stream_value_expression.add(value_expression84.getTree());
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(33);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:41: ( ',' value_expression )*
-                    loop37:
+                    dbg.location(163,43);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:43: ( ',' value_expression )*
+                    try { dbg.enterSubRule(34);
+
+                    loop34:
                     do {
-                        int alt37=2;
-                        int LA37_0 = input.LA(1);
+                        int alt34=2;
+                        try { dbg.enterDecision(34);
 
-                        if ( (LA37_0==55) ) {
-                            alt37=1;
+                        int LA34_0 = input.LA(1);
+
+                        if ( (LA34_0==51) ) {
+                            alt34=1;
                         }
 
 
-                        switch (alt37) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:178:42: ',' value_expression
-                            {
-                            char_literal92=(Token)match(input,55,FOLLOW_55_in_function1478); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_55.add(char_literal92);
+                        } finally {dbg.exitDecision(34);}
 
-                            pushFollow(FOLLOW_value_expression_in_function1480);
-                            value_expression93=value_expression();
+                        switch (alt34) {
+                    	case 1 :
+                    	    dbg.enterAlt(1);
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_value_expression.add(value_expression93.getTree());
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:44: ',' value_expression
+                    	    {
+                    	    dbg.location(163,44);
+                    	    char_literal85=(Token)match(input,51,FOLLOW_51_in_function1011); if (state.failed) return retval; 
+                    	    if ( state.backtracking==0 ) stream_51.add(char_literal85);
 
-                            }
-                            break;
+                    	    dbg.location(163,48);
+                    	    pushFollow(FOLLOW_value_expression_in_function1013);
+                    	    value_expression86=value_expression();
 
-                        default :
-                            break loop37;
+                    	    state._fsp--;
+                    	    if (state.failed) return retval;
+                    	    if ( state.backtracking==0 ) stream_value_expression.add(value_expression86.getTree());
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop34;
                         }
                     } while (true);
+                    } finally {dbg.exitSubRule(34);}
 
-                    char_literal94=(Token)match(input,53,FOLLOW_53_in_function1484); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_53.add(char_literal94);
+                    dbg.location(163,67);
+                    char_literal87=(Token)match(input,49,FOLLOW_49_in_function1017); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_49.add(char_literal87);
 
 
 
                     // AST REWRITE
-                    // elements: value_expression, name
+                    // elements: name, value_expression
                     // token labels: name
                     // rule labels: retval
                     // token list labels: 
@@ -3946,16 +4671,21 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 179:13: -> ^( FUNCTION $name ( value_expression )* )
+                    // 164:4: -> ^( FUNCTION $name ( value_expression )* )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:179:16: ^( FUNCTION $name ( value_expression )* )
+                        dbg.location(164,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:164:7: ^( FUNCTION $name ( value_expression )* )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(164,9);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(FUNCTION, "FUNCTION"), root_1);
 
+                        dbg.location(164,18);
                         adaptor.addChild(root_1, stream_name.nextNode());
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:179:33: ( value_expression )*
+                        dbg.location(164,24);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:164:24: ( value_expression )*
                         while ( stream_value_expression.hasNext() ) {
+                            dbg.location(164,24);
                             adaptor.addChild(root_1, stream_value_expression.nextTree());
 
                         }
@@ -3970,30 +4700,39 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:180:9: (name= ID ) '(' '*' ')'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:165:5: (name= ID ) '(' '*' ')'
                     {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:180:9: (name= ID )
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:180:10: name= ID
+                    dbg.location(165,5);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:165:5: (name= ID )
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:165:6: name= ID
                     {
-                    name=(Token)match(input,ID,FOLLOW_ID_in_function1522); if (state.failed) return retval; 
+                    dbg.location(165,10);
+                    name=(Token)match(input,ID,FOLLOW_ID_in_function1042); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(name);
 
 
                     }
 
-                    char_literal95=(Token)match(input,52,FOLLOW_52_in_function1525); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_52.add(char_literal95);
+                    dbg.location(165,15);
+                    char_literal88=(Token)match(input,48,FOLLOW_48_in_function1045); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_48.add(char_literal88);
 
-                    char_literal96=(Token)match(input,54,FOLLOW_54_in_function1527); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_54.add(char_literal96);
+                    dbg.location(165,19);
+                    char_literal89=(Token)match(input,50,FOLLOW_50_in_function1047); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_50.add(char_literal89);
 
-                    char_literal97=(Token)match(input,53,FOLLOW_53_in_function1529); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_53.add(char_literal97);
+                    dbg.location(165,23);
+                    char_literal90=(Token)match(input,49,FOLLOW_49_in_function1049); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_49.add(char_literal90);
 
 
 
                     // AST REWRITE
-                    // elements: 54, name
+                    // elements: 50, name
                     // token labels: name
                     // rule labels: retval
                     // token list labels: 
@@ -4005,15 +4744,19 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 180:31: -> ^( FUNCTION $name '*' )
+                    // 165:27: -> ^( FUNCTION $name '*' )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:180:34: ^( FUNCTION $name '*' )
+                        dbg.location(165,30);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:165:30: ^( FUNCTION $name '*' )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(165,32);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(FUNCTION, "FUNCTION"), root_1);
 
+                        dbg.location(165,41);
                         adaptor.addChild(root_1, stream_name.nextNode());
-                        adaptor.addChild(root_1, stream_54.nextNode());
+                        dbg.location(165,47);
+                        adaptor.addChild(root_1, stream_50.nextNode());
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -4041,6 +4784,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(166, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "function");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "function"
@@ -4051,153 +4803,201 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "string_value_expression"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:182:1: string_value_expression : ( column_name | STRING ) ( '||' ( column_name | STRING ) )+ ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:168:1: string_value_expression : ( column_name | STRING ) ( '||' ( column_name | STRING ) )+ ;
     public final SQL92QueryParser.string_value_expression_return string_value_expression() throws RecognitionException {
         SQL92QueryParser.string_value_expression_return retval = new SQL92QueryParser.string_value_expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token STRING99=null;
-        Token string_literal100=null;
-        Token STRING102=null;
-        SQL92QueryParser.column_name_return column_name98 = null;
+        Token STRING92=null;
+        Token string_literal93=null;
+        Token STRING95=null;
+        SQL92QueryParser.column_name_return column_name91 = null;
 
-        SQL92QueryParser.column_name_return column_name101 = null;
+        SQL92QueryParser.column_name_return column_name94 = null;
 
 
-        CommonTree STRING99_tree=null;
-        CommonTree string_literal100_tree=null;
-        CommonTree STRING102_tree=null;
+        CommonTree STRING92_tree=null;
+        CommonTree string_literal93_tree=null;
+        CommonTree STRING95_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "string_value_expression");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(168, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:5: ( ( column_name | STRING ) ( '||' ( column_name | STRING ) )+ )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:9: ( column_name | STRING ) ( '||' ( column_name | STRING ) )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:2: ( ( column_name | STRING ) ( '||' ( column_name | STRING ) )+ )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:4: ( column_name | STRING ) ( '||' ( column_name | STRING ) )+
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:9: ( column_name | STRING )
-            int alt39=2;
-            int LA39_0 = input.LA(1);
+            dbg.location(169,4);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:4: ( column_name | STRING )
+            int alt36=2;
+            try { dbg.enterSubRule(36);
+            try { dbg.enterDecision(36);
 
-            if ( (LA39_0==ID) ) {
-                alt39=1;
+            int LA36_0 = input.LA(1);
+
+            if ( (LA36_0==ID) ) {
+                alt36=1;
             }
-            else if ( (LA39_0==STRING) ) {
-                alt39=2;
+            else if ( (LA36_0==STRING) ) {
+                alt36=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 39, 0, input);
+                    new NoViableAltException("", 36, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt39) {
+            } finally {dbg.exitDecision(36);}
+
+            switch (alt36) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:10: column_name
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:5: column_name
                     {
-                    pushFollow(FOLLOW_column_name_in_string_value_expression1559);
-                    column_name98=column_name();
+                    dbg.location(169,5);
+                    pushFollow(FOLLOW_column_name_in_string_value_expression1072);
+                    column_name91=column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name98.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name91.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:24: STRING
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:19: STRING
                     {
-                    STRING99=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1563); if (state.failed) return retval;
+                    dbg.location(169,19);
+                    STRING92=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1076); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    STRING99_tree = (CommonTree)adaptor.create(STRING99);
-                    adaptor.addChild(root_0, STRING99_tree);
+                    STRING92_tree = (CommonTree)adaptor.create(STRING92);
+                    adaptor.addChild(root_0, STRING92_tree);
                     }
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(36);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:32: ( '||' ( column_name | STRING ) )+
-            int cnt41=0;
-            loop41:
+            dbg.location(169,27);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:27: ( '||' ( column_name | STRING ) )+
+            int cnt38=0;
+            try { dbg.enterSubRule(38);
+
+            loop38:
             do {
-                int alt41=2;
-                int LA41_0 = input.LA(1);
+                int alt38=2;
+                try { dbg.enterDecision(38);
 
-                if ( (LA41_0==79) ) {
-                    alt41=1;
+                int LA38_0 = input.LA(1);
+
+                if ( (LA38_0==73) ) {
+                    alt38=1;
                 }
 
 
-                switch (alt41) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:33: '||' ( column_name | STRING )
-                    {
-                    string_literal100=(Token)match(input,79,FOLLOW_79_in_string_value_expression1567); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal100_tree = (CommonTree)adaptor.create(string_literal100);
-                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal100_tree, root_0);
-                    }
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:39: ( column_name | STRING )
-                    int alt40=2;
-                    int LA40_0 = input.LA(1);
+                } finally {dbg.exitDecision(38);}
 
-                    if ( (LA40_0==ID) ) {
-                        alt40=1;
-                    }
-                    else if ( (LA40_0==STRING) ) {
-                        alt40=2;
-                    }
-                    else {
-                        if (state.backtracking>0) {state.failed=true; return retval;}
-                        NoViableAltException nvae =
-                            new NoViableAltException("", 40, 0, input);
+                switch (alt38) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                        throw nvae;
-                    }
-                    switch (alt40) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:40: column_name
-                            {
-                            pushFollow(FOLLOW_column_name_in_string_value_expression1571);
-                            column_name101=column_name();
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:28: '||' ( column_name | STRING )
+            	    {
+            	    dbg.location(169,32);
+            	    string_literal93=(Token)match(input,73,FOLLOW_73_in_string_value_expression1080); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    string_literal93_tree = (CommonTree)adaptor.create(string_literal93);
+            	    root_0 = (CommonTree)adaptor.becomeRoot(string_literal93_tree, root_0);
+            	    }
+            	    dbg.location(169,34);
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:34: ( column_name | STRING )
+            	    int alt37=2;
+            	    try { dbg.enterSubRule(37);
+            	    try { dbg.enterDecision(37);
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name101.getTree());
+            	    int LA37_0 = input.LA(1);
 
-                            }
-                            break;
-                        case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:183:54: STRING
-                            {
-                            STRING102=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1575); if (state.failed) return retval;
-                            if ( state.backtracking==0 ) {
-                            STRING102_tree = (CommonTree)adaptor.create(STRING102);
-                            adaptor.addChild(root_0, STRING102_tree);
-                            }
+            	    if ( (LA37_0==ID) ) {
+            	        alt37=1;
+            	    }
+            	    else if ( (LA37_0==STRING) ) {
+            	        alt37=2;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return retval;}
+            	        NoViableAltException nvae =
+            	            new NoViableAltException("", 37, 0, input);
 
-                            }
-                            break;
+            	        dbg.recognitionException(nvae);
+            	        throw nvae;
+            	    }
+            	    } finally {dbg.exitDecision(37);}
 
-                    }
+            	    switch (alt37) {
+            	        case 1 :
+            	            dbg.enterAlt(1);
+
+            	            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:35: column_name
+            	            {
+            	            dbg.location(169,35);
+            	            pushFollow(FOLLOW_column_name_in_string_value_expression1084);
+            	            column_name94=column_name();
+
+            	            state._fsp--;
+            	            if (state.failed) return retval;
+            	            if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name94.getTree());
+
+            	            }
+            	            break;
+            	        case 2 :
+            	            dbg.enterAlt(2);
+
+            	            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:49: STRING
+            	            {
+            	            dbg.location(169,49);
+            	            STRING95=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1088); if (state.failed) return retval;
+            	            if ( state.backtracking==0 ) {
+            	            STRING95_tree = (CommonTree)adaptor.create(STRING95);
+            	            adaptor.addChild(root_0, STRING95_tree);
+            	            }
+
+            	            }
+            	            break;
+
+            	    }
+            	    } finally {dbg.exitSubRule(37);}
 
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt41 >= 1 ) break loop41;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt38 >= 1 ) break loop38;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
-                            new EarlyExitException(41, input);
+                            new EarlyExitException(38, input);
+                        dbg.recognitionException(eee);
+
                         throw eee;
                 }
-                cnt41++;
+                cnt38++;
             } while (true);
+            } finally {dbg.exitSubRule(38);}
 
 
             }
@@ -4218,6 +5018,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(170, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "string_value_expression");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "string_value_expression"
@@ -4228,29 +5037,37 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_expression"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:185:1: table_expression : table_reference ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:172:1: table_expression : table_reference ;
     public final SQL92QueryParser.table_expression_return table_expression() throws RecognitionException {
         SQL92QueryParser.table_expression_return retval = new SQL92QueryParser.table_expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.table_reference_return table_reference103 = null;
+        SQL92QueryParser.table_reference_return table_reference96 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "table_expression");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(172, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:186:5: ( table_reference )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:186:9: table_reference
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:173:2: ( table_reference )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:173:4: table_reference
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_table_reference_in_table_expression1596);
-            table_reference103=table_reference();
+            dbg.location(173,4);
+            pushFollow(FOLLOW_table_reference_in_table_expression1103);
+            table_reference96=table_reference();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference103.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference96.getTree());
 
             }
 
@@ -4270,6 +5087,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(174, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_expression");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_expression"
@@ -4280,69 +5106,89 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_reference"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:188:1: table_reference : table ( ',' table_reference )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:175:1: table_reference : table ( ',' table_reference )* ;
     public final SQL92QueryParser.table_reference_return table_reference() throws RecognitionException {
         SQL92QueryParser.table_reference_return retval = new SQL92QueryParser.table_reference_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal105=null;
-        SQL92QueryParser.table_return table104 = null;
+        Token char_literal98=null;
+        SQL92QueryParser.table_return table97 = null;
 
-        SQL92QueryParser.table_reference_return table_reference106 = null;
+        SQL92QueryParser.table_reference_return table_reference99 = null;
 
 
-        CommonTree char_literal105_tree=null;
+        CommonTree char_literal98_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "table_reference");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(175, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:5: ( table ( ',' table_reference )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:9: table ( ',' table_reference )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:2: ( table ( ',' table_reference )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:4: table ( ',' table_reference )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_table_in_table_reference1614);
-            table104=table();
+            dbg.location(176,4);
+            pushFollow(FOLLOW_table_in_table_reference1113);
+            table97=table();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, table104.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:15: ( ',' table_reference )*
-            loop42:
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, table97.getTree());
+            dbg.location(176,10);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:10: ( ',' table_reference )*
+            try { dbg.enterSubRule(39);
+
+            loop39:
             do {
-                int alt42=2;
-                int LA42_0 = input.LA(1);
+                int alt39=2;
+                try { dbg.enterDecision(39);
 
-                if ( (LA42_0==55) ) {
-                    int LA42_2 = input.LA(2);
+                int LA39_0 = input.LA(1);
 
-                    if ( (synpred81_SQL92Query()) ) {
-                        alt42=1;
+                if ( (LA39_0==51) ) {
+                    int LA39_2 = input.LA(2);
+
+                    if ( (synpred78_SQL92Query()) ) {
+                        alt39=1;
                     }
 
 
                 }
 
 
-                switch (alt42) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:16: ',' table_reference
-                    {
-                    char_literal105=(Token)match(input,55,FOLLOW_55_in_table_reference1617); if (state.failed) return retval;
-                    pushFollow(FOLLOW_table_reference_in_table_reference1620);
-                    table_reference106=table_reference();
+                } finally {dbg.exitDecision(39);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference106.getTree());
+                switch (alt39) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    }
-                    break;
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:11: ',' table_reference
+            	    {
+            	    dbg.location(176,14);
+            	    char_literal98=(Token)match(input,51,FOLLOW_51_in_table_reference1116); if (state.failed) return retval;
+            	    dbg.location(176,16);
+            	    pushFollow(FOLLOW_table_reference_in_table_reference1119);
+            	    table_reference99=table_reference();
 
-                default :
-                    break loop42;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference99.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop39;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(39);}
 
 
             }
@@ -4363,6 +5209,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(177, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_reference");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_reference"
@@ -4373,105 +5228,129 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "join_type"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:191:1: join_type : ( 'RIGHT' ( 'OUTER' )? 'JOIN' -> RIGHT_OUTER_JOIN | 'LEFT' ( 'OUTER' )? 'JOIN' -> LEFT_OUTER_JOIN | 'FULL' ( 'OUTER' )? 'JOIN' -> FULL_OUTER_JOIN | ( 'INNER' )? 'JOIN' -> JOIN );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:179:1: join_type : ( 'RIGHT' ( 'OUTER' )? 'JOIN' -> RIGHT_OUTER_JOIN | 'LEFT' ( 'OUTER' )? 'JOIN' -> LEFT_OUTER_JOIN | 'FULL' ( 'OUTER' )? 'JOIN' -> FULL_OUTER_JOIN | ( 'INNER' )? 'JOIN' -> JOIN );
     public final SQL92QueryParser.join_type_return join_type() throws RecognitionException {
         SQL92QueryParser.join_type_return retval = new SQL92QueryParser.join_type_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
+        Token string_literal100=null;
+        Token string_literal101=null;
+        Token string_literal102=null;
+        Token string_literal103=null;
+        Token string_literal104=null;
+        Token string_literal105=null;
+        Token string_literal106=null;
         Token string_literal107=null;
         Token string_literal108=null;
         Token string_literal109=null;
         Token string_literal110=null;
-        Token string_literal111=null;
-        Token string_literal112=null;
-        Token string_literal113=null;
-        Token string_literal114=null;
-        Token string_literal115=null;
-        Token string_literal116=null;
-        Token string_literal117=null;
 
+        CommonTree string_literal100_tree=null;
+        CommonTree string_literal101_tree=null;
+        CommonTree string_literal102_tree=null;
+        CommonTree string_literal103_tree=null;
+        CommonTree string_literal104_tree=null;
+        CommonTree string_literal105_tree=null;
+        CommonTree string_literal106_tree=null;
         CommonTree string_literal107_tree=null;
         CommonTree string_literal108_tree=null;
         CommonTree string_literal109_tree=null;
         CommonTree string_literal110_tree=null;
-        CommonTree string_literal111_tree=null;
-        CommonTree string_literal112_tree=null;
-        CommonTree string_literal113_tree=null;
-        CommonTree string_literal114_tree=null;
-        CommonTree string_literal115_tree=null;
-        CommonTree string_literal116_tree=null;
-        CommonTree string_literal117_tree=null;
-        RewriteRuleTokenStream stream_82=new RewriteRuleTokenStream(adaptor,"token 82");
-        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
-        RewriteRuleTokenStream stream_80=new RewriteRuleTokenStream(adaptor,"token 80");
-        RewriteRuleTokenStream stream_81=new RewriteRuleTokenStream(adaptor,"token 81");
-        RewriteRuleTokenStream stream_84=new RewriteRuleTokenStream(adaptor,"token 84");
-        RewriteRuleTokenStream stream_85=new RewriteRuleTokenStream(adaptor,"token 85");
+        RewriteRuleTokenStream stream_79=new RewriteRuleTokenStream(adaptor,"token 79");
+        RewriteRuleTokenStream stream_78=new RewriteRuleTokenStream(adaptor,"token 78");
+        RewriteRuleTokenStream stream_77=new RewriteRuleTokenStream(adaptor,"token 77");
+        RewriteRuleTokenStream stream_74=new RewriteRuleTokenStream(adaptor,"token 74");
+        RewriteRuleTokenStream stream_75=new RewriteRuleTokenStream(adaptor,"token 75");
+        RewriteRuleTokenStream stream_76=new RewriteRuleTokenStream(adaptor,"token 76");
+
+        try { dbg.enterRule(getGrammarFileName(), "join_type");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(179, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:192:5: ( 'RIGHT' ( 'OUTER' )? 'JOIN' -> RIGHT_OUTER_JOIN | 'LEFT' ( 'OUTER' )? 'JOIN' -> LEFT_OUTER_JOIN | 'FULL' ( 'OUTER' )? 'JOIN' -> FULL_OUTER_JOIN | ( 'INNER' )? 'JOIN' -> JOIN )
-            int alt47=4;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:180:2: ( 'RIGHT' ( 'OUTER' )? 'JOIN' -> RIGHT_OUTER_JOIN | 'LEFT' ( 'OUTER' )? 'JOIN' -> LEFT_OUTER_JOIN | 'FULL' ( 'OUTER' )? 'JOIN' -> FULL_OUTER_JOIN | ( 'INNER' )? 'JOIN' -> JOIN )
+            int alt44=4;
+            try { dbg.enterDecision(44);
+
             switch ( input.LA(1) ) {
-            case 80:
+            case 74:
                 {
-                alt47=1;
+                alt44=1;
                 }
                 break;
-            case 83:
+            case 77:
                 {
-                alt47=2;
+                alt44=2;
                 }
                 break;
-            case 84:
+            case 78:
                 {
-                alt47=3;
+                alt44=3;
                 }
                 break;
-            case 82:
-            case 85:
+            case 76:
+            case 79:
                 {
-                alt47=4;
+                alt44=4;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 47, 0, input);
+                    new NoViableAltException("", 44, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt47) {
+            } finally {dbg.exitDecision(44);}
+
+            switch (alt44) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:192:9: 'RIGHT' ( 'OUTER' )? 'JOIN'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:180:4: 'RIGHT' ( 'OUTER' )? 'JOIN'
                     {
-                    string_literal107=(Token)match(input,80,FOLLOW_80_in_join_type1640); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_80.add(string_literal107);
+                    dbg.location(180,4);
+                    string_literal100=(Token)match(input,74,FOLLOW_74_in_join_type1132); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_74.add(string_literal100);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:192:17: ( 'OUTER' )?
-                    int alt43=2;
-                    int LA43_0 = input.LA(1);
+                    dbg.location(180,12);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:180:12: ( 'OUTER' )?
+                    int alt40=2;
+                    try { dbg.enterSubRule(40);
+                    try { dbg.enterDecision(40);
 
-                    if ( (LA43_0==81) ) {
-                        alt43=1;
+                    int LA40_0 = input.LA(1);
+
+                    if ( (LA40_0==75) ) {
+                        alt40=1;
                     }
-                    switch (alt43) {
+                    } finally {dbg.exitDecision(40);}
+
+                    switch (alt40) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'OUTER'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'OUTER'
                             {
-                            string_literal108=(Token)match(input,81,FOLLOW_81_in_join_type1642); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_81.add(string_literal108);
+                            dbg.location(180,12);
+                            string_literal101=(Token)match(input,75,FOLLOW_75_in_join_type1134); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_75.add(string_literal101);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(40);}
 
-                    string_literal109=(Token)match(input,82,FOLLOW_82_in_join_type1645); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_82.add(string_literal109);
+                    dbg.location(180,21);
+                    string_literal102=(Token)match(input,76,FOLLOW_76_in_join_type1137); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_76.add(string_literal102);
 
 
 
@@ -4487,8 +5366,9 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 192:33: -> RIGHT_OUTER_JOIN
+                    // 180:28: -> RIGHT_OUTER_JOIN
                     {
+                        dbg.location(180,31);
                         adaptor.addChild(root_0, (CommonTree)adaptor.create(RIGHT_OUTER_JOIN, "RIGHT_OUTER_JOIN"));
 
                     }
@@ -4497,33 +5377,47 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:193:9: 'LEFT' ( 'OUTER' )? 'JOIN'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:181:4: 'LEFT' ( 'OUTER' )? 'JOIN'
                     {
-                    string_literal110=(Token)match(input,83,FOLLOW_83_in_join_type1660); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_83.add(string_literal110);
+                    dbg.location(181,4);
+                    string_literal103=(Token)match(input,77,FOLLOW_77_in_join_type1147); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_77.add(string_literal103);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:193:16: ( 'OUTER' )?
-                    int alt44=2;
-                    int LA44_0 = input.LA(1);
+                    dbg.location(181,11);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:181:11: ( 'OUTER' )?
+                    int alt41=2;
+                    try { dbg.enterSubRule(41);
+                    try { dbg.enterDecision(41);
 
-                    if ( (LA44_0==81) ) {
-                        alt44=1;
+                    int LA41_0 = input.LA(1);
+
+                    if ( (LA41_0==75) ) {
+                        alt41=1;
                     }
-                    switch (alt44) {
+                    } finally {dbg.exitDecision(41);}
+
+                    switch (alt41) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'OUTER'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'OUTER'
                             {
-                            string_literal111=(Token)match(input,81,FOLLOW_81_in_join_type1662); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_81.add(string_literal111);
+                            dbg.location(181,11);
+                            string_literal104=(Token)match(input,75,FOLLOW_75_in_join_type1149); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_75.add(string_literal104);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(41);}
 
-                    string_literal112=(Token)match(input,82,FOLLOW_82_in_join_type1665); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_82.add(string_literal112);
+                    dbg.location(181,20);
+                    string_literal105=(Token)match(input,76,FOLLOW_76_in_join_type1152); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_76.add(string_literal105);
 
 
 
@@ -4539,8 +5433,9 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 193:32: -> LEFT_OUTER_JOIN
+                    // 181:27: -> LEFT_OUTER_JOIN
                     {
+                        dbg.location(181,30);
                         adaptor.addChild(root_0, (CommonTree)adaptor.create(LEFT_OUTER_JOIN, "LEFT_OUTER_JOIN"));
 
                     }
@@ -4549,33 +5444,47 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:194:9: 'FULL' ( 'OUTER' )? 'JOIN'
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:182:4: 'FULL' ( 'OUTER' )? 'JOIN'
                     {
-                    string_literal113=(Token)match(input,84,FOLLOW_84_in_join_type1679); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_84.add(string_literal113);
+                    dbg.location(182,4);
+                    string_literal106=(Token)match(input,78,FOLLOW_78_in_join_type1161); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_78.add(string_literal106);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:194:16: ( 'OUTER' )?
-                    int alt45=2;
-                    int LA45_0 = input.LA(1);
+                    dbg.location(182,11);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:182:11: ( 'OUTER' )?
+                    int alt42=2;
+                    try { dbg.enterSubRule(42);
+                    try { dbg.enterDecision(42);
 
-                    if ( (LA45_0==81) ) {
-                        alt45=1;
+                    int LA42_0 = input.LA(1);
+
+                    if ( (LA42_0==75) ) {
+                        alt42=1;
                     }
-                    switch (alt45) {
+                    } finally {dbg.exitDecision(42);}
+
+                    switch (alt42) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'OUTER'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'OUTER'
                             {
-                            string_literal114=(Token)match(input,81,FOLLOW_81_in_join_type1681); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_81.add(string_literal114);
+                            dbg.location(182,11);
+                            string_literal107=(Token)match(input,75,FOLLOW_75_in_join_type1163); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_75.add(string_literal107);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(42);}
 
-                    string_literal115=(Token)match(input,82,FOLLOW_82_in_join_type1684); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_82.add(string_literal115);
+                    dbg.location(182,20);
+                    string_literal108=(Token)match(input,76,FOLLOW_76_in_join_type1166); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_76.add(string_literal108);
 
 
 
@@ -4591,8 +5500,9 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 194:32: -> FULL_OUTER_JOIN
+                    // 182:27: -> FULL_OUTER_JOIN
                     {
+                        dbg.location(182,30);
                         adaptor.addChild(root_0, (CommonTree)adaptor.create(FULL_OUTER_JOIN, "FULL_OUTER_JOIN"));
 
                     }
@@ -4601,30 +5511,43 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:195:9: ( 'INNER' )? 'JOIN'
-                    {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:195:9: ( 'INNER' )?
-                    int alt46=2;
-                    int LA46_0 = input.LA(1);
+                    dbg.enterAlt(4);
 
-                    if ( (LA46_0==85) ) {
-                        alt46=1;
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:183:5: ( 'INNER' )? 'JOIN'
+                    {
+                    dbg.location(183,5);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:183:5: ( 'INNER' )?
+                    int alt43=2;
+                    try { dbg.enterSubRule(43);
+                    try { dbg.enterDecision(43);
+
+                    int LA43_0 = input.LA(1);
+
+                    if ( (LA43_0==79) ) {
+                        alt43=1;
                     }
-                    switch (alt46) {
+                    } finally {dbg.exitDecision(43);}
+
+                    switch (alt43) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: 'INNER'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: 'INNER'
                             {
-                            string_literal116=(Token)match(input,85,FOLLOW_85_in_join_type1698); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_85.add(string_literal116);
+                            dbg.location(183,5);
+                            string_literal109=(Token)match(input,79,FOLLOW_79_in_join_type1176); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_79.add(string_literal109);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(43);}
 
-                    string_literal117=(Token)match(input,82,FOLLOW_82_in_join_type1701); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_82.add(string_literal117);
+                    dbg.location(183,14);
+                    string_literal110=(Token)match(input,76,FOLLOW_76_in_join_type1179); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_76.add(string_literal110);
 
 
 
@@ -4640,8 +5563,9 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 195:25: -> JOIN
+                    // 183:21: -> JOIN
                     {
+                        dbg.location(183,24);
                         adaptor.addChild(root_0, (CommonTree)adaptor.create(JOIN, "JOIN"));
 
                     }
@@ -4667,6 +5591,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(184, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "join_type");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "join_type"
@@ -4677,79 +5610,101 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:197:1: table : non_join_table ( join_type non_join_table 'ON' search_condition )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:185:1: table : non_join_table ( join_type non_join_table 'ON' search_condition )* ;
     public final SQL92QueryParser.table_return table() throws RecognitionException {
         SQL92QueryParser.table_return retval = new SQL92QueryParser.table_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal121=null;
-        SQL92QueryParser.non_join_table_return non_join_table118 = null;
+        Token string_literal114=null;
+        SQL92QueryParser.non_join_table_return non_join_table111 = null;
 
-        SQL92QueryParser.join_type_return join_type119 = null;
+        SQL92QueryParser.join_type_return join_type112 = null;
 
-        SQL92QueryParser.non_join_table_return non_join_table120 = null;
+        SQL92QueryParser.non_join_table_return non_join_table113 = null;
 
-        SQL92QueryParser.search_condition_return search_condition122 = null;
+        SQL92QueryParser.search_condition_return search_condition115 = null;
 
 
-        CommonTree string_literal121_tree=null;
+        CommonTree string_literal114_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "table");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(185, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:198:5: ( non_join_table ( join_type non_join_table 'ON' search_condition )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:198:9: non_join_table ( join_type non_join_table 'ON' search_condition )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:185:8: ( non_join_table ( join_type non_join_table 'ON' search_condition )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:185:10: non_join_table ( join_type non_join_table 'ON' search_condition )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_non_join_table_in_table1723);
-            non_join_table118=non_join_table();
+            dbg.location(185,10);
+            pushFollow(FOLLOW_non_join_table_in_table1193);
+            non_join_table111=non_join_table();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table118.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:198:24: ( join_type non_join_table 'ON' search_condition )*
-            loop48:
-            do {
-                int alt48=2;
-                int LA48_0 = input.LA(1);
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table111.getTree());
+            dbg.location(185,25);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:185:25: ( join_type non_join_table 'ON' search_condition )*
+            try { dbg.enterSubRule(45);
 
-                if ( (LA48_0==80||(LA48_0>=82 && LA48_0<=85)) ) {
-                    alt48=1;
+            loop45:
+            do {
+                int alt45=2;
+                try { dbg.enterDecision(45);
+
+                int LA45_0 = input.LA(1);
+
+                if ( (LA45_0==74||(LA45_0>=76 && LA45_0<=79)) ) {
+                    alt45=1;
                 }
 
 
-                switch (alt48) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:198:25: join_type non_join_table 'ON' search_condition
-                    {
-                    pushFollow(FOLLOW_join_type_in_table1726);
-                    join_type119=join_type();
+                } finally {dbg.exitDecision(45);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(join_type119.getTree(), root_0);
-                    pushFollow(FOLLOW_non_join_table_in_table1729);
-                    non_join_table120=non_join_table();
+                switch (alt45) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table120.getTree());
-                    string_literal121=(Token)match(input,86,FOLLOW_86_in_table1731); if (state.failed) return retval;
-                    pushFollow(FOLLOW_search_condition_in_table1734);
-                    search_condition122=search_condition();
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:185:26: join_type non_join_table 'ON' search_condition
+            	    {
+            	    dbg.location(185,35);
+            	    pushFollow(FOLLOW_join_type_in_table1196);
+            	    join_type112=join_type();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition122.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(join_type112.getTree(), root_0);
+            	    dbg.location(185,37);
+            	    pushFollow(FOLLOW_non_join_table_in_table1199);
+            	    non_join_table113=non_join_table();
 
-                    }
-                    break;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table113.getTree());
+            	    dbg.location(185,56);
+            	    string_literal114=(Token)match(input,80,FOLLOW_80_in_table1201); if (state.failed) return retval;
+            	    dbg.location(185,58);
+            	    pushFollow(FOLLOW_search_condition_in_table1204);
+            	    search_condition115=search_condition();
 
-                default :
-                    break loop48;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition115.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop45;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(45);}
 
 
             }
@@ -4770,6 +5725,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(186, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table"
@@ -4780,99 +5744,123 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "non_join_table"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:200:1: non_join_table : ( table_name ( correlation_specification )? -> ^( RELATION table_name ( correlation_specification )? ) | table_function correlation_specification -> ^( RELATION table_function correlation_specification ) | sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:189:1: non_join_table : ( table_name ( correlation_specification )? -> ^( RELATION table_name ( correlation_specification )? ) | table_function correlation_specification -> ^( RELATION table_function correlation_specification ) | sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) );
     public final SQL92QueryParser.non_join_table_return non_join_table() throws RecognitionException {
         SQL92QueryParser.non_join_table_return retval = new SQL92QueryParser.non_join_table_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.table_name_return table_name123 = null;
+        SQL92QueryParser.table_name_return table_name116 = null;
 
-        SQL92QueryParser.correlation_specification_return correlation_specification124 = null;
+        SQL92QueryParser.correlation_specification_return correlation_specification117 = null;
 
-        SQL92QueryParser.table_function_return table_function125 = null;
+        SQL92QueryParser.table_function_return table_function118 = null;
 
-        SQL92QueryParser.correlation_specification_return correlation_specification126 = null;
+        SQL92QueryParser.correlation_specification_return correlation_specification119 = null;
 
-        SQL92QueryParser.sub_query_return sub_query127 = null;
+        SQL92QueryParser.sub_query_return sub_query120 = null;
 
-        SQL92QueryParser.correlation_specification_return correlation_specification128 = null;
+        SQL92QueryParser.correlation_specification_return correlation_specification121 = null;
 
 
         RewriteRuleSubtreeStream stream_table_function=new RewriteRuleSubtreeStream(adaptor,"rule table_function");
         RewriteRuleSubtreeStream stream_table_name=new RewriteRuleSubtreeStream(adaptor,"rule table_name");
         RewriteRuleSubtreeStream stream_sub_query=new RewriteRuleSubtreeStream(adaptor,"rule sub_query");
         RewriteRuleSubtreeStream stream_correlation_specification=new RewriteRuleSubtreeStream(adaptor,"rule correlation_specification");
+        try { dbg.enterRule(getGrammarFileName(), "non_join_table");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(189, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:201:5: ( table_name ( correlation_specification )? -> ^( RELATION table_name ( correlation_specification )? ) | table_function correlation_specification -> ^( RELATION table_function correlation_specification ) | sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
-            int alt50=3;
-            int LA50_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:2: ( table_name ( correlation_specification )? -> ^( RELATION table_name ( correlation_specification )? ) | table_function correlation_specification -> ^( RELATION table_function correlation_specification ) | sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
+            int alt47=3;
+            try { dbg.enterDecision(47);
 
-            if ( (LA50_0==ID) ) {
-                int LA50_1 = input.LA(2);
+            int LA47_0 = input.LA(1);
 
-                if ( (LA50_1==52) ) {
-                    alt50=2;
+            if ( (LA47_0==ID) ) {
+                int LA47_1 = input.LA(2);
+
+                if ( (LA47_1==48) ) {
+                    alt47=2;
                 }
-                else if ( (LA50_1==EOF||LA50_1==ID||(LA50_1>=40 && LA50_1<=42)||(LA50_1>=44 && LA50_1<=45)||(LA50_1>=48 && LA50_1<=50)||LA50_1==53||LA50_1==55||(LA50_1>=57 && LA50_1<=58)||LA50_1==80||(LA50_1>=82 && LA50_1<=86)) ) {
-                    alt50=1;
+                else if ( (LA47_1==EOF||LA47_1==ID||(LA47_1>=37 && LA47_1<=38)||(LA47_1>=40 && LA47_1<=41)||(LA47_1>=44 && LA47_1<=46)||LA47_1==49||LA47_1==51||(LA47_1>=53 && LA47_1<=54)||LA47_1==74||(LA47_1>=76 && LA47_1<=80)) ) {
+                    alt47=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 50, 1, input);
+                        new NoViableAltException("", 47, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
-            else if ( (LA50_0==52) ) {
-                alt50=3;
+            else if ( (LA47_0==48) ) {
+                alt47=3;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 50, 0, input);
+                    new NoViableAltException("", 47, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt50) {
+            } finally {dbg.exitDecision(47);}
+
+            switch (alt47) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:201:9: table_name ( correlation_specification )?
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:4: table_name ( correlation_specification )?
                     {
-                    pushFollow(FOLLOW_table_name_in_non_join_table1754);
-                    table_name123=table_name();
+                    dbg.location(190,4);
+                    pushFollow(FOLLOW_table_name_in_non_join_table1218);
+                    table_name116=table_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_name.add(table_name123.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:201:20: ( correlation_specification )?
-                    int alt49=2;
-                    int LA49_0 = input.LA(1);
+                    if ( state.backtracking==0 ) stream_table_name.add(table_name116.getTree());
+                    dbg.location(190,15);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:15: ( correlation_specification )?
+                    int alt46=2;
+                    try { dbg.enterSubRule(46);
+                    try { dbg.enterDecision(46);
 
-                    if ( (LA49_0==ID||LA49_0==57) ) {
-                        alt49=1;
+                    int LA46_0 = input.LA(1);
+
+                    if ( (LA46_0==ID||LA46_0==53) ) {
+                        alt46=1;
                     }
-                    switch (alt49) {
+                    } finally {dbg.exitDecision(46);}
+
+                    switch (alt46) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: correlation_specification
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: correlation_specification
                             {
-                            pushFollow(FOLLOW_correlation_specification_in_non_join_table1756);
-                            correlation_specification124=correlation_specification();
+                            dbg.location(190,15);
+                            pushFollow(FOLLOW_correlation_specification_in_non_join_table1220);
+                            correlation_specification117=correlation_specification();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification124.getTree());
+                            if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification117.getTree());
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(46);}
 
 
 
                     // AST REWRITE
-                    // elements: table_name, correlation_specification
+                    // elements: correlation_specification, table_name
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4883,16 +5871,21 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 201:47: -> ^( RELATION table_name ( correlation_specification )? )
+                    // 190:42: -> ^( RELATION table_name ( correlation_specification )? )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:201:50: ^( RELATION table_name ( correlation_specification )? )
+                        dbg.location(190,45);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:45: ^( RELATION table_name ( correlation_specification )? )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(190,47);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(190,56);
                         adaptor.addChild(root_1, stream_table_name.nextTree());
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:201:72: ( correlation_specification )?
+                        dbg.location(190,67);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:67: ( correlation_specification )?
                         if ( stream_correlation_specification.hasNext() ) {
+                            dbg.location(190,67);
                             adaptor.addChild(root_1, stream_correlation_specification.nextTree());
 
                         }
@@ -4907,24 +5900,28 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:202:9: table_function correlation_specification
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:191:5: table_function correlation_specification
                     {
-                    pushFollow(FOLLOW_table_function_in_non_join_table1778);
-                    table_function125=table_function();
+                    dbg.location(191,5);
+                    pushFollow(FOLLOW_table_function_in_non_join_table1238);
+                    table_function118=table_function();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_function.add(table_function125.getTree());
-                    pushFollow(FOLLOW_correlation_specification_in_non_join_table1780);
-                    correlation_specification126=correlation_specification();
+                    if ( state.backtracking==0 ) stream_table_function.add(table_function118.getTree());
+                    dbg.location(191,20);
+                    pushFollow(FOLLOW_correlation_specification_in_non_join_table1240);
+                    correlation_specification119=correlation_specification();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification126.getTree());
+                    if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification119.getTree());
 
 
                     // AST REWRITE
-                    // elements: correlation_specification, table_function
+                    // elements: table_function, correlation_specification
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4935,14 +5932,18 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 202:50: -> ^( RELATION table_function correlation_specification )
+                    // 191:46: -> ^( RELATION table_function correlation_specification )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:202:53: ^( RELATION table_function correlation_specification )
+                        dbg.location(191,49);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:191:49: ^( RELATION table_function correlation_specification )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(191,51);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(191,60);
                         adaptor.addChild(root_1, stream_table_function.nextTree());
+                        dbg.location(191,75);
                         adaptor.addChild(root_1, stream_correlation_specification.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -4954,20 +5955,24 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:203:9: sub_query correlation_specification
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:192:5: sub_query correlation_specification
                     {
-                    pushFollow(FOLLOW_sub_query_in_non_join_table1800);
-                    sub_query127=sub_query();
+                    dbg.location(192,5);
+                    pushFollow(FOLLOW_sub_query_in_non_join_table1256);
+                    sub_query120=sub_query();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_sub_query.add(sub_query127.getTree());
-                    pushFollow(FOLLOW_correlation_specification_in_non_join_table1802);
-                    correlation_specification128=correlation_specification();
+                    if ( state.backtracking==0 ) stream_sub_query.add(sub_query120.getTree());
+                    dbg.location(192,15);
+                    pushFollow(FOLLOW_correlation_specification_in_non_join_table1258);
+                    correlation_specification121=correlation_specification();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification128.getTree());
+                    if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification121.getTree());
 
 
                     // AST REWRITE
@@ -4982,14 +5987,18 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 203:45: -> ^( RELATION sub_query correlation_specification )
+                    // 192:41: -> ^( RELATION sub_query correlation_specification )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:203:48: ^( RELATION sub_query correlation_specification )
+                        dbg.location(192,44);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:192:44: ^( RELATION sub_query correlation_specification )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(192,46);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(192,55);
                         adaptor.addChild(root_1, stream_sub_query.nextTree());
+                        dbg.location(192,65);
                         adaptor.addChild(root_1, stream_correlation_specification.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -5018,6 +6027,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(193, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "non_join_table");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "non_join_table"
@@ -5028,7 +6046,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_function"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:205:1: table_function : name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')' -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* ) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:195:1: table_function : name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')' -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* ) ;
     public final SQL92QueryParser.table_function_return table_function() throws RecognitionException {
         SQL92QueryParser.table_function_return retval = new SQL92QueryParser.table_function_return();
         retval.start = input.LT(1);
@@ -5036,141 +6054,208 @@ public class SQL92QueryParser extends Parser {
         CommonTree root_0 = null;
 
         Token name=null;
-        Token char_literal129=null;
-        Token char_literal131=null;
-        Token char_literal133=null;
-        Token char_literal135=null;
-        SQL92QueryParser.table_function_subquery_return table_function_subquery130 = null;
+        Token char_literal122=null;
+        Token char_literal124=null;
+        Token char_literal126=null;
+        Token char_literal128=null;
+        SQL92QueryParser.table_function_subquery_return table_function_subquery123 = null;
 
-        SQL92QueryParser.table_function_subquery_return table_function_subquery132 = null;
+        SQL92QueryParser.table_function_subquery_return table_function_subquery125 = null;
 
-        SQL92QueryParser.table_function_param_return table_function_param134 = null;
+        SQL92QueryParser.table_function_param_return table_function_param127 = null;
 
 
         CommonTree name_tree=null;
-        CommonTree char_literal129_tree=null;
-        CommonTree char_literal131_tree=null;
-        CommonTree char_literal133_tree=null;
-        CommonTree char_literal135_tree=null;
-        RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
+        CommonTree char_literal122_tree=null;
+        CommonTree char_literal124_tree=null;
+        CommonTree char_literal126_tree=null;
+        CommonTree char_literal128_tree=null;
+        RewriteRuleTokenStream stream_49=new RewriteRuleTokenStream(adaptor,"token 49");
+        RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
+        RewriteRuleTokenStream stream_51=new RewriteRuleTokenStream(adaptor,"token 51");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_52=new RewriteRuleTokenStream(adaptor,"token 52");
-        RewriteRuleTokenStream stream_53=new RewriteRuleTokenStream(adaptor,"token 53");
         RewriteRuleSubtreeStream stream_table_function_subquery=new RewriteRuleSubtreeStream(adaptor,"rule table_function_subquery");
         RewriteRuleSubtreeStream stream_table_function_param=new RewriteRuleSubtreeStream(adaptor,"rule table_function_param");
+        try { dbg.enterRule(getGrammarFileName(), "table_function");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(195, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:5: (name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')' -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:9: name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:2: (name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')' -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* ) )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:4: name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')'
             {
-            name=(Token)match(input,ID,FOLLOW_ID_in_table_function1832); if (state.failed) return retval; 
+            dbg.location(196,8);
+            name=(Token)match(input,ID,FOLLOW_ID_in_table_function1282); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ID.add(name);
 
-            char_literal129=(Token)match(input,52,FOLLOW_52_in_table_function1834); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_52.add(char_literal129);
+            dbg.location(196,12);
+            char_literal122=(Token)match(input,48,FOLLOW_48_in_table_function1284); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_48.add(char_literal122);
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:21: ( table_function_subquery )?
-            int alt51=2;
-            alt51 = dfa51.predict(input);
-            switch (alt51) {
+            dbg.location(196,16);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:16: ( table_function_subquery )?
+            int alt48=2;
+            try { dbg.enterSubRule(48);
+            try { dbg.enterDecision(48);
+
+            try {
+                isCyclicDecision = true;
+                alt48 = dfa48.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(48);}
+
+            switch (alt48) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: table_function_subquery
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: table_function_subquery
                     {
-                    pushFollow(FOLLOW_table_function_subquery_in_table_function1836);
-                    table_function_subquery130=table_function_subquery();
+                    dbg.location(196,16);
+                    pushFollow(FOLLOW_table_function_subquery_in_table_function1286);
+                    table_function_subquery123=table_function_subquery();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery130.getTree());
+                    if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery123.getTree());
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(48);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:46: ( ',' table_function_subquery )*
-            loop52:
+            dbg.location(196,41);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:41: ( ',' table_function_subquery )*
+            try { dbg.enterSubRule(49);
+
+            loop49:
             do {
-                int alt52=2;
-                alt52 = dfa52.predict(input);
-                switch (alt52) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:47: ',' table_function_subquery
-                    {
-                    char_literal131=(Token)match(input,55,FOLLOW_55_in_table_function1840); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_55.add(char_literal131);
+                int alt49=2;
+                try { dbg.enterDecision(49);
 
-                    pushFollow(FOLLOW_table_function_subquery_in_table_function1842);
-                    table_function_subquery132=table_function_subquery();
+                try {
+                    isCyclicDecision = true;
+                    alt49 = dfa49.predict(input);
+                }
+                catch (NoViableAltException nvae) {
+                    dbg.recognitionException(nvae);
+                    throw nvae;
+                }
+                } finally {dbg.exitDecision(49);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery132.getTree());
+                switch (alt49) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    }
-                    break;
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:42: ',' table_function_subquery
+            	    {
+            	    dbg.location(196,42);
+            	    char_literal124=(Token)match(input,51,FOLLOW_51_in_table_function1290); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_51.add(char_literal124);
 
-                default :
-                    break loop52;
+            	    dbg.location(196,46);
+            	    pushFollow(FOLLOW_table_function_subquery_in_table_function1292);
+            	    table_function_subquery125=table_function_subquery();
+
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery125.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop49;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(49);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:77: ( ( ',' )? table_function_param )*
-            loop54:
+            dbg.location(196,72);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:72: ( ( ',' )? table_function_param )*
+            try { dbg.enterSubRule(51);
+
+            loop51:
             do {
-                int alt54=2;
-                int LA54_0 = input.LA(1);
+                int alt51=2;
+                try { dbg.enterDecision(51);
 
-                if ( ((LA54_0>=INT && LA54_0<=STRING)||LA54_0==52||LA54_0==55||(LA54_0>=63 && LA54_0<=74)||(LA54_0>=76 && LA54_0<=78)||LA54_0==89||LA54_0==93||(LA54_0>=104 && LA54_0<=105)) ) {
-                    alt54=1;
+                int LA51_0 = input.LA(1);
+
+                if ( ((LA51_0>=ID && LA51_0<=STRING)||LA51_0==48||LA51_0==51||(LA51_0>=57 && LA51_0<=68)||(LA51_0>=70 && LA51_0<=72)||LA51_0==83||LA51_0==87||(LA51_0>=98 && LA51_0<=99)) ) {
+                    alt51=1;
                 }
 
 
-                switch (alt54) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:78: ( ',' )? table_function_param
-                    {
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:78: ( ',' )?
-                    int alt53=2;
-                    int LA53_0 = input.LA(1);
+                } finally {dbg.exitDecision(51);}
 
-                    if ( (LA53_0==55) ) {
-                        alt53=1;
-                    }
-                    switch (alt53) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:0:0: ','
-                            {
-                            char_literal133=(Token)match(input,55,FOLLOW_55_in_table_function1847); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_55.add(char_literal133);
+                switch (alt51) {
+            	case 1 :
+            	    dbg.enterAlt(1);
+
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:73: ( ',' )? table_function_param
+            	    {
+            	    dbg.location(196,73);
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:73: ( ',' )?
+            	    int alt50=2;
+            	    try { dbg.enterSubRule(50);
+            	    try { dbg.enterDecision(50);
+
+            	    int LA50_0 = input.LA(1);
+
+            	    if ( (LA50_0==51) ) {
+            	        alt50=1;
+            	    }
+            	    } finally {dbg.exitDecision(50);}
+
+            	    switch (alt50) {
+            	        case 1 :
+            	            dbg.enterAlt(1);
+
+            	            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:0:0: ','
+            	            {
+            	            dbg.location(196,73);
+            	            char_literal126=(Token)match(input,51,FOLLOW_51_in_table_function1297); if (state.failed) return retval; 
+            	            if ( state.backtracking==0 ) stream_51.add(char_literal126);
 
 
-                            }
-                            break;
+            	            }
+            	            break;
 
-                    }
+            	    }
+            	    } finally {dbg.exitSubRule(50);}
 
-                    pushFollow(FOLLOW_table_function_param_in_table_function1850);
-                    table_function_param134=table_function_param();
+            	    dbg.location(196,78);
+            	    pushFollow(FOLLOW_table_function_param_in_table_function1300);
+            	    table_function_param127=table_function_param();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_function_param.add(table_function_param134.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_table_function_param.add(table_function_param127.getTree());
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    break loop54;
+            	default :
+            	    break loop51;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(51);}
 
-            char_literal135=(Token)match(input,53,FOLLOW_53_in_table_function1854); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_53.add(char_literal135);
+            dbg.location(196,101);
+            char_literal128=(Token)match(input,49,FOLLOW_49_in_table_function1304); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_49.add(char_literal128);
 
 
 
             // AST REWRITE
-            // elements: name, table_function_subquery, table_function_param
+            // elements: name, table_function_param, table_function_subquery
             // token labels: name
             // rule labels: retval
             // token list labels: 
@@ -5182,22 +6267,29 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 207:14: -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* )
+            // 197:5: -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* )
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:207:17: ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* )
+                dbg.location(197,8);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:197:8: ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(197,10);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(FUNCTION, "FUNCTION"), root_1);
 
+                dbg.location(197,19);
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:207:34: ( table_function_subquery )*
+                dbg.location(197,25);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:197:25: ( table_function_subquery )*
                 while ( stream_table_function_subquery.hasNext() ) {
+                    dbg.location(197,26);
                     adaptor.addChild(root_1, stream_table_function_subquery.nextTree());
 
                 }
                 stream_table_function_subquery.reset();
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:207:61: ( table_function_param )*
+                dbg.location(197,52);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:197:52: ( table_function_param )*
                 while ( stream_table_function_param.hasNext() ) {
+                    dbg.location(197,52);
                     adaptor.addChild(root_1, stream_table_function_param.nextTree());
 
                 }
@@ -5227,6 +6319,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(198, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_function");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_function"
@@ -5237,40 +6338,49 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_function_subquery"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:209:1: table_function_subquery : sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:200:1: table_function_subquery : sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) ;
     public final SQL92QueryParser.table_function_subquery_return table_function_subquery() throws RecognitionException {
         SQL92QueryParser.table_function_subquery_return retval = new SQL92QueryParser.table_function_subquery_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.sub_query_return sub_query136 = null;
+        SQL92QueryParser.sub_query_return sub_query129 = null;
 
-        SQL92QueryParser.correlation_specification_return correlation_specification137 = null;
+        SQL92QueryParser.correlation_specification_return correlation_specification130 = null;
 
 
         RewriteRuleSubtreeStream stream_sub_query=new RewriteRuleSubtreeStream(adaptor,"rule sub_query");
         RewriteRuleSubtreeStream stream_correlation_specification=new RewriteRuleSubtreeStream(adaptor,"rule correlation_specification");
+        try { dbg.enterRule(getGrammarFileName(), "table_function_subquery");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(200, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:210:5: ( sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:210:9: sub_query correlation_specification
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:201:2: ( sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:201:4: sub_query correlation_specification
             {
-            pushFollow(FOLLOW_sub_query_in_table_function_subquery1902);
-            sub_query136=sub_query();
+            dbg.location(201,4);
+            pushFollow(FOLLOW_sub_query_in_table_function_subquery1336);
+            sub_query129=sub_query();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_sub_query.add(sub_query136.getTree());
-            pushFollow(FOLLOW_correlation_specification_in_table_function_subquery1904);
-            correlation_specification137=correlation_specification();
+            if ( state.backtracking==0 ) stream_sub_query.add(sub_query129.getTree());
+            dbg.location(201,14);
+            pushFollow(FOLLOW_correlation_specification_in_table_function_subquery1338);
+            correlation_specification130=correlation_specification();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification137.getTree());
+            if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification130.getTree());
 
 
             // AST REWRITE
-            // elements: correlation_specification, sub_query
+            // elements: sub_query, correlation_specification
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5281,14 +6391,18 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 210:45: -> ^( RELATION sub_query correlation_specification )
+            // 201:40: -> ^( RELATION sub_query correlation_specification )
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:210:48: ^( RELATION sub_query correlation_specification )
+                dbg.location(201,43);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:201:43: ^( RELATION sub_query correlation_specification )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(201,45);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                dbg.location(201,54);
                 adaptor.addChild(root_1, stream_sub_query.nextTree());
+                dbg.location(201,64);
                 adaptor.addChild(root_1, stream_correlation_specification.nextTree());
 
                 adaptor.addChild(root_0, root_1);
@@ -5315,6 +6429,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(202, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_function_subquery");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_function_subquery"
@@ -5325,49 +6448,71 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_function_param"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:212:1: table_function_param : ( search_condition | value_expression );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:204:1: table_function_param : ( search_condition | value_expression );
     public final SQL92QueryParser.table_function_param_return table_function_param() throws RecognitionException {
         SQL92QueryParser.table_function_param_return retval = new SQL92QueryParser.table_function_param_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.search_condition_return search_condition138 = null;
+        SQL92QueryParser.search_condition_return search_condition131 = null;
 
-        SQL92QueryParser.value_expression_return value_expression139 = null;
+        SQL92QueryParser.value_expression_return value_expression132 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "table_function_param");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(204, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:213:5: ( search_condition | value_expression )
-            int alt55=2;
-            alt55 = dfa55.predict(input);
-            switch (alt55) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:205:2: ( search_condition | value_expression )
+            int alt52=2;
+            try { dbg.enterDecision(52);
+
+            try {
+                isCyclicDecision = true;
+                alt52 = dfa52.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(52);}
+
+            switch (alt52) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:213:9: search_condition
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:205:4: search_condition
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_search_condition_in_table_function_param1932);
-                    search_condition138=search_condition();
+                    dbg.location(205,4);
+                    pushFollow(FOLLOW_search_condition_in_table_function_param1359);
+                    search_condition131=search_condition();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition138.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition131.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:214:9: value_expression
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:206:4: value_expression
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_value_expression_in_table_function_param1942);
-                    value_expression139=value_expression();
+                    dbg.location(206,4);
+                    pushFollow(FOLLOW_value_expression_in_table_function_param1364);
+                    value_expression132=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression139.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression132.getTree());
 
                     }
                     break;
@@ -5389,6 +6534,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(207, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_function_param");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_function_param"
@@ -5399,65 +6553,79 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "relation"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:216:1: relation : ( table_name -> ^( RELATION table_name ) | table_function -> ^( RELATION table_function ) | query -> ^( RELATION query ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:209:1: relation : ( table_name -> ^( RELATION table_name ) | table_function -> ^( RELATION table_function ) | query -> ^( RELATION query ) );
     public final SQL92QueryParser.relation_return relation() throws RecognitionException {
         SQL92QueryParser.relation_return retval = new SQL92QueryParser.relation_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.table_name_return table_name140 = null;
+        SQL92QueryParser.table_name_return table_name133 = null;
 
-        SQL92QueryParser.table_function_return table_function141 = null;
+        SQL92QueryParser.table_function_return table_function134 = null;
 
-        SQL92QueryParser.query_return query142 = null;
+        SQL92QueryParser.query_return query135 = null;
 
 
         RewriteRuleSubtreeStream stream_table_function=new RewriteRuleSubtreeStream(adaptor,"rule table_function");
         RewriteRuleSubtreeStream stream_query=new RewriteRuleSubtreeStream(adaptor,"rule query");
         RewriteRuleSubtreeStream stream_table_name=new RewriteRuleSubtreeStream(adaptor,"rule table_name");
+        try { dbg.enterRule(getGrammarFileName(), "relation");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(209, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:217:5: ( table_name -> ^( RELATION table_name ) | table_function -> ^( RELATION table_function ) | query -> ^( RELATION query ) )
-            int alt56=3;
-            int LA56_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:210:3: ( table_name -> ^( RELATION table_name ) | table_function -> ^( RELATION table_function ) | query -> ^( RELATION query ) )
+            int alt53=3;
+            try { dbg.enterDecision(53);
 
-            if ( (LA56_0==ID) ) {
-                int LA56_1 = input.LA(2);
+            int LA53_0 = input.LA(1);
 
-                if ( (LA56_1==52) ) {
-                    alt56=2;
+            if ( (LA53_0==ID) ) {
+                int LA53_1 = input.LA(2);
+
+                if ( (LA53_1==48) ) {
+                    alt53=2;
                 }
-                else if ( (LA56_1==EOF) ) {
-                    alt56=1;
+                else if ( (LA53_1==EOF) ) {
+                    alt53=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 56, 1, input);
+                        new NoViableAltException("", 53, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
-            else if ( (LA56_0==46||LA56_0==52) ) {
-                alt56=3;
+            else if ( (LA53_0==42||LA53_0==48) ) {
+                alt53=3;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 56, 0, input);
+                    new NoViableAltException("", 53, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt56) {
+            } finally {dbg.exitDecision(53);}
+
+            switch (alt53) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:217:9: table_name
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:210:5: table_name
                     {
-                    pushFollow(FOLLOW_table_name_in_relation1964);
-                    table_name140=table_name();
+                    dbg.location(210,5);
+                    pushFollow(FOLLOW_table_name_in_relation1378);
+                    table_name133=table_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_name.add(table_name140.getTree());
+                    if ( state.backtracking==0 ) stream_table_name.add(table_name133.getTree());
 
 
                     // AST REWRITE
@@ -5472,13 +6640,16 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 217:20: -> ^( RELATION table_name )
+                    // 210:16: -> ^( RELATION table_name )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:217:23: ^( RELATION table_name )
+                        dbg.location(210,19);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:210:19: ^( RELATION table_name )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(210,21);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(210,30);
                         adaptor.addChild(root_1, stream_table_name.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -5490,14 +6661,17 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:218:9: table_function
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:211:5: table_function
                     {
-                    pushFollow(FOLLOW_table_function_in_relation1982);
-                    table_function141=table_function();
+                    dbg.location(211,5);
+                    pushFollow(FOLLOW_table_function_in_relation1392);
+                    table_function134=table_function();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_table_function.add(table_function141.getTree());
+                    if ( state.backtracking==0 ) stream_table_function.add(table_function134.getTree());
 
 
                     // AST REWRITE
@@ -5512,13 +6686,16 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 218:24: -> ^( RELATION table_function )
+                    // 211:20: -> ^( RELATION table_function )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:218:27: ^( RELATION table_function )
+                        dbg.location(211,23);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:211:23: ^( RELATION table_function )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(211,25);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(211,34);
                         adaptor.addChild(root_1, stream_table_function.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -5530,14 +6707,17 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:219:9: query
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:212:5: query
                     {
-                    pushFollow(FOLLOW_query_in_relation2000);
-                    query142=query();
+                    dbg.location(212,5);
+                    pushFollow(FOLLOW_query_in_relation1406);
+                    query135=query();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_query.add(query142.getTree());
+                    if ( state.backtracking==0 ) stream_query.add(query135.getTree());
 
 
                     // AST REWRITE
@@ -5552,13 +6732,16 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 219:15: -> ^( RELATION query )
+                    // 212:11: -> ^( RELATION query )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:219:18: ^( RELATION query )
+                        dbg.location(212,14);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:212:14: ^( RELATION query )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(212,16);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(RELATION, "RELATION"), root_1);
 
+                        dbg.location(212,25);
                         adaptor.addChild(root_1, stream_query.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -5587,6 +6770,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(213, 3);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "relation");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "relation"
@@ -5597,67 +6789,87 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "search_condition"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:221:1: search_condition : boolean_factor ( 'OR' boolean_factor )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:215:1: search_condition : boolean_factor ( 'OR' boolean_factor )* ;
     public final SQL92QueryParser.search_condition_return search_condition() throws RecognitionException {
         SQL92QueryParser.search_condition_return retval = new SQL92QueryParser.search_condition_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal144=null;
-        SQL92QueryParser.boolean_factor_return boolean_factor143 = null;
+        Token string_literal137=null;
+        SQL92QueryParser.boolean_factor_return boolean_factor136 = null;
 
-        SQL92QueryParser.boolean_factor_return boolean_factor145 = null;
+        SQL92QueryParser.boolean_factor_return boolean_factor138 = null;
 
 
-        CommonTree string_literal144_tree=null;
+        CommonTree string_literal137_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "search_condition");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(215, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:222:5: ( boolean_factor ( 'OR' boolean_factor )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:222:9: boolean_factor ( 'OR' boolean_factor )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:216:2: ( boolean_factor ( 'OR' boolean_factor )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:216:4: boolean_factor ( 'OR' boolean_factor )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_boolean_factor_in_search_condition2026);
-            boolean_factor143=boolean_factor();
+            dbg.location(216,4);
+            pushFollow(FOLLOW_boolean_factor_in_search_condition1427);
+            boolean_factor136=boolean_factor();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor143.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:222:24: ( 'OR' boolean_factor )*
-            loop57:
-            do {
-                int alt57=2;
-                int LA57_0 = input.LA(1);
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor136.getTree());
+            dbg.location(216,19);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:216:19: ( 'OR' boolean_factor )*
+            try { dbg.enterSubRule(54);
 
-                if ( (LA57_0==87) ) {
-                    alt57=1;
+            loop54:
+            do {
+                int alt54=2;
+                try { dbg.enterDecision(54);
+
+                int LA54_0 = input.LA(1);
+
+                if ( (LA54_0==81) ) {
+                    alt54=1;
                 }
 
 
-                switch (alt57) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:222:25: 'OR' boolean_factor
-                    {
-                    string_literal144=(Token)match(input,87,FOLLOW_87_in_search_condition2029); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal144_tree = (CommonTree)adaptor.create(string_literal144);
-                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal144_tree, root_0);
-                    }
-                    pushFollow(FOLLOW_boolean_factor_in_search_condition2032);
-                    boolean_factor145=boolean_factor();
+                } finally {dbg.exitDecision(54);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor145.getTree());
+                switch (alt54) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    }
-                    break;
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:216:20: 'OR' boolean_factor
+            	    {
+            	    dbg.location(216,24);
+            	    string_literal137=(Token)match(input,81,FOLLOW_81_in_search_condition1430); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    string_literal137_tree = (CommonTree)adaptor.create(string_literal137);
+            	    root_0 = (CommonTree)adaptor.becomeRoot(string_literal137_tree, root_0);
+            	    }
+            	    dbg.location(216,26);
+            	    pushFollow(FOLLOW_boolean_factor_in_search_condition1433);
+            	    boolean_factor138=boolean_factor();
 
-                default :
-                    break loop57;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor138.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop54;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(54);}
 
 
             }
@@ -5678,6 +6890,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(216, 42);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "search_condition");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "search_condition"
@@ -5688,67 +6909,87 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "boolean_factor"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:224:1: boolean_factor : boolean_term ( 'AND' boolean_term )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:217:1: boolean_factor : boolean_term ( 'AND' boolean_term )* ;
     public final SQL92QueryParser.boolean_factor_return boolean_factor() throws RecognitionException {
         SQL92QueryParser.boolean_factor_return retval = new SQL92QueryParser.boolean_factor_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal147=null;
-        SQL92QueryParser.boolean_term_return boolean_term146 = null;
+        Token string_literal140=null;
+        SQL92QueryParser.boolean_term_return boolean_term139 = null;
 
-        SQL92QueryParser.boolean_term_return boolean_term148 = null;
+        SQL92QueryParser.boolean_term_return boolean_term141 = null;
 
 
-        CommonTree string_literal147_tree=null;
+        CommonTree string_literal140_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "boolean_factor");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(217, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:225:5: ( boolean_term ( 'AND' boolean_term )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:225:9: boolean_term ( 'AND' boolean_term )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:218:2: ( boolean_term ( 'AND' boolean_term )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:218:4: boolean_term ( 'AND' boolean_term )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_boolean_term_in_boolean_factor2052);
-            boolean_term146=boolean_term();
+            dbg.location(218,4);
+            pushFollow(FOLLOW_boolean_term_in_boolean_factor1443);
+            boolean_term139=boolean_term();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term146.getTree());
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:225:22: ( 'AND' boolean_term )*
-            loop58:
-            do {
-                int alt58=2;
-                int LA58_0 = input.LA(1);
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term139.getTree());
+            dbg.location(218,17);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:218:17: ( 'AND' boolean_term )*
+            try { dbg.enterSubRule(55);
 
-                if ( (LA58_0==88) ) {
-                    alt58=1;
+            loop55:
+            do {
+                int alt55=2;
+                try { dbg.enterDecision(55);
+
+                int LA55_0 = input.LA(1);
+
+                if ( (LA55_0==82) ) {
+                    alt55=1;
                 }
 
 
-                switch (alt58) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:225:23: 'AND' boolean_term
-                    {
-                    string_literal147=(Token)match(input,88,FOLLOW_88_in_boolean_factor2055); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal147_tree = (CommonTree)adaptor.create(string_literal147);
-                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal147_tree, root_0);
-                    }
-                    pushFollow(FOLLOW_boolean_term_in_boolean_factor2058);
-                    boolean_term148=boolean_term();
+                } finally {dbg.exitDecision(55);}
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term148.getTree());
+                switch (alt55) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                    }
-                    break;
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:218:18: 'AND' boolean_term
+            	    {
+            	    dbg.location(218,23);
+            	    string_literal140=(Token)match(input,82,FOLLOW_82_in_boolean_factor1446); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    string_literal140_tree = (CommonTree)adaptor.create(string_literal140);
+            	    root_0 = (CommonTree)adaptor.becomeRoot(string_literal140_tree, root_0);
+            	    }
+            	    dbg.location(218,25);
+            	    pushFollow(FOLLOW_boolean_term_in_boolean_factor1449);
+            	    boolean_term141=boolean_term();
 
-                default :
-                    break loop58;
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term141.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop55;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(55);}
 
 
             }
@@ -5769,6 +7010,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(219, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "boolean_factor");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "boolean_factor"
@@ -5779,67 +7029,84 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "boolean_term"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:227:1: boolean_term : ( boolean_test | 'NOT' boolean_term -> ^( NOT boolean_term ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:220:1: boolean_term : ( boolean_test | 'NOT' boolean_term -> ^( NOT boolean_term ) );
     public final SQL92QueryParser.boolean_term_return boolean_term() throws RecognitionException {
         SQL92QueryParser.boolean_term_return retval = new SQL92QueryParser.boolean_term_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal150=null;
-        SQL92QueryParser.boolean_test_return boolean_test149 = null;
+        Token string_literal143=null;
+        SQL92QueryParser.boolean_test_return boolean_test142 = null;
 
-        SQL92QueryParser.boolean_term_return boolean_term151 = null;
+        SQL92QueryParser.boolean_term_return boolean_term144 = null;
 
 
-        CommonTree string_literal150_tree=null;
-        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
+        CommonTree string_literal143_tree=null;
+        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
         RewriteRuleSubtreeStream stream_boolean_term=new RewriteRuleSubtreeStream(adaptor,"rule boolean_term");
-        try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:228:5: ( boolean_test | 'NOT' boolean_term -> ^( NOT boolean_term ) )
-            int alt59=2;
-            int LA59_0 = input.LA(1);
+        try { dbg.enterRule(getGrammarFileName(), "boolean_term");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(220, 1);
 
-            if ( ((LA59_0>=INT && LA59_0<=STRING)||LA59_0==52||(LA59_0>=63 && LA59_0<=74)||(LA59_0>=76 && LA59_0<=78)||LA59_0==93||(LA59_0>=104 && LA59_0<=105)) ) {
-                alt59=1;
+        try {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:221:2: ( boolean_test | 'NOT' boolean_term -> ^( NOT boolean_term ) )
+            int alt56=2;
+            try { dbg.enterDecision(56);
+
+            int LA56_0 = input.LA(1);
+
+            if ( ((LA56_0>=ID && LA56_0<=STRING)||LA56_0==48||(LA56_0>=57 && LA56_0<=68)||(LA56_0>=70 && LA56_0<=72)||LA56_0==87||(LA56_0>=98 && LA56_0<=99)) ) {
+                alt56=1;
             }
-            else if ( (LA59_0==89) ) {
-                alt59=2;
+            else if ( (LA56_0==83) ) {
+                alt56=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 59, 0, input);
+                    new NoViableAltException("", 56, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt59) {
+            } finally {dbg.exitDecision(56);}
+
+            switch (alt56) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:228:9: boolean_test
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:221:4: boolean_test
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_boolean_test_in_boolean_term2078);
-                    boolean_test149=boolean_test();
+                    dbg.location(221,4);
+                    pushFollow(FOLLOW_boolean_test_in_boolean_term1461);
+                    boolean_test142=boolean_test();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_test149.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_test142.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:229:9: 'NOT' boolean_term
-                    {
-                    string_literal150=(Token)match(input,89,FOLLOW_89_in_boolean_term2088); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_89.add(string_literal150);
+                    dbg.enterAlt(2);
 
-                    pushFollow(FOLLOW_boolean_term_in_boolean_term2090);
-                    boolean_term151=boolean_term();
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:222:4: 'NOT' boolean_term
+                    {
+                    dbg.location(222,4);
+                    string_literal143=(Token)match(input,83,FOLLOW_83_in_boolean_term1466); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_83.add(string_literal143);
+
+                    dbg.location(222,10);
+                    pushFollow(FOLLOW_boolean_term_in_boolean_term1468);
+                    boolean_term144=boolean_term();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_boolean_term.add(boolean_term151.getTree());
+                    if ( state.backtracking==0 ) stream_boolean_term.add(boolean_term144.getTree());
 
 
                     // AST REWRITE
@@ -5854,13 +7121,16 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 229:28: -> ^( NOT boolean_term )
+                    // 222:23: -> ^( NOT boolean_term )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:229:31: ^( NOT boolean_term )
+                        dbg.location(222,26);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:222:26: ^( NOT boolean_term )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(222,28);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(NOT, "NOT"), root_1);
 
+                        dbg.location(222,32);
                         adaptor.addChild(root_1, stream_boolean_term.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -5889,6 +7159,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(222, 45);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "boolean_term");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "boolean_term"
@@ -5899,29 +7178,37 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "boolean_test"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:231:1: boolean_test : boolean_primary ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:223:1: boolean_test : boolean_primary ;
     public final SQL92QueryParser.boolean_test_return boolean_test() throws RecognitionException {
         SQL92QueryParser.boolean_test_return retval = new SQL92QueryParser.boolean_test_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.boolean_primary_return boolean_primary152 = null;
+        SQL92QueryParser.boolean_primary_return boolean_primary145 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "boolean_test");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(223, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:232:5: ( boolean_primary )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:232:9: boolean_primary
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:224:2: ( boolean_primary )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:224:4: boolean_primary
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_boolean_primary_in_boolean_test2116);
-            boolean_primary152=boolean_primary();
+            dbg.location(224,4);
+            pushFollow(FOLLOW_boolean_primary_in_boolean_test1484);
+            boolean_primary145=boolean_primary();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_primary152.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_primary145.getTree());
 
             }
 
@@ -5941,6 +7228,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(224, 19);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "boolean_test");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "boolean_test"
@@ -5951,55 +7247,79 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "boolean_primary"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:234:1: boolean_primary : ( predicate | '(' search_condition ')' );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:225:1: boolean_primary : ( predicate | '(' search_condition ')' );
     public final SQL92QueryParser.boolean_primary_return boolean_primary() throws RecognitionException {
         SQL92QueryParser.boolean_primary_return retval = new SQL92QueryParser.boolean_primary_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal154=null;
-        Token char_literal156=null;
-        SQL92QueryParser.predicate_return predicate153 = null;
+        Token char_literal147=null;
+        Token char_literal149=null;
+        SQL92QueryParser.predicate_return predicate146 = null;
 
-        SQL92QueryParser.search_condition_return search_condition155 = null;
+        SQL92QueryParser.search_condition_return search_condition148 = null;
 
 
-        CommonTree char_literal154_tree=null;
-        CommonTree char_literal156_tree=null;
+        CommonTree char_literal147_tree=null;
+        CommonTree char_literal149_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "boolean_primary");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(225, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:235:5: ( predicate | '(' search_condition ')' )
-            int alt60=2;
-            alt60 = dfa60.predict(input);
-            switch (alt60) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:2: ( predicate | '(' search_condition ')' )
+            int alt57=2;
+            try { dbg.enterDecision(57);
+
+            try {
+                isCyclicDecision = true;
+                alt57 = dfa57.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(57);}
+
+            switch (alt57) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:235:9: predicate
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:4: predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_predicate_in_boolean_primary2134);
-                    predicate153=predicate();
+                    dbg.location(226,4);
+                    pushFollow(FOLLOW_predicate_in_boolean_primary1492);
+                    predicate146=predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, predicate153.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, predicate146.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:235:21: '(' search_condition ')'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:16: '(' search_condition ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    char_literal154=(Token)match(input,52,FOLLOW_52_in_boolean_primary2138); if (state.failed) return retval;
-                    pushFollow(FOLLOW_search_condition_in_boolean_primary2141);
-                    search_condition155=search_condition();
+                    dbg.location(226,19);
+                    char_literal147=(Token)match(input,48,FOLLOW_48_in_boolean_primary1496); if (state.failed) return retval;
+                    dbg.location(226,21);
+                    pushFollow(FOLLOW_search_condition_in_boolean_primary1499);
+                    search_condition148=search_condition();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition155.getTree());
-                    char_literal156=(Token)match(input,53,FOLLOW_53_in_boolean_primary2143); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition148.getTree());
+                    dbg.location(226,41);
+                    char_literal149=(Token)match(input,49,FOLLOW_49_in_boolean_primary1501); if (state.failed) return retval;
 
                     }
                     break;
@@ -6021,6 +7341,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(226, 42);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "boolean_primary");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "boolean_primary"
@@ -6031,113 +7360,147 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:237:1: predicate : ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:227:1: predicate : ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate );
     public final SQL92QueryParser.predicate_return predicate() throws RecognitionException {
         SQL92QueryParser.predicate_return retval = new SQL92QueryParser.predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        SQL92QueryParser.comparison_predicate_return comparison_predicate157 = null;
+        SQL92QueryParser.comparison_predicate_return comparison_predicate150 = null;
 
-        SQL92QueryParser.like_predicate_return like_predicate158 = null;
+        SQL92QueryParser.like_predicate_return like_predicate151 = null;
 
-        SQL92QueryParser.in_predicate_return in_predicate159 = null;
+        SQL92QueryParser.in_predicate_return in_predicate152 = null;
 
-        SQL92QueryParser.null_predicate_return null_predicate160 = null;
+        SQL92QueryParser.null_predicate_return null_predicate153 = null;
 
-        SQL92QueryParser.exists_predicate_return exists_predicate161 = null;
+        SQL92QueryParser.exists_predicate_return exists_predicate154 = null;
 
-        SQL92QueryParser.between_predicate_return between_predicate162 = null;
+        SQL92QueryParser.between_predicate_return between_predicate155 = null;
 
 
+
+        try { dbg.enterRule(getGrammarFileName(), "predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(227, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:5: ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate )
-            int alt61=6;
-            alt61 = dfa61.predict(input);
-            switch (alt61) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:2: ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate )
+            int alt58=6;
+            try { dbg.enterDecision(58);
+
+            try {
+                isCyclicDecision = true;
+                alt58 = dfa58.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(58);}
+
+            switch (alt58) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:9: comparison_predicate
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:4: comparison_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_comparison_predicate_in_predicate2165);
-                    comparison_predicate157=comparison_predicate();
+                    dbg.location(228,4);
+                    pushFollow(FOLLOW_comparison_predicate_in_predicate1511);
+                    comparison_predicate150=comparison_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, comparison_predicate157.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, comparison_predicate150.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:32: like_predicate
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:27: like_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_like_predicate_in_predicate2169);
-                    like_predicate158=like_predicate();
+                    dbg.location(228,27);
+                    pushFollow(FOLLOW_like_predicate_in_predicate1515);
+                    like_predicate151=like_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, like_predicate158.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, like_predicate151.getTree());
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:49: in_predicate
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:44: in_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_in_predicate_in_predicate2173);
-                    in_predicate159=in_predicate();
+                    dbg.location(228,44);
+                    pushFollow(FOLLOW_in_predicate_in_predicate1519);
+                    in_predicate152=in_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, in_predicate159.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, in_predicate152.getTree());
 
                     }
                     break;
                 case 4 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:64: null_predicate
+                    dbg.enterAlt(4);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:59: null_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_null_predicate_in_predicate2177);
-                    null_predicate160=null_predicate();
+                    dbg.location(228,59);
+                    pushFollow(FOLLOW_null_predicate_in_predicate1523);
+                    null_predicate153=null_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, null_predicate160.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, null_predicate153.getTree());
 
                     }
                     break;
                 case 5 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:81: exists_predicate
+                    dbg.enterAlt(5);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:76: exists_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_exists_predicate_in_predicate2181);
-                    exists_predicate161=exists_predicate();
+                    dbg.location(228,76);
+                    pushFollow(FOLLOW_exists_predicate_in_predicate1527);
+                    exists_predicate154=exists_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, exists_predicate161.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, exists_predicate154.getTree());
 
                     }
                     break;
                 case 6 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:100: between_predicate
+                    dbg.enterAlt(6);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:95: between_predicate
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_between_predicate_in_predicate2185);
-                    between_predicate162=between_predicate();
+                    dbg.location(228,95);
+                    pushFollow(FOLLOW_between_predicate_in_predicate1531);
+                    between_predicate155=between_predicate();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, between_predicate162.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, between_predicate155.getTree());
 
                     }
                     break;
@@ -6159,6 +7522,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(228, 112);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "predicate"
@@ -6169,51 +7541,72 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "null_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:240:1: null_predicate : ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:229:1: null_predicate : ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) );
     public final SQL92QueryParser.null_predicate_return null_predicate() throws RecognitionException {
         SQL92QueryParser.null_predicate_return retval = new SQL92QueryParser.null_predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal164=null;
-        Token string_literal165=null;
-        Token string_literal167=null;
-        Token string_literal168=null;
-        Token string_literal169=null;
-        SQL92QueryParser.row_value_return row_value163 = null;
+        Token string_literal157=null;
+        Token string_literal158=null;
+        Token string_literal160=null;
+        Token string_literal161=null;
+        Token string_literal162=null;
+        SQL92QueryParser.row_value_return row_value156 = null;
 
-        SQL92QueryParser.row_value_return row_value166 = null;
+        SQL92QueryParser.row_value_return row_value159 = null;
 
 
-        CommonTree string_literal164_tree=null;
-        CommonTree string_literal165_tree=null;
-        CommonTree string_literal167_tree=null;
-        CommonTree string_literal168_tree=null;
-        CommonTree string_literal169_tree=null;
-        RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
-        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
-        RewriteRuleTokenStream stream_76=new RewriteRuleTokenStream(adaptor,"token 76");
+        CommonTree string_literal157_tree=null;
+        CommonTree string_literal158_tree=null;
+        CommonTree string_literal160_tree=null;
+        CommonTree string_literal161_tree=null;
+        CommonTree string_literal162_tree=null;
+        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
+        RewriteRuleTokenStream stream_70=new RewriteRuleTokenStream(adaptor,"token 70");
+        RewriteRuleTokenStream stream_84=new RewriteRuleTokenStream(adaptor,"token 84");
         RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
+        try { dbg.enterRule(getGrammarFileName(), "null_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(229, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:241:5: ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) )
-            int alt62=2;
-            alt62 = dfa62.predict(input);
-            switch (alt62) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:2: ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) )
+            int alt59=2;
+            try { dbg.enterDecision(59);
+
+            try {
+                isCyclicDecision = true;
+                alt59 = dfa59.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(59);}
+
+            switch (alt59) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:241:9: row_value 'IS' 'NULL'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:4: row_value 'IS' 'NULL'
                     {
-                    pushFollow(FOLLOW_row_value_in_null_predicate2203);
-                    row_value163=row_value();
+                    dbg.location(230,4);
+                    pushFollow(FOLLOW_row_value_in_null_predicate1539);
+                    row_value156=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_row_value.add(row_value163.getTree());
-                    string_literal164=(Token)match(input,90,FOLLOW_90_in_null_predicate2205); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_90.add(string_literal164);
+                    if ( state.backtracking==0 ) stream_row_value.add(row_value156.getTree());
+                    dbg.location(230,14);
+                    string_literal157=(Token)match(input,84,FOLLOW_84_in_null_predicate1541); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_84.add(string_literal157);
 
-                    string_literal165=(Token)match(input,76,FOLLOW_76_in_null_predicate2207); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_76.add(string_literal165);
+                    dbg.location(230,19);
+                    string_literal158=(Token)match(input,70,FOLLOW_70_in_null_predicate1543); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_70.add(string_literal158);
 
 
 
@@ -6229,13 +7622,16 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 241:31: -> ^( IS_NULL row_value )
+                    // 230:26: -> ^( IS_NULL row_value )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:241:34: ^( IS_NULL row_value )
+                        dbg.location(230,29);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:29: ^( IS_NULL row_value )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(230,31);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(IS_NULL, "IS_NULL"), root_1);
 
+                        dbg.location(230,39);
                         adaptor.addChild(root_1, stream_row_value.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -6247,22 +7643,28 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:242:9: row_value 'IS' 'NOT' 'NULL'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:231:4: row_value 'IS' 'NOT' 'NULL'
                     {
-                    pushFollow(FOLLOW_row_value_in_null_predicate2225);
-                    row_value166=row_value();
+                    dbg.location(231,4);
+                    pushFollow(FOLLOW_row_value_in_null_predicate1556);
+                    row_value159=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_row_value.add(row_value166.getTree());
-                    string_literal167=(Token)match(input,90,FOLLOW_90_in_null_predicate2227); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_90.add(string_literal167);
+                    if ( state.backtracking==0 ) stream_row_value.add(row_value159.getTree());
+                    dbg.location(231,14);
+                    string_literal160=(Token)match(input,84,FOLLOW_84_in_null_predicate1558); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_84.add(string_literal160);
 
-                    string_literal168=(Token)match(input,89,FOLLOW_89_in_null_predicate2229); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_89.add(string_literal168);
+                    dbg.location(231,19);
+                    string_literal161=(Token)match(input,83,FOLLOW_83_in_null_predicate1560); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_83.add(string_literal161);
 
-                    string_literal169=(Token)match(input,76,FOLLOW_76_in_null_predicate2231); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_76.add(string_literal169);
+                    dbg.location(231,25);
+                    string_literal162=(Token)match(input,70,FOLLOW_70_in_null_predicate1562); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_70.add(string_literal162);
 
 
 
@@ -6278,18 +7680,23 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 242:37: -> ^( NOT ^( IS_NULL row_value ) )
+                    // 231:32: -> ^( NOT ^( IS_NULL row_value ) )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:242:40: ^( NOT ^( IS_NULL row_value ) )
+                        dbg.location(231,35);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:231:35: ^( NOT ^( IS_NULL row_value ) )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(231,37);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(NOT, "NOT"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:242:46: ^( IS_NULL row_value )
+                        dbg.location(231,41);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:231:41: ^( IS_NULL row_value )
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
+                        dbg.location(231,43);
                         root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(IS_NULL, "IS_NULL"), root_2);
 
+                        dbg.location(231,51);
                         adaptor.addChild(root_2, stream_row_value.nextTree());
 
                         adaptor.addChild(root_1, root_2);
@@ -6321,6 +7728,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(232, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "null_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "null_predicate"
@@ -6331,62 +7747,84 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "in_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:244:1: in_predicate : ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:233:1: in_predicate : ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) );
     public final SQL92QueryParser.in_predicate_return in_predicate() throws RecognitionException {
         SQL92QueryParser.in_predicate_return retval = new SQL92QueryParser.in_predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal171=null;
-        Token string_literal172=null;
-        Token string_literal175=null;
-        SQL92QueryParser.row_value_return row_value170 = null;
+        Token string_literal164=null;
+        Token string_literal165=null;
+        Token string_literal168=null;
+        SQL92QueryParser.row_value_return row_value163 = null;
 
-        SQL92QueryParser.in_predicate_tail_return in_predicate_tail173 = null;
+        SQL92QueryParser.in_predicate_tail_return in_predicate_tail166 = null;
 
-        SQL92QueryParser.row_value_return row_value174 = null;
+        SQL92QueryParser.row_value_return row_value167 = null;
 
-        SQL92QueryParser.in_predicate_tail_return in_predicate_tail176 = null;
+        SQL92QueryParser.in_predicate_tail_return in_predicate_tail169 = null;
 
 
-        CommonTree string_literal171_tree=null;
-        CommonTree string_literal172_tree=null;
-        CommonTree string_literal175_tree=null;
-        RewriteRuleTokenStream stream_91=new RewriteRuleTokenStream(adaptor,"token 91");
-        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
+        CommonTree string_literal164_tree=null;
+        CommonTree string_literal165_tree=null;
+        CommonTree string_literal168_tree=null;
+        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
+        RewriteRuleTokenStream stream_85=new RewriteRuleTokenStream(adaptor,"token 85");
         RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
         RewriteRuleSubtreeStream stream_in_predicate_tail=new RewriteRuleSubtreeStream(adaptor,"rule in_predicate_tail");
+        try { dbg.enterRule(getGrammarFileName(), "in_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(233, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:245:5: ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) )
-            int alt63=2;
-            alt63 = dfa63.predict(input);
-            switch (alt63) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:234:2: ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) )
+            int alt60=2;
+            try { dbg.enterDecision(60);
+
+            try {
+                isCyclicDecision = true;
+                alt60 = dfa60.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(60);}
+
+            switch (alt60) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:245:9: row_value 'NOT' 'IN' in_predicate_tail
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:234:4: row_value 'NOT' 'IN' in_predicate_tail
                     {
-                    pushFollow(FOLLOW_row_value_in_in_predicate2261);
-                    row_value170=row_value();
+                    dbg.location(234,4);
+                    pushFollow(FOLLOW_row_value_in_in_predicate1584);
+                    row_value163=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_row_value.add(row_value170.getTree());
-                    string_literal171=(Token)match(input,89,FOLLOW_89_in_in_predicate2263); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_89.add(string_literal171);
+                    if ( state.backtracking==0 ) stream_row_value.add(row_value163.getTree());
+                    dbg.location(234,14);
+                    string_literal164=(Token)match(input,83,FOLLOW_83_in_in_predicate1586); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_83.add(string_literal164);
 
-                    string_literal172=(Token)match(input,91,FOLLOW_91_in_in_predicate2265); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_91.add(string_literal172);
+                    dbg.location(234,20);
+                    string_literal165=(Token)match(input,85,FOLLOW_85_in_in_predicate1588); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_85.add(string_literal165);
 
-                    pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2267);
-                    in_predicate_tail173=in_predicate_tail();
+                    dbg.location(234,25);
+                    pushFollow(FOLLOW_in_predicate_tail_in_in_predicate1590);
+                    in_predicate_tail166=in_predicate_tail();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail173.getTree());
+                    if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail166.getTree());
 
 
                     // AST REWRITE
-                    // elements: row_value, in_predicate_tail, 91
+                    // elements: row_value, 85, in_predicate_tail
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6397,19 +7835,25 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 246:13: -> ^( NOT ^( 'IN' row_value in_predicate_tail ) )
+                    // 235:4: -> ^( NOT ^( 'IN' row_value in_predicate_tail ) )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:246:16: ^( NOT ^( 'IN' row_value in_predicate_tail ) )
+                        dbg.location(235,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:235:7: ^( NOT ^( 'IN' row_value in_predicate_tail ) )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(235,9);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(NOT, "NOT"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:246:22: ^( 'IN' row_value in_predicate_tail )
+                        dbg.location(235,13);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:235:13: ^( 'IN' row_value in_predicate_tail )
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
-                        root_2 = (CommonTree)adaptor.becomeRoot(stream_91.nextNode(), root_2);
+                        dbg.location(235,15);
+                        root_2 = (CommonTree)adaptor.becomeRoot(stream_85.nextNode(), root_2);
 
+                        dbg.location(235,20);
                         adaptor.addChild(root_2, stream_row_value.nextTree());
+                        dbg.location(235,30);
                         adaptor.addChild(root_2, stream_in_predicate_tail.nextTree());
 
                         adaptor.addChild(root_1, root_2);
@@ -6424,27 +7868,32 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:247:9: row_value 'IN' in_predicate_tail
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:236:4: row_value 'IN' in_predicate_tail
                     {
-                    pushFollow(FOLLOW_row_value_in_in_predicate2303);
-                    row_value174=row_value();
+                    dbg.location(236,4);
+                    pushFollow(FOLLOW_row_value_in_in_predicate1612);
+                    row_value167=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_row_value.add(row_value174.getTree());
-                    string_literal175=(Token)match(input,91,FOLLOW_91_in_in_predicate2305); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_91.add(string_literal175);
+                    if ( state.backtracking==0 ) stream_row_value.add(row_value167.getTree());
+                    dbg.location(236,14);
+                    string_literal168=(Token)match(input,85,FOLLOW_85_in_in_predicate1614); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_85.add(string_literal168);
 
-                    pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2307);
-                    in_predicate_tail176=in_predicate_tail();
+                    dbg.location(236,19);
+                    pushFollow(FOLLOW_in_predicate_tail_in_in_predicate1616);
+                    in_predicate_tail169=in_predicate_tail();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail176.getTree());
+                    if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail169.getTree());
 
 
                     // AST REWRITE
-                    // elements: in_predicate_tail, 91, row_value
+                    // elements: in_predicate_tail, row_value, 85
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6455,14 +7904,18 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 248:13: -> ^( 'IN' row_value in_predicate_tail )
+                    // 237:4: -> ^( 'IN' row_value in_predicate_tail )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:248:16: ^( 'IN' row_value in_predicate_tail )
+                        dbg.location(237,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:237:7: ^( 'IN' row_value in_predicate_tail )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot(stream_91.nextNode(), root_1);
+                        dbg.location(237,9);
+                        root_1 = (CommonTree)adaptor.becomeRoot(stream_85.nextNode(), root_1);
 
+                        dbg.location(237,14);
                         adaptor.addChild(root_1, stream_row_value.nextTree());
+                        dbg.location(237,24);
                         adaptor.addChild(root_1, stream_in_predicate_tail.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -6491,6 +7944,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(238, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "in_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "in_predicate"
@@ -6501,127 +7963,161 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "in_predicate_tail"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:250:1: in_predicate_tail : ( sub_query | '(' ( value_expression ( ',' value_expression )* ) ')' -> ^( SET ( value_expression )* ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:239:1: in_predicate_tail : ( sub_query | '(' ( value_expression ( ',' value_expression )* ) ')' -> ^( SET ( value_expression )* ) );
     public final SQL92QueryParser.in_predicate_tail_return in_predicate_tail() throws RecognitionException {
         SQL92QueryParser.in_predicate_tail_return retval = new SQL92QueryParser.in_predicate_tail_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal178=null;
-        Token char_literal180=null;
-        Token char_literal182=null;
-        SQL92QueryParser.sub_query_return sub_query177 = null;
+        Token char_literal171=null;
+        Token char_literal173=null;
+        Token char_literal175=null;
+        SQL92QueryParser.sub_query_return sub_query170 = null;
 
-        SQL92QueryParser.value_expression_return value_expression179 = null;
+        SQL92QueryParser.value_expression_return value_expression172 = null;
 
-        SQL92QueryParser.value_expression_return value_expression181 = null;
+        SQL92QueryParser.value_expression_return value_expression174 = null;
 
 
-        CommonTree char_literal178_tree=null;
-        CommonTree char_literal180_tree=null;
-        CommonTree char_literal182_tree=null;
-        RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
-        RewriteRuleTokenStream stream_52=new RewriteRuleTokenStream(adaptor,"token 52");
-        RewriteRuleTokenStream stream_53=new RewriteRuleTokenStream(adaptor,"token 53");
+        CommonTree char_literal171_tree=null;
+        CommonTree char_literal173_tree=null;
+        CommonTree char_literal175_tree=null;
+        RewriteRuleTokenStream stream_49=new RewriteRuleTokenStream(adaptor,"token 49");
+        RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
+        RewriteRuleTokenStream stream_51=new RewriteRuleTokenStream(adaptor,"token 51");
         RewriteRuleSubtreeStream stream_value_expression=new RewriteRuleSubtreeStream(adaptor,"rule value_expression");
+        try { dbg.enterRule(getGrammarFileName(), "in_predicate_tail");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(239, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:251:5: ( sub_query | '(' ( value_expression ( ',' value_expression )* ) ')' -> ^( SET ( value_expression )* ) )
-            int alt65=2;
-            int LA65_0 = input.LA(1);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:240:2: ( sub_query | '(' ( value_expression ( ',' value_expression )* ) ')' -> ^( SET ( value_expression )* ) )
+            int alt62=2;
+            try { dbg.enterDecision(62);
 
-            if ( (LA65_0==52) ) {
-                int LA65_1 = input.LA(2);
+            int LA62_0 = input.LA(1);
 
-                if ( (synpred111_SQL92Query()) ) {
-                    alt65=1;
+            if ( (LA62_0==48) ) {
+                int LA62_1 = input.LA(2);
+
+                if ( (synpred108_SQL92Query()) ) {
+                    alt62=1;
                 }
                 else if ( (true) ) {
-                    alt65=2;
+                    alt62=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 65, 1, input);
+                        new NoViableAltException("", 62, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 65, 0, input);
+                    new NoViableAltException("", 62, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt65) {
+            } finally {dbg.exitDecision(62);}
+
+            switch (alt62) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:251:9: sub_query
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:240:4: sub_query
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_sub_query_in_in_predicate_tail2347);
-                    sub_query177=sub_query();
+                    dbg.location(240,4);
+                    pushFollow(FOLLOW_sub_query_in_in_predicate_tail1639);
+                    sub_query170=sub_query();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query177.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query170.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:9: '(' ( value_expression ( ',' value_expression )* ) ')'
-                    {
-                    char_literal178=(Token)match(input,52,FOLLOW_52_in_in_predicate_tail2358); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_52.add(char_literal178);
+                    dbg.enterAlt(2);
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:13: ( value_expression ( ',' value_expression )* )
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:14: value_expression ( ',' value_expression )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:5: '(' ( value_expression ( ',' value_expression )* ) ')'
                     {
-                    pushFollow(FOLLOW_value_expression_in_in_predicate_tail2361);
-                    value_expression179=value_expression();
+                    dbg.location(241,5);
+                    char_literal171=(Token)match(input,48,FOLLOW_48_in_in_predicate_tail1646); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_48.add(char_literal171);
+
+                    dbg.location(241,9);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:9: ( value_expression ( ',' value_expression )* )
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:10: value_expression ( ',' value_expression )*
+                    {
+                    dbg.location(241,10);
+                    pushFollow(FOLLOW_value_expression_in_in_predicate_tail1649);
+                    value_expression172=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression179.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:31: ( ',' value_expression )*
-                    loop64:
-                    do {
-                        int alt64=2;
-                        int LA64_0 = input.LA(1);
+                    if ( state.backtracking==0 ) stream_value_expression.add(value_expression172.getTree());
+                    dbg.location(241,27);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:27: ( ',' value_expression )*
+                    try { dbg.enterSubRule(61);
 
-                        if ( (LA64_0==55) ) {
-                            alt64=1;
+                    loop61:
+                    do {
+                        int alt61=2;
+                        try { dbg.enterDecision(61);
+
+                        int LA61_0 = input.LA(1);
+
+                        if ( (LA61_0==51) ) {
+                            alt61=1;
                         }
 
 
-                        switch (alt64) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:32: ',' value_expression
-                            {
-                            char_literal180=(Token)match(input,55,FOLLOW_55_in_in_predicate_tail2364); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_55.add(char_literal180);
+                        } finally {dbg.exitDecision(61);}
 
-                            pushFollow(FOLLOW_value_expression_in_in_predicate_tail2366);
-                            value_expression181=value_expression();
+                        switch (alt61) {
+                    	case 1 :
+                    	    dbg.enterAlt(1);
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_value_expression.add(value_expression181.getTree());
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:28: ',' value_expression
+                    	    {
+                    	    dbg.location(241,28);
+                    	    char_literal173=(Token)match(input,51,FOLLOW_51_in_in_predicate_tail1652); if (state.failed) return retval; 
+                    	    if ( state.backtracking==0 ) stream_51.add(char_literal173);
 
-                            }
-                            break;
+                    	    dbg.location(241,32);
+                    	    pushFollow(FOLLOW_value_expression_in_in_predicate_tail1654);
+                    	    value_expression174=value_expression();
 
-                        default :
-                            break loop64;
+                    	    state._fsp--;
+                    	    if (state.failed) return retval;
+                    	    if ( state.backtracking==0 ) stream_value_expression.add(value_expression174.getTree());
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop61;
                         }
                     } while (true);
+                    } finally {dbg.exitSubRule(61);}
 
 
                     }
 
-                    char_literal182=(Token)match(input,53,FOLLOW_53_in_in_predicate_tail2371); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_53.add(char_literal182);
+                    dbg.location(241,52);
+                    char_literal175=(Token)match(input,49,FOLLOW_49_in_in_predicate_tail1659); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_49.add(char_literal175);
 
 
 
@@ -6637,15 +8133,19 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 252:60: -> ^( SET ( value_expression )* )
+                    // 241:56: -> ^( SET ( value_expression )* )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:63: ^( SET ( value_expression )* )
+                        dbg.location(241,59);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:59: ^( SET ( value_expression )* )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(241,61);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(SET, "SET"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:252:69: ( value_expression )*
+                        dbg.location(241,65);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:241:65: ( value_expression )*
                         while ( stream_value_expression.hasNext() ) {
+                            dbg.location(241,65);
                             adaptor.addChild(root_1, stream_value_expression.nextTree());
 
                         }
@@ -6677,6 +8177,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(241, 84);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "in_predicate_tail");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "in_predicate_tail"
@@ -6687,18 +8196,18 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "between_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:254:1: between_predicate : (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:242:1: between_predicate : (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) );
     public final SQL92QueryParser.between_predicate_return between_predicate() throws RecognitionException {
         SQL92QueryParser.between_predicate_return retval = new SQL92QueryParser.between_predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal183=null;
-        Token string_literal184=null;
-        Token string_literal185=null;
-        Token string_literal186=null;
-        Token string_literal187=null;
+        Token string_literal176=null;
+        Token string_literal177=null;
+        Token string_literal178=null;
+        Token string_literal179=null;
+        Token string_literal180=null;
         SQL92QueryParser.row_value_return value = null;
 
         SQL92QueryParser.row_value_return btw1 = null;
@@ -6706,42 +8215,65 @@ public class SQL92QueryParser extends Parser {
         SQL92QueryParser.row_value_return btw2 = null;
 
 
-        CommonTree string_literal183_tree=null;
-        CommonTree string_literal184_tree=null;
-        CommonTree string_literal185_tree=null;
-        CommonTree string_literal186_tree=null;
-        CommonTree string_literal187_tree=null;
-        RewriteRuleTokenStream stream_92=new RewriteRuleTokenStream(adaptor,"token 92");
-        RewriteRuleTokenStream stream_88=new RewriteRuleTokenStream(adaptor,"token 88");
-        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
+        CommonTree string_literal176_tree=null;
+        CommonTree string_literal177_tree=null;
+        CommonTree string_literal178_tree=null;
+        CommonTree string_literal179_tree=null;
+        CommonTree string_literal180_tree=null;
+        RewriteRuleTokenStream stream_82=new RewriteRuleTokenStream(adaptor,"token 82");
+        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
+        RewriteRuleTokenStream stream_86=new RewriteRuleTokenStream(adaptor,"token 86");
         RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
+        try { dbg.enterRule(getGrammarFileName(), "between_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(242, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:255:5: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) )
-            int alt66=2;
-            alt66 = dfa66.predict(input);
-            switch (alt66) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:243:2: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) )
+            int alt63=2;
+            try { dbg.enterDecision(63);
+
+            try {
+                isCyclicDecision = true;
+                alt63 = dfa63.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(63);}
+
+            switch (alt63) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:255:9: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:243:4: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
                     {
-                    pushFollow(FOLLOW_row_value_in_between_predicate2400);
+                    dbg.location(243,9);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1679);
                     value=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(value.getTree());
-                    string_literal183=(Token)match(input,92,FOLLOW_92_in_between_predicate2402); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_92.add(string_literal183);
+                    dbg.location(243,20);
+                    string_literal176=(Token)match(input,86,FOLLOW_86_in_between_predicate1681); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_86.add(string_literal176);
 
-                    pushFollow(FOLLOW_row_value_in_between_predicate2406);
+                    dbg.location(243,34);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1685);
                     btw1=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(btw1.getTree());
-                    string_literal184=(Token)match(input,88,FOLLOW_88_in_between_predicate2408); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_88.add(string_literal184);
+                    dbg.location(243,45);
+                    string_literal177=(Token)match(input,82,FOLLOW_82_in_between_predicate1687); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_82.add(string_literal177);
 
-                    pushFollow(FOLLOW_row_value_in_between_predicate2412);
+                    dbg.location(243,55);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1691);
                     btw2=row_value();
 
                     state._fsp--;
@@ -6750,7 +8282,7 @@ public class SQL92QueryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: value, btw1, btw2, 92
+                    // elements: 86, value, btw2, btw1
                     // token labels: 
                     // rule labels: retval, value, btw2, btw1
                     // token list labels: 
@@ -6764,15 +8296,20 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_btw1=new RewriteRuleSubtreeStream(adaptor,"rule btw1",btw1!=null?btw1.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 256:13: -> ^( 'BETWEEN' $value $btw1 $btw2)
+                    // 244:4: -> ^( 'BETWEEN' $value $btw1 $btw2)
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:256:16: ^( 'BETWEEN' $value $btw1 $btw2)
+                        dbg.location(244,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:244:7: ^( 'BETWEEN' $value $btw1 $btw2)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot(stream_92.nextNode(), root_1);
+                        dbg.location(244,9);
+                        root_1 = (CommonTree)adaptor.becomeRoot(stream_86.nextNode(), root_1);
 
+                        dbg.location(244,19);
                         adaptor.addChild(root_1, stream_value.nextTree());
+                        dbg.location(244,26);
                         adaptor.addChild(root_1, stream_btw1.nextTree());
+                        dbg.location(244,32);
                         adaptor.addChild(root_1, stream_btw2.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -6784,30 +8321,38 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:257:9: value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:245:4: value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value
                     {
-                    pushFollow(FOLLOW_row_value_in_between_predicate2452);
+                    dbg.location(245,9);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1717);
                     value=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(value.getTree());
-                    string_literal185=(Token)match(input,89,FOLLOW_89_in_between_predicate2454); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_89.add(string_literal185);
+                    dbg.location(245,20);
+                    string_literal178=(Token)match(input,83,FOLLOW_83_in_between_predicate1719); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_83.add(string_literal178);
 
-                    string_literal186=(Token)match(input,92,FOLLOW_92_in_between_predicate2456); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_92.add(string_literal186);
+                    dbg.location(245,26);
+                    string_literal179=(Token)match(input,86,FOLLOW_86_in_between_predicate1721); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_86.add(string_literal179);
 
-                    pushFollow(FOLLOW_row_value_in_between_predicate2460);
+                    dbg.location(245,40);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1725);
                     btw1=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(btw1.getTree());
-                    string_literal187=(Token)match(input,88,FOLLOW_88_in_between_predicate2462); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_88.add(string_literal187);
+                    dbg.location(245,51);
+                    string_literal180=(Token)match(input,82,FOLLOW_82_in_between_predicate1727); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_82.add(string_literal180);
 
-                    pushFollow(FOLLOW_row_value_in_between_predicate2466);
+                    dbg.location(245,61);
+                    pushFollow(FOLLOW_row_value_in_between_predicate1731);
                     btw2=row_value();
 
                     state._fsp--;
@@ -6816,7 +8361,7 @@ public class SQL92QueryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: btw2, value, 92, btw1
+                    // elements: 86, btw2, btw1, value
                     // token labels: 
                     // rule labels: retval, value, btw2, btw1
                     // token list labels: 
@@ -6830,20 +8375,27 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_btw1=new RewriteRuleSubtreeStream(adaptor,"rule btw1",btw1!=null?btw1.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 258:13: -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) )
+                    // 246:4: -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:258:16: ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) )
+                        dbg.location(246,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:246:7: ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(246,9);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(NOT, "NOT"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:258:22: ^( 'BETWEEN' $value $btw1 $btw2)
+                        dbg.location(246,13);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:246:13: ^( 'BETWEEN' $value $btw1 $btw2)
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
-                        root_2 = (CommonTree)adaptor.becomeRoot(stream_92.nextNode(), root_2);
+                        dbg.location(246,15);
+                        root_2 = (CommonTree)adaptor.becomeRoot(stream_86.nextNode(), root_2);
 
+                        dbg.location(246,25);
                         adaptor.addChild(root_2, stream_value.nextTree());
+                        dbg.location(246,32);
                         adaptor.addChild(root_2, stream_btw1.nextTree());
+                        dbg.location(246,38);
                         adaptor.addChild(root_2, stream_btw2.nextTree());
 
                         adaptor.addChild(root_1, root_2);
@@ -6875,6 +8427,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(246, 45);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "between_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "between_predicate"
@@ -6885,36 +8446,45 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "exists_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:260:1: exists_predicate : 'EXISTS' sub_query ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:247:1: exists_predicate : 'EXISTS' sub_query ;
     public final SQL92QueryParser.exists_predicate_return exists_predicate() throws RecognitionException {
         SQL92QueryParser.exists_predicate_return retval = new SQL92QueryParser.exists_predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal188=null;
-        SQL92QueryParser.sub_query_return sub_query189 = null;
+        Token string_literal181=null;
+        SQL92QueryParser.sub_query_return sub_query182 = null;
 
 
-        CommonTree string_literal188_tree=null;
+        CommonTree string_literal181_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "exists_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(247, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:261:5: ( 'EXISTS' sub_query )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:261:9: 'EXISTS' sub_query
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:248:2: ( 'EXISTS' sub_query )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:248:4: 'EXISTS' sub_query
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            string_literal188=(Token)match(input,93,FOLLOW_93_in_exists_predicate2515); if (state.failed) return retval;
+            dbg.location(248,12);
+            string_literal181=(Token)match(input,87,FOLLOW_87_in_exists_predicate1761); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            string_literal188_tree = (CommonTree)adaptor.create(string_literal188);
-            root_0 = (CommonTree)adaptor.becomeRoot(string_literal188_tree, root_0);
+            string_literal181_tree = (CommonTree)adaptor.create(string_literal181);
+            root_0 = (CommonTree)adaptor.becomeRoot(string_literal181_tree, root_0);
             }
-            pushFollow(FOLLOW_sub_query_in_exists_predicate2518);
-            sub_query189=sub_query();
+            dbg.location(248,14);
+            pushFollow(FOLLOW_sub_query_in_exists_predicate1764);
+            sub_query182=sub_query();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query189.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query182.getTree());
 
             }
 
@@ -6934,6 +8504,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(248, 23);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "exists_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "exists_predicate"
@@ -6944,7 +8523,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "comparison_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:263:1: comparison_predicate : ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:250:1: comparison_predicate : ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value );
     public final SQL92QueryParser.comparison_predicate_return comparison_predicate() throws RecognitionException {
         SQL92QueryParser.comparison_predicate_return retval = new SQL92QueryParser.comparison_predicate_return();
         retval.start = input.LT(1);
@@ -6953,246 +8532,317 @@ public class SQL92QueryParser extends Parser {
 
         Token op=null;
         Token ep=null;
-        Token char_literal191=null;
-        Token set194=null;
+        Token char_literal184=null;
+        Token set187=null;
         SQL92QueryParser.row_value_return lv = null;
 
         SQL92QueryParser.row_value_return rv = null;
 
-        SQL92QueryParser.bind_table_return bind_table190 = null;
+        SQL92QueryParser.bind_table_return bind_table183 = null;
 
-        SQL92QueryParser.row_value_return row_value192 = null;
+        SQL92QueryParser.row_value_return row_value185 = null;
 
-        SQL92QueryParser.row_value_return row_value193 = null;
+        SQL92QueryParser.row_value_return row_value186 = null;
 
-        SQL92QueryParser.row_value_return row_value195 = null;
+        SQL92QueryParser.row_value_return row_value188 = null;
 
 
         CommonTree op_tree=null;
         CommonTree ep_tree=null;
-        CommonTree char_literal191_tree=null;
-        CommonTree set194_tree=null;
-        RewriteRuleTokenStream stream_98=new RewriteRuleTokenStream(adaptor,"token 98");
-        RewriteRuleTokenStream stream_97=new RewriteRuleTokenStream(adaptor,"token 97");
+        CommonTree char_literal184_tree=null;
+        CommonTree set187_tree=null;
         RewriteRuleTokenStream stream_96=new RewriteRuleTokenStream(adaptor,"token 96");
         RewriteRuleTokenStream stream_95=new RewriteRuleTokenStream(adaptor,"token 95");
-        RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
         RewriteRuleTokenStream stream_94=new RewriteRuleTokenStream(adaptor,"token 94");
-        RewriteRuleTokenStream stream_102=new RewriteRuleTokenStream(adaptor,"token 102");
-        RewriteRuleTokenStream stream_99=new RewriteRuleTokenStream(adaptor,"token 99");
-        RewriteRuleTokenStream stream_101=new RewriteRuleTokenStream(adaptor,"token 101");
-        RewriteRuleTokenStream stream_100=new RewriteRuleTokenStream(adaptor,"token 100");
+        RewriteRuleTokenStream stream_93=new RewriteRuleTokenStream(adaptor,"token 93");
+        RewriteRuleTokenStream stream_92=new RewriteRuleTokenStream(adaptor,"token 92");
+        RewriteRuleTokenStream stream_91=new RewriteRuleTokenStream(adaptor,"token 91");
+        RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
+        RewriteRuleTokenStream stream_39=new RewriteRuleTokenStream(adaptor,"token 39");
+        RewriteRuleTokenStream stream_88=new RewriteRuleTokenStream(adaptor,"token 88");
+        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
         RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
+        try { dbg.enterRule(getGrammarFileName(), "comparison_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(250, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:264:5: ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value )
-            int alt69=3;
-            alt69 = dfa69.predict(input);
-            switch (alt69) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:251:2: ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value )
+            int alt66=3;
+            try { dbg.enterDecision(66);
+
+            try {
+                isCyclicDecision = true;
+                alt66 = dfa66.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(66);}
+
+            switch (alt66) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:264:9: bind_table '=' row_value
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:251:4: bind_table '=' row_value
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_bind_table_in_comparison_predicate2536);
-                    bind_table190=bind_table();
+                    dbg.location(251,4);
+                    pushFollow(FOLLOW_bind_table_in_comparison_predicate1773);
+                    bind_table183=bind_table();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, bind_table190.getTree());
-                    char_literal191=(Token)match(input,94,FOLLOW_94_in_comparison_predicate2538); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, bind_table183.getTree());
+                    dbg.location(251,18);
+                    char_literal184=(Token)match(input,88,FOLLOW_88_in_comparison_predicate1775); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    char_literal191_tree = (CommonTree)adaptor.create(char_literal191);
-                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal191_tree, root_0);
+                    char_literal184_tree = (CommonTree)adaptor.create(char_literal184);
+                    root_0 = (CommonTree)adaptor.becomeRoot(char_literal184_tree, root_0);
                     }
-                    pushFollow(FOLLOW_row_value_in_comparison_predicate2541);
-                    row_value192=row_value();
+                    dbg.location(251,20);
+                    pushFollow(FOLLOW_row_value_in_comparison_predicate1778);
+                    row_value185=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value192.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value185.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:9: lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:4: lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value
                     {
-                    pushFollow(FOLLOW_row_value_in_comparison_predicate2553);
+                    dbg.location(252,6);
+                    pushFollow(FOLLOW_row_value_in_comparison_predicate1785);
                     lv=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(lv.getTree());
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:22: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
-                    int alt67=7;
+                    dbg.location(252,17);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:17: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
+                    int alt64=7;
+                    try { dbg.enterSubRule(64);
+                    try { dbg.enterDecision(64);
+
                     switch ( input.LA(1) ) {
+                    case 88:
+                        {
+                        alt64=1;
+                        }
+                        break;
+                    case 89:
+                        {
+                        alt64=2;
+                        }
+                        break;
+                    case 90:
+                        {
+                        alt64=3;
+                        }
+                        break;
+                    case 91:
+                        {
+                        alt64=4;
+                        }
+                        break;
+                    case 92:
+                        {
+                        alt64=5;
+                        }
+                        break;
+                    case 93:
+                        {
+                        alt64=6;
+                        }
+                        break;
                     case 94:
                         {
-                        alt67=1;
-                        }
-                        break;
-                    case 95:
-                        {
-                        alt67=2;
-                        }
-                        break;
-                    case 96:
-                        {
-                        alt67=3;
-                        }
-                        break;
-                    case 97:
-                        {
-                        alt67=4;
-                        }
-                        break;
-                    case 98:
-                        {
-                        alt67=5;
-                        }
-                        break;
-                    case 99:
-                        {
-                        alt67=6;
-                        }
-                        break;
-                    case 100:
-                        {
-                        alt67=7;
+                        alt64=7;
                         }
                         break;
                     default:
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 67, 0, input);
+                            new NoViableAltException("", 64, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
 
-                    switch (alt67) {
+                    } finally {dbg.exitDecision(64);}
+
+                    switch (alt64) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:23: op= '='
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:18: op= '='
                             {
-                            op=(Token)match(input,94,FOLLOW_94_in_comparison_predicate2558); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_94.add(op);
+                            dbg.location(252,20);
+                            op=(Token)match(input,88,FOLLOW_88_in_comparison_predicate1790); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_88.add(op);
 
 
                             }
                             break;
                         case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:30: op= '<>'
+                            dbg.enterAlt(2);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:25: op= '<>'
                             {
-                            op=(Token)match(input,95,FOLLOW_95_in_comparison_predicate2562); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_95.add(op);
+                            dbg.location(252,27);
+                            op=(Token)match(input,89,FOLLOW_89_in_comparison_predicate1794); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_89.add(op);
 
 
                             }
                             break;
                         case 3 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:38: op= '!='
+                            dbg.enterAlt(3);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:33: op= '!='
                             {
-                            op=(Token)match(input,96,FOLLOW_96_in_comparison_predicate2566); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_96.add(op);
+                            dbg.location(252,35);
+                            op=(Token)match(input,90,FOLLOW_90_in_comparison_predicate1798); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_90.add(op);
 
 
                             }
                             break;
                         case 4 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:46: op= '<'
+                            dbg.enterAlt(4);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:41: op= '<'
                             {
-                            op=(Token)match(input,97,FOLLOW_97_in_comparison_predicate2570); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_97.add(op);
+                            dbg.location(252,43);
+                            op=(Token)match(input,91,FOLLOW_91_in_comparison_predicate1802); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_91.add(op);
 
 
                             }
                             break;
                         case 5 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:53: op= '>'
+                            dbg.enterAlt(5);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:48: op= '>'
                             {
-                            op=(Token)match(input,98,FOLLOW_98_in_comparison_predicate2574); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_98.add(op);
+                            dbg.location(252,50);
+                            op=(Token)match(input,92,FOLLOW_92_in_comparison_predicate1806); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_92.add(op);
 
 
                             }
                             break;
                         case 6 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:60: op= '>='
+                            dbg.enterAlt(6);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:55: op= '>='
                             {
-                            op=(Token)match(input,99,FOLLOW_99_in_comparison_predicate2578); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_99.add(op);
+                            dbg.location(252,57);
+                            op=(Token)match(input,93,FOLLOW_93_in_comparison_predicate1810); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_93.add(op);
 
 
                             }
                             break;
                         case 7 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:68: op= '<='
+                            dbg.enterAlt(7);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:63: op= '<='
                             {
-                            op=(Token)match(input,100,FOLLOW_100_in_comparison_predicate2582); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_100.add(op);
+                            dbg.location(252,65);
+                            op=(Token)match(input,94,FOLLOW_94_in_comparison_predicate1814); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_94.add(op);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(64);}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:77: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
-                    int alt68=3;
+                    dbg.location(252,72);
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:72: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
+                    int alt65=3;
+                    try { dbg.enterSubRule(65);
+                    try { dbg.enterDecision(65);
+
                     switch ( input.LA(1) ) {
-                    case 43:
+                    case 39:
                         {
-                        alt68=1;
+                        alt65=1;
                         }
                         break;
-                    case 101:
+                    case 95:
                         {
-                        alt68=2;
+                        alt65=2;
                         }
                         break;
-                    case 102:
+                    case 96:
                         {
-                        alt68=3;
+                        alt65=3;
                         }
                         break;
                     default:
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 68, 0, input);
+                            new NoViableAltException("", 65, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
 
-                    switch (alt68) {
+                    } finally {dbg.exitDecision(65);}
+
+                    switch (alt65) {
                         case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:78: ep= 'ALL'
+                            dbg.enterAlt(1);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:73: ep= 'ALL'
                             {
-                            ep=(Token)match(input,43,FOLLOW_43_in_comparison_predicate2588); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_43.add(ep);
+                            dbg.location(252,75);
+                            ep=(Token)match(input,39,FOLLOW_39_in_comparison_predicate1820); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_39.add(ep);
 
 
                             }
                             break;
                         case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:87: ep= 'SOME'
+                            dbg.enterAlt(2);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:82: ep= 'SOME'
                             {
-                            ep=(Token)match(input,101,FOLLOW_101_in_comparison_predicate2592); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_101.add(ep);
+                            dbg.location(252,84);
+                            ep=(Token)match(input,95,FOLLOW_95_in_comparison_predicate1824); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_95.add(ep);
 
 
                             }
                             break;
                         case 3 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:97: ep= 'ANY'
+                            dbg.enterAlt(3);
+
+                            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:92: ep= 'ANY'
                             {
-                            ep=(Token)match(input,102,FOLLOW_102_in_comparison_predicate2596); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_102.add(ep);
+                            dbg.location(252,94);
+                            ep=(Token)match(input,96,FOLLOW_96_in_comparison_predicate1828); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_96.add(ep);
 
 
                             }
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(65);}
 
-                    pushFollow(FOLLOW_row_value_in_comparison_predicate2601);
+                    dbg.location(252,104);
+                    pushFollow(FOLLOW_row_value_in_comparison_predicate1833);
                     rv=row_value();
 
                     state._fsp--;
@@ -7201,7 +8851,7 @@ public class SQL92QueryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: rv, op, lv, ep
+                    // elements: op, rv, ep, lv
                     // token labels: op, ep
                     // rule labels: retval, lv, rv
                     // token list labels: 
@@ -7216,19 +8866,25 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_rv=new RewriteRuleSubtreeStream(adaptor,"rule rv",rv!=null?rv.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 266:13: -> ^( $ep ^( $op $lv $rv) )
+                    // 253:4: -> ^( $ep ^( $op $lv $rv) )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:266:16: ^( $ep ^( $op $lv $rv) )
+                        dbg.location(253,7);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:253:7: ^( $ep ^( $op $lv $rv) )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(253,9);
                         root_1 = (CommonTree)adaptor.becomeRoot(stream_ep.nextNode(), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:266:22: ^( $op $lv $rv)
+                        dbg.location(253,13);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:253:13: ^( $op $lv $rv)
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
+                        dbg.location(253,15);
                         root_2 = (CommonTree)adaptor.becomeRoot(stream_op.nextNode(), root_2);
 
+                        dbg.location(253,19);
                         adaptor.addChild(root_2, stream_lv.nextTree());
+                        dbg.location(253,23);
                         adaptor.addChild(root_2, stream_rv.nextTree());
 
                         adaptor.addChild(root_1, root_2);
@@ -7243,35 +8899,41 @@ public class SQL92QueryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:267:9: row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:254:4: row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_row_value_in_comparison_predicate2641);
-                    row_value193=row_value();
+                    dbg.location(254,4);
+                    pushFollow(FOLLOW_row_value_in_comparison_predicate1859);
+                    row_value186=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value193.getTree());
-                    set194=(Token)input.LT(1);
-                    set194=(Token)input.LT(1);
-                    if ( (input.LA(1)>=94 && input.LA(1)<=100) ) {
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value186.getTree());
+                    dbg.location(254,14);
+                    set187=(Token)input.LT(1);
+                    set187=(Token)input.LT(1);
+                    if ( (input.LA(1)>=88 && input.LA(1)<=94) ) {
                         input.consume();
-                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set194), root_0);
+                        if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set187), root_0);
                         state.errorRecovery=false;state.failed=false;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
+                        dbg.recognitionException(mse);
                         throw mse;
                     }
 
-                    pushFollow(FOLLOW_row_value_in_comparison_predicate2672);
-                    row_value195=row_value();
+                    dbg.location(254,61);
+                    pushFollow(FOLLOW_row_value_in_comparison_predicate1890);
+                    row_value188=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value195.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value188.getTree());
 
                     }
                     break;
@@ -7293,6 +8955,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(254, 70);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "comparison_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "comparison_predicate"
@@ -7303,77 +8974,104 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "like_predicate"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:269:1: like_predicate : ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:258:1: like_predicate : ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) );
     public final SQL92QueryParser.like_predicate_return like_predicate() throws RecognitionException {
         SQL92QueryParser.like_predicate_return retval = new SQL92QueryParser.like_predicate_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal197=null;
-        Token string_literal199=null;
-        Token string_literal200=null;
+        Token string_literal190=null;
+        Token string_literal192=null;
+        Token string_literal193=null;
         SQL92QueryParser.row_value_return v1 = null;
 
         SQL92QueryParser.row_value_return v2 = null;
 
-        SQL92QueryParser.row_value_return row_value196 = null;
+        SQL92QueryParser.row_value_return row_value189 = null;
 
-        SQL92QueryParser.row_value_return row_value198 = null;
+        SQL92QueryParser.row_value_return row_value191 = null;
 
 
-        CommonTree string_literal197_tree=null;
-        CommonTree string_literal199_tree=null;
-        CommonTree string_literal200_tree=null;
-        RewriteRuleTokenStream stream_103=new RewriteRuleTokenStream(adaptor,"token 103");
-        RewriteRuleTokenStream stream_89=new RewriteRuleTokenStream(adaptor,"token 89");
+        CommonTree string_literal190_tree=null;
+        CommonTree string_literal192_tree=null;
+        CommonTree string_literal193_tree=null;
+        RewriteRuleTokenStream stream_97=new RewriteRuleTokenStream(adaptor,"token 97");
+        RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
         RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
+        try { dbg.enterRule(getGrammarFileName(), "like_predicate");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(258, 1);
+
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:270:5: ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) )
-            int alt70=2;
-            alt70 = dfa70.predict(input);
-            switch (alt70) {
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:259:2: ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) )
+            int alt67=2;
+            try { dbg.enterDecision(67);
+
+            try {
+                isCyclicDecision = true;
+                alt67 = dfa67.predict(input);
+            }
+            catch (NoViableAltException nvae) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+            }
+            } finally {dbg.exitDecision(67);}
+
+            switch (alt67) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:270:9: row_value 'LIKE' row_value
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:259:4: row_value 'LIKE' row_value
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_row_value_in_like_predicate2690);
-                    row_value196=row_value();
+                    dbg.location(259,4);
+                    pushFollow(FOLLOW_row_value_in_like_predicate1901);
+                    row_value189=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value196.getTree());
-                    string_literal197=(Token)match(input,103,FOLLOW_103_in_like_predicate2692); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value189.getTree());
+                    dbg.location(259,20);
+                    string_literal190=(Token)match(input,97,FOLLOW_97_in_like_predicate1903); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal197_tree = (CommonTree)adaptor.create(string_literal197);
-                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal197_tree, root_0);
+                    string_literal190_tree = (CommonTree)adaptor.create(string_literal190);
+                    root_0 = (CommonTree)adaptor.becomeRoot(string_literal190_tree, root_0);
                     }
-                    pushFollow(FOLLOW_row_value_in_like_predicate2695);
-                    row_value198=row_value();
+                    dbg.location(259,22);
+                    pushFollow(FOLLOW_row_value_in_like_predicate1906);
+                    row_value191=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value198.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value191.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:271:9: v1= row_value 'NOT' 'LIKE' v2= row_value
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:260:4: v1= row_value 'NOT' 'LIKE' v2= row_value
                     {
-                    pushFollow(FOLLOW_row_value_in_like_predicate2707);
+                    dbg.location(260,6);
+                    pushFollow(FOLLOW_row_value_in_like_predicate1913);
                     v1=row_value();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_row_value.add(v1.getTree());
-                    string_literal199=(Token)match(input,89,FOLLOW_89_in_like_predicate2709); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_89.add(string_literal199);
+                    dbg.location(260,17);
+                    string_literal192=(Token)match(input,83,FOLLOW_83_in_like_predicate1915); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_83.add(string_literal192);
 
-                    string_literal200=(Token)match(input,103,FOLLOW_103_in_like_predicate2711); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_103.add(string_literal200);
+                    dbg.location(260,23);
+                    string_literal193=(Token)match(input,97,FOLLOW_97_in_like_predicate1917); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_97.add(string_literal193);
 
-                    pushFollow(FOLLOW_row_value_in_like_predicate2715);
+                    dbg.location(260,32);
+                    pushFollow(FOLLOW_row_value_in_like_predicate1921);
                     v2=row_value();
 
                     state._fsp--;
@@ -7382,7 +9080,7 @@ public class SQL92QueryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: v2, v1, 103
+                    // elements: 97, v1, v2
                     // token labels: 
                     // rule labels: v1, retval, v2
                     // token list labels: 
@@ -7395,19 +9093,25 @@ public class SQL92QueryParser extends Parser {
                     RewriteRuleSubtreeStream stream_v2=new RewriteRuleSubtreeStream(adaptor,"rule v2",v2!=null?v2.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 271:48: -> ^( NOT ^( 'LIKE' $v1 $v2) )
+                    // 260:43: -> ^( NOT ^( 'LIKE' $v1 $v2) )
                     {
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:271:51: ^( NOT ^( 'LIKE' $v1 $v2) )
+                        dbg.location(260,46);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:260:46: ^( NOT ^( 'LIKE' $v1 $v2) )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
+                        dbg.location(260,48);
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(NOT, "NOT"), root_1);
 
-                        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:271:57: ^( 'LIKE' $v1 $v2)
+                        dbg.location(260,52);
+                        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:260:52: ^( 'LIKE' $v1 $v2)
                         {
                         CommonTree root_2 = (CommonTree)adaptor.nil();
-                        root_2 = (CommonTree)adaptor.becomeRoot(stream_103.nextNode(), root_2);
+                        dbg.location(260,54);
+                        root_2 = (CommonTree)adaptor.becomeRoot(stream_97.nextNode(), root_2);
 
+                        dbg.location(260,61);
                         adaptor.addChild(root_2, stream_v1.nextTree());
+                        dbg.location(260,65);
                         adaptor.addChild(root_2, stream_v2.nextTree());
 
                         adaptor.addChild(root_1, root_2);
@@ -7439,6 +9143,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(260, 70);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "like_predicate");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "like_predicate"
@@ -7449,118 +9162,138 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "row_value"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:273:1: row_value : ( value_expression | 'NULL' | 'DEFAULT' );
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:266:1: row_value : ( value_expression | 'NULL' | 'DEFAULT' );
     public final SQL92QueryParser.row_value_return row_value() throws RecognitionException {
         SQL92QueryParser.row_value_return retval = new SQL92QueryParser.row_value_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal202=null;
-        Token string_literal203=null;
-        SQL92QueryParser.value_expression_return value_expression201 = null;
+        Token string_literal195=null;
+        Token string_literal196=null;
+        SQL92QueryParser.value_expression_return value_expression194 = null;
 
 
-        CommonTree string_literal202_tree=null;
-        CommonTree string_literal203_tree=null;
+        CommonTree string_literal195_tree=null;
+        CommonTree string_literal196_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "row_value");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(266, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:5: ( value_expression | 'NULL' | 'DEFAULT' )
-            int alt71=3;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:2: ( value_expression | 'NULL' | 'DEFAULT' )
+            int alt68=3;
+            try { dbg.enterDecision(68);
+
             switch ( input.LA(1) ) {
-            case INT:
             case ID:
+            case INT:
             case FLOAT:
             case NUMERIC:
             case STRING:
-            case 52:
+            case 48:
+            case 57:
+            case 58:
+            case 59:
+            case 60:
+            case 61:
+            case 62:
             case 63:
             case 64:
             case 65:
             case 66:
             case 67:
             case 68:
-            case 69:
-            case 70:
             case 71:
             case 72:
-            case 73:
-            case 74:
-            case 77:
-            case 78:
                 {
-                alt71=1;
+                alt68=1;
                 }
                 break;
-            case 76:
+            case 70:
                 {
-                int LA71_2 = input.LA(2);
+                int LA68_2 = input.LA(2);
 
-                if ( (synpred131_SQL92Query()) ) {
-                    alt71=1;
+                if ( (synpred128_SQL92Query()) ) {
+                    alt68=1;
                 }
-                else if ( (synpred132_SQL92Query()) ) {
-                    alt71=2;
+                else if ( (synpred129_SQL92Query()) ) {
+                    alt68=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 71, 2, input);
+                        new NoViableAltException("", 68, 2, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
                 }
                 break;
-            case 104:
+            case 98:
                 {
-                alt71=3;
+                alt68=3;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 71, 0, input);
+                    new NoViableAltException("", 68, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
 
-            switch (alt71) {
+            } finally {dbg.exitDecision(68);}
+
+            switch (alt68) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:9: value_expression
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:4: value_expression
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_value_expression_in_row_value2749);
-                    value_expression201=value_expression();
+                    dbg.location(267,4);
+                    pushFollow(FOLLOW_value_expression_in_row_value1950);
+                    value_expression194=value_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression201.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression194.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:27: 'NULL'
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:22: 'NULL'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal202=(Token)match(input,76,FOLLOW_76_in_row_value2752); if (state.failed) return retval;
+                    dbg.location(267,22);
+                    string_literal195=(Token)match(input,70,FOLLOW_70_in_row_value1953); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal202_tree = (CommonTree)adaptor.create(string_literal202);
-                    adaptor.addChild(root_0, string_literal202_tree);
+                    string_literal195_tree = (CommonTree)adaptor.create(string_literal195);
+                    adaptor.addChild(root_0, string_literal195_tree);
                     }
 
                     }
                     break;
                 case 3 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:36: 'DEFAULT'
+                    dbg.enterAlt(3);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:31: 'DEFAULT'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    string_literal203=(Token)match(input,104,FOLLOW_104_in_row_value2756); if (state.failed) return retval;
+                    dbg.location(267,31);
+                    string_literal196=(Token)match(input,98,FOLLOW_98_in_row_value1957); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    string_literal203_tree = (CommonTree)adaptor.create(string_literal203);
-                    adaptor.addChild(root_0, string_literal203_tree);
+                    string_literal196_tree = (CommonTree)adaptor.create(string_literal196);
+                    adaptor.addChild(root_0, string_literal196_tree);
                     }
 
                     }
@@ -7583,6 +9316,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(267, 41);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "row_value");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "row_value"
@@ -7593,7 +9335,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "bind_table"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:276:1: bind_table : '@' tableid= ID '.' columnid= ID -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) ) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:269:1: bind_table : '@' tableid= ID '.' columnid= ID -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) ) ;
     public final SQL92QueryParser.bind_table_return bind_table() throws RecognitionException {
         SQL92QueryParser.bind_table_return retval = new SQL92QueryParser.bind_table_return();
         retval.start = input.LT(1);
@@ -7602,37 +9344,48 @@ public class SQL92QueryParser extends Parser {
 
         Token tableid=null;
         Token columnid=null;
-        Token char_literal204=null;
-        Token char_literal205=null;
+        Token char_literal197=null;
+        Token char_literal198=null;
 
         CommonTree tableid_tree=null;
         CommonTree columnid_tree=null;
-        CommonTree char_literal204_tree=null;
-        CommonTree char_literal205_tree=null;
+        CommonTree char_literal197_tree=null;
+        CommonTree char_literal198_tree=null;
+        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_105=new RewriteRuleTokenStream(adaptor,"token 105");
-        RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
+        RewriteRuleTokenStream stream_99=new RewriteRuleTokenStream(adaptor,"token 99");
+
+        try { dbg.enterRule(getGrammarFileName(), "bind_table");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(269, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:277:5: ( '@' tableid= ID '.' columnid= ID -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:277:9: '@' tableid= ID '.' columnid= ID
-            {
-            char_literal204=(Token)match(input,105,FOLLOW_105_in_bind_table2774); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_105.add(char_literal204);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:270:2: ( '@' tableid= ID '.' columnid= ID -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) ) )
+            dbg.enterAlt(1);
 
-            tableid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2777); if (state.failed) return retval; 
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:270:4: '@' tableid= ID '.' columnid= ID
+            {
+            dbg.location(270,4);
+            char_literal197=(Token)match(input,99,FOLLOW_99_in_bind_table1967); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_99.add(char_literal197);
+
+            dbg.location(270,14);
+            tableid=(Token)match(input,ID,FOLLOW_ID_in_bind_table1970); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-            char_literal205=(Token)match(input,62,FOLLOW_62_in_bind_table2778); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_62.add(char_literal205);
+            dbg.location(270,17);
+            char_literal198=(Token)match(input,56,FOLLOW_56_in_bind_table1971); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_56.add(char_literal198);
 
-            columnid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2781); if (state.failed) return retval; 
+            dbg.location(270,28);
+            columnid=(Token)match(input,ID,FOLLOW_ID_in_bind_table1974); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 
 
             // AST REWRITE
-            // elements: tableid, columnid
+            // elements: columnid, tableid
             // token labels: tableid, columnid
             // rule labels: retval
             // token list labels: 
@@ -7645,19 +9398,25 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 277:37: -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) )
+            // 270:32: -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) )
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:277:40: ^( BOUND ^( TABLECOLUMN $tableid $columnid) )
+                dbg.location(270,35);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:270:35: ^( BOUND ^( TABLECOLUMN $tableid $columnid) )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(270,37);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(BOUND, "BOUND"), root_1);
 
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:277:48: ^( TABLECOLUMN $tableid $columnid)
+                dbg.location(270,43);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:270:43: ^( TABLECOLUMN $tableid $columnid)
                 {
                 CommonTree root_2 = (CommonTree)adaptor.nil();
+                dbg.location(270,45);
                 root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(TABLECOLUMN, "TABLECOLUMN"), root_2);
 
+                dbg.location(270,57);
                 adaptor.addChild(root_2, stream_tableid.nextNode());
+                dbg.location(270,66);
                 adaptor.addChild(root_2, stream_columnid.nextNode());
 
                 adaptor.addChild(root_1, root_2);
@@ -7687,6 +9446,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(271, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "bind_table");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "bind_table"
@@ -7697,47 +9465,65 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "correlation_specification"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:279:1: correlation_specification : ( 'AS' )? ID ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:273:1: correlation_specification : ( 'AS' )? ID ;
     public final SQL92QueryParser.correlation_specification_return correlation_specification() throws RecognitionException {
         SQL92QueryParser.correlation_specification_return retval = new SQL92QueryParser.correlation_specification_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal206=null;
-        Token ID207=null;
+        Token string_literal199=null;
+        Token ID200=null;
 
-        CommonTree string_literal206_tree=null;
-        CommonTree ID207_tree=null;
+        CommonTree string_literal199_tree=null;
+        CommonTree ID200_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "correlation_specification");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(273, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:280:5: ( ( 'AS' )? ID )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:280:9: ( 'AS' )? ID
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:274:2: ( ( 'AS' )? ID )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:274:4: ( 'AS' )? ID
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:280:9: ( 'AS' )?
-            int alt72=2;
-            int LA72_0 = input.LA(1);
+            dbg.location(274,4);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:274:4: ( 'AS' )?
+            int alt69=2;
+            try { dbg.enterSubRule(69);
+            try { dbg.enterDecision(69);
 
-            if ( (LA72_0==57) ) {
-                alt72=1;
+            int LA69_0 = input.LA(1);
+
+            if ( (LA69_0==53) ) {
+                alt69=1;
             }
-            switch (alt72) {
+            } finally {dbg.exitDecision(69);}
+
+            switch (alt69) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:280:10: 'AS'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:274:5: 'AS'
                     {
-                    string_literal206=(Token)match(input,57,FOLLOW_57_in_correlation_specification2816); if (state.failed) return retval;
+                    dbg.location(274,9);
+                    string_literal199=(Token)match(input,53,FOLLOW_53_in_correlation_specification2002); if (state.failed) return retval;
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(69);}
 
-            ID207=(Token)match(input,ID,FOLLOW_ID_in_correlation_specification2821); if (state.failed) return retval;
+            dbg.location(274,13);
+            ID200=(Token)match(input,ID,FOLLOW_ID_in_correlation_specification2007); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            ID207_tree = (CommonTree)adaptor.create(ID207);
-            adaptor.addChild(root_0, ID207_tree);
+            ID200_tree = (CommonTree)adaptor.create(ID200);
+            adaptor.addChild(root_0, ID200_tree);
             }
 
             }
@@ -7758,6 +9544,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(274, 15);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "correlation_specification");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "correlation_specification"
@@ -7768,27 +9563,35 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "table_name"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:282:1: table_name : ID ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:275:1: table_name : ID ;
     public final SQL92QueryParser.table_name_return table_name() throws RecognitionException {
         SQL92QueryParser.table_name_return retval = new SQL92QueryParser.table_name_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token ID208=null;
+        Token ID201=null;
 
-        CommonTree ID208_tree=null;
+        CommonTree ID201_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "table_name");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(275, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:283:5: ( ID )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:283:9: ID
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:276:2: ( ID )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:276:4: ID
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            ID208=(Token)match(input,ID,FOLLOW_ID_in_table_name2842); if (state.failed) return retval;
+            dbg.location(276,4);
+            ID201=(Token)match(input,ID,FOLLOW_ID_in_table_name2016); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            ID208_tree = (CommonTree)adaptor.create(ID208);
-            adaptor.addChild(root_0, ID208_tree);
+            ID201_tree = (CommonTree)adaptor.create(ID201);
+            adaptor.addChild(root_0, ID201_tree);
             }
 
             }
@@ -7809,6 +9612,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(276, 6);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "table_name");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "table_name"
@@ -7819,201 +9631,251 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "column_list"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:285:1: column_list : ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )* ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:277:1: column_list : ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )* ;
     public final SQL92QueryParser.column_list_return column_list() throws RecognitionException {
         SQL92QueryParser.column_list_return retval = new SQL92QueryParser.column_list_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal211=null;
-        SQL92QueryParser.column_name_return column_name209 = null;
+        Token char_literal204=null;
+        SQL92QueryParser.column_name_return column_name202 = null;
 
-        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name210 = null;
+        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name203 = null;
 
-        SQL92QueryParser.column_name_return column_name212 = null;
+        SQL92QueryParser.column_name_return column_name205 = null;
 
-        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name213 = null;
+        SQL92QueryParser.reserved_word_column_name_return reserved_word_column_name206 = null;
 
 
-        CommonTree char_literal211_tree=null;
+        CommonTree char_literal204_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "column_list");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(277, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:5: ( ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )* )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:9: ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )*
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:2: ( ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )* )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:4: ( column_name | reserved_word_column_name ) ( ',' ( column_name | reserved_word_column_name ) )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:9: ( column_name | reserved_word_column_name )
-            int alt73=2;
-            int LA73_0 = input.LA(1);
+            dbg.location(278,4);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:4: ( column_name | reserved_word_column_name )
+            int alt70=2;
+            try { dbg.enterSubRule(70);
+            try { dbg.enterDecision(70);
 
-            if ( (LA73_0==ID) ) {
-                int LA73_1 = input.LA(2);
+            int LA70_0 = input.LA(1);
 
-                if ( (LA73_1==62) ) {
-                    int LA73_3 = input.LA(3);
+            if ( (LA70_0==ID) ) {
+                int LA70_1 = input.LA(2);
 
-                    if ( ((LA73_3>=63 && LA73_3<=72)) ) {
-                        alt73=2;
+                if ( (LA70_1==56) ) {
+                    int LA70_3 = input.LA(3);
+
+                    if ( (LA70_3==ID) ) {
+                        alt70=1;
                     }
-                    else if ( (LA73_3==ID) ) {
-                        alt73=1;
+                    else if ( ((LA70_3>=57 && LA70_3<=66)) ) {
+                        alt70=2;
                     }
                     else {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("", 73, 3, input);
+                            new NoViableAltException("", 70, 3, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
-                else if ( (LA73_1==EOF||(LA73_1>=40 && LA73_1<=42)||(LA73_1>=44 && LA73_1<=45)||LA73_1==50||LA73_1==53||LA73_1==55||LA73_1==58) ) {
-                    alt73=1;
+                else if ( (LA70_1==EOF||(LA70_1>=37 && LA70_1<=38)||(LA70_1>=40 && LA70_1<=41)||LA70_1==46||LA70_1==49||LA70_1==51||LA70_1==54) ) {
+                    alt70=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 73, 1, input);
+                        new NoViableAltException("", 70, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
-            else if ( ((LA73_0>=63 && LA73_0<=72)) ) {
-                alt73=2;
+            else if ( ((LA70_0>=57 && LA70_0<=66)) ) {
+                alt70=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 73, 0, input);
+                    new NoViableAltException("", 70, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
-            switch (alt73) {
+            } finally {dbg.exitDecision(70);}
+
+            switch (alt70) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:10: column_name
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:5: column_name
                     {
-                    pushFollow(FOLLOW_column_name_in_column_list2861);
-                    column_name209=column_name();
+                    dbg.location(278,5);
+                    pushFollow(FOLLOW_column_name_in_column_list2025);
+                    column_name202=column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name209.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name202.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:24: reserved_word_column_name
+                    dbg.enterAlt(2);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:19: reserved_word_column_name
                     {
-                    pushFollow(FOLLOW_reserved_word_column_name_in_column_list2865);
-                    reserved_word_column_name210=reserved_word_column_name();
+                    dbg.location(278,19);
+                    pushFollow(FOLLOW_reserved_word_column_name_in_column_list2029);
+                    reserved_word_column_name203=reserved_word_column_name();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name210.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name203.getTree());
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(70);}
 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:51: ( ',' ( column_name | reserved_word_column_name ) )*
-            loop75:
+            dbg.location(278,46);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:46: ( ',' ( column_name | reserved_word_column_name ) )*
+            try { dbg.enterSubRule(72);
+
+            loop72:
             do {
-                int alt75=2;
-                int LA75_0 = input.LA(1);
+                int alt72=2;
+                try { dbg.enterDecision(72);
 
-                if ( (LA75_0==55) ) {
-                    alt75=1;
+                int LA72_0 = input.LA(1);
+
+                if ( (LA72_0==51) ) {
+                    alt72=1;
                 }
 
 
-                switch (alt75) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:52: ',' ( column_name | reserved_word_column_name )
-                    {
-                    char_literal211=(Token)match(input,55,FOLLOW_55_in_column_list2869); if (state.failed) return retval;
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:57: ( column_name | reserved_word_column_name )
-                    int alt74=2;
-                    int LA74_0 = input.LA(1);
+                } finally {dbg.exitDecision(72);}
 
-                    if ( (LA74_0==ID) ) {
-                        int LA74_1 = input.LA(2);
+                switch (alt72) {
+            	case 1 :
+            	    dbg.enterAlt(1);
 
-                        if ( (LA74_1==62) ) {
-                            int LA74_3 = input.LA(3);
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:47: ',' ( column_name | reserved_word_column_name )
+            	    {
+            	    dbg.location(278,50);
+            	    char_literal204=(Token)match(input,51,FOLLOW_51_in_column_list2033); if (state.failed) return retval;
+            	    dbg.location(278,52);
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:52: ( column_name | reserved_word_column_name )
+            	    int alt71=2;
+            	    try { dbg.enterSubRule(71);
+            	    try { dbg.enterDecision(71);
 
-                            if ( ((LA74_3>=63 && LA74_3<=72)) ) {
-                                alt74=2;
-                            }
-                            else if ( (LA74_3==ID) ) {
-                                alt74=1;
-                            }
-                            else {
-                                if (state.backtracking>0) {state.failed=true; return retval;}
-                                NoViableAltException nvae =
-                                    new NoViableAltException("", 74, 3, input);
+            	    int LA71_0 = input.LA(1);
 
-                                throw nvae;
-                            }
-                        }
-                        else if ( (LA74_1==EOF||(LA74_1>=40 && LA74_1<=42)||(LA74_1>=44 && LA74_1<=45)||LA74_1==50||LA74_1==53||LA74_1==55||LA74_1==58) ) {
-                            alt74=1;
-                        }
-                        else {
-                            if (state.backtracking>0) {state.failed=true; return retval;}
-                            NoViableAltException nvae =
-                                new NoViableAltException("", 74, 1, input);
+            	    if ( (LA71_0==ID) ) {
+            	        int LA71_1 = input.LA(2);
 
-                            throw nvae;
-                        }
-                    }
-                    else if ( ((LA74_0>=63 && LA74_0<=72)) ) {
-                        alt74=2;
-                    }
-                    else {
-                        if (state.backtracking>0) {state.failed=true; return retval;}
-                        NoViableAltException nvae =
-                            new NoViableAltException("", 74, 0, input);
+            	        if ( (LA71_1==56) ) {
+            	            int LA71_3 = input.LA(3);
 
-                        throw nvae;
-                    }
-                    switch (alt74) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:58: column_name
-                            {
-                            pushFollow(FOLLOW_column_name_in_column_list2873);
-                            column_name212=column_name();
+            	            if ( ((LA71_3>=57 && LA71_3<=66)) ) {
+            	                alt71=2;
+            	            }
+            	            else if ( (LA71_3==ID) ) {
+            	                alt71=1;
+            	            }
+            	            else {
+            	                if (state.backtracking>0) {state.failed=true; return retval;}
+            	                NoViableAltException nvae =
+            	                    new NoViableAltException("", 71, 3, input);
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name212.getTree());
+            	                dbg.recognitionException(nvae);
+            	                throw nvae;
+            	            }
+            	        }
+            	        else if ( (LA71_1==EOF||(LA71_1>=37 && LA71_1<=38)||(LA71_1>=40 && LA71_1<=41)||LA71_1==46||LA71_1==49||LA71_1==51||LA71_1==54) ) {
+            	            alt71=1;
+            	        }
+            	        else {
+            	            if (state.backtracking>0) {state.failed=true; return retval;}
+            	            NoViableAltException nvae =
+            	                new NoViableAltException("", 71, 1, input);
 
-                            }
-                            break;
-                        case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:286:72: reserved_word_column_name
-                            {
-                            pushFollow(FOLLOW_reserved_word_column_name_in_column_list2877);
-                            reserved_word_column_name213=reserved_word_column_name();
+            	            dbg.recognitionException(nvae);
+            	            throw nvae;
+            	        }
+            	    }
+            	    else if ( ((LA71_0>=57 && LA71_0<=66)) ) {
+            	        alt71=2;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return retval;}
+            	        NoViableAltException nvae =
+            	            new NoViableAltException("", 71, 0, input);
 
-                            state._fsp--;
-                            if (state.failed) return retval;
-                            if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name213.getTree());
+            	        dbg.recognitionException(nvae);
+            	        throw nvae;
+            	    }
+            	    } finally {dbg.exitDecision(71);}
 
-                            }
-                            break;
+            	    switch (alt71) {
+            	        case 1 :
+            	            dbg.enterAlt(1);
 
-                    }
+            	            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:53: column_name
+            	            {
+            	            dbg.location(278,53);
+            	            pushFollow(FOLLOW_column_name_in_column_list2037);
+            	            column_name205=column_name();
+
+            	            state._fsp--;
+            	            if (state.failed) return retval;
+            	            if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name205.getTree());
+
+            	            }
+            	            break;
+            	        case 2 :
+            	            dbg.enterAlt(2);
+
+            	            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:67: reserved_word_column_name
+            	            {
+            	            dbg.location(278,67);
+            	            pushFollow(FOLLOW_reserved_word_column_name_in_column_list2041);
+            	            reserved_word_column_name206=reserved_word_column_name();
+
+            	            state._fsp--;
+            	            if (state.failed) return retval;
+            	            if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name206.getTree());
+
+            	            }
+            	            break;
+
+            	    }
+            	    } finally {dbg.exitSubRule(71);}
 
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    break loop75;
+            	default :
+            	    break loop72;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(72);}
 
 
             }
@@ -8034,6 +9896,15 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(278, 95);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "column_list");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "column_list"
@@ -8044,7 +9915,7 @@ public class SQL92QueryParser extends Parser {
     };
 
     // $ANTLR start "column_name"
-    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:288:1: column_name : (tableid= ID '.' )? columnid= ID -> ^( TABLECOLUMN ( $tableid)? $columnid) ;
+    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:279:1: column_name : (tableid= ID '.' )? columnid= ID -> ^( TABLECOLUMN ( $tableid)? $columnid) ;
     public final SQL92QueryParser.column_name_return column_name() throws RecognitionException {
         SQL92QueryParser.column_name_return retval = new SQL92QueryParser.column_name_return();
         retval.start = input.LT(1);
@@ -8053,46 +9924,65 @@ public class SQL92QueryParser extends Parser {
 
         Token tableid=null;
         Token columnid=null;
-        Token char_literal214=null;
+        Token char_literal207=null;
 
         CommonTree tableid_tree=null;
         CommonTree columnid_tree=null;
-        CommonTree char_literal214_tree=null;
+        CommonTree char_literal207_tree=null;
+        RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
+
+        try { dbg.enterRule(getGrammarFileName(), "column_name");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(279, 1);
 
         try {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:5: ( (tableid= ID '.' )? columnid= ID -> ^( TABLECOLUMN ( $tableid)? $columnid) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:9: (tableid= ID '.' )? columnid= ID
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:2: ( (tableid= ID '.' )? columnid= ID -> ^( TABLECOLUMN ( $tableid)? $columnid) )
+            dbg.enterAlt(1);
+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:4: (tableid= ID '.' )? columnid= ID
             {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:9: (tableid= ID '.' )?
-            int alt76=2;
-            int LA76_0 = input.LA(1);
+            dbg.location(280,4);
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:4: (tableid= ID '.' )?
+            int alt73=2;
+            try { dbg.enterSubRule(73);
+            try { dbg.enterDecision(73);
 
-            if ( (LA76_0==ID) ) {
-                int LA76_1 = input.LA(2);
+            int LA73_0 = input.LA(1);
 
-                if ( (LA76_1==62) ) {
-                    alt76=1;
+            if ( (LA73_0==ID) ) {
+                int LA73_1 = input.LA(2);
+
+                if ( (LA73_1==56) ) {
+                    alt73=1;
                 }
             }
-            switch (alt76) {
+            } finally {dbg.exitDecision(73);}
+
+            switch (alt73) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:10: tableid= ID '.'
+                    dbg.enterAlt(1);
+
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:5: tableid= ID '.'
                     {
-                    tableid=(Token)match(input,ID,FOLLOW_ID_in_column_name2901); if (state.failed) return retval; 
+                    dbg.location(280,12);
+                    tableid=(Token)match(input,ID,FOLLOW_ID_in_column_name2055); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-                    char_literal214=(Token)match(input,62,FOLLOW_62_in_column_name2902); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_62.add(char_literal214);
+                    dbg.location(280,15);
+                    char_literal207=(Token)match(input,56,FOLLOW_56_in_column_name2056); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_56.add(char_literal207);
 
 
                     }
                     break;
 
             }
+            } finally {dbg.exitSubRule(73);}
 
-            columnid=(Token)match(input,ID,FOLLOW_ID_in_column_name2907); if (state.failed) return retval; 
+            dbg.location(280,28);
+            columnid=(Token)match(input,ID,FOLLOW_ID_in_column_name2061); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 
@@ -8111,19 +10001,24 @@ public class SQL92QueryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 289:37: -> ^( TABLECOLUMN ( $tableid)? $columnid)
+            // 280:32: -> ^( TABLECOLUMN ( $tableid)? $columnid)
             {
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:40: ^( TABLECOLUMN ( $tableid)? $columnid)
+                dbg.location(280,35);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:35: ^( TABLECOLUMN ( $tableid)? $columnid)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(280,37);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(TABLECOLUMN, "TABLECOLUMN"), root_1);
 
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:289:54: ( $tableid)?
+                dbg.location(280,49);
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:49: ( $tableid)?
                 if ( stream_tableid.hasNext() ) {
+                    dbg.location(280,49);
                     adaptor.addChild(root_1, stream_tableid.nextNode());
 
                 }
                 stream_tableid.reset();
+                dbg.location(280,59);
                 adaptor.addChild(root_1, stream_columnid.nextNode());
 
                 adaptor.addChild(root_0, root_1);
@@ -8150,26 +10045,40 @@ public class SQL92QueryParser extends Parser {
         }
         finally {
         }
+        dbg.location(281, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "column_name");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "column_name"
 
-    // $ANTLR start synpred39_SQL92Query
-    public final void synpred39_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:17: ( ( '+' | '-' ) factor )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:151:17: ( '+' | '-' ) factor
+    // $ANTLR start synpred36_SQL92Query
+    public final void synpred36_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:13: ( ( '+' | '-' ) factor )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:139:13: ( '+' | '-' ) factor
         {
-        if ( (input.LA(1)>=73 && input.LA(1)<=74) ) {
+        dbg.location(139,13);
+        if ( (input.LA(1)>=67 && input.LA(1)<=68) ) {
             input.consume();
             state.errorRecovery=false;state.failed=false;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             MismatchedSetException mse = new MismatchedSetException(null,input);
+            dbg.recognitionException(mse);
             throw mse;
         }
 
-        pushFollow(FOLLOW_factor_in_synpred39_SQL92Query1076);
+        dbg.location(139,24);
+        pushFollow(FOLLOW_factor_in_synpred36_SQL92Query698);
         factor();
 
         state._fsp--;
@@ -8177,31 +10086,39 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred39_SQL92Query
+    // $ANTLR end synpred36_SQL92Query
 
-    // $ANTLR start synpred44_SQL92Query
-    public final void synpred44_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:160:9: ( '(' value_expression ')' )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:160:9: '(' value_expression ')'
+    // $ANTLR start synpred41_SQL92Query
+    public final void synpred41_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:146:4: ( '(' value_expression ')' )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:146:4: '(' value_expression ')'
         {
-        match(input,52,FOLLOW_52_in_synpred44_SQL92Query1157); if (state.failed) return ;
-        pushFollow(FOLLOW_value_expression_in_synpred44_SQL92Query1160);
+        dbg.location(146,4);
+        match(input,48,FOLLOW_48_in_synpred41_SQL92Query751); if (state.failed) return ;
+        dbg.location(146,9);
+        pushFollow(FOLLOW_value_expression_in_synpred41_SQL92Query754);
         value_expression();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,53,FOLLOW_53_in_synpred44_SQL92Query1162); if (state.failed) return ;
+        dbg.location(146,26);
+        match(input,49,FOLLOW_49_in_synpred41_SQL92Query756); if (state.failed) return ;
 
         }
     }
-    // $ANTLR end synpred44_SQL92Query
+    // $ANTLR end synpred41_SQL92Query
 
-    // $ANTLR start synpred45_SQL92Query
-    public final void synpred45_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:161:9: ( function )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:161:9: function
+    // $ANTLR start synpred42_SQL92Query
+    public final void synpred42_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:147:5: ( function )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:147:5: function
         {
-        pushFollow(FOLLOW_function_in_synpred45_SQL92Query1173);
+        dbg.location(147,5);
+        pushFollow(FOLLOW_function_in_synpred42_SQL92Query763);
         function();
 
         state._fsp--;
@@ -8209,14 +10126,17 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred45_SQL92Query
+    // $ANTLR end synpred42_SQL92Query
 
-    // $ANTLR start synpred46_SQL92Query
-    public final void synpred46_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:162:9: ( column_name )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:162:9: column_name
+    // $ANTLR start synpred43_SQL92Query
+    public final void synpred43_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:148:5: ( column_name )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:148:5: column_name
         {
-        pushFollow(FOLLOW_column_name_in_synpred46_SQL92Query1183);
+        dbg.location(148,5);
+        pushFollow(FOLLOW_column_name_in_synpred43_SQL92Query769);
         column_name();
 
         state._fsp--;
@@ -8224,14 +10144,17 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred46_SQL92Query
+    // $ANTLR end synpred43_SQL92Query
 
-    // $ANTLR start synpred47_SQL92Query
-    public final void synpred47_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:163:9: ( literal )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:163:9: literal
+    // $ANTLR start synpred44_SQL92Query
+    public final void synpred44_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:149:5: ( literal )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:149:5: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred47_SQL92Query1193);
+        dbg.location(149,5);
+        pushFollow(FOLLOW_literal_in_synpred44_SQL92Query775);
         literal();
 
         state._fsp--;
@@ -8239,58 +10162,73 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred47_SQL92Query
+    // $ANTLR end synpred44_SQL92Query
 
-    // $ANTLR start synpred58_SQL92Query
-    public final void synpred58_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:170:9: ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:170:9: ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING
+    // $ANTLR start synpred55_SQL92Query
+    public final void synpred55_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:155:4: ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:155:4: ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING
         {
-        if ( (input.LA(1)>=63 && input.LA(1)<=65) ) {
+        dbg.location(155,4);
+        if ( (input.LA(1)>=57 && input.LA(1)<=59) ) {
             input.consume();
             state.errorRecovery=false;state.failed=false;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             MismatchedSetException mse = new MismatchedSetException(null,input);
+            dbg.recognitionException(mse);
             throw mse;
         }
 
-        match(input,STRING,FOLLOW_STRING_in_synpred58_SQL92Query1284); if (state.failed) return ;
+        dbg.location(155,37);
+        match(input,STRING,FOLLOW_STRING_in_synpred55_SQL92Query844); if (state.failed) return ;
 
         }
     }
-    // $ANTLR end synpred58_SQL92Query
+    // $ANTLR end synpred55_SQL92Query
 
-    // $ANTLR start synpred67_SQL92Query
-    public final void synpred67_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:174:9: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:174:9: 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' )
+    // $ANTLR start synpred64_SQL92Query
+    public final void synpred64_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:159:4: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:159:4: 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' )
         {
-        match(input,66,FOLLOW_66_in_synpred67_SQL92Query1348); if (state.failed) return ;
-        match(input,STRING,FOLLOW_STRING_in_synpred67_SQL92Query1351); if (state.failed) return ;
-        if ( (input.LA(1)>=67 && input.LA(1)<=72) ) {
+        dbg.location(159,4);
+        match(input,60,FOLLOW_60_in_synpred64_SQL92Query896); if (state.failed) return ;
+        dbg.location(159,16);
+        match(input,STRING,FOLLOW_STRING_in_synpred64_SQL92Query899); if (state.failed) return ;
+        dbg.location(159,23);
+        if ( (input.LA(1)>=61 && input.LA(1)<=66) ) {
             input.consume();
             state.errorRecovery=false;state.failed=false;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             MismatchedSetException mse = new MismatchedSetException(null,input);
+            dbg.recognitionException(mse);
             throw mse;
         }
 
 
         }
     }
-    // $ANTLR end synpred67_SQL92Query
+    // $ANTLR end synpred64_SQL92Query
 
-    // $ANTLR start synpred81_SQL92Query
-    public final void synpred81_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:16: ( ',' table_reference )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:189:16: ',' table_reference
+    // $ANTLR start synpred78_SQL92Query
+    public final void synpred78_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:11: ( ',' table_reference )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:176:11: ',' table_reference
         {
-        match(input,55,FOLLOW_55_in_synpred81_SQL92Query1617); if (state.failed) return ;
-        pushFollow(FOLLOW_table_reference_in_synpred81_SQL92Query1620);
+        dbg.location(176,11);
+        match(input,51,FOLLOW_51_in_synpred78_SQL92Query1116); if (state.failed) return ;
+        dbg.location(176,16);
+        pushFollow(FOLLOW_table_reference_in_synpred78_SQL92Query1119);
         table_reference();
 
         state._fsp--;
@@ -8298,14 +10236,17 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred81_SQL92Query
+    // $ANTLR end synpred78_SQL92Query
 
-    // $ANTLR start synpred93_SQL92Query
-    public final void synpred93_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:21: ( table_function_subquery )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:21: table_function_subquery
+    // $ANTLR start synpred90_SQL92Query
+    public final void synpred90_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:16: ( table_function_subquery )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:16: table_function_subquery
         {
-        pushFollow(FOLLOW_table_function_subquery_in_synpred93_SQL92Query1836);
+        dbg.location(196,16);
+        pushFollow(FOLLOW_table_function_subquery_in_synpred90_SQL92Query1286);
         table_function_subquery();
 
         state._fsp--;
@@ -8313,16 +10254,38 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred93_SQL92Query
+    // $ANTLR end synpred90_SQL92Query
+
+    // $ANTLR start synpred91_SQL92Query
+    public final void synpred91_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:42: ( ',' table_function_subquery )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:42: ',' table_function_subquery
+        {
+        dbg.location(196,42);
+        match(input,51,FOLLOW_51_in_synpred91_SQL92Query1290); if (state.failed) return ;
+        dbg.location(196,46);
+        pushFollow(FOLLOW_table_function_subquery_in_synpred91_SQL92Query1292);
+        table_function_subquery();
+
+        state._fsp--;
+        if (state.failed) return ;
+
+        }
+    }
+    // $ANTLR end synpred91_SQL92Query
 
     // $ANTLR start synpred94_SQL92Query
     public final void synpred94_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:47: ( ',' table_function_subquery )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:206:47: ',' table_function_subquery
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:205:4: ( search_condition )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:205:4: search_condition
         {
-        match(input,55,FOLLOW_55_in_synpred94_SQL92Query1840); if (state.failed) return ;
-        pushFollow(FOLLOW_table_function_subquery_in_synpred94_SQL92Query1842);
-        table_function_subquery();
+        dbg.location(205,4);
+        pushFollow(FOLLOW_search_condition_in_synpred94_SQL92Query1359);
+        search_condition();
 
         state._fsp--;
         if (state.failed) return ;
@@ -8331,28 +10294,70 @@ public class SQL92QueryParser extends Parser {
     }
     // $ANTLR end synpred94_SQL92Query
 
-    // $ANTLR start synpred97_SQL92Query
-    public final void synpred97_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:213:9: ( search_condition )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:213:9: search_condition
+    // $ANTLR start synpred100_SQL92Query
+    public final void synpred100_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:4: ( predicate )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:4: predicate
         {
-        pushFollow(FOLLOW_search_condition_in_synpred97_SQL92Query1932);
-        search_condition();
+        dbg.location(226,4);
+        pushFollow(FOLLOW_predicate_in_synpred100_SQL92Query1492);
+        predicate();
 
         state._fsp--;
         if (state.failed) return ;
 
         }
     }
-    // $ANTLR end synpred97_SQL92Query
+    // $ANTLR end synpred100_SQL92Query
+
+    // $ANTLR start synpred101_SQL92Query
+    public final void synpred101_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:4: ( comparison_predicate )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:4: comparison_predicate
+        {
+        dbg.location(228,4);
+        pushFollow(FOLLOW_comparison_predicate_in_synpred101_SQL92Query1511);
+        comparison_predicate();
+
+        state._fsp--;
+        if (state.failed) return ;
+
+        }
+    }
+    // $ANTLR end synpred101_SQL92Query
+
+    // $ANTLR start synpred102_SQL92Query
+    public final void synpred102_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:27: ( like_predicate )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:27: like_predicate
+        {
+        dbg.location(228,27);
+        pushFollow(FOLLOW_like_predicate_in_synpred102_SQL92Query1515);
+        like_predicate();
+
+        state._fsp--;
+        if (state.failed) return ;
+
+        }
+    }
+    // $ANTLR end synpred102_SQL92Query
 
     // $ANTLR start synpred103_SQL92Query
     public final void synpred103_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:235:9: ( predicate )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:235:9: predicate
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:44: ( in_predicate )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:44: in_predicate
         {
-        pushFollow(FOLLOW_predicate_in_synpred103_SQL92Query2134);
-        predicate();
+        dbg.location(228,44);
+        pushFollow(FOLLOW_in_predicate_in_synpred103_SQL92Query1519);
+        in_predicate();
 
         state._fsp--;
         if (state.failed) return ;
@@ -8363,11 +10368,14 @@ public class SQL92QueryParser extends Parser {
 
     // $ANTLR start synpred104_SQL92Query
     public final void synpred104_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:9: ( comparison_predicate )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:9: comparison_predicate
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:59: ( null_predicate )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:59: null_predicate
         {
-        pushFollow(FOLLOW_comparison_predicate_in_synpred104_SQL92Query2165);
-        comparison_predicate();
+        dbg.location(228,59);
+        pushFollow(FOLLOW_null_predicate_in_synpred104_SQL92Query1523);
+        null_predicate();
 
         state._fsp--;
         if (state.failed) return ;
@@ -8376,31 +10384,23 @@ public class SQL92QueryParser extends Parser {
     }
     // $ANTLR end synpred104_SQL92Query
 
-    // $ANTLR start synpred105_SQL92Query
-    public final void synpred105_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:32: ( like_predicate )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:32: like_predicate
-        {
-        pushFollow(FOLLOW_like_predicate_in_synpred105_SQL92Query2169);
-        like_predicate();
-
-        state._fsp--;
-        if (state.failed) return ;
-
-        }
-    }
-    // $ANTLR end synpred105_SQL92Query
-
     // $ANTLR start synpred106_SQL92Query
     public final void synpred106_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:49: ( in_predicate )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:49: in_predicate
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:4: ( row_value 'IS' 'NULL' )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:4: row_value 'IS' 'NULL'
         {
-        pushFollow(FOLLOW_in_predicate_in_synpred106_SQL92Query2173);
-        in_predicate();
+        dbg.location(230,4);
+        pushFollow(FOLLOW_row_value_in_synpred106_SQL92Query1539);
+        row_value();
 
         state._fsp--;
         if (state.failed) return ;
+        dbg.location(230,14);
+        match(input,84,FOLLOW_84_in_synpred106_SQL92Query1541); if (state.failed) return ;
+        dbg.location(230,19);
+        match(input,70,FOLLOW_70_in_synpred106_SQL92Query1543); if (state.failed) return ;
 
         }
     }
@@ -8408,11 +10408,24 @@ public class SQL92QueryParser extends Parser {
 
     // $ANTLR start synpred107_SQL92Query
     public final void synpred107_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:64: ( null_predicate )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:238:64: null_predicate
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:234:4: ( row_value 'NOT' 'IN' in_predicate_tail )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:234:4: row_value 'NOT' 'IN' in_predicate_tail
         {
-        pushFollow(FOLLOW_null_predicate_in_synpred107_SQL92Query2177);
-        null_predicate();
+        dbg.location(234,4);
+        pushFollow(FOLLOW_row_value_in_synpred107_SQL92Query1584);
+        row_value();
+
+        state._fsp--;
+        if (state.failed) return ;
+        dbg.location(234,14);
+        match(input,83,FOLLOW_83_in_synpred107_SQL92Query1586); if (state.failed) return ;
+        dbg.location(234,20);
+        match(input,85,FOLLOW_85_in_synpred107_SQL92Query1588); if (state.failed) return ;
+        dbg.location(234,25);
+        pushFollow(FOLLOW_in_predicate_tail_in_synpred107_SQL92Query1590);
+        in_predicate_tail();
 
         state._fsp--;
         if (state.failed) return ;
@@ -8421,37 +10434,57 @@ public class SQL92QueryParser extends Parser {
     }
     // $ANTLR end synpred107_SQL92Query
 
-    // $ANTLR start synpred109_SQL92Query
-    public final void synpred109_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:241:9: ( row_value 'IS' 'NULL' )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:241:9: row_value 'IS' 'NULL'
+    // $ANTLR start synpred108_SQL92Query
+    public final void synpred108_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:240:4: ( sub_query )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:240:4: sub_query
         {
-        pushFollow(FOLLOW_row_value_in_synpred109_SQL92Query2203);
-        row_value();
+        dbg.location(240,4);
+        pushFollow(FOLLOW_sub_query_in_synpred108_SQL92Query1639);
+        sub_query();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,90,FOLLOW_90_in_synpred109_SQL92Query2205); if (state.failed) return ;
-        match(input,76,FOLLOW_76_in_synpred109_SQL92Query2207); if (state.failed) return ;
 
         }
     }
-    // $ANTLR end synpred109_SQL92Query
+    // $ANTLR end synpred108_SQL92Query
 
     // $ANTLR start synpred110_SQL92Query
     public final void synpred110_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:245:9: ( row_value 'NOT' 'IN' in_predicate_tail )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:245:9: row_value 'NOT' 'IN' in_predicate_tail
+        SQL92QueryParser.row_value_return value = null;
+
+        SQL92QueryParser.row_value_return btw1 = null;
+
+        SQL92QueryParser.row_value_return btw2 = null;
+
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:243:4: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:243:4: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
         {
-        pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query2261);
-        row_value();
+        dbg.location(243,9);
+        pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query1679);
+        value=row_value();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,89,FOLLOW_89_in_synpred110_SQL92Query2263); if (state.failed) return ;
-        match(input,91,FOLLOW_91_in_synpred110_SQL92Query2265); if (state.failed) return ;
-        pushFollow(FOLLOW_in_predicate_tail_in_synpred110_SQL92Query2267);
-        in_predicate_tail();
+        dbg.location(243,20);
+        match(input,86,FOLLOW_86_in_synpred110_SQL92Query1681); if (state.failed) return ;
+        dbg.location(243,34);
+        pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query1685);
+        btw1=row_value();
+
+        state._fsp--;
+        if (state.failed) return ;
+        dbg.location(243,45);
+        match(input,82,FOLLOW_82_in_synpred110_SQL92Query1687); if (state.failed) return ;
+        dbg.location(243,55);
+        pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query1691);
+        btw2=row_value();
 
         state._fsp--;
         if (state.failed) return ;
@@ -8460,57 +10493,8 @@ public class SQL92QueryParser extends Parser {
     }
     // $ANTLR end synpred110_SQL92Query
 
-    // $ANTLR start synpred111_SQL92Query
-    public final void synpred111_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:251:9: ( sub_query )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:251:9: sub_query
-        {
-        pushFollow(FOLLOW_sub_query_in_synpred111_SQL92Query2347);
-        sub_query();
-
-        state._fsp--;
-        if (state.failed) return ;
-
-        }
-    }
-    // $ANTLR end synpred111_SQL92Query
-
-    // $ANTLR start synpred113_SQL92Query
-    public final void synpred113_SQL92Query_fragment() throws RecognitionException {   
-        SQL92QueryParser.row_value_return value = null;
-
-        SQL92QueryParser.row_value_return btw1 = null;
-
-        SQL92QueryParser.row_value_return btw2 = null;
-
-
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:255:9: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:255:9: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
-        {
-        pushFollow(FOLLOW_row_value_in_synpred113_SQL92Query2400);
-        value=row_value();
-
-        state._fsp--;
-        if (state.failed) return ;
-        match(input,92,FOLLOW_92_in_synpred113_SQL92Query2402); if (state.failed) return ;
-        pushFollow(FOLLOW_row_value_in_synpred113_SQL92Query2406);
-        btw1=row_value();
-
-        state._fsp--;
-        if (state.failed) return ;
-        match(input,88,FOLLOW_88_in_synpred113_SQL92Query2408); if (state.failed) return ;
-        pushFollow(FOLLOW_row_value_in_synpred113_SQL92Query2412);
-        btw2=row_value();
-
-        state._fsp--;
-        if (state.failed) return ;
-
-        }
-    }
-    // $ANTLR end synpred113_SQL92Query
-
-    // $ANTLR start synpred123_SQL92Query
-    public final void synpred123_SQL92Query_fragment() throws RecognitionException {   
+    // $ANTLR start synpred120_SQL92Query
+    public final void synpred120_SQL92Query_fragment() throws RecognitionException {   
         Token op=null;
         Token ep=null;
         SQL92QueryParser.row_value_return lv = null;
@@ -8518,165 +10502,215 @@ public class SQL92QueryParser extends Parser {
         SQL92QueryParser.row_value_return rv = null;
 
 
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:9: (lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:9: lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:4: (lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:4: lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value
         {
-        pushFollow(FOLLOW_row_value_in_synpred123_SQL92Query2553);
+        dbg.location(252,6);
+        pushFollow(FOLLOW_row_value_in_synpred120_SQL92Query1785);
         lv=row_value();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:22: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
-        int alt89=7;
+        dbg.location(252,17);
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:17: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
+        int alt86=7;
+        try { dbg.enterSubRule(86);
+        try { dbg.enterDecision(86);
+
         switch ( input.LA(1) ) {
+        case 88:
+            {
+            alt86=1;
+            }
+            break;
+        case 89:
+            {
+            alt86=2;
+            }
+            break;
+        case 90:
+            {
+            alt86=3;
+            }
+            break;
+        case 91:
+            {
+            alt86=4;
+            }
+            break;
+        case 92:
+            {
+            alt86=5;
+            }
+            break;
+        case 93:
+            {
+            alt86=6;
+            }
+            break;
         case 94:
             {
-            alt89=1;
-            }
-            break;
-        case 95:
-            {
-            alt89=2;
-            }
-            break;
-        case 96:
-            {
-            alt89=3;
-            }
-            break;
-        case 97:
-            {
-            alt89=4;
-            }
-            break;
-        case 98:
-            {
-            alt89=5;
-            }
-            break;
-        case 99:
-            {
-            alt89=6;
-            }
-            break;
-        case 100:
-            {
-            alt89=7;
+            alt86=7;
             }
             break;
         default:
             if (state.backtracking>0) {state.failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("", 89, 0, input);
+                new NoViableAltException("", 86, 0, input);
 
+            dbg.recognitionException(nvae);
             throw nvae;
         }
 
-        switch (alt89) {
+        } finally {dbg.exitDecision(86);}
+
+        switch (alt86) {
             case 1 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:23: op= '='
+                dbg.enterAlt(1);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:18: op= '='
                 {
-                op=(Token)match(input,94,FOLLOW_94_in_synpred123_SQL92Query2558); if (state.failed) return ;
+                dbg.location(252,20);
+                op=(Token)match(input,88,FOLLOW_88_in_synpred120_SQL92Query1790); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:30: op= '<>'
+                dbg.enterAlt(2);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:25: op= '<>'
                 {
-                op=(Token)match(input,95,FOLLOW_95_in_synpred123_SQL92Query2562); if (state.failed) return ;
+                dbg.location(252,27);
+                op=(Token)match(input,89,FOLLOW_89_in_synpred120_SQL92Query1794); if (state.failed) return ;
 
                 }
                 break;
             case 3 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:38: op= '!='
+                dbg.enterAlt(3);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:33: op= '!='
                 {
-                op=(Token)match(input,96,FOLLOW_96_in_synpred123_SQL92Query2566); if (state.failed) return ;
+                dbg.location(252,35);
+                op=(Token)match(input,90,FOLLOW_90_in_synpred120_SQL92Query1798); if (state.failed) return ;
 
                 }
                 break;
             case 4 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:46: op= '<'
+                dbg.enterAlt(4);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:41: op= '<'
                 {
-                op=(Token)match(input,97,FOLLOW_97_in_synpred123_SQL92Query2570); if (state.failed) return ;
+                dbg.location(252,43);
+                op=(Token)match(input,91,FOLLOW_91_in_synpred120_SQL92Query1802); if (state.failed) return ;
 
                 }
                 break;
             case 5 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:53: op= '>'
+                dbg.enterAlt(5);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:48: op= '>'
                 {
-                op=(Token)match(input,98,FOLLOW_98_in_synpred123_SQL92Query2574); if (state.failed) return ;
+                dbg.location(252,50);
+                op=(Token)match(input,92,FOLLOW_92_in_synpred120_SQL92Query1806); if (state.failed) return ;
 
                 }
                 break;
             case 6 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:60: op= '>='
+                dbg.enterAlt(6);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:55: op= '>='
                 {
-                op=(Token)match(input,99,FOLLOW_99_in_synpred123_SQL92Query2578); if (state.failed) return ;
+                dbg.location(252,57);
+                op=(Token)match(input,93,FOLLOW_93_in_synpred120_SQL92Query1810); if (state.failed) return ;
 
                 }
                 break;
             case 7 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:68: op= '<='
+                dbg.enterAlt(7);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:63: op= '<='
                 {
-                op=(Token)match(input,100,FOLLOW_100_in_synpred123_SQL92Query2582); if (state.failed) return ;
+                dbg.location(252,65);
+                op=(Token)match(input,94,FOLLOW_94_in_synpred120_SQL92Query1814); if (state.failed) return ;
 
                 }
                 break;
 
         }
+        } finally {dbg.exitSubRule(86);}
 
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:77: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
-        int alt90=3;
+        dbg.location(252,72);
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:72: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
+        int alt87=3;
+        try { dbg.enterSubRule(87);
+        try { dbg.enterDecision(87);
+
         switch ( input.LA(1) ) {
-        case 43:
+        case 39:
             {
-            alt90=1;
+            alt87=1;
             }
             break;
-        case 101:
+        case 95:
             {
-            alt90=2;
+            alt87=2;
             }
             break;
-        case 102:
+        case 96:
             {
-            alt90=3;
+            alt87=3;
             }
             break;
         default:
             if (state.backtracking>0) {state.failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("", 90, 0, input);
+                new NoViableAltException("", 87, 0, input);
 
+            dbg.recognitionException(nvae);
             throw nvae;
         }
 
-        switch (alt90) {
+        } finally {dbg.exitDecision(87);}
+
+        switch (alt87) {
             case 1 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:78: ep= 'ALL'
+                dbg.enterAlt(1);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:73: ep= 'ALL'
                 {
-                ep=(Token)match(input,43,FOLLOW_43_in_synpred123_SQL92Query2588); if (state.failed) return ;
+                dbg.location(252,75);
+                ep=(Token)match(input,39,FOLLOW_39_in_synpred120_SQL92Query1820); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:87: ep= 'SOME'
+                dbg.enterAlt(2);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:82: ep= 'SOME'
                 {
-                ep=(Token)match(input,101,FOLLOW_101_in_synpred123_SQL92Query2592); if (state.failed) return ;
+                dbg.location(252,84);
+                ep=(Token)match(input,95,FOLLOW_95_in_synpred120_SQL92Query1824); if (state.failed) return ;
 
                 }
                 break;
             case 3 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:265:97: ep= 'ANY'
+                dbg.enterAlt(3);
+
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:92: ep= 'ANY'
                 {
-                ep=(Token)match(input,102,FOLLOW_102_in_synpred123_SQL92Query2596); if (state.failed) return ;
+                dbg.location(252,94);
+                ep=(Token)match(input,96,FOLLOW_96_in_synpred120_SQL92Query1828); if (state.failed) return ;
 
                 }
                 break;
 
         }
+        } finally {dbg.exitSubRule(87);}
 
-        pushFollow(FOLLOW_row_value_in_synpred123_SQL92Query2601);
+        dbg.location(252,104);
+        pushFollow(FOLLOW_row_value_in_synpred120_SQL92Query1833);
         rv=row_value();
 
         state._fsp--;
@@ -8684,20 +10718,25 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred123_SQL92Query
+    // $ANTLR end synpred120_SQL92Query
 
-    // $ANTLR start synpred130_SQL92Query
-    public final void synpred130_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:270:9: ( row_value 'LIKE' row_value )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:270:9: row_value 'LIKE' row_value
+    // $ANTLR start synpred127_SQL92Query
+    public final void synpred127_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:259:4: ( row_value 'LIKE' row_value )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:259:4: row_value 'LIKE' row_value
         {
-        pushFollow(FOLLOW_row_value_in_synpred130_SQL92Query2690);
+        dbg.location(259,4);
+        pushFollow(FOLLOW_row_value_in_synpred127_SQL92Query1901);
         row_value();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,103,FOLLOW_103_in_synpred130_SQL92Query2692); if (state.failed) return ;
-        pushFollow(FOLLOW_row_value_in_synpred130_SQL92Query2695);
+        dbg.location(259,14);
+        match(input,97,FOLLOW_97_in_synpred127_SQL92Query1903); if (state.failed) return ;
+        dbg.location(259,22);
+        pushFollow(FOLLOW_row_value_in_synpred127_SQL92Query1906);
         row_value();
 
         state._fsp--;
@@ -8705,14 +10744,17 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred130_SQL92Query
+    // $ANTLR end synpred127_SQL92Query
 
-    // $ANTLR start synpred131_SQL92Query
-    public final void synpred131_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:9: ( value_expression )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:9: value_expression
+    // $ANTLR start synpred128_SQL92Query
+    public final void synpred128_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:4: ( value_expression )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:4: value_expression
         {
-        pushFollow(FOLLOW_value_expression_in_synpred131_SQL92Query2749);
+        dbg.location(267,4);
+        pushFollow(FOLLOW_value_expression_in_synpred128_SQL92Query1950);
         value_expression();
 
         state._fsp--;
@@ -8720,51 +10762,59 @@ public class SQL92QueryParser extends Parser {
 
         }
     }
-    // $ANTLR end synpred131_SQL92Query
+    // $ANTLR end synpred128_SQL92Query
 
-    // $ANTLR start synpred132_SQL92Query
-    public final void synpred132_SQL92Query_fragment() throws RecognitionException {   
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:27: ( 'NULL' )
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:274:27: 'NULL'
+    // $ANTLR start synpred129_SQL92Query
+    public final void synpred129_SQL92Query_fragment() throws RecognitionException {   
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:22: ( 'NULL' )
+        dbg.enterAlt(1);
+
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:22: 'NULL'
         {
-        match(input,76,FOLLOW_76_in_synpred132_SQL92Query2752); if (state.failed) return ;
+        dbg.location(267,22);
+        match(input,70,FOLLOW_70_in_synpred129_SQL92Query1953); if (state.failed) return ;
 
         }
     }
-    // $ANTLR end synpred132_SQL92Query
+    // $ANTLR end synpred129_SQL92Query
 
     // Delegated rules
 
-    public final boolean synpred132_SQL92Query() {
+    public final boolean synpred41_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred132_SQL92Query_fragment(); // can never throw exception
+            synpred41_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred109_SQL92Query() {
+    public final boolean synpred55_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred109_SQL92Query_fragment(); // can never throw exception
+            synpred55_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred110_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred110_SQL92Query_fragment(); // can never throw exception
@@ -8773,68 +10823,46 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred39_SQL92Query() {
+    public final boolean synpred90_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred39_SQL92Query_fragment(); // can never throw exception
+            synpred90_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred131_SQL92Query() {
+    public final boolean synpred43_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred131_SQL92Query_fragment(); // can never throw exception
+            synpred43_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred93_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred93_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred130_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred130_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred104_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred104_SQL92Query_fragment(); // can never throw exception
@@ -8843,26 +10871,14 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred123_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred123_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred106_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred106_SQL92Query_fragment(); // can never throw exception
@@ -8871,26 +10887,94 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred113_SQL92Query() {
+    public final boolean synpred101_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred113_SQL92Query_fragment(); // can never throw exception
+            synpred101_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred102_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred102_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred100_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred100_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred91_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred91_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred128_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred128_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred103_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred103_SQL92Query_fragment(); // can never throw exception
@@ -8899,110 +10983,94 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred45_SQL92Query() {
+    public final boolean synpred78_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred45_SQL92Query_fragment(); // can never throw exception
+            synpred78_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred58_SQL92Query() {
+    public final boolean synpred36_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred58_SQL92Query_fragment(); // can never throw exception
+            synpred36_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred97_SQL92Query() {
+    public final boolean synpred64_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred97_SQL92Query_fragment(); // can never throw exception
+            synpred64_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred81_SQL92Query() {
+    public final boolean synpred127_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred81_SQL92Query_fragment(); // can never throw exception
+            synpred127_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred46_SQL92Query() {
+    public final boolean synpred42_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred46_SQL92Query_fragment(); // can never throw exception
+            synpred42_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred111_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred111_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred47_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred47_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred94_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred94_SQL92Query_fragment(); // can never throw exception
@@ -9011,40 +11079,30 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
-    public final boolean synpred67_SQL92Query() {
+    public final boolean synpred120_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
-            synpred67_SQL92Query_fragment(); // can never throw exception
+            synpred120_SQL92Query_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred105_SQL92Query() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred105_SQL92Query_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred107_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred107_SQL92Query_fragment(); // can never throw exception
@@ -9053,12 +11111,14 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
     public final boolean synpred44_SQL92Query() {
         state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
         int start = input.mark();
         try {
             synpred44_SQL92Query_fragment(); // can never throw exception
@@ -9067,108 +11127,74 @@ public class SQL92QueryParser extends Parser {
         }
         boolean success = !state.failed;
         input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred129_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred129_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
+    public final boolean synpred108_SQL92Query() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred108_SQL92Query_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
         state.backtracking--;
         state.failed=false;
         return success;
     }
 
 
-    protected DFA21 dfa21 = new DFA21(this);
+    protected DFA22 dfa22 = new DFA22(this);
     protected DFA25 dfa25 = new DFA25(this);
-    protected DFA28 dfa28 = new DFA28(this);
-    protected DFA29 dfa29 = new DFA29(this);
-    protected DFA35 dfa35 = new DFA35(this);
-    protected DFA51 dfa51 = new DFA51(this);
+    protected DFA26 dfa26 = new DFA26(this);
+    protected DFA32 dfa32 = new DFA32(this);
+    protected DFA48 dfa48 = new DFA48(this);
+    protected DFA49 dfa49 = new DFA49(this);
     protected DFA52 dfa52 = new DFA52(this);
-    protected DFA55 dfa55 = new DFA55(this);
+    protected DFA57 dfa57 = new DFA57(this);
+    protected DFA58 dfa58 = new DFA58(this);
+    protected DFA59 dfa59 = new DFA59(this);
     protected DFA60 dfa60 = new DFA60(this);
-    protected DFA61 dfa61 = new DFA61(this);
-    protected DFA62 dfa62 = new DFA62(this);
     protected DFA63 dfa63 = new DFA63(this);
     protected DFA66 dfa66 = new DFA66(this);
-    protected DFA69 dfa69 = new DFA69(this);
-    protected DFA70 dfa70 = new DFA70(this);
-    static final String DFA21_eotS =
-        "\21\uffff";
-    static final String DFA21_eofS =
-        "\1\uffff\14\17\3\uffff\1\17";
-    static final String DFA21_minS =
-        "\1\42\14\50\1\43\2\uffff\1\50";
-    static final String DFA21_maxS =
-        "\1\110\1\76\13\75\1\110\2\uffff\1\75";
-    static final String DFA21_acceptS =
-        "\16\uffff\1\1\1\2\1\uffff";
-    static final String DFA21_specialS =
-        "\21\uffff}>";
-    static final String[] DFA21_transitionS = {
-            "\1\2\1\1\33\uffff\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
-            "\14",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17\1\15",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17",
-            "\1\20\33\uffff\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14",
-            "",
-            "",
-            "\2\17\15\uffff\1\17\4\uffff\1\16\1\17"
-    };
-
-    static final short[] DFA21_eot = DFA.unpackEncodedString(DFA21_eotS);
-    static final short[] DFA21_eof = DFA.unpackEncodedString(DFA21_eofS);
-    static final char[] DFA21_min = DFA.unpackEncodedStringToUnsignedChars(DFA21_minS);
-    static final char[] DFA21_max = DFA.unpackEncodedStringToUnsignedChars(DFA21_maxS);
-    static final short[] DFA21_accept = DFA.unpackEncodedString(DFA21_acceptS);
-    static final short[] DFA21_special = DFA.unpackEncodedString(DFA21_specialS);
-    static final short[][] DFA21_transition;
-
-    static {
-        int numStates = DFA21_transitionS.length;
-        DFA21_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA21_transition[i] = DFA.unpackEncodedString(DFA21_transitionS[i]);
-        }
-    }
-
-    class DFA21 extends DFA {
-
-        public DFA21(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 21;
-            this.eot = DFA21_eot;
-            this.eof = DFA21_eof;
-            this.min = DFA21_min;
-            this.max = DFA21_max;
-            this.accept = DFA21_accept;
-            this.special = DFA21_special;
-            this.transition = DFA21_transition;
-        }
-        public String getDescription() {
-            return "138:1: ordered_sort_spec : ( sort_spec 'DESC' -> ^( DESC sort_spec ) | sort_spec ( 'ASC' )? -> ^( ASC sort_spec ) );";
-        }
-    }
-    static final String DFA25_eotS =
-        "\73\uffff";
-    static final String DFA25_eofS =
-        "\1\1\72\uffff";
-    static final String DFA25_minS =
-        "\1\42\10\uffff\2\0\60\uffff";
-    static final String DFA25_maxS =
-        "\1\151\10\uffff\2\0\60\uffff";
-    static final String DFA25_acceptS =
-        "\1\uffff\1\2\70\uffff\1\1";
-    static final String DFA25_specialS =
-        "\11\uffff\1\0\1\1\60\uffff}>";
-    static final String[] DFA25_transitionS = {
-            "\5\1\1\uffff\3\1\1\uffff\2\1\1\uffff\4\1\1\uffff\2\1\1\uffff"+
-            "\1\1\1\uffff\2\1\4\uffff\12\1\1\11\1\12\1\uffff\3\1\1\uffff"+
+    protected DFA67 dfa67 = new DFA67(this);
+    static final String DFA22_eotS =
+        "\72\uffff";
+    static final String DFA22_eofS =
+        "\1\1\71\uffff";
+    static final String DFA22_minS =
+        "\1\37\10\uffff\2\0\57\uffff";
+    static final String DFA22_maxS =
+        "\1\143\10\uffff\2\0\57\uffff";
+    static final String DFA22_acceptS =
+        "\1\uffff\1\2\67\uffff\1\1";
+    static final String DFA22_specialS =
+        "\11\uffff\1\0\1\1\57\uffff}>";
+    static final String[] DFA22_transitionS = {
+            "\5\1\1\uffff\2\1\1\uffff\2\1\1\uffff\4\1\1\uffff\2\1\1\uffff"+
+            "\1\1\1\uffff\2\1\2\uffff\12\1\1\11\1\12\1\uffff\3\1\1\uffff"+
             "\1\1\1\uffff\4\1\1\uffff\16\1\2\uffff\3\1",
             "",
             "",
@@ -9226,6 +11252,121 @@ public class SQL92QueryParser extends Parser {
             "",
             "",
             "",
+            ""
+    };
+
+    static final short[] DFA22_eot = DFA.unpackEncodedString(DFA22_eotS);
+    static final short[] DFA22_eof = DFA.unpackEncodedString(DFA22_eofS);
+    static final char[] DFA22_min = DFA.unpackEncodedStringToUnsignedChars(DFA22_minS);
+    static final char[] DFA22_max = DFA.unpackEncodedStringToUnsignedChars(DFA22_maxS);
+    static final short[] DFA22_accept = DFA.unpackEncodedString(DFA22_acceptS);
+    static final short[] DFA22_special = DFA.unpackEncodedString(DFA22_specialS);
+    static final short[][] DFA22_transition;
+
+    static {
+        int numStates = DFA22_transitionS.length;
+        DFA22_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA22_transition[i] = DFA.unpackEncodedString(DFA22_transitionS[i]);
+        }
+    }
+
+    class DFA22 extends DFA {
+
+        public DFA22(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 22;
+            this.eot = DFA22_eot;
+            this.eof = DFA22_eof;
+            this.min = DFA22_min;
+            this.max = DFA22_max;
+            this.accept = DFA22_accept;
+            this.special = DFA22_special;
+            this.transition = DFA22_transition;
+        }
+        public String getDescription() {
+            return "()* loopback of 139:12: ( ( '+' | '-' ) factor )*";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA22_9 = input.LA(1);
+
+                         
+                        int index22_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred36_SQL92Query()) ) {s = 57;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index22_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA22_10 = input.LA(1);
+
+                         
+                        int index22_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred36_SQL92Query()) ) {s = 57;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index22_10);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 22, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA25_eotS =
+        "\30\uffff";
+    static final String DFA25_eofS =
+        "\30\uffff";
+    static final String DFA25_minS =
+        "\1\37\2\0\25\uffff";
+    static final String DFA25_maxS =
+        "\1\110\2\0\25\uffff";
+    static final String DFA25_acceptS =
+        "\3\uffff\1\4\20\uffff\1\1\1\5\1\2\1\3";
+    static final String DFA25_specialS =
+        "\1\uffff\1\0\1\1\25\uffff}>";
+    static final String[] DFA25_transitionS = {
+            "\1\2\4\3\14\uffff\1\1\10\uffff\12\3\3\uffff\3\3",
+            "\1\uffff",
+            "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "",
             ""
     };
@@ -9260,40 +11401,45 @@ public class SQL92QueryParser extends Parser {
             this.transition = DFA25_transition;
         }
         public String getDescription() {
-            return "()* loopback of 151:16: ( ( '+' | '-' ) factor )*";
+            return "145:1: value_expression_primary : ( '(' value_expression ')' | function | column_name | literal | sub_query );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA25_9 = input.LA(1);
+                        int LA25_1 = input.LA(1);
 
                          
-                        int index25_9 = input.index();
+                        int index25_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred39_SQL92Query()) ) {s = 58;}
+                        if ( (synpred41_SQL92Query()) ) {s = 20;}
 
-                        else if ( (true) ) {s = 1;}
+                        else if ( (true) ) {s = 21;}
 
                          
-                        input.seek(index25_9);
+                        input.seek(index25_1);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA25_10 = input.LA(1);
+                        int LA25_2 = input.LA(1);
 
                          
-                        int index25_10 = input.index();
+                        int index25_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred39_SQL92Query()) ) {s = 58;}
+                        if ( (synpred42_SQL92Query()) ) {s = 22;}
 
-                        else if ( (true) ) {s = 1;}
+                        else if ( (synpred43_SQL92Query()) ) {s = 23;}
+
+                        else if ( (synpred44_SQL92Query()) ) {s = 3;}
 
                          
-                        input.seek(index25_10);
+                        input.seek(index25_2);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -9304,135 +11450,20 @@ public class SQL92QueryParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA28_eotS =
-        "\30\uffff";
-    static final String DFA28_eofS =
-        "\30\uffff";
-    static final String DFA28_minS =
-        "\1\42\2\0\25\uffff";
-    static final String DFA28_maxS =
-        "\1\116\2\0\25\uffff";
-    static final String DFA28_acceptS =
-        "\3\uffff\1\4\20\uffff\1\1\1\5\1\2\1\3";
-    static final String DFA28_specialS =
-        "\1\uffff\1\0\1\1\25\uffff}>";
-    static final String[] DFA28_transitionS = {
-            "\1\3\1\2\3\3\15\uffff\1\1\12\uffff\12\3\3\uffff\3\3",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA28_eot = DFA.unpackEncodedString(DFA28_eotS);
-    static final short[] DFA28_eof = DFA.unpackEncodedString(DFA28_eofS);
-    static final char[] DFA28_min = DFA.unpackEncodedStringToUnsignedChars(DFA28_minS);
-    static final char[] DFA28_max = DFA.unpackEncodedStringToUnsignedChars(DFA28_maxS);
-    static final short[] DFA28_accept = DFA.unpackEncodedString(DFA28_acceptS);
-    static final short[] DFA28_special = DFA.unpackEncodedString(DFA28_specialS);
-    static final short[][] DFA28_transition;
-
-    static {
-        int numStates = DFA28_transitionS.length;
-        DFA28_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA28_transition[i] = DFA.unpackEncodedString(DFA28_transitionS[i]);
-        }
-    }
-
-    class DFA28 extends DFA {
-
-        public DFA28(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 28;
-            this.eot = DFA28_eot;
-            this.eof = DFA28_eof;
-            this.min = DFA28_min;
-            this.max = DFA28_max;
-            this.accept = DFA28_accept;
-            this.special = DFA28_special;
-            this.transition = DFA28_transition;
-        }
-        public String getDescription() {
-            return "159:1: value_expression_primary : ( '(' value_expression ')' | function | column_name | literal | sub_query );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-            int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA28_1 = input.LA(1);
-
-                         
-                        int index28_1 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred44_SQL92Query()) ) {s = 20;}
-
-                        else if ( (true) ) {s = 21;}
-
-                         
-                        input.seek(index28_1);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA28_2 = input.LA(1);
-
-                         
-                        int index28_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred45_SQL92Query()) ) {s = 22;}
-
-                        else if ( (synpred46_SQL92Query()) ) {s = 23;}
-
-                        else if ( (synpred47_SQL92Query()) ) {s = 3;}
-
-                         
-                        input.seek(index28_2);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 28, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA29_eotS =
+    static final String DFA26_eotS =
         "\14\uffff";
-    static final String DFA29_eofS =
+    static final String DFA26_eofS =
         "\14\uffff";
-    static final String DFA29_minS =
-        "\1\42\5\uffff\1\76\4\uffff\1\77";
-    static final String DFA29_maxS =
-        "\1\116\5\uffff\1\76\4\uffff\1\110";
-    static final String DFA29_acceptS =
+    static final String DFA26_minS =
+        "\1\37\5\uffff\1\70\4\uffff\1\71";
+    static final String DFA26_maxS =
+        "\1\110\5\uffff\1\70\4\uffff\1\102";
+    static final String DFA26_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\uffff\1\6\1\7\1\10\1\11\1\uffff";
-    static final String DFA29_specialS =
+    static final String DFA26_specialS =
         "\14\uffff}>";
-    static final String[] DFA29_transitionS = {
-            "\1\1\1\6\1\2\1\3\1\4\30\uffff\3\5\7\7\3\uffff\1\10\1\11\1\12",
+    static final String[] DFA26_transitionS = {
+            "\1\6\1\1\1\2\1\3\1\4\25\uffff\3\5\7\7\3\uffff\1\10\1\11\1\12",
             "",
             "",
             "",
@@ -9446,59 +11477,62 @@ public class SQL92QueryParser extends Parser {
             "\3\5\7\7"
     };
 
-    static final short[] DFA29_eot = DFA.unpackEncodedString(DFA29_eotS);
-    static final short[] DFA29_eof = DFA.unpackEncodedString(DFA29_eofS);
-    static final char[] DFA29_min = DFA.unpackEncodedStringToUnsignedChars(DFA29_minS);
-    static final char[] DFA29_max = DFA.unpackEncodedStringToUnsignedChars(DFA29_maxS);
-    static final short[] DFA29_accept = DFA.unpackEncodedString(DFA29_acceptS);
-    static final short[] DFA29_special = DFA.unpackEncodedString(DFA29_specialS);
-    static final short[][] DFA29_transition;
+    static final short[] DFA26_eot = DFA.unpackEncodedString(DFA26_eotS);
+    static final short[] DFA26_eof = DFA.unpackEncodedString(DFA26_eofS);
+    static final char[] DFA26_min = DFA.unpackEncodedStringToUnsignedChars(DFA26_minS);
+    static final char[] DFA26_max = DFA.unpackEncodedStringToUnsignedChars(DFA26_maxS);
+    static final short[] DFA26_accept = DFA.unpackEncodedString(DFA26_acceptS);
+    static final short[] DFA26_special = DFA.unpackEncodedString(DFA26_specialS);
+    static final short[][] DFA26_transition;
 
     static {
-        int numStates = DFA29_transitionS.length;
-        DFA29_transition = new short[numStates][];
+        int numStates = DFA26_transitionS.length;
+        DFA26_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA29_transition[i] = DFA.unpackEncodedString(DFA29_transitionS[i]);
+            DFA26_transition[i] = DFA.unpackEncodedString(DFA26_transitionS[i]);
         }
     }
 
-    class DFA29 extends DFA {
+    class DFA26 extends DFA {
 
-        public DFA29(BaseRecognizer recognizer) {
+        public DFA26(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 29;
-            this.eot = DFA29_eot;
-            this.eof = DFA29_eof;
-            this.min = DFA29_min;
-            this.max = DFA29_max;
-            this.accept = DFA29_accept;
-            this.special = DFA29_special;
-            this.transition = DFA29_transition;
+            this.decisionNumber = 26;
+            this.eot = DFA26_eot;
+            this.eof = DFA26_eof;
+            this.min = DFA26_min;
+            this.max = DFA26_max;
+            this.accept = DFA26_accept;
+            this.special = DFA26_special;
+            this.transition = DFA26_transition;
         }
         public String getDescription() {
-            return "166:1: literal : ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' );";
+            return "153:1: literal : ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
     }
-    static final String DFA35_eotS =
+    static final String DFA32_eotS =
         "\13\uffff";
-    static final String DFA35_eofS =
+    static final String DFA32_eofS =
         "\1\uffff\1\2\11\uffff";
-    static final String DFA35_minS =
-        "\1\43\1\42\1\uffff\1\42\6\0\1\uffff";
-    static final String DFA35_maxS =
-        "\1\110\1\151\1\uffff\1\151\6\0\1\uffff";
-    static final String DFA35_acceptS =
+    static final String DFA32_minS =
+        "\2\37\1\uffff\1\37\6\0\1\uffff";
+    static final String DFA32_maxS =
+        "\1\102\1\143\1\uffff\1\143\6\0\1\uffff";
+    static final String DFA32_acceptS =
         "\2\uffff\1\2\7\uffff\1\1";
-    static final String DFA35_specialS =
-        "\4\uffff\1\5\1\0\1\2\1\4\1\1\1\3\1\uffff}>";
-    static final String[] DFA35_transitionS = {
-            "\1\2\36\uffff\1\1\6\2",
-            "\4\2\1\3\1\uffff\3\2\1\uffff\2\2\1\uffff\4\2\1\uffff\4\2\1"+
-            "\uffff\2\2\4\uffff\20\2\1\uffff\1\2\1\uffff\4\2\1\uffff\16\2"+
+    static final String DFA32_specialS =
+        "\4\uffff\1\0\1\4\1\3\1\1\1\2\1\5\1\uffff}>";
+    static final String[] DFA32_transitionS = {
+            "\1\2\34\uffff\1\1\6\2",
+            "\4\2\1\3\1\uffff\2\2\1\uffff\2\2\1\uffff\4\2\1\uffff\4\2\1"+
+            "\uffff\2\2\2\uffff\20\2\1\uffff\1\2\1\uffff\4\2\1\uffff\16\2"+
             "\2\uffff\3\2",
             "",
-            "\5\2\15\uffff\4\2\7\uffff\4\2\1\4\1\5\1\6\1\7\1\10\1\11\7\2"+
-            "\11\uffff\14\2\2\uffff\3\2",
+            "\5\2\14\uffff\4\2\5\uffff\4\2\1\4\1\5\1\6\1\7\1\10\1\11\7"+
+            "\2\11\uffff\14\2\2\uffff\3\2",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9508,155 +11542,158 @@ public class SQL92QueryParser extends Parser {
             ""
     };
 
-    static final short[] DFA35_eot = DFA.unpackEncodedString(DFA35_eotS);
-    static final short[] DFA35_eof = DFA.unpackEncodedString(DFA35_eofS);
-    static final char[] DFA35_min = DFA.unpackEncodedStringToUnsignedChars(DFA35_minS);
-    static final char[] DFA35_max = DFA.unpackEncodedStringToUnsignedChars(DFA35_maxS);
-    static final short[] DFA35_accept = DFA.unpackEncodedString(DFA35_acceptS);
-    static final short[] DFA35_special = DFA.unpackEncodedString(DFA35_specialS);
-    static final short[][] DFA35_transition;
+    static final short[] DFA32_eot = DFA.unpackEncodedString(DFA32_eotS);
+    static final short[] DFA32_eof = DFA.unpackEncodedString(DFA32_eofS);
+    static final char[] DFA32_min = DFA.unpackEncodedStringToUnsignedChars(DFA32_minS);
+    static final char[] DFA32_max = DFA.unpackEncodedStringToUnsignedChars(DFA32_maxS);
+    static final short[] DFA32_accept = DFA.unpackEncodedString(DFA32_acceptS);
+    static final short[] DFA32_special = DFA.unpackEncodedString(DFA32_specialS);
+    static final short[][] DFA32_transition;
 
     static {
-        int numStates = DFA35_transitionS.length;
-        DFA35_transition = new short[numStates][];
+        int numStates = DFA32_transitionS.length;
+        DFA32_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA35_transition[i] = DFA.unpackEncodedString(DFA35_transitionS[i]);
+            DFA32_transition[i] = DFA.unpackEncodedString(DFA32_transitionS[i]);
         }
     }
 
-    class DFA35 extends DFA {
+    class DFA32 extends DFA {
 
-        public DFA35(BaseRecognizer recognizer) {
+        public DFA32(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 35;
-            this.eot = DFA35_eot;
-            this.eof = DFA35_eof;
-            this.min = DFA35_min;
-            this.max = DFA35_max;
-            this.accept = DFA35_accept;
-            this.special = DFA35_special;
-            this.transition = DFA35_transition;
+            this.decisionNumber = 32;
+            this.eot = DFA32_eot;
+            this.eof = DFA32_eof;
+            this.min = DFA32_min;
+            this.max = DFA32_max;
+            this.accept = DFA32_accept;
+            this.special = DFA32_special;
+            this.transition = DFA32_transition;
         }
         public String getDescription() {
-            return "173:1: interval : ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) );";
+            return "158:1: interval : ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA35_5 = input.LA(1);
+                        int LA32_4 = input.LA(1);
 
                          
-                        int index35_5 = input.index();
+                        int index32_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_5);
+                        input.seek(index32_4);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA35_8 = input.LA(1);
+                        int LA32_7 = input.LA(1);
 
                          
-                        int index35_8 = input.index();
+                        int index32_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_8);
+                        input.seek(index32_7);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA35_6 = input.LA(1);
+                        int LA32_8 = input.LA(1);
 
                          
-                        int index35_6 = input.index();
+                        int index32_8 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_6);
+                        input.seek(index32_8);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA35_9 = input.LA(1);
+                        int LA32_6 = input.LA(1);
 
                          
-                        int index35_9 = input.index();
+                        int index32_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_9);
+                        input.seek(index32_6);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA35_7 = input.LA(1);
+                        int LA32_5 = input.LA(1);
 
                          
-                        int index35_7 = input.index();
+                        int index32_5 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_7);
+                        input.seek(index32_5);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA35_4 = input.LA(1);
+                        int LA32_9 = input.LA(1);
 
                          
-                        int index35_4 = input.index();
+                        int index32_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred67_SQL92Query()) ) {s = 10;}
+                        if ( (synpred64_SQL92Query()) ) {s = 10;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index35_4);
+                        input.seek(index32_9);
                         if ( s>=0 ) return s;
                         break;
             }
             if (state.backtracking>0) {state.failed=true; return -1;}
             NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 35, _s, input);
+                new NoViableAltException(getDescription(), 32, _s, input);
             error(nvae);
             throw nvae;
         }
     }
-    static final String DFA51_eotS =
+    static final String DFA48_eotS =
         "\35\uffff";
-    static final String DFA51_eofS =
+    static final String DFA48_eofS =
         "\35\uffff";
-    static final String DFA51_minS =
-        "\1\42\1\0\33\uffff";
-    static final String DFA51_maxS =
-        "\1\151\1\0\33\uffff";
-    static final String DFA51_acceptS =
+    static final String DFA48_minS =
+        "\1\37\1\0\33\uffff";
+    static final String DFA48_maxS =
+        "\1\143\1\0\33\uffff";
+    static final String DFA48_acceptS =
         "\2\uffff\1\2\31\uffff\1\1";
-    static final String DFA51_specialS =
+    static final String DFA48_specialS =
         "\1\uffff\1\0\33\uffff}>";
-    static final String[] DFA51_transitionS = {
-            "\5\2\15\uffff\1\1\1\2\1\uffff\1\2\7\uffff\14\2\1\uffff\3\2\12"+
-            "\uffff\1\2\3\uffff\1\2\12\uffff\2\2",
+    static final String[] DFA48_transitionS = {
+            "\5\2\14\uffff\1\1\1\2\1\uffff\1\2\5\uffff\14\2\1\uffff\3\2"+
+            "\12\uffff\1\2\3\uffff\1\2\12\uffff\2\2",
             "\1\uffff",
             "",
             "",
@@ -9687,79 +11724,82 @@ public class SQL92QueryParser extends Parser {
             ""
     };
 
-    static final short[] DFA51_eot = DFA.unpackEncodedString(DFA51_eotS);
-    static final short[] DFA51_eof = DFA.unpackEncodedString(DFA51_eofS);
-    static final char[] DFA51_min = DFA.unpackEncodedStringToUnsignedChars(DFA51_minS);
-    static final char[] DFA51_max = DFA.unpackEncodedStringToUnsignedChars(DFA51_maxS);
-    static final short[] DFA51_accept = DFA.unpackEncodedString(DFA51_acceptS);
-    static final short[] DFA51_special = DFA.unpackEncodedString(DFA51_specialS);
-    static final short[][] DFA51_transition;
+    static final short[] DFA48_eot = DFA.unpackEncodedString(DFA48_eotS);
+    static final short[] DFA48_eof = DFA.unpackEncodedString(DFA48_eofS);
+    static final char[] DFA48_min = DFA.unpackEncodedStringToUnsignedChars(DFA48_minS);
+    static final char[] DFA48_max = DFA.unpackEncodedStringToUnsignedChars(DFA48_maxS);
+    static final short[] DFA48_accept = DFA.unpackEncodedString(DFA48_acceptS);
+    static final short[] DFA48_special = DFA.unpackEncodedString(DFA48_specialS);
+    static final short[][] DFA48_transition;
 
     static {
-        int numStates = DFA51_transitionS.length;
-        DFA51_transition = new short[numStates][];
+        int numStates = DFA48_transitionS.length;
+        DFA48_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA51_transition[i] = DFA.unpackEncodedString(DFA51_transitionS[i]);
+            DFA48_transition[i] = DFA.unpackEncodedString(DFA48_transitionS[i]);
         }
     }
 
-    class DFA51 extends DFA {
+    class DFA48 extends DFA {
 
-        public DFA51(BaseRecognizer recognizer) {
+        public DFA48(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 51;
-            this.eot = DFA51_eot;
-            this.eof = DFA51_eof;
-            this.min = DFA51_min;
-            this.max = DFA51_max;
-            this.accept = DFA51_accept;
-            this.special = DFA51_special;
-            this.transition = DFA51_transition;
+            this.decisionNumber = 48;
+            this.eot = DFA48_eot;
+            this.eof = DFA48_eof;
+            this.min = DFA48_min;
+            this.max = DFA48_max;
+            this.accept = DFA48_accept;
+            this.special = DFA48_special;
+            this.transition = DFA48_transition;
         }
         public String getDescription() {
-            return "206:21: ( table_function_subquery )?";
+            return "196:16: ( table_function_subquery )?";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA51_1 = input.LA(1);
+                        int LA48_1 = input.LA(1);
 
                          
-                        int index51_1 = input.index();
+                        int index48_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred93_SQL92Query()) ) {s = 28;}
+                        if ( (synpred90_SQL92Query()) ) {s = 28;}
 
                         else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index51_1);
+                        input.seek(index48_1);
                         if ( s>=0 ) return s;
                         break;
             }
             if (state.backtracking>0) {state.failed=true; return -1;}
             NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 51, _s, input);
+                new NoViableAltException(getDescription(), 48, _s, input);
             error(nvae);
             throw nvae;
         }
     }
-    static final String DFA52_eotS =
+    static final String DFA49_eotS =
         "\35\uffff";
-    static final String DFA52_eofS =
+    static final String DFA49_eofS =
         "\35\uffff";
-    static final String DFA52_minS =
-        "\1\42\1\0\33\uffff";
-    static final String DFA52_maxS =
-        "\1\151\1\0\33\uffff";
-    static final String DFA52_acceptS =
+    static final String DFA49_minS =
+        "\1\37\1\0\33\uffff";
+    static final String DFA49_maxS =
+        "\1\143\1\0\33\uffff";
+    static final String DFA49_acceptS =
         "\2\uffff\1\2\31\uffff\1\1";
-    static final String DFA52_specialS =
+    static final String DFA49_specialS =
         "\1\uffff\1\0\33\uffff}>";
-    static final String[] DFA52_transitionS = {
-            "\5\2\15\uffff\2\2\1\uffff\1\1\7\uffff\14\2\1\uffff\3\2\12\uffff"+
+    static final String[] DFA49_transitionS = {
+            "\5\2\14\uffff\2\2\1\uffff\1\1\5\uffff\14\2\1\uffff\3\2\12\uffff"+
             "\1\2\3\uffff\1\2\12\uffff\2\2",
             "\1\uffff",
             "",
@@ -9785,6 +11825,113 @@ public class SQL92QueryParser extends Parser {
             "",
             "",
             "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA49_eot = DFA.unpackEncodedString(DFA49_eotS);
+    static final short[] DFA49_eof = DFA.unpackEncodedString(DFA49_eofS);
+    static final char[] DFA49_min = DFA.unpackEncodedStringToUnsignedChars(DFA49_minS);
+    static final char[] DFA49_max = DFA.unpackEncodedStringToUnsignedChars(DFA49_maxS);
+    static final short[] DFA49_accept = DFA.unpackEncodedString(DFA49_acceptS);
+    static final short[] DFA49_special = DFA.unpackEncodedString(DFA49_specialS);
+    static final short[][] DFA49_transition;
+
+    static {
+        int numStates = DFA49_transitionS.length;
+        DFA49_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA49_transition[i] = DFA.unpackEncodedString(DFA49_transitionS[i]);
+        }
+    }
+
+    class DFA49 extends DFA {
+
+        public DFA49(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 49;
+            this.eot = DFA49_eot;
+            this.eof = DFA49_eof;
+            this.min = DFA49_min;
+            this.max = DFA49_max;
+            this.accept = DFA49_accept;
+            this.special = DFA49_special;
+            this.transition = DFA49_transition;
+        }
+        public String getDescription() {
+            return "()* loopback of 196:41: ( ',' table_function_subquery )*";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA49_1 = input.LA(1);
+
+                         
+                        int index49_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred91_SQL92Query()) ) {s = 28;}
+
+                        else if ( (true) ) {s = 2;}
+
+                         
+                        input.seek(index49_1);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 49, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA52_eotS =
+        "\33\uffff";
+    static final String DFA52_eofS =
+        "\33\uffff";
+    static final String DFA52_minS =
+        "\1\37\1\uffff\25\0\4\uffff";
+    static final String DFA52_maxS =
+        "\1\143\1\uffff\25\0\4\uffff";
+    static final String DFA52_acceptS =
+        "\1\uffff\1\1\30\uffff\1\2";
+    static final String DFA52_specialS =
+        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\4\uffff}>";
+    static final String[] DFA52_transitionS = {
+            "\1\2\1\7\1\10\1\11\1\3\14\uffff\1\6\10\uffff\1\12\1\13\1\14"+
+            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
+            "\1\26\12\uffff\1\1\3\uffff\1\1\12\uffff\2\1",
+            "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -9821,25 +11968,328 @@ public class SQL92QueryParser extends Parser {
             this.transition = DFA52_transition;
         }
         public String getDescription() {
-            return "()* loopback of 206:46: ( ',' table_function_subquery )*";
+            return "204:1: table_function_param : ( search_condition | value_expression );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA52_1 = input.LA(1);
+                        int LA52_2 = input.LA(1);
 
                          
-                        int index52_1 = input.index();
+                        int index52_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred94_SQL92Query()) ) {s = 28;}
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 2;}
+                        else if ( (true) ) {s = 26;}
 
                          
-                        input.seek(index52_1);
+                        input.seek(index52_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA52_3 = input.LA(1);
+
+                         
+                        int index52_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA52_4 = input.LA(1);
+
+                         
+                        int index52_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA52_5 = input.LA(1);
+
+                         
+                        int index52_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA52_6 = input.LA(1);
+
+                         
+                        int index52_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA52_7 = input.LA(1);
+
+                         
+                        int index52_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA52_8 = input.LA(1);
+
+                         
+                        int index52_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA52_9 = input.LA(1);
+
+                         
+                        int index52_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA52_10 = input.LA(1);
+
+                         
+                        int index52_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA52_11 = input.LA(1);
+
+                         
+                        int index52_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA52_12 = input.LA(1);
+
+                         
+                        int index52_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA52_13 = input.LA(1);
+
+                         
+                        int index52_13 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_13);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA52_14 = input.LA(1);
+
+                         
+                        int index52_14 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA52_15 = input.LA(1);
+
+                         
+                        int index52_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA52_16 = input.LA(1);
+
+                         
+                        int index52_16 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_16);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA52_17 = input.LA(1);
+
+                         
+                        int index52_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_17);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA52_18 = input.LA(1);
+
+                         
+                        int index52_18 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_18);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA52_19 = input.LA(1);
+
+                         
+                        int index52_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA52_20 = input.LA(1);
+
+                         
+                        int index52_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA52_21 = input.LA(1);
+
+                         
+                        int index52_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA52_22 = input.LA(1);
+
+                         
+                        int index52_22 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred94_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 26;}
+
+                         
+                        input.seek(index52_22);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -9850,424 +12300,20 @@ public class SQL92QueryParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA55_eotS =
-        "\33\uffff";
-    static final String DFA55_eofS =
-        "\33\uffff";
-    static final String DFA55_minS =
-        "\1\42\1\uffff\25\0\4\uffff";
-    static final String DFA55_maxS =
-        "\1\151\1\uffff\25\0\4\uffff";
-    static final String DFA55_acceptS =
-        "\1\uffff\1\1\30\uffff\1\2";
-    static final String DFA55_specialS =
-        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\4\uffff}>";
-    static final String[] DFA55_transitionS = {
-            "\1\7\1\2\1\10\1\11\1\3\15\uffff\1\6\12\uffff\1\12\1\13\1\14"+
-            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
-            "\1\26\12\uffff\1\1\3\uffff\1\1\12\uffff\2\1",
-            "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA55_eot = DFA.unpackEncodedString(DFA55_eotS);
-    static final short[] DFA55_eof = DFA.unpackEncodedString(DFA55_eofS);
-    static final char[] DFA55_min = DFA.unpackEncodedStringToUnsignedChars(DFA55_minS);
-    static final char[] DFA55_max = DFA.unpackEncodedStringToUnsignedChars(DFA55_maxS);
-    static final short[] DFA55_accept = DFA.unpackEncodedString(DFA55_acceptS);
-    static final short[] DFA55_special = DFA.unpackEncodedString(DFA55_specialS);
-    static final short[][] DFA55_transition;
-
-    static {
-        int numStates = DFA55_transitionS.length;
-        DFA55_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA55_transition[i] = DFA.unpackEncodedString(DFA55_transitionS[i]);
-        }
-    }
-
-    class DFA55 extends DFA {
-
-        public DFA55(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 55;
-            this.eot = DFA55_eot;
-            this.eof = DFA55_eof;
-            this.min = DFA55_min;
-            this.max = DFA55_max;
-            this.accept = DFA55_accept;
-            this.special = DFA55_special;
-            this.transition = DFA55_transition;
-        }
-        public String getDescription() {
-            return "212:1: table_function_param : ( search_condition | value_expression );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-            int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA55_2 = input.LA(1);
-
-                         
-                        int index55_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA55_3 = input.LA(1);
-
-                         
-                        int index55_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA55_4 = input.LA(1);
-
-                         
-                        int index55_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA55_5 = input.LA(1);
-
-                         
-                        int index55_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA55_6 = input.LA(1);
-
-                         
-                        int index55_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA55_7 = input.LA(1);
-
-                         
-                        int index55_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA55_8 = input.LA(1);
-
-                         
-                        int index55_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA55_9 = input.LA(1);
-
-                         
-                        int index55_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA55_10 = input.LA(1);
-
-                         
-                        int index55_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA55_11 = input.LA(1);
-
-                         
-                        int index55_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA55_12 = input.LA(1);
-
-                         
-                        int index55_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA55_13 = input.LA(1);
-
-                         
-                        int index55_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA55_14 = input.LA(1);
-
-                         
-                        int index55_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 13 : 
-                        int LA55_15 = input.LA(1);
-
-                         
-                        int index55_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
-                        int LA55_16 = input.LA(1);
-
-                         
-                        int index55_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA55_17 = input.LA(1);
-
-                         
-                        int index55_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA55_18 = input.LA(1);
-
-                         
-                        int index55_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA55_19 = input.LA(1);
-
-                         
-                        int index55_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_19);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA55_20 = input.LA(1);
-
-                         
-                        int index55_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA55_21 = input.LA(1);
-
-                         
-                        int index55_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA55_22 = input.LA(1);
-
-                         
-                        int index55_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred97_SQL92Query()) ) {s = 1;}
-
-                        else if ( (true) ) {s = 26;}
-
-                         
-                        input.seek(index55_22);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 55, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA60_eotS =
+    static final String DFA57_eotS =
         "\32\uffff";
-    static final String DFA60_eofS =
+    static final String DFA57_eofS =
         "\32\uffff";
-    static final String DFA60_minS =
-        "\1\42\5\uffff\1\0\23\uffff";
-    static final String DFA60_maxS =
-        "\1\151\5\uffff\1\0\23\uffff";
-    static final String DFA60_acceptS =
+    static final String DFA57_minS =
+        "\1\37\5\uffff\1\0\23\uffff";
+    static final String DFA57_maxS =
+        "\1\143\5\uffff\1\0\23\uffff";
+    static final String DFA57_acceptS =
         "\1\uffff\1\1\27\uffff\1\2";
-    static final String DFA60_specialS =
+    static final String DFA57_specialS =
         "\6\uffff\1\0\23\uffff}>";
-    static final String[] DFA60_transitionS = {
-            "\5\1\15\uffff\1\6\12\uffff\14\1\1\uffff\3\1\16\uffff\1\1\12"+
+    static final String[] DFA57_transitionS = {
+            "\5\1\14\uffff\1\6\10\uffff\14\1\1\uffff\3\1\16\uffff\1\1\12"+
             "\uffff\2\1",
             "",
             "",
@@ -10292,6 +12338,1087 @@ public class SQL92QueryParser extends Parser {
             "",
             "",
             "",
+            "",
+            ""
+    };
+
+    static final short[] DFA57_eot = DFA.unpackEncodedString(DFA57_eotS);
+    static final short[] DFA57_eof = DFA.unpackEncodedString(DFA57_eofS);
+    static final char[] DFA57_min = DFA.unpackEncodedStringToUnsignedChars(DFA57_minS);
+    static final char[] DFA57_max = DFA.unpackEncodedStringToUnsignedChars(DFA57_maxS);
+    static final short[] DFA57_accept = DFA.unpackEncodedString(DFA57_acceptS);
+    static final short[] DFA57_special = DFA.unpackEncodedString(DFA57_specialS);
+    static final short[][] DFA57_transition;
+
+    static {
+        int numStates = DFA57_transitionS.length;
+        DFA57_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA57_transition[i] = DFA.unpackEncodedString(DFA57_transitionS[i]);
+        }
+    }
+
+    class DFA57 extends DFA {
+
+        public DFA57(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 57;
+            this.eot = DFA57_eot;
+            this.eof = DFA57_eof;
+            this.min = DFA57_min;
+            this.max = DFA57_max;
+            this.accept = DFA57_accept;
+            this.special = DFA57_special;
+            this.transition = DFA57_transition;
+        }
+        public String getDescription() {
+            return "225:1: boolean_primary : ( predicate | '(' search_condition ')' );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA57_6 = input.LA(1);
+
+                         
+                        int index57_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred100_SQL92Query()) ) {s = 1;}
+
+                        else if ( (true) ) {s = 25;}
+
+                         
+                        input.seek(index57_6);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 57, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA58_eotS =
+        "\35\uffff";
+    static final String DFA58_eofS =
+        "\35\uffff";
+    static final String DFA58_minS =
+        "\1\37\1\uffff\26\0\5\uffff";
+    static final String DFA58_maxS =
+        "\1\143\1\uffff\26\0\5\uffff";
+    static final String DFA58_acceptS =
+        "\1\uffff\1\1\26\uffff\1\5\1\2\1\3\1\4\1\6";
+    static final String DFA58_specialS =
+        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\5\uffff}>";
+    static final String[] DFA58_transitionS = {
+            "\1\2\1\7\1\10\1\11\1\3\14\uffff\1\6\10\uffff\1\12\1\13\1\14"+
+            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
+            "\1\26\16\uffff\1\30\12\uffff\1\27\1\1",
+            "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA58_eot = DFA.unpackEncodedString(DFA58_eotS);
+    static final short[] DFA58_eof = DFA.unpackEncodedString(DFA58_eofS);
+    static final char[] DFA58_min = DFA.unpackEncodedStringToUnsignedChars(DFA58_minS);
+    static final char[] DFA58_max = DFA.unpackEncodedStringToUnsignedChars(DFA58_maxS);
+    static final short[] DFA58_accept = DFA.unpackEncodedString(DFA58_acceptS);
+    static final short[] DFA58_special = DFA.unpackEncodedString(DFA58_specialS);
+    static final short[][] DFA58_transition;
+
+    static {
+        int numStates = DFA58_transitionS.length;
+        DFA58_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA58_transition[i] = DFA.unpackEncodedString(DFA58_transitionS[i]);
+        }
+    }
+
+    class DFA58 extends DFA {
+
+        public DFA58(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 58;
+            this.eot = DFA58_eot;
+            this.eof = DFA58_eof;
+            this.min = DFA58_min;
+            this.max = DFA58_max;
+            this.accept = DFA58_accept;
+            this.special = DFA58_special;
+            this.transition = DFA58_transition;
+        }
+        public String getDescription() {
+            return "227:1: predicate : ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA58_2 = input.LA(1);
+
+                         
+                        int index58_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA58_3 = input.LA(1);
+
+                         
+                        int index58_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA58_4 = input.LA(1);
+
+                         
+                        int index58_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA58_5 = input.LA(1);
+
+                         
+                        int index58_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA58_6 = input.LA(1);
+
+                         
+                        int index58_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA58_7 = input.LA(1);
+
+                         
+                        int index58_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA58_8 = input.LA(1);
+
+                         
+                        int index58_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA58_9 = input.LA(1);
+
+                         
+                        int index58_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA58_10 = input.LA(1);
+
+                         
+                        int index58_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA58_11 = input.LA(1);
+
+                         
+                        int index58_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA58_12 = input.LA(1);
+
+                         
+                        int index58_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA58_13 = input.LA(1);
+
+                         
+                        int index58_13 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_13);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA58_14 = input.LA(1);
+
+                         
+                        int index58_14 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA58_15 = input.LA(1);
+
+                         
+                        int index58_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA58_16 = input.LA(1);
+
+                         
+                        int index58_16 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_16);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA58_17 = input.LA(1);
+
+                         
+                        int index58_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_17);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA58_18 = input.LA(1);
+
+                         
+                        int index58_18 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_18);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA58_19 = input.LA(1);
+
+                         
+                        int index58_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA58_20 = input.LA(1);
+
+                         
+                        int index58_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA58_21 = input.LA(1);
+
+                         
+                        int index58_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA58_22 = input.LA(1);
+
+                         
+                        int index58_22 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_22);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA58_23 = input.LA(1);
+
+                         
+                        int index58_23 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred101_SQL92Query()) ) {s = 1;}
+
+                        else if ( (synpred102_SQL92Query()) ) {s = 25;}
+
+                        else if ( (synpred103_SQL92Query()) ) {s = 26;}
+
+                        else if ( (synpred104_SQL92Query()) ) {s = 27;}
+
+                        else if ( (true) ) {s = 28;}
+
+                         
+                        input.seek(index58_23);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 58, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA59_eotS =
+        "\31\uffff";
+    static final String DFA59_eofS =
+        "\31\uffff";
+    static final String DFA59_minS =
+        "\1\37\26\0\2\uffff";
+    static final String DFA59_maxS =
+        "\1\142\26\0\2\uffff";
+    static final String DFA59_acceptS =
+        "\27\uffff\1\1\1\2";
+    static final String DFA59_specialS =
+        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
+    static final String[] DFA59_transitionS = {
+            "\1\1\1\6\1\7\1\10\1\2\14\uffff\1\5\10\uffff\1\11\1\12\1\13"+
+            "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
+            "\1\25\31\uffff\1\26",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "",
+            ""
+    };
+
+    static final short[] DFA59_eot = DFA.unpackEncodedString(DFA59_eotS);
+    static final short[] DFA59_eof = DFA.unpackEncodedString(DFA59_eofS);
+    static final char[] DFA59_min = DFA.unpackEncodedStringToUnsignedChars(DFA59_minS);
+    static final char[] DFA59_max = DFA.unpackEncodedStringToUnsignedChars(DFA59_maxS);
+    static final short[] DFA59_accept = DFA.unpackEncodedString(DFA59_acceptS);
+    static final short[] DFA59_special = DFA.unpackEncodedString(DFA59_specialS);
+    static final short[][] DFA59_transition;
+
+    static {
+        int numStates = DFA59_transitionS.length;
+        DFA59_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA59_transition[i] = DFA.unpackEncodedString(DFA59_transitionS[i]);
+        }
+    }
+
+    class DFA59 extends DFA {
+
+        public DFA59(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 59;
+            this.eot = DFA59_eot;
+            this.eof = DFA59_eof;
+            this.min = DFA59_min;
+            this.max = DFA59_max;
+            this.accept = DFA59_accept;
+            this.special = DFA59_special;
+            this.transition = DFA59_transition;
+        }
+        public String getDescription() {
+            return "229:1: null_predicate : ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA59_1 = input.LA(1);
+
+                         
+                        int index59_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA59_2 = input.LA(1);
+
+                         
+                        int index59_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA59_3 = input.LA(1);
+
+                         
+                        int index59_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA59_4 = input.LA(1);
+
+                         
+                        int index59_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA59_5 = input.LA(1);
+
+                         
+                        int index59_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA59_6 = input.LA(1);
+
+                         
+                        int index59_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA59_7 = input.LA(1);
+
+                         
+                        int index59_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA59_8 = input.LA(1);
+
+                         
+                        int index59_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA59_9 = input.LA(1);
+
+                         
+                        int index59_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA59_10 = input.LA(1);
+
+                         
+                        int index59_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA59_11 = input.LA(1);
+
+                         
+                        int index59_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA59_12 = input.LA(1);
+
+                         
+                        int index59_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA59_13 = input.LA(1);
+
+                         
+                        int index59_13 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_13);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA59_14 = input.LA(1);
+
+                         
+                        int index59_14 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA59_15 = input.LA(1);
+
+                         
+                        int index59_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA59_16 = input.LA(1);
+
+                         
+                        int index59_16 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_16);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA59_17 = input.LA(1);
+
+                         
+                        int index59_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_17);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA59_18 = input.LA(1);
+
+                         
+                        int index59_18 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_18);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA59_19 = input.LA(1);
+
+                         
+                        int index59_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA59_20 = input.LA(1);
+
+                         
+                        int index59_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA59_21 = input.LA(1);
+
+                         
+                        int index59_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA59_22 = input.LA(1);
+
+                         
+                        int index59_22 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred106_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index59_22);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 59, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA60_eotS =
+        "\31\uffff";
+    static final String DFA60_eofS =
+        "\31\uffff";
+    static final String DFA60_minS =
+        "\1\37\26\0\2\uffff";
+    static final String DFA60_maxS =
+        "\1\142\26\0\2\uffff";
+    static final String DFA60_acceptS =
+        "\27\uffff\1\1\1\2";
+    static final String DFA60_specialS =
+        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
+    static final String[] DFA60_transitionS = {
+            "\1\1\1\6\1\7\1\10\1\2\14\uffff\1\5\10\uffff\1\11\1\12\1\13"+
+            "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
+            "\1\25\31\uffff\1\26",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             ""
     };
@@ -10326,25 +13453,343 @@ public class SQL92QueryParser extends Parser {
             this.transition = DFA60_transition;
         }
         public String getDescription() {
-            return "234:1: boolean_primary : ( predicate | '(' search_condition ')' );";
+            return "233:1: in_predicate : ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
+                        int LA60_1 = input.LA(1);
+
+                         
+                        int index60_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA60_2 = input.LA(1);
+
+                         
+                        int index60_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA60_3 = input.LA(1);
+
+                         
+                        int index60_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA60_4 = input.LA(1);
+
+                         
+                        int index60_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA60_5 = input.LA(1);
+
+                         
+                        int index60_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
                         int LA60_6 = input.LA(1);
 
                          
                         int index60_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred103_SQL92Query()) ) {s = 1;}
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
 
-                        else if ( (true) ) {s = 25;}
+                        else if ( (true) ) {s = 24;}
 
                          
                         input.seek(index60_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA60_7 = input.LA(1);
+
+                         
+                        int index60_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA60_8 = input.LA(1);
+
+                         
+                        int index60_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA60_9 = input.LA(1);
+
+                         
+                        int index60_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA60_10 = input.LA(1);
+
+                         
+                        int index60_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA60_11 = input.LA(1);
+
+                         
+                        int index60_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA60_12 = input.LA(1);
+
+                         
+                        int index60_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA60_13 = input.LA(1);
+
+                         
+                        int index60_13 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_13);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA60_14 = input.LA(1);
+
+                         
+                        int index60_14 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA60_15 = input.LA(1);
+
+                         
+                        int index60_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA60_16 = input.LA(1);
+
+                         
+                        int index60_16 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_16);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA60_17 = input.LA(1);
+
+                         
+                        int index60_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_17);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA60_18 = input.LA(1);
+
+                         
+                        int index60_18 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_18);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA60_19 = input.LA(1);
+
+                         
+                        int index60_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA60_20 = input.LA(1);
+
+                         
+                        int index60_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA60_21 = input.LA(1);
+
+                         
+                        int index60_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA60_22 = input.LA(1);
+
+                         
+                        int index60_22 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred107_SQL92Query()) ) {s = 23;}
+
+                        else if ( (true) ) {s = 24;}
+
+                         
+                        input.seek(index60_22);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -10355,992 +13800,22 @@ public class SQL92QueryParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA61_eotS =
-        "\35\uffff";
-    static final String DFA61_eofS =
-        "\35\uffff";
-    static final String DFA61_minS =
-        "\1\42\1\uffff\26\0\5\uffff";
-    static final String DFA61_maxS =
-        "\1\151\1\uffff\26\0\5\uffff";
-    static final String DFA61_acceptS =
-        "\1\uffff\1\1\26\uffff\1\5\1\2\1\3\1\4\1\6";
-    static final String DFA61_specialS =
-        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\5\uffff}>";
-    static final String[] DFA61_transitionS = {
-            "\1\7\1\2\1\10\1\11\1\3\15\uffff\1\6\12\uffff\1\12\1\13\1\14"+
-            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
-            "\1\26\16\uffff\1\30\12\uffff\1\27\1\1",
-            "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA61_eot = DFA.unpackEncodedString(DFA61_eotS);
-    static final short[] DFA61_eof = DFA.unpackEncodedString(DFA61_eofS);
-    static final char[] DFA61_min = DFA.unpackEncodedStringToUnsignedChars(DFA61_minS);
-    static final char[] DFA61_max = DFA.unpackEncodedStringToUnsignedChars(DFA61_maxS);
-    static final short[] DFA61_accept = DFA.unpackEncodedString(DFA61_acceptS);
-    static final short[] DFA61_special = DFA.unpackEncodedString(DFA61_specialS);
-    static final short[][] DFA61_transition;
-
-    static {
-        int numStates = DFA61_transitionS.length;
-        DFA61_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA61_transition[i] = DFA.unpackEncodedString(DFA61_transitionS[i]);
-        }
-    }
-
-    class DFA61 extends DFA {
-
-        public DFA61(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 61;
-            this.eot = DFA61_eot;
-            this.eof = DFA61_eof;
-            this.min = DFA61_min;
-            this.max = DFA61_max;
-            this.accept = DFA61_accept;
-            this.special = DFA61_special;
-            this.transition = DFA61_transition;
-        }
-        public String getDescription() {
-            return "237:1: predicate : ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-            int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA61_2 = input.LA(1);
-
-                         
-                        int index61_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA61_3 = input.LA(1);
-
-                         
-                        int index61_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA61_4 = input.LA(1);
-
-                         
-                        int index61_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA61_5 = input.LA(1);
-
-                         
-                        int index61_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA61_6 = input.LA(1);
-
-                         
-                        int index61_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA61_7 = input.LA(1);
-
-                         
-                        int index61_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA61_8 = input.LA(1);
-
-                         
-                        int index61_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA61_9 = input.LA(1);
-
-                         
-                        int index61_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA61_10 = input.LA(1);
-
-                         
-                        int index61_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA61_11 = input.LA(1);
-
-                         
-                        int index61_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA61_12 = input.LA(1);
-
-                         
-                        int index61_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA61_13 = input.LA(1);
-
-                         
-                        int index61_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA61_14 = input.LA(1);
-
-                         
-                        int index61_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 13 : 
-                        int LA61_15 = input.LA(1);
-
-                         
-                        int index61_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
-                        int LA61_16 = input.LA(1);
-
-                         
-                        int index61_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA61_17 = input.LA(1);
-
-                         
-                        int index61_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA61_18 = input.LA(1);
-
-                         
-                        int index61_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA61_19 = input.LA(1);
-
-                         
-                        int index61_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_19);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA61_20 = input.LA(1);
-
-                         
-                        int index61_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA61_21 = input.LA(1);
-
-                         
-                        int index61_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA61_22 = input.LA(1);
-
-                         
-                        int index61_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA61_23 = input.LA(1);
-
-                         
-                        int index61_23 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred104_SQL92Query()) ) {s = 1;}
-
-                        else if ( (synpred105_SQL92Query()) ) {s = 25;}
-
-                        else if ( (synpred106_SQL92Query()) ) {s = 26;}
-
-                        else if ( (synpred107_SQL92Query()) ) {s = 27;}
-
-                        else if ( (true) ) {s = 28;}
-
-                         
-                        input.seek(index61_23);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 61, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA62_eotS =
-        "\31\uffff";
-    static final String DFA62_eofS =
-        "\31\uffff";
-    static final String DFA62_minS =
-        "\1\42\26\0\2\uffff";
-    static final String DFA62_maxS =
-        "\1\150\26\0\2\uffff";
-    static final String DFA62_acceptS =
-        "\27\uffff\1\1\1\2";
-    static final String DFA62_specialS =
-        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
-    static final String[] DFA62_transitionS = {
-            "\1\6\1\1\1\7\1\10\1\2\15\uffff\1\5\12\uffff\1\11\1\12\1\13\1"+
-            "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
-            "\1\25\31\uffff\1\26",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            ""
-    };
-
-    static final short[] DFA62_eot = DFA.unpackEncodedString(DFA62_eotS);
-    static final short[] DFA62_eof = DFA.unpackEncodedString(DFA62_eofS);
-    static final char[] DFA62_min = DFA.unpackEncodedStringToUnsignedChars(DFA62_minS);
-    static final char[] DFA62_max = DFA.unpackEncodedStringToUnsignedChars(DFA62_maxS);
-    static final short[] DFA62_accept = DFA.unpackEncodedString(DFA62_acceptS);
-    static final short[] DFA62_special = DFA.unpackEncodedString(DFA62_specialS);
-    static final short[][] DFA62_transition;
-
-    static {
-        int numStates = DFA62_transitionS.length;
-        DFA62_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA62_transition[i] = DFA.unpackEncodedString(DFA62_transitionS[i]);
-        }
-    }
-
-    class DFA62 extends DFA {
-
-        public DFA62(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 62;
-            this.eot = DFA62_eot;
-            this.eof = DFA62_eof;
-            this.min = DFA62_min;
-            this.max = DFA62_max;
-            this.accept = DFA62_accept;
-            this.special = DFA62_special;
-            this.transition = DFA62_transition;
-        }
-        public String getDescription() {
-            return "240:1: null_predicate : ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-            int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA62_1 = input.LA(1);
-
-                         
-                        int index62_1 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_1);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA62_2 = input.LA(1);
-
-                         
-                        int index62_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA62_3 = input.LA(1);
-
-                         
-                        int index62_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA62_4 = input.LA(1);
-
-                         
-                        int index62_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA62_5 = input.LA(1);
-
-                         
-                        int index62_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA62_6 = input.LA(1);
-
-                         
-                        int index62_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA62_7 = input.LA(1);
-
-                         
-                        int index62_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA62_8 = input.LA(1);
-
-                         
-                        int index62_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA62_9 = input.LA(1);
-
-                         
-                        int index62_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA62_10 = input.LA(1);
-
-                         
-                        int index62_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA62_11 = input.LA(1);
-
-                         
-                        int index62_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA62_12 = input.LA(1);
-
-                         
-                        int index62_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA62_13 = input.LA(1);
-
-                         
-                        int index62_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 13 : 
-                        int LA62_14 = input.LA(1);
-
-                         
-                        int index62_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
-                        int LA62_15 = input.LA(1);
-
-                         
-                        int index62_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA62_16 = input.LA(1);
-
-                         
-                        int index62_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA62_17 = input.LA(1);
-
-                         
-                        int index62_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA62_18 = input.LA(1);
-
-                         
-                        int index62_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA62_19 = input.LA(1);
-
-                         
-                        int index62_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_19);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA62_20 = input.LA(1);
-
-                         
-                        int index62_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA62_21 = input.LA(1);
-
-                         
-                        int index62_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA62_22 = input.LA(1);
-
-                         
-                        int index62_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred109_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index62_22);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 62, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
     static final String DFA63_eotS =
         "\31\uffff";
     static final String DFA63_eofS =
         "\31\uffff";
     static final String DFA63_minS =
-        "\1\42\26\0\2\uffff";
+        "\1\37\26\0\2\uffff";
     static final String DFA63_maxS =
-        "\1\150\26\0\2\uffff";
+        "\1\142\26\0\2\uffff";
     static final String DFA63_acceptS =
         "\27\uffff\1\1\1\2";
     static final String DFA63_specialS =
-        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
+        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
     static final String[] DFA63_transitionS = {
-            "\1\6\1\1\1\7\1\10\1\2\15\uffff\1\5\12\uffff\1\11\1\12\1\13\1"+
-            "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
+            "\1\1\1\6\1\7\1\10\1\2\14\uffff\1\5\10\uffff\1\11\1\12\1\13"+
+            "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
             "\1\25\31\uffff\1\26",
             "\1\uffff",
             "\1\uffff",
@@ -11398,11 +13873,14 @@ public class SQL92QueryParser extends Parser {
             this.transition = DFA63_transition;
         }
         public String getDescription() {
-            return "244:1: in_predicate : ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) );";
+            return "242:1: between_predicate : (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA63_1 = input.LA(1);
@@ -11743,22 +14221,23 @@ public class SQL92QueryParser extends Parser {
         }
     }
     static final String DFA66_eotS =
-        "\31\uffff";
+        "\32\uffff";
     static final String DFA66_eofS =
-        "\31\uffff";
+        "\32\uffff";
     static final String DFA66_minS =
-        "\1\42\26\0\2\uffff";
+        "\1\37\1\uffff\26\0\2\uffff";
     static final String DFA66_maxS =
-        "\1\150\26\0\2\uffff";
+        "\1\143\1\uffff\26\0\2\uffff";
     static final String DFA66_acceptS =
-        "\27\uffff\1\1\1\2";
+        "\1\uffff\1\1\26\uffff\1\2\1\3";
     static final String DFA66_specialS =
-        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
+        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
     static final String[] DFA66_transitionS = {
-            "\1\6\1\1\1\7\1\10\1\2\15\uffff\1\5\12\uffff\1\11\1\12\1\13\1"+
-            "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
-            "\1\25\31\uffff\1\26",
+            "\1\2\1\7\1\10\1\11\1\3\14\uffff\1\6\10\uffff\1\12\1\13\1\14"+
+            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
+            "\1\26\31\uffff\1\27\1\1",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -11815,340 +14294,343 @@ public class SQL92QueryParser extends Parser {
             this.transition = DFA66_transition;
         }
         public String getDescription() {
-            return "254:1: between_predicate : (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) );";
+            return "250:1: comparison_predicate : ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA66_1 = input.LA(1);
-
-                         
-                        int index66_1 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 24;}
-
-                         
-                        input.seek(index66_1);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA66_2 = input.LA(1);
 
                          
                         int index66_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 2 : 
+                    case 1 : 
                         int LA66_3 = input.LA(1);
 
                          
                         int index66_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_3);
                         if ( s>=0 ) return s;
                         break;
-                    case 3 : 
+                    case 2 : 
                         int LA66_4 = input.LA(1);
 
                          
                         int index66_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_4);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
+                    case 3 : 
                         int LA66_5 = input.LA(1);
 
                          
                         int index66_5 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_5);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
+                    case 4 : 
                         int LA66_6 = input.LA(1);
 
                          
                         int index66_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_6);
                         if ( s>=0 ) return s;
                         break;
-                    case 6 : 
+                    case 5 : 
                         int LA66_7 = input.LA(1);
 
                          
                         int index66_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_7);
                         if ( s>=0 ) return s;
                         break;
-                    case 7 : 
+                    case 6 : 
                         int LA66_8 = input.LA(1);
 
                          
                         int index66_8 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_8);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
+                    case 7 : 
                         int LA66_9 = input.LA(1);
 
                          
                         int index66_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_9);
                         if ( s>=0 ) return s;
                         break;
-                    case 9 : 
+                    case 8 : 
                         int LA66_10 = input.LA(1);
 
                          
                         int index66_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_10);
                         if ( s>=0 ) return s;
                         break;
-                    case 10 : 
+                    case 9 : 
                         int LA66_11 = input.LA(1);
 
                          
                         int index66_11 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_11);
                         if ( s>=0 ) return s;
                         break;
-                    case 11 : 
+                    case 10 : 
                         int LA66_12 = input.LA(1);
 
                          
                         int index66_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_12);
                         if ( s>=0 ) return s;
                         break;
-                    case 12 : 
+                    case 11 : 
                         int LA66_13 = input.LA(1);
 
                          
                         int index66_13 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_13);
                         if ( s>=0 ) return s;
                         break;
-                    case 13 : 
+                    case 12 : 
                         int LA66_14 = input.LA(1);
 
                          
                         int index66_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_14);
                         if ( s>=0 ) return s;
                         break;
-                    case 14 : 
+                    case 13 : 
                         int LA66_15 = input.LA(1);
 
                          
                         int index66_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_15);
                         if ( s>=0 ) return s;
                         break;
-                    case 15 : 
+                    case 14 : 
                         int LA66_16 = input.LA(1);
 
                          
                         int index66_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_16);
                         if ( s>=0 ) return s;
                         break;
-                    case 16 : 
+                    case 15 : 
                         int LA66_17 = input.LA(1);
 
                          
                         int index66_17 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_17);
                         if ( s>=0 ) return s;
                         break;
-                    case 17 : 
+                    case 16 : 
                         int LA66_18 = input.LA(1);
 
                          
                         int index66_18 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_18);
                         if ( s>=0 ) return s;
                         break;
-                    case 18 : 
+                    case 17 : 
                         int LA66_19 = input.LA(1);
 
                          
                         int index66_19 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_19);
                         if ( s>=0 ) return s;
                         break;
-                    case 19 : 
+                    case 18 : 
                         int LA66_20 = input.LA(1);
 
                          
                         int index66_20 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_20);
                         if ( s>=0 ) return s;
                         break;
-                    case 20 : 
+                    case 19 : 
                         int LA66_21 = input.LA(1);
 
                          
                         int index66_21 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_21);
                         if ( s>=0 ) return s;
                         break;
-                    case 21 : 
+                    case 20 : 
                         int LA66_22 = input.LA(1);
 
                          
                         int index66_22 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred113_SQL92Query()) ) {s = 23;}
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
 
-                        else if ( (true) ) {s = 24;}
+                        else if ( (true) ) {s = 25;}
 
                          
                         input.seek(index66_22);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA66_23 = input.LA(1);
+
+                         
+                        int index66_23 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred120_SQL92Query()) ) {s = 24;}
+
+                        else if ( (true) ) {s = 25;}
+
+                         
+                        input.seek(index66_23);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -12159,440 +14641,22 @@ public class SQL92QueryParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA69_eotS =
-        "\32\uffff";
-    static final String DFA69_eofS =
-        "\32\uffff";
-    static final String DFA69_minS =
-        "\1\42\1\uffff\26\0\2\uffff";
-    static final String DFA69_maxS =
-        "\1\151\1\uffff\26\0\2\uffff";
-    static final String DFA69_acceptS =
-        "\1\uffff\1\1\26\uffff\1\2\1\3";
-    static final String DFA69_specialS =
-        "\2\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
-    static final String[] DFA69_transitionS = {
-            "\1\7\1\2\1\10\1\11\1\3\15\uffff\1\6\12\uffff\1\12\1\13\1\14"+
-            "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\4\1\5\1\uffff\1\24\1\25"+
-            "\1\26\31\uffff\1\27\1\1",
-            "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            ""
-    };
-
-    static final short[] DFA69_eot = DFA.unpackEncodedString(DFA69_eotS);
-    static final short[] DFA69_eof = DFA.unpackEncodedString(DFA69_eofS);
-    static final char[] DFA69_min = DFA.unpackEncodedStringToUnsignedChars(DFA69_minS);
-    static final char[] DFA69_max = DFA.unpackEncodedStringToUnsignedChars(DFA69_maxS);
-    static final short[] DFA69_accept = DFA.unpackEncodedString(DFA69_acceptS);
-    static final short[] DFA69_special = DFA.unpackEncodedString(DFA69_specialS);
-    static final short[][] DFA69_transition;
-
-    static {
-        int numStates = DFA69_transitionS.length;
-        DFA69_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA69_transition[i] = DFA.unpackEncodedString(DFA69_transitionS[i]);
-        }
-    }
-
-    class DFA69 extends DFA {
-
-        public DFA69(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 69;
-            this.eot = DFA69_eot;
-            this.eof = DFA69_eof;
-            this.min = DFA69_min;
-            this.max = DFA69_max;
-            this.accept = DFA69_accept;
-            this.special = DFA69_special;
-            this.transition = DFA69_transition;
-        }
-        public String getDescription() {
-            return "263:1: comparison_predicate : ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-            int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA69_2 = input.LA(1);
-
-                         
-                        int index69_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA69_3 = input.LA(1);
-
-                         
-                        int index69_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA69_4 = input.LA(1);
-
-                         
-                        int index69_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA69_5 = input.LA(1);
-
-                         
-                        int index69_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA69_6 = input.LA(1);
-
-                         
-                        int index69_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA69_7 = input.LA(1);
-
-                         
-                        int index69_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA69_8 = input.LA(1);
-
-                         
-                        int index69_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA69_9 = input.LA(1);
-
-                         
-                        int index69_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA69_10 = input.LA(1);
-
-                         
-                        int index69_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA69_11 = input.LA(1);
-
-                         
-                        int index69_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA69_12 = input.LA(1);
-
-                         
-                        int index69_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA69_13 = input.LA(1);
-
-                         
-                        int index69_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA69_14 = input.LA(1);
-
-                         
-                        int index69_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 13 : 
-                        int LA69_15 = input.LA(1);
-
-                         
-                        int index69_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
-                        int LA69_16 = input.LA(1);
-
-                         
-                        int index69_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA69_17 = input.LA(1);
-
-                         
-                        int index69_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA69_18 = input.LA(1);
-
-                         
-                        int index69_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA69_19 = input.LA(1);
-
-                         
-                        int index69_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_19);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA69_20 = input.LA(1);
-
-                         
-                        int index69_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA69_21 = input.LA(1);
-
-                         
-                        int index69_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA69_22 = input.LA(1);
-
-                         
-                        int index69_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA69_23 = input.LA(1);
-
-                         
-                        int index69_23 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred123_SQL92Query()) ) {s = 24;}
-
-                        else if ( (true) ) {s = 25;}
-
-                         
-                        input.seek(index69_23);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 69, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA70_eotS =
+    static final String DFA67_eotS =
         "\31\uffff";
-    static final String DFA70_eofS =
+    static final String DFA67_eofS =
         "\31\uffff";
-    static final String DFA70_minS =
-        "\1\42\26\0\2\uffff";
-    static final String DFA70_maxS =
-        "\1\150\26\0\2\uffff";
-    static final String DFA70_acceptS =
+    static final String DFA67_minS =
+        "\1\37\26\0\2\uffff";
+    static final String DFA67_maxS =
+        "\1\142\26\0\2\uffff";
+    static final String DFA67_acceptS =
         "\27\uffff\1\1\1\2";
-    static final String DFA70_specialS =
-        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
-        "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
-    static final String[] DFA70_transitionS = {
-            "\1\6\1\1\1\7\1\10\1\2\15\uffff\1\5\12\uffff\1\11\1\12\1\13\1"+
-            "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
+    static final String DFA67_specialS =
+        "\1\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\2\uffff}>";
+    static final String[] DFA67_transitionS = {
+            "\1\1\1\6\1\7\1\10\1\2\14\uffff\1\5\10\uffff\1\11\1\12\1\13"+
+            "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\3\1\4\1\uffff\1\23\1\24"+
             "\1\25\31\uffff\1\26",
             "\1\uffff",
             "\1\uffff",
@@ -12620,703 +14684,699 @@ public class SQL92QueryParser extends Parser {
             ""
     };
 
-    static final short[] DFA70_eot = DFA.unpackEncodedString(DFA70_eotS);
-    static final short[] DFA70_eof = DFA.unpackEncodedString(DFA70_eofS);
-    static final char[] DFA70_min = DFA.unpackEncodedStringToUnsignedChars(DFA70_minS);
-    static final char[] DFA70_max = DFA.unpackEncodedStringToUnsignedChars(DFA70_maxS);
-    static final short[] DFA70_accept = DFA.unpackEncodedString(DFA70_acceptS);
-    static final short[] DFA70_special = DFA.unpackEncodedString(DFA70_specialS);
-    static final short[][] DFA70_transition;
+    static final short[] DFA67_eot = DFA.unpackEncodedString(DFA67_eotS);
+    static final short[] DFA67_eof = DFA.unpackEncodedString(DFA67_eofS);
+    static final char[] DFA67_min = DFA.unpackEncodedStringToUnsignedChars(DFA67_minS);
+    static final char[] DFA67_max = DFA.unpackEncodedStringToUnsignedChars(DFA67_maxS);
+    static final short[] DFA67_accept = DFA.unpackEncodedString(DFA67_acceptS);
+    static final short[] DFA67_special = DFA.unpackEncodedString(DFA67_specialS);
+    static final short[][] DFA67_transition;
 
     static {
-        int numStates = DFA70_transitionS.length;
-        DFA70_transition = new short[numStates][];
+        int numStates = DFA67_transitionS.length;
+        DFA67_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA70_transition[i] = DFA.unpackEncodedString(DFA70_transitionS[i]);
+            DFA67_transition[i] = DFA.unpackEncodedString(DFA67_transitionS[i]);
         }
     }
 
-    class DFA70 extends DFA {
+    class DFA67 extends DFA {
 
-        public DFA70(BaseRecognizer recognizer) {
+        public DFA67(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 70;
-            this.eot = DFA70_eot;
-            this.eof = DFA70_eof;
-            this.min = DFA70_min;
-            this.max = DFA70_max;
-            this.accept = DFA70_accept;
-            this.special = DFA70_special;
-            this.transition = DFA70_transition;
+            this.decisionNumber = 67;
+            this.eot = DFA67_eot;
+            this.eof = DFA67_eof;
+            this.min = DFA67_min;
+            this.max = DFA67_max;
+            this.accept = DFA67_accept;
+            this.special = DFA67_special;
+            this.transition = DFA67_transition;
         }
         public String getDescription() {
-            return "269:1: like_predicate : ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) );";
+            return "258:1: like_predicate : ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) );";
+        }
+        public void error(NoViableAltException nvae) {
+            dbg.recognitionException(nvae);
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-            int _s = s;
+        	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA70_1 = input.LA(1);
+                        int LA67_1 = input.LA(1);
 
                          
-                        int index70_1 = input.index();
+                        int index67_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_1);
+                        input.seek(index67_1);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA70_2 = input.LA(1);
+                        int LA67_2 = input.LA(1);
 
                          
-                        int index70_2 = input.index();
+                        int index67_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_2);
+                        input.seek(index67_2);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA70_3 = input.LA(1);
+                        int LA67_3 = input.LA(1);
 
                          
-                        int index70_3 = input.index();
+                        int index67_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_3);
+                        input.seek(index67_3);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA70_4 = input.LA(1);
+                        int LA67_4 = input.LA(1);
 
                          
-                        int index70_4 = input.index();
+                        int index67_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_4);
+                        input.seek(index67_4);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA70_5 = input.LA(1);
+                        int LA67_5 = input.LA(1);
 
                          
-                        int index70_5 = input.index();
+                        int index67_5 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_5);
+                        input.seek(index67_5);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA70_6 = input.LA(1);
+                        int LA67_6 = input.LA(1);
 
                          
-                        int index70_6 = input.index();
+                        int index67_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_6);
+                        input.seek(index67_6);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA70_7 = input.LA(1);
+                        int LA67_7 = input.LA(1);
 
                          
-                        int index70_7 = input.index();
+                        int index67_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_7);
+                        input.seek(index67_7);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA70_8 = input.LA(1);
+                        int LA67_8 = input.LA(1);
 
                          
-                        int index70_8 = input.index();
+                        int index67_8 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_8);
+                        input.seek(index67_8);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA70_9 = input.LA(1);
+                        int LA67_9 = input.LA(1);
 
                          
-                        int index70_9 = input.index();
+                        int index67_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_9);
+                        input.seek(index67_9);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA70_10 = input.LA(1);
+                        int LA67_10 = input.LA(1);
 
                          
-                        int index70_10 = input.index();
+                        int index67_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_10);
+                        input.seek(index67_10);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA70_11 = input.LA(1);
+                        int LA67_11 = input.LA(1);
 
                          
-                        int index70_11 = input.index();
+                        int index67_11 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_11);
+                        input.seek(index67_11);
                         if ( s>=0 ) return s;
                         break;
                     case 11 : 
-                        int LA70_12 = input.LA(1);
+                        int LA67_12 = input.LA(1);
 
                          
-                        int index70_12 = input.index();
+                        int index67_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_12);
+                        input.seek(index67_12);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA70_13 = input.LA(1);
+                        int LA67_13 = input.LA(1);
 
                          
-                        int index70_13 = input.index();
+                        int index67_13 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_13);
+                        input.seek(index67_13);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA70_14 = input.LA(1);
+                        int LA67_14 = input.LA(1);
 
                          
-                        int index70_14 = input.index();
+                        int index67_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_14);
+                        input.seek(index67_14);
                         if ( s>=0 ) return s;
                         break;
                     case 14 : 
-                        int LA70_15 = input.LA(1);
+                        int LA67_15 = input.LA(1);
 
                          
-                        int index70_15 = input.index();
+                        int index67_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_15);
+                        input.seek(index67_15);
                         if ( s>=0 ) return s;
                         break;
                     case 15 : 
-                        int LA70_16 = input.LA(1);
+                        int LA67_16 = input.LA(1);
 
                          
-                        int index70_16 = input.index();
+                        int index67_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_16);
+                        input.seek(index67_16);
                         if ( s>=0 ) return s;
                         break;
                     case 16 : 
-                        int LA70_17 = input.LA(1);
+                        int LA67_17 = input.LA(1);
 
                          
-                        int index70_17 = input.index();
+                        int index67_17 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_17);
+                        input.seek(index67_17);
                         if ( s>=0 ) return s;
                         break;
                     case 17 : 
-                        int LA70_18 = input.LA(1);
+                        int LA67_18 = input.LA(1);
 
                          
-                        int index70_18 = input.index();
+                        int index67_18 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_18);
+                        input.seek(index67_18);
                         if ( s>=0 ) return s;
                         break;
                     case 18 : 
-                        int LA70_19 = input.LA(1);
+                        int LA67_19 = input.LA(1);
 
                          
-                        int index70_19 = input.index();
+                        int index67_19 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_19);
+                        input.seek(index67_19);
                         if ( s>=0 ) return s;
                         break;
                     case 19 : 
-                        int LA70_20 = input.LA(1);
+                        int LA67_20 = input.LA(1);
 
                          
-                        int index70_20 = input.index();
+                        int index67_20 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_20);
+                        input.seek(index67_20);
                         if ( s>=0 ) return s;
                         break;
                     case 20 : 
-                        int LA70_21 = input.LA(1);
+                        int LA67_21 = input.LA(1);
 
                          
-                        int index70_21 = input.index();
+                        int index67_21 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_21);
+                        input.seek(index67_21);
                         if ( s>=0 ) return s;
                         break;
                     case 21 : 
-                        int LA70_22 = input.LA(1);
+                        int LA67_22 = input.LA(1);
 
                          
-                        int index70_22 = input.index();
+                        int index67_22 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred130_SQL92Query()) ) {s = 23;}
+                        if ( (synpred127_SQL92Query()) ) {s = 23;}
 
                         else if ( (true) ) {s = 24;}
 
                          
-                        input.seek(index70_22);
+                        input.seek(index67_22);
                         if ( s>=0 ) return s;
                         break;
             }
             if (state.backtracking>0) {state.failed=true; return -1;}
             NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 70, _s, input);
+                new NoViableAltException(getDescription(), 67, _s, input);
             error(nvae);
             throw nvae;
         }
     }
  
 
-    public static final BitSet FOLLOW_query_expression_in_statement315 = new BitSet(new long[]{0x0400030000000000L});
-    public static final BitSet FOLLOW_order_by_in_statement317 = new BitSet(new long[]{0x0000030000000000L});
-    public static final BitSet FOLLOW_limit_in_statement320 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_40_in_statement323 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_statement326 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_41_in_limit363 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_INT_in_limit365 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_query_in_query_expression391 = new BitSet(new long[]{0x0000340000000002L});
-    public static final BitSet FOLLOW_set_op_in_query_expression394 = new BitSet(new long[]{0x0010400000000000L});
-    public static final BitSet FOLLOW_query_in_query_expression397 = new BitSet(new long[]{0x0000340000000002L});
-    public static final BitSet FOLLOW_42_in_set_op419 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_set_op421 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_set_op437 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_44_in_set_op453 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_set_op455 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_44_in_set_op471 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_set_op487 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_query514 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_46_in_query524 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_set_quantifier_in_query526 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_select_list_in_query529 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_47_in_query531 = new BitSet(new long[]{0x0010000800000000L});
-    public static final BitSet FOLLOW_table_expression_in_query533 = new BitSet(new long[]{0x0007000000000002L});
-    public static final BitSet FOLLOW_48_in_query536 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_search_condition_in_query540 = new BitSet(new long[]{0x0006000000000002L});
-    public static final BitSet FOLLOW_49_in_query545 = new BitSet(new long[]{0x8000000800000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_column_list_in_query547 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_query552 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_search_condition_in_query556 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_query_expression_in_statement183 = new BitSet(new long[]{0x0040002000000000L});
+    public static final BitSet FOLLOW_order_by_in_statement185 = new BitSet(new long[]{0x0000002000000000L});
+    public static final BitSet FOLLOW_37_in_statement188 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_statement191 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_query_in_query_expression211 = new BitSet(new long[]{0x0000034000000002L});
+    public static final BitSet FOLLOW_set_op_in_query_expression214 = new BitSet(new long[]{0x0001040000000000L});
+    public static final BitSet FOLLOW_query_in_query_expression217 = new BitSet(new long[]{0x0000034000000002L});
+    public static final BitSet FOLLOW_38_in_set_op231 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_39_in_set_op233 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_38_in_set_op244 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_set_op255 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_39_in_set_op257 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_set_op268 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_41_in_set_op279 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_query300 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_query305 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_set_quantifier_in_query307 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_select_list_in_query310 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_query312 = new BitSet(new long[]{0x0001000080000000L});
+    public static final BitSet FOLLOW_table_expression_in_query314 = new BitSet(new long[]{0x0000700000000002L});
+    public static final BitSet FOLLOW_44_in_query317 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_search_condition_in_query321 = new BitSet(new long[]{0x0000600000000002L});
+    public static final BitSet FOLLOW_45_in_query326 = new BitSet(new long[]{0xFE00000080000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_column_list_in_query328 = new BitSet(new long[]{0x0000400000000002L});
+    public static final BitSet FOLLOW_46_in_query333 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_search_condition_in_query337 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_set_quantifier0 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_sub_query659 = new BitSet(new long[]{0x0010400000000000L});
-    public static final BitSet FOLLOW_query_expression_in_sub_query662 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_sub_query664 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_54_in_select_list683 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_derived_column_in_select_list701 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_55_in_select_list704 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_derived_column_in_select_list707 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_56_in_derived_column727 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_derived_column729 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_57_in_derived_column731 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_derived_column735 = new BitSet(new long[]{0x0200000800000002L});
-    public static final BitSet FOLLOW_57_in_derived_column738 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_derived_column743 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_expression_in_derived_column774 = new BitSet(new long[]{0x0200000800000002L});
-    public static final BitSet FOLLOW_57_in_derived_column777 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_derived_column780 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_58_in_order_by814 = new BitSet(new long[]{0x0800000000000000L});
-    public static final BitSet FOLLOW_59_in_order_by816 = new BitSet(new long[]{0x8000000C00000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_ordered_sort_spec_in_order_by818 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_55_in_order_by821 = new BitSet(new long[]{0x8000000C00000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_ordered_sort_spec_in_order_by823 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_column_name_in_sort_spec852 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_sort_spec856 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_reserved_word_column_name_in_sort_spec860 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec878 = new BitSet(new long[]{0x1000000000000000L});
-    public static final BitSet FOLLOW_60_in_ordered_sort_spec880 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec898 = new BitSet(new long[]{0x2000000000000002L});
-    public static final BitSet FOLLOW_61_in_ordered_sort_spec900 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_reserved_word_column_name930 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_62_in_reserved_word_column_name931 = new BitSet(new long[]{0x8000000000000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_63_in_reserved_word_column_name937 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_reserved_word_column_name943 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_reserved_word_column_name949 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_reserved_word_column_name955 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_reserved_word_column_name961 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_reserved_word_column_name967 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_reserved_word_column_name973 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_70_in_reserved_word_column_name979 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_71_in_reserved_word_column_name985 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_reserved_word_column_name991 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_string_value_expression_in_value_expression1037 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_numeric_value_expression_in_value_expression1047 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_factor_in_numeric_value_expression1066 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000600L});
-    public static final BitSet FOLLOW_set_in_numeric_value_expression1069 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_factor_in_numeric_value_expression1076 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000600L});
-    public static final BitSet FOLLOW_numeric_primary_in_factor1098 = new BitSet(new long[]{0x0040000000000002L,0x0000000000000800L});
-    public static final BitSet FOLLOW_set_in_factor1101 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_numeric_primary_in_factor1108 = new BitSet(new long[]{0x0040000000000002L,0x0000000000000800L});
-    public static final BitSet FOLLOW_73_in_numeric_primary1129 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_74_in_numeric_primary1132 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_primary_in_numeric_primary1137 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_value_expression_primary1157 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_value_expression_primary1160 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_value_expression_primary1162 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_function_in_value_expression_primary1173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_name_in_value_expression_primary1183 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_value_expression_primary1193 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_value_expression_primary1203 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal1221 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal1225 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NUMERIC_in_literal1229 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal1233 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_datetime_in_literal1237 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_interval_in_literal1241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_literal1245 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_77_in_literal1249 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_78_in_literal1253 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_datetime1271 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_STRING_in_datetime1284 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_datetime1297 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_62_in_datetime1298 = new BitSet(new long[]{0x8000000000000000L,0x0000000000000003L});
-    public static final BitSet FOLLOW_63_in_datetime1304 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_datetime1310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_datetime1316 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_interval1348 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_STRING_in_interval1351 = new BitSet(new long[]{0x0000000000000000L,0x00000000000001F8L});
-    public static final BitSet FOLLOW_set_in_interval1353 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_interval1388 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_62_in_interval1389 = new BitSet(new long[]{0x0000000000000000L,0x00000000000001FCL});
-    public static final BitSet FOLLOW_66_in_interval1395 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_interval1401 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_interval1407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_interval1413 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_70_in_interval1419 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_71_in_interval1425 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_interval1431 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_function1469 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_52_in_function1472 = new BitSet(new long[]{0x81F8087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_function1474 = new BitSet(new long[]{0x00A0000000000000L});
-    public static final BitSet FOLLOW_55_in_function1478 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_function1480 = new BitSet(new long[]{0x00A0000000000000L});
-    public static final BitSet FOLLOW_53_in_function1484 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_function1522 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_52_in_function1525 = new BitSet(new long[]{0x0040000000000000L});
-    public static final BitSet FOLLOW_54_in_function1527 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_function1529 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_name_in_string_value_expression1559 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-    public static final BitSet FOLLOW_STRING_in_string_value_expression1563 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-    public static final BitSet FOLLOW_79_in_string_value_expression1567 = new BitSet(new long[]{0x0000004800000000L});
-    public static final BitSet FOLLOW_column_name_in_string_value_expression1571 = new BitSet(new long[]{0x0000000000000002L,0x0000000000008000L});
-    public static final BitSet FOLLOW_STRING_in_string_value_expression1575 = new BitSet(new long[]{0x0000000000000002L,0x0000000000008000L});
-    public static final BitSet FOLLOW_table_reference_in_table_expression1596 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_table_in_table_reference1614 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_55_in_table_reference1617 = new BitSet(new long[]{0x0010000800000000L});
-    public static final BitSet FOLLOW_table_reference_in_table_reference1620 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_80_in_join_type1640 = new BitSet(new long[]{0x0000000000000000L,0x0000000000060000L});
-    public static final BitSet FOLLOW_81_in_join_type1642 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_82_in_join_type1645 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_83_in_join_type1660 = new BitSet(new long[]{0x0000000000000000L,0x0000000000060000L});
-    public static final BitSet FOLLOW_81_in_join_type1662 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_82_in_join_type1665 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_84_in_join_type1679 = new BitSet(new long[]{0x0000000000000000L,0x0000000000060000L});
-    public static final BitSet FOLLOW_81_in_join_type1681 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_82_in_join_type1684 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_85_in_join_type1698 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_82_in_join_type1701 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_non_join_table_in_table1723 = new BitSet(new long[]{0x0000000000000002L,0x00000000003D0000L});
-    public static final BitSet FOLLOW_join_type_in_table1726 = new BitSet(new long[]{0x0010000800000000L});
-    public static final BitSet FOLLOW_non_join_table_in_table1729 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
-    public static final BitSet FOLLOW_86_in_table1731 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_search_condition_in_table1734 = new BitSet(new long[]{0x0000000000000002L,0x00000000003D0000L});
-    public static final BitSet FOLLOW_table_name_in_non_join_table1754 = new BitSet(new long[]{0x0200000800000002L});
-    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_table_function_in_non_join_table1778 = new BitSet(new long[]{0x0200000800000000L});
-    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1780 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_non_join_table1800 = new BitSet(new long[]{0x0200000800000000L});
-    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1802 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_table_function1832 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_52_in_table_function1834 = new BitSet(new long[]{0x81F8087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_table_function_subquery_in_table_function1836 = new BitSet(new long[]{0x81F8087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_55_in_table_function1840 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_table_function_subquery_in_table_function1842 = new BitSet(new long[]{0x81F8087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_55_in_table_function1847 = new BitSet(new long[]{0x81D8087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_table_function_param_in_table_function1850 = new BitSet(new long[]{0x81F8087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_53_in_table_function1854 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_table_function_subquery1902 = new BitSet(new long[]{0x0200000800000000L});
-    public static final BitSet FOLLOW_correlation_specification_in_table_function_subquery1904 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_search_condition_in_table_function_param1932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_expression_in_table_function_param1942 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_table_name_in_relation1964 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_table_function_in_relation1982 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_query_in_relation2000 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_boolean_factor_in_search_condition2026 = new BitSet(new long[]{0x0000000000000002L,0x0000000000800000L});
-    public static final BitSet FOLLOW_87_in_search_condition2029 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_boolean_factor_in_search_condition2032 = new BitSet(new long[]{0x0000000000000002L,0x0000000000800000L});
-    public static final BitSet FOLLOW_boolean_term_in_boolean_factor2052 = new BitSet(new long[]{0x0000000000000002L,0x0000000001000000L});
-    public static final BitSet FOLLOW_88_in_boolean_factor2055 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_boolean_term_in_boolean_factor2058 = new BitSet(new long[]{0x0000000000000002L,0x0000000001000000L});
-    public static final BitSet FOLLOW_boolean_test_in_boolean_term2078 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_89_in_boolean_term2088 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_boolean_term_in_boolean_term2090 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_boolean_primary_in_boolean_test2116 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_predicate_in_boolean_primary2134 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_boolean_primary2138 = new BitSet(new long[]{0x8158087C00000000L,0x00000300220077FFL});
-    public static final BitSet FOLLOW_search_condition_in_boolean_primary2141 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_boolean_primary2143 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_comparison_predicate_in_predicate2165 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_like_predicate_in_predicate2169 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_in_predicate_in_predicate2173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_null_predicate_in_predicate2177 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exists_predicate_in_predicate2181 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_between_predicate_in_predicate2185 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_null_predicate2203 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_90_in_null_predicate2205 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_null_predicate2207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_null_predicate2225 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_90_in_null_predicate2227 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_89_in_null_predicate2229 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_null_predicate2231 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_in_predicate2261 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_89_in_in_predicate2263 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-    public static final BitSet FOLLOW_91_in_in_predicate2265 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2267 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_in_predicate2303 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-    public static final BitSet FOLLOW_91_in_in_predicate2305 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2307 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_in_predicate_tail2347 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_in_predicate_tail2358 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2361 = new BitSet(new long[]{0x00A0000000000000L});
-    public static final BitSet FOLLOW_55_in_in_predicate_tail2364 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2366 = new BitSet(new long[]{0x00A0000000000000L});
-    public static final BitSet FOLLOW_53_in_in_predicate_tail2371 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2400 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_92_in_between_predicate2402 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2406 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_88_in_between_predicate2408 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2452 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_89_in_between_predicate2454 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_92_in_between_predicate2456 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2460 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_88_in_between_predicate2462 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_between_predicate2466 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_93_in_exists_predicate2515 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_sub_query_in_exists_predicate2518 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_bind_table_in_comparison_predicate2536 = new BitSet(new long[]{0x0000000000000000L,0x0000000040000000L});
-    public static final BitSet FOLLOW_94_in_comparison_predicate2538 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_comparison_predicate2541 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_comparison_predicate2553 = new BitSet(new long[]{0x0000000000000000L,0x0000001FC0000000L});
-    public static final BitSet FOLLOW_94_in_comparison_predicate2558 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_95_in_comparison_predicate2562 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_96_in_comparison_predicate2566 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_97_in_comparison_predicate2570 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_98_in_comparison_predicate2574 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_99_in_comparison_predicate2578 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_100_in_comparison_predicate2582 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_43_in_comparison_predicate2588 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_101_in_comparison_predicate2592 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_102_in_comparison_predicate2596 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_comparison_predicate2601 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_comparison_predicate2641 = new BitSet(new long[]{0x0000000000000000L,0x0000001FC0000000L});
-    public static final BitSet FOLLOW_set_in_comparison_predicate2643 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_comparison_predicate2672 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_like_predicate2690 = new BitSet(new long[]{0x0000000000000000L,0x0000008000000000L});
-    public static final BitSet FOLLOW_103_in_like_predicate2692 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_like_predicate2695 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_like_predicate2707 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_89_in_like_predicate2709 = new BitSet(new long[]{0x0000000000000000L,0x0000008000000000L});
-    public static final BitSet FOLLOW_103_in_like_predicate2711 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_like_predicate2715 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_expression_in_row_value2749 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_row_value2752 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_104_in_row_value2756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_105_in_bind_table2774 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_bind_table2777 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_62_in_bind_table2778 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_bind_table2781 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_correlation_specification2816 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_correlation_specification2821 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_table_name2842 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_name_in_column_list2861 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2865 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_55_in_column_list2869 = new BitSet(new long[]{0x8000000800000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_column_name_in_column_list2873 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2877 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_ID_in_column_name2901 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_62_in_column_name2902 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_ID_in_column_name2907 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_synpred39_SQL92Query1069 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_factor_in_synpred39_SQL92Query1076 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_synpred44_SQL92Query1157 = new BitSet(new long[]{0x8158087C00000000L,0x00000000000077FFL});
-    public static final BitSet FOLLOW_value_expression_in_synpred44_SQL92Query1160 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_synpred44_SQL92Query1162 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_function_in_synpred45_SQL92Query1173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_name_in_synpred46_SQL92Query1183 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred47_SQL92Query1193 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_synpred58_SQL92Query1271 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_STRING_in_synpred58_SQL92Query1284 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_synpred67_SQL92Query1348 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_STRING_in_synpred67_SQL92Query1351 = new BitSet(new long[]{0x0000000000000000L,0x00000000000001F8L});
-    public static final BitSet FOLLOW_set_in_synpred67_SQL92Query1353 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_55_in_synpred81_SQL92Query1617 = new BitSet(new long[]{0x0010000800000000L});
-    public static final BitSet FOLLOW_table_reference_in_synpred81_SQL92Query1620 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_table_function_subquery_in_synpred93_SQL92Query1836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_55_in_synpred94_SQL92Query1840 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_table_function_subquery_in_synpred94_SQL92Query1842 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_search_condition_in_synpred97_SQL92Query1932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_predicate_in_synpred103_SQL92Query2134 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_comparison_predicate_in_synpred104_SQL92Query2165 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_like_predicate_in_synpred105_SQL92Query2169 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_in_predicate_in_synpred106_SQL92Query2173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_null_predicate_in_synpred107_SQL92Query2177 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_synpred109_SQL92Query2203 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_90_in_synpred109_SQL92Query2205 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_synpred109_SQL92Query2207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query2261 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_89_in_synpred110_SQL92Query2263 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-    public static final BitSet FOLLOW_91_in_synpred110_SQL92Query2265 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_in_predicate_tail_in_synpred110_SQL92Query2267 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_sub_query_in_synpred111_SQL92Query2347 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_synpred113_SQL92Query2400 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_92_in_synpred113_SQL92Query2402 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_synpred113_SQL92Query2406 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_88_in_synpred113_SQL92Query2408 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_synpred113_SQL92Query2412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_synpred123_SQL92Query2553 = new BitSet(new long[]{0x0000000000000000L,0x0000001FC0000000L});
-    public static final BitSet FOLLOW_94_in_synpred123_SQL92Query2558 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_95_in_synpred123_SQL92Query2562 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_96_in_synpred123_SQL92Query2566 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_97_in_synpred123_SQL92Query2570 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_98_in_synpred123_SQL92Query2574 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_99_in_synpred123_SQL92Query2578 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_100_in_synpred123_SQL92Query2582 = new BitSet(new long[]{0x0000080000000000L,0x0000006000000000L});
-    public static final BitSet FOLLOW_43_in_synpred123_SQL92Query2588 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_101_in_synpred123_SQL92Query2592 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_102_in_synpred123_SQL92Query2596 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_synpred123_SQL92Query2601 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_row_value_in_synpred130_SQL92Query2690 = new BitSet(new long[]{0x0000000000000000L,0x0000008000000000L});
-    public static final BitSet FOLLOW_103_in_synpred130_SQL92Query2692 = new BitSet(new long[]{0x8158087C00000000L,0x00000100000077FFL});
-    public static final BitSet FOLLOW_row_value_in_synpred130_SQL92Query2695 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_expression_in_synpred131_SQL92Query2749 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_synpred132_SQL92Query2752 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_48_in_sub_query409 = new BitSet(new long[]{0x0001040000000000L});
+    public static final BitSet FOLLOW_query_expression_in_sub_query412 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_sub_query414 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_50_in_select_list424 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_derived_column_in_select_list438 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_51_in_select_list441 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_derived_column_in_select_list444 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_52_in_derived_column456 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_derived_column458 = new BitSet(new long[]{0x0020000000000000L});
+    public static final BitSet FOLLOW_53_in_derived_column460 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_derived_column464 = new BitSet(new long[]{0x0020000080000002L});
+    public static final BitSet FOLLOW_53_in_derived_column467 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_derived_column472 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_expression_in_derived_column498 = new BitSet(new long[]{0x0020000080000002L});
+    public static final BitSet FOLLOW_53_in_derived_column501 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_derived_column504 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_54_in_order_by529 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_order_by531 = new BitSet(new long[]{0xFE00000180000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_sort_specification_in_order_by533 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_51_in_order_by536 = new BitSet(new long[]{0xFE00000180000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_sort_specification_in_order_by538 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_column_name_in_sort_specification557 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_sort_specification561 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_reserved_word_column_name_in_sort_specification565 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_reserved_word_column_name579 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_reserved_word_column_name580 = new BitSet(new long[]{0xFE00000000000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_57_in_reserved_word_column_name586 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_58_in_reserved_word_column_name592 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_reserved_word_column_name598 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_reserved_word_column_name604 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_reserved_word_column_name610 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_62_in_reserved_word_column_name616 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_reserved_word_column_name622 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_reserved_word_column_name628 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_reserved_word_column_name634 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_reserved_word_column_name640 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_string_value_expression_in_value_expression671 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_numeric_value_expression_in_value_expression676 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_factor_in_numeric_value_expression688 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000018L});
+    public static final BitSet FOLLOW_set_in_numeric_value_expression691 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_factor_in_numeric_value_expression698 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000018L});
+    public static final BitSet FOLLOW_numeric_primary_in_factor710 = new BitSet(new long[]{0x0004000000000002L,0x0000000000000020L});
+    public static final BitSet FOLLOW_set_in_factor713 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_numeric_primary_in_factor720 = new BitSet(new long[]{0x0004000000000002L,0x0000000000000020L});
+    public static final BitSet FOLLOW_67_in_numeric_primary733 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_68_in_numeric_primary736 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_primary_in_numeric_primary741 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_48_in_value_expression_primary751 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_value_expression_primary754 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_value_expression_primary756 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_function_in_value_expression_primary763 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_name_in_value_expression_primary769 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_value_expression_primary775 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_value_expression_primary781 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal791 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal795 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NUMERIC_in_literal799 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal803 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_datetime_in_literal807 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_interval_in_literal811 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_70_in_literal815 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_71_in_literal819 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_literal823 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_datetime831 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_STRING_in_datetime844 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_datetime853 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_datetime854 = new BitSet(new long[]{0x0E00000000000000L});
+    public static final BitSet FOLLOW_57_in_datetime860 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_58_in_datetime866 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_datetime872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_interval896 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_STRING_in_interval899 = new BitSet(new long[]{0xE000000000000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_interval901 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_interval931 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_interval932 = new BitSet(new long[]{0xF000000000000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_60_in_interval938 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_interval944 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_62_in_interval950 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_interval956 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_interval962 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_interval968 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_interval974 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_function1002 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_48_in_function1005 = new BitSet(new long[]{0xFE1F808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_function1007 = new BitSet(new long[]{0x000A000000000000L});
+    public static final BitSet FOLLOW_51_in_function1011 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_function1013 = new BitSet(new long[]{0x000A000000000000L});
+    public static final BitSet FOLLOW_49_in_function1017 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_function1042 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_48_in_function1045 = new BitSet(new long[]{0x0004000000000000L});
+    public static final BitSet FOLLOW_50_in_function1047 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_function1049 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_name_in_string_value_expression1072 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000200L});
+    public static final BitSet FOLLOW_STRING_in_string_value_expression1076 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000200L});
+    public static final BitSet FOLLOW_73_in_string_value_expression1080 = new BitSet(new long[]{0x0000000880000000L});
+    public static final BitSet FOLLOW_column_name_in_string_value_expression1084 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000200L});
+    public static final BitSet FOLLOW_STRING_in_string_value_expression1088 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000200L});
+    public static final BitSet FOLLOW_table_reference_in_table_expression1103 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_table_in_table_reference1113 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_51_in_table_reference1116 = new BitSet(new long[]{0x0001000080000000L});
+    public static final BitSet FOLLOW_table_reference_in_table_reference1119 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_74_in_join_type1132 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001800L});
+    public static final BitSet FOLLOW_75_in_join_type1134 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_76_in_join_type1137 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_77_in_join_type1147 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001800L});
+    public static final BitSet FOLLOW_75_in_join_type1149 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_76_in_join_type1152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_78_in_join_type1161 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001800L});
+    public static final BitSet FOLLOW_75_in_join_type1163 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_76_in_join_type1166 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_79_in_join_type1176 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_76_in_join_type1179 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_non_join_table_in_table1193 = new BitSet(new long[]{0x0000000000000002L,0x000000000000F400L});
+    public static final BitSet FOLLOW_join_type_in_table1196 = new BitSet(new long[]{0x0001000080000000L});
+    public static final BitSet FOLLOW_non_join_table_in_table1199 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
+    public static final BitSet FOLLOW_80_in_table1201 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_search_condition_in_table1204 = new BitSet(new long[]{0x0000000000000002L,0x000000000000F400L});
+    public static final BitSet FOLLOW_table_name_in_non_join_table1218 = new BitSet(new long[]{0x0020000080000002L});
+    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1220 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_table_function_in_non_join_table1238 = new BitSet(new long[]{0x0020000080000000L});
+    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1240 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_non_join_table1256 = new BitSet(new long[]{0x0020000080000000L});
+    public static final BitSet FOLLOW_correlation_specification_in_non_join_table1258 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_table_function1282 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_48_in_table_function1284 = new BitSet(new long[]{0xFE1F808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_table_function_subquery_in_table_function1286 = new BitSet(new long[]{0xFE1F808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_51_in_table_function1290 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_table_function_subquery_in_table_function1292 = new BitSet(new long[]{0xFE1F808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_51_in_table_function1297 = new BitSet(new long[]{0xFE1D808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_table_function_param_in_table_function1300 = new BitSet(new long[]{0xFE1F808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_49_in_table_function1304 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_table_function_subquery1336 = new BitSet(new long[]{0x0020000080000000L});
+    public static final BitSet FOLLOW_correlation_specification_in_table_function_subquery1338 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_search_condition_in_table_function_param1359 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_expression_in_table_function_param1364 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_table_name_in_relation1378 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_table_function_in_relation1392 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_query_in_relation1406 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_boolean_factor_in_search_condition1427 = new BitSet(new long[]{0x0000000000000002L,0x0000000000020000L});
+    public static final BitSet FOLLOW_81_in_search_condition1430 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_boolean_factor_in_search_condition1433 = new BitSet(new long[]{0x0000000000000002L,0x0000000000020000L});
+    public static final BitSet FOLLOW_boolean_term_in_boolean_factor1443 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_82_in_boolean_factor1446 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_boolean_term_in_boolean_factor1449 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_boolean_test_in_boolean_term1461 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_83_in_boolean_term1466 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_boolean_term_in_boolean_term1468 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_boolean_primary_in_boolean_test1484 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_predicate_in_boolean_primary1492 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_48_in_boolean_primary1496 = new BitSet(new long[]{0xFE15808F80000000L,0x0000000C008801DFL});
+    public static final BitSet FOLLOW_search_condition_in_boolean_primary1499 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_boolean_primary1501 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_comparison_predicate_in_predicate1511 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_like_predicate_in_predicate1515 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_in_predicate_in_predicate1519 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_null_predicate_in_predicate1523 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exists_predicate_in_predicate1527 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_between_predicate_in_predicate1531 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_null_predicate1539 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_84_in_null_predicate1541 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_null_predicate1543 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_null_predicate1556 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_84_in_null_predicate1558 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_83_in_null_predicate1560 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_null_predicate1562 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_in_predicate1584 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_83_in_in_predicate1586 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_85_in_in_predicate1588 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate1590 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_in_predicate1612 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_85_in_in_predicate1614 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate1616 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_in_predicate_tail1639 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_48_in_in_predicate_tail1646 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_in_predicate_tail1649 = new BitSet(new long[]{0x000A000000000000L});
+    public static final BitSet FOLLOW_51_in_in_predicate_tail1652 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_in_predicate_tail1654 = new BitSet(new long[]{0x000A000000000000L});
+    public static final BitSet FOLLOW_49_in_in_predicate_tail1659 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1679 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_86_in_between_predicate1681 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1685 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_82_in_between_predicate1687 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1691 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1717 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_83_in_between_predicate1719 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_86_in_between_predicate1721 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1725 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_82_in_between_predicate1727 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_between_predicate1731 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_87_in_exists_predicate1761 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_sub_query_in_exists_predicate1764 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_bind_table_in_comparison_predicate1773 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_88_in_comparison_predicate1775 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_comparison_predicate1778 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_comparison_predicate1785 = new BitSet(new long[]{0x0000000000000000L,0x000000007F000000L});
+    public static final BitSet FOLLOW_88_in_comparison_predicate1790 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_89_in_comparison_predicate1794 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_90_in_comparison_predicate1798 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_91_in_comparison_predicate1802 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_92_in_comparison_predicate1806 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_93_in_comparison_predicate1810 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_94_in_comparison_predicate1814 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_39_in_comparison_predicate1820 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_95_in_comparison_predicate1824 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_96_in_comparison_predicate1828 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_comparison_predicate1833 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_comparison_predicate1859 = new BitSet(new long[]{0x0000000000000000L,0x000000007F000000L});
+    public static final BitSet FOLLOW_set_in_comparison_predicate1861 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_comparison_predicate1890 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_like_predicate1901 = new BitSet(new long[]{0x0000000000000000L,0x0000000200000000L});
+    public static final BitSet FOLLOW_97_in_like_predicate1903 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_like_predicate1906 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_like_predicate1913 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_83_in_like_predicate1915 = new BitSet(new long[]{0x0000000000000000L,0x0000000200000000L});
+    public static final BitSet FOLLOW_97_in_like_predicate1917 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_like_predicate1921 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_expression_in_row_value1950 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_70_in_row_value1953 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_98_in_row_value1957 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_99_in_bind_table1967 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_bind_table1970 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_bind_table1971 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_bind_table1974 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_53_in_correlation_specification2002 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_correlation_specification2007 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_table_name2016 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_name_in_column_list2025 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2029 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_51_in_column_list2033 = new BitSet(new long[]{0xFE00000080000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_column_name_in_column_list2037 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2041 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_ID_in_column_name2055 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_column_name2056 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ID_in_column_name2061 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred36_SQL92Query691 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_factor_in_synpred36_SQL92Query698 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_48_in_synpred41_SQL92Query751 = new BitSet(new long[]{0xFE15808F80000000L,0x00000000000001DFL});
+    public static final BitSet FOLLOW_value_expression_in_synpred41_SQL92Query754 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_synpred41_SQL92Query756 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_function_in_synpred42_SQL92Query763 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_name_in_synpred43_SQL92Query769 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred44_SQL92Query775 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred55_SQL92Query831 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_STRING_in_synpred55_SQL92Query844 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_synpred64_SQL92Query896 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_STRING_in_synpred64_SQL92Query899 = new BitSet(new long[]{0xE000000000000000L,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_synpred64_SQL92Query901 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_synpred78_SQL92Query1116 = new BitSet(new long[]{0x0001000080000000L});
+    public static final BitSet FOLLOW_table_reference_in_synpred78_SQL92Query1119 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_table_function_subquery_in_synpred90_SQL92Query1286 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_synpred91_SQL92Query1290 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_table_function_subquery_in_synpred91_SQL92Query1292 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_search_condition_in_synpred94_SQL92Query1359 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_predicate_in_synpred100_SQL92Query1492 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_comparison_predicate_in_synpred101_SQL92Query1511 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_like_predicate_in_synpred102_SQL92Query1515 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_in_predicate_in_synpred103_SQL92Query1519 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_null_predicate_in_synpred104_SQL92Query1523 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_synpred106_SQL92Query1539 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_84_in_synpred106_SQL92Query1541 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_synpred106_SQL92Query1543 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_synpred107_SQL92Query1584 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_83_in_synpred107_SQL92Query1586 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_85_in_synpred107_SQL92Query1588 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_in_predicate_tail_in_synpred107_SQL92Query1590 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_sub_query_in_synpred108_SQL92Query1639 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query1679 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_86_in_synpred110_SQL92Query1681 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query1685 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_82_in_synpred110_SQL92Query1687 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query1691 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_synpred120_SQL92Query1785 = new BitSet(new long[]{0x0000000000000000L,0x000000007F000000L});
+    public static final BitSet FOLLOW_88_in_synpred120_SQL92Query1790 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_89_in_synpred120_SQL92Query1794 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_90_in_synpred120_SQL92Query1798 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_91_in_synpred120_SQL92Query1802 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_92_in_synpred120_SQL92Query1806 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_93_in_synpred120_SQL92Query1810 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_94_in_synpred120_SQL92Query1814 = new BitSet(new long[]{0x0000008000000000L,0x0000000180000000L});
+    public static final BitSet FOLLOW_39_in_synpred120_SQL92Query1820 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_95_in_synpred120_SQL92Query1824 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_96_in_synpred120_SQL92Query1828 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_synpred120_SQL92Query1833 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_row_value_in_synpred127_SQL92Query1901 = new BitSet(new long[]{0x0000000000000000L,0x0000000200000000L});
+    public static final BitSet FOLLOW_97_in_synpred127_SQL92Query1903 = new BitSet(new long[]{0xFE15808F80000000L,0x00000004000001DFL});
+    public static final BitSet FOLLOW_row_value_in_synpred127_SQL92Query1906 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_expression_in_synpred128_SQL92Query1950 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_70_in_synpred129_SQL92Query1953 = new BitSet(new long[]{0x0000000000000002L});
 
 }

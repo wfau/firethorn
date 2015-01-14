@@ -1,7 +1,6 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g 2011-11-03 11:20:26
-
 package uk.org.ogsadai.parser.sql92query;
 
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g 2010-09-09 10:42:37
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -34,9 +33,8 @@ public class SQL92QueryLexer extends Lexer {
     public static final int T__81=81;
     public static final int T__82=82;
     public static final int T__83=83;
-    public static final int ASC=31;
-    public static final int INT=34;
-    public static final int NUMERIC=37;
+    public static final int INT=32;
+    public static final int NUMERIC=34;
     public static final int T__85=85;
     public static final int T__84=84;
     public static final int T__87=87;
@@ -45,7 +43,7 @@ public class SQL92QueryLexer extends Lexer {
     public static final int T__88=88;
     public static final int INTERSECT=28;
     public static final int T__71=71;
-    public static final int WS=39;
+    public static final int WS=36;
     public static final int T__72=72;
     public static final int T__70=70;
     public static final int SELECT_LIST=8;
@@ -68,10 +66,9 @@ public class SQL92QueryLexer extends Lexer {
     public static final int T__62=62;
     public static final int T__63=63;
     public static final int ORDER=7;
-    public static final int LIMIT=33;
     public static final int LEFT_OUTER_JOIN=20;
-    public static final int FLOAT=36;
-    public static final int ID=35;
+    public static final int FLOAT=33;
+    public static final int ID=31;
     public static final int T__61=61;
     public static final int T__60=60;
     public static final int T__55=55;
@@ -83,10 +80,7 @@ public class SQL92QueryLexer extends Lexer {
     public static final int T__53=53;
     public static final int T__54=54;
     public static final int T__59=59;
-    public static final int T__103=103;
     public static final int RIGHT_OUTER_JOIN=19;
-    public static final int T__104=104;
-    public static final int T__105=105;
     public static final int COLUMN=14;
     public static final int T__50=50;
     public static final int T__42=42;
@@ -102,22 +96,23 @@ public class SQL92QueryLexer extends Lexer {
     public static final int RELATION=13;
     public static final int SET=17;
     public static final int HAVING=12;
-    public static final int T__102=102;
-    public static final int T__101=101;
-    public static final int T__100=100;
     public static final int JOIN=22;
     public static final int UNION=24;
     public static final int UNION_ALL=26;
     public static final int GROUP_BY=11;
     public static final int FROM_LIST=9;
-    public static final int DESC=32;
-    public static final int STRING=38;
+    public static final int T__37=37;
+    public static final int T__38=38;
+    public static final int T__39=39;
+    public static final int STRING=35;
 
-    protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow) throws RecognitionException {
+    protected void mismatch(IntStream input, int ttype, BitSet follow)
+        throws RecognitionException
+    { 
         throw new MismatchedTokenException(ttype, input);
     }
 
-    public Object recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
+    public void recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
         throws RecognitionException
     {
         throw re;
@@ -135,17 +130,80 @@ public class SQL92QueryLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g"; }
+    public String getGrammarFileName() { return "C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g"; }
+
+    // $ANTLR start "T__37"
+    public final void mT__37() throws RecognitionException {
+        try {
+            int _type = T__37;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:24:7: ( ';' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:24:9: ';'
+            {
+            match(';'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__37"
+
+    // $ANTLR start "T__38"
+    public final void mT__38() throws RecognitionException {
+        try {
+            int _type = T__38;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:25:7: ( 'UNION' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:25:9: 'UNION'
+            {
+            match("UNION"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__38"
+
+    // $ANTLR start "T__39"
+    public final void mT__39() throws RecognitionException {
+        try {
+            int _type = T__39;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:26:7: ( 'ALL' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:26:9: 'ALL'
+            {
+            match("ALL"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__39"
 
     // $ANTLR start "T__40"
     public final void mT__40() throws RecognitionException {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:25:7: ( ';' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:25:9: ';'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:27:7: ( 'EXCEPT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:27:9: 'EXCEPT'
             {
-            match(';'); 
+            match("EXCEPT"); 
+
 
             }
 
@@ -162,10 +220,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:26:7: ( 'LIMIT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:26:9: 'LIMIT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:28:7: ( 'INTERSECT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:28:9: 'INTERSECT'
             {
-            match("LIMIT"); 
+            match("INTERSECT"); 
 
 
             }
@@ -183,10 +241,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:27:7: ( 'UNION' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:27:9: 'UNION'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:29:7: ( 'SELECT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:29:9: 'SELECT'
             {
-            match("UNION"); 
+            match("SELECT"); 
 
 
             }
@@ -204,10 +262,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:28:7: ( 'ALL' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:28:9: 'ALL'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:30:7: ( 'FROM' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:30:9: 'FROM'
             {
-            match("ALL"); 
+            match("FROM"); 
 
 
             }
@@ -225,10 +283,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:29:7: ( 'EXCEPT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:29:9: 'EXCEPT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:31:7: ( 'WHERE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:31:9: 'WHERE'
             {
-            match("EXCEPT"); 
+            match("WHERE"); 
 
 
             }
@@ -246,10 +304,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:30:7: ( 'INTERSECT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:30:9: 'INTERSECT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:32:7: ( 'GROUP BY' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:32:9: 'GROUP BY'
             {
-            match("INTERSECT"); 
+            match("GROUP BY"); 
 
 
             }
@@ -267,10 +325,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:31:7: ( 'SELECT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:31:9: 'SELECT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:33:7: ( 'HAVING' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:33:9: 'HAVING'
             {
-            match("SELECT"); 
+            match("HAVING"); 
 
 
             }
@@ -288,10 +346,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:32:7: ( 'FROM' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:32:9: 'FROM'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:34:7: ( 'DISTINCT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:34:9: 'DISTINCT'
             {
-            match("FROM"); 
+            match("DISTINCT"); 
 
 
             }
@@ -309,11 +367,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:33:7: ( 'WHERE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:33:9: 'WHERE'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:35:7: ( '(' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:35:9: '('
             {
-            match("WHERE"); 
-
+            match('('); 
 
             }
 
@@ -330,11 +387,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:34:7: ( 'GROUP BY' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:34:9: 'GROUP BY'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:36:7: ( ')' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:36:9: ')'
             {
-            match("GROUP BY"); 
-
+            match(')'); 
 
             }
 
@@ -351,11 +407,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:35:7: ( 'HAVING' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:35:9: 'HAVING'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:37:7: ( '*' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:37:9: '*'
             {
-            match("HAVING"); 
-
+            match('*'); 
 
             }
 
@@ -372,11 +427,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:36:7: ( 'DISTINCT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:36:9: 'DISTINCT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:38:7: ( ',' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:38:9: ','
             {
-            match("DISTINCT"); 
-
+            match(','); 
 
             }
 
@@ -393,10 +447,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:37:7: ( '(' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:37:9: '('
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:39:7: ( 'CAST' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:39:9: 'CAST'
             {
-            match('('); 
+            match("CAST"); 
+
 
             }
 
@@ -413,10 +468,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:38:7: ( ')' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:38:9: ')'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:40:7: ( 'AS' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:40:9: 'AS'
             {
-            match(')'); 
+            match("AS"); 
+
 
             }
 
@@ -433,10 +489,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:39:7: ( '*' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:39:9: '*'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:41:7: ( 'ORDER' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:41:9: 'ORDER'
             {
-            match('*'); 
+            match("ORDER"); 
+
 
             }
 
@@ -453,10 +510,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:40:7: ( ',' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:40:9: ','
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:42:7: ( 'BY' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:42:9: 'BY'
             {
-            match(','); 
+            match("BY"); 
+
 
             }
 
@@ -473,11 +531,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:41:7: ( 'CAST' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:41:9: 'CAST'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:43:7: ( '.' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:43:9: '.'
             {
-            match("CAST"); 
-
+            match('.'); 
 
             }
 
@@ -494,10 +551,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:42:7: ( 'AS' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:42:9: 'AS'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:44:7: ( 'DATE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:44:9: 'DATE'
             {
-            match("AS"); 
+            match("DATE"); 
 
 
             }
@@ -515,10 +572,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:43:7: ( 'ORDER' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:43:9: 'ORDER'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:45:7: ( 'TIMESTAMP' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:45:9: 'TIMESTAMP'
             {
-            match("ORDER"); 
+            match("TIMESTAMP"); 
 
 
             }
@@ -536,10 +593,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:44:7: ( 'BY' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:44:9: 'BY'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:46:7: ( 'TIME' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:46:9: 'TIME'
             {
-            match("BY"); 
+            match("TIME"); 
 
 
             }
@@ -557,10 +614,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:45:7: ( 'DESC' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:45:9: 'DESC'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:47:7: ( 'INTERVAL' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:47:9: 'INTERVAL'
             {
-            match("DESC"); 
+            match("INTERVAL"); 
 
 
             }
@@ -578,10 +635,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:46:7: ( 'ASC' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:46:9: 'ASC'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:48:7: ( 'YEAR' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:48:9: 'YEAR'
             {
-            match("ASC"); 
+            match("YEAR"); 
 
 
             }
@@ -599,10 +656,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:47:7: ( '.' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:47:9: '.'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:49:7: ( 'MONTH' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:49:9: 'MONTH'
             {
-            match('.'); 
+            match("MONTH"); 
+
 
             }
 
@@ -619,10 +677,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:48:7: ( 'DATE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:48:9: 'DATE'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:50:7: ( 'DAY' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:50:9: 'DAY'
             {
-            match("DATE"); 
+            match("DAY"); 
 
 
             }
@@ -640,10 +698,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:49:7: ( 'TIMESTAMP' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:49:9: 'TIMESTAMP'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:51:7: ( 'HOUR' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:51:9: 'HOUR'
             {
-            match("TIMESTAMP"); 
+            match("HOUR"); 
 
 
             }
@@ -661,10 +719,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:50:7: ( 'TIME' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:50:9: 'TIME'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:52:7: ( 'MINUTE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:52:9: 'MINUTE'
             {
-            match("TIME"); 
+            match("MINUTE"); 
 
 
             }
@@ -682,10 +740,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:51:7: ( 'INTERVAL' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:51:9: 'INTERVAL'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:53:7: ( 'SECOND' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:53:9: 'SECOND'
             {
-            match("INTERVAL"); 
+            match("SECOND"); 
 
 
             }
@@ -703,11 +761,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:52:7: ( 'YEAR' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:52:9: 'YEAR'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:54:7: ( '+' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:54:9: '+'
             {
-            match("YEAR"); 
-
+            match('+'); 
 
             }
 
@@ -724,11 +781,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:53:7: ( 'MONTH' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:53:9: 'MONTH'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:55:7: ( '-' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:55:9: '-'
             {
-            match("MONTH"); 
-
+            match('-'); 
 
             }
 
@@ -745,11 +801,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:54:7: ( 'DAY' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:54:9: 'DAY'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:56:7: ( '/' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:56:9: '/'
             {
-            match("DAY"); 
-
+            match('/'); 
 
             }
 
@@ -766,10 +821,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:55:7: ( 'HOUR' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:55:9: 'HOUR'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:57:7: ( 'NULL' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:57:9: 'NULL'
             {
-            match("HOUR"); 
+            match("NULL"); 
 
 
             }
@@ -787,10 +842,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:56:7: ( 'MINUTE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:56:9: 'MINUTE'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:58:7: ( 'TRUE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:58:9: 'TRUE'
             {
-            match("MINUTE"); 
+            match("TRUE"); 
 
 
             }
@@ -808,10 +863,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:57:7: ( 'SECOND' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:57:9: 'SECOND'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:59:7: ( 'FALSE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:59:9: 'FALSE'
             {
-            match("SECOND"); 
+            match("FALSE"); 
 
 
             }
@@ -829,10 +884,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:58:7: ( '+' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:58:9: '+'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:60:7: ( '||' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:60:9: '||'
             {
-            match('+'); 
+            match("||"); 
+
 
             }
 
@@ -849,10 +905,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:59:7: ( '-' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:59:9: '-'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:61:7: ( 'RIGHT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:61:9: 'RIGHT'
             {
-            match('-'); 
+            match("RIGHT"); 
+
 
             }
 
@@ -869,10 +926,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:60:7: ( '/' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:60:9: '/'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:62:7: ( 'OUTER' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:62:9: 'OUTER'
             {
-            match('/'); 
+            match("OUTER"); 
+
 
             }
 
@@ -889,10 +947,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:61:7: ( 'NULL' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:61:9: 'NULL'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:63:7: ( 'JOIN' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:63:9: 'JOIN'
             {
-            match("NULL"); 
+            match("JOIN"); 
 
 
             }
@@ -910,10 +968,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:62:7: ( 'TRUE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:62:9: 'TRUE'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:64:7: ( 'LEFT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:64:9: 'LEFT'
             {
-            match("TRUE"); 
+            match("LEFT"); 
 
 
             }
@@ -931,10 +989,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:63:7: ( 'FALSE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:63:9: 'FALSE'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:65:7: ( 'FULL' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:65:9: 'FULL'
             {
-            match("FALSE"); 
+            match("FULL"); 
 
 
             }
@@ -952,10 +1010,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:64:7: ( '||' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:64:9: '||'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:66:7: ( 'INNER' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:66:9: 'INNER'
             {
-            match("||"); 
+            match("INNER"); 
 
 
             }
@@ -973,10 +1031,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:65:7: ( 'RIGHT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:65:9: 'RIGHT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:67:7: ( 'ON' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:67:9: 'ON'
             {
-            match("RIGHT"); 
+            match("ON"); 
 
 
             }
@@ -994,10 +1052,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:66:7: ( 'OUTER' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:66:9: 'OUTER'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:68:7: ( 'OR' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:68:9: 'OR'
             {
-            match("OUTER"); 
+            match("OR"); 
 
 
             }
@@ -1015,10 +1073,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__82;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:67:7: ( 'JOIN' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:67:9: 'JOIN'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:69:7: ( 'AND' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:69:9: 'AND'
             {
-            match("JOIN"); 
+            match("AND"); 
 
 
             }
@@ -1036,10 +1094,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__83;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:68:7: ( 'LEFT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:68:9: 'LEFT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:70:7: ( 'NOT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:70:9: 'NOT'
             {
-            match("LEFT"); 
+            match("NOT"); 
 
 
             }
@@ -1057,10 +1115,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:69:7: ( 'FULL' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:69:9: 'FULL'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:71:7: ( 'IS' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:71:9: 'IS'
             {
-            match("FULL"); 
+            match("IS"); 
 
 
             }
@@ -1078,10 +1136,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__85;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:70:7: ( 'INNER' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:70:9: 'INNER'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:72:7: ( 'IN' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:72:9: 'IN'
             {
-            match("INNER"); 
+            match("IN"); 
 
 
             }
@@ -1099,10 +1157,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__86;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:71:7: ( 'ON' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:71:9: 'ON'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:73:7: ( 'BETWEEN' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:73:9: 'BETWEEN'
             {
-            match("ON"); 
+            match("BETWEEN"); 
 
 
             }
@@ -1120,10 +1178,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__87;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:72:7: ( 'OR' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:72:9: 'OR'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:74:7: ( 'EXISTS' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:74:9: 'EXISTS'
             {
-            match("OR"); 
+            match("EXISTS"); 
 
 
             }
@@ -1141,11 +1199,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:73:7: ( 'AND' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:73:9: 'AND'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:75:7: ( '=' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:75:9: '='
             {
-            match("AND"); 
-
+            match('='); 
 
             }
 
@@ -1162,10 +1219,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:74:7: ( 'NOT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:74:9: 'NOT'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:76:7: ( '<>' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:76:9: '<>'
             {
-            match("NOT"); 
+            match("<>"); 
 
 
             }
@@ -1183,10 +1240,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__90;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:75:7: ( 'IS' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:75:9: 'IS'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:77:7: ( '!=' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:77:9: '!='
             {
-            match("IS"); 
+            match("!="); 
 
 
             }
@@ -1204,11 +1261,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:76:7: ( 'IN' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:76:9: 'IN'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:78:7: ( '<' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:78:9: '<'
             {
-            match("IN"); 
-
+            match('<'); 
 
             }
 
@@ -1225,11 +1281,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:77:7: ( 'BETWEEN' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:77:9: 'BETWEEN'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:79:7: ( '>' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:79:9: '>'
             {
-            match("BETWEEN"); 
-
+            match('>'); 
 
             }
 
@@ -1246,10 +1301,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:78:7: ( 'EXISTS' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:78:9: 'EXISTS'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:80:7: ( '>=' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:80:9: '>='
             {
-            match("EXISTS"); 
+            match(">="); 
 
 
             }
@@ -1267,10 +1322,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:79:7: ( '=' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:79:9: '='
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:81:7: ( '<=' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:81:9: '<='
             {
-            match('='); 
+            match("<="); 
+
 
             }
 
@@ -1287,10 +1343,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:80:7: ( '<>' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:80:9: '<>'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:82:7: ( 'SOME' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:82:9: 'SOME'
             {
-            match("<>"); 
+            match("SOME"); 
 
 
             }
@@ -1308,10 +1364,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:81:7: ( '!=' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:81:9: '!='
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:83:7: ( 'ANY' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:83:9: 'ANY'
             {
-            match("!="); 
+            match("ANY"); 
 
 
             }
@@ -1329,10 +1385,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:82:7: ( '<' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:82:9: '<'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:84:7: ( 'LIKE' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:84:9: 'LIKE'
             {
-            match('<'); 
+            match("LIKE"); 
+
 
             }
 
@@ -1349,10 +1406,11 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:83:7: ( '>' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:83:9: '>'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:85:7: ( 'DEFAULT' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:85:9: 'DEFAULT'
             {
-            match('>'); 
+            match("DEFAULT"); 
+
 
             }
 
@@ -1369,134 +1427,8 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:84:7: ( '>=' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:84:9: '>='
-            {
-            match(">="); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__99"
-
-    // $ANTLR start "T__100"
-    public final void mT__100() throws RecognitionException {
-        try {
-            int _type = T__100;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:85:8: ( '<=' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:85:10: '<='
-            {
-            match("<="); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__100"
-
-    // $ANTLR start "T__101"
-    public final void mT__101() throws RecognitionException {
-        try {
-            int _type = T__101;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:86:8: ( 'SOME' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:86:10: 'SOME'
-            {
-            match("SOME"); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__101"
-
-    // $ANTLR start "T__102"
-    public final void mT__102() throws RecognitionException {
-        try {
-            int _type = T__102;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:87:8: ( 'ANY' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:87:10: 'ANY'
-            {
-            match("ANY"); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__102"
-
-    // $ANTLR start "T__103"
-    public final void mT__103() throws RecognitionException {
-        try {
-            int _type = T__103;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:88:8: ( 'LIKE' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:88:10: 'LIKE'
-            {
-            match("LIKE"); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__103"
-
-    // $ANTLR start "T__104"
-    public final void mT__104() throws RecognitionException {
-        try {
-            int _type = T__104;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:89:8: ( 'DEFAULT' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:89:10: 'DEFAULT'
-            {
-            match("DEFAULT"); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__104"
-
-    // $ANTLR start "T__105"
-    public final void mT__105() throws RecognitionException {
-        try {
-            int _type = T__105;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:90:8: ( '@' )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:90:10: '@'
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:86:7: ( '@' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:86:9: '@'
             {
             match('@'); 
 
@@ -1508,14 +1440,14 @@ public class SQL92QueryLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "T__105"
+    // $ANTLR end "T__99"
 
     // $ANTLR start "ID"
     public final void mID() throws RecognitionException {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:5: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )* | '`' (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )* '`' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )* | '`' (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )* '`' )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -1533,7 +1465,7 @@ public class SQL92QueryLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )*
                     {
                     if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                         input.consume();
@@ -1544,7 +1476,7 @@ public class SQL92QueryLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:31: ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:28: ( ( 'a' .. 'z' | 'A' .. 'Z' ) | ( '0' .. '9' ) | '_' )*
                     loop1:
                     do {
                         int alt1=4;
@@ -1628,44 +1560,44 @@ public class SQL92QueryLexer extends Lexer {
                         }
 
                         switch (alt1) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:33: ( 'a' .. 'z' | 'A' .. 'Z' )
-                            {
-                            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
-                                input.consume();
+                    	case 1 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:30: ( 'a' .. 'z' | 'A' .. 'Z' )
+                    	    {
+                    	    if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+                    	        input.consume();
 
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;}
-
-
-                            }
-                            break;
-                        case 2 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:57: ( '0' .. '9' )
-                            {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:57: ( '0' .. '9' )
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:58: '0' .. '9'
-                            {
-                            matchRange('0','9'); 
-
-                            }
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
 
 
-                            }
-                            break;
-                        case 3 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:292:70: '_'
-                            {
-                            match('_'); 
+                    	    }
+                    	    break;
+                    	case 2 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:54: ( '0' .. '9' )
+                    	    {
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:54: ( '0' .. '9' )
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:55: '0' .. '9'
+                    	    {
+                    	    matchRange('0','9'); 
 
-                            }
-                            break;
+                    	    }
 
-                        default :
-                            break loop1;
+
+                    	    }
+                    	    break;
+                    	case 3 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:283:67: '_'
+                    	    {
+                    	    match('_'); 
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop1;
                         }
                     } while (true);
 
@@ -1673,11 +1605,11 @@ public class SQL92QueryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:9: '`' (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )* '`'
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:4: '`' (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )* '`'
                     {
                     match('`'); 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:13: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:14: ~ ( '\\'' | '\\n' | '\\r' | '`' )
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:8: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:9: ~ ( '\\'' | '\\n' | '\\r' | '`' )
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='_')||(input.LA(1)>='a' && input.LA(1)<='\uFFFF') ) {
                         input.consume();
@@ -1691,7 +1623,7 @@ public class SQL92QueryLexer extends Lexer {
 
                     }
 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:37: ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:32: ( (~ ( '\\'' | '\\n' | '\\r' | '`' ) ) )*
                     loop2:
                     do {
                         int alt2=2;
@@ -1703,30 +1635,30 @@ public class SQL92QueryLexer extends Lexer {
 
 
                         switch (alt2) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:39: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
-                            {
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:39: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:293:40: ~ ( '\\'' | '\\n' | '\\r' | '`' )
-                            {
-                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='_')||(input.LA(1)>='a' && input.LA(1)<='\uFFFF') ) {
-                                input.consume();
+                    	case 1 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:34: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
+                    	    {
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:34: (~ ( '\\'' | '\\n' | '\\r' | '`' ) )
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:284:35: ~ ( '\\'' | '\\n' | '\\r' | '`' )
+                    	    {
+                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='_')||(input.LA(1)>='a' && input.LA(1)<='\uFFFF') ) {
+                    	        input.consume();
 
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;}
-
-
-                            }
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
 
 
-                            }
-                            break;
+                    	    }
 
-                        default :
-                            break loop2;
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop2;
                         }
                     } while (true);
 
@@ -1749,10 +1681,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = FLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:7: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:9: ( '0' .. '9' )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:9: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1765,16 +1697,16 @@ public class SQL92QueryLexer extends Lexer {
 
 
                 switch (alt4) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:10: '0' .. '9'
-                    {
-                    matchRange('0','9'); 
+            	case 1 :
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:10: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt4 >= 1 ) break loop4;
+            	default :
+            	    if ( cnt4 >= 1 ) break loop4;
                         EarlyExitException eee =
                             new EarlyExitException(4, input);
                         throw eee;
@@ -1783,7 +1715,7 @@ public class SQL92QueryLexer extends Lexer {
             } while (true);
 
             match('.'); 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:25: ( '0' .. '9' )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:25: ( '0' .. '9' )+
             int cnt5=0;
             loop5:
             do {
@@ -1796,16 +1728,16 @@ public class SQL92QueryLexer extends Lexer {
 
 
                 switch (alt5) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:296:26: '0' .. '9'
-                    {
-                    matchRange('0','9'); 
+            	case 1 :
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:285:26: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt5 >= 1 ) break loop5;
+            	default :
+            	    if ( cnt5 >= 1 ) break loop5;
                         EarlyExitException eee =
                             new EarlyExitException(5, input);
                         throw eee;
@@ -1829,10 +1761,10 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:299:5: ( ( '0' .. '9' )+ )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:299:9: ( '0' .. '9' )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:286:5: ( ( '0' .. '9' )+ )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:286:7: ( '0' .. '9' )+
             {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:299:9: ( '0' .. '9' )+
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:286:7: ( '0' .. '9' )+
             int cnt6=0;
             loop6:
             do {
@@ -1845,16 +1777,16 @@ public class SQL92QueryLexer extends Lexer {
 
 
                 switch (alt6) {
-                case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:299:10: '0' .. '9'
-                    {
-                    matchRange('0','9'); 
+            	case 1 :
+            	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:286:8: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt6 >= 1 ) break loop6;
+            	default :
+            	    if ( cnt6 >= 1 ) break loop6;
                         EarlyExitException eee =
                             new EarlyExitException(6, input);
                         throw eee;
@@ -1878,22 +1810,22 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = NUMERIC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:5: ( ( INT | FLOAT ) 'E' ( '+' | '-' )? INT )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:9: ( INT | FLOAT ) 'E' ( '+' | '-' )? INT
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:9: ( ( INT | FLOAT ) 'E' ( '+' | '-' )? INT )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:11: ( INT | FLOAT ) 'E' ( '+' | '-' )? INT
             {
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:9: ( INT | FLOAT )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:11: ( INT | FLOAT )
             int alt7=2;
             alt7 = dfa7.predict(input);
             switch (alt7) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:10: INT
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:12: INT
                     {
                     mINT(); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:16: FLOAT
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:18: FLOAT
                     {
                     mFLOAT(); 
 
@@ -1903,7 +1835,7 @@ public class SQL92QueryLexer extends Lexer {
             }
 
             match('E'); 
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:302:27: ( '+' | '-' )?
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:287:29: ( '+' | '-' )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -1912,7 +1844,7 @@ public class SQL92QueryLexer extends Lexer {
             }
             switch (alt8) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -1946,7 +1878,7 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:305:5: ( '\"' (~ ( '\"' | '\\n' | '\\r' ) )* '\"' | '\\'' (~ ( '\\'' | '\\n' | '\\r' ) )* '\\'' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:288:8: ( '\"' (~ ( '\"' | '\\n' | '\\r' ) )* '\"' | '\\'' (~ ( '\\'' | '\\n' | '\\r' ) )* '\\'' )
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1964,10 +1896,10 @@ public class SQL92QueryLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:305:9: '\"' (~ ( '\"' | '\\n' | '\\r' ) )* '\"'
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:288:10: '\"' (~ ( '\"' | '\\n' | '\\r' ) )* '\"'
                     {
                     match('\"'); 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:305:13: (~ ( '\"' | '\\n' | '\\r' ) )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:288:14: (~ ( '\"' | '\\n' | '\\r' ) )*
                     loop9:
                     do {
                         int alt9=2;
@@ -1979,24 +1911,24 @@ public class SQL92QueryLexer extends Lexer {
 
 
                         switch (alt9) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:305:14: ~ ( '\"' | '\\n' | '\\r' )
-                            {
-                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='\uFFFF') ) {
-                                input.consume();
+                    	case 1 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:288:15: ~ ( '\"' | '\\n' | '\\r' )
+                    	    {
+                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='\uFFFF') ) {
+                    	        input.consume();
 
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;}
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
 
 
-                            }
-                            break;
+                    	    }
+                    	    break;
 
-                        default :
-                            break loop9;
+                    	default :
+                    	    break loop9;
                         }
                     } while (true);
 
@@ -2005,10 +1937,10 @@ public class SQL92QueryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:306:9: '\\'' (~ ( '\\'' | '\\n' | '\\r' ) )* '\\''
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:289:4: '\\'' (~ ( '\\'' | '\\n' | '\\r' ) )* '\\''
                     {
                     match('\''); 
-                    // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:306:14: (~ ( '\\'' | '\\n' | '\\r' ) )*
+                    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:289:9: (~ ( '\\'' | '\\n' | '\\r' ) )*
                     loop10:
                     do {
                         int alt10=2;
@@ -2020,24 +1952,24 @@ public class SQL92QueryLexer extends Lexer {
 
 
                         switch (alt10) {
-                        case 1 :
-                            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:306:15: ~ ( '\\'' | '\\n' | '\\r' )
-                            {
-                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='\uFFFF') ) {
-                                input.consume();
+                    	case 1 :
+                    	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:289:10: ~ ( '\\'' | '\\n' | '\\r' )
+                    	    {
+                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='\uFFFF') ) {
+                    	        input.consume();
 
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;}
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
 
 
-                            }
-                            break;
+                    	    }
+                    	    break;
 
-                        default :
-                            break loop10;
+                    	default :
+                    	    break loop10;
                         }
                     } while (true);
 
@@ -2060,8 +1992,8 @@ public class SQL92QueryLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:309:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:309:9: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:290:4: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:290:6: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -2085,509 +2017,488 @@ public class SQL92QueryLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:8: ( T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | ID | FLOAT | INT | NUMERIC | STRING | WS )
-        int alt12=72;
+        // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:8: ( T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | ID | FLOAT | INT | NUMERIC | STRING | WS )
+        int alt12=69;
         alt12 = dfa12.predict(input);
         switch (alt12) {
             case 1 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:10: T__40
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:10: T__37
+                {
+                mT__37(); 
+
+                }
+                break;
+            case 2 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:16: T__38
+                {
+                mT__38(); 
+
+                }
+                break;
+            case 3 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:22: T__39
+                {
+                mT__39(); 
+
+                }
+                break;
+            case 4 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:28: T__40
                 {
                 mT__40(); 
 
                 }
                 break;
-            case 2 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:16: T__41
+            case 5 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:34: T__41
                 {
                 mT__41(); 
 
                 }
                 break;
-            case 3 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:22: T__42
+            case 6 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:40: T__42
                 {
                 mT__42(); 
 
                 }
                 break;
-            case 4 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:28: T__43
+            case 7 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:46: T__43
                 {
                 mT__43(); 
 
                 }
                 break;
-            case 5 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:34: T__44
+            case 8 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:52: T__44
                 {
                 mT__44(); 
 
                 }
                 break;
-            case 6 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:40: T__45
+            case 9 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:58: T__45
                 {
                 mT__45(); 
 
                 }
                 break;
-            case 7 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:46: T__46
+            case 10 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:64: T__46
                 {
                 mT__46(); 
 
                 }
                 break;
-            case 8 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:52: T__47
+            case 11 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:70: T__47
                 {
                 mT__47(); 
 
                 }
                 break;
-            case 9 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:58: T__48
+            case 12 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:76: T__48
                 {
                 mT__48(); 
 
                 }
                 break;
-            case 10 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:64: T__49
+            case 13 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:82: T__49
                 {
                 mT__49(); 
 
                 }
                 break;
-            case 11 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:70: T__50
+            case 14 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:88: T__50
                 {
                 mT__50(); 
 
                 }
                 break;
-            case 12 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:76: T__51
+            case 15 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:94: T__51
                 {
                 mT__51(); 
 
                 }
                 break;
-            case 13 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:82: T__52
+            case 16 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:100: T__52
                 {
                 mT__52(); 
 
                 }
                 break;
-            case 14 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:88: T__53
+            case 17 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:106: T__53
                 {
                 mT__53(); 
 
                 }
                 break;
-            case 15 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:94: T__54
+            case 18 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:112: T__54
                 {
                 mT__54(); 
 
                 }
                 break;
-            case 16 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:100: T__55
+            case 19 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:118: T__55
                 {
                 mT__55(); 
 
                 }
                 break;
-            case 17 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:106: T__56
+            case 20 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:124: T__56
                 {
                 mT__56(); 
 
                 }
                 break;
-            case 18 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:112: T__57
+            case 21 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:130: T__57
                 {
                 mT__57(); 
 
                 }
                 break;
-            case 19 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:118: T__58
+            case 22 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:136: T__58
                 {
                 mT__58(); 
 
                 }
                 break;
-            case 20 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:124: T__59
+            case 23 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:142: T__59
                 {
                 mT__59(); 
 
                 }
                 break;
-            case 21 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:130: T__60
+            case 24 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:148: T__60
                 {
                 mT__60(); 
 
                 }
                 break;
-            case 22 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:136: T__61
+            case 25 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:154: T__61
                 {
                 mT__61(); 
 
                 }
                 break;
-            case 23 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:142: T__62
+            case 26 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:160: T__62
                 {
                 mT__62(); 
 
                 }
                 break;
-            case 24 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:148: T__63
+            case 27 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:166: T__63
                 {
                 mT__63(); 
 
                 }
                 break;
-            case 25 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:154: T__64
+            case 28 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:172: T__64
                 {
                 mT__64(); 
 
                 }
                 break;
-            case 26 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:160: T__65
+            case 29 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:178: T__65
                 {
                 mT__65(); 
 
                 }
                 break;
-            case 27 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:166: T__66
+            case 30 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:184: T__66
                 {
                 mT__66(); 
 
                 }
                 break;
-            case 28 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:172: T__67
+            case 31 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:190: T__67
                 {
                 mT__67(); 
 
                 }
                 break;
-            case 29 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:178: T__68
+            case 32 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:196: T__68
                 {
                 mT__68(); 
 
                 }
                 break;
-            case 30 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:184: T__69
+            case 33 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:202: T__69
                 {
                 mT__69(); 
 
                 }
                 break;
-            case 31 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:190: T__70
+            case 34 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:208: T__70
                 {
                 mT__70(); 
 
                 }
                 break;
-            case 32 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:196: T__71
+            case 35 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:214: T__71
                 {
                 mT__71(); 
 
                 }
                 break;
-            case 33 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:202: T__72
+            case 36 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:220: T__72
                 {
                 mT__72(); 
 
                 }
                 break;
-            case 34 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:208: T__73
+            case 37 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:226: T__73
                 {
                 mT__73(); 
 
                 }
                 break;
-            case 35 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:214: T__74
+            case 38 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:232: T__74
                 {
                 mT__74(); 
 
                 }
                 break;
-            case 36 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:220: T__75
+            case 39 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:238: T__75
                 {
                 mT__75(); 
 
                 }
                 break;
-            case 37 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:226: T__76
+            case 40 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:244: T__76
                 {
                 mT__76(); 
 
                 }
                 break;
-            case 38 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:232: T__77
+            case 41 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:250: T__77
                 {
                 mT__77(); 
 
                 }
                 break;
-            case 39 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:238: T__78
+            case 42 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:256: T__78
                 {
                 mT__78(); 
 
                 }
                 break;
-            case 40 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:244: T__79
+            case 43 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:262: T__79
                 {
                 mT__79(); 
 
                 }
                 break;
-            case 41 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:250: T__80
+            case 44 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:268: T__80
                 {
                 mT__80(); 
 
                 }
                 break;
-            case 42 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:256: T__81
+            case 45 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:274: T__81
                 {
                 mT__81(); 
 
                 }
                 break;
-            case 43 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:262: T__82
+            case 46 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:280: T__82
                 {
                 mT__82(); 
 
                 }
                 break;
-            case 44 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:268: T__83
+            case 47 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:286: T__83
                 {
                 mT__83(); 
 
                 }
                 break;
-            case 45 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:274: T__84
+            case 48 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:292: T__84
                 {
                 mT__84(); 
 
                 }
                 break;
-            case 46 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:280: T__85
+            case 49 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:298: T__85
                 {
                 mT__85(); 
 
                 }
                 break;
-            case 47 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:286: T__86
+            case 50 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:304: T__86
                 {
                 mT__86(); 
 
                 }
                 break;
-            case 48 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:292: T__87
+            case 51 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:310: T__87
                 {
                 mT__87(); 
 
                 }
                 break;
-            case 49 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:298: T__88
+            case 52 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:316: T__88
                 {
                 mT__88(); 
 
                 }
                 break;
-            case 50 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:304: T__89
+            case 53 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:322: T__89
                 {
                 mT__89(); 
 
                 }
                 break;
-            case 51 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:310: T__90
+            case 54 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:328: T__90
                 {
                 mT__90(); 
 
                 }
                 break;
-            case 52 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:316: T__91
+            case 55 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:334: T__91
                 {
                 mT__91(); 
 
                 }
                 break;
-            case 53 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:322: T__92
+            case 56 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:340: T__92
                 {
                 mT__92(); 
 
                 }
                 break;
-            case 54 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:328: T__93
+            case 57 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:346: T__93
                 {
                 mT__93(); 
 
                 }
                 break;
-            case 55 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:334: T__94
+            case 58 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:352: T__94
                 {
                 mT__94(); 
 
                 }
                 break;
-            case 56 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:340: T__95
+            case 59 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:358: T__95
                 {
                 mT__95(); 
 
                 }
                 break;
-            case 57 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:346: T__96
+            case 60 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:364: T__96
                 {
                 mT__96(); 
 
                 }
                 break;
-            case 58 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:352: T__97
+            case 61 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:370: T__97
                 {
                 mT__97(); 
 
                 }
                 break;
-            case 59 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:358: T__98
+            case 62 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:376: T__98
                 {
                 mT__98(); 
 
                 }
                 break;
-            case 60 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:364: T__99
+            case 63 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:382: T__99
                 {
                 mT__99(); 
 
                 }
                 break;
-            case 61 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:370: T__100
-                {
-                mT__100(); 
-
-                }
-                break;
-            case 62 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:377: T__101
-                {
-                mT__101(); 
-
-                }
-                break;
-            case 63 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:384: T__102
-                {
-                mT__102(); 
-
-                }
-                break;
             case 64 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:391: T__103
-                {
-                mT__103(); 
-
-                }
-                break;
-            case 65 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:398: T__104
-                {
-                mT__104(); 
-
-                }
-                break;
-            case 66 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:405: T__105
-                {
-                mT__105(); 
-
-                }
-                break;
-            case 67 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:412: ID
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:388: ID
                 {
                 mID(); 
 
                 }
                 break;
-            case 68 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:415: FLOAT
+            case 65 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:391: FLOAT
                 {
                 mFLOAT(); 
 
                 }
                 break;
-            case 69 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:421: INT
+            case 66 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:397: INT
                 {
                 mINT(); 
 
                 }
                 break;
-            case 70 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:425: NUMERIC
+            case 67 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:401: NUMERIC
                 {
                 mNUMERIC(); 
 
                 }
                 break;
-            case 71 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:433: STRING
+            case 68 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:409: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
-            case 72 :
-                // /Users/akrause/Documents/eclipse/workspace/ogsa-dai/ogsa-dai/trunk/extensions/dqp/server/src/main/grammar/SQL92Query.g:1:440: WS
+            case 69 :
+                // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:1:416: WS
                 {
                 mWS(); 
 
@@ -2650,153 +2561,155 @@ public class SQL92QueryLexer extends Lexer {
             this.transition = DFA7_transition;
         }
         public String getDescription() {
-            return "302:9: ( INT | FLOAT )";
+            return "287:11: ( INT | FLOAT )";
         }
     }
     static final String DFA12_eotS =
-        "\2\uffff\13\44\4\uffff\3\44\1\uffff\3\44\3\uffff\1\44\1\uffff\2"+
-        "\44\1\uffff\1\116\1\uffff\1\120\2\uffff\1\121\2\uffff\4\44\1\132"+
-        "\2\44\1\141\1\142\15\44\1\164\1\44\1\166\1\167\12\44\10\uffff\4"+
-        "\44\1\u0087\1\u0088\1\uffff\1\u0089\1\u008a\4\44\2\uffff\16\44\1"+
-        "\u009d\2\44\1\uffff\1\44\2\uffff\7\44\1\u00a8\2\44\1\u00ab\1\44"+
-        "\1\u00ad\1\u00ae\1\44\4\uffff\6\44\1\u00b6\1\u00b7\1\44\1\u00b9"+
-        "\3\44\1\u00bd\1\44\1\u00bf\1\44\1\u00c1\1\uffff\1\u00c2\3\44\1\u00c7"+
-        "\1\u00c8\1\u00c9\2\44\1\u00cc\1\uffff\1\44\1\u00ce\1\uffff\1\u00cf"+
-        "\2\uffff\1\u00d0\3\44\1\u00d5\2\44\2\uffff\1\u00d8\1\uffff\1\u00d9"+
-        "\2\44\1\uffff\1\44\1\uffff\1\44\2\uffff\1\u00de\1\u00df\2\44\3\uffff"+
-        "\1\u00e2\1\44\1\uffff\1\u00e4\3\uffff\1\u00e5\1\u00e6\2\44\1\uffff"+
-        "\1\u00e9\1\u00ea\3\uffff\1\u00eb\2\44\2\uffff\2\44\1\uffff\1\u00f0"+
-        "\3\uffff\2\44\3\uffff\1\44\1\u00f4\1\u00f5\1\44\1\uffff\1\44\1\u00f8"+
-        "\1\u00f9\2\uffff\1\44\1\u00fb\2\uffff\1\u00fc\2\uffff";
+        "\2\uffff\12\44\4\uffff\3\44\1\uffff\3\44\3\uffff\1\44\1\uffff\3"+
+        "\44\1\uffff\1\116\1\uffff\1\120\2\uffff\1\122\2\uffff\2\44\1\126"+
+        "\2\44\1\135\1\136\15\44\1\157\1\44\1\161\1\162\14\44\10\uffff\1"+
+        "\44\1\u0081\1\uffff\1\u0082\1\u0083\4\44\2\uffff\14\44\1\u0094\3"+
+        "\44\1\uffff\1\44\2\uffff\7\44\1\u00a0\4\44\1\u00a5\1\44\3\uffff"+
+        "\6\44\1\u00ad\1\u00ae\1\44\1\u00b0\3\44\1\u00b4\1\44\1\u00b6\1\uffff"+
+        "\1\44\1\u00b8\3\44\1\u00bd\1\u00be\1\u00bf\2\44\1\u00c2\1\uffff"+
+        "\1\44\1\u00c4\1\u00c5\1\u00c6\1\uffff\1\u00c7\3\44\1\u00cc\2\44"+
+        "\2\uffff\1\u00cf\1\uffff\1\u00d0\2\44\1\uffff\1\44\1\uffff\1\44"+
+        "\1\uffff\1\u00d5\1\u00d6\2\44\3\uffff\1\u00d9\1\44\1\uffff\1\u00db"+
+        "\4\uffff\1\u00dc\1\u00dd\2\44\1\uffff\1\u00e0\1\u00e1\3\uffff\1"+
+        "\u00e2\2\44\2\uffff\2\44\1\uffff\1\u00e7\3\uffff\2\44\3\uffff\1"+
+        "\44\1\u00eb\1\u00ec\1\44\1\uffff\1\44\1\u00ef\1\u00f0\2\uffff\1"+
+        "\44\1\u00f2\2\uffff\1\u00f3\2\uffff";
     static final String DFA12_eofS =
-        "\u00fd\uffff";
+        "\u00f4\uffff";
     static final String DFA12_minS =
-        "\1\11\1\uffff\1\105\1\116\1\114\1\130\1\116\1\105\1\101\1\110\1"+
-        "\122\2\101\4\uffff\1\101\1\116\1\105\1\uffff\1\111\1\105\1\111\3"+
-        "\uffff\1\117\1\uffff\1\111\1\117\1\uffff\1\75\1\uffff\1\75\2\uffff"+
-        "\1\56\2\uffff\1\113\1\106\1\111\1\114\1\60\1\104\1\103\2\60\1\103"+
-        "\1\115\1\117\2\114\1\105\1\117\1\126\1\125\1\123\1\106\1\124\1\123"+
-        "\1\60\1\124\2\60\1\124\1\115\1\125\1\101\2\116\1\114\1\124\1\107"+
-        "\1\111\6\uffff\1\60\1\uffff\1\111\1\105\1\124\1\117\2\60\1\uffff"+
-        "\2\60\1\105\1\123\2\105\2\uffff\1\105\1\117\1\105\1\115\1\123\1"+
-        "\114\1\122\1\125\1\111\1\122\1\124\1\103\1\101\1\105\1\60\1\124"+
-        "\1\105\1\uffff\1\105\2\uffff\1\127\2\105\1\122\1\124\1\125\1\114"+
-        "\1\60\1\110\1\116\1\60\1\124\2\60\1\116\4\uffff\1\120\1\124\2\122"+
-        "\1\103\1\116\2\60\1\105\1\60\1\105\1\120\1\116\1\60\1\111\1\60\1"+
-        "\125\1\60\1\uffff\1\60\2\122\1\105\3\60\1\110\1\124\1\60\1\uffff"+
-        "\1\124\1\60\1\uffff\1\60\2\uffff\1\60\1\124\2\123\1\60\1\124\1\104"+
-        "\2\uffff\1\60\1\uffff\1\60\1\40\1\107\1\uffff\1\116\1\uffff\1\114"+
-        "\2\uffff\2\60\1\105\1\124\3\uffff\1\60\1\105\1\uffff\1\60\3\uffff"+
-        "\2\60\1\105\1\101\1\uffff\2\60\3\uffff\1\60\1\103\1\124\2\uffff"+
-        "\1\116\1\101\1\uffff\1\60\3\uffff\1\103\1\114\3\uffff\1\124\2\60"+
-        "\1\115\1\uffff\1\124\2\60\2\uffff\1\120\1\60\2\uffff\1\60\2\uffff";
+        "\1\11\1\uffff\1\116\1\114\1\130\1\116\1\105\1\101\1\110\1\122\2"+
+        "\101\4\uffff\1\101\1\116\1\105\1\uffff\1\111\1\105\1\111\3\uffff"+
+        "\1\117\1\uffff\1\111\1\117\1\105\1\uffff\1\75\1\uffff\1\75\2\uffff"+
+        "\1\56\2\uffff\1\111\1\114\1\60\1\104\1\103\2\60\1\103\1\115\1\117"+
+        "\2\114\1\105\1\117\1\126\1\125\1\123\1\124\1\106\1\123\1\60\1\124"+
+        "\2\60\1\124\1\115\1\125\1\101\2\116\1\114\1\124\1\107\1\111\1\106"+
+        "\1\113\5\uffff\1\60\2\uffff\1\117\1\60\1\uffff\2\60\1\105\1\123"+
+        "\2\105\2\uffff\1\105\1\117\1\105\1\115\1\123\1\114\1\122\1\125\1"+
+        "\111\1\122\1\124\1\105\1\60\1\101\1\124\1\105\1\uffff\1\105\2\uffff"+
+        "\1\127\2\105\1\122\1\124\1\125\1\114\1\60\1\110\1\116\1\124\1\105"+
+        "\1\60\1\116\3\uffff\1\120\1\124\2\122\1\103\1\116\2\60\1\105\1\60"+
+        "\1\105\1\120\1\116\1\60\1\111\1\60\1\uffff\1\125\1\60\2\122\1\105"+
+        "\3\60\1\110\1\124\1\60\1\uffff\1\124\3\60\1\uffff\1\60\1\124\2\123"+
+        "\1\60\1\124\1\104\2\uffff\1\60\1\uffff\1\60\1\40\1\107\1\uffff\1"+
+        "\116\1\uffff\1\114\1\uffff\2\60\1\105\1\124\3\uffff\1\60\1\105\1"+
+        "\uffff\1\60\4\uffff\2\60\1\105\1\101\1\uffff\2\60\3\uffff\1\60\1"+
+        "\103\1\124\2\uffff\1\116\1\101\1\uffff\1\60\3\uffff\1\103\1\114"+
+        "\3\uffff\1\124\2\60\1\115\1\uffff\1\124\2\60\2\uffff\1\120\1\60"+
+        "\2\uffff\1\60\2\uffff";
     static final String DFA12_maxS =
-        "\1\174\1\uffff\1\111\1\116\1\123\1\130\1\123\1\117\1\125\1\110\1"+
-        "\122\1\117\1\111\4\uffff\1\101\1\125\1\131\1\uffff\1\122\1\105\1"+
-        "\117\3\uffff\1\125\1\uffff\1\111\1\117\1\uffff\1\76\1\uffff\1\75"+
-        "\2\uffff\1\105\2\uffff\1\115\1\106\1\111\1\114\1\172\1\131\1\111"+
-        "\2\172\1\114\1\115\1\117\2\114\1\105\1\117\1\126\1\125\2\123\1\131"+
+        "\1\174\1\uffff\1\116\1\123\1\130\1\123\1\117\1\125\1\110\1\122"+
+        "\1\117\1\111\4\uffff\1\101\1\125\1\131\1\uffff\1\122\1\105\1\117"+
+        "\3\uffff\1\125\1\uffff\1\111\1\117\1\111\1\uffff\1\76\1\uffff\1"+
+        "\75\2\uffff\1\105\2\uffff\1\111\1\114\1\172\1\131\1\111\2\172\1"+
+        "\114\1\115\1\117\2\114\1\105\1\117\1\126\1\125\1\123\1\131\1\106"+
         "\1\123\1\172\1\124\2\172\1\124\1\115\1\125\1\101\2\116\1\114\1\124"+
-        "\1\107\1\111\6\uffff\1\71\1\uffff\1\111\1\105\1\124\1\117\2\172"+
-        "\1\uffff\2\172\1\105\1\123\2\105\2\uffff\1\105\1\117\1\105\1\115"+
-        "\1\123\1\114\1\122\1\125\1\111\1\122\1\124\1\103\1\101\1\105\1\172"+
-        "\1\124\1\105\1\uffff\1\105\2\uffff\1\127\2\105\1\122\1\124\1\125"+
-        "\1\114\1\172\1\110\1\116\1\105\1\124\2\172\1\116\4\uffff\1\120\1"+
-        "\124\2\122\1\103\1\116\2\172\1\105\1\172\1\105\1\120\1\116\1\172"+
-        "\1\111\1\172\1\125\1\172\1\uffff\1\172\2\122\1\105\3\172\1\110\1"+
-        "\124\1\172\1\uffff\1\124\1\172\1\uffff\1\172\2\uffff\1\172\1\124"+
-        "\1\123\1\126\1\172\1\124\1\104\2\uffff\1\172\1\uffff\1\172\1\40"+
-        "\1\107\1\uffff\1\116\1\uffff\1\114\2\uffff\2\172\1\105\1\124\3\uffff"+
-        "\1\172\1\105\1\uffff\1\172\3\uffff\2\172\1\105\1\101\1\uffff\2\172"+
-        "\3\uffff\1\172\1\103\1\124\2\uffff\1\116\1\101\1\uffff\1\172\3\uffff"+
-        "\1\103\1\114\3\uffff\1\124\2\172\1\115\1\uffff\1\124\2\172\2\uffff"+
-        "\1\120\1\172\2\uffff\1\172\2\uffff";
+        "\1\107\1\111\1\106\1\113\5\uffff\1\71\2\uffff\1\117\1\172\1\uffff"+
+        "\2\172\1\105\1\123\2\105\2\uffff\1\105\1\117\1\105\1\115\1\123\1"+
+        "\114\1\122\1\125\1\111\1\122\1\124\1\105\1\172\1\101\1\124\1\105"+
+        "\1\uffff\1\105\2\uffff\1\127\2\105\1\122\1\124\1\125\1\114\1\172"+
+        "\1\110\1\116\1\124\2\105\1\116\3\uffff\1\120\1\124\2\122\1\103\1"+
+        "\116\2\172\1\105\1\172\1\105\1\120\1\116\1\172\1\111\1\172\1\uffff"+
+        "\1\125\1\172\2\122\1\105\3\172\1\110\1\124\1\172\1\uffff\1\124\3"+
+        "\172\1\uffff\1\172\1\124\1\123\1\126\1\172\1\124\1\104\2\uffff\1"+
+        "\172\1\uffff\1\172\1\40\1\107\1\uffff\1\116\1\uffff\1\114\1\uffff"+
+        "\2\172\1\105\1\124\3\uffff\1\172\1\105\1\uffff\1\172\4\uffff\2\172"+
+        "\1\105\1\101\1\uffff\2\172\3\uffff\1\172\1\103\1\124\2\uffff\1\116"+
+        "\1\101\1\uffff\1\172\3\uffff\1\103\1\114\3\uffff\1\124\2\172\1\115"+
+        "\1\uffff\1\124\2\172\2\uffff\1\120\1\172\2\uffff\1\172\2\uffff";
     static final String DFA12_acceptS =
-        "\1\uffff\1\1\13\uffff\1\15\1\16\1\17\1\20\3\uffff\1\27\3\uffff\1"+
-        "\42\1\43\1\44\1\uffff\1\50\2\uffff\1\67\1\uffff\1\71\1\uffff\1\102"+
-        "\1\103\1\uffff\1\107\1\110\44\uffff\1\70\1\75\1\72\1\74\1\73\1\105"+
-        "\1\uffff\1\106\6\uffff\1\22\6\uffff\1\64\1\63\21\uffff\1\60\1\uffff"+
-        "\1\57\1\24\17\uffff\1\4\1\26\1\61\1\77\22\uffff\1\36\12\uffff\1"+
-        "\62\2\uffff\1\104\1\uffff\1\100\1\54\7\uffff\1\76\1\10\1\uffff\1"+
-        "\55\3\uffff\1\37\1\uffff\1\25\1\uffff\1\30\1\21\4\uffff\1\32\1\46"+
-        "\1\34\2\uffff\1\45\1\uffff\1\53\1\2\1\3\4\uffff\1\56\2\uffff\1\47"+
-        "\1\11\1\12\3\uffff\1\23\1\52\2\uffff\1\35\1\uffff\1\51\1\5\1\66"+
-        "\2\uffff\1\7\1\41\1\13\4\uffff\1\40\3\uffff\1\101\1\65\2\uffff\1"+
-        "\33\1\14\1\uffff\1\6\1\31";
+        "\1\uffff\1\1\12\uffff\1\14\1\15\1\16\1\17\3\uffff\1\24\3\uffff"+
+        "\1\37\1\40\1\41\1\uffff\1\45\3\uffff\1\64\1\uffff\1\66\1\uffff\1"+
+        "\77\1\100\1\uffff\1\104\1\105\44\uffff\1\65\1\72\1\67\1\71\1\70"+
+        "\1\uffff\1\102\1\103\2\uffff\1\21\6\uffff\1\61\1\60\20\uffff\1\55"+
+        "\1\uffff\1\54\1\23\16\uffff\1\3\1\56\1\74\20\uffff\1\33\13\uffff"+
+        "\1\57\4\uffff\1\101\7\uffff\1\73\1\7\1\uffff\1\52\3\uffff\1\34\1"+
+        "\uffff\1\25\1\uffff\1\20\4\uffff\1\27\1\43\1\31\2\uffff\1\42\1\uffff"+
+        "\1\50\1\51\1\75\1\2\4\uffff\1\53\2\uffff\1\44\1\10\1\11\3\uffff"+
+        "\1\22\1\47\2\uffff\1\32\1\uffff\1\46\1\4\1\63\2\uffff\1\6\1\36\1"+
+        "\12\4\uffff\1\35\3\uffff\1\76\1\62\2\uffff\1\30\1\13\1\uffff\1\5"+
+        "\1\26";
     static final String DFA12_specialS =
-        "\u00fd\uffff}>";
+        "\u00f4\uffff}>";
     static final String[] DFA12_transitionS = {
-            "\2\47\2\uffff\1\47\22\uffff\1\47\1\41\1\46\4\uffff\1\46\1\15"+
-            "\1\16\1\17\1\30\1\20\1\31\1\24\1\32\12\45\1\uffff\1\1\1\40\1"+
-            "\37\1\42\1\uffff\1\43\1\4\1\23\1\21\1\14\1\5\1\10\1\12\1\13"+
-            "\1\6\1\36\1\44\1\2\1\27\1\33\1\22\2\44\1\35\1\7\1\25\1\3\1\44"+
-            "\1\11\1\44\1\26\1\44\5\uffff\33\44\1\uffff\1\34",
+            "\2\47\2\uffff\1\47\22\uffff\1\47\1\41\1\46\4\uffff\1\46\1\14"+
+            "\1\15\1\16\1\27\1\17\1\30\1\23\1\31\12\45\1\uffff\1\1\1\40\1"+
+            "\37\1\42\1\uffff\1\43\1\3\1\22\1\20\1\13\1\4\1\7\1\11\1\12\1"+
+            "\5\1\35\1\44\1\36\1\26\1\32\1\21\2\44\1\34\1\6\1\24\1\2\1\44"+
+            "\1\10\1\44\1\25\1\44\5\uffff\33\44\1\uffff\1\33",
             "",
-            "\1\51\3\uffff\1\50",
-            "\1\52",
-            "\1\53\1\uffff\1\55\4\uffff\1\54",
-            "\1\56",
-            "\1\57\4\uffff\1\60",
-            "\1\61\11\uffff\1\62",
-            "\1\64\20\uffff\1\63\2\uffff\1\65",
-            "\1\66",
-            "\1\67",
-            "\1\70\15\uffff\1\71",
-            "\1\74\3\uffff\1\73\3\uffff\1\72",
-            "",
+            "\1\50",
+            "\1\51\1\uffff\1\53\4\uffff\1\52",
+            "\1\54",
+            "\1\55\4\uffff\1\56",
+            "\1\57\11\uffff\1\60",
+            "\1\62\20\uffff\1\61\2\uffff\1\63",
+            "\1\64",
+            "\1\65",
+            "\1\66\15\uffff\1\67",
+            "\1\71\3\uffff\1\72\3\uffff\1\70",
             "",
             "",
             "",
-            "\1\75",
-            "\1\100\3\uffff\1\76\2\uffff\1\77",
-            "\1\102\23\uffff\1\101",
             "",
-            "\1\103\10\uffff\1\104",
-            "\1\105",
+            "\1\73",
+            "\1\76\3\uffff\1\74\2\uffff\1\75",
+            "\1\100\23\uffff\1\77",
+            "",
+            "\1\101\10\uffff\1\102",
+            "\1\103",
+            "\1\105\5\uffff\1\104",
+            "",
+            "",
+            "",
             "\1\107\5\uffff\1\106",
             "",
-            "",
-            "",
-            "\1\111\5\uffff\1\110",
-            "",
-            "\1\112",
-            "\1\113",
+            "\1\110",
+            "\1\111",
+            "\1\112\3\uffff\1\113",
             "",
             "\1\115\1\114",
             "",
             "\1\117",
             "",
             "",
-            "\1\122\1\uffff\12\45\13\uffff\1\123",
+            "\1\121\1\uffff\12\45\13\uffff\1\123",
             "",
             "",
-            "\1\125\1\uffff\1\124",
-            "\1\126",
-            "\1\127",
-            "\1\130",
-            "\12\44\7\uffff\2\44\1\131\27\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\133\24\uffff\1\134",
-            "\1\135\5\uffff\1\136",
-            "\12\44\7\uffff\15\44\1\140\5\44\1\137\6\44\4\uffff\1\44\1\uffff"+
-            "\32\44",
+            "\1\124",
+            "\1\125",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\144\10\uffff\1\143",
+            "\1\127\24\uffff\1\130",
+            "\1\131\5\uffff\1\132",
+            "\12\44\7\uffff\15\44\1\134\5\44\1\133\6\44\4\uffff\1\44\1"+
+            "\uffff\32\44",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\140\10\uffff\1\137",
+            "\1\141",
+            "\1\142",
+            "\1\143",
+            "\1\144",
             "\1\145",
             "\1\146",
             "\1\147",
             "\1\150",
             "\1\151",
-            "\1\152",
-            "\1\153",
+            "\1\152\4\uffff\1\153",
             "\1\154",
             "\1\155",
-            "\1\157\14\uffff\1\156",
-            "\1\160\4\uffff\1\161",
-            "\1\162",
-            "\12\44\7\uffff\3\44\1\163\26\44\4\uffff\1\44\1\uffff\32\44",
+            "\12\44\7\uffff\3\44\1\156\26\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\160",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\163",
+            "\1\164",
             "\1\165",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\166",
+            "\1\167",
             "\1\170",
             "\1\171",
             "\1\172",
@@ -2804,180 +2717,169 @@ public class SQL92QueryLexer extends Lexer {
             "\1\174",
             "\1\175",
             "\1\176",
-            "\1\177",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\12\177",
+            "",
+            "",
             "\1\u0080",
-            "\1\u0081",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\12\u0082",
-            "",
-            "\1\u0083",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u0084",
             "\1\u0085",
             "\1\u0086",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u0087",
             "",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "",
+            "\1\u0088",
+            "\1\u0089",
+            "\1\u008a",
             "\1\u008b",
             "\1\u008c",
             "\1\u008d",
             "\1\u008e",
-            "",
-            "",
             "\1\u008f",
             "\1\u0090",
             "\1\u0091",
             "\1\u0092",
             "\1\u0093",
-            "\1\u0094",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u0095",
             "\1\u0096",
             "\1\u0097",
+            "",
             "\1\u0098",
+            "",
+            "",
             "\1\u0099",
             "\1\u009a",
             "\1\u009b",
             "\1\u009c",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u009d",
             "\1\u009e",
             "\1\u009f",
-            "",
-            "\1\u00a0",
-            "",
-            "",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00a1",
             "\1\u00a2",
             "\1\u00a3",
             "\1\u00a4",
-            "\1\u00a5",
+            "\12\177\13\uffff\1\123",
             "\1\u00a6",
+            "",
+            "",
+            "",
             "\1\u00a7",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u00a8",
             "\1\u00a9",
             "\1\u00aa",
-            "\12\u0082\13\uffff\1\123",
+            "\1\u00ab",
             "\1\u00ac",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00af",
-            "",
-            "",
-            "",
-            "",
-            "\1\u00b0",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00b1",
             "\1\u00b2",
             "\1\u00b3",
-            "\1\u00b4",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00b5",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "",
+            "\1\u00b7",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00b8",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u00b9",
             "\1\u00ba",
             "\1\u00bb",
-            "\1\u00bc",
+            "\12\44\7\uffff\22\44\1\u00bc\7\44\4\uffff\1\44\1\uffff\32"+
+            "\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00be",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00c0",
+            "\1\u00c1",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00c3",
-            "\1\u00c4",
-            "\1\u00c5",
-            "\12\44\7\uffff\22\44\1\u00c6\7\44\4\uffff\1\44\1\uffff\32\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00ca",
-            "\1\u00cb",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u00c8",
+            "\1\u00c9",
+            "\1\u00ca\2\uffff\1\u00cb",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00cd",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\1\u00ce",
+            "",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00d1",
             "\1\u00d2",
-            "\1\u00d3\2\uffff\1\u00d4",
+            "",
+            "\1\u00d3",
+            "",
+            "\1\u00d4",
+            "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00d6",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00d7",
+            "\1\u00d8",
             "",
             "",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00da",
-            "\1\u00db",
             "",
-            "\1\u00dc",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
-            "\1\u00dd",
+            "",
             "",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00e0",
-            "\1\u00e1",
+            "\1\u00de",
+            "\1\u00df",
+            "",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
             "",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\1\u00e3",
+            "\1\u00e4",
+            "",
+            "",
+            "\1\u00e5",
+            "\1\u00e6",
             "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
             "",
             "",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00e7",
             "\1\u00e8",
+            "\1\u00e9",
             "",
+            "",
+            "",
+            "\1\u00ea",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "",
-            "",
-            "",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00ec",
             "\1\u00ed",
             "",
-            "",
             "\1\u00ee",
-            "\1\u00ef",
-            "",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "",
+            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
             "",
             "\1\u00f1",
-            "\1\u00f2",
-            "",
-            "",
-            "",
-            "\1\u00f3",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\1\u00f6",
-            "",
-            "\1\u00f7",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
-            "",
-            "",
-            "\1\u00fa",
             "\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
             "",
             "",
@@ -3016,7 +2918,7 @@ public class SQL92QueryLexer extends Lexer {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | ID | FLOAT | INT | NUMERIC | STRING | WS );";
+            return "1:1: Tokens : ( T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | ID | FLOAT | INT | NUMERIC | STRING | WS );";
         }
     }
  

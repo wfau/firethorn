@@ -39,6 +39,7 @@ tokens
     ASC;
     DESC;
     LIMIT;
+    TOP;
 }
 
 @header {
@@ -98,7 +99,10 @@ statement
     
 limit 	
     : 'LIMIT' INT -> ^(LIMIT INT);
-    
+ 
+top 	
+    : 'TOP' INT -> ^(TOP INT);
+       
 query_expression
     :   query (set_op^ query)*
     ;
@@ -111,8 +115,8 @@ set_op
     ;
 query   
     :   sub_query
-    |   'SELECT' set_quantifier? select_list 'FROM' table_expression ('WHERE' s1=search_condition)? ('GROUP BY' column_list)? ('HAVING' s2=search_condition)?
-            -> ^(QUERY ^(SELECT_LIST set_quantifier? select_list) ^(FROM_LIST table_expression) ^(WHERE $s1)? ^(GROUP_BY column_list)? ^(HAVING $s2)?)
+    |   'SELECT' top? set_quantifier? select_list 'FROM' table_expression ('WHERE' s1=search_condition)? ('GROUP BY' column_list)? ('HAVING' s2=search_condition)?
+            -> ^(QUERY ^(top? SELECT_LIST set_quantifier? select_list) ^(FROM_LIST table_expression) ^(WHERE $s1)? ^(GROUP_BY column_list)? ^(HAVING $s2)?)
     ;
     
 set_quantifier
