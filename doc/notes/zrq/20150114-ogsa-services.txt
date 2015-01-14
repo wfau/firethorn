@@ -1,0 +1,81 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-ogsadai-services
+    
+    # Copy paste instructions
+    gedit 'doc/notes/zrq/20141130-01-hg-branch.txt' &
+
+# -----------------------------------------------------
+# Merge changes from previous branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Set our branch names.
+        newbranch=$(getversion)
+        oldbranch=1.11.29-zrq-ogsadai-services
+        
+        #
+        # Merge the old branch into the new branch.
+        hg update "${newbranch:?}"
+        hg merge  "${oldbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${oldbranch:?}] into [${newbranch:?}]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${oldbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${oldbranch:?}]"
+        hg push
+
+        #
+        # Jump back to the new branch.
+        hg update "${newbranch:?}"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
