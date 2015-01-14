@@ -131,7 +131,7 @@
 
         #
         # Install Java package(s).
-        yum install \
+        yum -y install \
           --installroot "${buildpath:?}" \
           --setopt=override_install_langs=en \
           --setopt=tsflags=nodocs \
@@ -170,6 +170,7 @@ EOF
 
         #
         # Tag this image it as our java image
+        docker tag "${buildname:?}"  "firethorn/java"
         docker tag "${buildname:?}"  "firethorn/java:8"
         docker tag "${buildname:?}"  "firethorn/java:latest"
 
@@ -198,6 +199,7 @@ EOF
 # https://github.com/docker/docker/issues/863
 #[user@desktop]
 
+    docker tag "firethorn/tomcat:8"   "firethorn/tomcat"
     docker tag "firethorn/tomcat:8"   "firethorn/tomcat:latest"
     docker images
 

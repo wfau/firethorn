@@ -563,11 +563,12 @@
                 <!--+
                     | Maven Docker plugin.
                     | https://github.com/alexec/docker-maven-plugin
+                    | Version 2.2.0 tries to connect to TCP loalhost.
                     +-->
                 <plugin>
                     <groupId>com.alexecollins.docker</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>2.2.0</version>
+                    <version>2.1.0</version>
                     <configuration>
                         <removeIntermediateImages>true</removeIntermediateImages>
                         <cache>true</cache>

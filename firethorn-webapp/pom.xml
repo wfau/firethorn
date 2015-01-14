@@ -262,19 +262,6 @@
             </plugin>
                 +-->
 
-            <!--+
-                | Maven Docker plugin.
-                | https://github.com/alexec/docker-maven-plugin
-            <plugin>
-                <groupId>com.alexecollins.docker</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <removeIntermediateImages>true</removeIntermediateImages>
-                    <cache>true</cache>
-                </configuration>
-            </plugin>
-                +-->
-
         </plugins>
 
         <resources>
