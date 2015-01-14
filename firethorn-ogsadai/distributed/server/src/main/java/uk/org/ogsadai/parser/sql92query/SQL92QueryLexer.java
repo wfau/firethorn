@@ -112,7 +112,7 @@ public class SQL92QueryLexer extends Lexer {
         throw new MismatchedTokenException(ttype, input);
     }
 
-    public void recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
+    public Object recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
         throws RecognitionException
     {
         throw re;
