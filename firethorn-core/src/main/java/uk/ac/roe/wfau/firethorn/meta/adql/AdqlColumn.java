@@ -122,160 +122,6 @@ extends BaseColumn<AdqlColumn>
     /**
      * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
      * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
-     * Plus an extra ARRAY value to catch array data.
-     * Plus DATE, TIME and TIMESTAMP.
-     * @todo Convert this to an interface to allow user defined types.
-     *
-    @Deprecated
-    public enum OldAdqlType
-        {
-        ARRAY(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-array-1.0.json",     "array",         JdbcColumn.OldJdbcType.ARRAY),
-        BOOLEAN(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-boolean-1.0.json",   "boolean",       JdbcColumn.OldJdbcType.BOOLEAN),
-        BIT(            "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-bit-1.0.json",       "bit",           JdbcColumn.OldJdbcType.BLOB),
-        BYTE(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-byte-1.0.json",      "unsignedByte",  JdbcColumn.OldJdbcType.TINYINT),
-        CHAR(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-char-1.0.json",      "char",          JdbcColumn.OldJdbcType.CHAR),
-        UNICODE(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-unicode-1.0.json",   "unicodeChar",   JdbcColumn.OldJdbcType.CHAR),
-        SHORT(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int16-1.0.json",     "short",         JdbcColumn.OldJdbcType.SMALLINT),
-        INTEGER(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int32-1.0.json",     "int",           JdbcColumn.OldJdbcType.INTEGER),
-        LONG(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int64-1.0.json",     "long",          JdbcColumn.OldJdbcType.BIGINT),
-        FLOAT(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-float32-1.0.json",   "float",         JdbcColumn.OldJdbcType.FLOAT),
-        DOUBLE(         "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-float64-1.0.json",   "double",        JdbcColumn.OldJdbcType.DOUBLE),
-        FLOATCOMPLEX(   "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-complex32-1.0.json", "floatComplex",  JdbcColumn.OldJdbcType.UNKNOWN),
-        DOUBLECOMPLEX(  "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-complex64-1.0.json", "doubleComplex", JdbcColumn.OldJdbcType.UNKNOWN),
-        DATE(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-date-1.0.json",      "char",          JdbcColumn.OldJdbcType.DATE),      // YYYY-MM-DD
-        TIME(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-time-1.0.json",      "char",          JdbcColumn.OldJdbcType.TIME),      // HH:MM:SS.sss
-        DATETIME(       "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-datetime-1.0.json",  "char",          JdbcColumn.OldJdbcType.DATE),      // YYYY-MM-DDTHH:MM:SS.sss
-        UNKNOWN(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-unknown-1.0.json",   "unknown",       JdbcColumn.OldJdbcType.UNKNOWN);
-
-        private final String votype ;
-        public  String votype()
-            {
-            return this.votype;
-            }
-
-        private final String xtype ;
-        public  String xtype()
-            {
-            return this.xtype;
-            }
-
-        private final JdbcColumn.OldJdbcType jdbc ;
-        public  JdbcColumn.OldJdbcType jdbc()
-            {
-            return this.jdbc;
-            }
-
-        OldAdqlType(final String xtype, final String votype, final JdbcColumn.OldJdbcType jdbc)
-            {
-            this.xtype = xtype ;
-            this.votype = votype ;
-            this.jdbc = jdbc ;
-            }
-
-        /**
-         * Mapping from JdbcColumn.Type to AdqlColumn.Type.
-         * @see JdbcColumn.OldJdbcType
-         *
-         *
-        public static AdqlColumn.OldAdqlType type(final JdbcColumn.OldJdbcType jdbc)
-            {
-            return type(
-                jdbc.sqltype()
-                );
-            }
-
-        /**
-         * Mapping from java.sql.Types to AdqlColumnType.
-         * @see java.sql.Types
-         *
-         *
-        public static AdqlColumn.OldAdqlType type(final int sql)
-            {
-            switch(sql)
-                {
-                case Types.ARRAY :
-                    return ARRAY;
-
-                case Types.BIGINT :
-                    return LONG ;
-
-                case Types.BIT :
-                case Types.BOOLEAN :
-                    return BOOLEAN ;
-
-                case Types.LONGNVARCHAR :
-                case Types.LONGVARCHAR :
-                case Types.NVARCHAR :
-                case Types.VARCHAR :
-                case Types.NCHAR :
-                case Types.CHAR :
-                    return CHAR ;
-
-                case Types.DOUBLE :
-                    return DOUBLE ;
-
-                case Types.REAL  :
-                case Types.FLOAT :
-                    return FLOAT ;
-
-                case Types.INTEGER :
-                    return INTEGER ;
-
-                case Types.TINYINT :
-                    return BYTE ;
-
-                case Types.SMALLINT :
-                    return SHORT ;
-
-                case Types.DATE :
-                    return DATE ;
-
-                case Types.TIME :
-                    return TIME ;
-
-                case Types.TIMESTAMP :
-                    return DATETIME ;
-
-                case Types.BINARY :
-                case Types.BLOB :
-                case Types.CLOB :
-                case Types.DATALINK :
-                case Types.DECIMAL :
-                case Types.DISTINCT :
-                case Types.JAVA_OBJECT :
-                case Types.LONGVARBINARY :
-                case Types.NCLOB :
-                case Types.NULL :
-                case Types.NUMERIC :
-                case Types.OTHER :
-                case Types.REF :
-                case Types.ROWID :
-                case Types.SQLXML :
-                case Types.STRUCT :
-                case Types.VARBINARY :
-                default :
-                    return UNKNOWN ;
-                }
-            }
-
-        public static AdqlColumn.OldAdqlType type(final String name)
-            {
-            if(name != null)
-                {
-                return AdqlColumn.OldAdqlType.valueOf(
-                    name.trim().toUpperCase()
-                    );
-                }
-            else {
-                return null ;
-                }
-            }
-        }
-     */
-
-    /**
-     * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
-     * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
      * Plus ARRAY to handle array data.
      * Plus USER  to handle user defined types.
      * Plus DATE, TIME and TIMESTAMP.
@@ -427,67 +273,25 @@ extends BaseColumn<AdqlColumn>
         private static final Map<String, AdqlType> map = new HashMap<String, AdqlType>();
         static {
             //
-            // Add all the standard names. 
+            // Add all the ADQL type names. 
             for (AdqlType type : AdqlType.values())
                 {
                 map.put(
-                    type.name(),
+                    type.name().toUpperCase(),
                     type
                     );
                 }
             //
-            // Add the extra names.
-            map.put(
-                "BIGINT",
-                AdqlType.LONG
-                );
-
-            map.put(
-                "NCHAR",
-                AdqlType.CHAR
-                );
-            map.put(
-                "NCLOB",
-                AdqlType.CHAR
-                );
-            map.put(
-                "NCLOB",
-                AdqlType.CHAR
-                );
-            map.put(
-                "VARCHAR",
-                AdqlType.CHAR
-                );
-            map.put(
-                "LONGVARCHAR",
-                AdqlType.CHAR
-                );
-            map.put(
-                "NVARCHAR",
-                AdqlType.CHAR
-                );
-            map.put(
-                "LONGNVARCHAR",
-                AdqlType.CHAR
-                );
-
-            map.put(
-                "BLOB",
-                AdqlType.BYTE
-                );
-            map.put(
-                "BINARY",
-                AdqlType.BYTE
-                );
-            map.put(
-                "VARBINARY",
-                AdqlType.BYTE
-                );
-            map.put(
-                "LONGVARBINARY",
-                AdqlType.BYTE
-                );
-            
+            // Add all the JDBC type names. 
+            for (JdbcColumn.JdbcType type : JdbcColumn.JdbcType.values())
+                {
+                map.put(
+                    type.name().toUpperCase(),
+                    resolve(
+                        type
+                        )
+                    );
+                }
             }
 
         /**
@@ -498,7 +302,7 @@ extends BaseColumn<AdqlColumn>
             {
             log.debug("resolve(String) [{}]", name);
             final AdqlType type = map.get(
-                name
+                name.toUpperCase()
                 );
             if (type != null)
                 {
