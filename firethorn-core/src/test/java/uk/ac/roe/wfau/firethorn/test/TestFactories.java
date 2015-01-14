@@ -812,19 +812,6 @@ public class TestFactories
                         return null;
                         }
                     }
-                @Component
-                public static class NameFactory
-                extends DateNameFactory<OgsaJdbcResource>
-                implements OgsaJdbcResource.NameFactory
-                    {
-                    @Override
-                    public String name()
-                        {
-                        return datename(
-                            "OGSA_JDBC_RESOURCE"
-                            );
-                        }
-                    }
                 }
 
             @Component
@@ -856,19 +843,6 @@ public class TestFactories
                         {
                         // TODO Auto-generated method stub
                         return null;
-                        }
-                    }
-                @Component
-                public static class NameFactory
-                extends DateNameFactory<OgsaIvoaResource>
-                implements OgsaIvoaResource.NameFactory
-                    {
-                    @Override
-                    public String name()
-                        {
-                        return datename(
-                            "OGSA_IVOA_RESOURCE"
-                            );
                         }
                     }
                 }

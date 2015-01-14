@@ -63,8 +63,11 @@ extends BaseResourceBean<IvoaResource>
             );
         }
 
+    /*
+     * No longer part of IvoaResource.
     public String getOgsadai()
         {
         return entity().meta().ogsa().id();
         }
+    */
     }

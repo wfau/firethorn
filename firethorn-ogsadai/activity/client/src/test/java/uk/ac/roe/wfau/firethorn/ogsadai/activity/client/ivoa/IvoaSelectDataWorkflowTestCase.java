@@ -43,7 +43,9 @@ extends IvoaResourceTestBase
                 )
             );
         final CreateResourceResult ivoadata = ivoacreator.execute(
-            source
+            new IvoaCreateResourceWorkflow.SimpleParam(
+                source.endpoint()
+                )
             );
         assertNotNull(
             ivoadata
@@ -148,7 +150,7 @@ extends IvoaResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return userdata.resource().toString();
                             }
@@ -165,7 +167,7 @@ extends IvoaResourceTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return userdata.resource().toString();
                             }

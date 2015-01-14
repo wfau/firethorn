@@ -11,10 +11,6 @@ import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;

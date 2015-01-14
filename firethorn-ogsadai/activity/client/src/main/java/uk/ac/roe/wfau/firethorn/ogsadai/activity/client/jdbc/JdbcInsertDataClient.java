@@ -53,7 +53,7 @@ implements ResourceActivity
          * @return The target resource ID.
          *
          */
-        public String store();
+        public String ogsaid();
         
         /**
          * The target table name.
@@ -108,7 +108,7 @@ implements ResourceActivity
 
         private String store;
         @Override
-        public String store()
+        public String ogsaid()
             {
             return this.store;
             }
@@ -180,7 +180,7 @@ implements ResourceActivity
             );
         this.setResourceID(
             new ResourceID(
-                param.store()
+                param.ogsaid()
                 )
             );
         

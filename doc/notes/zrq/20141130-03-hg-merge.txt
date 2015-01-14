@@ -53,6 +53,10 @@
         hg update 'default'
         oldversion=$(getversion)
 
+    echo "oldversion [${oldversion:?}]"
+    echo "newversion [${newversion:?}]"
+    echo "devbranch  [${devbranch:?}]"
+
         #
         # Merge the dev branch.
         hg merge "${devbranch:?}"
@@ -88,17 +92,6 @@
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install eclipse:eclipse
-
-    popd
-
-# -------------------------------------------------------------------------------------------
-# Push our artifacts to our Maven repo.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        ./bin/rsync-repo.sh
 
     popd
 
@@ -145,7 +138,7 @@
     docker images
 
 # -------------------------------------------------------------------------------------------
-# Push our webapp images to Docker Hub.
+# Push our images to Docker Hub.
 # https://docs.docker.com/userguide/dockerhub/
 #[user@desktop]
 
@@ -161,4 +154,16 @@
         docker push "firethorn/ogsadai:latest"
 
     popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
 

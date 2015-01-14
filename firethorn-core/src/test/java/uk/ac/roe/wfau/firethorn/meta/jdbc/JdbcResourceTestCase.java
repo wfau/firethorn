@@ -17,14 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc ;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
+ * Tests for {@link JdbcResource} resources.
  *
  */
 public class JdbcResourceTestCase

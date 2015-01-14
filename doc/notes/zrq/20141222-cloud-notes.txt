@@ -20,47 +20,10 @@
 #
 #
 
-# -------------------------------------------------------------------------------------------
-# Running GUI apps with Docker
-# http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
-#[user@desktop]
 
 
-    pushd $(mktemp -d)
+    Installing CoreOS on Linode
+    http://nickrandell.wordpress.com/2014/09/29/installing-coreos-on-linode/
 
-    cat > Dockerfile << EOF
-FROM firethorn/fedora
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-#
-# Update the system.
-RUN yum -y update
-
-#
-# Install some GUI tools.
-RUN yum -y install gedit
-RUN yum -y install eclipse-jdt
-
-#
-# Add our user
-RUN useradd --uid=500 "Albert"
-USER Albert
-
-ENV  HOME /home/Albert
-WORKDIR   /home/Albert
-
-CMD /usr/bin/bash
-EOF
-
-    #
-    # Build the docker image    
-    docker build -t albert . 
-
-    #
-    # Run the container
-    docker run -ti --rm \
-       -e DISPLAY=$DISPLAY \
-       -v /tmp/.X11-unix:/tmp/.X11-unix \
-       albert eclipse
 
 

@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
@@ -315,6 +316,29 @@ public class IvoaResourceEntity
             public Ogsa ogsa()
                 {
                 return ogsameta();
+                }
+            };
+        }
+
+    @Override
+    public OgsaIvoaResources ogsa()
+        {
+        return new OgsaIvoaResources()
+            {
+            @Override
+            public OgsaIvoaResource primary()
+                {
+                return factories().ogsa().factories().ivoa().primary(
+                    IvoaResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select()
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    IvoaResourceEntity.this
+                    );
                 }
             };
         }

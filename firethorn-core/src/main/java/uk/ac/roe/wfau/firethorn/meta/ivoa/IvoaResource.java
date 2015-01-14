@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 
 /**
  *
@@ -79,6 +80,7 @@ extends BaseResource<IvoaSchema>
          * @todo - move to services
          *
          */
+        @Deprecated
         public IvoaSchema.EntityFactory schemas();
 
         }
@@ -121,10 +123,10 @@ extends BaseResource<IvoaSchema>
          * The resource endpoint URL.
          *
          */
-        public String url();
+        public String endpoint();
 
         /**
-         * Get the service capabilities.
+         * Get the endpoint capabilities.
          * 
          */
 
@@ -140,7 +142,7 @@ extends BaseResource<IvoaSchema>
          * Add a new service Endpoint.
          * 
          */
-        public Endpoint create(final String url);
+        public Endpoint create(final String endpoint);
 
         /**
          * Select a list of the service Endpoint(s).
@@ -179,5 +181,32 @@ extends BaseResource<IvoaSchema>
 
     @Override
     public IvoaResource.Metadata meta();
+
+    /**
+     * Interface to access the {@link OgsaIvoaResource} OGSA-DAI resources.
+     * 
+     */
+    public interface OgsaIvoaResources
+    extends OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaIvoaResource} OGSA-DAI resource.
+         * 
+         */
+        public OgsaIvoaResource primary();
+        
+        /**
+         * Select all the {@link OgsaIvoaResource} OGSA-DAI resources for this {@link IvoaResource}.
+         * 
+         */
+        public Iterable<OgsaIvoaResource> select();
+
+        }
+
+    /**
+     * Access the {@link OgsaIvoaResource} OGSA-DAI resources.
+     * 
+     */
+    public OgsaIvoaResources ogsa();
     
     }
