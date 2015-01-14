@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+### Downloaded antlr-3.2.jar
+### https://github.com/antlr/website-antlr3/blob/gh-pages/download/antlr-3.2.jar
+
+### Compile grammar file
+
+java -cp antlr-3.2.jar org.antlr.Tool ../firethorn/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g
+
+error(10):  internal error: Can't get property indirectDelegates using method get/isIndirectDelegates from org.antlr.tool.Grammar instance : java.lang.NullPointerException
+java.util.Objects.requireNonNull(Objects.java:203)
+java.util.ArrayList.removeAll(ArrayList.java:689)
+org.antlr.tool.CompositeGrammar.getIndirectDelegates(CompositeGrammar.java:222)
+org.antlr.tool.Grammar.getIndirectDelegates(Grammar.java:2620)
+sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+java.lang.reflect.Method.invoke(Method.java:483)
+org.antlr.stringtemplate.language.ASTExpr.invokeMethod(ASTExpr.java:564)
+org.antlr.stringtemplate.language.ASTExpr.rawGetObjectProperty(ASTExpr.java:515)
+org.antlr.stringtemplate.language.ASTExpr.getObjectProperty(ASTExpr.java:417)
+org.antlr.stringtemplate.language.ActionEvaluator.attribute(ActionEvaluator.java:351)
+org.antlr.stringtemplate.language.ActionEvaluator.expr(ActionEvaluator.java:136)
+org.antlr.stringtemplate.language.ActionEvaluator.templateApplication(ActionEvaluator.java:216)
+org.antlr.stringtemplate.language.ActionEvaluator.expr(ActionEvaluator.java:126)
+org.antlr.stringtemplate.language.ActionEvaluator.action(ActionEvaluator.java:84)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:149)
+org.antlr.stringtemplate.StringTemplate.write(StringTemplate.java:705)
+org.antlr.stringtemplate.language.ASTExpr.writeTemplate(ASTExpr.java:750)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:680)
+org.antlr.stringtemplate.language.ASTExpr.writeAttribute(ASTExpr.java:660)
+org.antlr.stringtemplate.language.ActionEvaluator.action(ActionEvaluator.java:86)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:149)
+org.antlr.stringtemplate.StringTemplate.write(StringTemplate.java:705)
+org.antlr.stringtemplate.language.ASTExpr.writeTemplate(ASTExpr.java:750)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:680)
+org.antlr.stringtemplate.language.ASTExpr.writeAttribute(ASTExpr.java:660)
+org.antlr.stringtemplate.language.ActionEvaluator.action(ActionEvaluator.java:86)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:149)
+org.antlr.stringtemplate.StringTemplate.write(StringTemplate.java:705)
+org.antlr.stringtemplate.language.ASTExpr.writeTemplate(ASTExpr.java:750)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:680)
+org.antlr.stringtemplate.language.ASTExpr.writeAttribute(ASTExpr.java:660)
+org.antlr.stringtemplate.language.ActionEvaluator.action(ActionEvaluator.java:86)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:149)
+org.antlr.stringtemplate.StringTemplate.write(StringTemplate.java:705)
+org.antlr.stringtemplate.language.ASTExpr.writeTemplate(ASTExpr.java:750)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:680)
+org.antlr.stringtemplate.language.ASTExpr.writeAttribute(ASTExpr.java:660)
+org.antlr.stringtemplate.language.ActionEvaluator.action(ActionEvaluator.java:86)
+org.antlr.stringtemplate.language.ASTExpr.write(ASTExpr.java:149)
+org.antlr.stringtemplate.StringTemplate.write(StringTemplate.java:705)
+org.antlr.codegen.CodeGenerator.write(CodeGenerator.java:1281)
+org.antlr.codegen.Target.genRecognizerFile(Target.java:94)
+org.antlr.codegen.CodeGenerator.genRecognizer(CodeGenerator.java:466)
+org.antlr.Tool.generateRecognizer(Tool.java:641)
+org.antlr.Tool.process(Tool.java:454)
+org.antlr.Tool.main(Tool.java:91)
+stelios@stelios:~/Downloads$ 
+
+
+
+
+### Download antlrworks 1.5.2 GUI
+### http://www.antlr3.org/works/
+
+java -jar antlrworks-1.5.2-complete.jar 
+
+### Click generate Parser code
+
