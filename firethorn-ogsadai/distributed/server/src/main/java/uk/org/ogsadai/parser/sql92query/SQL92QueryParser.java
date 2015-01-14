@@ -18,6 +18,7 @@ public class SQL92QueryParser extends DebugParser {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STATEMENT", "QUERY", "SETOP", "ORDER", "SELECT_LIST", "FROM_LIST", "WHERE", "GROUP_BY", "HAVING", "RELATION", "COLUMN", "FUNCTION", "NOT", "SET", "TABLECOLUMN", "RIGHT_OUTER_JOIN", "LEFT_OUTER_JOIN", "FULL_OUTER_JOIN", "JOIN", "IS_NULL", "UNION", "EXCEPT", "UNION_ALL", "EXCEPT_ALL", "INTERSECT", "BOUND", "CAST", "ID", "INT", "FLOAT", "NUMERIC", "STRING", "WS", "';'", "'UNION'", "'ALL'", "'EXCEPT'", "'INTERSECT'", "'SELECT'", "'FROM'", "'WHERE'", "'GROUP BY'", "'HAVING'", "'DISTINCT'", "'('", "')'", "'*'", "','", "'CAST'", "'AS'", "'ORDER'", "'BY'", "'.'", "'DATE'", "'TIMESTAMP'", "'TIME'", "'INTERVAL'", "'YEAR'", "'MONTH'", "'DAY'", "'HOUR'", "'MINUTE'", "'SECOND'", "'+'", "'-'", "'/'", "'NULL'", "'TRUE'", "'FALSE'", "'||'", "'RIGHT'", "'OUTER'", "'JOIN'", "'LEFT'", "'FULL'", "'INNER'", "'ON'", "'OR'", "'AND'", "'NOT'", "'IS'", "'IN'", "'BETWEEN'", "'EXISTS'", "'='", "'<>'", "'!='", "'<'", "'>'", "'>='", "'<='", "'SOME'", "'ANY'", "'LIKE'", "'DEFAULT'", "'@'"
     };
     public static final int CAST=30;
+    public static final int ASC=30;
     public static final int FUNCTION=15;
     public static final int EXCEPT_ALL=27;
     public static final int FULL_OUTER_JOIN=21;
@@ -233,7 +234,7 @@ public class SQL92QueryParser extends DebugParser {
         throw new MismatchedTokenException(ttype, input);
     }
 
-    public void recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
+    public Object recoverFromMismatchedSet(IntStream input, RecognitionException re, BitSet follow)
         throws RecognitionException
     {
         throw re;
@@ -288,7 +289,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:21: ( order_by )?
             int alt1=2;
             try { dbg.enterSubRule(1);
-            try { dbg.enterDecision(1);
+            try { dbg.enterDecision(1, isCyclicDecision);
 
             int LA1_0 = input.LA(1);
 
@@ -321,7 +322,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:88:31: ( ';' )?
             int alt2=2;
             try { dbg.enterSubRule(2);
-            try { dbg.enterDecision(2);
+            try { dbg.enterDecision(2, isCyclicDecision);
 
             int LA2_0 = input.LA(1);
 
@@ -470,7 +471,7 @@ public class SQL92QueryParser extends DebugParser {
             loop3:
             do {
                 int alt3=2;
-                try { dbg.enterDecision(3);
+                try { dbg.enterDecision(3, isCyclicDecision);
 
                 int LA3_0 = input.LA(1);
 
@@ -584,7 +585,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:96:8: ( 'UNION' 'ALL' -> ^( UNION_ALL ) | 'UNION' -> ^( UNION ) | 'EXCEPT' 'ALL' -> ^( EXCEPT_ALL ) | 'EXCEPT' -> ^( EXCEPT ) | 'INTERSECT' -> ^( INTERSECT ) )
             int alt4=5;
-            try { dbg.enterDecision(4);
+            try { dbg.enterDecision(4, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case 38:
@@ -939,7 +940,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:105:2: ( sub_query | 'SELECT' ( set_quantifier )? select_list 'FROM' table_expression ( 'WHERE' s1= search_condition )? ( 'GROUP BY' column_list )? ( 'HAVING' s2= search_condition )? -> ^( QUERY ^( SELECT_LIST ( set_quantifier )? select_list ) ^( FROM_LIST table_expression ) ( ^( WHERE $s1) )? ( ^( GROUP_BY column_list ) )? ( ^( HAVING $s2) )? ) )
             int alt9=2;
-            try { dbg.enterDecision(9);
+            try { dbg.enterDecision(9, isCyclicDecision);
 
             int LA9_0 = input.LA(1);
 
@@ -990,7 +991,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:13: ( set_quantifier )?
                     int alt5=2;
                     try { dbg.enterSubRule(5);
-                    try { dbg.enterDecision(5);
+                    try { dbg.enterDecision(5, isCyclicDecision);
 
                     int LA5_0 = input.LA(1);
 
@@ -1041,7 +1042,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:65: ( 'WHERE' s1= search_condition )?
                     int alt6=2;
                     try { dbg.enterSubRule(6);
-                    try { dbg.enterDecision(6);
+                    try { dbg.enterDecision(6, isCyclicDecision);
 
                     int LA6_0 = input.LA(1);
 
@@ -1078,7 +1079,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:96: ( 'GROUP BY' column_list )?
                     int alt7=2;
                     try { dbg.enterSubRule(7);
-                    try { dbg.enterDecision(7);
+                    try { dbg.enterDecision(7, isCyclicDecision);
 
                     int LA7_0 = input.LA(1);
 
@@ -1115,7 +1116,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:106:122: ( 'HAVING' s2= search_condition )?
                     int alt8=2;
                     try { dbg.enterSubRule(8);
-                    try { dbg.enterDecision(8);
+                    try { dbg.enterDecision(8, isCyclicDecision);
 
                     int LA8_0 = input.LA(1);
 
@@ -1484,7 +1485,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:115:2: ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' derived_column )* )
             int alt11=2;
-            try { dbg.enterDecision(11);
+            try { dbg.enterDecision(11, isCyclicDecision);
 
             int LA11_0 = input.LA(1);
 
@@ -1569,7 +1570,7 @@ public class SQL92QueryParser extends DebugParser {
                     loop10:
                     do {
                         int alt10=2;
-                        try { dbg.enterDecision(10);
+                        try { dbg.enterDecision(10, isCyclicDecision);
 
                         int LA10_0 = input.LA(1);
 
@@ -1683,7 +1684,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:2: ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) )
             int alt16=2;
-            try { dbg.enterDecision(16);
+            try { dbg.enterDecision(16, isCyclicDecision);
 
             int LA16_0 = input.LA(1);
 
@@ -1732,7 +1733,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:40: ( ( 'AS' )? id2= ID )?
                     int alt13=2;
                     try { dbg.enterSubRule(13);
-                    try { dbg.enterDecision(13);
+                    try { dbg.enterDecision(13, isCyclicDecision);
 
                     int LA13_0 = input.LA(1);
 
@@ -1751,7 +1752,7 @@ public class SQL92QueryParser extends DebugParser {
                             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:119:41: ( 'AS' )?
                             int alt12=2;
                             try { dbg.enterSubRule(12);
-                            try { dbg.enterDecision(12);
+                            try { dbg.enterDecision(12, isCyclicDecision);
 
                             int LA12_0 = input.LA(1);
 
@@ -1860,7 +1861,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:21: ( ( 'AS' )? ID )?
                     int alt15=2;
                     try { dbg.enterSubRule(15);
-                    try { dbg.enterDecision(15);
+                    try { dbg.enterDecision(15, isCyclicDecision);
 
                     int LA15_0 = input.LA(1);
 
@@ -1879,7 +1880,7 @@ public class SQL92QueryParser extends DebugParser {
                             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:120:22: ( 'AS' )?
                             int alt14=2;
                             try { dbg.enterSubRule(14);
-                            try { dbg.enterDecision(14);
+                            try { dbg.enterDecision(14, isCyclicDecision);
 
                             int LA14_0 = input.LA(1);
 
@@ -2050,7 +2051,7 @@ public class SQL92QueryParser extends DebugParser {
             loop17:
             do {
                 int alt17=2;
-                try { dbg.enterDecision(17);
+                try { dbg.enterDecision(17, isCyclicDecision);
 
                 int LA17_0 = input.LA(1);
 
@@ -2188,7 +2189,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:126:2: ( column_name | INT | reserved_word_column_name )
             int alt18=3;
-            try { dbg.enterDecision(18);
+            try { dbg.enterDecision(18, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case ID:
@@ -2386,7 +2387,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:4: (tableid= ID '.' )?
             int alt19=2;
             try { dbg.enterSubRule(19);
-            try { dbg.enterDecision(19);
+            try { dbg.enterDecision(19, isCyclicDecision);
 
             int LA19_0 = input.LA(1);
 
@@ -2420,7 +2421,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:130:20: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' | s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
             int alt20=10;
             try { dbg.enterSubRule(20);
-            try { dbg.enterDecision(20);
+            try { dbg.enterDecision(20, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case 57:
@@ -2709,7 +2710,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:135:2: ( string_value_expression | numeric_value_expression )
             int alt21=2;
-            try { dbg.enterDecision(21);
+            try { dbg.enterDecision(21, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case ID:
@@ -2996,7 +2997,7 @@ public class SQL92QueryParser extends DebugParser {
             loop22:
             do {
                 int alt22=2;
-                try { dbg.enterDecision(22);
+                try { dbg.enterDecision(22, isCyclicDecision);
 
                 try {
                     isCyclicDecision = true;
@@ -3126,7 +3127,7 @@ public class SQL92QueryParser extends DebugParser {
             loop23:
             do {
                 int alt23=2;
-                try { dbg.enterDecision(23);
+                try { dbg.enterDecision(23, isCyclicDecision);
 
                 int LA23_0 = input.LA(1);
 
@@ -3245,7 +3246,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:144:5: ( '+' | '-' )?
             int alt24=3;
             try { dbg.enterSubRule(24);
-            try { dbg.enterDecision(24);
+            try { dbg.enterDecision(24, isCyclicDecision);
 
             int LA24_0 = input.LA(1);
 
@@ -3366,7 +3367,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:146:2: ( '(' value_expression ')' | function | column_name | literal | sub_query )
             int alt25=5;
-            try { dbg.enterDecision(25);
+            try { dbg.enterDecision(25, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -3540,7 +3541,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:153:9: ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' )
             int alt26=9;
-            try { dbg.enterDecision(26);
+            try { dbg.enterDecision(26, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -3768,7 +3769,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:155:2: ( ( 'DATE' | 'TIMESTAMP' | 'TIME' ) STRING | (tableid= ID '.' )? (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
             int alt29=2;
-            try { dbg.enterDecision(29);
+            try { dbg.enterDecision(29, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case 57:
@@ -3933,7 +3934,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:5: (tableid= ID '.' )?
                     int alt27=2;
                     try { dbg.enterSubRule(27);
-                    try { dbg.enterDecision(27);
+                    try { dbg.enterDecision(27, isCyclicDecision);
 
                     int LA27_0 = input.LA(1);
 
@@ -3967,7 +3968,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:156:21: (s= 'DATE' | s= 'TIMESTAMP' | s= 'TIME' )
                     int alt28=3;
                     try { dbg.enterSubRule(28);
-                    try { dbg.enterDecision(28);
+                    try { dbg.enterDecision(28, isCyclicDecision);
 
                     switch ( input.LA(1) ) {
                     case 57:
@@ -4156,7 +4157,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:159:2: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) | (tableid= ID '.' )? (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' ) -> ^( TABLECOLUMN ( $tableid)? $s) )
             int alt32=2;
-            try { dbg.enterDecision(32);
+            try { dbg.enterDecision(32, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -4214,7 +4215,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:4: (tableid= ID '.' )?
                     int alt30=2;
                     try { dbg.enterSubRule(30);
-                    try { dbg.enterDecision(30);
+                    try { dbg.enterDecision(30, isCyclicDecision);
 
                     int LA30_0 = input.LA(1);
 
@@ -4248,7 +4249,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:160:20: (s= 'INTERVAL' | s= 'YEAR' | s= 'MONTH' | s= 'DAY' | s= 'HOUR' | s= 'MINUTE' | s= 'SECOND' )
                     int alt31=7;
                     try { dbg.enterSubRule(31);
-                    try { dbg.enterDecision(31);
+                    try { dbg.enterDecision(31, isCyclicDecision);
 
                     switch ( input.LA(1) ) {
                     case 60:
@@ -4507,7 +4508,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:9: ( (name= ID ) '(' ( value_expression )? ( ',' value_expression )* ')' -> ^( FUNCTION $name ( value_expression )* ) | (name= ID ) '(' '*' ')' -> ^( FUNCTION $name '*' ) )
             int alt35=2;
-            try { dbg.enterDecision(35);
+            try { dbg.enterDecision(35, isCyclicDecision);
 
             int LA35_0 = input.LA(1);
 
@@ -4578,7 +4579,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:163:25: ( value_expression )?
                     int alt33=2;
                     try { dbg.enterSubRule(33);
-                    try { dbg.enterDecision(33);
+                    try { dbg.enterDecision(33, isCyclicDecision);
 
                     int LA33_0 = input.LA(1);
 
@@ -4614,7 +4615,7 @@ public class SQL92QueryParser extends DebugParser {
                     loop34:
                     do {
                         int alt34=2;
-                        try { dbg.enterDecision(34);
+                        try { dbg.enterDecision(34, isCyclicDecision);
 
                         int LA34_0 = input.LA(1);
 
@@ -4839,7 +4840,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:4: ( column_name | STRING )
             int alt36=2;
             try { dbg.enterSubRule(36);
-            try { dbg.enterDecision(36);
+            try { dbg.enterDecision(36, isCyclicDecision);
 
             int LA36_0 = input.LA(1);
 
@@ -4901,7 +4902,7 @@ public class SQL92QueryParser extends DebugParser {
             loop38:
             do {
                 int alt38=2;
-                try { dbg.enterDecision(38);
+                try { dbg.enterDecision(38, isCyclicDecision);
 
                 int LA38_0 = input.LA(1);
 
@@ -4928,7 +4929,7 @@ public class SQL92QueryParser extends DebugParser {
             	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:169:34: ( column_name | STRING )
             	    int alt37=2;
             	    try { dbg.enterSubRule(37);
-            	    try { dbg.enterDecision(37);
+            	    try { dbg.enterDecision(37, isCyclicDecision);
 
             	    int LA37_0 = input.LA(1);
 
@@ -5148,7 +5149,7 @@ public class SQL92QueryParser extends DebugParser {
             loop39:
             do {
                 int alt39=2;
-                try { dbg.enterDecision(39);
+                try { dbg.enterDecision(39, isCyclicDecision);
 
                 int LA39_0 = input.LA(1);
 
@@ -5273,7 +5274,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:180:2: ( 'RIGHT' ( 'OUTER' )? 'JOIN' -> RIGHT_OUTER_JOIN | 'LEFT' ( 'OUTER' )? 'JOIN' -> LEFT_OUTER_JOIN | 'FULL' ( 'OUTER' )? 'JOIN' -> FULL_OUTER_JOIN | ( 'INNER' )? 'JOIN' -> JOIN )
             int alt44=4;
-            try { dbg.enterDecision(44);
+            try { dbg.enterDecision(44, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case 74:
@@ -5322,7 +5323,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:180:12: ( 'OUTER' )?
                     int alt40=2;
                     try { dbg.enterSubRule(40);
-                    try { dbg.enterDecision(40);
+                    try { dbg.enterDecision(40, isCyclicDecision);
 
                     int LA40_0 = input.LA(1);
 
@@ -5389,7 +5390,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:181:11: ( 'OUTER' )?
                     int alt41=2;
                     try { dbg.enterSubRule(41);
-                    try { dbg.enterDecision(41);
+                    try { dbg.enterDecision(41, isCyclicDecision);
 
                     int LA41_0 = input.LA(1);
 
@@ -5456,7 +5457,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:182:11: ( 'OUTER' )?
                     int alt42=2;
                     try { dbg.enterSubRule(42);
-                    try { dbg.enterDecision(42);
+                    try { dbg.enterDecision(42, isCyclicDecision);
 
                     int LA42_0 = input.LA(1);
 
@@ -5519,7 +5520,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:183:5: ( 'INNER' )?
                     int alt43=2;
                     try { dbg.enterSubRule(43);
-                    try { dbg.enterDecision(43);
+                    try { dbg.enterDecision(43, isCyclicDecision);
 
                     int LA43_0 = input.LA(1);
 
@@ -5656,7 +5657,7 @@ public class SQL92QueryParser extends DebugParser {
             loop45:
             do {
                 int alt45=2;
-                try { dbg.enterDecision(45);
+                try { dbg.enterDecision(45, isCyclicDecision);
 
                 int LA45_0 = input.LA(1);
 
@@ -5776,7 +5777,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:2: ( table_name ( correlation_specification )? -> ^( RELATION table_name ( correlation_specification )? ) | table_function correlation_specification -> ^( RELATION table_function correlation_specification ) | sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
             int alt47=3;
-            try { dbg.enterDecision(47);
+            try { dbg.enterDecision(47, isCyclicDecision);
 
             int LA47_0 = input.LA(1);
 
@@ -5828,7 +5829,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:190:15: ( correlation_specification )?
                     int alt46=2;
                     try { dbg.enterSubRule(46);
-                    try { dbg.enterDecision(46);
+                    try { dbg.enterDecision(46, isCyclicDecision);
 
                     int LA46_0 = input.LA(1);
 
@@ -6099,7 +6100,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:16: ( table_function_subquery )?
             int alt48=2;
             try { dbg.enterSubRule(48);
-            try { dbg.enterDecision(48);
+            try { dbg.enterDecision(48, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -6138,7 +6139,7 @@ public class SQL92QueryParser extends DebugParser {
             loop49:
             do {
                 int alt49=2;
-                try { dbg.enterDecision(49);
+                try { dbg.enterDecision(49, isCyclicDecision);
 
                 try {
                     isCyclicDecision = true;
@@ -6184,7 +6185,7 @@ public class SQL92QueryParser extends DebugParser {
             loop51:
             do {
                 int alt51=2;
-                try { dbg.enterDecision(51);
+                try { dbg.enterDecision(51, isCyclicDecision);
 
                 int LA51_0 = input.LA(1);
 
@@ -6205,7 +6206,7 @@ public class SQL92QueryParser extends DebugParser {
             	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:196:73: ( ',' )?
             	    int alt50=2;
             	    try { dbg.enterSubRule(50);
-            	    try { dbg.enterDecision(50);
+            	    try { dbg.enterDecision(50, isCyclicDecision);
 
             	    int LA50_0 = input.LA(1);
 
@@ -6469,7 +6470,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:205:2: ( search_condition | value_expression )
             int alt52=2;
-            try { dbg.enterDecision(52);
+            try { dbg.enterDecision(52, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -6578,7 +6579,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:210:3: ( table_name -> ^( RELATION table_name ) | table_function -> ^( RELATION table_function ) | query -> ^( RELATION query ) )
             int alt53=3;
-            try { dbg.enterDecision(53);
+            try { dbg.enterDecision(53, isCyclicDecision);
 
             int LA53_0 = input.LA(1);
 
@@ -6831,7 +6832,7 @@ public class SQL92QueryParser extends DebugParser {
             loop54:
             do {
                 int alt54=2;
-                try { dbg.enterDecision(54);
+                try { dbg.enterDecision(54, isCyclicDecision);
 
                 int LA54_0 = input.LA(1);
 
@@ -6951,7 +6952,7 @@ public class SQL92QueryParser extends DebugParser {
             loop55:
             do {
                 int alt55=2;
-                try { dbg.enterDecision(55);
+                try { dbg.enterDecision(55, isCyclicDecision);
 
                 int LA55_0 = input.LA(1);
 
@@ -7053,7 +7054,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:221:2: ( boolean_test | 'NOT' boolean_term -> ^( NOT boolean_term ) )
             int alt56=2;
-            try { dbg.enterDecision(56);
+            try { dbg.enterDecision(56, isCyclicDecision);
 
             int LA56_0 = input.LA(1);
 
@@ -7272,7 +7273,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:226:2: ( predicate | '(' search_condition ')' )
             int alt57=2;
-            try { dbg.enterDecision(57);
+            try { dbg.enterDecision(57, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -7389,7 +7390,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:228:2: ( comparison_predicate | like_predicate | in_predicate | null_predicate | exists_predicate | between_predicate )
             int alt58=6;
-            try { dbg.enterDecision(58);
+            try { dbg.enterDecision(58, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -7575,7 +7576,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:230:2: ( row_value 'IS' 'NULL' -> ^( IS_NULL row_value ) | row_value 'IS' 'NOT' 'NULL' -> ^( NOT ^( IS_NULL row_value ) ) )
             int alt59=2;
-            try { dbg.enterDecision(59);
+            try { dbg.enterDecision(59, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -7781,7 +7782,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:234:2: ( row_value 'NOT' 'IN' in_predicate_tail -> ^( NOT ^( 'IN' row_value in_predicate_tail ) ) | row_value 'IN' in_predicate_tail -> ^( 'IN' row_value in_predicate_tail ) )
             int alt60=2;
-            try { dbg.enterDecision(60);
+            try { dbg.enterDecision(60, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -7995,7 +7996,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:240:2: ( sub_query | '(' ( value_expression ( ',' value_expression )* ) ')' -> ^( SET ( value_expression )* ) )
             int alt62=2;
-            try { dbg.enterDecision(62);
+            try { dbg.enterDecision(62, isCyclicDecision);
 
             int LA62_0 = input.LA(1);
 
@@ -8074,7 +8075,7 @@ public class SQL92QueryParser extends DebugParser {
                     loop61:
                     do {
                         int alt61=2;
-                        try { dbg.enterDecision(61);
+                        try { dbg.enterDecision(61, isCyclicDecision);
 
                         int LA61_0 = input.LA(1);
 
@@ -8232,7 +8233,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:243:2: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( 'BETWEEN' $value $btw1 $btw2) | value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value -> ^( NOT ^( 'BETWEEN' $value $btw1 $btw2) ) )
             int alt63=2;
-            try { dbg.enterDecision(63);
+            try { dbg.enterDecision(63, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -8570,7 +8571,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:251:2: ( bind_table '=' row_value | lv= row_value (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' ) (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' ) rv= row_value -> ^( $ep ^( $op $lv $rv) ) | row_value ( '=' | '<>' | '!=' | '<' | '>' | '>=' | '<=' ) row_value )
             int alt66=3;
-            try { dbg.enterDecision(66);
+            try { dbg.enterDecision(66, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -8629,7 +8630,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:17: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
                     int alt64=7;
                     try { dbg.enterSubRule(64);
-                    try { dbg.enterDecision(64);
+                    try { dbg.enterDecision(64, isCyclicDecision);
 
                     switch ( input.LA(1) ) {
                     case 88:
@@ -8771,7 +8772,7 @@ public class SQL92QueryParser extends DebugParser {
                     // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:72: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
                     int alt65=3;
                     try { dbg.enterSubRule(65);
-                    try { dbg.enterDecision(65);
+                    try { dbg.enterDecision(65, isCyclicDecision);
 
                     switch ( input.LA(1) ) {
                     case 39:
@@ -9007,7 +9008,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:259:2: ( row_value 'LIKE' row_value | v1= row_value 'NOT' 'LIKE' v2= row_value -> ^( NOT ^( 'LIKE' $v1 $v2) ) )
             int alt67=2;
-            try { dbg.enterDecision(67);
+            try { dbg.enterDecision(67, isCyclicDecision);
 
             try {
                 isCyclicDecision = true;
@@ -9185,7 +9186,7 @@ public class SQL92QueryParser extends DebugParser {
         try {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:267:2: ( value_expression | 'NULL' | 'DEFAULT' )
             int alt68=3;
-            try { dbg.enterDecision(68);
+            try { dbg.enterDecision(68, isCyclicDecision);
 
             switch ( input.LA(1) ) {
             case ID:
@@ -9495,7 +9496,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:274:4: ( 'AS' )?
             int alt69=2;
             try { dbg.enterSubRule(69);
-            try { dbg.enterDecision(69);
+            try { dbg.enterDecision(69, isCyclicDecision);
 
             int LA69_0 = input.LA(1);
 
@@ -9667,7 +9668,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:4: ( column_name | reserved_word_column_name )
             int alt70=2;
             try { dbg.enterSubRule(70);
-            try { dbg.enterDecision(70);
+            try { dbg.enterDecision(70, isCyclicDecision);
 
             int LA70_0 = input.LA(1);
 
@@ -9759,7 +9760,7 @@ public class SQL92QueryParser extends DebugParser {
             loop72:
             do {
                 int alt72=2;
-                try { dbg.enterDecision(72);
+                try { dbg.enterDecision(72, isCyclicDecision);
 
                 int LA72_0 = input.LA(1);
 
@@ -9782,7 +9783,7 @@ public class SQL92QueryParser extends DebugParser {
             	    // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:278:52: ( column_name | reserved_word_column_name )
             	    int alt71=2;
             	    try { dbg.enterSubRule(71);
-            	    try { dbg.enterDecision(71);
+            	    try { dbg.enterDecision(71, isCyclicDecision);
 
             	    int LA71_0 = input.LA(1);
 
@@ -9947,7 +9948,7 @@ public class SQL92QueryParser extends DebugParser {
             // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:280:4: (tableid= ID '.' )?
             int alt73=2;
             try { dbg.enterSubRule(73);
-            try { dbg.enterDecision(73);
+            try { dbg.enterDecision(73, isCyclicDecision);
 
             int LA73_0 = input.LA(1);
 
@@ -10517,7 +10518,7 @@ public class SQL92QueryParser extends DebugParser {
         // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:17: (op= '=' | op= '<>' | op= '!=' | op= '<' | op= '>' | op= '>=' | op= '<=' )
         int alt86=7;
         try { dbg.enterSubRule(86);
-        try { dbg.enterDecision(86);
+        try { dbg.enterDecision(86, isCyclicDecision);
 
         switch ( input.LA(1) ) {
         case 88:
@@ -10645,7 +10646,7 @@ public class SQL92QueryParser extends DebugParser {
         // C:\\Documents and Settings\\ahume\\workspace\\ogsadai\\OGSA-DAI DQP\\server\\src\\main\\grammar\\SQL92Query.g:252:72: (ep= 'ALL' | ep= 'SOME' | ep= 'ANY' )
         int alt87=3;
         try { dbg.enterSubRule(87);
-        try { dbg.enterDecision(87);
+        try { dbg.enterDecision(87, isCyclicDecision);
 
         switch ( input.LA(1) ) {
         case 39:

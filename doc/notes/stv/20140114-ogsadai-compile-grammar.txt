@@ -88,3 +88,6 @@ java -jar antlrworks-1.5.2-complete.jar
 
 ### Click generate Parser code
 
+
+### Replace all occurences of "\.enterDecision\((.+)\)" with "\.enterDecision(\1, isCyclicDecision)"
+

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class SQL92QueryLexer extends Lexer {
     public static final int FUNCTION=15;
     public static final int CAST=30;
+    public static final int ASC=31;
     public static final int EXCEPT_ALL=27;
     public static final int FULL_OUTER_JOIN=21;
     public static final int NOT=16;
