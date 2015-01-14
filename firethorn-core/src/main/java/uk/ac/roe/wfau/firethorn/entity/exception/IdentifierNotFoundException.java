@@ -50,10 +50,10 @@ extends EntityNotFoundException
         {
         if (ident != null)
             {
-            return DEFAULT_MESSAGE.replace(":name:", ident.toString());
+            return DEFAULT_MESSAGE.replace(":ident:", ident.toString());
             }
         else {
-            return DEFAULT_MESSAGE.replace(":name:", null);
+            return DEFAULT_MESSAGE.replace(":ident:", null);
             }
         }
 

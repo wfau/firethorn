@@ -471,9 +471,9 @@ public class JdbcColumnEntity
     @Override
     protected AdqlColumn.AdqlType adqltype()
         {
-        if (this.adqltype != null)
+        if (this.adqltype() != null)
             {
-            return this.adqltype;
+            return this.adqltype();
             }
         else if (this.jdbctype != null)
             {
@@ -506,9 +506,9 @@ public class JdbcColumnEntity
     @Override
     protected Integer adqlsize()
         {
-        if (this.adqlsize != null)
+        if (super.adqlsize() != null)
             {
-            return this.adqlsize ;
+            return super.adqlsize() ;
             }
         else {
             if (this.jdbctype.isarray())

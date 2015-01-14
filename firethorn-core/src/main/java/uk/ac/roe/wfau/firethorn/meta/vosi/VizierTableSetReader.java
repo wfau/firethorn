@@ -34,6 +34,7 @@ import javax.xml.stream.events.StartElement;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -924,17 +925,23 @@ public class VizierTableSetReader
                     "std"
                     )
                 );
-                
+
+             // TODO XMLReaderMap.
+             // Can the elements be out of order ?            
+
             final String name  = simplify(namereader.read(params.events())); 
-// TODO XMLReaderMap.
-// Can the elements be out of order ?            
-            
+
+            final AdqlColumn.AdqlType type = AdqlColumn.AdqlType.resolve(
+                dtypereader.read(
+                    params.events()
+                    )
+                ); 
+
             final String title = titlereader.read(params.events());
             final String text  = textreader.read(params.events()); 
             final String unit  = unitreader.read(params.events()); 
             final String utype = utypereader.read(params.events()); 
             final String ucd   = ucdreader.read(params.events()); 
-            final String dtype = dtypereader.read(params.events()); 
 
             List<String> flags = new ArrayList<String>();
             while(flagreader.match(params.events()))
@@ -946,12 +953,12 @@ public class VizierTableSetReader
 
             log.debug("Column [{}]", name);
             log.debug("    std   [{}]", std);
+            log.debug("    type  [{}]", type);
             log.debug("    title [{}]", title);
             log.debug("    text  [{}]", text);
             log.debug("    unit  [{}]", unit);
             log.debug("    ucd   [{}]", ucd);
             log.debug("    utype [{}]", utype);
-            log.debug("    dtype [{}]", dtype);
             for (String flag : flags)
                 {
                 log.debug("    flag  [{}]", flag);
@@ -982,6 +989,11 @@ public class VizierTableSetReader
                                 return name;
                                 }
                             @Override
+                            public AdqlColumn.AdqlType type()
+                                {
+                                return type;
+                                }
+                            @Override
                             public String title()
                                 {
                                 return title;
@@ -995,11 +1007,6 @@ public class VizierTableSetReader
                             public String utype()
                                 {
                                 return utype;
-                                }
-                            @Override
-                            public String dtype()
-                                {
-                                return dtype;
                                 }
                             @Override
                             public String unit()

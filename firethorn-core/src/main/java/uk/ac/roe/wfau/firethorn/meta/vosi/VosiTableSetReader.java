@@ -34,6 +34,7 @@ import javax.xml.stream.events.StartElement;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
@@ -778,17 +779,17 @@ public class VosiTableSetReader
 
                 Boolean std  ;
 
+                AdqlColumn.AdqlType type ;
+
                 String name  ; 
                 String title ;
                 String text  ; 
                 String unit  ; 
                 String utype ; 
                 String ucd   ; 
-                String dtype ; 
 
                 private List<String> flags = new ArrayList<String>();
                 private XMLReaderSet<String> readers = new XMLReaderSetImpl<String>();
-
 
                 @Override
                 public Adql adql()
@@ -813,6 +814,11 @@ public class VosiTableSetReader
                             return name;
                             }
                         @Override
+                        public AdqlColumn.AdqlType type()
+                            {
+                            return type;
+                            }
+                        @Override
                         public String title()
                             {
                             return title;
@@ -826,11 +832,6 @@ public class VosiTableSetReader
                         public String utype()
                             {
                             return utype;
-                            }
-                        @Override
-                        public String dtype()
-                            {
-                            return dtype;
                             }
                         @Override
                         public String unit()
@@ -964,10 +965,12 @@ public class VosiTableSetReader
                             public String read(final XMLEventReader events)
                             throws XMLParserException, XMLReaderException
                                 {
-                                dtype = super.read(
-                                    events
+                                type = AdqlColumn.AdqlType.resolve(
+                                    super.read(
+                                        events
+                                        )
                                     );
-                                return dtype;
+                                return (type != null) ? type.name() : null ;
                                 }
                             }
                         );
@@ -981,10 +984,12 @@ public class VosiTableSetReader
                             public String read(final XMLEventReader events)
                             throws XMLParserException, XMLReaderException
                                 {
-                                dtype = super.read(
-                                    events
+                                type = AdqlColumn.AdqlType.resolve(
+                                    super.read(
+                                        events
+                                        )
                                     );
-                                return dtype;
+                                return (type != null) ? type.name() : null ;
                                 }
                             }
                         );
@@ -1030,23 +1035,29 @@ public class VosiTableSetReader
                         }
                     log.debug("Column [{}]", name);
                     log.debug("    std   [{}]", std);
+                    log.debug("    type  [{}]", type);
                     log.debug("    title [{}]", title);
                     log.debug("    text  [{}]", text);
                     log.debug("    unit  [{}]", unit);
                     log.debug("    ucd   [{}]", ucd);
                     log.debug("    utype [{}]", utype);
-                    log.debug("    dtype [{}]", dtype);
                     for (String flag : flags)
                         {
                         log.debug("    flag  [{}]", flag);
                         }
                     log.debug("    count [{}]", columncount++);
                     //
-                    // Check name != null.
+                    // Check non-null values.
                     if (name == null)
                         {
                         throw new XMLReaderException(
                             "Column name required"
+                            );
+                        }
+                    if (type == null)
+                        {
+                        throw new XMLReaderException(
+                            "Column type required"
                             );
                         }
                     //

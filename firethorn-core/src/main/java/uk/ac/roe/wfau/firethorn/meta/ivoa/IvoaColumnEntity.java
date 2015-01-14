@@ -410,9 +410,9 @@ public class IvoaColumnEntity
     @Override
     protected AdqlColumn.AdqlType adqltype()
         {
-        if (this.adqltype != null)
+        if (super.adqltype() != null)
             {
-            return this.adqltype;
+            return super.adqltype();
             }
         else {
             return this.ivoatype;
@@ -440,9 +440,9 @@ public class IvoaColumnEntity
     @Override
     protected Integer adqlsize()
         {
-        if (this.adqlsize != null)
+        if (super.adqlsize() != null)
             {
-            return this.adqlsize ;
+            return super.adqlsize() ;
             }
         else {
             return this.ivoasize ;
@@ -485,6 +485,12 @@ public class IvoaColumnEntity
                 }
 
             @Override
+            public AdqlColumn.AdqlType type()
+                {
+                return IvoaColumnEntity.this.ivoatype();
+                }
+
+            @Override
             public String title()
                 {
                 return IvoaColumnEntity.this.name();
@@ -500,12 +506,6 @@ public class IvoaColumnEntity
             public String utype()
                 {
                 return IvoaColumnEntity.this.adqlutype();
-                }
-
-            @Override
-            public String dtype()
-                {
-                return IvoaColumnEntity.this.adqldtype();
                 }
 
             @Override
@@ -567,6 +567,13 @@ public class IvoaColumnEntity
     @Override
     public void update(IvoaColumn.Metadata.Ivoa update)
         {
+        this.adqltype(
+            update.type()
+            );
+        this.adqlsize(
+            update.arraysize()
+            );
+
         if (update.text() != null)
             {
             this.text(update.text());
@@ -583,41 +590,5 @@ public class IvoaColumnEntity
             {
             this.adqlutype(update.utype());
             }
-        if (update.dtype() != null)
-            {
-            this.adqldtype(update.dtype());
-/*            
-            if (this.adqltype == null)
-            	{
-//TODO Needs proper parser for the known type strings.
-            	try {
-	            	this.adqltype = AdqlColumn.AdqlType.dtype(
-	            		update.dtype()
-	        			);
-            		}
-            	catch (Exception ouch)
-            		{
-            		this.adqltype = null;
-            		log.warn("Failed to parse ADQL dtype [{}]", update.dtype());
-            		}
-            	}
- */            	
-            }
-        else {
-//TODO        	
-// Unknown data type - useless unless we cast to char ?
-// We could find out from the results ...
-        	}
-        if (update.arraysize() != null)
-            {
-            this.adqlsize(
-        		update.arraysize()
-            	);
-            }
-        else {
-            this.adqlsize(
-        		AdqlColumn.NON_ARRAY_SIZE
-            	);
-        	}
         }
     }

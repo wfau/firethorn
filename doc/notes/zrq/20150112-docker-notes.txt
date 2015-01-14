@@ -1,0 +1,104 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Experimenting with Docker and Weave..
+#[user@desktop]
+
+    #
+    # Download latest Weave from GitHub
+    pushd /var/local/toolkits
+
+        mkdir weave
+        pushd weave
+
+            mkdir 0.8.0
+            pushd 0.8.0
+
+                wget 'https://github.com/zettio/weave/releases/download/v0.8.0/weave'
+
+                chmod a+x weave
+
+            popd
+
+            ln -s 0.8.0 weave latest
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Launch Weave.
+#[user@desktop]
+
+    weave launch
+
+        This is WEAVE, Version 4.4 (Web2C 7.5.6)
+        weave: fatal: web file `launch.web' not found.
+
+    weave --help
+
+        Usage: weave [OPTION]... WEBFILE[.web] [CHANGEFILE[.ch]]
+        Weave WEBFILE with CHANGEFILE into a TeX document.
+        Default CHANGEFILE is /dev/null;
+        TeX output goes to the basename of WEBFILE extended with `.tex'.
+
+        -x          omit cross-reference information
+        -help       display this help and exit
+        -version    output version information and exit
+
+        Email bug reports to tex-k@mail.tug.org.
+
+
+    #
+    # Ok - not the program we were expecting. 
+    # Conflicting component from the texlive package.
+
+    yum provides */weave
+
+        texlive-2007-57.el6_2.x86_64 : Binaries for the TeX formatting system
+        Repo        : installed
+        Matched from:
+        Filename    : /usr/bin/weave
+
+# -----------------------------------------------------
+# Launch Docker Weave.
+#[user@desktop]
+
+    /var/local/toolkits/weave/latest
+
+    weave must be run as 'root'
+
+# -----------------------------------------------------
+# Create a test VM.
+#[root@desktop]
+
+    ischnura-createvm
+
+        ... create a Fedora 21 base image ....
+        
+
+
+
+
+
+
+

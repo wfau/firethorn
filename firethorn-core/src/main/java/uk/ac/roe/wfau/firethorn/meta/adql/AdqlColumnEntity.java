@@ -442,9 +442,9 @@ public class AdqlColumnEntity
 
     protected AdqlColumn.AdqlType adqltype()
         {
-        if (this.adqltype != null)
+        if (super.adqltype() != null)
             {
-            return this.adqltype;
+            return super.adqltype();
             }
         else {
             return base().meta().adql().type();
@@ -453,9 +453,9 @@ public class AdqlColumnEntity
 
     protected Integer adqlsize()
         {
-        if (this.adqlsize != null)
+        if (super.adqlsize() != null)
             {
-            return this.adqlsize ;
+            return super.adqlsize() ;
             }
         else {
             return base().meta().adql().arraysize();
@@ -481,17 +481,6 @@ public class AdqlColumnEntity
             }
         else {
             return base().meta().adql().utype();
-            }
-        }
-
-    protected String adqldtype()
-        {
-        if (this.adqldtype != null)
-            {
-            return this.adqldtype ;
-            }
-        else {
-            return base().meta().adql().dtype();
             }
         }
 

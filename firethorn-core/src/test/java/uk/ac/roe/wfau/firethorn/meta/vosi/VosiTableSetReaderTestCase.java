@@ -47,7 +47,8 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
-        log.debug("-- Reading [cadc-tableset.xml] --");
+        log.debug("Resource [{}][{}]", resource.name(), resource.ident());
+        log.debug("Reading  [cadc-tableset.xml]");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/cadc-tableset.xml"
@@ -67,7 +68,8 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
-        log.debug("-- Reading [gaia-tableset.xml] --");
+        log.debug("Resource [{}][{}]", resource.name(), resource.ident());
+        log.debug("Reading  [gaia-tableset.xml]");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/gaia-tableset.xml"
@@ -87,7 +89,8 @@ public class VosiTableSetReaderTestCase
         
         VosiTableSetReader reader = new VosiTableSetReader(); 
 
-        log.debug("-- Reading [gavo-tableset.xml] --");
+        log.debug("Resource [{}][{}]", resource.name(), resource.ident());
+        log.debug("Reading  [gavo-tableset.xml]");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/gavo-tableset.xml"
@@ -123,7 +126,9 @@ public class VosiTableSetReaderTestCase
             "vizier-tap"
             );
         VosiTableSetReader reader = new VosiTableSetReader(); 
-        log.debug("-- Reading [vizier-twomass.xml] --");
+
+        log.debug("Resource [{}][{}]", resource.name(), resource.ident());
+        log.debug("Reading  [vizier-tableset.xml]");
         reader.inport(
             new FileReader(
                 "src/test/data/vosi/original/vizier-twomass.xml"
