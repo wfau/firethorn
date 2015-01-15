@@ -146,7 +146,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg commit -m "Imported Astronomy extensions from OGSA-DAI source code"
+        hg addremove
+        hg commit -m "Imported astro extensions from OGSA-DAI source code"
         hg push
         
     popd
