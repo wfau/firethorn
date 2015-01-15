@@ -59,6 +59,7 @@
         <module>activity</module>
         <module>depends</module>
         <module>distributed</module>
+        <module>firethorn</module>
         <module>metadata</module>
         <module>webapp</module>
     </modules>

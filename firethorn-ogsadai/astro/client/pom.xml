@@ -52,11 +52,12 @@
     <dependencies>
 
         <!--+
-            | JUnit-3.8.1 used for testing..
+            | OGSA-DAI 3rd party dependencies.
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-depends</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
             +-->
 
@@ -93,7 +94,7 @@
         </dependency>
 
         <!--+
-            | The StarLink VOTAble library, used by our TAP client. 
+            | The StarLink VOTable library, used by our TAP client. 
             +-->
         <dependency>
             <groupId>uk.ac.starlink</groupId>

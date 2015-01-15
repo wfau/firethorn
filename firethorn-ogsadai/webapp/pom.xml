@@ -67,18 +67,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-client</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -88,18 +76,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -109,18 +85,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -130,18 +94,15 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-astro-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
+        </dependency>
+
+        <!--+
+            | Our FireThorn components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+

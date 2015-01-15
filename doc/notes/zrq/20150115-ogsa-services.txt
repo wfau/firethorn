@@ -79,4 +79,12 @@
         mvn -P all clean install eclipse:eclipse
 
     popd
-    
+
+# -----------------------------------------------------
+# Add new code ....
+#[user@desktop]
+
+    #
+    # Eclipse ....
+    #
+

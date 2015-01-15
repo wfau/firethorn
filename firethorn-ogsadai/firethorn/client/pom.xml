@@ -31,18 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-dqp</artifactId>
+        <artifactId>firethorn-ogsadai-firethorn</artifactId>
         <version project='firethorn'>1.11.32-zrq-ogsadai-services</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-dqp-client</artifactId>
+    <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (client)</name>
+    <name>OGSA-DAI FireThorn components (client)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
-        Based on a clone of the OGSA-DAI code in svn.
+        Client (OGSA-DAI) components for FireThorn.
         ]]>
     </description>
 
@@ -52,21 +51,16 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
-            | OGSA-DAI DQP common components.
+            | OGSA-DAI DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-dqp-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -80,8 +74,16 @@
         </dependency>
 
         <!--+
-            | OGSA-DAI dependencies.
+            | OGSA-DAI FireThorn common classes.
             +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | OGSA-DAI dependencies.
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-common</artifactId>
@@ -102,11 +104,9 @@
             <artifactId>ogsadai-relational-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
+            +-->
 
     </dependencies>
-
-    <build>
-    </build>
 
 </project>
 
