@@ -15,16 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
+//package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
+package uk.org.ogsadai.dqp.firethorn;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.AttributeService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.StatisticsService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMappingService;
+
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.CachingAttributeServiceImpl;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.CachingTableMappingServiceImpl;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.StatisticsServiceImpl;
+
 import uk.org.ogsadai.dqp.common.RequestDetails;
-import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
+//import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
 
 class MetadataServiceFactoryImpl

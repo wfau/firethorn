@@ -23,8 +23,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMapping;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMappingService;
 
 /**
  *

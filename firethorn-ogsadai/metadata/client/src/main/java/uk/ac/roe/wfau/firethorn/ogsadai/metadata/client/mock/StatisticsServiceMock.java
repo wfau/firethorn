@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.mock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.StatisticsService;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;
 import uk.org.ogsadai.dqp.lqp.cardinality.HistogramBasedAttributeStatistics;

@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.31</version>
+        <version project='firethorn'>1.11.32</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -59,16 +59,6 @@
             <version>${ogsadai.version}</version>
             <type>war</type>
         </dependency>
-
-        <!--+
-            | Our astro server components.
-            | This is already part of the webapp.
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-astro-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-            +-->
 
         <!--+
             | Our metadata components.
@@ -134,6 +124,27 @@
         </dependency>
 
         <!--+
+            | Our Astronomy extenstions.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-astro-server</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <!--+
+                    | Exclude all transitive dependencies.
+                    | https://jira.codehaus.org/browse/MNG-3832
+                    | Ignore the warnings, fixed in latest Maven.
+                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                    +-->
+            </exclusions>
+        </dependency>
+
+        <!--+
             | FireThorn JDBC drivers.
             +-->
         <dependency>
@@ -168,14 +179,6 @@
 
         <!--+
             | Starlink Tables library.
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-fits</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-tamfits</artifactId>
-        </dependency>
             +-->
         <dependency>
             <groupId>uk.ac.starlink</groupId>
@@ -222,14 +225,13 @@
                                 <exclude>WEB-INF/lib/ogsadai-basic-server-4.2.jar</exclude>
 
                                 <exclude>WEB-INF/lib/ogsadai-relational-client-4.2.jar</exclude>
-                                    <exclude>WEB-INF/lib/ogsadai-relational-server-4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/ogsadai-relational-server-4.2.jar</exclude>
 
                                 <exclude>WEB-INF/lib/ogsadai-dqp-client-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-dqp-server-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-dqp-jaxb-bindings-4.2.jar</exclude>
 
                                 <exclude>WEB-INF/lib/org.springframework.*</exclude>
-
 
                             </excludes>
                         </overlay>

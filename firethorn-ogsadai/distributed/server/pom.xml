@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>1.11.31</version>
+        <version project='firethorn'>1.11.32</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-dqp-server</artifactId>
@@ -62,14 +62,18 @@
         </dependency>
 
         <!--+
-            | Firethorn DQP client.
+            | OGSA-DAI DQP common components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-dqp-client</artifactId>
+            <artifactId>firethorn-ogsadai-dqp-common</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+
+        <!--+
+            | OGSA-DAI DQP bindings.
+            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-dqp-bindings</artifactId>
