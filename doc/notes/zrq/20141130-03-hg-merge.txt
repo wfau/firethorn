@@ -149,7 +149,7 @@
     docker images
 
 # -------------------------------------------------------------------------------------------
-# Push our webapp images to Docker Hub.
+# Push our images to Docker Hub.
 # https://docs.docker.com/userguide/dockerhub/
 #[user@desktop]
 

@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -31,6 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
 /**
  *
@@ -48,8 +55,20 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
         {
         @NamedQuery(
             name  = "OgsaJdbcResource-select-all",
-            query = "FROM OgsaJdbcResourceEntity ORDER BY name asc, ident desc"
+            query = "FROM OgsaJdbcResourceEntity ORDER BY ident desc"
             ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-service",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-source",
+            query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-service-source",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
+            )
         }
     )
 public class OgsaJdbcResourceEntity
@@ -80,18 +99,14 @@ implements OgsaJdbcResource
     /**
      *
      * Public constructor.
-     * @param name The resource name.
      * @param service The parent {@link OgsaService}
      * @param source  The source {@link JdbcResource}
-     * @throws NameFormatException
      *
      */
-    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source, final String name)
-    throws NameFormatException
+    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source)
         {
         super(
-            service,
-            name
+            service
             );
         this.source = source  ;
         }
@@ -116,15 +131,105 @@ implements OgsaJdbcResource
     @Override
     public String link()
         {
-        return factories().ogsa().resources().jdbc().links().link(
+        return factories().ogsa().factories().jdbc().links().link(
             this
             );
         }
 
     @Override
-    public Status ping()
+    public String ogsaid()
         {
-        // TODO Auto-generated method stub
-        return null;
+        if (this.ogsaid == null)
+            {
+            this.init();
+            }
+        return this.ogsaid;
+        }
+
+    @Override
+    public Status connect()
+        {
+        if (this.ogsaid != null)
+            {
+            return status() ;
+            }
+        else {
+            return this.init();
+            }
+        }
+        
+    protected Status init()
+        {
+        JdbcCreateResourceWorkflow workflow = null;
+        try {
+            workflow = new JdbcCreateResourceWorkflow(
+                service().endpoint()
+                );
+            }
+        catch (MalformedURLException ouch)
+            {
+            return status(
+                Status.ERROR
+                );
+            }
+
+        final CreateResourceResult response = workflow.execute(
+            new JdbcCreateResourceWorkflow.Param()
+                {
+                @Override
+                public String jdbcurl()
+                    {
+                    return source.connection().uri();
+                    }
+                @Override
+                public String username()
+                    {
+                    return source.connection().user();
+                    }
+                @Override
+                public String password()
+                    {
+                    return source.connection().pass();
+                    }
+                @Override
+                public String driver()
+                    {
+                    return source.connection().driver();
+                    }
+                @Override
+                public boolean writable()
+                    {
+                    return false;
+                    }
+                }
+            );
+
+        log.debug("Status  [{}]", response.status());
+        log.debug("Created [{}]", response.resource());
+
+        if (response.status() == WorkflowResult.Status.COMPLETED)
+            {
+            ogsaid(
+                response.resource().toString()
+                );
+            return status(
+                Status.ACTIVE
+                );
+            }
+
+        else {
+            return status(
+                Status.ERROR
+                );
+            }
+        }
+
+    @Override
+    public Status release()
+        {
+        throw new UnsupportedOperationException(
+            "Release not implemented yet"
+            );
         }
     }
+        

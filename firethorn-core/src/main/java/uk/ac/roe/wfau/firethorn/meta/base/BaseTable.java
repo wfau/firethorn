@@ -34,23 +34,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponent
     {
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<TableType extends BaseTable<?,?>>
-    extends Entity.IdentFactory<TableType>
-        {
-        }
-     */
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<TableType extends BaseTable<?,?>>
-    extends NamedEntity.NameFactory<TableType>
-        {
-        }
-     */
 
     /**
      * {@link Entity.AliasFactory} interface.
@@ -130,13 +113,13 @@ extends BaseComponent
         }
 
     /**
-     * The {@link BaseTable} this table is derived from.
+     * The next {@link BaseTable} this table is derived from.
      *
      */
     public BaseTable<?, ?> base();
 
     /**
-     * The root of the chain that this table is derived from.
+     * The root {@link BaseTable} this table is derived from.
      *
      */
     public BaseTable<?, ?> root();

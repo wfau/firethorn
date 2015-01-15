@@ -169,7 +169,7 @@ EOF
             firethorn/java        latest                      94352ff7bedc        4 weeks ago         928.6 MB
 
         #
-        # Tag this image it as our java image
+        # Tag this image as our java image
         docker tag "${buildname:?}"  "firethorn/java"
         docker tag "${buildname:?}"  "firethorn/java:8"
         docker tag "${buildname:?}"  "firethorn/java:latest"
@@ -251,5 +251,37 @@ EOF
     #
     # Docker layers cost
     # https://medium.com/@vaceletm/docker-layers-cost-b28cb13cb627
+
+
+# -------------------------------------------------------------------------------------------
+# Using debootstrap to create a debian image
+
+
+    mkdir wheezy-chroot
+    debootstrap wheezy ./wheezy-chroot http://http.debian.net/debian/
+    cd wheezy-chroot
+    tar cpf - . | docker import - mydebian
+    docker run -t -i --rm mydebian /bin/bash
+
+# -------------------------------------------------------------------------------------------
+# Moved Docker files onto separate drive.
+#[root@desktop]
+
+    service docker stop
+
+    mv /var/lib/docker /var/lib/docker.old
+
+    mkdir /var/lib/docker
+    touch /var/lib/docker/MOUT-FAILED
+
+    mkdir /var/raid/zer/active/docker
+
+    vi /etc/fstab 
+
+    +   /var/raid/zero/active/docker /var/lib/docker none defaults,bind 0 0
+
+    service docker start
+    
+
 
 
