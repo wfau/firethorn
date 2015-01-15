@@ -38,6 +38,10 @@
         hg update 'default'
 
         #
+        # Check the status
+        hg status
+        
+        #
         # Create the new branch name
         source "bin/util.sh"
         devbranch="$(getversion)-${devname:?}"
