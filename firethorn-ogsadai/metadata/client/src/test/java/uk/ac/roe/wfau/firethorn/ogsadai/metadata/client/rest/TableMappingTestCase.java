@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMapping;
 
 /**
  *

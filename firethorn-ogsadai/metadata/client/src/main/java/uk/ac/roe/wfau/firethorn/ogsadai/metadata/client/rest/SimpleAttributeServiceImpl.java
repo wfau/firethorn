@@ -23,7 +23,7 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.AttributeService;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;

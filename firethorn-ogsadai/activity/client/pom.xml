@@ -60,6 +60,15 @@
         </dependency>
 
         <!--+
+            | OGSA-DAI Astronomy extensions.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-astro-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
             | FireThorn logging dependencies.
             +-->
         <dependency>

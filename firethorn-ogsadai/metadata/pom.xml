@@ -50,9 +50,7 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
-        <module>common</module>
         <module>client</module>
-        <module>server</module>
     </modules>
     
     <properties>

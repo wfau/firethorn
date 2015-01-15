@@ -471,9 +471,9 @@ public class JdbcColumnEntity
     @Override
     protected AdqlColumn.AdqlType adqltype()
         {
-        if (this.adqltype() != null)
+        if (super.adqltype() != null)
             {
-            return this.adqltype();
+            return super.adqltype();
             }
         else if (this.jdbctype != null)
             {

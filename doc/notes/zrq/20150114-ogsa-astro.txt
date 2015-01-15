@@ -1,0 +1,163 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-ogsa-astro
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Import the source code for the OGSA-DAI Astro extensions.
+#[user@desktop]
+
+    OGSA_BASE=/var/local/projects/edinburgh/ogsa-dai/code/ogsa-dai
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+    
+        pushd firethorn-ogsadai
+
+            mkdir astro
+            pushd astro
+
+                #
+                # Create the Maven POM.
+                cp ../distributed/pom.xml .
+                gedit pom.xml &
+
+                mkdir client
+                pushd client
+
+                    #
+                    # Create the Maven POM.
+                    cp ../../distributed/client/pom.xml .
+                    gedit pom.xml &
+
+                    #
+                    # Copy the source code and remove the SVN metadata.
+                    cp -r "${OGSA_BASE:?}/trunk/extensions/astro/client/src" "src"
+                    find . -name '.svn' -type d -print -prune -exec rm -rf {} \;
+
+                popd
+
+                mkdir server
+                pushd server
+
+                    #
+                    # Create the Maven POM.
+                    cp ../../distributed/server/pom.xml .
+                    gedit pom.xml &
+
+                    #
+                    # Copy the source code and remove the SVN metadata.
+                    cp -r "${OGSA_BASE:?}/trunk/extensions/astro/server/src" "src"
+                    find . -name '.svn' -type d -print -prune -exec rm -rf {} \;
+
+                popd
+            popd
+
+            #
+            # Update the project dependencies.
+            gedit pom.xml &
+
+            gedit activity/pom.xml &
+            gedit activity/client/pom.xml &
+            gedit activity/server/pom.xml &
+
+            gedit distributed/pom.xml &
+            gedit distributed/client/pom.xml &
+            gedit distributed/server/pom.xml &
+
+            gedit metadata/pom.xml &
+            gedit metadata/client/pom.xml &
+            gedit metadata/server/pom.xml &
+
+            gedit webapp/pom.xml &
+
+            #
+            # Create DQP common project for shared classes.
+            # (initially just SortOrder)
+            mkdir distributed/common
+            gedit distributed/common/pom.xml &
+
+            #
+            # Create DQP firethorn project to resolve circular dependencies between
+            # the OGSA-DAI DQP server components, OGSA-DAI Astronomy extensions and
+            # the FireThorn metadata client.
+            mkdir distributed/firethorn
+            gedit distributed/firethorn/pom.xml &
+
+            #
+            # Manual tweaks to resolve dependency issues.
+            # ....
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150115-01-gnome-tests.txt" &
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150115-02-query-tests.txt" &
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg commit -m "Imported Astronomy extensions from OGSA-DAI source code"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.11.32
+
+    # Copy paste instructions
+    gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &
+
+

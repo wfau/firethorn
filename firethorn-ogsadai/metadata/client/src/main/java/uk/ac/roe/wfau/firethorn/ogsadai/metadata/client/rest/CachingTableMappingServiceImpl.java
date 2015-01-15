@@ -23,8 +23,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMapping;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMappingService;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 
 /**
@@ -47,10 +47,10 @@ implements TableMappingService
     private final SimpleTableMappingServiceImpl service ;
 
     /**
-     * Protected constructor.
+     * Public constructor.
      *
      */
-    protected CachingTableMappingServiceImpl(final String endpoint, final RequestDetails request)
+    public CachingTableMappingServiceImpl(final String endpoint, final RequestDetails request)
         {
         this.service = new SimpleTableMappingServiceImpl(
             endpoint,
