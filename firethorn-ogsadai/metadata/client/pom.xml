@@ -59,13 +59,13 @@
 
         <!--+
             | Firethorn metadata components.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-common</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
         <!--+
             | OGSA-DAI DQP server components.

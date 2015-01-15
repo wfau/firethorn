@@ -53,6 +53,10 @@
         hg update 'default'
         oldversion=$(getversion)
 
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
         #
         # Merge the dev branch.
         hg merge "${devbranch:?}"
