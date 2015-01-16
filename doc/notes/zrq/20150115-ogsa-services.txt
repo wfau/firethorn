@@ -88,3 +88,39 @@
     # Eclipse ....
     #
 
+
+
+
+
+
+
+# -----------------------------------------------------
+# Run our OGSA-DAI service  ....
+#[user@desktop]
+
+    mytemp=$(mktemp)
+    cat > "${mytemp:?}" << 'EOF'
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd 'firethorn-ogsadai'
+            pushd 'webapp'
+
+                source src/test/bin/jdbc-functions.sh
+                pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                    jdbcconfig atlas         firethorn.atlas
+                    jdbcconfig userdata      firethorn.user
+
+                popd
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+        popd
+    popd
+EOF
+
+    gnome-terminal --geometry=200x20 -x bash -c "source ${mytemp:?}"
+

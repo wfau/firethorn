@@ -1,21 +1,18 @@
-/**
- * Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
- * All rights reserved.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// Copyright (c) The University of Edinburgh, 2007-2011.
+//
+// LICENCE-START
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// LICENCE-END
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.dqp;
 
 import java.io.BufferedReader;
@@ -61,25 +58,108 @@ import uk.org.ogsadai.resource.dataresource.dqp.DQPResourceState;
 import uk.org.ogsadai.tools.DQPEditor;
 
 /**
- * An activity to create a FireThorn DQP resource.
+ * An activity that creates a DQP data resource based upon a resource template
+ * available on the server.
+ * <p>
+ * Activity inputs:
+ * <ul>
+ * <li>
+ * <code>resourceId</code>. Type: {@link java.lang.String}. The ID for the new
+ * resource. This is an optional input. If omitted then the server will generate
+ * a new unique ID. If provided then the value must be parsable into a valid
+ * {@link uk.org.ogsadai.resource.ResourceID} and must not already be assigned
+ * to a server-side resource.</li>
+ * <li>
+ * <code>templateId</code>. Type: {@link java.lang.String}. The ID for the
+ * server-side resource template to use as a basis for the new resource. This is
+ * an optional input. If omitted then the server will use the default template
+ * ID specified as part of the activity configuration. If provided then the
+ * value must be parsable into a valid
+ * {@link uk.org.ogsadai.resource.ResourceID}.</li>
+ * <li>
+ * <code>configuration</code>. Type: OGSA-DAI list of <code>char[]</code>. The
+ * configuration for the new DQP resource. The value must be well-formed
+ * <code>DQPResourceConfig</code> XML document.</li>
+ * </ul>
+ * <p>
+ * Activity outputs:
+ * <ul>
+ * <li>
+ * <code>result</code>. Type: {@link java.lang.String}. ID of the new resource.
+ * This will be parsable into a {@link uk.org.ogsadai.resource.ResourceID}.</li>
+ * </ul>
+ * <p>
+ * Configuration parameters:
+ * <ul>
+ * <li>
+ * <code>dai.template.id</code> This must hold the ID of a resource template
+ * deployed server-side. Furthermore this resource template must specify the
+ * data resource implementation class
+ * <code>uk.org.ogsadai.resource.dataresource.dqp.DQPResource</code>.</li>
+ * <li>
+ * <code>dqp.config.dir</code> This must hold the path of an existing directory
+ * into which client-specified DQP configurations are placed. The directory must
+ * be writable by the server.</li>
+ * <li>
+ * <code>dqp.context.template</code> This must hold the path to the context
+ * template, relative to the configuration directory (see above). The file must
+ * be readable by the server.</li>
+ * <li>
+ * <code>dqp.evaluation.node.factory</code> This optional parameter can be
+ * used to specify the implementation class of the 
+ * <code>uk.org.ogsadai.dqp.presentation.common.EvaluationNodeFactory</code>
+ * that creates evaluation node objects when initialising the DQP resource. 
+ * If it is not provided then the default evaluation node factory is used. 
+ * </li>
+ * </ul>
+ * <p>
+ * Activity input/output ordering: none.
+ * <p>
+ * Activity contracts: none.
+ * <p>
+ * Target data resource: none.
+ * <p>
+ * Behaviour:
+ * <ul>
+ * <li>
+ * If a resource ID hasn't been provided then the activity auto-generates a
+ * unique one.</li>
+ * <li>
+ * If a template ID hasn't been provided then the activity gets the default one
+ * specified in its configuration.</li>
+ * <li>
+ * It attempts to load the given resource template. If the template cannot be
+ * found and the ID was provided by the client then this error is returned to
+ * the client. If the default template ID is being used or any other loading
+ * problems arise then a server-side error is logged.</li>
+ * <li>
+ * If a configuration is provided then it is written to a file and parsed into a
+ * DQP configuration.</li>
+ * <li>
+ * It then creates a resource using this template and checks that the resulting
+ * resource implements <code>DQPResource</code>. If there is a creation problem
+ * or the check fails then a server-side error is logged.</li>
+ * <li>
+ * It adds the resource to the resource manager.</li>
+ * <li>
+ * The ID of the new resource is then output.</li>
+ * </ul>
  * 
+ * @author The OGSA-DAI Project Team.
  */
-public class CreateFTDQPResourceActivity
+public class CreateOriginalDQPActivity 
     extends MatchedIterativeActivity
     implements ResourceManagerActivity, 
                ResourceFactoryActivity,
                ConfigurableActivity
-    {
-    /**
-     * Copyright
-     *
-     */
+{
+    /** Copyright. */
     private static final String COPYRIGHT_NOTICE = 
-        "Copyright (c) 2015, ROE (http://www.roe.ac.uk/)";
+        "Copyright (c) The University of Edinburgh, 2007-2011.";
 
     /** Logger. */
     private static final DAILogger LOG = 
-        DAILogger.getLogger(CreateFTDQPResourceActivity.class);
+        DAILogger.getLogger(CreateOriginalDQPActivity.class);
     
     /** 
      * Key into activities configuration file denoting the
@@ -177,7 +257,11 @@ public class CreateFTDQPResourceActivity
         return new ActivityInput[] 
         {
             // Input 0
-            new TypedOptionalActivityInput(INPUT_ID, String.class)
+            new TypedOptionalActivityInput(INPUT_ID, String.class),
+            // Input 1
+            new TypedOptionalActivityInput(INPUT_TEMPLATE_ID, String.class),
+            // Input 2
+            new ReaderActivityInput(INPUT_CONFIG)
         };
     }
 

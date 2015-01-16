@@ -18,14 +18,10 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFTDQPParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
-import uk.org.ogsadai.client.toolkit.Utilities;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
@@ -34,49 +30,68 @@ import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.client.toolkit.exception.DataSourceUsageException;
 import uk.org.ogsadai.client.toolkit.exception.DataStreamErrorException;
 import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
-import uk.org.ogsadai.data.ListBegin;
-import uk.org.ogsadai.data.ListEnd;
 import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFTDQPParam ;
 
 /**
  * An activity to create a FireThorn DQP resource.
  * 
  */
-public class CreateFTDQPResource
+public class CreateFireThornDQPClient
 extends BaseActivity
     {
+    /**
+     * Public interface for the Activity params.
+     *
+     */
+    public interface Param
+        {
+        /**
+         * The resource identifier.
+         * 
+         */
+        public String ident();
+        }
 
     /**
      * Resource name input.
      *
      */
-    private final ActivityInput mResourceIdInput;
+    private final ActivityInput input;
     
     /**
      * Resource name output.
      *
      */
-    private final ActivityOutput mResultOutput;
+    private final ActivityOutput output;
 
     /**
      * Public constructor.
      *
      */
-    public CreateFTDQPResource()
+    public CreateFireThornDQPClient(final Param param)
         {
         super(
             new ActivityName(
                 CreateFTDQPParam.ACTIVITY_NAME
                 )
             );
-        mResourceIdInput = new SimpleActivityInput(
+        input = new SimpleActivityInput(
             CreateFTDQPParam.INPUT_ID,
             SimpleActivityInput.OPTIONAL
             );
-        mResultOutput = new SimpleActivityOutput(
+
+        if (param.ident() != null)
+            {
+            this.input.add(
+                new StringData(
+                    param.ident()
+                    )
+                );
+            }
+
+        
+        output = new SimpleActivityOutput(
             CreateFTDQPParam.OUTPUT_ID
             );
         }
@@ -84,12 +99,10 @@ extends BaseActivity
     /**
      * Adds a resource ID input.
      * 
-     * @param resourceID
-     *     ID of the new resource.
      */
-    public void addResourceId(final ResourceID resourceID)
+    public void add(final ResourceID resourceID)
         {
-        mResourceIdInput.add(
+        input.add(
             new StringData(
                 resourceID.toString()
                 )
@@ -99,57 +112,38 @@ extends BaseActivity
     /**
      * Connects the resource ID input to the given output.
      * 
-     * @param output 
-     *     Output to connect the input to.
      */
-    public void connectResourceIdInput(final SingleActivityOutput output)
+    public void connect(final SingleActivityOutput output)
         {
-        mResourceIdInput.connect(
+        input.connect(
             output
             );
         }
     
     /**
-     * Gets the activity's result output.  This method is use to
-     * connect the output to other activities.
+     * Get the activity's result output.
      * 
-     * @return the activity's output.
      */
     public SingleActivityOutput getResultOutput()
         {
-        return mResultOutput.getSingleActivityOutputs()[0];
+        return output.getSingleActivityOutputs()[0];
         }
     
     /**
-     * Gets whether or not there are any unread output values.
+     * Check if there are any unread output values.
      * 
-     * @return <code>true</code> if there are unread output value, 
-     *         <code>false</code> if there are none.
-     * @throws DataStreamErrorException 
-     *     If there is an error on the data stream.
-     * @throws UnexpectedDataValueException
-     *     If there is an unexpected data value on the data stream.
-     * @throws DataSourceUsageException
-     *     If there is an error reading from a data source.
      */
     public boolean hasNextResult() 
     throws DataStreamErrorException, 
            UnexpectedDataValueException, 
            DataSourceUsageException
         {
-        return mResultOutput.getDataValueIterator().hasNext();
+        return output.getDataValueIterator().hasNext();
         }
     
     /**
-     * Gets the next resource ID from the output.
+     * Get the next resource ID from the output.
      * 
-     * @return resource ID.
-     * @throws DataStreamErrorException 
-     *     If there is an error on the data stream.
-     * @throws UnexpectedDataValueException
-     *     If there is an unexpected data value on the data stream.
-     * @throws DataSourceUsageException
-     *     If there is an error reading from a data source.
      */
     public ResourceID nextResult() 
     throws DataStreamErrorException, 
@@ -157,40 +151,30 @@ extends BaseActivity
            DataSourceUsageException
         {
         return new ResourceID(
-            mResultOutput.getDataValueIterator().nextAsString()
+            output.getDataValueIterator().nextAsString()
             );
         }
-    
-    /**
-     * {@inheritDoc}
-     *
-     * No-op.
-     */ 
+
+    @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {
-        // Empty method.
         }
 
-    /**
-     * {@inheritDoc}
-     *
-     */ 
+    @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]
             {
-            mResourceIdInput
+            input
             };
         }
 
-    /**
-     * {@inheritDoc}
-     */ 
+    @Override
     protected ActivityOutput[] getOutputs()
         {
         return new ActivityOutput[]{
-            mResultOutput
+            output
             };
         }
     }

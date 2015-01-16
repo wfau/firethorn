@@ -53,7 +53,7 @@ public class CreateFTDQPParam
      * Default Activity name.
      * 
      */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.CreateFTDQP" ;
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.CreateFireThornDQP" ;
 
     }
 

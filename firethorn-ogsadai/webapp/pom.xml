@@ -86,6 +86,11 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-firethorn</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!--+
             | Our Astronomy extenstions.
