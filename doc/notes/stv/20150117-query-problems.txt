@@ -1,0 +1,124 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+Database:ramses5
+Firethorn release:1.11.28-release
+Test server/VM: pyrus
+Query status: FAILED
+Query: "SELECT TOP 10 ra, dec FROM atlassource"
+
+
+Running a a simple query from integration tests produces the following error in coccinea output:
+
+2015-01-17 15:00:15,180 DEBUG [FireThornTaskExecutor-2] [AdqlQueryDelays] AdqlQueryDelays() 
+2015-01-17 15:00:15,225 DEBUG [FireThornTaskExecutor-2] [PipelineClient] Exception during request processing [{}] 
+uk.org.ogsadai.client.toolkit.exception.ServerException: [1421506815223:1] uk.org.ogsadai.SERVER_ERROR
+	at uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyDRERResource.executeRequest(JerseyDRERResource.java:144) ~[ogsadai-jersey-client-4.2.2198.jar:na]
+	at uk.org.ogsadai.client.toolkit.resource.BaseDataRequestExecutionResource.execute(BaseDataRequestExecutionResource.java:141) ~[ogsadai-client-4.2.2198.jar:na]
+	at uk.org.ogsadai.client.toolkit.resource.BaseDataRequestExecutionResource.execute(BaseDataRequestExecutionResource.java:118) ~[ogsadai-client-4.2.2198.jar:na]
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient.execute(PipelineClient.java:174) ~[firethorn-ogsadai-activity-client-1.11.28-release.jar:1.11.28-release]
+	at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity.execute(AdqlQueryEntity.java:1176) [firethorn-core-1.11.28-release.jar:1.11.28-release]
+	at uk.ac.roe.wfau.firethorn.job.JobEntity$Executor.execute(JobEntity.java:404) [firethorn-core-1.11.28-release.jar:1.11.28-release]
+	at uk.ac.roe.wfau.firethorn.job.JobEntity$Executor$$FastClassBySpringCGLIB$$d52b0546.invoke(<generated>) [spring-core-4.1.2.RELEASE.jar:1.11.28-release]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) [spring-core-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:717) [spring-aop-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157) [spring-aop-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) [spring-tx-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:267) [spring-tx-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) [spring-tx-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) [spring-aop-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor$1.call(AsyncExecutionInterceptor.java:110) [spring-aop-4.1.2.RELEASE.jar:4.1.2.RELEASE]
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334) [na:1.7.0_03]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166) [na:1.7.0_03]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145) [na:1.7.0_03]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615) [na:1.7.0_03]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_03]
+Caused by: com.sun.jersey.api.client.UniformInterfaceException: POST http://pyracantha:8080/ogsa-dai/services/drers/DataRequestExecutionResource/sync/ returned a response status of 500 Internal Server Error
+	at com.sun.jersey.api.client.WebResource.handle(WebResource.java:688) ~[jersey-client-1.10.jar:1.10]
+	at com.sun.jersey.api.client.WebResource.access$300(WebResource.java:74) ~[jersey-client-1.10.jar:1.10]
+	at com.sun.jersey.api.client.WebResource$Builder.post(WebResource.java:568) ~[jersey-client-1.10.jar:1.10]
+	at uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyDRERResource.executeRequest(JerseyDRERResource.java:130) ~[ogsadai-jersey-client-4.2.2198.jar:na]
+	... 19 common frames omitted
+
+
+
+
+
+
+
+
+
+
+
+
+Navigating to pyracantha: http://localhost:8092/ogsa-dai/services/drers/DataRequestExecutionResource/sync/
+
+exception
+
+javax.servlet.ServletException: Servlet.init() for servlet OGSA-DAI REST Service threw exception
+	org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)
+	org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+	org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:861)
+	org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:606)
+	org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)
+	java.lang.Thread.run(Thread.java:679)
+
+root cause
+
+java.lang.UnsupportedClassVersionError: uk/org/ogsadai/service/rest/JerseyDRER : Unsupported major.minor version 51.0 (unable to load class uk.org.ogsadai.service.rest.JerseyDRER)
+	org.apache.catalina.loader.WebappClassLoader.findClassInternal(WebappClassLoader.java:2858)
+	org.apache.catalina.loader.WebappClassLoader.findClass(WebappClassLoader.java:1159)
+	org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoader.java:1647)
+	org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoader.java:1526)
+	java.lang.Class.forName0(Native Method)
+	java.lang.Class.forName(Class.java:266)
+	com.sun.jersey.core.reflection.ReflectionHelper.classForNameWithException(ReflectionHelper.java:236)
+	com.sun.jersey.spi.scanning.AnnotationScannerListener$AnnotatedClassVisitor.getClassForName(AnnotationScannerListener.java:214)
+	com.sun.jersey.spi.scanning.AnnotationScannerListener$AnnotatedClassVisitor.visitEnd(AnnotationScannerListener.java:183)
+	org.objectweb.asm.ClassReader.accept(Unknown Source)
+	org.objectweb.asm.ClassReader.accept(Unknown Source)
+	com.sun.jersey.spi.scanning.AnnotationScannerListener.onProcess(AnnotationScannerListener.java:133)
+	com.sun.jersey.core.spi.scanning.JarFileScanner.scan(JarFileScanner.java:97)
+	com.sun.jersey.core.spi.scanning.uri.JarZipSchemeScanner$1.f(JarZipSchemeScanner.java:78)
+	com.sun.jersey.core.util.Closing.f(Closing.java:71)
+	com.sun.jersey.core.spi.scanning.uri.JarZipSchemeScanner.scan(JarZipSchemeScanner.java:75)
+	com.sun.jersey.core.spi.scanning.PackageNamesScanner.scan(PackageNamesScanner.java:223)
+	com.sun.jersey.core.spi.scanning.PackageNamesScanner.scan(PackageNamesScanner.java:139)
+	com.sun.jersey.api.core.ScanningResourceConfig.init(ScanningResourceConfig.java:80)
+	com.sun.jersey.api.core.PackagesResourceConfig.init(PackagesResourceConfig.java:104)
+	com.sun.jersey.api.core.PackagesResourceConfig.<init>(PackagesResourceConfig.java:78)
+	com.sun.jersey.api.core.PackagesResourceConfig.<init>(PackagesResourceConfig.java:89)
+	com.sun.jersey.spi.container.servlet.WebComponent.createResourceConfig(WebComponent.java:700)
+	com.sun.jersey.spi.container.servlet.WebComponent.createResourceConfig(WebComponent.java:678)
+	com.sun.jersey.spi.container.servlet.WebComponent.init(WebComponent.java:203)
+	com.sun.jersey.spi.container.servlet.ServletContainer.init(ServletContainer.java:373)
+	com.sun.jersey.spi.container.servlet.ServletContainer.init(ServletContainer.java:556)
+	javax.servlet.GenericServlet.init(GenericServlet.java:212)
+	org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)
+	org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+	org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:861)
+	org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:606)
+	org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)
+	java.lang.Thread.run(Thread.java:679)
+
+
+
+
