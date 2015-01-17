@@ -1,0 +1,54 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+Database:ramses5
+Firethorn release:1.11.28-release
+Test server/VM: pyrus
+
+Databases that produce following error during scan:
+2015-01-17 14:34:12,615 DEBUG [http-bio-8080-exec-1] [MSSQLMetadataScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
+2015-01-17 14:34:12,615 WARN  [http-bio-8080-exec-1] [MSSQLMetadataScanner] Fatal error code, resetting connection 
+
+XCS
+WISE
+VESPA
+TWOXMM
+TWOMASS
+TWODFGRS
+SPITZER
+SkyServerV3
+SIXDF_DR3_prev
+SIXDF_DR3
+SIXDF
+ROSAT
+MOPED4
+MGC
+MCPS
+MACHO
+IRAS
+GLIMPSE
+GalexGR6
+FIRST
+EROS
+DENIS
+COMBO17
+BEN
+AKARI
+XCS_prev
