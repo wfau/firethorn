@@ -48,6 +48,7 @@ public class OperatorID
     public static final OperatorID DUPLICATE_ELIMINATION =
         new OperatorID("DUPLICATE_ELIMINATION");
     public static final OperatorID LIMIT = new OperatorID("LIMIT");
+    public static final OperatorID TOP = new OperatorID("TOP");
     public static final OperatorID SORT = new OperatorID("SORT");
     public static final OperatorID TABLE_SCAN = new OperatorID("TABLE_SCAN");
     public static final OperatorID FILTERED_TABLE_SCAN = new OperatorID("FILTERED_TABLE_SCAN");

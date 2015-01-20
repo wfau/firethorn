@@ -33,11 +33,6 @@ chmod a+x pp
 
 #
 # The service endpoint URL.
-endpointurl=${endpointurl:-$(
-    sed -n '
-        s/^firethorn\.webapp\.endpoint=\(.*\)$/\1/p
-        ' "${HOME:?}/firethorn.properties"
-    )}
 endpointurl=${endpointurl:-'http://localhost:8080/firethorn'}
 
 

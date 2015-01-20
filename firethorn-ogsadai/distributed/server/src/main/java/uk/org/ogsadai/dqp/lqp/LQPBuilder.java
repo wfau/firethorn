@@ -38,6 +38,7 @@ import uk.org.ogsadai.dqp.lqp.operators.InnerThetaJoinOperator;
 import uk.org.ogsadai.dqp.lqp.operators.IntersectionOperator;
 import uk.org.ogsadai.dqp.lqp.operators.LeftOuterJoinOperator;
 import uk.org.ogsadai.dqp.lqp.operators.LimitOperator;
+import uk.org.ogsadai.dqp.lqp.operators.TopOperator;
 import uk.org.ogsadai.dqp.lqp.operators.NilOperator;
 import uk.org.ogsadai.dqp.lqp.operators.OneRowOnlyOperator;
 import uk.org.ogsadai.dqp.lqp.operators.ProjectOperator;
@@ -140,6 +141,7 @@ public class LQPBuilder
         // Check if we have ORDER_BY or LIMIT
         Operator sortOperator = null;
         Operator limitOperator = null;
+        Operator topOperator = null;
         for (int i=1; i<ast.getChildCount(); i++)
         {
             String astText = ast.getChild(i).getText();
@@ -150,6 +152,11 @@ public class LQPBuilder
             else if (ASTConstants.LIMIT_TOKEN.equals(astText))
             {
                 limitOperator = new LimitOperator(
+                        ast.getChild(i).getChild(0).getText());
+            } 
+            else  if (ASTConstants.TOP_TOKEN.equals(astText))
+            {
+                topOperator = new TopOperator(
                         ast.getChild(i).getChild(0).getText());
             }
         }
@@ -164,6 +171,19 @@ public class LQPBuilder
             else
             {
                 limitOperator.setChild(0, statementRoot);
+            }
+        } 
+        else  if (topOperator != null)
+        {
+            connectUnary(nilOperator, topOperator);
+            if (sortOperator != null)
+            {
+            	topOperator.setChild(0, sortOperator);
+                sortOperator.setChild(0, statementRoot);
+            }
+            else
+            {
+            	topOperator.setChild(0, statementRoot);
             }
         }
         else if (sortOperator != null)

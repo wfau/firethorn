@@ -71,4 +71,5 @@ public abstract class ASTConstants
     public static final String SET_TOKEN = "SET";
     public static final String ORDER_TOKEN = "ORDER";
     public static final String LIMIT_TOKEN = "LIMIT";
+    public static final String TOP_TOKEN = "TOP";
 }
