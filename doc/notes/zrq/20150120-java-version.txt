@@ -89,7 +89,7 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg commit -m "Imported astro extensions from OGSA-DAI source code"
+        hg commit -m "Updated Java version and dependencies"
         hg push
         
     popd
