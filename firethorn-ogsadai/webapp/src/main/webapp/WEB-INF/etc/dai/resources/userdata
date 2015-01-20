@@ -1,12 +1,12 @@
-id=userdata
+id=userdate
 type=uk.org.ogsadai.DATA_RESOURCE
 creationTime=null
 terminationTime=null
 PROPERTIES
 END
 CONFIG
-dai.driver.class={driver}
 dai.data.resource.uri={url}
+dai.driver.class=net.sourceforge.jtds.jdbc.Driver
 dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
 END
 ACTIVITIES
@@ -22,7 +22,6 @@ uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
 uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
 uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
 uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
-uk.ac.roe.wfau.firethorn.Insert=uk.ac.roe.wfau.firethorn.Insert
 uk.ac.roe.wfau.firethorn.JdbcSelectData=uk.ac.roe.wfau.firethorn.JdbcSelectData
 uk.ac.roe.wfau.firethorn.JdbcInsertData=uk.ac.roe.wfau.firethorn.JdbcInsertData
 uk.ac.roe.wfau.firethorn.JdbcCreateTable=uk.ac.roe.wfau.firethorn.JdbcCreateTable

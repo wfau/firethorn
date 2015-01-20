@@ -63,49 +63,6 @@ extends TestBase
         return this.factories;
         }
 
-    /**
-     * Local properties file.
-     *
-     */
-    private final Properties config = new Properties();
-
-    /**
-     * Local properties file.
-     *
-     */
-    public Properties config()
-        {
-        return this.config;
-        }
-
-    public static final String CONFIG_PATH = "user.home" ;
-    public static final String CONFIG_FILE = "firethorn.properties" ;
-
-    @Before
-    @Override
-    public void before()
-    throws Exception
-        {
-        log.debug("Before ----");
-        this.config.load(
-            new FileInputStream(
-                new File(
-                    System.getProperty(
-                        CONFIG_PATH
-                        ),
-                    CONFIG_FILE
-                    )
-                )
-            );
-        }
-
-    @After
-    @Override
-    public void after()
-        {
-        log.debug("After ----");
-        }
-
     public void display(final JdbcResource resource)
         {
         log.debug("---");

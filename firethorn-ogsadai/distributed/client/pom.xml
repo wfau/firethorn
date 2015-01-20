@@ -61,7 +61,7 @@
         </dependency>
 
         <!--+
-            | OGSA-DAI Astronomy extensions.
+            | OGSA-DAI astronomy extensions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

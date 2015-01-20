@@ -49,21 +49,41 @@ public class IvoaCreateResourceWorkflow
     /**
      * Public interface for the workflow params.
      *
+     */
     public interface Param
     extends IvoaCreateResourceClient.Param
         {
         }
-     */
     
     /**
-     * Simple {@link Param}implementation.
+     * Simple {@link Param} implementation.
      * 
+     */
     public static class SimpleParam
     extends IvoaCreateResourceClient.SimpleParam
     implements Param
         {
+        public SimpleParam(final String endpoint)
+            {
+            super(endpoint);
+            }
+        public SimpleParam(final Boolean quickstart, final String endpoint)
+            {
+            super(
+                quickstart,
+                endpoint
+                );
+            }
+        public SimpleParam(final Boolean quickstart, final String endpoint, final Integer interval, final Integer timeout)
+            {
+            super(
+                quickstart,
+                endpoint,
+                interval,
+                timeout
+                );
+            }
         }
-     */
     
     /**
      * Public constructor.
@@ -119,7 +139,7 @@ public class IvoaCreateResourceWorkflow
      * @return A {@link CreateResourceResult} containing the results.
      *   
      */
-    public CreateResourceResult execute(final IvoaCreateResourceClient.Param param)
+    public CreateResourceResult execute(final Param param)
         {
         IvoaCreateResourceClient create = new IvoaCreateResourceClient(
             param

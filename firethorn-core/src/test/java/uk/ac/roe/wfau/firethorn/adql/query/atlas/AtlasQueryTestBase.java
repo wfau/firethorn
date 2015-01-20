@@ -67,7 +67,6 @@ extends AbstractQueryTestBase
 
         testSchema(adqlspace, jdbcspace, ATLAS_VERSION, ATLAS_VERSION, "dbo");
         testSchema(adqlspace, jdbcspace, "ROSAT",       "ROSAT",       "dbo");
-        testSchema(adqlspace, jdbcspace, "BestDR9",     "BestDR9",     "dbo");
         testSchema(adqlspace, jdbcspace, "TWOMASS",     "TWOMASS",     "dbo");
 
         }

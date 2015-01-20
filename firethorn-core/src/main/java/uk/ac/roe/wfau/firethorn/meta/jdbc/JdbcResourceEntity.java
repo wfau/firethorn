@@ -35,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -48,6 +50,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
  *
@@ -68,8 +71,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
             query = "FROM JdbcResourceEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "JdbcResource-select-ogsaid",
-            query = "FROM JdbcResourceEntity WHERE (ogsaid = :ogsaid) ORDER BY ident desc"
+            name  = "JdbcResource-select-userdata",
+            query = "FROM JdbcResourceEntity WHERE (connection.url= :url) ORDER BY ident desc"
             )
         }
     )
@@ -99,6 +102,7 @@ public class JdbcResourceEntity
      * Resource factory implementation.
      *
      */
+    @Component
     @Repository
     public static class EntityFactory
     extends AbstractEntityFactory<JdbcResource>
@@ -206,22 +210,42 @@ public class JdbcResourceEntity
             }
 
         /**
-         * The default 'userdate' OGSA-DAI resource id.
-         * @todo Make this a configurable property.
+         * The default 'userdata' JDBC URL.
          *
          */
-        public static final String DEFAULT_USERDATA_OGSA_ID = "userdata" ;
+        @Value("${firethorn.user.url}")
+        public String udurl ;
 
         /**
-         * The default 'userdate' JDBC URI.
-         * @todo Make this a configurable property.
+         * The default 'userdata' JDBC catalog.
          *
          */
-        public static final String DEFAULT_USERDATA_URI = "spring:FireThornUserData" ;
+        @Value("${firethorn.user.cat}")
+        public String udcat;
 
         /**
-         * Select (or create) the default 'userdata' Resource (based on ogsaid).
-         * @todo Make the default properties configurable.
+         * The default 'userdata' JDBC username.
+         *
+         */
+        @Value("${firethorn.user.user}")
+        public String uduser ;
+
+        /**
+         * The default 'userdata' JDBC password.
+         *
+         */
+        @Value("${firethorn.user.pass}")
+        public String udpass ;
+
+        /**
+         * The default 'userdata' JDBC driver.
+         *
+         */
+        @Value("${firethorn.user.driver}")
+        public String uddriver ;
+
+        /**
+         * Select (or create) the default 'userdata' JdbcResource.
          *
          */
         @Override
@@ -229,35 +253,38 @@ public class JdbcResourceEntity
         public JdbcResource userdata()
             {
             log.debug("userdata()");
-            JdbcResource userdata = ogsaid(
-                DEFAULT_USERDATA_OGSA_ID
+            JdbcResource userdata = super.first(
+                super.query(
+                    "JdbcResource-select-userdata"
+                    ).setString(
+                        "url",
+                        udurl
+                        )
                 );
+            
             if (userdata == null)
                 {
                 log.debug("Userdata resource is null, creating a new one");
-                userdata = create(
-                    DEFAULT_USERDATA_OGSA_ID,
-                    DEFAULT_USERDATA_OGSA_ID,
-                    DEFAULT_USERDATA_URI
+
+                log.debug(" cat [{}]", udcat);
+                log.debug(" url [{}]", udurl);
+                log.debug(" user [{}]", uduser);
+                log.debug(" pass [{}]", udpass);
+                log.debug(" driver [{}]", uddriver);
+                
+                userdata = this.create(
+                    "NOID",
+                    udcat,
+                    "Userdata resource",
+                    udurl,
+                    uduser,
+                    udpass,
+                    uddriver
                     );
                 }
             log.debug("Userdata resource [{}][{}]", userdata.ident(), userdata.name());
             return userdata ;
             }
-
-        @SelectMethod
-        public JdbcResource ogsaid(final String ogsaid)
-            {
-            return super.first(
-                super.query(
-                    "JdbcResource-select-ogsaid"
-                    ).setString(
-                        "ogsaid",
-                        ogsaid
-                        )
-                );
-            }
-
         }
 
     /**
@@ -387,18 +414,6 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String catalog, final String schema)
             throws NameNotFoundException
                 {
-                if ("FIRETHORN_TEST_DATA".equals(catalog))
-                    {
-                    log.debug("FIRETHORN_TEST_DATA");
-                    }
-/*
-                return select(
-                    factories().jdbc().schemas().names().fullname(
-                        catalog,
-                        schema
-                        )
-                    );
- */
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,
                     catalog,
@@ -429,9 +444,8 @@ public class JdbcResourceEntity
                     }
                 catch (final MetadataException ouch)
                     {
-                    log.warn("Exception trying to access JDBC metadata");
-                    throw new EntityServiceException(
-                        "Exception trying to access JDBC metadata",
+                    throw new EntityNotFoundException(
+                        "Unable to load JDBC metadata",
                         ouch
                         );
                     }
@@ -647,7 +661,7 @@ public class JdbcResourceEntity
         final String key = keyname(
             schema
             );
-        log.debug("Scanning for schema [{}][{}]", schema.catalog(), schema.name());
+        log.debug("Scanning for schema [{}][{}]", schema.catalog().name(), schema.name());
         log.debug("Scanning for schema [{}]", key);
         //
         // Check for an existing match.
@@ -664,7 +678,7 @@ public class JdbcResourceEntity
         //
         // No match, so create a new one.
         else {
-            log.debug("Creating new schema [{}][{}]", schema.catalog(), schema.name());
+            log.debug("Creating new schema [{}][{}]", schema.catalog().name(), schema.name());
             log.debug("Cacheing new schema [{}]", key);
             matching.put(
                 key,
@@ -702,6 +716,29 @@ public class JdbcResourceEntity
             public Ogsa ogsa()
                 {
                 return ogsameta();
+                }
+            };
+        }
+
+    @Override
+    public OgsaJdbcResources ogsa()
+        {
+        return new OgsaJdbcResources()
+            {
+            @Override
+            public OgsaJdbcResource primary()
+                {
+                return factories().ogsa().factories().jdbc().primary(
+                    JdbcResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select()
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    JdbcResourceEntity.this
+                    );
                 }
             };
         }
