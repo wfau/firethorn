@@ -117,11 +117,6 @@
     </dependencies>
 
     <build>
-        <plugins>
-        </plugins>
-
-        <resources>
-        </resources>
 
         <testResources>
 

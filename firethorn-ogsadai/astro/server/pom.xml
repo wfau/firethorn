@@ -52,25 +52,6 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
-            | JUnit-3.8.1 used for testing..
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-            +-->
-
-        <!--+
             | OGSA-DAI dependencies.
             +-->
         <dependency>
@@ -150,9 +131,6 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-    </build>
 
 </project>
 

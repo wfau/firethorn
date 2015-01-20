@@ -41,9 +41,6 @@
         ]]>
     </description>
 
-    <modules>
-    </modules>
-
     <properties>
     </properties>
 
@@ -109,15 +106,6 @@
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
             <version>1.3.1</version>
-            <!--+
-            <version>1.2.7</version>
-                | Requires Java 1.7.
-                | UnsupportedClassVersionError: net/sourceforge/jtds/jdbc/Driver
-                | http://stackoverflow.com/questions/13403471/unsupported-version-error-using-jtds-with-scala
-                | http://sourceforge.net/p/jtds/news/2012/10/jtds-jdbc-driver-127-and-130-released/
-            <version>1.3.0</version>
-            <version>1.3.1</version>
-                +-->
         </dependency>
 
         <!--+
@@ -130,24 +118,7 @@
             <version>0.9.1.2</version>
         </dependency>
 
-        <!--+
-            | Commons connection pooling.
-            | http://commons.apache.org/dbcp/
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-        </dependency>
-            +-->
-
-
     </dependencies>
-
-    <build>
-    </build>
-
-    <reporting>
-    </reporting>
 
 </project>
 

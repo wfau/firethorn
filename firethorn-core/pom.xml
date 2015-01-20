@@ -48,8 +48,6 @@
     <url>http://redmine.roe.ac.uk/projects/wva</url>
     
     <properties>
-		<!--org.spring.version>3.2.0.M1</org.spring.version-->
-		<!--org.spring.version>3.2.3.RELEASE</org.spring.version-->
     </properties>
 
     <repositories>

@@ -48,26 +48,6 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
-            | Firethorn metadata components.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-metadata-common</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
             | OGSA-DAI DQP server components.
             +-->
         <dependency>
@@ -75,15 +55,6 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--+
-            | OGSA-DAI Astronomy extensions.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-astro-server</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-            +-->
 
         <!--+
             | JUnit test framework.
@@ -130,11 +101,6 @@
     </dependencies>
 
     <build>
-        <plugins>
-        </plugins>
-
-        <resources>
-        </resources>
 
         <testResources>
 
@@ -150,6 +116,7 @@
     		</testResource>
 
         </testResources>
+
     </build>
 
 </project>
