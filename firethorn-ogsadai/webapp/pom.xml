@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.33</version>
+        <version project='firethorn'>1.11.34</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -67,18 +67,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-metadata-client</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -88,18 +76,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -109,18 +85,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -135,18 +99,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-astro-server</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <!--+
-                    | Exclude all transitive dependencies.
-                    | https://jira.codehaus.org/browse/MNG-3832
-                    | Ignore the warnings, fixed in latest Maven.
-                    | https://git-wip-us.apache.org/repos/asf?p=maven.git;a=commitdiff;h=65c135d5
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                    +-->
-            </exclusions>
         </dependency>
 
         <!--+
@@ -157,29 +109,6 @@
             <artifactId>firethorn-jdbc</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sourceforge.jtds</groupId>
-                    <artifactId>jtds</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--+
-            | Downgrade the jTDS SQLServer JDBC driver.
-            | http://jtds.sourceforge.net/
-            +-->
-        <dependency>
-            <groupId>net.sourceforge.jtds</groupId>
-            <artifactId>jtds</artifactId>
-            <version>1.2.7</version>
-            <!--+
-                | Requires Java 1.7 - UnsupportedClassVersionError: net/sourceforge/jtds/jdbc/Driver
-                | http://stackoverflow.com/questions/13403471/unsupported-version-error-using-jtds-with-scala
-                | http://sourceforge.net/p/jtds/news/2012/10/jtds-jdbc-driver-127-and-130-released/
-            <version>1.3.0</version>
-            <version>1.3.1</version>
-                +-->
         </dependency>
 
         <!--+
@@ -241,46 +170,6 @@
                             </excludes>
                         </overlay>
                     </overlays>
-                </configuration>
-            </plugin>
-
-            <!--+
-                | Tomcat 6 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0/
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat6-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <!--+
-                        | The network port number.
-                        +-->
-                    <port>${ogsadai.webapp.port}</port>
-                    <!--+
-                        | Enable JNDI service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/${ogsadai.webapp.path}</path>
-                    <!--+
-                        | The webapp context file.
-                    <contextFile>src/test/conf/test-context.xml</contextFile>
-                        +-->
-
-                    <!--+
-                        | Use the unpacked war file as the webapp.
-                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
-                        +-->
-                    <warSourceDirectory>
-                        ${project.build.directory}/${project.build.finalName}
-                    </warSourceDirectory>
                 </configuration>
             </plugin>
 
@@ -348,13 +237,6 @@
 
     </build>
 
-    <reporting>
-        <plugins>
-        </plugins>
-    </reporting>
-
-    <profiles>
-    </profiles>
 </project>
 
 

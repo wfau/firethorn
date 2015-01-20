@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>1.11.33</version>
+        <version project='firethorn'>1.11.34</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-dqp-client</artifactId>
@@ -52,16 +52,6 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
             | OGSA-DAI DQP common components.
             +-->
         <dependency>
@@ -78,20 +68,6 @@
             <artifactId>firethorn-ogsadai-astro-client</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--+
-            | 3rd party dependencies.
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>1.1</version>
-        </dependency>
-            +-->
 
         <!--+
             | OGSA-DAI dependencies.
@@ -118,9 +94,6 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-    </build>
 
 </project>
 

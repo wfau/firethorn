@@ -33,7 +33,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.11.33</version>
+        <version project='firethorn'>1.11.34</version>
     </parent>
 
     <artifactId>firethorn-webapp</artifactId>
@@ -176,33 +176,6 @@
     <build>
 
         <plugins>
-            <!--+
-                | Tomcat 6 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0/
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat6-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <!--+
-                        | Enable JNDI nameing service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/firethorn</path>
-                    <!--+
-                        | The webapp context file.
-                        +-->
-                    <contextFile>src/test/conf/test-context.xml</contextFile>
-                </configuration>
-            </plugin>
 
             <!--+
                 | Tomcat 7 plugin.
@@ -240,27 +213,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-
-            <!--+
-                | Maven dependency plugin.
-                | https://maven.apache.org/plugins/maven-dependency-plugin/
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>resolve</goal>
-                        </goals>
-                        <configuration>
-                            <silent>true</silent>
-                            <outputScope>false</outputScope>
-                            <outputFile>${project.build.directory}/${project.build.finalName}/depends</outputFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-                +-->
 
         </plugins>
 

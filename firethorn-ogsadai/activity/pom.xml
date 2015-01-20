@@ -37,7 +37,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.33</version>
+        <version project='firethorn'>1.11.34</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity</artifactId>
@@ -61,11 +61,6 @@
     </modules>
     
     <properties>
-        <!--+
-            | Compile for 1.6 because live server is TC6 in Jdk 1.6
-            +-->
-        <project.javaversion>1.6</project.javaversion>
-
     </properties>
 
 </project>
