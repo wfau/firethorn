@@ -124,25 +124,6 @@ public class FunctionRepositoryConfig
                     LOG.warn(e);
                 }
             }
-            try
-                {
-                    line = "uk.org.ogsadai.dqp.lqp.udf.scalar.Degrees";
-	            LOG.debug("Registering function class: " + line);
-                    Class<? extends Function> cl = 
-                        Class.forName(line).asSubclass(Function.class);
-                    repository.register(cl);
-                }
-                catch (ClassCastException e)
-                {
-                    LOG.debug("Could not load function class.");
-                    LOG.warn(e);
-                }
-                catch (ClassNotFoundException e)
-                {
-                    LOG.debug("Could not load function class.");
-                    LOG.warn(e);
-                }
-
 
             input.close();
         }
