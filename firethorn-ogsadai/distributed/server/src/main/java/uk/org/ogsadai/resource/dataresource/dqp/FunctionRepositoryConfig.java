@@ -88,12 +88,16 @@ public class FunctionRepositoryConfig
         BufferedReader input = null;
         try
         {
+
+
             String fullPath = configFile;
             // check whether config file path is absolute
             if(!(new File(fullPath)).isAbsolute())
             {
                 File odConfigDir = (File) OGSADAIContext.getInstance().get(
                     OGSADAIConstants.CONFIG_DIR);
+
+
                 fullPath = (new File(odConfigDir, configFile)).getCanonicalPath();
             }
 
@@ -120,6 +124,26 @@ public class FunctionRepositoryConfig
                     LOG.warn(e);
                 }
             }
+            try
+                {
+                    line = "uk.org.ogsadai.dqp.lqp.udf.scalar.Degrees";
+	            LOG.debug("Registering function class: " + line);
+                    Class<? extends Function> cl = 
+                        Class.forName(line).asSubclass(Function.class);
+                    repository.register(cl);
+                }
+                catch (ClassCastException e)
+                {
+                    LOG.debug("Could not load function class.");
+                    LOG.warn(e);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    LOG.debug("Could not load function class.");
+                    LOG.warn(e);
+                }
+
+
             input.close();
         }
         catch (IOException e)
