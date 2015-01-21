@@ -702,6 +702,7 @@ class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.dqp.CreateFireThornDQPAct
 description=
 CONFIG
 dqp.config.dir=dqp
+dqp.config.path=dqp
 dqp.context.template=DQPContextTemplate.xml
 dai.template.id=uk.ac.roe.wfau.firethorn.DQP_RESOURCE_TEMPLATE
 END

@@ -102,6 +102,20 @@
         </dependency>
 
         <!--+
+            | Our FioreThorn extenstions.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
             | FireThorn JDBC drivers.
             +-->
         <dependency>

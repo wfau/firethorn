@@ -70,12 +70,14 @@ public class SimpleDQPResourceState implements DQPResourceState
         String contextConfig;
           
         File ogsadaiConfigDir = (File) OGSADAIContext.getInstance().get(
-                OGSADAIConstants.CONFIG_DIR);
-          
+                OGSADAIConstants.CONFIG_DIR
+                );
+        LOG.debug("ogsadaiConfigDir [" + ogsadaiConfigDir + "]");
+
         try
         {
-            contextConfig = 
-                  (String)state.getConfiguration().get(CONFIG_PATH);
+            contextConfig = (String)state.getConfiguration().get(CONFIG_PATH);
+            LOG.debug("contextConfig [" + contextConfig + "]");
         } 
         catch (ConfigurationValueException e)
         {
@@ -93,6 +95,7 @@ public class SimpleDQPResourceState implements DQPResourceState
         {
             contextConfig = new File(contextConfig).toURI().toASCIIString();
         }
+        LOG.debug("contextConfig [" + contextConfig + "]");
         
         try
         {

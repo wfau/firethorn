@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFTDQPParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
@@ -208,9 +209,25 @@ public class CreateFireThornDQPActivity
             "uk.ac.roe.wfau.firethorn.DQP_RESOURCE_TEMPLATE"
             );
 
-        Reader fred    = null ;
         String config  = null ;
         String context = null ;
+
+        //Reader fred = null ;
+        Reader fred =new StringReader(
+            "<DQPResourceConfig>" +
+            "    <dataResources>" +
+            "        <resource " +
+            "            dsis=\"dataSinks\"" +
+            "            dsos=\"dataSources\"" +
+            "            resourceID=\"atlas\"" +
+            "            isLocal=\"true\"" +
+            "            />" +
+            "    </dataResources>" +
+            "</DQPResourceConfig>"
+            );
+
+        /*
+         */
 
         try {
             config = writeConfig((Reader)fred, resourceID);
@@ -224,7 +241,7 @@ public class CreateFireThornDQPActivity
             {
             throw new ActivityProcessingException(e);
             }
- 
+
         LOG.debug("Resource ID:   " + resourceID);
         LOG.debug("Template ID:   " + templateID);
         LOG.debug("Configuration: " + config);
@@ -248,8 +265,10 @@ public class CreateFireThornDQPActivity
                     throw new ActivityUserException(e);
                     }
                 }
-            LOG.debug("Created resource: " + resource);
+            LOG.debug("Resource [" + resource + "]");
             DQPResourceState state = resource.getDQPResourceState();
+            LOG.debug("Resource state [" + state + "]");
+            LOG.debug("Resource state [" + state.getState() + "]");
             state.getState().setResourceID(
                 resourceID
                 );
@@ -402,7 +421,7 @@ public class CreateFireThornDQPActivity
         DAIClassMissingInterfaceException
         {
         DataResourceState state = mResourceFactory.createDataResourceState(templateResourceID);
-        state.getConfiguration().put(CONFIG_PATH, context);
+        //state.getConfiguration().put(CONFIG_PATH, context);
 
         String resourceClassName = state.getDataResourceClass();
         DataResource resource = 
