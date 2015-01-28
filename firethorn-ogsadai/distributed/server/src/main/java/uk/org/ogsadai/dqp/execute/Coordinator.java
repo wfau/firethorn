@@ -166,6 +166,7 @@ public class Coordinator
         throws ActivityUserException, ActivityProcessingException,
         ActivityTerminatedException
     {
+        LOG.debug("execute()");
         Operator root;
         Set<Partition> partitions = null;
         try
@@ -179,6 +180,8 @@ public class Coordinator
             root = queryPlanBuilder.buildQueryPlan(
                 sql, mResourceAccessor, requestDetails);
             LOG.debug("Built validated LQP");
+            LOG.debug("  Root [" + root + "]");
+            
             root = optimiseLQP(root, requestDetails);
             LOG.debug("Applied optimisers");
         }
@@ -333,6 +336,8 @@ public class Coordinator
         Operator rootOperator, RequestDetails requestDetails)
         throws ActivityUserException
     {
+    LOG.debug("optimiseLQP()");
+    LOG.debug("  Root [" + rootOperator + "]");
         List<Optimiser> optChain = mCompilerConfig.getOptimisationChain();
         Operator currentRoot = rootOperator;
         Optimiser currentOpt = null;

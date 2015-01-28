@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.SimpleTableMappingServiceImpl;
 import uk.org.ogsadai.context.OGSADAIContext;
 import uk.org.ogsadai.dqp.common.DataDictionary;
 import uk.org.ogsadai.dqp.common.DataNode;
@@ -17,27 +21,63 @@ import uk.org.ogsadai.resource.dataresource.dqp.DQPFederation;
 public class MetadataServiceDQPFederation implements DQPFederation
 {
 
+    /**
+     * Debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(MetadataServiceDQPFederation.class);
+
     private Set<EvaluationNode> mEvaluationNodes = new HashSet<EvaluationNode>();
     private Map<String, DataNode> mDataNodes = new HashMap<String, DataNode>();
     private EvaluationNode mLocalNode;
     private FunctionRepository mFunctionRepository;
     private MetadataServiceFactory mMetadataServiceFactory;
 
+    public MetadataServiceDQPFederation()
+        {
+        // ZRQ
+        log.debug("MetadataServiceDQPFederation()");
+        }
+    
     @Override
     public Set<EvaluationNode> getEvaluationNodes()
     {
+        log.debug("getEvaluationNodes()");
+        if (mEvaluationNodes == null)
+            {
+            log.debug("  EvaluationNodes [null]");
+            }
+        else {
+            for (EvaluationNode node : mEvaluationNodes)
+                {
+                log.debug("  EvaluationNode [" + node.toString() + "]");
+                }
+            }
         return mEvaluationNodes;
     }
 
     @Override
     public Set<DataNode> getDataNodes() 
     {
+        log.debug("getDataNodes()");
+        if (mDataNodes == null)
+            {
+            log.debug("  DataNodes [null]");
+            }
+        else {
+            for (String key : mDataNodes.keySet())
+                {
+                log.debug("  DataNode [" + key + "][" + mDataNodes.get(key) + "]");
+                }
+            }
         return new HashSet<DataNode>(mDataNodes.values());
     }
 
     @Override
     public EvaluationNode getLocalNode()
     {
+        log.debug("getLocalNode()");
+        log.debug("  LocalNode [" + mLocalNode + "]");
         return mLocalNode;
     }
 
@@ -75,7 +115,7 @@ public class MetadataServiceDQPFederation implements DQPFederation
         return mFunctionRepository;
     }
     
-    protected Map<String, DataNode> getDataNodesMap()
+    public Map<String, DataNode> getDataNodesMap()
     {
         return mDataNodes;
     }
@@ -106,6 +146,13 @@ public class MetadataServiceDQPFederation implements DQPFederation
      */
     public void setDataNodesMap(Map<String, DataNode> dataNodes)
     {
+        // ++ ZRQ
+        log.debug("setDataNodesMap()");
+        for (String key : dataNodes.keySet())
+            {
+            log.debug("  DataNode [" + key + "][" + dataNodes.get(key) + "]");
+            }
+        // -- ZRQ
         mDataNodes.clear();
         mDataNodes.putAll(dataNodes);
     }

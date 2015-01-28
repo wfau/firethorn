@@ -32,7 +32,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
 
@@ -158,7 +158,7 @@ public class OgsaIvoaResourceEntity
                     );
                 }
 
-            final CreateResourceResult response = workflow.execute(
+            final SimpleResourceWorkflowResult response = workflow.execute(
                 new IvoaCreateResourceWorkflow.Param()
                     {
                     @Override
@@ -189,12 +189,12 @@ public class OgsaIvoaResourceEntity
                 );
 
             log.debug("Status  [{}]", response.status());
-            log.debug("Created [{}]", response.resource());
+            log.debug("Created [{}]", response.result());
     
             if (response.status() == WorkflowResult.Status.COMPLETED)
                 {
                 ogsaid(
-                    response.resource().toString()
+                    response.result().toString()
                     );
                 return status(
                     Status.ACTIVE

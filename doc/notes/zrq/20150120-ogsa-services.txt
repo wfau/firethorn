@@ -92,17 +92,59 @@
     #
 
 
+# -----------------------------------------------------
+# Build ogsa components ....
+#[user@desktop]
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-ogsadai
 
+            mvn -P all clean install
 
+        popd
+    popd
 
+# -----------------------------------------------------
+# Run our SSH tunnel  ....
+#[user@desktop]
+
+gnome-terminal --geometry=100x10 -x bash -c "ssh sqltunnel"
+
+# -----------------------------------------------------
+# Run our FireThorn service  ....
+#[user@desktop]
+
+    runfire=$(mktemp)
+    cat > "${runfire:?}" << 'EOF'
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        popd
+    popd
+EOF
+
+gnome-terminal --geometry=200x20+400+100 -x bash -c "source ${runfire:?}"
+
+# -----------------------------------------------------
+# Create our test data  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-01-test-workspace.txt"
 
 # -----------------------------------------------------
 # Run our OGSA-DAI service  ....
 #[user@desktop]
 
-    mytemp=$(mktemp)
-    cat > "${mytemp:?}" << 'EOF'
+    runogsa=$(mktemp)
+    cat > "${runogsa:?}" << 'EOF'
 
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
@@ -125,5 +167,5 @@
     popd
 EOF
 
-    gnome-terminal --geometry=200x20 -x bash -c "source ${mytemp:?}"
+gnome-terminal --geometry=200x20+400+500 -x bash -c "source ${runogsa:?}"
 

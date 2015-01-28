@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 
 /**
@@ -35,13 +35,13 @@ extends JdbcResourceTestBase
                 )
             );
 
-        final CreateResourceResult created = workflow.execute(
+        final ResourceWorkflowResult created = workflow.execute(
             config().jdbc().databases().get("atlas")
             );
 
         log.debug("Status  [{}]", created.status());
         log.debug("Request [{}]", created.request());
-        log.debug("Created [{}]", created.resource());
+        log.debug("Created [{}]", created.result());
 
         assertNotNull(
             created
@@ -54,7 +54,7 @@ extends JdbcResourceTestBase
             created.request()
             );
         assertNotNull(
-            created.resource()
+            created.result()
             );
         }
     }

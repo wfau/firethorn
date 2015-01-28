@@ -285,6 +285,8 @@ public class SQLQueryActivity extends MatchedIterativeActivity
 
         try
         {
+        LOGGER.debug(" SLQ [" + sql.substring(0, 20) + "]");
+        LOGGER.debug(" REQ [" + mRequestDetails + "]");
             coordinator.execute(sql, mRequestDetails);
         }
         catch(Throwable e)

@@ -21,7 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceClient.Param;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
@@ -136,10 +136,10 @@ public class IvoaCreateResourceWorkflow
     /**
      * Execute our workflow.
      * @param The workflow params.
-     * @return A {@link CreateResourceResult} containing the results.
+     * @return A {@link SimpleResourceWorkflowResult} containing the results.
      *   
      */
-    public CreateResourceResult execute(final Param param)
+    public SimpleResourceWorkflowResult execute(final Param param)
         {
         IvoaCreateResourceClient create = new IvoaCreateResourceClient(
             param
@@ -155,7 +155,7 @@ public class IvoaCreateResourceWorkflow
         workflow.add(deliver);
 
         try {
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 servce.drer().execute(
                     workflow,
                     RequestExecutionType.SYNCHRONOUS
@@ -168,7 +168,7 @@ public class IvoaCreateResourceWorkflow
         catch (ServerCommsException ouch)
             {
             log.debug("ServerCommsException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ServerCommsException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -176,7 +176,7 @@ public class IvoaCreateResourceWorkflow
         catch (ServerException ouch)
             {
             log.debug("ServerException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ServerException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -184,7 +184,7 @@ public class IvoaCreateResourceWorkflow
         catch (ClientToolkitException ouch)
             {
             log.debug("ClientToolkitException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ClientToolkitException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -192,7 +192,7 @@ public class IvoaCreateResourceWorkflow
         catch (ResourceUnknownException ouch)
             {
             log.debug("ResourceUnknownException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ResourceUnknownException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -200,7 +200,7 @@ public class IvoaCreateResourceWorkflow
         catch (ClientException ouch)
             {
             log.debug("ClientException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ClientException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -208,7 +208,7 @@ public class IvoaCreateResourceWorkflow
         catch (RequestException ouch)
             {
             log.debug("RequestException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "RequestException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -216,7 +216,7 @@ public class IvoaCreateResourceWorkflow
         catch (DataStreamErrorException ouch)
             {
             log.debug("DataStreamErrorException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "DataStreamErrorException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -224,7 +224,7 @@ public class IvoaCreateResourceWorkflow
         catch (UnexpectedDataValueException ouch)
             {
             log.debug("UnexpectedDataValueException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "UnexpectedDataValueException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -232,7 +232,7 @@ public class IvoaCreateResourceWorkflow
         catch (DataSourceUsageException ouch)
             {
             log.debug("DataSourceUsageException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "DataSourceUsageException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );
@@ -240,7 +240,7 @@ public class IvoaCreateResourceWorkflow
         catch (ActivityOutputUnreadableException ouch)
             {
             log.debug("ActivityOutputUnreadableException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
+            return new SimpleResourceWorkflowResult(
                 "ActivityOutputUnreadableException while creating data source [" + ouch.getMessage() + "]",
                 ouch
                 );

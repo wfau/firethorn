@@ -23,43 +23,13 @@ import uk.org.ogsadai.resource.ResourceID;
  *
  *
  */
-public interface WorkflowResult
+public interface ResourceWorkflowResult
+extends WorkflowResult
     {
     /**
-     * The workflow staus.
-     *
+     * The result resource ID.
+     * 
      */
-    public enum Status {
-        CREATED(),
-        RUNNING(),
-        COMPLETED(),
-        CANCELLED(),
-        FAILED(),
-        UNKNOWN();
-        }
-
-    /**
-     * The workflow staus.
-     *
-     */
-    public Status status();
-
-    /**
-     * The request resource ID.
-     *
-     */
-    public ResourceID request();
-    
-    /**
-     * A text message associated with an error.
-     *
-     */
-    public String message();
-
-    /**
-     * A text message associated with an error.
-     *
-     */
-    public Throwable cause();
+    public ResourceID result();
 
     }

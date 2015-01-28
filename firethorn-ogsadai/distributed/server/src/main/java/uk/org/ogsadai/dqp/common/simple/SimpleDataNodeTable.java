@@ -16,8 +16,10 @@
 
 package uk.org.ogsadai.dqp.common.simple;
 
+import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.dqp.common.DataNode;
 import uk.org.ogsadai.dqp.common.DataNodeTable;
+import uk.org.ogsadai.dqp.lqp.operators.TableScanOperator;
 
 /**
  * Simple implementation of a data node table.
@@ -29,6 +31,10 @@ public class SimpleDataNodeTable implements DataNodeTable
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE = 
         "Copyright (c) The University of Edinburgh, 2009.";
+
+    /** Logger. */
+    private static final DAILogger LOG = 
+        DAILogger.getLogger(SimpleDataNodeTable .class);
 
     /** Data node associated with the table. */
     protected DataNode mDataNode;
@@ -46,6 +52,17 @@ public class SimpleDataNodeTable implements DataNodeTable
     public SimpleDataNodeTable(
         DataNode dataNode, String originalTableName)
     {
+        // ++ ZRQ
+        LOG.debug("SimpleDataNodeTable()");
+        LOG.debug("  DataNode  [" + dataNode + "]");
+        LOG.debug("  TableName [" + originalTableName + "]");
+        if (dataNode ==null)
+            {
+            throw new RuntimeException(
+                "DataNodeTable with null DataNode"
+                ); 
+            }
+        //-- ZRQ
         mDataNode = dataNode;
         mOriginalTableName = originalTableName;
     }

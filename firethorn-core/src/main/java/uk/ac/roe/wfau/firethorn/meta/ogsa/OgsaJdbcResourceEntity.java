@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
@@ -173,7 +173,7 @@ implements OgsaJdbcResource
                 );
             }
 
-        final CreateResourceResult response = workflow.execute(
+        final SimpleResourceWorkflowResult response = workflow.execute(
             new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override
@@ -205,12 +205,12 @@ implements OgsaJdbcResource
             );
 
         log.debug("Status  [{}]", response.status());
-        log.debug("Created [{}]", response.resource());
+        log.debug("Created [{}]", response.result());
 
         if (response.status() == WorkflowResult.Status.COMPLETED)
             {
             ogsaid(
-                response.resource().toString()
+                response.result().toString()
                 );
             return status(
                 Status.ACTIVE

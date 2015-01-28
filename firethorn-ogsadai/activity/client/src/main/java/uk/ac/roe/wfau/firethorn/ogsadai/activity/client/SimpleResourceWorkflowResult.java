@@ -4,25 +4,30 @@ import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * Workflow results.
+ * Workflow result with a ResourceID.
  * 
  */
-public class CreateResourceResult
+public class SimpleResourceWorkflowResult
 extends SimpleWorkflowResult
+implements ResourceWorkflowResult
     {
-    public CreateResourceResult(final RequestResource request, ResourceID created)
+    /**
+     * Public constructor.
+     * 
+     */
+    public SimpleResourceWorkflowResult(final RequestResource request, final ResourceID result)
         {
         super(
             request
             );
-        this.resource = created;
+        this.result = result;
         }
 
     /**
      * Public constructor.
      * 
      */
-    public CreateResourceResult(final Throwable cause)
+    public SimpleResourceWorkflowResult(final Throwable cause)
         {
         super(
             cause
@@ -33,7 +38,7 @@ extends SimpleWorkflowResult
      * Public constructor.
      * 
      */
-    public CreateResourceResult(final String message, final Throwable cause)
+    public SimpleResourceWorkflowResult(final String message, final Throwable cause)
         {
         super(
             message,
@@ -42,17 +47,14 @@ extends SimpleWorkflowResult
         }
 
     /**
-     * The created resource ID.
+     * The result resource ID.
      * 
      */
-    private ResourceID resource ;
+    private ResourceID result ;
 
-    /**
-     * The created resource ID.
-     * 
-     */
-    public ResourceID resource()
+    @Override
+    public ResourceID result()
         {
-        return this.resource;
+        return this.result;
         }
     }

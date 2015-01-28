@@ -1,0 +1,148 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Need a map of which activities map to which classes in the config files.
+    #
+
+
+
+    
+    #
+    # Need a map of the call chain ..
+    #
+
+    class CreateFireThornDQPActivity
+    
+        processIteration(Object[] iterationData)
+
+
+                config  = writeConfig((Reader)iterationData[2], resourceID);
+                            <=  mConfigDir + "/" + resourceID.toString() + "/DQPResourceConfig.xml";
+
+                context{filename} = writeContext(resourceID, config);
+                            <= mConfigDir + "/" + resourceID.toString() + "/DQPContext.xml";
+
+                public createResource(templateResourceID, {filename}) 
+
+                    DataResourceState state = mResourceFactory.createDataResourceState(templateResourceID);
+                    state.getConfiguration().put(CONFIG_PATH, {filename});
+        
+                    DataResource resource = mResourceFactory.createDataResource(
+                        state.getDataResourceClass()  // uk.org.ogsadai.resource.dataresource.dqp.DQPResource
+                        );
+
+                    resource.initialize(state);
+                    
+
+    class DQPResource
+
+        public initialize(ResourceState resourceState)
+
+            mState = new SimpleDQPResourceState(
+                (DataResourceState)resourceState
+                );
+
+
+    class SimpleDQPResourceState implements DQPResourceState
+
+        public SimpleDQPResourceState(DataResourceState state)
+
+            context{filename} = (String)state.getConfiguration().get(CONFIG_PATH);
+
+            DQPContext context = new DQPContext(context{filename});
+
+            mDQPFederation = context.getDQPFederation();
+
+            mCompilerConfiguration = context.getCompilerConfiguration();
+
+
+
+    class DQPContext 
+
+        private ApplicationContext mSpringContext;
+
+        public DQPContext(String context{filename})
+
+            mSpringContext = new FileSystemXmlApplicationContext(
+                context{filename}
+                );
+
+        public Object get(Object key) 
+
+            return mSpringContext.getBean(key.toString());
+    
+        public CompilerConfiguration getCompilerConfiguration()
+
+            return (CompilerConfiguration)get(COMPILER_CONFIGURATION);
+            return (CompilerConfiguration)get("compilerConfiguration");
+
+            <bean id="compilerConfiguration" class="uk.org.ogsadai.resource.dataresource.dqp.SimpleCompilerConfiguration">
+                ....
+            </bean>
+
+        public DQPFederation getDQPFederation()
+        
+            return (DQPFederation) get(DQP_FEDERATION);
+            return (DQPFederation) get("federation");
+    
+            <bean id="federation" class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
+                ....
+            </bean>
+
+
+    interface CompilerConfiguration
+
+        ....
+        complicated
+        ....
+        
+
+    interface DQPFederation
+
+        /**
+         * Returns the set of evaluation nodes from the configuration document.
+         */
+        public Set<EvaluationNode> getEvaluationNodes();
+
+        /**
+         * Returns the set of data nodes in the configuration document.
+         */
+        public Set<DataNode> getDataNodes();
+
+        /**
+         * Returns the local evaluation node of this DQP resource.
+         */
+        public EvaluationNode getLocalNode();
+
+        /**
+         * Returns the data dictionary that defines the schema of the federation.
+         */
+        public DataDictionary getDataDictionary(RequestDetails requestDetails);
+
+        /**
+         * Refreshed the data dictionary that defines the schema of the federation.
+         */
+        public void refreshDataDictionary(RequestDetails requestDetails);
+
+
+

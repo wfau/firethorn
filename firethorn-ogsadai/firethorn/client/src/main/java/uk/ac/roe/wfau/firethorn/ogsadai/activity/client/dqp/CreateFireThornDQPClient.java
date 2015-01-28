@@ -18,7 +18,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFTDQPParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFireThornDQPParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
@@ -73,11 +73,11 @@ extends BaseActivity
         {
         super(
             new ActivityName(
-                CreateFTDQPParam.ACTIVITY_NAME
+                CreateFireThornDQPParam.ACTIVITY_NAME
                 )
             );
         input = new SimpleActivityInput(
-            CreateFTDQPParam.INPUT_ID,
+            CreateFireThornDQPParam.INPUT_ID,
             SimpleActivityInput.OPTIONAL
             );
 
@@ -92,7 +92,7 @@ extends BaseActivity
 
         
         output = new SimpleActivityOutput(
-            CreateFTDQPParam.OUTPUT_ID
+            CreateFireThornDQPParam.OUTPUT_ID
             );
         }
     

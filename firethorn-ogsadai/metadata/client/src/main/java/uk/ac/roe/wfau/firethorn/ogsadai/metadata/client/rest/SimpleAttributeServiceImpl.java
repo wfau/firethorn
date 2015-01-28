@@ -185,8 +185,10 @@ implements AttributeService
          */
         public static Attribute wrap(final AttributeBean bean)
             {
-            return new BeanWrapper(
-                bean
+            return debug(
+                new BeanWrapper(
+                    bean
+                    )
                 );
             }
 
@@ -238,6 +240,53 @@ implements AttributeService
             {
             return this.key;
             }
+        }
+    
+    public static Attribute debug(final Attribute attribute)
+        {
+        log.debug("Attribute");
+        log.debug("  Name [" + attribute.getName() + "]");
+        log.debug("  Type [" + attribute.getType() + "]");
+        log.debug("  Source [" + attribute.getSource() + "]");
+        return attribute ;
+        }
+
+    public static Iterable<Attribute> debug(final Iterable<Attribute> inner)
+        {
+        return new Iterable<Attribute>()
+            {
+            @Override
+            public Iterator<Attribute> iterator()
+                {
+                return debug(
+                    inner.iterator()
+                    );
+                }
+            };
+        }
+
+    public static Iterator<Attribute> debug(final Iterator<Attribute> inner)
+        {
+        return new Iterator<Attribute>()
+            {
+            @Override
+            public boolean hasNext()
+                {
+                return inner.hasNext();
+                }
+            @Override
+            public Attribute next()
+                {
+                return debug(
+                    inner.next()
+                    );
+                }
+            @Override
+            public void remove()
+                {
+                inner.remove();
+                }
+            };
         }
     }
 

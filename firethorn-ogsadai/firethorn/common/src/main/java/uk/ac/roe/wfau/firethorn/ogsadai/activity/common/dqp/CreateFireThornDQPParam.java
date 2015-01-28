@@ -19,10 +19,10 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp;
 
 /**
- * Parameter names for the CreateFTDQPResource activity.
+ * Parameter names for the {@link CreateFireThornDQPResource} activity.
  *
  */
-public class CreateFTDQPParam
+public class CreateFireThornDQPParam
     {
 
     /**

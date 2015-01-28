@@ -21,7 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -38,8 +39,8 @@ import uk.org.ogsadai.resource.ResourceID;
  */
 @Slf4j
 public class CreateFireThornDQPWorkflow
+extends BaseWorkflow
     {
-    
     /**
      * Public constructor.
      * @param endpoint The OGSA-DAI service endpoint URL.
@@ -49,12 +50,8 @@ public class CreateFireThornDQPWorkflow
     public CreateFireThornDQPWorkflow(final String endpoint)
     throws MalformedURLException
         {
-        this(
-            new OgsaServiceClient(
-                new URL(
-                    endpoint
-                    )
-                )
+        super(
+            endpoint
             );
         }
 
@@ -65,10 +62,8 @@ public class CreateFireThornDQPWorkflow
      */
     public CreateFireThornDQPWorkflow(final URL endpoint)
         {
-        this(
-            new OgsaServiceClient(
-                endpoint
-                )
+        super(
+            endpoint
             );
         }
 
@@ -79,20 +74,16 @@ public class CreateFireThornDQPWorkflow
      */
     public CreateFireThornDQPWorkflow(final OgsaServiceClient service)
         {
-        this.servce = service ;
+        super(
+            service
+            );
         }
-
-    /**
-     * Our {@link OgsaServiceClient} client.
-     * 
-     */
-    private OgsaServiceClient servce ;  
 
     /**
      * Execute our workflow.
      *   
      */
-    public CreateResourceResult execute(final String ident)
+    public ResourceWorkflowResult execute(final String ident)
         {
         return execute(
             new CreateFireThornDQPClient.Param()
@@ -110,7 +101,7 @@ public class CreateFireThornDQPWorkflow
      * Execute our workflow.
      *   
      */
-    public CreateResourceResult execute(final CreateFireThornDQPClient.Param param)
+    public ResourceWorkflowResult execute(final CreateFireThornDQPClient.Param param)
         {
         CreateFireThornDQPClient create = new CreateFireThornDQPClient(
             param
@@ -126,8 +117,8 @@ public class CreateFireThornDQPWorkflow
         workflow.add(deliver);
 
         try {
-            return new CreateResourceResult(
-                servce.drer().execute(
+            return new SimpleResourceWorkflowResult(
+                service().drer().execute(
                     workflow,
                     RequestExecutionType.SYNCHRONOUS
                     ),
@@ -136,43 +127,10 @@ public class CreateFireThornDQPWorkflow
                     )
                 );
             }
-        catch (ServerException ouch)
-            {
-            log.debug("ServerException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
-                "ServerException while creating data source [" + ouch.getMessage() + "]",
-                ouch
-                );
-            }
-        catch (ClientToolkitException ouch)
-            {
-            log.debug("ClientToolkitException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
-                "ClientToolkitException while creating data source [" + ouch.getMessage() + "]",
-                ouch
-                );
-            }
-        catch (ClientException ouch)
-            {
-            log.debug("ClientException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
-                "ClientException while creating data source [" + ouch.getMessage() + "]",
-                ouch
-                );
-            }
-        catch (RequestException ouch)
-            {
-            log.debug("RequestException while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
-                "RequestException while creating data source [" + ouch.getMessage() + "]",
-                ouch
-                );
-            }
         catch (Exception ouch)
             {
-            log.debug("Exception while creating data source [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            return new CreateResourceResult(
-                "Exception while creating data source [" + ouch.getMessage() + "]",
+            log.debug("Exception while creating DQP resource [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            return new SimpleResourceWorkflowResult(
                 ouch
                 );
             }

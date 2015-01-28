@@ -175,124 +175,16 @@ public class PipelineClient
                 pipeline,
                 RequestExecutionType.SYNCHRONOUS
                 );
-            result(
+            return new SimplePipelineResult(
                 request.getRequestExecutionStatus()
                 );
             }
         catch (final Exception ouch)
             {
             log.debug("Exception during request processing [{}]", ouch);
-            result(
+            return new SimplePipelineResult(
                 ouch
                 );
-            }
-        return this.result;
-        }
-
-    private PipelineResult result ;
-    public PipelineResult result()
-        {
-        return this.result;
-        }
-
-    private void result(final RequestExecutionStatus status)
-        {
-        if (RequestExecutionStatus.COMPLETED.equals(status))
-            {
-            this.result = new PipelineResultImpl(
-                PipelineResult.Result.COMPLETED
-                );
-            }
-        else if (RequestExecutionStatus.COMPLETED_WITH_ERROR.equals(status))
-            {
-            this.result = new PipelineResultImpl(
-                PipelineResult.Result.FAILED
-                );
-            }
-        else if (RequestExecutionStatus.TERMINATED.equals(status))
-            {
-            this.result = new PipelineResultImpl(
-                PipelineResult.Result.CANCELLED
-                );
-            }
-        else if (RequestExecutionStatus.ERROR.equals(status))
-            {
-            this.result = new PipelineResultImpl(
-                PipelineResult.Result.FAILED
-                );
-            }
-        else {
-            this.result = new PipelineResultImpl(
-                PipelineResult.Result.FAILED,
-                "Unknown RequestExecutionStatus [" + status + "]"
-                );
-            }
-        }
-
-    private void result(final Throwable ouch)
-        {
-        this.result = new PipelineResultImpl(
-            ouch
-            );
-        }
-
-    private static class PipelineResultImpl
-    implements PipelineResult
-        {
-
-        protected PipelineResultImpl(final Result result)
-            {
-            this(
-                result,
-                null,
-                null
-                );
-            }
-
-        protected PipelineResultImpl(final Result result, final String message)
-            {
-            this(
-                result,
-                message,
-                null
-                );
-            }
-
-        protected PipelineResultImpl(final Throwable cause)
-            {
-            this(
-                Result.FAILED,
-                cause.getMessage(),
-                cause
-                );
-            }
-
-        protected PipelineResultImpl(final Result result, final String message, final Throwable cause)
-            {
-            this.cause   = cause   ;
-            this.result  = result  ;
-            this.message = message ;
-            }
-
-        private final String message;
-        @Override
-        public String message()
-            {
-            return this.message;
-            }
-
-        private final Throwable cause;
-        @Override
-        public Throwable cause()
-            {
-            return this.cause;
-            }
-
-        private final Result result;
-        @Override
-        public Result result()
-            {
-            return this.result;
             }
         }
     }

@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFTDQPParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFireThornDQPParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -63,6 +63,7 @@ import uk.org.ogsadai.resource.ResourceUnknownException;
 import uk.org.ogsadai.resource.SupportedActivities;
 import uk.org.ogsadai.resource.dataresource.DataResource;
 import uk.org.ogsadai.resource.dataresource.DataResourceState;
+import uk.org.ogsadai.resource.dataresource.dqp.DQPFederation;
 import uk.org.ogsadai.resource.dataresource.dqp.DQPResource;
 import uk.org.ogsadai.resource.dataresource.dqp.DQPResourceState;
 import uk.org.ogsadai.resource.event.ResourceEventListener;
@@ -177,7 +178,7 @@ public class CreateFireThornDQPActivity
         return new ActivityInput[] 
             {
             new TypedOptionalActivityInput(
-                CreateFTDQPParam.INPUT_ID,
+                CreateFireThornDQPParam.INPUT_ID,
                 String.class
                 )
             };
@@ -190,7 +191,7 @@ public class CreateFireThornDQPActivity
         ActivityTerminatedException
         {
         validateOutput(
-            CreateFTDQPParam.OUTPUT_ID
+            CreateFireThornDQPParam.OUTPUT_ID
             );
         mResult = getOutput();
         }
@@ -202,21 +203,20 @@ public class CreateFireThornDQPActivity
         ActivityUserException
         {
         // Get resource ID.
-        ResourceID resourceID = mResourceManager.createUniqueID();
+        final ResourceID resourceID = mResourceManager.createUniqueID();
 
         // Get template ID.
-        ResourceID templateID = new ResourceID(
+        final ResourceID templateID = new ResourceID(
             "uk.ac.roe.wfau.firethorn.DQP_RESOURCE_TEMPLATE"
             );
 
-        String config  = null ;
-        String context = null ;
+        String configFilename  = null ;
+        String contextFilename = null ;
 
-        //Reader fred = null ;
-        Reader fred =new StringReader(
+        final Reader stringReader = new StringReader(
             "<DQPResourceConfig>" +
             "    <dataResources>" +
-            "        <resource " +
+            "        <albert " +
             "            dsis=\"dataSinks\"" +
             "            dsos=\"dataSources\"" +
             "            resourceID=\"atlas\"" +
@@ -226,12 +226,9 @@ public class CreateFireThornDQPActivity
             "</DQPResourceConfig>"
             );
 
-        /*
-         */
-
         try {
-            config = writeConfig((Reader)fred, resourceID);
-            context = writeContext(resourceID, config);
+            configFilename  = writeConfig((Reader)stringReader, resourceID);
+            contextFilename = writeContext(resourceID, configFilename);
             }
         catch (IOException e)
             {
@@ -242,28 +239,21 @@ public class CreateFireThornDQPActivity
             throw new ActivityProcessingException(e);
             }
 
-        LOG.debug("Resource ID:   " + resourceID);
-        LOG.debug("Template ID:   " + templateID);
-        LOG.debug("Configuration: " + config);
-        LOG.debug("Context:       " + context);
+        LOG.debug("Resource ID  [" + resourceID + "]");
+        LOG.debug("Template ID  [" + templateID + "]");
+        LOG.debug("Config  file [" + configFilename  + "]");
+        LOG.debug("Context file [" + contextFilename + "]");
 
         try {
-            // Create resource from template.
             DQPResource resource = null;
             try {
-                resource = createResource(templateID, context);
+                resource = createResource(templateID, contextFilename);
                 } 
-            catch (ResourceUnknownException e)
+            catch (ResourceUnknownException ouch)
                 {
-                if (iterationData[1] == null)
-                    {
-                    // Cannot be found.
-                    throw e;
-                    }
-                else {
-                    // Cannot be found but was requested by client.
-                    throw new ActivityUserException(e);
-                    }
+                throw new ActivityUserException(
+                    ouch
+                    );
                 }
             LOG.debug("Resource [" + resource + "]");
             DQPResourceState state = resource.getDQPResourceState();
@@ -272,7 +262,11 @@ public class CreateFireThornDQPActivity
             state.getState().setResourceID(
                 resourceID
                 );
-
+            DQPFederation federation = resource.getFederation();
+            LOG.debug("Federation [" + federation + "]");
+            
+            federation.getDataNodes();
+            
             // Add the resource to the OGSA-DAI resource manager
             // via the resource factory utility.
             mResourceFactory.addResource(
@@ -296,10 +290,6 @@ public class CreateFireThornDQPActivity
         catch (PipeIOException e)
             {
             throw new ActivityPipeProcessingException(e);
-            }
-        catch (ResourceIDAlreadyAssignedException e)
-            {
-            throw new ActivityUserException(e);
             }
         catch (ActivityUserException e)
             {
@@ -415,13 +405,14 @@ public class CreateFireThornDQPActivity
      * @throws DAIClassMissingInterfaceException
      *             if the template doesn't create DQP resources
      */
-    protected DQPResource createResource(ResourceID templateResourceID, String context) 
+    protected DQPResource createResource(ResourceID templateResourceID, String contextFilename) 
     throws ResourceUnknownException, 
         ResourceTypeException, 
         DAIClassMissingInterfaceException
         {
+        LOG.debug("Context file [" + contextFilename + "]");
         DataResourceState state = mResourceFactory.createDataResourceState(templateResourceID);
-        //state.getConfiguration().put(CONFIG_PATH, context);
+        state.getConfiguration().put(CONFIG_PATH, contextFilename);
 
         String resourceClassName = state.getDataResourceClass();
         DataResource resource = 

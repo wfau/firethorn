@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
@@ -103,13 +103,13 @@ extends OgsaResourceTestBase
                 )
             );
 
-        final CreateResourceResult result = workflow.execute(
+        final ResourceWorkflowResult result = workflow.execute(
             "albert"
             );
 
         log.debug("Status  [{}]", result.status());
         log.debug("Request [{}]", result.request());
-        log.debug("Created [{}]", result.resource());
+        log.debug("Created [{}]", result.result());
 
         assertNotNull(
             result
@@ -122,7 +122,7 @@ extends OgsaResourceTestBase
             result.request()
             );
         assertNotNull(
-            result.resource()
+            result.result()
             );
         }
     }
