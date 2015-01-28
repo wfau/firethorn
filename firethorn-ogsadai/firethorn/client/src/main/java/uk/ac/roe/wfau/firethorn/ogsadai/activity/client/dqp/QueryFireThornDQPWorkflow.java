@@ -55,24 +55,6 @@ extends BaseWorkflow
          *
          */
         public CreateFireThornDQPClient.Param create();
-
-        /**
-         * The {@link DelaysClient} params. 
-         * 
-         */
-        public DelaysClient.Param delays();
-
-        /**
-         * The {@link LimitsClient} params. 
-         * 
-         */
-        public LimitsClient.Param limits();
-
-        /**
-         * The {@link JdbcInsertDataClient} params. 
-         * 
-         */
-        public JdbcInsertDataClient.Param insert();
                  
         /**
          * The SQL select query.
@@ -219,36 +201,6 @@ extends BaseWorkflow
         select.addExpression(
             param.query()
             );
-
-        //
-        // Add our Delays Activity.
-        final DelaysClient delay = new DelaysClient(
-            select.getDataOutput(),
-            param.delays()
-            );
-        workflow.add(
-            delay
-            );
-
-        //
-        // Add our Limits Activity.
-        final LimitsClient limits = new LimitsClient(
-            delay.output(),
-            param.limits()
-            );
-        workflow.add(
-            limits
-            );
-
-        //
-        // Create our Insert Activity.
-        final JdbcInsertDataClient insert = new JdbcInsertDataClient(
-            limits.output(),
-            param.insert()
-            );
-        workflow.add(
-            insert
-            );
         
         //
         // Create our delivery handler.
@@ -257,7 +209,7 @@ extends BaseWorkflow
             delivery
             );
         delivery.connectInput(
-            insert.results()
+            select.getDataOutput()
             );
         //
         // Execute our pipeline.

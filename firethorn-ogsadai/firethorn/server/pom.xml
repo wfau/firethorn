@@ -51,16 +51,6 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-            +-->
-
-        <!--+
             | OGSA-DAI DQP common components.
             +-->
         <dependency>
@@ -79,15 +69,6 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
-        <!--+
-            | OGSA-DAI astronomy client extensions.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-astro-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-            +-->
 
         <!--+
             | OGSA-DAI FireThorn common classes.

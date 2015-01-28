@@ -75,7 +75,10 @@ extends OgsaResourceTestBase
     throws Exception
         {
         //final String query = "SELECT COUNT(*) FROM AtlasSource" ;
-        final String query = "SELECT COUNT(ra) FROM JDBC_TABLE_8323073" ;
+        //final String query = "SELECT COUNT(ra) FROM JDBC_TABLE_8323073" ;
+        //final String query = "SELECT TOP 5 ra FROM JDBC_TABLE_8323073 " ;
+        //final String query = "SELECT ra FROM JDBC_TABLE_8323073 LIMIT 5" ;
+        final String query = "SELECT COUNT(ra) FROM JDBC_TABLE_8323073 WHERE ra BETWEEN 1.0 AND 2.0" ;
         
         final QueryFireThornDQPWorkflow workflow = new QueryFireThornDQPWorkflow(
             new URL(
@@ -90,49 +93,6 @@ extends OgsaResourceTestBase
                 public String query()
                     {
                     return query;
-                    }
-                
-                @Override
-                public LimitsClient.Param limits()
-                    {
-                    return null;
-                    }
-                
-                @Override
-                public JdbcInsertDataClient.Param insert()
-                    {
-                    return new JdbcInsertDataClient.Param()
-                        {
-                        @Override
-                        public String ogsaid()
-                            {
-                            return "userdata";
-                            }
-
-                        @Override
-                        public String table()
-                            {
-                            return "tableone";
-                            }
-
-                        @Override
-                        public Integer first()
-                            {
-                            return null;
-                            }
-
-                        @Override
-                        public Integer block()
-                            {
-                            return null;
-                            }
-                        };
-                    }
-                
-                @Override
-                public DelaysClient.Param delays()
-                    {
-                    return null;
                     }
                 
                 @Override

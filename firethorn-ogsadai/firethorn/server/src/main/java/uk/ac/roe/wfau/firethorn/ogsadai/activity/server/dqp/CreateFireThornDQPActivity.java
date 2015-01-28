@@ -219,7 +219,7 @@ public class CreateFireThornDQPActivity
 
         final Reader stringReader = new StringReader(
             "<DQPResourceConfig>" +
-            "    <dataResources>" +
+            "    <gregor>" +
             "        <albert " +
             "            dsis=\"dataSinks\"" +
             "            dsos=\"dataSources\"" +

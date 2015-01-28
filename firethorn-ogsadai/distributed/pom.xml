@@ -54,7 +54,7 @@
         <module>client</module>
         <module>common</module>
         <module>server</module>
-        <module>firethorn</module>
+        <!--module>firethorn</module-->
     </modules>
 
     <properties>
