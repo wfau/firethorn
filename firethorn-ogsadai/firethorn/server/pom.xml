@@ -82,12 +82,12 @@
 
         <!--+
             | OGSA-DAI astronomy client extensions.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-astro-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | OGSA-DAI FireThorn common classes.
@@ -98,6 +98,23 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!--+
+            | OGSA-DAI Astronomy extensions.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-astro-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | FireThorn metadata client.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-metadata-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

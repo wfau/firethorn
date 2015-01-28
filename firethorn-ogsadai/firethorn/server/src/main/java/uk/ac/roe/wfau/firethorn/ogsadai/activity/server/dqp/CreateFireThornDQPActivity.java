@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateFireThornDQPParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
@@ -48,6 +49,9 @@ import uk.org.ogsadai.config.Key;
 import uk.org.ogsadai.config.KeyValueProperties;
 import uk.org.ogsadai.context.OGSADAIConstants;
 import uk.org.ogsadai.context.OGSADAIContext;
+import uk.org.ogsadai.dqp.common.DataNode;
+import uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation;
+import uk.org.ogsadai.dqp.presentation.common.SimpleDataNode;
 import uk.org.ogsadai.exception.DAIClassMissingInterfaceException;
 import uk.org.ogsadai.exception.ErrorID;
 import uk.org.ogsadai.resource.ResourceFactory;
@@ -264,9 +268,27 @@ public class CreateFireThornDQPActivity
                 );
             DQPFederation federation = resource.getFederation();
             LOG.debug("Federation [" + federation + "]");
-            
-            federation.getDataNodes();
-            
+            //
+            // Add data nodes.
+            if (federation instanceof MetadataServiceDQPFederation)
+                {
+                LOG.debug(" Adding DataNodes ....");
+                Map<String, DataNode> map = ((MetadataServiceDQPFederation) federation).getDataNodesMap();
+                DataNode node = new SimpleDataNode(
+                    "atlas",
+                    federation.getLocalNode()
+                    );
+                map.put(
+                    node.getResourceID().toString(),
+                    node
+                    );                
+                }
+            else {
+                throw new ResourceTypeException(
+                    resourceID,
+                    null
+                    );
+                }
             // Add the resource to the OGSA-DAI resource manager
             // via the resource factory utility.
             mResourceFactory.addResource(
