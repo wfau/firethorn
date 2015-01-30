@@ -74,6 +74,8 @@ public class ArithmeticExpressionFactory
     {
         try
         {
+        
+
             if (expressionTree.getType() == SQL92QueryParser.TABLECOLUMN)
             {
                 String source = null;
@@ -127,6 +129,7 @@ public class ArithmeticExpressionFactory
                         new ArrayList<ArithmeticExpression>();
                     for (int i = 1; i < expressionTree.getChildCount(); i++)
                     {
+
                         paramList.add(buildArithmeticExpression(
                             (CommonTree)expressionTree.getChild(i), 
                             functionRepository));
@@ -187,6 +190,7 @@ public class ArithmeticExpressionFactory
             }
             else if (expressionTree.getText().equals("*"))
             {
+
                 if (expressionTree.getChildCount() == 0)
                 {
                     // we have a function with parameter '*'

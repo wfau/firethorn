@@ -183,6 +183,7 @@ public class SQLQueryParser implements SQLParser
     public CommonTree parseSQLForDerivedColumn(String expression)
             throws SQLParserException
     {        
+
         SQL92QueryLexer lex = new SQL92QueryLexer(new ANTLRNoCaseStringStream(
                 expression));
         CommonTokenStream tokens = new CommonTokenStream(lex);
@@ -362,6 +363,7 @@ public class SQLQueryParser implements SQLParser
         // Generate SQL from syntax tree
         try
         {
+
             SQL92QueryWalker treeWalker = createTreeWalker(abstractSyntaxTree);
 
             SQL92QueryWalker.value_expression_return valueExpr = treeWalker

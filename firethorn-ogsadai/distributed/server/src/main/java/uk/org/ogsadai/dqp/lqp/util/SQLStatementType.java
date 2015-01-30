@@ -79,7 +79,6 @@ public class SQLStatementType
 	{
 	    result |= n1.getText().equals("QUERY") ? mSelectFromFlag : 0;
 	}
-
 	result |= (isSelectFrom(result) || isSelectFromWhere(result))
 		&& n4.getText().equals("*") ? mSelectStarFlag : 0;
 

@@ -583,6 +583,11 @@ id=uk.org.ogsadai.TupleLeftOuterJoin
 class=uk.org.ogsadai.activity.relational.TupleJoinActivity
 description=
 CONFIG
+END
+id=uk.org.ogsadai.Top
+class=uk.org.ogsadai.activity.relational.TopActivity
+description=
+CONFIG
 join.implementation=uk.org.ogsadai.tuple.join.OuterJoin
 END
 id=uk.org.ogsadai.TupleProduct

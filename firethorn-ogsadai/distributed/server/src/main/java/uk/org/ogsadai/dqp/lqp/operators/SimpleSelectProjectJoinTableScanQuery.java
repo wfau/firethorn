@@ -234,7 +234,7 @@ public class SimpleSelectProjectJoinTableScanQuery
                 localiseAttributes(predClone.getExpression(), dataNode);
                 localPredicateList.add(predClone);
             }
-            
+
             return generateSQL(
                 localTableNames, 
                 localProjectExpressions,

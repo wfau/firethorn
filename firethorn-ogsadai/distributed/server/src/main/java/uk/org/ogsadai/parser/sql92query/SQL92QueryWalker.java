@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g 2015-01-18 22:04:56
+// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g 2015-01-27 23:03:12
 
   package uk.org.ogsadai.parser.sql92query; 
 
@@ -803,7 +803,7 @@ public class SQL92QueryWalker extends TreeParser {
 
 
 	// $ANTLR start "select_list"
-	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:62:1: select_list : ( ^( COLUMN s= '*' ) -> emitstr(str=$s)| (c+= column_def )+ -> column_list(columns=$c));
+	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:62:1: select_list : ( (c+= column_def )+ -> column_list(columns=$c)| ^( COLUMN s= '*' ) -> emitstr(str=$s));
 	public final SQL92QueryWalker.select_list_return select_list() throws RecognitionException {
 		SQL92QueryWalker.select_list_return retval = new SQL92QueryWalker.select_list_return();
 		retval.start = input.LT(1);
@@ -812,7 +812,7 @@ public class SQL92QueryWalker extends TreeParser {
 		List<Object> list_c=null;
 		RuleReturnScope c = null;
 		try {
-			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:5: ( ^( COLUMN s= '*' ) -> emitstr(str=$s)| (c+= column_def )+ -> column_list(columns=$c))
+			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:5: ( (c+= column_def )+ -> column_list(columns=$c)| ^( COLUMN s= '*' ) -> emitstr(str=$s))
 			int alt12=2;
 			int LA12_0 = input.LA(1);
 			if ( (LA12_0==COLUMN) ) {
@@ -822,10 +822,10 @@ public class SQL92QueryWalker extends TreeParser {
 					if ( (LA12_2==44) ) {
 						int LA12_3 = input.LA(4);
 						if ( (LA12_3==UP) ) {
-							alt12=1;
+							alt12=2;
 						}
 						else if ( (LA12_3==DOWN) ) {
-							alt12=2;
+							alt12=1;
 						}
 
 						else {
@@ -845,7 +845,7 @@ public class SQL92QueryWalker extends TreeParser {
 
 					}
 					else if ( ((LA12_2 >= EXCEPT && LA12_2 <= FLOAT)||LA12_2==FUNCTION||(LA12_2 >= INT && LA12_2 <= INTERSECT)||LA12_2==NUMERIC||LA12_2==QUERY||(LA12_2 >= STRING && LA12_2 <= TABLECOLUMN)||(LA12_2 >= UNION && LA12_2 <= UNION_ALL)||LA12_2==45||LA12_2==47||LA12_2==49||LA12_2==66||LA12_2==73||LA12_2==82||LA12_2==91||(LA12_2 >= 100 && LA12_2 <= 101)||LA12_2==103||LA12_2==107) ) {
-						alt12=2;
+						alt12=1;
 					}
 
 					else {
@@ -889,29 +889,9 @@ public class SQL92QueryWalker extends TreeParser {
 
 			switch (alt12) {
 				case 1 :
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:9: ^( COLUMN s= '*' )
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:9: (c+= column_def )+
 					{
-					match(input,COLUMN,FOLLOW_COLUMN_in_select_list558); if (state.failed) return retval;
-					match(input, Token.DOWN, null); if (state.failed) return retval;
-					s=(CommonTree)match(input,44,FOLLOW_44_in_select_list562); if (state.failed) return retval;
-					match(input, Token.UP, null); if (state.failed) return retval;
-
-					// TEMPLATE REWRITE
-					if ( state.backtracking==0 ) {
-					  // 63:28: -> emitstr(str=$s)
-					  {
-					  	retval.st = templateLib.getInstanceOf("emitstr",new STAttrMap().put("str", s));
-					  }
-
-
-					}
-
-					}
-					break;
-				case 2 :
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:64:9: (c+= column_def )+
-					{
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:64:9: (c+= column_def )+
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:9: (c+= column_def )+
 					int cnt11=0;
 					loop11:
 					while (true) {
@@ -923,9 +903,9 @@ public class SQL92QueryWalker extends TreeParser {
 
 						switch (alt11) {
 						case 1 :
-							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:64:10: c+= column_def
+							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:63:10: c+= column_def
 							{
-							pushFollow(FOLLOW_column_def_in_select_list588);
+							pushFollow(FOLLOW_column_def_in_select_list560);
 							c=column_def();
 							state._fsp--;
 							if (state.failed) return retval;
@@ -945,9 +925,29 @@ public class SQL92QueryWalker extends TreeParser {
 
 					// TEMPLATE REWRITE
 					if ( state.backtracking==0 ) {
-					  // 64:28: -> column_list(columns=$c)
+					  // 63:28: -> column_list(columns=$c)
 					  {
 					  	retval.st = templateLib.getInstanceOf("column_list",new STAttrMap().put("columns", list_c));
+					  }
+
+
+					}
+
+					}
+					break;
+				case 2 :
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:64:9: ^( COLUMN s= '*' )
+					{
+					match(input,COLUMN,FOLLOW_COLUMN_in_select_list584); if (state.failed) return retval;
+					match(input, Token.DOWN, null); if (state.failed) return retval;
+					s=(CommonTree)match(input,44,FOLLOW_44_in_select_list588); if (state.failed) return retval;
+					match(input, Token.UP, null); if (state.failed) return retval;
+
+					// TEMPLATE REWRITE
+					if ( state.backtracking==0 ) {
+					  // 64:28: -> emitstr(str=$s)
+					  {
+					  	retval.st = templateLib.getInstanceOf("emitstr",new STAttrMap().put("str", s));
 					  }
 
 
@@ -4960,23 +4960,23 @@ public class SQL92QueryWalker extends TreeParser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:79:9: ^( (op= '+' |op= '-' ) v1= numeric_value_expression v2= numeric_value_expression )
 		{
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:79:11: (op= '+' |op= '-' )
-		int alt47=2;
-		int LA47_0 = input.LA(1);
-		if ( (LA47_0==45) ) {
-			alt47=1;
+		int alt48=2;
+		int LA48_0 = input.LA(1);
+		if ( (LA48_0==45) ) {
+			alt48=1;
 		}
-		else if ( (LA47_0==47) ) {
-			alt47=2;
+		else if ( (LA48_0==47) ) {
+			alt48=2;
 		}
 
 		else {
 			if (state.backtracking>0) {state.failed=true; return;}
 			NoViableAltException nvae =
-				new NoViableAltException("", 47, 0, input);
+				new NoViableAltException("", 48, 0, input);
 			throw nvae;
 		}
 
-		switch (alt47) {
+		switch (alt48) {
 			case 1 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92QueryWalker.g:79:12: op= '+'
 				{
@@ -5256,9 +5256,9 @@ public class SQL92QueryWalker extends TreeParser {
 	public static final BitSet FOLLOW_column_name_in_query441 = new BitSet(new long[]{0x0000000800000008L});
 	public static final BitSet FOLLOW_HAVING_in_query462 = new BitSet(new long[]{0x0000000000000004L});
 	public static final BitSet FOLLOW_search_condition_in_query466 = new BitSet(new long[]{0x0000000000000008L});
-	public static final BitSet FOLLOW_COLUMN_in_select_list558 = new BitSet(new long[]{0x0000000000000004L});
-	public static final BitSet FOLLOW_44_in_select_list562 = new BitSet(new long[]{0x0000000000000008L});
-	public static final BitSet FOLLOW_column_def_in_select_list588 = new BitSet(new long[]{0x0000000000000082L});
+	public static final BitSet FOLLOW_column_def_in_select_list560 = new BitSet(new long[]{0x0000000000000082L});
+	public static final BitSet FOLLOW_COLUMN_in_select_list584 = new BitSet(new long[]{0x0000000000000004L});
+	public static final BitSet FOLLOW_44_in_select_list588 = new BitSet(new long[]{0x0000000000000008L});
 	public static final BitSet FOLLOW_COLUMN_in_column_def620 = new BitSet(new long[]{0x0000000000000004L});
 	public static final BitSet FOLLOW_value_expression_in_column_def622 = new BitSet(new long[]{0x0000000000000008L});
 	public static final BitSet FOLLOW_COLUMN_in_column_def641 = new BitSet(new long[]{0x0000000000000004L});

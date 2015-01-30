@@ -128,49 +128,16 @@ public class ProjectOperator extends UnaryOperator
             {
                 continue;
             }
-
             // Get alias if exists
             if (column.getChildCount() > 1)
             {
                 alias = column.getChild(1).getText();
             }
-
+        
             // Move one level down
             CommonTree child = (CommonTree) column.getChild(0);
 
-            // Deal with SELECT *
-            if (child.getText().equals(ASTConstants.STAR_TOKEN))
-            {
-                for (Attribute attrib : mChildOperator.getHeading()
-                    .getAttributes())
-                {
-                    if (!attrib.isTemporary())
-                    {
-                        try
-                        {
-                            mAttributeExprList.add(ArithmeticExpressionFactory
-                                .buildArithmeticExpression(
-                                    qp.parseSQLForDerivedColumn(
-                                        attrib.toString()),
-                                    functionRepository));
-                            mDerivedAttrAliases.add(null);
-                        }
-                        // ExpressionException, SQLParserException
-                        catch (Exception e)
-                        {
-                            if(LOG.isDebugEnabled())
-                            {
-                                LOG.debug("Trouble with: " + attrib.toString());
-                            }
-                            throw new LQPException(e);
-                        }
-                    }
-                }
-
-                // that's it
-                break;
-            }
-            else if (child.getText().equals(ASTConstants.TABLECOLUMN_TOKEN))
+            if (child.getText().equals(ASTConstants.TABLECOLUMN_TOKEN))
             {
                 // we have direct table column access
                 try

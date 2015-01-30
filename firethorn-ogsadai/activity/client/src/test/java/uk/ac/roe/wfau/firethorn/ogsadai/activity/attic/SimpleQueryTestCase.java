@@ -118,5 +118,28 @@ extends SimpleQueryTestBase
             "    match.distanceMins < 1E-3"
             );
         }
+    
+    
+    /**
+     * Single catalog, ATLASDR1.
+     *
+     */
+    @Test
+    public void test004()
+    throws Exception
+        {
+        execute(
+            endpoint,
+            "atlas",
+            " SELECT" +
+            "    *" +
+            " FROM" +
+            "    Filter" +
+            " WHERE" +
+            "    filterID>0"
+           
+            );
+        }
+
     }
 

@@ -692,7 +692,6 @@ public class ASTUtil
                     {
                         function = existingAggregate;
                     }
-
                     TreeAdaptor adaptor = new CommonTreeAdaptor();
                     CommonTree tableColumn = (CommonTree) adaptor
                         .create(

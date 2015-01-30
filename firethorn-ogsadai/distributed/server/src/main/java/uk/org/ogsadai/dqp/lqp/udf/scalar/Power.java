@@ -146,7 +146,7 @@ public class Power extends LogicalExecutableFunctionBase
         }
         else
         {
-            mResult = Math.pow((Double)parameters[0],(Double)parameters[1]);
+            mResult = Math.pow(((Number)parameters[0]).doubleValue(),((Number)parameters[1]).doubleValue());
         }
     } 
     

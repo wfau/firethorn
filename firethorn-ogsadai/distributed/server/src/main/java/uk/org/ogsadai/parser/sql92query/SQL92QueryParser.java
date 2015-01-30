@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g 2015-01-18 17:56:35
+// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g 2015-01-28 23:11:54
 
   package uk.org.ogsadai.parser.sql92query; 
 
@@ -1112,7 +1112,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: set_quantifier, table_expression, select_list, s1, column_list, top, s2
+					// elements: column_list, s2, s1, top, set_quantifier, table_expression, select_list
 					// token labels: 
 					// rule labels: s1, retval, s2
 					// token list labels: 
@@ -1364,30 +1364,30 @@ public class SQL92QueryParser extends Parser {
 
 
 	// $ANTLR start "select_list"
-	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:128:1: select_list : ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' ! derived_column )* );
+	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:128:1: select_list : ( derived_column ( ',' ! derived_column )* | '*' -> ^( COLUMN '*' ) );
 	public final SQL92QueryParser.select_list_return select_list() throws RecognitionException {
 		SQL92QueryParser.select_list_return retval = new SQL92QueryParser.select_list_return();
 		retval.start = input.LT(1);
 
 		CommonTree root_0 = null;
 
-		Token char_literal35=null;
-		Token char_literal37=null;
-		ParserRuleReturnScope derived_column36 =null;
-		ParserRuleReturnScope derived_column38 =null;
+		Token char_literal36=null;
+		Token char_literal38=null;
+		ParserRuleReturnScope derived_column35 =null;
+		ParserRuleReturnScope derived_column37 =null;
 
-		CommonTree char_literal35_tree=null;
-		CommonTree char_literal37_tree=null;
+		CommonTree char_literal36_tree=null;
+		CommonTree char_literal38_tree=null;
 		RewriteRuleTokenStream stream_44=new RewriteRuleTokenStream(adaptor,"token 44");
 
 		try {
-			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:5: ( '*' -> ^( COLUMN '*' ) | derived_column ( ',' ! derived_column )* )
+			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:5: ( derived_column ( ',' ! derived_column )* | '*' -> ^( COLUMN '*' ) )
 			int alt13=2;
 			int LA13_0 = input.LA(1);
-			if ( (LA13_0==44) ) {
+			if ( (LA13_0==FLOAT||(LA13_0 >= ID && LA13_0 <= INT)||LA13_0==NUMERIC||LA13_0==STRING||LA13_0==42||LA13_0==45||LA13_0==47||(LA13_0 >= 65 && LA13_0 <= 67)||LA13_0==73||LA13_0==78||LA13_0==82||(LA13_0 >= 88 && LA13_0 <= 89)||LA13_0==91||LA13_0==97||(LA13_0 >= 100 && LA13_0 <= 101)||LA13_0==103||LA13_0==106) ) {
 				alt13=1;
 			}
-			else if ( (LA13_0==FLOAT||(LA13_0 >= ID && LA13_0 <= INT)||LA13_0==NUMERIC||LA13_0==STRING||LA13_0==42||LA13_0==45||LA13_0==47||(LA13_0 >= 65 && LA13_0 <= 67)||LA13_0==73||LA13_0==78||LA13_0==82||(LA13_0 >= 88 && LA13_0 <= 89)||LA13_0==91||LA13_0==97||(LA13_0 >= 100 && LA13_0 <= 101)||LA13_0==103||LA13_0==106) ) {
+			else if ( (LA13_0==44) ) {
 				alt13=2;
 			}
 
@@ -1400,10 +1400,52 @@ public class SQL92QueryParser extends Parser {
 
 			switch (alt13) {
 				case 1 :
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:9: '*'
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:9: derived_column ( ',' ! derived_column )*
 					{
-					char_literal35=(Token)match(input,44,FOLLOW_44_in_select_list727); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_44.add(char_literal35);
+					root_0 = (CommonTree)adaptor.nil();
+
+
+					pushFollow(FOLLOW_derived_column_in_select_list727);
+					derived_column35=derived_column();
+					state._fsp--;
+					if (state.failed) return retval;
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column35.getTree());
+
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:24: ( ',' ! derived_column )*
+					loop12:
+					while (true) {
+						int alt12=2;
+						int LA12_0 = input.LA(1);
+						if ( (LA12_0==46) ) {
+							alt12=1;
+						}
+
+						switch (alt12) {
+						case 1 :
+							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:25: ',' ! derived_column
+							{
+							char_literal36=(Token)match(input,46,FOLLOW_46_in_select_list730); if (state.failed) return retval;
+							pushFollow(FOLLOW_derived_column_in_select_list733);
+							derived_column37=derived_column();
+							state._fsp--;
+							if (state.failed) return retval;
+							if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column37.getTree());
+
+							}
+							break;
+
+						default :
+							break loop12;
+						}
+					}
+
+					}
+					break;
+				case 2 :
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:130:9: '*'
+					{
+					char_literal38=(Token)match(input,44,FOLLOW_44_in_select_list745); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_44.add(char_literal38);
 
 					// AST REWRITE
 					// elements: 44
@@ -1417,9 +1459,9 @@ public class SQL92QueryParser extends Parser {
 					RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.getTree():null);
 
 					root_0 = (CommonTree)adaptor.nil();
-					// 129:13: -> ^( COLUMN '*' )
+					// 130:13: -> ^( COLUMN '*' )
 					{
-						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:129:16: ^( COLUMN '*' )
+						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:130:16: ^( COLUMN '*' )
 						{
 						CommonTree root_1 = (CommonTree)adaptor.nil();
 						root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(COLUMN, "COLUMN"), root_1);
@@ -1431,48 +1473,6 @@ public class SQL92QueryParser extends Parser {
 
 
 					retval.tree = root_0;
-					}
-
-					}
-					break;
-				case 2 :
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:130:9: derived_column ( ',' ! derived_column )*
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					pushFollow(FOLLOW_derived_column_in_select_list745);
-					derived_column36=derived_column();
-					state._fsp--;
-					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column36.getTree());
-
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:130:24: ( ',' ! derived_column )*
-					loop12:
-					while (true) {
-						int alt12=2;
-						int LA12_0 = input.LA(1);
-						if ( (LA12_0==46) ) {
-							alt12=1;
-						}
-
-						switch (alt12) {
-						case 1 :
-							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:130:25: ',' ! derived_column
-							{
-							char_literal37=(Token)match(input,46,FOLLOW_46_in_select_list748); if (state.failed) return retval;
-							pushFollow(FOLLOW_derived_column_in_select_list751);
-							derived_column38=derived_column();
-							state._fsp--;
-							if (state.failed) return retval;
-							if ( state.backtracking==0 ) adaptor.addChild(root_0, derived_column38.getTree());
-
-							}
-							break;
-
-						default :
-							break loop12;
-						}
 					}
 
 					}
@@ -1611,7 +1611,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: id1, value_expression, id2
+					// elements: id2, id1, value_expression
 					// token labels: id2, id1
 					// rule labels: retval
 					// token list labels: 
@@ -4821,7 +4821,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: tableid, s
+					// elements: s, tableid
 					// token labels: s, tableid
 					// rule labels: retval
 					// token list labels: 
@@ -5043,7 +5043,7 @@ public class SQL92QueryParser extends Parser {
 					if ( state.backtracking==0 ) stream_43.add(char_literal97);
 
 					// AST REWRITE
-					// elements: value_expression, name
+					// elements: name, value_expression
 					// token labels: name
 					// rule labels: retval
 					// token list labels: 
@@ -5100,7 +5100,7 @@ public class SQL92QueryParser extends Parser {
 					if ( state.backtracking==0 ) stream_43.add(char_literal100);
 
 					// AST REWRITE
-					// elements: name, 44
+					// elements: 44, name
 					// token labels: name
 					// rule labels: retval
 					// token list labels: 
@@ -5966,7 +5966,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: table_name, correlation_specification
+					// elements: correlation_specification, table_name
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -6059,7 +6059,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification131.getTree());
 					// AST REWRITE
-					// elements: correlation_specification, sub_query
+					// elements: sub_query, correlation_specification
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -6263,7 +6263,7 @@ public class SQL92QueryParser extends Parser {
 			if ( state.backtracking==0 ) stream_43.add(char_literal138);
 
 			// AST REWRITE
-			// elements: name, table_function_param, table_function_subquery
+			// elements: table_function_subquery, table_function_param, name
 			// token labels: name
 			// rule labels: retval
 			// token list labels: 
@@ -8788,7 +8788,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail176.getTree());
 					// AST REWRITE
-					// elements: row_value, in_predicate_tail, 79
+					// elements: in_predicate_tail, row_value, 79
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -8842,7 +8842,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail179.getTree());
 					// AST REWRITE
-					// elements: row_value, 79, in_predicate_tail
+					// elements: 79, in_predicate_tail, row_value
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -9404,7 +9404,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw2.getTree());
 					// AST REWRITE
-					// elements: btw1, value, btw2, 63
+					// elements: btw2, btw1, 63, value
 					// token labels: 
 					// rule labels: btw1, btw2, value, retval
 					// token list labels: 
@@ -9466,7 +9466,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw2.getTree());
 					// AST REWRITE
-					// elements: 63, value, btw1, btw2
+					// elements: value, btw1, btw2, 63
 					// token labels: 
 					// rule labels: btw1, btw2, value, retval
 					// token list labels: 
@@ -10112,7 +10112,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(rv.getTree());
 					// AST REWRITE
-					// elements: lv, op, ep, rv
+					// elements: ep, op, rv, lv
 					// token labels: op, ep
 					// rule labels: rv, lv, retval
 					// token list labels: 
@@ -10561,7 +10561,7 @@ public class SQL92QueryParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(v2.getTree());
 					// AST REWRITE
-					// elements: 86, v1, v2
+					// elements: 86, v2, v1
 					// token labels: 
 					// rule labels: v1, v2, retval
 					// token list labels: 
@@ -10822,7 +10822,7 @@ public class SQL92QueryParser extends Parser {
 			if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 			// AST REWRITE
-			// elements: tableid, columnid
+			// elements: columnid, tableid
 			// token labels: columnid, tableid
 			// rule labels: retval
 			// token list labels: 
@@ -11316,7 +11316,7 @@ public class SQL92QueryParser extends Parser {
 			if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 			// AST REWRITE
-			// elements: columnid, tableid
+			// elements: tableid, columnid
 			// token labels: columnid, tableid
 			// rule labels: retval
 			// token list labels: 
@@ -11757,50 +11757,50 @@ public class SQL92QueryParser extends Parser {
 		if (state.failed) return;
 
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:22: (op= '=' |op= '<>' |op= '!=' |op= '<' |op= '>' |op= '>=' |op= '<=' )
-		int alt90=7;
+		int alt91=7;
 		switch ( input.LA(1) ) {
 		case 54:
 			{
-			alt90=1;
+			alt91=1;
 			}
 			break;
 		case 53:
 			{
-			alt90=2;
+			alt91=2;
 			}
 			break;
 		case 41:
 			{
-			alt90=3;
+			alt91=3;
 			}
 			break;
 		case 51:
 			{
-			alt90=4;
+			alt91=4;
 			}
 			break;
 		case 55:
 			{
-			alt90=5;
+			alt91=5;
 			}
 			break;
 		case 56:
 			{
-			alt90=6;
+			alt91=6;
 			}
 			break;
 		case 52:
 			{
-			alt90=7;
+			alt91=7;
 			}
 			break;
 		default:
 			if (state.backtracking>0) {state.failed=true; return;}
 			NoViableAltException nvae =
-				new NoViableAltException("", 90, 0, input);
+				new NoViableAltException("", 91, 0, input);
 			throw nvae;
 		}
-		switch (alt90) {
+		switch (alt91) {
 			case 1 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:23: op= '='
 				{
@@ -11854,30 +11854,30 @@ public class SQL92QueryParser extends Parser {
 		}
 
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:77: (ep= 'ALL' |ep= 'SOME' |ep= 'ANY' )
-		int alt91=3;
+		int alt92=3;
 		switch ( input.LA(1) ) {
 		case 58:
 			{
-			alt91=1;
+			alt92=1;
 			}
 			break;
 		case 99:
 			{
-			alt91=2;
+			alt92=2;
 			}
 			break;
 		case 60:
 			{
-			alt91=3;
+			alt92=3;
 			}
 			break;
 		default:
 			if (state.backtracking>0) {state.failed=true; return;}
 			NoViableAltException nvae =
-				new NoViableAltException("", 91, 0, input);
+				new NoViableAltException("", 92, 0, input);
 			throw nvae;
 		}
-		switch (alt91) {
+		switch (alt92) {
 			case 1 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:78: ep= 'ALL'
 				{
@@ -12337,10 +12337,10 @@ public class SQL92QueryParser extends Parser {
 	public static final BitSet FOLLOW_42_in_sub_query703 = new BitSet(new long[]{0x0000040000000000L,0x0000000400000000L});
 	public static final BitSet FOLLOW_query_expression_in_sub_query706 = new BitSet(new long[]{0x0000080000000000L});
 	public static final BitSet FOLLOW_43_in_sub_query708 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_44_in_select_list727 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_derived_column_in_select_list745 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_select_list748 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420EL});
-	public static final BitSet FOLLOW_derived_column_in_select_list751 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_derived_column_in_select_list727 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_46_in_select_list730 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420EL});
+	public static final BitSet FOLLOW_derived_column_in_select_list733 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_44_in_select_list745 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_65_in_derived_column771 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
 	public static final BitSet FOLLOW_value_expression_in_derived_column773 = new BitSet(new long[]{0x2000000000000000L});
 	public static final BitSet FOLLOW_61_in_derived_column775 = new BitSet(new long[]{0x0000000000020000L});

@@ -60,7 +60,6 @@ public class SQLQueryPlanBuilder implements QueryPlanBuilder
         FunctionRepository functionRepository = 
             (FunctionRepository) OGSADAIContext.getInstance().get(
                 FunctionRepository.FUNCTION_REPOSITORY_KEY);
-
         CommonTree ast = parseSQL(query);
         if (LOG.isDebugEnabled())
         {

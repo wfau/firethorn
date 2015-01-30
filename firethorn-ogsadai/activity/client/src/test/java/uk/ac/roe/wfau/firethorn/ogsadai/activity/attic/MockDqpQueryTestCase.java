@@ -161,5 +161,21 @@ extends SimpleQueryTestBase
             "    neighbour.distanceMins < 1E-3"
             );
         }
+    
+    /**
+     * ATLASDR1, using single JDBC connection.
+     *
+     */
+    @Test
+    public void test004()
+    throws Exception
+        {
+        execute(
+            endpoint,
+            "atlas",
+            " SELECT (POWER(filterID,2)*2) as p2 from Filter" 
+            
+            );
+        }
     }
 
