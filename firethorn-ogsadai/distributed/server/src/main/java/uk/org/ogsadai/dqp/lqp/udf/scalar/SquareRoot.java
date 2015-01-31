@@ -28,12 +28,12 @@ import uk.org.ogsadai.tuple.TypeConverter;
 import uk.org.ogsadai.tuple.TypeMismatchException;
 
 /**
- * Scalar function to calculate sine.
+ * Scalar function to calculate the square root of the input value.
  * 
  * @author The OGSA-DAI Project Team.
  *
  */
-public class Sin extends LogicalExecutableFunctionBase {
+public class SquareRoot extends LogicalExecutableFunctionBase {
 
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE =
@@ -44,7 +44,7 @@ public class Sin extends LogicalExecutableFunctionBase {
         DAILogger.getLogger(Mod.class);
 
     /** The function's name. */
-    private static final String FUNCTION_NAME = "SIN";
+    private static final String FUNCTION_NAME = "SQRT";
     
     /** The data type of the input parameter. */
     private int mType = -1;
@@ -58,7 +58,7 @@ public class Sin extends LogicalExecutableFunctionBase {
     /**
      * Constructor.
      */
-    public Sin() {
+    public SquareRoot() {
         super(1);
     }
     
@@ -68,10 +68,10 @@ public class Sin extends LogicalExecutableFunctionBase {
      * 
      * @param mod
      */
-    public Sin(Sin sin) {
+    public SquareRoot(SquareRoot sqrt) {
         this();
-        mType = sin.getParameterType();
-        mResultType = sin.getOutputType();
+        mType = sqrt.getParameterType();
+        mResultType = sqrt.getOutputType();
     }
     
     /**
@@ -131,7 +131,7 @@ public class Sin extends LogicalExecutableFunctionBase {
     }
     
     /**
-     * Puts the input parameter X and computes sin(X).
+     * Puts the input parameter X and computes sqrt(X).
      * 
      */
     public void put(Object... parameters) {
@@ -153,14 +153,13 @@ public class Sin extends LogicalExecutableFunctionBase {
             }
             switch(mResultType) {
                 case TupleTypes._DOUBLE:
-                    mResult = Math.sin((Double)x);
+                    mResult = Math.sqrt((Double)x);
                     break;
                 case TupleTypes._BIGDECIMAL:
                     BigDecimal xb = (BigDecimal)x;
-                    mResult = Math.sin(xb.doubleValue());
+                    mResult = Math.sqrt(xb.doubleValue());
                     break;
             }
         }
     }
 }
-

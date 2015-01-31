@@ -28,12 +28,12 @@ import uk.org.ogsadai.tuple.TypeConverter;
 import uk.org.ogsadai.tuple.TypeMismatchException;
 
 /**
- * Scalar function to calculate sine.
+ * Scalar function to convert Degree to Radian.
  * 
  * @author The OGSA-DAI Project Team.
  *
  */
-public class Sin extends LogicalExecutableFunctionBase {
+public class RadDeg extends LogicalExecutableFunctionBase {
 
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE =
@@ -44,9 +44,10 @@ public class Sin extends LogicalExecutableFunctionBase {
         DAILogger.getLogger(Mod.class);
 
     /** The function's name. */
-    private static final String FUNCTION_NAME = "SIN";
+    private static final String FUNCTION_NAME = "RADDEG";
     
-    /** The data type of the input parameter. */
+    public static final double CONST = Math.PI/180.0;
+
     private int mType = -1;
 
     /** The data type of the evaluation result. */
@@ -58,7 +59,7 @@ public class Sin extends LogicalExecutableFunctionBase {
     /**
      * Constructor.
      */
-    public Sin() {
+    public RadDeg() {
         super(1);
     }
     
@@ -68,10 +69,10 @@ public class Sin extends LogicalExecutableFunctionBase {
      * 
      * @param mod
      */
-    public Sin(Sin sin) {
+    public RadDeg(RadDeg raddeg) {
         this();
-        mType = sin.getParameterType();
-        mResultType = sin.getOutputType();
+        mType = raddeg.getParameterType();
+        mResultType = raddeg.getOutputType();
     }
     
     /**
@@ -89,7 +90,7 @@ public class Sin extends LogicalExecutableFunctionBase {
     }
     
     /**
-     * Configures the function with the given data types.
+     * Configures the function with the given data type.
      */
     public void configure(int... types) throws TypeMismatchException {
         switch(types[0]) {
@@ -98,8 +99,10 @@ public class Sin extends LogicalExecutableFunctionBase {
         case TupleTypes._INT:
         case TupleTypes._DOUBLE:
         case TupleTypes._FLOAT:
-        case TupleTypes._BIGDECIMAL:
             mResultType = TupleTypes._DOUBLE;
+            break;
+        case TupleTypes._BIGDECIMAL:
+            mResultType = TupleTypes._BIGDECIMAL;
             break;
         default:  
             throw new TypeMismatchException(types[0]);
@@ -131,7 +134,7 @@ public class Sin extends LogicalExecutableFunctionBase {
     }
     
     /**
-     * Puts the input parameter X and computes sin(X).
+     * Puts the input parameter (as degree) and converts it into radian.
      * 
      */
     public void put(Object... parameters) {
@@ -153,14 +156,13 @@ public class Sin extends LogicalExecutableFunctionBase {
             }
             switch(mResultType) {
                 case TupleTypes._DOUBLE:
-                    mResult = Math.sin((Double)x);
+                    mResult = CONST * (Double)x;
                     break;
                 case TupleTypes._BIGDECIMAL:
                     BigDecimal xb = (BigDecimal)x;
-                    mResult = Math.sin(xb.doubleValue());
+                    mResult = xb.multiply(BigDecimal.valueOf(CONST));
                     break;
             }
         }
     }
 }
-
