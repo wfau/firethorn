@@ -18,6 +18,16 @@ class=uk.org.ogsadai.activity.block.ControlledRepeatActivity
 description=
 CONFIG
 END
+id=uk.org.ogsadai.Head
+class=uk.org.ogsadai.activity.block.HeadActivity
+description=
+CONFIG
+END
+id=uk.org.ogsadai.activity.block.HeadActivity
+class=uk.org.ogsadai.activity.block.HeadActivity
+description=
+CONFIG
+END
 id=uk.org.ogsadai.EndIf
 class=uk.org.ogsadai.activity.block.EndIfActivity
 description=
