@@ -224,6 +224,12 @@ public class ArithmeticExpressionFactory
                 return buildArithmeticExpression(
                     (CommonTree) expressionTree.getChild(0), 
                     functionRepository);
+            }    
+            else if (expressionTree.getType() == SQL92QueryParser.CAST)
+            {
+                return buildArithmeticExpression(
+                    (CommonTree) expressionTree.getChild(0), 
+                    functionRepository);
             }
             else
             {

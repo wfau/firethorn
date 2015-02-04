@@ -130,7 +130,7 @@ select_list
     |   '*' -> ^(COLUMN '*')
     ;
 derived_column
-    :   'CAST' value_expression 'AS' id1=ID ('AS'? id2=ID)? -> ^(COLUMN ^(CAST value_expression $id1) $id2?)
+    : 'CAST'  '(' value_expression 'AS' id1=ID ')' ('AS'? id2=ID)? -> ^(COLUMN ^(CAST value_expression $id1) $id2?)
     |   value_expression ('AS'? ID)? -> ^(COLUMN value_expression ID?)
     ;   
 order_by

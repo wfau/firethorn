@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g 2015-01-28 23:11:54
+// $ANTLR 3.5.1 /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g 2015-02-04 18:49:30
 
   package uk.org.ogsadai.parser.sql92query; 
 
@@ -276,7 +276,7 @@ public class SQL92QueryParser extends Parser {
 			if ( state.backtracking==0 ) stream_EOF.add(EOF5);
 
 			// AST REWRITE
-			// elements: query_expression, order_by, limit
+			// elements: limit, query_expression, order_by
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -1112,7 +1112,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: column_list, s2, s1, top, set_quantifier, table_expression, select_list
+					// elements: s2, set_quantifier, table_expression, s1, column_list, top, select_list
 					// token labels: 
 					// rule labels: s1, retval, s2
 					// token list labels: 
@@ -1509,7 +1509,7 @@ public class SQL92QueryParser extends Parser {
 
 
 	// $ANTLR start "derived_column"
-	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:132:1: derived_column : ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) );
+	// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:132:1: derived_column : ( 'CAST' '(' value_expression 'AS' id1= ID ')' ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) );
 	public final SQL92QueryParser.derived_column_return derived_column() throws RecognitionException {
 		SQL92QueryParser.derived_column_return retval = new SQL92QueryParser.derived_column_return();
 		retval.start = input.LT(1);
@@ -1519,27 +1519,33 @@ public class SQL92QueryParser extends Parser {
 		Token id1=null;
 		Token id2=null;
 		Token string_literal39=null;
-		Token string_literal41=null;
+		Token char_literal40=null;
 		Token string_literal42=null;
+		Token char_literal43=null;
 		Token string_literal44=null;
-		Token ID45=null;
-		ParserRuleReturnScope value_expression40 =null;
-		ParserRuleReturnScope value_expression43 =null;
+		Token string_literal46=null;
+		Token ID47=null;
+		ParserRuleReturnScope value_expression41 =null;
+		ParserRuleReturnScope value_expression45 =null;
 
 		CommonTree id1_tree=null;
 		CommonTree id2_tree=null;
 		CommonTree string_literal39_tree=null;
-		CommonTree string_literal41_tree=null;
+		CommonTree char_literal40_tree=null;
 		CommonTree string_literal42_tree=null;
+		CommonTree char_literal43_tree=null;
 		CommonTree string_literal44_tree=null;
-		CommonTree ID45_tree=null;
+		CommonTree string_literal46_tree=null;
+		CommonTree ID47_tree=null;
 		RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 		RewriteRuleTokenStream stream_61=new RewriteRuleTokenStream(adaptor,"token 61");
+		RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
+		RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
 		RewriteRuleTokenStream stream_65=new RewriteRuleTokenStream(adaptor,"token 65");
 		RewriteRuleSubtreeStream stream_value_expression=new RewriteRuleSubtreeStream(adaptor,"rule value_expression");
 
 		try {
-			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:5: ( 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) )
+			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:5: ( 'CAST' '(' value_expression 'AS' id1= ID ')' ( ( 'AS' )? id2= ID )? -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? ) | value_expression ( ( 'AS' )? ID )? -> ^( COLUMN value_expression ( ID )? ) )
 			int alt18=2;
 			int LA18_0 = input.LA(1);
 			if ( (LA18_0==65) ) {
@@ -1558,23 +1564,29 @@ public class SQL92QueryParser extends Parser {
 
 			switch (alt18) {
 				case 1 :
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:9: 'CAST' value_expression 'AS' id1= ID ( ( 'AS' )? id2= ID )?
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:7: 'CAST' '(' value_expression 'AS' id1= ID ')' ( ( 'AS' )? id2= ID )?
 					{
-					string_literal39=(Token)match(input,65,FOLLOW_65_in_derived_column771); if (state.failed) return retval; 
+					string_literal39=(Token)match(input,65,FOLLOW_65_in_derived_column769); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_65.add(string_literal39);
 
-					pushFollow(FOLLOW_value_expression_in_derived_column773);
-					value_expression40=value_expression();
+					char_literal40=(Token)match(input,42,FOLLOW_42_in_derived_column772); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_42.add(char_literal40);
+
+					pushFollow(FOLLOW_value_expression_in_derived_column774);
+					value_expression41=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_value_expression.add(value_expression40.getTree());
-					string_literal41=(Token)match(input,61,FOLLOW_61_in_derived_column775); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_61.add(string_literal41);
+					if ( state.backtracking==0 ) stream_value_expression.add(value_expression41.getTree());
+					string_literal42=(Token)match(input,61,FOLLOW_61_in_derived_column776); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_61.add(string_literal42);
 
-					id1=(Token)match(input,ID,FOLLOW_ID_in_derived_column779); if (state.failed) return retval; 
+					id1=(Token)match(input,ID,FOLLOW_ID_in_derived_column780); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_ID.add(id1);
 
-					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:45: ( ( 'AS' )? id2= ID )?
+					char_literal43=(Token)match(input,43,FOLLOW_43_in_derived_column782); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_43.add(char_literal43);
+
+					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:52: ( ( 'AS' )? id2= ID )?
 					int alt15=2;
 					int LA15_0 = input.LA(1);
 					if ( (LA15_0==ID||LA15_0==61) ) {
@@ -1582,9 +1594,9 @@ public class SQL92QueryParser extends Parser {
 					}
 					switch (alt15) {
 						case 1 :
-							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:46: ( 'AS' )? id2= ID
+							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:53: ( 'AS' )? id2= ID
 							{
-							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:46: ( 'AS' )?
+							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:53: ( 'AS' )?
 							int alt14=2;
 							int LA14_0 = input.LA(1);
 							if ( (LA14_0==61) ) {
@@ -1592,17 +1604,17 @@ public class SQL92QueryParser extends Parser {
 							}
 							switch (alt14) {
 								case 1 :
-									// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:46: 'AS'
+									// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:53: 'AS'
 									{
-									string_literal42=(Token)match(input,61,FOLLOW_61_in_derived_column782); if (state.failed) return retval; 
-									if ( state.backtracking==0 ) stream_61.add(string_literal42);
+									string_literal44=(Token)match(input,61,FOLLOW_61_in_derived_column785); if (state.failed) return retval; 
+									if ( state.backtracking==0 ) stream_61.add(string_literal44);
 
 									}
 									break;
 
 							}
 
-							id2=(Token)match(input,ID,FOLLOW_ID_in_derived_column787); if (state.failed) return retval; 
+							id2=(Token)match(input,ID,FOLLOW_ID_in_derived_column790); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_ID.add(id2);
 
 							}
@@ -1611,7 +1623,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: id2, id1, value_expression
+					// elements: id2, value_expression, id1
 					// token labels: id2, id1
 					// rule labels: retval
 					// token list labels: 
@@ -1624,13 +1636,13 @@ public class SQL92QueryParser extends Parser {
 					RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.getTree():null);
 
 					root_0 = (CommonTree)adaptor.nil();
-					// 133:61: -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
+					// 133:68: -> ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
 					{
-						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:64: ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
+						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:71: ^( COLUMN ^( CAST value_expression $id1) ( $id2)? )
 						{
 						CommonTree root_1 = (CommonTree)adaptor.nil();
 						root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(COLUMN, "COLUMN"), root_1);
-						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:73: ^( CAST value_expression $id1)
+						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:80: ^( CAST value_expression $id1)
 						{
 						CommonTree root_2 = (CommonTree)adaptor.nil();
 						root_2 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(CAST, "CAST"), root_2);
@@ -1639,7 +1651,7 @@ public class SQL92QueryParser extends Parser {
 						adaptor.addChild(root_1, root_2);
 						}
 
-						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:104: ( $id2)?
+						// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:133:111: ( $id2)?
 						if ( stream_id2.hasNext() ) {
 							adaptor.addChild(root_1, stream_id2.nextNode());
 						}
@@ -1659,11 +1671,11 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:134:9: value_expression ( ( 'AS' )? ID )?
 					{
-					pushFollow(FOLLOW_value_expression_in_derived_column818);
-					value_expression43=value_expression();
+					pushFollow(FOLLOW_value_expression_in_derived_column821);
+					value_expression45=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_value_expression.add(value_expression43.getTree());
+					if ( state.backtracking==0 ) stream_value_expression.add(value_expression45.getTree());
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:134:26: ( ( 'AS' )? ID )?
 					int alt17=2;
 					int LA17_0 = input.LA(1);
@@ -1684,16 +1696,16 @@ public class SQL92QueryParser extends Parser {
 								case 1 :
 									// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:134:27: 'AS'
 									{
-									string_literal44=(Token)match(input,61,FOLLOW_61_in_derived_column821); if (state.failed) return retval; 
-									if ( state.backtracking==0 ) stream_61.add(string_literal44);
+									string_literal46=(Token)match(input,61,FOLLOW_61_in_derived_column824); if (state.failed) return retval; 
+									if ( state.backtracking==0 ) stream_61.add(string_literal46);
 
 									}
 									break;
 
 							}
 
-							ID45=(Token)match(input,ID,FOLLOW_ID_in_derived_column824); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_ID.add(ID45);
+							ID47=(Token)match(input,ID,FOLLOW_ID_in_derived_column827); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_ID.add(ID47);
 
 							}
 							break;
@@ -1701,7 +1713,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: ID, value_expression
+					// elements: value_expression, ID
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -1775,15 +1787,15 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal46=null;
-		Token string_literal47=null;
-		Token char_literal49=null;
-		ParserRuleReturnScope ordered_sort_spec48 =null;
+		Token string_literal48=null;
+		Token string_literal49=null;
+		Token char_literal51=null;
 		ParserRuleReturnScope ordered_sort_spec50 =null;
+		ParserRuleReturnScope ordered_sort_spec52 =null;
 
-		CommonTree string_literal46_tree=null;
-		CommonTree string_literal47_tree=null;
-		CommonTree char_literal49_tree=null;
+		CommonTree string_literal48_tree=null;
+		CommonTree string_literal49_tree=null;
+		CommonTree char_literal51_tree=null;
 		RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
 		RewriteRuleTokenStream stream_94=new RewriteRuleTokenStream(adaptor,"token 94");
 		RewriteRuleTokenStream stream_64=new RewriteRuleTokenStream(adaptor,"token 64");
@@ -1793,17 +1805,17 @@ public class SQL92QueryParser extends Parser {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:137:5: ( 'ORDER' 'BY' ordered_sort_spec ( ',' ordered_sort_spec )* -> ^( ORDER ( ordered_sort_spec )+ ) )
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:137:9: 'ORDER' 'BY' ordered_sort_spec ( ',' ordered_sort_spec )*
 			{
-			string_literal46=(Token)match(input,94,FOLLOW_94_in_order_by858); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_94.add(string_literal46);
+			string_literal48=(Token)match(input,94,FOLLOW_94_in_order_by861); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_94.add(string_literal48);
 
-			string_literal47=(Token)match(input,64,FOLLOW_64_in_order_by860); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_64.add(string_literal47);
+			string_literal49=(Token)match(input,64,FOLLOW_64_in_order_by863); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_64.add(string_literal49);
 
-			pushFollow(FOLLOW_ordered_sort_spec_in_order_by862);
-			ordered_sort_spec48=ordered_sort_spec();
+			pushFollow(FOLLOW_ordered_sort_spec_in_order_by865);
+			ordered_sort_spec50=ordered_sort_spec();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec48.getTree());
+			if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec50.getTree());
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:137:40: ( ',' ordered_sort_spec )*
 			loop19:
 			while (true) {
@@ -1817,14 +1829,14 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:137:41: ',' ordered_sort_spec
 					{
-					char_literal49=(Token)match(input,46,FOLLOW_46_in_order_by865); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_46.add(char_literal49);
+					char_literal51=(Token)match(input,46,FOLLOW_46_in_order_by868); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_46.add(char_literal51);
 
-					pushFollow(FOLLOW_ordered_sort_spec_in_order_by867);
-					ordered_sort_spec50=ordered_sort_spec();
+					pushFollow(FOLLOW_ordered_sort_spec_in_order_by870);
+					ordered_sort_spec52=ordered_sort_spec();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec50.getTree());
+					if ( state.backtracking==0 ) stream_ordered_sort_spec.add(ordered_sort_spec52.getTree());
 					}
 					break;
 
@@ -1907,11 +1919,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token INT52=null;
-		ParserRuleReturnScope column_name51 =null;
-		ParserRuleReturnScope reserved_word_column_name53 =null;
+		Token INT54=null;
+		ParserRuleReturnScope column_name53 =null;
+		ParserRuleReturnScope reserved_word_column_name55 =null;
 
-		CommonTree INT52_tree=null;
+		CommonTree INT54_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:140:5: ( column_name | INT | reserved_word_column_name )
@@ -1996,11 +2008,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_column_name_in_sort_spec896);
-					column_name51=column_name();
+					pushFollow(FOLLOW_column_name_in_sort_spec899);
+					column_name53=column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name51.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name53.getTree());
 
 					}
 					break;
@@ -2010,10 +2022,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					INT52=(Token)match(input,INT,FOLLOW_INT_in_sort_spec900); if (state.failed) return retval;
+					INT54=(Token)match(input,INT,FOLLOW_INT_in_sort_spec903); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					INT52_tree = (CommonTree)adaptor.create(INT52);
-					adaptor.addChild(root_0, INT52_tree);
+					INT54_tree = (CommonTree)adaptor.create(INT54);
+					adaptor.addChild(root_0, INT54_tree);
 					}
 
 					}
@@ -2024,11 +2036,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_reserved_word_column_name_in_sort_spec904);
-					reserved_word_column_name53=reserved_word_column_name();
+					pushFollow(FOLLOW_reserved_word_column_name_in_sort_spec907);
+					reserved_word_column_name55=reserved_word_column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name53.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name55.getTree());
 
 					}
 					break;
@@ -2071,13 +2083,13 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal55=null;
 		Token string_literal57=null;
-		ParserRuleReturnScope sort_spec54 =null;
+		Token string_literal59=null;
 		ParserRuleReturnScope sort_spec56 =null;
+		ParserRuleReturnScope sort_spec58 =null;
 
-		CommonTree string_literal55_tree=null;
 		CommonTree string_literal57_tree=null;
+		CommonTree string_literal59_tree=null;
 		RewriteRuleTokenStream stream_69=new RewriteRuleTokenStream(adaptor,"token 69");
 		RewriteRuleTokenStream stream_62=new RewriteRuleTokenStream(adaptor,"token 62");
 		RewriteRuleSubtreeStream stream_sort_spec=new RewriteRuleSubtreeStream(adaptor,"rule sort_spec");
@@ -2718,13 +2730,13 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:143:9: sort_spec 'DESC'
 					{
-					pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec922);
-					sort_spec54=sort_spec();
+					pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec925);
+					sort_spec56=sort_spec();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec54.getTree());
-					string_literal55=(Token)match(input,69,FOLLOW_69_in_ordered_sort_spec924); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_69.add(string_literal55);
+					if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec56.getTree());
+					string_literal57=(Token)match(input,69,FOLLOW_69_in_ordered_sort_spec927); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_69.add(string_literal57);
 
 					// AST REWRITE
 					// elements: sort_spec
@@ -2759,11 +2771,11 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:144:9: sort_spec ( 'ASC' )?
 					{
-					pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec942);
-					sort_spec56=sort_spec();
+					pushFollow(FOLLOW_sort_spec_in_ordered_sort_spec945);
+					sort_spec58=sort_spec();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec56.getTree());
+					if ( state.backtracking==0 ) stream_sort_spec.add(sort_spec58.getTree());
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:144:19: ( 'ASC' )?
 					int alt21=2;
 					int LA21_0 = input.LA(1);
@@ -2774,8 +2786,8 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:144:19: 'ASC'
 							{
-							string_literal57=(Token)match(input,62,FOLLOW_62_in_ordered_sort_spec944); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_62.add(string_literal57);
+							string_literal59=(Token)match(input,62,FOLLOW_62_in_ordered_sort_spec947); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_62.add(string_literal59);
 
 							}
 							break;
@@ -2853,11 +2865,11 @@ public class SQL92QueryParser extends Parser {
 
 		Token tableid=null;
 		Token s=null;
-		Token char_literal58=null;
+		Token char_literal60=null;
 
 		CommonTree tableid_tree=null;
 		CommonTree s_tree=null;
-		CommonTree char_literal58_tree=null;
+		CommonTree char_literal60_tree=null;
 		RewriteRuleTokenStream stream_66=new RewriteRuleTokenStream(adaptor,"token 66");
 		RewriteRuleTokenStream stream_88=new RewriteRuleTokenStream(adaptor,"token 88");
 		RewriteRuleTokenStream stream_78=new RewriteRuleTokenStream(adaptor,"token 78");
@@ -2885,11 +2897,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:10: tableid= ID '.'
 					{
-					tableid=(Token)match(input,ID,FOLLOW_ID_in_reserved_word_column_name974); if (state.failed) return retval; 
+					tableid=(Token)match(input,ID,FOLLOW_ID_in_reserved_word_column_name977); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-					char_literal58=(Token)match(input,48,FOLLOW_48_in_reserved_word_column_name975); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_48.add(char_literal58);
+					char_literal60=(Token)match(input,48,FOLLOW_48_in_reserved_word_column_name978); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_48.add(char_literal60);
 
 					}
 					break;
@@ -2959,7 +2971,7 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:26: s= 'DATE'
 					{
-					s=(Token)match(input,66,FOLLOW_66_in_reserved_word_column_name981); if (state.failed) return retval; 
+					s=(Token)match(input,66,FOLLOW_66_in_reserved_word_column_name984); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_66.add(s);
 
 					}
@@ -2967,7 +2979,7 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:37: s= 'TIMESTAMP'
 					{
-					s=(Token)match(input,101,FOLLOW_101_in_reserved_word_column_name987); if (state.failed) return retval; 
+					s=(Token)match(input,101,FOLLOW_101_in_reserved_word_column_name990); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_101.add(s);
 
 					}
@@ -2975,7 +2987,7 @@ public class SQL92QueryParser extends Parser {
 				case 3 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:53: s= 'TIME'
 					{
-					s=(Token)match(input,100,FOLLOW_100_in_reserved_word_column_name993); if (state.failed) return retval; 
+					s=(Token)match(input,100,FOLLOW_100_in_reserved_word_column_name996); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_100.add(s);
 
 					}
@@ -2983,7 +2995,7 @@ public class SQL92QueryParser extends Parser {
 				case 4 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:64: s= 'INTERVAL'
 					{
-					s=(Token)match(input,82,FOLLOW_82_in_reserved_word_column_name999); if (state.failed) return retval; 
+					s=(Token)match(input,82,FOLLOW_82_in_reserved_word_column_name1002); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_82.add(s);
 
 					}
@@ -2991,7 +3003,7 @@ public class SQL92QueryParser extends Parser {
 				case 5 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:79: s= 'YEAR'
 					{
-					s=(Token)match(input,106,FOLLOW_106_in_reserved_word_column_name1005); if (state.failed) return retval; 
+					s=(Token)match(input,106,FOLLOW_106_in_reserved_word_column_name1008); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_106.add(s);
 
 					}
@@ -2999,7 +3011,7 @@ public class SQL92QueryParser extends Parser {
 				case 6 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:90: s= 'MONTH'
 					{
-					s=(Token)match(input,89,FOLLOW_89_in_reserved_word_column_name1011); if (state.failed) return retval; 
+					s=(Token)match(input,89,FOLLOW_89_in_reserved_word_column_name1014); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_89.add(s);
 
 					}
@@ -3007,7 +3019,7 @@ public class SQL92QueryParser extends Parser {
 				case 7 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:102: s= 'DAY'
 					{
-					s=(Token)match(input,67,FOLLOW_67_in_reserved_word_column_name1017); if (state.failed) return retval; 
+					s=(Token)match(input,67,FOLLOW_67_in_reserved_word_column_name1020); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_67.add(s);
 
 					}
@@ -3015,7 +3027,7 @@ public class SQL92QueryParser extends Parser {
 				case 8 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:112: s= 'HOUR'
 					{
-					s=(Token)match(input,78,FOLLOW_78_in_reserved_word_column_name1023); if (state.failed) return retval; 
+					s=(Token)match(input,78,FOLLOW_78_in_reserved_word_column_name1026); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_78.add(s);
 
 					}
@@ -3023,7 +3035,7 @@ public class SQL92QueryParser extends Parser {
 				case 9 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:123: s= 'MINUTE'
 					{
-					s=(Token)match(input,88,FOLLOW_88_in_reserved_word_column_name1029); if (state.failed) return retval; 
+					s=(Token)match(input,88,FOLLOW_88_in_reserved_word_column_name1032); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_88.add(s);
 
 					}
@@ -3031,7 +3043,7 @@ public class SQL92QueryParser extends Parser {
 				case 10 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:147:136: s= 'SECOND'
 					{
-					s=(Token)match(input,97,FOLLOW_97_in_reserved_word_column_name1035); if (state.failed) return retval; 
+					s=(Token)match(input,97,FOLLOW_97_in_reserved_word_column_name1038); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_97.add(s);
 
 					}
@@ -3040,7 +3052,7 @@ public class SQL92QueryParser extends Parser {
 			}
 
 			// AST REWRITE
-			// elements: s, tableid
+			// elements: tableid, s
 			// token labels: s, tableid
 			// rule labels: retval
 			// token list labels: 
@@ -3114,8 +3126,8 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope string_value_expression59 =null;
-		ParserRuleReturnScope numeric_value_expression60 =null;
+		ParserRuleReturnScope string_value_expression61 =null;
+		ParserRuleReturnScope numeric_value_expression62 =null;
 
 
 		try {
@@ -3317,11 +3329,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_string_value_expression_in_value_expression1081);
-					string_value_expression59=string_value_expression();
+					pushFollow(FOLLOW_string_value_expression_in_value_expression1084);
+					string_value_expression61=string_value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, string_value_expression59.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, string_value_expression61.getTree());
 
 					}
 					break;
@@ -3331,11 +3343,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_numeric_value_expression_in_value_expression1091);
-					numeric_value_expression60=numeric_value_expression();
+					pushFollow(FOLLOW_numeric_value_expression_in_value_expression1094);
+					numeric_value_expression62=numeric_value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_value_expression60.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_value_expression62.getTree());
 
 					}
 					break;
@@ -3378,11 +3390,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token set62=null;
-		ParserRuleReturnScope factor61 =null;
+		Token set64=null;
 		ParserRuleReturnScope factor63 =null;
+		ParserRuleReturnScope factor65 =null;
 
-		CommonTree set62_tree=null;
+		CommonTree set64_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:155:5: ( factor ( ( '+' | '-' ) ^ factor )* )
@@ -3391,11 +3403,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_factor_in_numeric_value_expression1110);
-			factor61=factor();
+			pushFollow(FOLLOW_factor_in_numeric_value_expression1113);
+			factor63=factor();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, factor61.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, factor63.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:155:16: ( ( '+' | '-' ) ^ factor )*
 			loop26:
@@ -3421,11 +3433,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:155:17: ( '+' | '-' ) ^ factor
 					{
-					set62=input.LT(1);
-					set62=input.LT(1);
+					set64=input.LT(1);
+					set64=input.LT(1);
 					if ( input.LA(1)==45||input.LA(1)==47 ) {
 						input.consume();
-						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set62), root_0);
+						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set64), root_0);
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -3434,11 +3446,11 @@ public class SQL92QueryParser extends Parser {
 						MismatchedSetException mse = new MismatchedSetException(null,input);
 						throw mse;
 					}
-					pushFollow(FOLLOW_factor_in_numeric_value_expression1120);
-					factor63=factor();
+					pushFollow(FOLLOW_factor_in_numeric_value_expression1123);
+					factor65=factor();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, factor63.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, factor65.getTree());
 
 					}
 					break;
@@ -3487,11 +3499,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token set65=null;
-		ParserRuleReturnScope numeric_primary64 =null;
+		Token set67=null;
 		ParserRuleReturnScope numeric_primary66 =null;
+		ParserRuleReturnScope numeric_primary68 =null;
 
-		CommonTree set65_tree=null;
+		CommonTree set67_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:158:5: ( numeric_primary ( ( '*' | '/' ) ^ numeric_primary )* )
@@ -3500,11 +3512,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_numeric_primary_in_factor1142);
-			numeric_primary64=numeric_primary();
+			pushFollow(FOLLOW_numeric_primary_in_factor1145);
+			numeric_primary66=numeric_primary();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary64.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary66.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:158:25: ( ( '*' | '/' ) ^ numeric_primary )*
 			loop27:
@@ -3519,11 +3531,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:158:26: ( '*' | '/' ) ^ numeric_primary
 					{
-					set65=input.LT(1);
-					set65=input.LT(1);
+					set67=input.LT(1);
+					set67=input.LT(1);
 					if ( input.LA(1)==44||input.LA(1)==49 ) {
 						input.consume();
-						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set65), root_0);
+						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set67), root_0);
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -3532,11 +3544,11 @@ public class SQL92QueryParser extends Parser {
 						MismatchedSetException mse = new MismatchedSetException(null,input);
 						throw mse;
 					}
-					pushFollow(FOLLOW_numeric_primary_in_factor1152);
-					numeric_primary66=numeric_primary();
+					pushFollow(FOLLOW_numeric_primary_in_factor1155);
+					numeric_primary68=numeric_primary();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary66.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, numeric_primary68.getTree());
 
 					}
 					break;
@@ -3585,12 +3597,12 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal67=null;
-		Token char_literal68=null;
-		ParserRuleReturnScope value_expression_primary69 =null;
+		Token char_literal69=null;
+		Token char_literal70=null;
+		ParserRuleReturnScope value_expression_primary71 =null;
 
-		CommonTree char_literal67_tree=null;
-		CommonTree char_literal68_tree=null;
+		CommonTree char_literal69_tree=null;
+		CommonTree char_literal70_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:161:5: ( ( '+' ^| '-' ^)? value_expression_primary )
@@ -3612,10 +3624,10 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:161:10: '+' ^
 					{
-					char_literal67=(Token)match(input,45,FOLLOW_45_in_numeric_primary1173); if (state.failed) return retval;
+					char_literal69=(Token)match(input,45,FOLLOW_45_in_numeric_primary1176); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					char_literal67_tree = (CommonTree)adaptor.create(char_literal67);
-					root_0 = (CommonTree)adaptor.becomeRoot(char_literal67_tree, root_0);
+					char_literal69_tree = (CommonTree)adaptor.create(char_literal69);
+					root_0 = (CommonTree)adaptor.becomeRoot(char_literal69_tree, root_0);
 					}
 
 					}
@@ -3623,10 +3635,10 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:161:15: '-' ^
 					{
-					char_literal68=(Token)match(input,47,FOLLOW_47_in_numeric_primary1176); if (state.failed) return retval;
+					char_literal70=(Token)match(input,47,FOLLOW_47_in_numeric_primary1179); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					char_literal68_tree = (CommonTree)adaptor.create(char_literal68);
-					root_0 = (CommonTree)adaptor.becomeRoot(char_literal68_tree, root_0);
+					char_literal70_tree = (CommonTree)adaptor.create(char_literal70);
+					root_0 = (CommonTree)adaptor.becomeRoot(char_literal70_tree, root_0);
 					}
 
 					}
@@ -3634,11 +3646,11 @@ public class SQL92QueryParser extends Parser {
 
 			}
 
-			pushFollow(FOLLOW_value_expression_primary_in_numeric_primary1181);
-			value_expression_primary69=value_expression_primary();
+			pushFollow(FOLLOW_value_expression_primary_in_numeric_primary1184);
+			value_expression_primary71=value_expression_primary();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression_primary69.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression_primary71.getTree());
 
 			}
 
@@ -3679,16 +3691,16 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal70=null;
 		Token char_literal72=null;
-		ParserRuleReturnScope value_expression71 =null;
-		ParserRuleReturnScope function73 =null;
-		ParserRuleReturnScope column_name74 =null;
-		ParserRuleReturnScope literal75 =null;
-		ParserRuleReturnScope sub_query76 =null;
+		Token char_literal74=null;
+		ParserRuleReturnScope value_expression73 =null;
+		ParserRuleReturnScope function75 =null;
+		ParserRuleReturnScope column_name76 =null;
+		ParserRuleReturnScope literal77 =null;
+		ParserRuleReturnScope sub_query78 =null;
 
-		CommonTree char_literal70_tree=null;
 		CommonTree char_literal72_tree=null;
+		CommonTree char_literal74_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:164:5: ( '(' ! value_expression ')' !| function | column_name | literal | sub_query )
@@ -3768,14 +3780,14 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					char_literal70=(Token)match(input,42,FOLLOW_42_in_value_expression_primary1201); if (state.failed) return retval;
-					pushFollow(FOLLOW_value_expression_in_value_expression_primary1204);
-					value_expression71=value_expression();
+					char_literal72=(Token)match(input,42,FOLLOW_42_in_value_expression_primary1204); if (state.failed) return retval;
+					pushFollow(FOLLOW_value_expression_in_value_expression_primary1207);
+					value_expression73=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression71.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression73.getTree());
 
-					char_literal72=(Token)match(input,43,FOLLOW_43_in_value_expression_primary1206); if (state.failed) return retval;
+					char_literal74=(Token)match(input,43,FOLLOW_43_in_value_expression_primary1209); if (state.failed) return retval;
 					}
 					break;
 				case 2 :
@@ -3784,11 +3796,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_function_in_value_expression_primary1217);
-					function73=function();
+					pushFollow(FOLLOW_function_in_value_expression_primary1220);
+					function75=function();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, function73.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, function75.getTree());
 
 					}
 					break;
@@ -3798,11 +3810,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_column_name_in_value_expression_primary1227);
-					column_name74=column_name();
+					pushFollow(FOLLOW_column_name_in_value_expression_primary1230);
+					column_name76=column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name74.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name76.getTree());
 
 					}
 					break;
@@ -3812,11 +3824,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_literal_in_value_expression_primary1237);
-					literal75=literal();
+					pushFollow(FOLLOW_literal_in_value_expression_primary1240);
+					literal77=literal();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal75.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal77.getTree());
 
 					}
 					break;
@@ -3826,11 +3838,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_sub_query_in_value_expression_primary1247);
-					sub_query76=sub_query();
+					pushFollow(FOLLOW_sub_query_in_value_expression_primary1250);
+					sub_query78=sub_query();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query76.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query78.getTree());
 
 					}
 					break;
@@ -3873,23 +3885,23 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token INT77=null;
-		Token FLOAT78=null;
-		Token NUMERIC79=null;
-		Token STRING80=null;
-		Token string_literal83=null;
-		Token string_literal84=null;
+		Token INT79=null;
+		Token FLOAT80=null;
+		Token NUMERIC81=null;
+		Token STRING82=null;
 		Token string_literal85=null;
-		ParserRuleReturnScope datetime81 =null;
-		ParserRuleReturnScope interval82 =null;
+		Token string_literal86=null;
+		Token string_literal87=null;
+		ParserRuleReturnScope datetime83 =null;
+		ParserRuleReturnScope interval84 =null;
 
-		CommonTree INT77_tree=null;
-		CommonTree FLOAT78_tree=null;
-		CommonTree NUMERIC79_tree=null;
-		CommonTree STRING80_tree=null;
-		CommonTree string_literal83_tree=null;
-		CommonTree string_literal84_tree=null;
+		CommonTree INT79_tree=null;
+		CommonTree FLOAT80_tree=null;
+		CommonTree NUMERIC81_tree=null;
+		CommonTree STRING82_tree=null;
 		CommonTree string_literal85_tree=null;
+		CommonTree string_literal86_tree=null;
+		CommonTree string_literal87_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:171:5: ( INT | FLOAT | NUMERIC | STRING | datetime | interval | 'NULL' | 'TRUE' | 'FALSE' )
@@ -4005,10 +4017,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					INT77=(Token)match(input,INT,FOLLOW_INT_in_literal1265); if (state.failed) return retval;
+					INT79=(Token)match(input,INT,FOLLOW_INT_in_literal1268); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					INT77_tree = (CommonTree)adaptor.create(INT77);
-					adaptor.addChild(root_0, INT77_tree);
+					INT79_tree = (CommonTree)adaptor.create(INT79);
+					adaptor.addChild(root_0, INT79_tree);
 					}
 
 					}
@@ -4019,10 +4031,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					FLOAT78=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_literal1269); if (state.failed) return retval;
+					FLOAT80=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_literal1272); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					FLOAT78_tree = (CommonTree)adaptor.create(FLOAT78);
-					adaptor.addChild(root_0, FLOAT78_tree);
+					FLOAT80_tree = (CommonTree)adaptor.create(FLOAT80);
+					adaptor.addChild(root_0, FLOAT80_tree);
 					}
 
 					}
@@ -4033,10 +4045,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					NUMERIC79=(Token)match(input,NUMERIC,FOLLOW_NUMERIC_in_literal1273); if (state.failed) return retval;
+					NUMERIC81=(Token)match(input,NUMERIC,FOLLOW_NUMERIC_in_literal1276); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					NUMERIC79_tree = (CommonTree)adaptor.create(NUMERIC79);
-					adaptor.addChild(root_0, NUMERIC79_tree);
+					NUMERIC81_tree = (CommonTree)adaptor.create(NUMERIC81);
+					adaptor.addChild(root_0, NUMERIC81_tree);
 					}
 
 					}
@@ -4047,10 +4059,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					STRING80=(Token)match(input,STRING,FOLLOW_STRING_in_literal1277); if (state.failed) return retval;
+					STRING82=(Token)match(input,STRING,FOLLOW_STRING_in_literal1280); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					STRING80_tree = (CommonTree)adaptor.create(STRING80);
-					adaptor.addChild(root_0, STRING80_tree);
+					STRING82_tree = (CommonTree)adaptor.create(STRING82);
+					adaptor.addChild(root_0, STRING82_tree);
 					}
 
 					}
@@ -4061,11 +4073,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_datetime_in_literal1281);
-					datetime81=datetime();
+					pushFollow(FOLLOW_datetime_in_literal1284);
+					datetime83=datetime();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, datetime81.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, datetime83.getTree());
 
 					}
 					break;
@@ -4075,11 +4087,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_interval_in_literal1285);
-					interval82=interval();
+					pushFollow(FOLLOW_interval_in_literal1288);
+					interval84=interval();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, interval82.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, interval84.getTree());
 
 					}
 					break;
@@ -4089,10 +4101,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal83=(Token)match(input,91,FOLLOW_91_in_literal1289); if (state.failed) return retval;
+					string_literal85=(Token)match(input,91,FOLLOW_91_in_literal1292); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal83_tree = (CommonTree)adaptor.create(string_literal83);
-					adaptor.addChild(root_0, string_literal83_tree);
+					string_literal85_tree = (CommonTree)adaptor.create(string_literal85);
+					adaptor.addChild(root_0, string_literal85_tree);
 					}
 
 					}
@@ -4103,10 +4115,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal84=(Token)match(input,103,FOLLOW_103_in_literal1293); if (state.failed) return retval;
+					string_literal86=(Token)match(input,103,FOLLOW_103_in_literal1296); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal84_tree = (CommonTree)adaptor.create(string_literal84);
-					adaptor.addChild(root_0, string_literal84_tree);
+					string_literal86_tree = (CommonTree)adaptor.create(string_literal86);
+					adaptor.addChild(root_0, string_literal86_tree);
 					}
 
 					}
@@ -4117,10 +4129,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal85=(Token)match(input,73,FOLLOW_73_in_literal1297); if (state.failed) return retval;
+					string_literal87=(Token)match(input,73,FOLLOW_73_in_literal1300); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal85_tree = (CommonTree)adaptor.create(string_literal85);
-					adaptor.addChild(root_0, string_literal85_tree);
+					string_literal87_tree = (CommonTree)adaptor.create(string_literal87);
+					adaptor.addChild(root_0, string_literal87_tree);
 					}
 
 					}
@@ -4166,15 +4178,15 @@ public class SQL92QueryParser extends Parser {
 
 		Token tableid=null;
 		Token s=null;
-		Token set86=null;
-		Token STRING87=null;
-		Token char_literal88=null;
+		Token set88=null;
+		Token STRING89=null;
+		Token char_literal90=null;
 
 		CommonTree tableid_tree=null;
 		CommonTree s_tree=null;
-		CommonTree set86_tree=null;
-		CommonTree STRING87_tree=null;
-		CommonTree char_literal88_tree=null;
+		CommonTree set88_tree=null;
+		CommonTree STRING89_tree=null;
+		CommonTree char_literal90_tree=null;
 		RewriteRuleTokenStream stream_66=new RewriteRuleTokenStream(adaptor,"token 66");
 		RewriteRuleTokenStream stream_100=new RewriteRuleTokenStream(adaptor,"token 100");
 		RewriteRuleTokenStream stream_101=new RewriteRuleTokenStream(adaptor,"token 101");
@@ -4299,11 +4311,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					set86=input.LT(1);
-					set86=input.LT(1);
+					set88=input.LT(1);
+					set88=input.LT(1);
 					if ( input.LA(1)==66||(input.LA(1) >= 100 && input.LA(1) <= 101) ) {
 						input.consume();
-						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set86), root_0);
+						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set88), root_0);
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -4312,10 +4324,10 @@ public class SQL92QueryParser extends Parser {
 						MismatchedSetException mse = new MismatchedSetException(null,input);
 						throw mse;
 					}
-					STRING87=(Token)match(input,STRING,FOLLOW_STRING_in_datetime1328); if (state.failed) return retval;
+					STRING89=(Token)match(input,STRING,FOLLOW_STRING_in_datetime1331); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					STRING87_tree = (CommonTree)adaptor.create(STRING87);
-					adaptor.addChild(root_0, STRING87_tree);
+					STRING89_tree = (CommonTree)adaptor.create(STRING89);
+					adaptor.addChild(root_0, STRING89_tree);
 					}
 
 					}
@@ -4333,11 +4345,11 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:175:10: tableid= ID '.'
 							{
-							tableid=(Token)match(input,ID,FOLLOW_ID_in_datetime1341); if (state.failed) return retval; 
+							tableid=(Token)match(input,ID,FOLLOW_ID_in_datetime1344); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-							char_literal88=(Token)match(input,48,FOLLOW_48_in_datetime1342); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_48.add(char_literal88);
+							char_literal90=(Token)match(input,48,FOLLOW_48_in_datetime1345); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_48.add(char_literal90);
 
 							}
 							break;
@@ -4372,7 +4384,7 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:175:26: s= 'DATE'
 							{
-							s=(Token)match(input,66,FOLLOW_66_in_datetime1348); if (state.failed) return retval; 
+							s=(Token)match(input,66,FOLLOW_66_in_datetime1351); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_66.add(s);
 
 							}
@@ -4380,7 +4392,7 @@ public class SQL92QueryParser extends Parser {
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:175:37: s= 'TIMESTAMP'
 							{
-							s=(Token)match(input,101,FOLLOW_101_in_datetime1354); if (state.failed) return retval; 
+							s=(Token)match(input,101,FOLLOW_101_in_datetime1357); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_101.add(s);
 
 							}
@@ -4388,7 +4400,7 @@ public class SQL92QueryParser extends Parser {
 						case 3 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:175:53: s= 'TIME'
 							{
-							s=(Token)match(input,100,FOLLOW_100_in_datetime1360); if (state.failed) return retval; 
+							s=(Token)match(input,100,FOLLOW_100_in_datetime1363); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_100.add(s);
 
 							}
@@ -4397,7 +4409,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: s, tableid
+					// elements: tableid, s
 					// token labels: s, tableid
 					// rule labels: retval
 					// token list labels: 
@@ -4475,17 +4487,17 @@ public class SQL92QueryParser extends Parser {
 
 		Token tableid=null;
 		Token s=null;
-		Token string_literal89=null;
-		Token STRING90=null;
-		Token set91=null;
-		Token char_literal92=null;
+		Token string_literal91=null;
+		Token STRING92=null;
+		Token set93=null;
+		Token char_literal94=null;
 
 		CommonTree tableid_tree=null;
 		CommonTree s_tree=null;
-		CommonTree string_literal89_tree=null;
-		CommonTree STRING90_tree=null;
-		CommonTree set91_tree=null;
-		CommonTree char_literal92_tree=null;
+		CommonTree string_literal91_tree=null;
+		CommonTree STRING92_tree=null;
+		CommonTree set93_tree=null;
+		CommonTree char_literal94_tree=null;
 		RewriteRuleTokenStream stream_88=new RewriteRuleTokenStream(adaptor,"token 88");
 		RewriteRuleTokenStream stream_78=new RewriteRuleTokenStream(adaptor,"token 78");
 		RewriteRuleTokenStream stream_67=new RewriteRuleTokenStream(adaptor,"token 67");
@@ -4666,22 +4678,22 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal89=(Token)match(input,82,FOLLOW_82_in_interval1392); if (state.failed) return retval;
+					string_literal91=(Token)match(input,82,FOLLOW_82_in_interval1395); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal89_tree = (CommonTree)adaptor.create(string_literal89);
-					root_0 = (CommonTree)adaptor.becomeRoot(string_literal89_tree, root_0);
+					string_literal91_tree = (CommonTree)adaptor.create(string_literal91);
+					root_0 = (CommonTree)adaptor.becomeRoot(string_literal91_tree, root_0);
 					}
 
-					STRING90=(Token)match(input,STRING,FOLLOW_STRING_in_interval1395); if (state.failed) return retval;
+					STRING92=(Token)match(input,STRING,FOLLOW_STRING_in_interval1398); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					STRING90_tree = (CommonTree)adaptor.create(STRING90);
-					adaptor.addChild(root_0, STRING90_tree);
+					STRING92_tree = (CommonTree)adaptor.create(STRING92);
+					adaptor.addChild(root_0, STRING92_tree);
 					}
 
-					set91=input.LT(1);
+					set93=input.LT(1);
 					if ( input.LA(1)==67||input.LA(1)==78||(input.LA(1) >= 88 && input.LA(1) <= 89)||input.LA(1)==97||input.LA(1)==106 ) {
 						input.consume();
-						if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set91));
+						if ( state.backtracking==0 ) adaptor.addChild(root_0, (CommonTree)adaptor.create(set93));
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -4705,11 +4717,11 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:10: tableid= ID '.'
 							{
-							tableid=(Token)match(input,ID,FOLLOW_ID_in_interval1432); if (state.failed) return retval; 
+							tableid=(Token)match(input,ID,FOLLOW_ID_in_interval1435); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-							char_literal92=(Token)match(input,48,FOLLOW_48_in_interval1433); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_48.add(char_literal92);
+							char_literal94=(Token)match(input,48,FOLLOW_48_in_interval1436); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_48.add(char_literal94);
 
 							}
 							break;
@@ -4764,7 +4776,7 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:26: s= 'INTERVAL'
 							{
-							s=(Token)match(input,82,FOLLOW_82_in_interval1439); if (state.failed) return retval; 
+							s=(Token)match(input,82,FOLLOW_82_in_interval1442); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_82.add(s);
 
 							}
@@ -4772,7 +4784,7 @@ public class SQL92QueryParser extends Parser {
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:41: s= 'YEAR'
 							{
-							s=(Token)match(input,106,FOLLOW_106_in_interval1445); if (state.failed) return retval; 
+							s=(Token)match(input,106,FOLLOW_106_in_interval1448); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_106.add(s);
 
 							}
@@ -4780,7 +4792,7 @@ public class SQL92QueryParser extends Parser {
 						case 3 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:52: s= 'MONTH'
 							{
-							s=(Token)match(input,89,FOLLOW_89_in_interval1451); if (state.failed) return retval; 
+							s=(Token)match(input,89,FOLLOW_89_in_interval1454); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_89.add(s);
 
 							}
@@ -4788,7 +4800,7 @@ public class SQL92QueryParser extends Parser {
 						case 4 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:64: s= 'DAY'
 							{
-							s=(Token)match(input,67,FOLLOW_67_in_interval1457); if (state.failed) return retval; 
+							s=(Token)match(input,67,FOLLOW_67_in_interval1460); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_67.add(s);
 
 							}
@@ -4796,7 +4808,7 @@ public class SQL92QueryParser extends Parser {
 						case 5 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:74: s= 'HOUR'
 							{
-							s=(Token)match(input,78,FOLLOW_78_in_interval1463); if (state.failed) return retval; 
+							s=(Token)match(input,78,FOLLOW_78_in_interval1466); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_78.add(s);
 
 							}
@@ -4804,7 +4816,7 @@ public class SQL92QueryParser extends Parser {
 						case 6 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:85: s= 'MINUTE'
 							{
-							s=(Token)match(input,88,FOLLOW_88_in_interval1469); if (state.failed) return retval; 
+							s=(Token)match(input,88,FOLLOW_88_in_interval1472); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_88.add(s);
 
 							}
@@ -4812,7 +4824,7 @@ public class SQL92QueryParser extends Parser {
 						case 7 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:179:98: s= 'SECOND'
 							{
-							s=(Token)match(input,97,FOLLOW_97_in_interval1475); if (state.failed) return retval; 
+							s=(Token)match(input,97,FOLLOW_97_in_interval1478); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_97.add(s);
 
 							}
@@ -4821,7 +4833,7 @@ public class SQL92QueryParser extends Parser {
 					}
 
 					// AST REWRITE
-					// elements: s, tableid
+					// elements: tableid, s
 					// token labels: s, tableid
 					// rule labels: retval
 					// token list labels: 
@@ -4898,22 +4910,22 @@ public class SQL92QueryParser extends Parser {
 		CommonTree root_0 = null;
 
 		Token name=null;
-		Token char_literal93=null;
 		Token char_literal95=null;
 		Token char_literal97=null;
-		Token char_literal98=null;
 		Token char_literal99=null;
 		Token char_literal100=null;
-		ParserRuleReturnScope value_expression94 =null;
+		Token char_literal101=null;
+		Token char_literal102=null;
 		ParserRuleReturnScope value_expression96 =null;
+		ParserRuleReturnScope value_expression98 =null;
 
 		CommonTree name_tree=null;
-		CommonTree char_literal93_tree=null;
 		CommonTree char_literal95_tree=null;
 		CommonTree char_literal97_tree=null;
-		CommonTree char_literal98_tree=null;
 		CommonTree char_literal99_tree=null;
 		CommonTree char_literal100_tree=null;
+		CommonTree char_literal101_tree=null;
+		CommonTree char_literal102_tree=null;
 		RewriteRuleTokenStream stream_44=new RewriteRuleTokenStream(adaptor,"token 44");
 		RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
 		RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
@@ -4982,13 +4994,13 @@ public class SQL92QueryParser extends Parser {
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:182:9: (name= ID )
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:182:10: name= ID
 					{
-					name=(Token)match(input,ID,FOLLOW_ID_in_function1513); if (state.failed) return retval; 
+					name=(Token)match(input,ID,FOLLOW_ID_in_function1516); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_ID.add(name);
 
 					}
 
-					char_literal93=(Token)match(input,42,FOLLOW_42_in_function1516); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_42.add(char_literal93);
+					char_literal95=(Token)match(input,42,FOLLOW_42_in_function1519); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_42.add(char_literal95);
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:182:23: ( value_expression )?
 					int alt37=2;
@@ -5000,11 +5012,11 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:182:23: value_expression
 							{
-							pushFollow(FOLLOW_value_expression_in_function1518);
-							value_expression94=value_expression();
+							pushFollow(FOLLOW_value_expression_in_function1521);
+							value_expression96=value_expression();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) stream_value_expression.add(value_expression94.getTree());
+							if ( state.backtracking==0 ) stream_value_expression.add(value_expression96.getTree());
 							}
 							break;
 
@@ -5023,14 +5035,14 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:182:42: ',' value_expression
 							{
-							char_literal95=(Token)match(input,46,FOLLOW_46_in_function1522); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_46.add(char_literal95);
+							char_literal97=(Token)match(input,46,FOLLOW_46_in_function1525); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_46.add(char_literal97);
 
-							pushFollow(FOLLOW_value_expression_in_function1524);
-							value_expression96=value_expression();
+							pushFollow(FOLLOW_value_expression_in_function1527);
+							value_expression98=value_expression();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) stream_value_expression.add(value_expression96.getTree());
+							if ( state.backtracking==0 ) stream_value_expression.add(value_expression98.getTree());
 							}
 							break;
 
@@ -5039,8 +5051,8 @@ public class SQL92QueryParser extends Parser {
 						}
 					}
 
-					char_literal97=(Token)match(input,43,FOLLOW_43_in_function1528); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_43.add(char_literal97);
+					char_literal99=(Token)match(input,43,FOLLOW_43_in_function1531); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_43.add(char_literal99);
 
 					// AST REWRITE
 					// elements: name, value_expression
@@ -5085,22 +5097,22 @@ public class SQL92QueryParser extends Parser {
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:184:9: (name= ID )
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:184:10: name= ID
 					{
-					name=(Token)match(input,ID,FOLLOW_ID_in_function1566); if (state.failed) return retval; 
+					name=(Token)match(input,ID,FOLLOW_ID_in_function1569); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_ID.add(name);
 
 					}
 
-					char_literal98=(Token)match(input,42,FOLLOW_42_in_function1569); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_42.add(char_literal98);
+					char_literal100=(Token)match(input,42,FOLLOW_42_in_function1572); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_42.add(char_literal100);
 
-					char_literal99=(Token)match(input,44,FOLLOW_44_in_function1571); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_44.add(char_literal99);
+					char_literal101=(Token)match(input,44,FOLLOW_44_in_function1574); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_44.add(char_literal101);
 
-					char_literal100=(Token)match(input,43,FOLLOW_43_in_function1573); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_43.add(char_literal100);
+					char_literal102=(Token)match(input,43,FOLLOW_43_in_function1576); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_43.add(char_literal102);
 
 					// AST REWRITE
-					// elements: 44, name
+					// elements: name, 44
 					// token labels: name
 					// rule labels: retval
 					// token list labels: 
@@ -5170,15 +5182,15 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token STRING102=null;
-		Token string_literal103=null;
-		Token STRING105=null;
-		ParserRuleReturnScope column_name101 =null;
-		ParserRuleReturnScope column_name104 =null;
+		Token STRING104=null;
+		Token string_literal105=null;
+		Token STRING107=null;
+		ParserRuleReturnScope column_name103 =null;
+		ParserRuleReturnScope column_name106 =null;
 
-		CommonTree STRING102_tree=null;
-		CommonTree string_literal103_tree=null;
-		CommonTree STRING105_tree=null;
+		CommonTree STRING104_tree=null;
+		CommonTree string_literal105_tree=null;
+		CommonTree STRING107_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:5: ( ( column_name | STRING ) ( '||' ^ ( column_name | STRING ) )+ )
@@ -5208,21 +5220,21 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:10: column_name
 					{
-					pushFollow(FOLLOW_column_name_in_string_value_expression1603);
-					column_name101=column_name();
+					pushFollow(FOLLOW_column_name_in_string_value_expression1606);
+					column_name103=column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name101.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name103.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:24: STRING
 					{
-					STRING102=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1607); if (state.failed) return retval;
+					STRING104=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1610); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					STRING102_tree = (CommonTree)adaptor.create(STRING102);
-					adaptor.addChild(root_0, STRING102_tree);
+					STRING104_tree = (CommonTree)adaptor.create(STRING104);
+					adaptor.addChild(root_0, STRING104_tree);
 					}
 
 					}
@@ -5244,10 +5256,10 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:33: '||' ^ ( column_name | STRING )
 					{
-					string_literal103=(Token)match(input,107,FOLLOW_107_in_string_value_expression1611); if (state.failed) return retval;
+					string_literal105=(Token)match(input,107,FOLLOW_107_in_string_value_expression1614); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal103_tree = (CommonTree)adaptor.create(string_literal103);
-					root_0 = (CommonTree)adaptor.becomeRoot(string_literal103_tree, root_0);
+					string_literal105_tree = (CommonTree)adaptor.create(string_literal105);
+					root_0 = (CommonTree)adaptor.becomeRoot(string_literal105_tree, root_0);
 					}
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:39: ( column_name | STRING )
@@ -5271,21 +5283,21 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:40: column_name
 							{
-							pushFollow(FOLLOW_column_name_in_string_value_expression1615);
-							column_name104=column_name();
+							pushFollow(FOLLOW_column_name_in_string_value_expression1618);
+							column_name106=column_name();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name104.getTree());
+							if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name106.getTree());
 
 							}
 							break;
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:187:54: STRING
 							{
-							STRING105=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1619); if (state.failed) return retval;
+							STRING107=(Token)match(input,STRING,FOLLOW_STRING_in_string_value_expression1622); if (state.failed) return retval;
 							if ( state.backtracking==0 ) {
-							STRING105_tree = (CommonTree)adaptor.create(STRING105);
-							adaptor.addChild(root_0, STRING105_tree);
+							STRING107_tree = (CommonTree)adaptor.create(STRING107);
+							adaptor.addChild(root_0, STRING107_tree);
 							}
 
 							}
@@ -5344,7 +5356,7 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope table_reference106 =null;
+		ParserRuleReturnScope table_reference108 =null;
 
 
 		try {
@@ -5354,11 +5366,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_table_reference_in_table_expression1640);
-			table_reference106=table_reference();
+			pushFollow(FOLLOW_table_reference_in_table_expression1643);
+			table_reference108=table_reference();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference106.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference108.getTree());
 
 			}
 
@@ -5399,11 +5411,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal108=null;
-		ParserRuleReturnScope table107 =null;
-		ParserRuleReturnScope table_reference109 =null;
+		Token char_literal110=null;
+		ParserRuleReturnScope table109 =null;
+		ParserRuleReturnScope table_reference111 =null;
 
-		CommonTree char_literal108_tree=null;
+		CommonTree char_literal110_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:193:5: ( table ( ',' ! table_reference )* )
@@ -5412,11 +5424,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_table_in_table_reference1658);
-			table107=table();
+			pushFollow(FOLLOW_table_in_table_reference1661);
+			table109=table();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, table107.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, table109.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:193:15: ( ',' ! table_reference )*
 			loop43:
@@ -5435,12 +5447,12 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:193:16: ',' ! table_reference
 					{
-					char_literal108=(Token)match(input,46,FOLLOW_46_in_table_reference1661); if (state.failed) return retval;
-					pushFollow(FOLLOW_table_reference_in_table_reference1664);
-					table_reference109=table_reference();
+					char_literal110=(Token)match(input,46,FOLLOW_46_in_table_reference1664); if (state.failed) return retval;
+					pushFollow(FOLLOW_table_reference_in_table_reference1667);
+					table_reference111=table_reference();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference109.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, table_reference111.getTree());
 
 					}
 					break;
@@ -5489,8 +5501,6 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal110=null;
-		Token string_literal111=null;
 		Token string_literal112=null;
 		Token string_literal113=null;
 		Token string_literal114=null;
@@ -5500,9 +5510,9 @@ public class SQL92QueryParser extends Parser {
 		Token string_literal118=null;
 		Token string_literal119=null;
 		Token string_literal120=null;
+		Token string_literal121=null;
+		Token string_literal122=null;
 
-		CommonTree string_literal110_tree=null;
-		CommonTree string_literal111_tree=null;
 		CommonTree string_literal112_tree=null;
 		CommonTree string_literal113_tree=null;
 		CommonTree string_literal114_tree=null;
@@ -5512,6 +5522,8 @@ public class SQL92QueryParser extends Parser {
 		CommonTree string_literal118_tree=null;
 		CommonTree string_literal119_tree=null;
 		CommonTree string_literal120_tree=null;
+		CommonTree string_literal121_tree=null;
+		CommonTree string_literal122_tree=null;
 		RewriteRuleTokenStream stream_80=new RewriteRuleTokenStream(adaptor,"token 80");
 		RewriteRuleTokenStream stream_84=new RewriteRuleTokenStream(adaptor,"token 84");
 		RewriteRuleTokenStream stream_95=new RewriteRuleTokenStream(adaptor,"token 95");
@@ -5554,8 +5566,8 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:196:9: 'RIGHT' ( 'OUTER' )? 'JOIN'
 					{
-					string_literal110=(Token)match(input,96,FOLLOW_96_in_join_type1684); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_96.add(string_literal110);
+					string_literal112=(Token)match(input,96,FOLLOW_96_in_join_type1687); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_96.add(string_literal112);
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:196:17: ( 'OUTER' )?
 					int alt44=2;
@@ -5567,16 +5579,16 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:196:17: 'OUTER'
 							{
-							string_literal111=(Token)match(input,95,FOLLOW_95_in_join_type1686); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_95.add(string_literal111);
+							string_literal113=(Token)match(input,95,FOLLOW_95_in_join_type1689); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_95.add(string_literal113);
 
 							}
 							break;
 
 					}
 
-					string_literal112=(Token)match(input,84,FOLLOW_84_in_join_type1689); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_84.add(string_literal112);
+					string_literal114=(Token)match(input,84,FOLLOW_84_in_join_type1692); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_84.add(string_literal114);
 
 					// AST REWRITE
 					// elements: 
@@ -5604,8 +5616,8 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:197:9: 'LEFT' ( 'OUTER' )? 'JOIN'
 					{
-					string_literal113=(Token)match(input,85,FOLLOW_85_in_join_type1704); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_85.add(string_literal113);
+					string_literal115=(Token)match(input,85,FOLLOW_85_in_join_type1707); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_85.add(string_literal115);
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:197:16: ( 'OUTER' )?
 					int alt45=2;
@@ -5617,16 +5629,16 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:197:16: 'OUTER'
 							{
-							string_literal114=(Token)match(input,95,FOLLOW_95_in_join_type1706); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_95.add(string_literal114);
+							string_literal116=(Token)match(input,95,FOLLOW_95_in_join_type1709); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_95.add(string_literal116);
 
 							}
 							break;
 
 					}
 
-					string_literal115=(Token)match(input,84,FOLLOW_84_in_join_type1709); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_84.add(string_literal115);
+					string_literal117=(Token)match(input,84,FOLLOW_84_in_join_type1712); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_84.add(string_literal117);
 
 					// AST REWRITE
 					// elements: 
@@ -5654,8 +5666,8 @@ public class SQL92QueryParser extends Parser {
 				case 3 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:198:9: 'FULL' ( 'OUTER' )? 'JOIN'
 					{
-					string_literal116=(Token)match(input,75,FOLLOW_75_in_join_type1723); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_75.add(string_literal116);
+					string_literal118=(Token)match(input,75,FOLLOW_75_in_join_type1726); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_75.add(string_literal118);
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:198:16: ( 'OUTER' )?
 					int alt46=2;
@@ -5667,16 +5679,16 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:198:16: 'OUTER'
 							{
-							string_literal117=(Token)match(input,95,FOLLOW_95_in_join_type1725); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_95.add(string_literal117);
+							string_literal119=(Token)match(input,95,FOLLOW_95_in_join_type1728); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_95.add(string_literal119);
 
 							}
 							break;
 
 					}
 
-					string_literal118=(Token)match(input,84,FOLLOW_84_in_join_type1728); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_84.add(string_literal118);
+					string_literal120=(Token)match(input,84,FOLLOW_84_in_join_type1731); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_84.add(string_literal120);
 
 					// AST REWRITE
 					// elements: 
@@ -5714,16 +5726,16 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:199:9: 'INNER'
 							{
-							string_literal119=(Token)match(input,80,FOLLOW_80_in_join_type1742); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_80.add(string_literal119);
+							string_literal121=(Token)match(input,80,FOLLOW_80_in_join_type1745); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_80.add(string_literal121);
 
 							}
 							break;
 
 					}
 
-					string_literal120=(Token)match(input,84,FOLLOW_84_in_join_type1745); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_84.add(string_literal120);
+					string_literal122=(Token)match(input,84,FOLLOW_84_in_join_type1748); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_84.add(string_literal122);
 
 					// AST REWRITE
 					// elements: 
@@ -5787,13 +5799,13 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal124=null;
-		ParserRuleReturnScope non_join_table121 =null;
-		ParserRuleReturnScope join_type122 =null;
+		Token string_literal126=null;
 		ParserRuleReturnScope non_join_table123 =null;
-		ParserRuleReturnScope search_condition125 =null;
+		ParserRuleReturnScope join_type124 =null;
+		ParserRuleReturnScope non_join_table125 =null;
+		ParserRuleReturnScope search_condition127 =null;
 
-		CommonTree string_literal124_tree=null;
+		CommonTree string_literal126_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:202:5: ( non_join_table ( join_type ^ non_join_table 'ON' ! search_condition )* )
@@ -5802,11 +5814,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_non_join_table_in_table1767);
-			non_join_table121=non_join_table();
+			pushFollow(FOLLOW_non_join_table_in_table1770);
+			non_join_table123=non_join_table();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table121.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table123.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:202:24: ( join_type ^ non_join_table 'ON' ! search_condition )*
 			loop49:
@@ -5821,23 +5833,23 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:202:25: join_type ^ non_join_table 'ON' ! search_condition
 					{
-					pushFollow(FOLLOW_join_type_in_table1770);
-					join_type122=join_type();
+					pushFollow(FOLLOW_join_type_in_table1773);
+					join_type124=join_type();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(join_type122.getTree(), root_0);
-					pushFollow(FOLLOW_non_join_table_in_table1773);
-					non_join_table123=non_join_table();
+					if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot(join_type124.getTree(), root_0);
+					pushFollow(FOLLOW_non_join_table_in_table1776);
+					non_join_table125=non_join_table();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table123.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, non_join_table125.getTree());
 
-					string_literal124=(Token)match(input,92,FOLLOW_92_in_table1775); if (state.failed) return retval;
-					pushFollow(FOLLOW_search_condition_in_table1778);
-					search_condition125=search_condition();
+					string_literal126=(Token)match(input,92,FOLLOW_92_in_table1778); if (state.failed) return retval;
+					pushFollow(FOLLOW_search_condition_in_table1781);
+					search_condition127=search_condition();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition125.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition127.getTree());
 
 					}
 					break;
@@ -5886,12 +5898,12 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope table_name126 =null;
-		ParserRuleReturnScope correlation_specification127 =null;
-		ParserRuleReturnScope table_function128 =null;
+		ParserRuleReturnScope table_name128 =null;
 		ParserRuleReturnScope correlation_specification129 =null;
-		ParserRuleReturnScope sub_query130 =null;
+		ParserRuleReturnScope table_function130 =null;
 		ParserRuleReturnScope correlation_specification131 =null;
+		ParserRuleReturnScope sub_query132 =null;
+		ParserRuleReturnScope correlation_specification133 =null;
 
 		RewriteRuleSubtreeStream stream_table_function=new RewriteRuleSubtreeStream(adaptor,"rule table_function");
 		RewriteRuleSubtreeStream stream_correlation_specification=new RewriteRuleSubtreeStream(adaptor,"rule correlation_specification");
@@ -5940,11 +5952,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:205:9: table_name ( correlation_specification )?
 					{
-					pushFollow(FOLLOW_table_name_in_non_join_table1798);
-					table_name126=table_name();
+					pushFollow(FOLLOW_table_name_in_non_join_table1801);
+					table_name128=table_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_name.add(table_name126.getTree());
+					if ( state.backtracking==0 ) stream_table_name.add(table_name128.getTree());
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:205:20: ( correlation_specification )?
 					int alt50=2;
 					int LA50_0 = input.LA(1);
@@ -5955,18 +5967,18 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:205:20: correlation_specification
 							{
-							pushFollow(FOLLOW_correlation_specification_in_non_join_table1800);
-							correlation_specification127=correlation_specification();
+							pushFollow(FOLLOW_correlation_specification_in_non_join_table1803);
+							correlation_specification129=correlation_specification();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification127.getTree());
+							if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification129.getTree());
 							}
 							break;
 
 					}
 
 					// AST REWRITE
-					// elements: correlation_specification, table_name
+					// elements: table_name, correlation_specification
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -6004,18 +6016,18 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:206:9: table_function correlation_specification
 					{
-					pushFollow(FOLLOW_table_function_in_non_join_table1822);
-					table_function128=table_function();
+					pushFollow(FOLLOW_table_function_in_non_join_table1825);
+					table_function130=table_function();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_function.add(table_function128.getTree());
-					pushFollow(FOLLOW_correlation_specification_in_non_join_table1824);
-					correlation_specification129=correlation_specification();
+					if ( state.backtracking==0 ) stream_table_function.add(table_function130.getTree());
+					pushFollow(FOLLOW_correlation_specification_in_non_join_table1827);
+					correlation_specification131=correlation_specification();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification129.getTree());
+					if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification131.getTree());
 					// AST REWRITE
-					// elements: correlation_specification, table_function
+					// elements: table_function, correlation_specification
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -6048,18 +6060,18 @@ public class SQL92QueryParser extends Parser {
 				case 3 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:207:9: sub_query correlation_specification
 					{
-					pushFollow(FOLLOW_sub_query_in_non_join_table1844);
-					sub_query130=sub_query();
+					pushFollow(FOLLOW_sub_query_in_non_join_table1847);
+					sub_query132=sub_query();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_sub_query.add(sub_query130.getTree());
-					pushFollow(FOLLOW_correlation_specification_in_non_join_table1846);
-					correlation_specification131=correlation_specification();
+					if ( state.backtracking==0 ) stream_sub_query.add(sub_query132.getTree());
+					pushFollow(FOLLOW_correlation_specification_in_non_join_table1849);
+					correlation_specification133=correlation_specification();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification131.getTree());
+					if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification133.getTree());
 					// AST REWRITE
-					// elements: sub_query, correlation_specification
+					// elements: correlation_specification, sub_query
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -6129,19 +6141,19 @@ public class SQL92QueryParser extends Parser {
 		CommonTree root_0 = null;
 
 		Token name=null;
-		Token char_literal132=null;
 		Token char_literal134=null;
 		Token char_literal136=null;
 		Token char_literal138=null;
-		ParserRuleReturnScope table_function_subquery133 =null;
+		Token char_literal140=null;
 		ParserRuleReturnScope table_function_subquery135 =null;
-		ParserRuleReturnScope table_function_param137 =null;
+		ParserRuleReturnScope table_function_subquery137 =null;
+		ParserRuleReturnScope table_function_param139 =null;
 
 		CommonTree name_tree=null;
-		CommonTree char_literal132_tree=null;
 		CommonTree char_literal134_tree=null;
 		CommonTree char_literal136_tree=null;
 		CommonTree char_literal138_tree=null;
+		CommonTree char_literal140_tree=null;
 		RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
 		RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 		RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
@@ -6153,11 +6165,11 @@ public class SQL92QueryParser extends Parser {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:5: (name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')' -> ^( FUNCTION $name ( table_function_subquery )* ( table_function_param )* ) )
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:9: name= ID '(' ( table_function_subquery )? ( ',' table_function_subquery )* ( ( ',' )? table_function_param )* ')'
 			{
-			name=(Token)match(input,ID,FOLLOW_ID_in_table_function1876); if (state.failed) return retval; 
+			name=(Token)match(input,ID,FOLLOW_ID_in_table_function1879); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_ID.add(name);
 
-			char_literal132=(Token)match(input,42,FOLLOW_42_in_table_function1878); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_42.add(char_literal132);
+			char_literal134=(Token)match(input,42,FOLLOW_42_in_table_function1881); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_42.add(char_literal134);
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:21: ( table_function_subquery )?
 			int alt52=2;
@@ -6172,11 +6184,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:21: table_function_subquery
 					{
-					pushFollow(FOLLOW_table_function_subquery_in_table_function1880);
-					table_function_subquery133=table_function_subquery();
+					pushFollow(FOLLOW_table_function_subquery_in_table_function1883);
+					table_function_subquery135=table_function_subquery();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery133.getTree());
+					if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery135.getTree());
 					}
 					break;
 
@@ -6199,14 +6211,14 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:47: ',' table_function_subquery
 					{
-					char_literal134=(Token)match(input,46,FOLLOW_46_in_table_function1884); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_46.add(char_literal134);
+					char_literal136=(Token)match(input,46,FOLLOW_46_in_table_function1887); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_46.add(char_literal136);
 
-					pushFollow(FOLLOW_table_function_subquery_in_table_function1886);
-					table_function_subquery135=table_function_subquery();
+					pushFollow(FOLLOW_table_function_subquery_in_table_function1889);
+					table_function_subquery137=table_function_subquery();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery135.getTree());
+					if ( state.backtracking==0 ) stream_table_function_subquery.add(table_function_subquery137.getTree());
 					}
 					break;
 
@@ -6238,19 +6250,19 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:78: ','
 							{
-							char_literal136=(Token)match(input,46,FOLLOW_46_in_table_function1891); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_46.add(char_literal136);
+							char_literal138=(Token)match(input,46,FOLLOW_46_in_table_function1894); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_46.add(char_literal138);
 
 							}
 							break;
 
 					}
 
-					pushFollow(FOLLOW_table_function_param_in_table_function1894);
-					table_function_param137=table_function_param();
+					pushFollow(FOLLOW_table_function_param_in_table_function1897);
+					table_function_param139=table_function_param();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_function_param.add(table_function_param137.getTree());
+					if ( state.backtracking==0 ) stream_table_function_param.add(table_function_param139.getTree());
 					}
 					break;
 
@@ -6259,11 +6271,11 @@ public class SQL92QueryParser extends Parser {
 				}
 			}
 
-			char_literal138=(Token)match(input,43,FOLLOW_43_in_table_function1898); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_43.add(char_literal138);
+			char_literal140=(Token)match(input,43,FOLLOW_43_in_table_function1901); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_43.add(char_literal140);
 
 			// AST REWRITE
-			// elements: table_function_subquery, table_function_param, name
+			// elements: name, table_function_param, table_function_subquery
 			// token labels: name
 			// rule labels: retval
 			// token list labels: 
@@ -6342,8 +6354,8 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope sub_query139 =null;
-		ParserRuleReturnScope correlation_specification140 =null;
+		ParserRuleReturnScope sub_query141 =null;
+		ParserRuleReturnScope correlation_specification142 =null;
 
 		RewriteRuleSubtreeStream stream_correlation_specification=new RewriteRuleSubtreeStream(adaptor,"rule correlation_specification");
 		RewriteRuleSubtreeStream stream_sub_query=new RewriteRuleSubtreeStream(adaptor,"rule sub_query");
@@ -6352,18 +6364,18 @@ public class SQL92QueryParser extends Parser {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:214:5: ( sub_query correlation_specification -> ^( RELATION sub_query correlation_specification ) )
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:214:9: sub_query correlation_specification
 			{
-			pushFollow(FOLLOW_sub_query_in_table_function_subquery1946);
-			sub_query139=sub_query();
+			pushFollow(FOLLOW_sub_query_in_table_function_subquery1949);
+			sub_query141=sub_query();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) stream_sub_query.add(sub_query139.getTree());
-			pushFollow(FOLLOW_correlation_specification_in_table_function_subquery1948);
-			correlation_specification140=correlation_specification();
+			if ( state.backtracking==0 ) stream_sub_query.add(sub_query141.getTree());
+			pushFollow(FOLLOW_correlation_specification_in_table_function_subquery1951);
+			correlation_specification142=correlation_specification();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification140.getTree());
+			if ( state.backtracking==0 ) stream_correlation_specification.add(correlation_specification142.getTree());
 			// AST REWRITE
-			// elements: sub_query, correlation_specification
+			// elements: correlation_specification, sub_query
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -6430,8 +6442,8 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope search_condition141 =null;
-		ParserRuleReturnScope value_expression142 =null;
+		ParserRuleReturnScope search_condition143 =null;
+		ParserRuleReturnScope value_expression144 =null;
 
 
 		try {
@@ -6711,11 +6723,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_search_condition_in_table_function_param1976);
-					search_condition141=search_condition();
+					pushFollow(FOLLOW_search_condition_in_table_function_param1979);
+					search_condition143=search_condition();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition141.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition143.getTree());
 
 					}
 					break;
@@ -6725,11 +6737,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_value_expression_in_table_function_param1986);
-					value_expression142=value_expression();
+					pushFollow(FOLLOW_value_expression_in_table_function_param1989);
+					value_expression144=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression142.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression144.getTree());
 
 					}
 					break;
@@ -6772,9 +6784,9 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope table_name143 =null;
-		ParserRuleReturnScope table_function144 =null;
-		ParserRuleReturnScope query145 =null;
+		ParserRuleReturnScope table_name145 =null;
+		ParserRuleReturnScope table_function146 =null;
+		ParserRuleReturnScope query147 =null;
 
 		RewriteRuleSubtreeStream stream_table_function=new RewriteRuleSubtreeStream(adaptor,"rule table_function");
 		RewriteRuleSubtreeStream stream_query=new RewriteRuleSubtreeStream(adaptor,"rule query");
@@ -6822,11 +6834,11 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:221:9: table_name
 					{
-					pushFollow(FOLLOW_table_name_in_relation2008);
-					table_name143=table_name();
+					pushFollow(FOLLOW_table_name_in_relation2011);
+					table_name145=table_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_name.add(table_name143.getTree());
+					if ( state.backtracking==0 ) stream_table_name.add(table_name145.getTree());
 					// AST REWRITE
 					// elements: table_name
 					// token labels: 
@@ -6860,11 +6872,11 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:222:9: table_function
 					{
-					pushFollow(FOLLOW_table_function_in_relation2026);
-					table_function144=table_function();
+					pushFollow(FOLLOW_table_function_in_relation2029);
+					table_function146=table_function();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_table_function.add(table_function144.getTree());
+					if ( state.backtracking==0 ) stream_table_function.add(table_function146.getTree());
 					// AST REWRITE
 					// elements: table_function
 					// token labels: 
@@ -6898,11 +6910,11 @@ public class SQL92QueryParser extends Parser {
 				case 3 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:223:9: query
 					{
-					pushFollow(FOLLOW_query_in_relation2044);
-					query145=query();
+					pushFollow(FOLLOW_query_in_relation2047);
+					query147=query();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_query.add(query145.getTree());
+					if ( state.backtracking==0 ) stream_query.add(query147.getTree());
 					// AST REWRITE
 					// elements: query
 					// token labels: 
@@ -6972,11 +6984,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal147=null;
-		ParserRuleReturnScope boolean_factor146 =null;
+		Token string_literal149=null;
 		ParserRuleReturnScope boolean_factor148 =null;
+		ParserRuleReturnScope boolean_factor150 =null;
 
-		CommonTree string_literal147_tree=null;
+		CommonTree string_literal149_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:226:5: ( boolean_factor ( 'OR' ^ boolean_factor )* )
@@ -6985,11 +6997,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_boolean_factor_in_search_condition2070);
-			boolean_factor146=boolean_factor();
+			pushFollow(FOLLOW_boolean_factor_in_search_condition2073);
+			boolean_factor148=boolean_factor();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor146.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor148.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:226:24: ( 'OR' ^ boolean_factor )*
 			loop58:
@@ -7004,17 +7016,17 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:226:25: 'OR' ^ boolean_factor
 					{
-					string_literal147=(Token)match(input,93,FOLLOW_93_in_search_condition2073); if (state.failed) return retval;
+					string_literal149=(Token)match(input,93,FOLLOW_93_in_search_condition2076); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal147_tree = (CommonTree)adaptor.create(string_literal147);
-					root_0 = (CommonTree)adaptor.becomeRoot(string_literal147_tree, root_0);
+					string_literal149_tree = (CommonTree)adaptor.create(string_literal149);
+					root_0 = (CommonTree)adaptor.becomeRoot(string_literal149_tree, root_0);
 					}
 
-					pushFollow(FOLLOW_boolean_factor_in_search_condition2076);
-					boolean_factor148=boolean_factor();
+					pushFollow(FOLLOW_boolean_factor_in_search_condition2079);
+					boolean_factor150=boolean_factor();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor148.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_factor150.getTree());
 
 					}
 					break;
@@ -7063,11 +7075,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal150=null;
-		ParserRuleReturnScope boolean_term149 =null;
+		Token string_literal152=null;
 		ParserRuleReturnScope boolean_term151 =null;
+		ParserRuleReturnScope boolean_term153 =null;
 
-		CommonTree string_literal150_tree=null;
+		CommonTree string_literal152_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:229:5: ( boolean_term ( 'AND' ^ boolean_term )* )
@@ -7076,11 +7088,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_boolean_term_in_boolean_factor2096);
-			boolean_term149=boolean_term();
+			pushFollow(FOLLOW_boolean_term_in_boolean_factor2099);
+			boolean_term151=boolean_term();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term149.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term151.getTree());
 
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:229:22: ( 'AND' ^ boolean_term )*
 			loop59:
@@ -7095,17 +7107,17 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:229:23: 'AND' ^ boolean_term
 					{
-					string_literal150=(Token)match(input,59,FOLLOW_59_in_boolean_factor2099); if (state.failed) return retval;
+					string_literal152=(Token)match(input,59,FOLLOW_59_in_boolean_factor2102); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal150_tree = (CommonTree)adaptor.create(string_literal150);
-					root_0 = (CommonTree)adaptor.becomeRoot(string_literal150_tree, root_0);
+					string_literal152_tree = (CommonTree)adaptor.create(string_literal152);
+					root_0 = (CommonTree)adaptor.becomeRoot(string_literal152_tree, root_0);
 					}
 
-					pushFollow(FOLLOW_boolean_term_in_boolean_factor2102);
-					boolean_term151=boolean_term();
+					pushFollow(FOLLOW_boolean_term_in_boolean_factor2105);
+					boolean_term153=boolean_term();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term151.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_term153.getTree());
 
 					}
 					break;
@@ -7154,11 +7166,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal153=null;
-		ParserRuleReturnScope boolean_test152 =null;
-		ParserRuleReturnScope boolean_term154 =null;
+		Token string_literal155=null;
+		ParserRuleReturnScope boolean_test154 =null;
+		ParserRuleReturnScope boolean_term156 =null;
 
-		CommonTree string_literal153_tree=null;
+		CommonTree string_literal155_tree=null;
 		RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
 		RewriteRuleSubtreeStream stream_boolean_term=new RewriteRuleSubtreeStream(adaptor,"rule boolean_term");
 
@@ -7187,25 +7199,25 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_boolean_test_in_boolean_term2122);
-					boolean_test152=boolean_test();
+					pushFollow(FOLLOW_boolean_test_in_boolean_term2125);
+					boolean_test154=boolean_test();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_test152.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_test154.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:233:9: 'NOT' boolean_term
 					{
-					string_literal153=(Token)match(input,90,FOLLOW_90_in_boolean_term2132); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_90.add(string_literal153);
+					string_literal155=(Token)match(input,90,FOLLOW_90_in_boolean_term2135); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_90.add(string_literal155);
 
-					pushFollow(FOLLOW_boolean_term_in_boolean_term2134);
-					boolean_term154=boolean_term();
+					pushFollow(FOLLOW_boolean_term_in_boolean_term2137);
+					boolean_term156=boolean_term();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_boolean_term.add(boolean_term154.getTree());
+					if ( state.backtracking==0 ) stream_boolean_term.add(boolean_term156.getTree());
 					// AST REWRITE
 					// elements: boolean_term
 					// token labels: 
@@ -7275,7 +7287,7 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope boolean_primary155 =null;
+		ParserRuleReturnScope boolean_primary157 =null;
 
 
 		try {
@@ -7285,11 +7297,11 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			pushFollow(FOLLOW_boolean_primary_in_boolean_test2160);
-			boolean_primary155=boolean_primary();
+			pushFollow(FOLLOW_boolean_primary_in_boolean_test2163);
+			boolean_primary157=boolean_primary();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_primary155.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_primary157.getTree());
 
 			}
 
@@ -7330,13 +7342,13 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal157=null;
 		Token char_literal159=null;
-		ParserRuleReturnScope predicate156 =null;
-		ParserRuleReturnScope search_condition158 =null;
+		Token char_literal161=null;
+		ParserRuleReturnScope predicate158 =null;
+		ParserRuleReturnScope search_condition160 =null;
 
-		CommonTree char_literal157_tree=null;
 		CommonTree char_literal159_tree=null;
+		CommonTree char_literal161_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:239:5: ( predicate | '(' ! search_condition ')' !)
@@ -7370,11 +7382,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_predicate_in_boolean_primary2178);
-					predicate156=predicate();
+					pushFollow(FOLLOW_predicate_in_boolean_primary2181);
+					predicate158=predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, predicate156.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, predicate158.getTree());
 
 					}
 					break;
@@ -7384,14 +7396,14 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					char_literal157=(Token)match(input,42,FOLLOW_42_in_boolean_primary2182); if (state.failed) return retval;
-					pushFollow(FOLLOW_search_condition_in_boolean_primary2185);
-					search_condition158=search_condition();
+					char_literal159=(Token)match(input,42,FOLLOW_42_in_boolean_primary2185); if (state.failed) return retval;
+					pushFollow(FOLLOW_search_condition_in_boolean_primary2188);
+					search_condition160=search_condition();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition158.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, search_condition160.getTree());
 
-					char_literal159=(Token)match(input,43,FOLLOW_43_in_boolean_primary2187); if (state.failed) return retval;
+					char_literal161=(Token)match(input,43,FOLLOW_43_in_boolean_primary2190); if (state.failed) return retval;
 					}
 					break;
 
@@ -7433,12 +7445,12 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		ParserRuleReturnScope comparison_predicate160 =null;
-		ParserRuleReturnScope like_predicate161 =null;
-		ParserRuleReturnScope in_predicate162 =null;
-		ParserRuleReturnScope null_predicate163 =null;
-		ParserRuleReturnScope exists_predicate164 =null;
-		ParserRuleReturnScope between_predicate165 =null;
+		ParserRuleReturnScope comparison_predicate162 =null;
+		ParserRuleReturnScope like_predicate163 =null;
+		ParserRuleReturnScope in_predicate164 =null;
+		ParserRuleReturnScope null_predicate165 =null;
+		ParserRuleReturnScope exists_predicate166 =null;
+		ParserRuleReturnScope between_predicate167 =null;
 
 
 		try {
@@ -7930,11 +7942,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_comparison_predicate_in_predicate2209);
-					comparison_predicate160=comparison_predicate();
+					pushFollow(FOLLOW_comparison_predicate_in_predicate2212);
+					comparison_predicate162=comparison_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, comparison_predicate160.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, comparison_predicate162.getTree());
 
 					}
 					break;
@@ -7944,11 +7956,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_like_predicate_in_predicate2213);
-					like_predicate161=like_predicate();
+					pushFollow(FOLLOW_like_predicate_in_predicate2216);
+					like_predicate163=like_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, like_predicate161.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, like_predicate163.getTree());
 
 					}
 					break;
@@ -7958,11 +7970,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_in_predicate_in_predicate2217);
-					in_predicate162=in_predicate();
+					pushFollow(FOLLOW_in_predicate_in_predicate2220);
+					in_predicate164=in_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, in_predicate162.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, in_predicate164.getTree());
 
 					}
 					break;
@@ -7972,11 +7984,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_null_predicate_in_predicate2221);
-					null_predicate163=null_predicate();
+					pushFollow(FOLLOW_null_predicate_in_predicate2224);
+					null_predicate165=null_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, null_predicate163.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, null_predicate165.getTree());
 
 					}
 					break;
@@ -7986,11 +7998,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_exists_predicate_in_predicate2225);
-					exists_predicate164=exists_predicate();
+					pushFollow(FOLLOW_exists_predicate_in_predicate2228);
+					exists_predicate166=exists_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, exists_predicate164.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, exists_predicate166.getTree());
 
 					}
 					break;
@@ -8000,11 +8012,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_between_predicate_in_predicate2229);
-					between_predicate165=between_predicate();
+					pushFollow(FOLLOW_between_predicate_in_predicate2232);
+					between_predicate167=between_predicate();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, between_predicate165.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, between_predicate167.getTree());
 
 					}
 					break;
@@ -8047,19 +8059,19 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal167=null;
-		Token string_literal168=null;
+		Token string_literal169=null;
 		Token string_literal170=null;
-		Token string_literal171=null;
 		Token string_literal172=null;
-		ParserRuleReturnScope row_value166 =null;
-		ParserRuleReturnScope row_value169 =null;
+		Token string_literal173=null;
+		Token string_literal174=null;
+		ParserRuleReturnScope row_value168 =null;
+		ParserRuleReturnScope row_value171 =null;
 
-		CommonTree string_literal167_tree=null;
-		CommonTree string_literal168_tree=null;
+		CommonTree string_literal169_tree=null;
 		CommonTree string_literal170_tree=null;
-		CommonTree string_literal171_tree=null;
 		CommonTree string_literal172_tree=null;
+		CommonTree string_literal173_tree=null;
+		CommonTree string_literal174_tree=null;
 		RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
 		RewriteRuleTokenStream stream_91=new RewriteRuleTokenStream(adaptor,"token 91");
 		RewriteRuleTokenStream stream_83=new RewriteRuleTokenStream(adaptor,"token 83");
@@ -8343,16 +8355,16 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:245:9: row_value 'IS' 'NULL'
 					{
-					pushFollow(FOLLOW_row_value_in_null_predicate2247);
-					row_value166=row_value();
+					pushFollow(FOLLOW_row_value_in_null_predicate2250);
+					row_value168=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_row_value.add(row_value166.getTree());
-					string_literal167=(Token)match(input,83,FOLLOW_83_in_null_predicate2249); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_83.add(string_literal167);
+					if ( state.backtracking==0 ) stream_row_value.add(row_value168.getTree());
+					string_literal169=(Token)match(input,83,FOLLOW_83_in_null_predicate2252); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_83.add(string_literal169);
 
-					string_literal168=(Token)match(input,91,FOLLOW_91_in_null_predicate2251); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_91.add(string_literal168);
+					string_literal170=(Token)match(input,91,FOLLOW_91_in_null_predicate2254); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_91.add(string_literal170);
 
 					// AST REWRITE
 					// elements: row_value
@@ -8387,19 +8399,19 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:246:9: row_value 'IS' 'NOT' 'NULL'
 					{
-					pushFollow(FOLLOW_row_value_in_null_predicate2269);
-					row_value169=row_value();
+					pushFollow(FOLLOW_row_value_in_null_predicate2272);
+					row_value171=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_row_value.add(row_value169.getTree());
-					string_literal170=(Token)match(input,83,FOLLOW_83_in_null_predicate2271); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_83.add(string_literal170);
+					if ( state.backtracking==0 ) stream_row_value.add(row_value171.getTree());
+					string_literal172=(Token)match(input,83,FOLLOW_83_in_null_predicate2274); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_83.add(string_literal172);
 
-					string_literal171=(Token)match(input,90,FOLLOW_90_in_null_predicate2273); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_90.add(string_literal171);
+					string_literal173=(Token)match(input,90,FOLLOW_90_in_null_predicate2276); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_90.add(string_literal173);
 
-					string_literal172=(Token)match(input,91,FOLLOW_91_in_null_predicate2275); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_91.add(string_literal172);
+					string_literal174=(Token)match(input,91,FOLLOW_91_in_null_predicate2278); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_91.add(string_literal174);
 
 					// AST REWRITE
 					// elements: row_value
@@ -8477,17 +8489,17 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal174=null;
-		Token string_literal175=null;
-		Token string_literal178=null;
-		ParserRuleReturnScope row_value173 =null;
-		ParserRuleReturnScope in_predicate_tail176 =null;
-		ParserRuleReturnScope row_value177 =null;
-		ParserRuleReturnScope in_predicate_tail179 =null;
+		Token string_literal176=null;
+		Token string_literal177=null;
+		Token string_literal180=null;
+		ParserRuleReturnScope row_value175 =null;
+		ParserRuleReturnScope in_predicate_tail178 =null;
+		ParserRuleReturnScope row_value179 =null;
+		ParserRuleReturnScope in_predicate_tail181 =null;
 
-		CommonTree string_literal174_tree=null;
-		CommonTree string_literal175_tree=null;
-		CommonTree string_literal178_tree=null;
+		CommonTree string_literal176_tree=null;
+		CommonTree string_literal177_tree=null;
+		CommonTree string_literal180_tree=null;
 		RewriteRuleTokenStream stream_79=new RewriteRuleTokenStream(adaptor,"token 79");
 		RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
 		RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
@@ -8771,24 +8783,24 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:249:9: row_value 'NOT' 'IN' in_predicate_tail
 					{
-					pushFollow(FOLLOW_row_value_in_in_predicate2305);
-					row_value173=row_value();
+					pushFollow(FOLLOW_row_value_in_in_predicate2308);
+					row_value175=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_row_value.add(row_value173.getTree());
-					string_literal174=(Token)match(input,90,FOLLOW_90_in_in_predicate2307); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_90.add(string_literal174);
+					if ( state.backtracking==0 ) stream_row_value.add(row_value175.getTree());
+					string_literal176=(Token)match(input,90,FOLLOW_90_in_in_predicate2310); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_90.add(string_literal176);
 
-					string_literal175=(Token)match(input,79,FOLLOW_79_in_in_predicate2309); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_79.add(string_literal175);
+					string_literal177=(Token)match(input,79,FOLLOW_79_in_in_predicate2312); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_79.add(string_literal177);
 
-					pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2311);
-					in_predicate_tail176=in_predicate_tail();
+					pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2314);
+					in_predicate_tail178=in_predicate_tail();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail176.getTree());
+					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail178.getTree());
 					// AST REWRITE
-					// elements: in_predicate_tail, row_value, 79
+					// elements: row_value, 79, in_predicate_tail
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -8828,19 +8840,19 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:251:9: row_value 'IN' in_predicate_tail
 					{
-					pushFollow(FOLLOW_row_value_in_in_predicate2347);
-					row_value177=row_value();
+					pushFollow(FOLLOW_row_value_in_in_predicate2350);
+					row_value179=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_row_value.add(row_value177.getTree());
-					string_literal178=(Token)match(input,79,FOLLOW_79_in_in_predicate2349); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_79.add(string_literal178);
+					if ( state.backtracking==0 ) stream_row_value.add(row_value179.getTree());
+					string_literal180=(Token)match(input,79,FOLLOW_79_in_in_predicate2352); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_79.add(string_literal180);
 
-					pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2351);
-					in_predicate_tail179=in_predicate_tail();
+					pushFollow(FOLLOW_in_predicate_tail_in_in_predicate2354);
+					in_predicate_tail181=in_predicate_tail();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail179.getTree());
+					if ( state.backtracking==0 ) stream_in_predicate_tail.add(in_predicate_tail181.getTree());
 					// AST REWRITE
 					// elements: 79, in_predicate_tail, row_value
 					// token labels: 
@@ -8911,16 +8923,16 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal181=null;
 		Token char_literal183=null;
 		Token char_literal185=null;
-		ParserRuleReturnScope sub_query180 =null;
-		ParserRuleReturnScope value_expression182 =null;
+		Token char_literal187=null;
+		ParserRuleReturnScope sub_query182 =null;
 		ParserRuleReturnScope value_expression184 =null;
+		ParserRuleReturnScope value_expression186 =null;
 
-		CommonTree char_literal181_tree=null;
 		CommonTree char_literal183_tree=null;
 		CommonTree char_literal185_tree=null;
+		CommonTree char_literal187_tree=null;
 		RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
 		RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
 		RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
@@ -8955,28 +8967,28 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_sub_query_in_in_predicate_tail2391);
-					sub_query180=sub_query();
+					pushFollow(FOLLOW_sub_query_in_in_predicate_tail2394);
+					sub_query182=sub_query();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query180.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query182.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:256:9: '(' ( value_expression ( ',' value_expression )* ) ')'
 					{
-					char_literal181=(Token)match(input,42,FOLLOW_42_in_in_predicate_tail2402); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_42.add(char_literal181);
+					char_literal183=(Token)match(input,42,FOLLOW_42_in_in_predicate_tail2405); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_42.add(char_literal183);
 
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:256:13: ( value_expression ( ',' value_expression )* )
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:256:14: value_expression ( ',' value_expression )*
 					{
-					pushFollow(FOLLOW_value_expression_in_in_predicate_tail2405);
-					value_expression182=value_expression();
+					pushFollow(FOLLOW_value_expression_in_in_predicate_tail2408);
+					value_expression184=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) stream_value_expression.add(value_expression182.getTree());
+					if ( state.backtracking==0 ) stream_value_expression.add(value_expression184.getTree());
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:256:31: ( ',' value_expression )*
 					loop65:
 					while (true) {
@@ -8990,14 +9002,14 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:256:32: ',' value_expression
 							{
-							char_literal183=(Token)match(input,46,FOLLOW_46_in_in_predicate_tail2408); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_46.add(char_literal183);
+							char_literal185=(Token)match(input,46,FOLLOW_46_in_in_predicate_tail2411); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_46.add(char_literal185);
 
-							pushFollow(FOLLOW_value_expression_in_in_predicate_tail2410);
-							value_expression184=value_expression();
+							pushFollow(FOLLOW_value_expression_in_in_predicate_tail2413);
+							value_expression186=value_expression();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) stream_value_expression.add(value_expression184.getTree());
+							if ( state.backtracking==0 ) stream_value_expression.add(value_expression186.getTree());
 							}
 							break;
 
@@ -9008,8 +9020,8 @@ public class SQL92QueryParser extends Parser {
 
 					}
 
-					char_literal185=(Token)match(input,43,FOLLOW_43_in_in_predicate_tail2415); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_43.add(char_literal185);
+					char_literal187=(Token)match(input,43,FOLLOW_43_in_in_predicate_tail2418); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_43.add(char_literal187);
 
 					// AST REWRITE
 					// elements: value_expression
@@ -9085,20 +9097,20 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal186=null;
-		Token string_literal187=null;
 		Token string_literal188=null;
 		Token string_literal189=null;
 		Token string_literal190=null;
+		Token string_literal191=null;
+		Token string_literal192=null;
 		ParserRuleReturnScope value =null;
 		ParserRuleReturnScope btw1 =null;
 		ParserRuleReturnScope btw2 =null;
 
-		CommonTree string_literal186_tree=null;
-		CommonTree string_literal187_tree=null;
 		CommonTree string_literal188_tree=null;
 		CommonTree string_literal189_tree=null;
 		CommonTree string_literal190_tree=null;
+		CommonTree string_literal191_tree=null;
+		CommonTree string_literal192_tree=null;
 		RewriteRuleTokenStream stream_59=new RewriteRuleTokenStream(adaptor,"token 59");
 		RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
 		RewriteRuleTokenStream stream_63=new RewriteRuleTokenStream(adaptor,"token 63");
@@ -9382,29 +9394,29 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:259:9: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
 					{
-					pushFollow(FOLLOW_row_value_in_between_predicate2444);
+					pushFollow(FOLLOW_row_value_in_between_predicate2447);
 					value=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(value.getTree());
-					string_literal186=(Token)match(input,63,FOLLOW_63_in_between_predicate2446); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_63.add(string_literal186);
+					string_literal188=(Token)match(input,63,FOLLOW_63_in_between_predicate2449); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_63.add(string_literal188);
 
-					pushFollow(FOLLOW_row_value_in_between_predicate2450);
+					pushFollow(FOLLOW_row_value_in_between_predicate2453);
 					btw1=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw1.getTree());
-					string_literal187=(Token)match(input,59,FOLLOW_59_in_between_predicate2452); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_59.add(string_literal187);
+					string_literal189=(Token)match(input,59,FOLLOW_59_in_between_predicate2455); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_59.add(string_literal189);
 
-					pushFollow(FOLLOW_row_value_in_between_predicate2456);
+					pushFollow(FOLLOW_row_value_in_between_predicate2459);
 					btw2=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw2.getTree());
 					// AST REWRITE
-					// elements: btw2, btw1, 63, value
+					// elements: btw2, btw1, value, 63
 					// token labels: 
 					// rule labels: btw1, btw2, value, retval
 					// token list labels: 
@@ -9441,32 +9453,32 @@ public class SQL92QueryParser extends Parser {
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:261:9: value= row_value 'NOT' 'BETWEEN' btw1= row_value 'AND' btw2= row_value
 					{
-					pushFollow(FOLLOW_row_value_in_between_predicate2496);
+					pushFollow(FOLLOW_row_value_in_between_predicate2499);
 					value=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(value.getTree());
-					string_literal188=(Token)match(input,90,FOLLOW_90_in_between_predicate2498); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_90.add(string_literal188);
+					string_literal190=(Token)match(input,90,FOLLOW_90_in_between_predicate2501); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_90.add(string_literal190);
 
-					string_literal189=(Token)match(input,63,FOLLOW_63_in_between_predicate2500); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_63.add(string_literal189);
+					string_literal191=(Token)match(input,63,FOLLOW_63_in_between_predicate2503); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_63.add(string_literal191);
 
-					pushFollow(FOLLOW_row_value_in_between_predicate2504);
+					pushFollow(FOLLOW_row_value_in_between_predicate2507);
 					btw1=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw1.getTree());
-					string_literal190=(Token)match(input,59,FOLLOW_59_in_between_predicate2506); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_59.add(string_literal190);
+					string_literal192=(Token)match(input,59,FOLLOW_59_in_between_predicate2509); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_59.add(string_literal192);
 
-					pushFollow(FOLLOW_row_value_in_between_predicate2510);
+					pushFollow(FOLLOW_row_value_in_between_predicate2513);
 					btw2=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(btw2.getTree());
 					// AST REWRITE
-					// elements: value, btw1, btw2, 63
+					// elements: btw1, btw2, value, 63
 					// token labels: 
 					// rule labels: btw1, btw2, value, retval
 					// token list labels: 
@@ -9546,10 +9558,10 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal191=null;
-		ParserRuleReturnScope sub_query192 =null;
+		Token string_literal193=null;
+		ParserRuleReturnScope sub_query194 =null;
 
-		CommonTree string_literal191_tree=null;
+		CommonTree string_literal193_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:265:5: ( 'EXISTS' ^ sub_query )
@@ -9558,17 +9570,17 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			string_literal191=(Token)match(input,72,FOLLOW_72_in_exists_predicate2559); if (state.failed) return retval;
+			string_literal193=(Token)match(input,72,FOLLOW_72_in_exists_predicate2562); if (state.failed) return retval;
 			if ( state.backtracking==0 ) {
-			string_literal191_tree = (CommonTree)adaptor.create(string_literal191);
-			root_0 = (CommonTree)adaptor.becomeRoot(string_literal191_tree, root_0);
+			string_literal193_tree = (CommonTree)adaptor.create(string_literal193);
+			root_0 = (CommonTree)adaptor.becomeRoot(string_literal193_tree, root_0);
 			}
 
-			pushFollow(FOLLOW_sub_query_in_exists_predicate2562);
-			sub_query192=sub_query();
+			pushFollow(FOLLOW_sub_query_in_exists_predicate2565);
+			sub_query194=sub_query();
 			state._fsp--;
 			if (state.failed) return retval;
-			if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query192.getTree());
+			if ( state.backtracking==0 ) adaptor.addChild(root_0, sub_query194.getTree());
 
 			}
 
@@ -9611,19 +9623,19 @@ public class SQL92QueryParser extends Parser {
 
 		Token op=null;
 		Token ep=null;
-		Token char_literal194=null;
-		Token set197=null;
+		Token char_literal196=null;
+		Token set199=null;
 		ParserRuleReturnScope lv =null;
 		ParserRuleReturnScope rv =null;
-		ParserRuleReturnScope bind_table193 =null;
-		ParserRuleReturnScope row_value195 =null;
-		ParserRuleReturnScope row_value196 =null;
+		ParserRuleReturnScope bind_table195 =null;
+		ParserRuleReturnScope row_value197 =null;
 		ParserRuleReturnScope row_value198 =null;
+		ParserRuleReturnScope row_value200 =null;
 
 		CommonTree op_tree=null;
 		CommonTree ep_tree=null;
-		CommonTree char_literal194_tree=null;
-		CommonTree set197_tree=null;
+		CommonTree char_literal196_tree=null;
+		CommonTree set199_tree=null;
 		RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
 		RewriteRuleTokenStream stream_99=new RewriteRuleTokenStream(adaptor,"token 99");
 		RewriteRuleTokenStream stream_56=new RewriteRuleTokenStream(adaptor,"token 56");
@@ -9922,30 +9934,30 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_bind_table_in_comparison_predicate2580);
-					bind_table193=bind_table();
+					pushFollow(FOLLOW_bind_table_in_comparison_predicate2583);
+					bind_table195=bind_table();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, bind_table193.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, bind_table195.getTree());
 
-					char_literal194=(Token)match(input,54,FOLLOW_54_in_comparison_predicate2582); if (state.failed) return retval;
+					char_literal196=(Token)match(input,54,FOLLOW_54_in_comparison_predicate2585); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					char_literal194_tree = (CommonTree)adaptor.create(char_literal194);
-					root_0 = (CommonTree)adaptor.becomeRoot(char_literal194_tree, root_0);
+					char_literal196_tree = (CommonTree)adaptor.create(char_literal196);
+					root_0 = (CommonTree)adaptor.becomeRoot(char_literal196_tree, root_0);
 					}
 
-					pushFollow(FOLLOW_row_value_in_comparison_predicate2585);
-					row_value195=row_value();
+					pushFollow(FOLLOW_row_value_in_comparison_predicate2588);
+					row_value197=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value195.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value197.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:9: lv= row_value (op= '=' |op= '<>' |op= '!=' |op= '<' |op= '>' |op= '>=' |op= '<=' ) (ep= 'ALL' |ep= 'SOME' |ep= 'ANY' ) rv= row_value
 					{
-					pushFollow(FOLLOW_row_value_in_comparison_predicate2597);
+					pushFollow(FOLLOW_row_value_in_comparison_predicate2600);
 					lv=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
@@ -9998,7 +10010,7 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:23: op= '='
 							{
-							op=(Token)match(input,54,FOLLOW_54_in_comparison_predicate2602); if (state.failed) return retval; 
+							op=(Token)match(input,54,FOLLOW_54_in_comparison_predicate2605); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_54.add(op);
 
 							}
@@ -10006,7 +10018,7 @@ public class SQL92QueryParser extends Parser {
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:30: op= '<>'
 							{
-							op=(Token)match(input,53,FOLLOW_53_in_comparison_predicate2606); if (state.failed) return retval; 
+							op=(Token)match(input,53,FOLLOW_53_in_comparison_predicate2609); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_53.add(op);
 
 							}
@@ -10014,7 +10026,7 @@ public class SQL92QueryParser extends Parser {
 						case 3 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:38: op= '!='
 							{
-							op=(Token)match(input,41,FOLLOW_41_in_comparison_predicate2610); if (state.failed) return retval; 
+							op=(Token)match(input,41,FOLLOW_41_in_comparison_predicate2613); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_41.add(op);
 
 							}
@@ -10022,7 +10034,7 @@ public class SQL92QueryParser extends Parser {
 						case 4 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:46: op= '<'
 							{
-							op=(Token)match(input,51,FOLLOW_51_in_comparison_predicate2614); if (state.failed) return retval; 
+							op=(Token)match(input,51,FOLLOW_51_in_comparison_predicate2617); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_51.add(op);
 
 							}
@@ -10030,7 +10042,7 @@ public class SQL92QueryParser extends Parser {
 						case 5 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:53: op= '>'
 							{
-							op=(Token)match(input,55,FOLLOW_55_in_comparison_predicate2618); if (state.failed) return retval; 
+							op=(Token)match(input,55,FOLLOW_55_in_comparison_predicate2621); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_55.add(op);
 
 							}
@@ -10038,7 +10050,7 @@ public class SQL92QueryParser extends Parser {
 						case 6 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:60: op= '>='
 							{
-							op=(Token)match(input,56,FOLLOW_56_in_comparison_predicate2622); if (state.failed) return retval; 
+							op=(Token)match(input,56,FOLLOW_56_in_comparison_predicate2625); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_56.add(op);
 
 							}
@@ -10046,7 +10058,7 @@ public class SQL92QueryParser extends Parser {
 						case 7 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:68: op= '<='
 							{
-							op=(Token)match(input,52,FOLLOW_52_in_comparison_predicate2626); if (state.failed) return retval; 
+							op=(Token)match(input,52,FOLLOW_52_in_comparison_predicate2629); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_52.add(op);
 
 							}
@@ -10082,7 +10094,7 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:78: ep= 'ALL'
 							{
-							ep=(Token)match(input,58,FOLLOW_58_in_comparison_predicate2632); if (state.failed) return retval; 
+							ep=(Token)match(input,58,FOLLOW_58_in_comparison_predicate2635); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_58.add(ep);
 
 							}
@@ -10090,7 +10102,7 @@ public class SQL92QueryParser extends Parser {
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:87: ep= 'SOME'
 							{
-							ep=(Token)match(input,99,FOLLOW_99_in_comparison_predicate2636); if (state.failed) return retval; 
+							ep=(Token)match(input,99,FOLLOW_99_in_comparison_predicate2639); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_99.add(ep);
 
 							}
@@ -10098,7 +10110,7 @@ public class SQL92QueryParser extends Parser {
 						case 3 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:97: ep= 'ANY'
 							{
-							ep=(Token)match(input,60,FOLLOW_60_in_comparison_predicate2640); if (state.failed) return retval; 
+							ep=(Token)match(input,60,FOLLOW_60_in_comparison_predicate2643); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_60.add(ep);
 
 							}
@@ -10106,13 +10118,13 @@ public class SQL92QueryParser extends Parser {
 
 					}
 
-					pushFollow(FOLLOW_row_value_in_comparison_predicate2645);
+					pushFollow(FOLLOW_row_value_in_comparison_predicate2648);
 					rv=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(rv.getTree());
 					// AST REWRITE
-					// elements: ep, op, rv, lv
+					// elements: op, rv, lv, ep
 					// token labels: op, ep
 					// rule labels: rv, lv, retval
 					// token list labels: 
@@ -10159,17 +10171,17 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_row_value_in_comparison_predicate2685);
-					row_value196=row_value();
+					pushFollow(FOLLOW_row_value_in_comparison_predicate2688);
+					row_value198=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value196.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value198.getTree());
 
-					set197=input.LT(1);
-					set197=input.LT(1);
+					set199=input.LT(1);
+					set199=input.LT(1);
 					if ( input.LA(1)==41||(input.LA(1) >= 51 && input.LA(1) <= 56) ) {
 						input.consume();
-						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set197), root_0);
+						if ( state.backtracking==0 ) root_0 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(set199), root_0);
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -10178,11 +10190,11 @@ public class SQL92QueryParser extends Parser {
 						MismatchedSetException mse = new MismatchedSetException(null,input);
 						throw mse;
 					}
-					pushFollow(FOLLOW_row_value_in_comparison_predicate2716);
-					row_value198=row_value();
+					pushFollow(FOLLOW_row_value_in_comparison_predicate2719);
+					row_value200=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value198.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value200.getTree());
 
 					}
 					break;
@@ -10225,17 +10237,17 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal200=null;
 		Token string_literal202=null;
-		Token string_literal203=null;
+		Token string_literal204=null;
+		Token string_literal205=null;
 		ParserRuleReturnScope v1 =null;
 		ParserRuleReturnScope v2 =null;
-		ParserRuleReturnScope row_value199 =null;
 		ParserRuleReturnScope row_value201 =null;
+		ParserRuleReturnScope row_value203 =null;
 
-		CommonTree string_literal200_tree=null;
 		CommonTree string_literal202_tree=null;
-		CommonTree string_literal203_tree=null;
+		CommonTree string_literal204_tree=null;
+		CommonTree string_literal205_tree=null;
 		RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
 		RewriteRuleTokenStream stream_86=new RewriteRuleTokenStream(adaptor,"token 86");
 		RewriteRuleSubtreeStream stream_row_value=new RewriteRuleSubtreeStream(adaptor,"rule row_value");
@@ -10521,47 +10533,47 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_row_value_in_like_predicate2734);
-					row_value199=row_value();
-					state._fsp--;
-					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value199.getTree());
-
-					string_literal200=(Token)match(input,86,FOLLOW_86_in_like_predicate2736); if (state.failed) return retval;
-					if ( state.backtracking==0 ) {
-					string_literal200_tree = (CommonTree)adaptor.create(string_literal200);
-					root_0 = (CommonTree)adaptor.becomeRoot(string_literal200_tree, root_0);
-					}
-
-					pushFollow(FOLLOW_row_value_in_like_predicate2739);
+					pushFollow(FOLLOW_row_value_in_like_predicate2737);
 					row_value201=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value201.getTree());
+
+					string_literal202=(Token)match(input,86,FOLLOW_86_in_like_predicate2739); if (state.failed) return retval;
+					if ( state.backtracking==0 ) {
+					string_literal202_tree = (CommonTree)adaptor.create(string_literal202);
+					root_0 = (CommonTree)adaptor.becomeRoot(string_literal202_tree, root_0);
+					}
+
+					pushFollow(FOLLOW_row_value_in_like_predicate2742);
+					row_value203=row_value();
+					state._fsp--;
+					if (state.failed) return retval;
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, row_value203.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:275:9: v1= row_value 'NOT' 'LIKE' v2= row_value
 					{
-					pushFollow(FOLLOW_row_value_in_like_predicate2751);
+					pushFollow(FOLLOW_row_value_in_like_predicate2754);
 					v1=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(v1.getTree());
-					string_literal202=(Token)match(input,90,FOLLOW_90_in_like_predicate2753); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_90.add(string_literal202);
+					string_literal204=(Token)match(input,90,FOLLOW_90_in_like_predicate2756); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_90.add(string_literal204);
 
-					string_literal203=(Token)match(input,86,FOLLOW_86_in_like_predicate2755); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_86.add(string_literal203);
+					string_literal205=(Token)match(input,86,FOLLOW_86_in_like_predicate2758); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_86.add(string_literal205);
 
-					pushFollow(FOLLOW_row_value_in_like_predicate2759);
+					pushFollow(FOLLOW_row_value_in_like_predicate2762);
 					v2=row_value();
 					state._fsp--;
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) stream_row_value.add(v2.getTree());
 					// AST REWRITE
-					// elements: 86, v2, v1
+					// elements: v2, 86, v1
 					// token labels: 
 					// rule labels: v1, v2, retval
 					// token list labels: 
@@ -10639,12 +10651,12 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal205=null;
-		Token string_literal206=null;
-		ParserRuleReturnScope value_expression204 =null;
+		Token string_literal207=null;
+		Token string_literal208=null;
+		ParserRuleReturnScope value_expression206 =null;
 
-		CommonTree string_literal205_tree=null;
-		CommonTree string_literal206_tree=null;
+		CommonTree string_literal207_tree=null;
+		CommonTree string_literal208_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:278:5: ( value_expression | 'NULL' | 'DEFAULT' )
@@ -10717,11 +10729,11 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					pushFollow(FOLLOW_value_expression_in_row_value2793);
-					value_expression204=value_expression();
+					pushFollow(FOLLOW_value_expression_in_row_value2796);
+					value_expression206=value_expression();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression204.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, value_expression206.getTree());
 
 					}
 					break;
@@ -10731,10 +10743,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal205=(Token)match(input,91,FOLLOW_91_in_row_value2796); if (state.failed) return retval;
+					string_literal207=(Token)match(input,91,FOLLOW_91_in_row_value2799); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal205_tree = (CommonTree)adaptor.create(string_literal205);
-					adaptor.addChild(root_0, string_literal205_tree);
+					string_literal207_tree = (CommonTree)adaptor.create(string_literal207);
+					adaptor.addChild(root_0, string_literal207_tree);
 					}
 
 					}
@@ -10745,10 +10757,10 @@ public class SQL92QueryParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					string_literal206=(Token)match(input,68,FOLLOW_68_in_row_value2800); if (state.failed) return retval;
+					string_literal208=(Token)match(input,68,FOLLOW_68_in_row_value2803); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					string_literal206_tree = (CommonTree)adaptor.create(string_literal206);
-					adaptor.addChild(root_0, string_literal206_tree);
+					string_literal208_tree = (CommonTree)adaptor.create(string_literal208);
+					adaptor.addChild(root_0, string_literal208_tree);
 					}
 
 					}
@@ -10794,13 +10806,13 @@ public class SQL92QueryParser extends Parser {
 
 		Token tableid=null;
 		Token columnid=null;
-		Token char_literal207=null;
-		Token char_literal208=null;
+		Token char_literal209=null;
+		Token char_literal210=null;
 
 		CommonTree tableid_tree=null;
 		CommonTree columnid_tree=null;
-		CommonTree char_literal207_tree=null;
-		CommonTree char_literal208_tree=null;
+		CommonTree char_literal209_tree=null;
+		CommonTree char_literal210_tree=null;
 		RewriteRuleTokenStream stream_57=new RewriteRuleTokenStream(adaptor,"token 57");
 		RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
 		RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
@@ -10809,20 +10821,20 @@ public class SQL92QueryParser extends Parser {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:281:5: ( '@' tableid= ID '.' columnid= ID -> ^( BOUND ^( TABLECOLUMN $tableid $columnid) ) )
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:281:9: '@' tableid= ID '.' columnid= ID
 			{
-			char_literal207=(Token)match(input,57,FOLLOW_57_in_bind_table2818); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_57.add(char_literal207);
+			char_literal209=(Token)match(input,57,FOLLOW_57_in_bind_table2821); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_57.add(char_literal209);
 
-			tableid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2821); if (state.failed) return retval; 
+			tableid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2824); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-			char_literal208=(Token)match(input,48,FOLLOW_48_in_bind_table2822); if (state.failed) return retval; 
-			if ( state.backtracking==0 ) stream_48.add(char_literal208);
+			char_literal210=(Token)match(input,48,FOLLOW_48_in_bind_table2825); if (state.failed) return retval; 
+			if ( state.backtracking==0 ) stream_48.add(char_literal210);
 
-			columnid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2825); if (state.failed) return retval; 
+			columnid=(Token)match(input,ID,FOLLOW_ID_in_bind_table2828); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 			// AST REWRITE
-			// elements: columnid, tableid
+			// elements: tableid, columnid
 			// token labels: columnid, tableid
 			// rule labels: retval
 			// token list labels: 
@@ -10898,11 +10910,11 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token string_literal209=null;
-		Token ID210=null;
+		Token string_literal211=null;
+		Token ID212=null;
 
-		CommonTree string_literal209_tree=null;
-		CommonTree ID210_tree=null;
+		CommonTree string_literal211_tree=null;
+		CommonTree ID212_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:284:5: ( ( 'AS' !)? ID )
@@ -10921,16 +10933,16 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:284:10: 'AS' !
 					{
-					string_literal209=(Token)match(input,61,FOLLOW_61_in_correlation_specification2860); if (state.failed) return retval;
+					string_literal211=(Token)match(input,61,FOLLOW_61_in_correlation_specification2863); if (state.failed) return retval;
 					}
 					break;
 
 			}
 
-			ID210=(Token)match(input,ID,FOLLOW_ID_in_correlation_specification2865); if (state.failed) return retval;
+			ID212=(Token)match(input,ID,FOLLOW_ID_in_correlation_specification2868); if (state.failed) return retval;
 			if ( state.backtracking==0 ) {
-			ID210_tree = (CommonTree)adaptor.create(ID210);
-			adaptor.addChild(root_0, ID210_tree);
+			ID212_tree = (CommonTree)adaptor.create(ID212);
+			adaptor.addChild(root_0, ID212_tree);
 			}
 
 			}
@@ -10972,9 +10984,9 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token ID211=null;
+		Token ID213=null;
 
-		CommonTree ID211_tree=null;
+		CommonTree ID213_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:287:5: ( ID )
@@ -10983,10 +10995,10 @@ public class SQL92QueryParser extends Parser {
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			ID211=(Token)match(input,ID,FOLLOW_ID_in_table_name2886); if (state.failed) return retval;
+			ID213=(Token)match(input,ID,FOLLOW_ID_in_table_name2889); if (state.failed) return retval;
 			if ( state.backtracking==0 ) {
-			ID211_tree = (CommonTree)adaptor.create(ID211);
-			adaptor.addChild(root_0, ID211_tree);
+			ID213_tree = (CommonTree)adaptor.create(ID213);
+			adaptor.addChild(root_0, ID213_tree);
 			}
 
 			}
@@ -11028,13 +11040,13 @@ public class SQL92QueryParser extends Parser {
 
 		CommonTree root_0 = null;
 
-		Token char_literal214=null;
-		ParserRuleReturnScope column_name212 =null;
-		ParserRuleReturnScope reserved_word_column_name213 =null;
-		ParserRuleReturnScope column_name215 =null;
-		ParserRuleReturnScope reserved_word_column_name216 =null;
+		Token char_literal216=null;
+		ParserRuleReturnScope column_name214 =null;
+		ParserRuleReturnScope reserved_word_column_name215 =null;
+		ParserRuleReturnScope column_name217 =null;
+		ParserRuleReturnScope reserved_word_column_name218 =null;
 
-		CommonTree char_literal214_tree=null;
+		CommonTree char_literal216_tree=null;
 
 		try {
 			// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:5: ( ( column_name | reserved_word_column_name ) ( ',' ! ( column_name | reserved_word_column_name ) )* )
@@ -11106,22 +11118,22 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:10: column_name
 					{
-					pushFollow(FOLLOW_column_name_in_column_list2905);
-					column_name212=column_name();
+					pushFollow(FOLLOW_column_name_in_column_list2908);
+					column_name214=column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name212.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name214.getTree());
 
 					}
 					break;
 				case 2 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:24: reserved_word_column_name
 					{
-					pushFollow(FOLLOW_reserved_word_column_name_in_column_list2909);
-					reserved_word_column_name213=reserved_word_column_name();
+					pushFollow(FOLLOW_reserved_word_column_name_in_column_list2912);
+					reserved_word_column_name215=reserved_word_column_name();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name213.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name215.getTree());
 
 					}
 					break;
@@ -11141,7 +11153,7 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:52: ',' ! ( column_name | reserved_word_column_name )
 					{
-					char_literal214=(Token)match(input,46,FOLLOW_46_in_column_list2913); if (state.failed) return retval;
+					char_literal216=(Token)match(input,46,FOLLOW_46_in_column_list2916); if (state.failed) return retval;
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:57: ( column_name | reserved_word_column_name )
 					int alt75=2;
 					int LA75_0 = input.LA(1);
@@ -11205,22 +11217,22 @@ public class SQL92QueryParser extends Parser {
 						case 1 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:58: column_name
 							{
-							pushFollow(FOLLOW_column_name_in_column_list2917);
-							column_name215=column_name();
+							pushFollow(FOLLOW_column_name_in_column_list2920);
+							column_name217=column_name();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name215.getTree());
+							if ( state.backtracking==0 ) adaptor.addChild(root_0, column_name217.getTree());
 
 							}
 							break;
 						case 2 :
 							// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:290:72: reserved_word_column_name
 							{
-							pushFollow(FOLLOW_reserved_word_column_name_in_column_list2921);
-							reserved_word_column_name216=reserved_word_column_name();
+							pushFollow(FOLLOW_reserved_word_column_name_in_column_list2924);
+							reserved_word_column_name218=reserved_word_column_name();
 							state._fsp--;
 							if (state.failed) return retval;
-							if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name216.getTree());
+							if ( state.backtracking==0 ) adaptor.addChild(root_0, reserved_word_column_name218.getTree());
 
 							}
 							break;
@@ -11276,11 +11288,11 @@ public class SQL92QueryParser extends Parser {
 
 		Token tableid=null;
 		Token columnid=null;
-		Token char_literal217=null;
+		Token char_literal219=null;
 
 		CommonTree tableid_tree=null;
 		CommonTree columnid_tree=null;
-		CommonTree char_literal217_tree=null;
+		CommonTree char_literal219_tree=null;
 		RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
 		RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
@@ -11301,22 +11313,22 @@ public class SQL92QueryParser extends Parser {
 				case 1 :
 					// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:293:10: tableid= ID '.'
 					{
-					tableid=(Token)match(input,ID,FOLLOW_ID_in_column_name2945); if (state.failed) return retval; 
+					tableid=(Token)match(input,ID,FOLLOW_ID_in_column_name2948); if (state.failed) return retval; 
 					if ( state.backtracking==0 ) stream_ID.add(tableid);
 
-					char_literal217=(Token)match(input,48,FOLLOW_48_in_column_name2946); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_48.add(char_literal217);
+					char_literal219=(Token)match(input,48,FOLLOW_48_in_column_name2949); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_48.add(char_literal219);
 
 					}
 					break;
 
 			}
 
-			columnid=(Token)match(input,ID,FOLLOW_ID_in_column_name2951); if (state.failed) return retval; 
+			columnid=(Token)match(input,ID,FOLLOW_ID_in_column_name2954); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_ID.add(columnid);
 
 			// AST REWRITE
-			// elements: tableid, columnid
+			// elements: columnid, tableid
 			// token labels: columnid, tableid
 			// rule labels: retval
 			// token list labels: 
@@ -11389,7 +11401,7 @@ public class SQL92QueryParser extends Parser {
 			MismatchedSetException mse = new MismatchedSetException(null,input);
 			throw mse;
 		}
-		pushFollow(FOLLOW_factor_in_synpred40_SQL92Query1120);
+		pushFollow(FOLLOW_factor_in_synpred40_SQL92Query1123);
 		factor();
 		state._fsp--;
 		if (state.failed) return;
@@ -11404,14 +11416,14 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:164:9: ( '(' value_expression ')' )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:164:9: '(' value_expression ')'
 		{
-		match(input,42,FOLLOW_42_in_synpred45_SQL92Query1201); if (state.failed) return;
+		match(input,42,FOLLOW_42_in_synpred45_SQL92Query1204); if (state.failed) return;
 
-		pushFollow(FOLLOW_value_expression_in_synpred45_SQL92Query1204);
+		pushFollow(FOLLOW_value_expression_in_synpred45_SQL92Query1207);
 		value_expression();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,43,FOLLOW_43_in_synpred45_SQL92Query1206); if (state.failed) return;
+		match(input,43,FOLLOW_43_in_synpred45_SQL92Query1209); if (state.failed) return;
 
 		}
 
@@ -11423,7 +11435,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:165:9: ( function )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:165:9: function
 		{
-		pushFollow(FOLLOW_function_in_synpred46_SQL92Query1217);
+		pushFollow(FOLLOW_function_in_synpred46_SQL92Query1220);
 		function();
 		state._fsp--;
 		if (state.failed) return;
@@ -11438,7 +11450,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:166:9: ( column_name )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:166:9: column_name
 		{
-		pushFollow(FOLLOW_column_name_in_synpred47_SQL92Query1227);
+		pushFollow(FOLLOW_column_name_in_synpred47_SQL92Query1230);
 		column_name();
 		state._fsp--;
 		if (state.failed) return;
@@ -11453,7 +11465,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:167:9: ( literal )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:167:9: literal
 		{
-		pushFollow(FOLLOW_literal_in_synpred48_SQL92Query1237);
+		pushFollow(FOLLOW_literal_in_synpred48_SQL92Query1240);
 		literal();
 		state._fsp--;
 		if (state.failed) return;
@@ -11478,7 +11490,7 @@ public class SQL92QueryParser extends Parser {
 			MismatchedSetException mse = new MismatchedSetException(null,input);
 			throw mse;
 		}
-		match(input,STRING,FOLLOW_STRING_in_synpred59_SQL92Query1328); if (state.failed) return;
+		match(input,STRING,FOLLOW_STRING_in_synpred59_SQL92Query1331); if (state.failed) return;
 
 		}
 
@@ -11490,9 +11502,9 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:178:9: ( 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' ) )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:178:9: 'INTERVAL' STRING ( 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' | 'MINUTE' | 'SECOND' )
 		{
-		match(input,82,FOLLOW_82_in_synpred68_SQL92Query1392); if (state.failed) return;
+		match(input,82,FOLLOW_82_in_synpred68_SQL92Query1395); if (state.failed) return;
 
-		match(input,STRING,FOLLOW_STRING_in_synpred68_SQL92Query1395); if (state.failed) return;
+		match(input,STRING,FOLLOW_STRING_in_synpred68_SQL92Query1398); if (state.failed) return;
 
 		if ( input.LA(1)==67||input.LA(1)==78||(input.LA(1) >= 88 && input.LA(1) <= 89)||input.LA(1)==97||input.LA(1)==106 ) {
 			input.consume();
@@ -11514,9 +11526,9 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:193:16: ( ',' table_reference )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:193:16: ',' table_reference
 		{
-		match(input,46,FOLLOW_46_in_synpred82_SQL92Query1661); if (state.failed) return;
+		match(input,46,FOLLOW_46_in_synpred82_SQL92Query1664); if (state.failed) return;
 
-		pushFollow(FOLLOW_table_reference_in_synpred82_SQL92Query1664);
+		pushFollow(FOLLOW_table_reference_in_synpred82_SQL92Query1667);
 		table_reference();
 		state._fsp--;
 		if (state.failed) return;
@@ -11531,7 +11543,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:21: ( table_function_subquery )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:21: table_function_subquery
 		{
-		pushFollow(FOLLOW_table_function_subquery_in_synpred94_SQL92Query1880);
+		pushFollow(FOLLOW_table_function_subquery_in_synpred94_SQL92Query1883);
 		table_function_subquery();
 		state._fsp--;
 		if (state.failed) return;
@@ -11546,9 +11558,9 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:47: ( ',' table_function_subquery )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:210:47: ',' table_function_subquery
 		{
-		match(input,46,FOLLOW_46_in_synpred95_SQL92Query1884); if (state.failed) return;
+		match(input,46,FOLLOW_46_in_synpred95_SQL92Query1887); if (state.failed) return;
 
-		pushFollow(FOLLOW_table_function_subquery_in_synpred95_SQL92Query1886);
+		pushFollow(FOLLOW_table_function_subquery_in_synpred95_SQL92Query1889);
 		table_function_subquery();
 		state._fsp--;
 		if (state.failed) return;
@@ -11563,7 +11575,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:217:9: ( search_condition )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:217:9: search_condition
 		{
-		pushFollow(FOLLOW_search_condition_in_synpred98_SQL92Query1976);
+		pushFollow(FOLLOW_search_condition_in_synpred98_SQL92Query1979);
 		search_condition();
 		state._fsp--;
 		if (state.failed) return;
@@ -11578,7 +11590,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:239:9: ( predicate )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:239:9: predicate
 		{
-		pushFollow(FOLLOW_predicate_in_synpred104_SQL92Query2178);
+		pushFollow(FOLLOW_predicate_in_synpred104_SQL92Query2181);
 		predicate();
 		state._fsp--;
 		if (state.failed) return;
@@ -11593,7 +11605,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:9: ( comparison_predicate )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:9: comparison_predicate
 		{
-		pushFollow(FOLLOW_comparison_predicate_in_synpred105_SQL92Query2209);
+		pushFollow(FOLLOW_comparison_predicate_in_synpred105_SQL92Query2212);
 		comparison_predicate();
 		state._fsp--;
 		if (state.failed) return;
@@ -11608,7 +11620,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:32: ( like_predicate )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:32: like_predicate
 		{
-		pushFollow(FOLLOW_like_predicate_in_synpred106_SQL92Query2213);
+		pushFollow(FOLLOW_like_predicate_in_synpred106_SQL92Query2216);
 		like_predicate();
 		state._fsp--;
 		if (state.failed) return;
@@ -11623,7 +11635,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:49: ( in_predicate )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:49: in_predicate
 		{
-		pushFollow(FOLLOW_in_predicate_in_synpred107_SQL92Query2217);
+		pushFollow(FOLLOW_in_predicate_in_synpred107_SQL92Query2220);
 		in_predicate();
 		state._fsp--;
 		if (state.failed) return;
@@ -11638,7 +11650,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:64: ( null_predicate )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:242:64: null_predicate
 		{
-		pushFollow(FOLLOW_null_predicate_in_synpred108_SQL92Query2221);
+		pushFollow(FOLLOW_null_predicate_in_synpred108_SQL92Query2224);
 		null_predicate();
 		state._fsp--;
 		if (state.failed) return;
@@ -11653,14 +11665,14 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:245:9: ( row_value 'IS' 'NULL' )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:245:9: row_value 'IS' 'NULL'
 		{
-		pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query2247);
+		pushFollow(FOLLOW_row_value_in_synpred110_SQL92Query2250);
 		row_value();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,83,FOLLOW_83_in_synpred110_SQL92Query2249); if (state.failed) return;
+		match(input,83,FOLLOW_83_in_synpred110_SQL92Query2252); if (state.failed) return;
 
-		match(input,91,FOLLOW_91_in_synpred110_SQL92Query2251); if (state.failed) return;
+		match(input,91,FOLLOW_91_in_synpred110_SQL92Query2254); if (state.failed) return;
 
 		}
 
@@ -11672,16 +11684,16 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:249:9: ( row_value 'NOT' 'IN' in_predicate_tail )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:249:9: row_value 'NOT' 'IN' in_predicate_tail
 		{
-		pushFollow(FOLLOW_row_value_in_synpred111_SQL92Query2305);
+		pushFollow(FOLLOW_row_value_in_synpred111_SQL92Query2308);
 		row_value();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,90,FOLLOW_90_in_synpred111_SQL92Query2307); if (state.failed) return;
+		match(input,90,FOLLOW_90_in_synpred111_SQL92Query2310); if (state.failed) return;
 
-		match(input,79,FOLLOW_79_in_synpred111_SQL92Query2309); if (state.failed) return;
+		match(input,79,FOLLOW_79_in_synpred111_SQL92Query2312); if (state.failed) return;
 
-		pushFollow(FOLLOW_in_predicate_tail_in_synpred111_SQL92Query2311);
+		pushFollow(FOLLOW_in_predicate_tail_in_synpred111_SQL92Query2314);
 		in_predicate_tail();
 		state._fsp--;
 		if (state.failed) return;
@@ -11696,7 +11708,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:255:9: ( sub_query )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:255:9: sub_query
 		{
-		pushFollow(FOLLOW_sub_query_in_synpred112_SQL92Query2391);
+		pushFollow(FOLLOW_sub_query_in_synpred112_SQL92Query2394);
 		sub_query();
 		state._fsp--;
 		if (state.failed) return;
@@ -11716,21 +11728,21 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:259:9: (value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:259:9: value= row_value 'BETWEEN' btw1= row_value 'AND' btw2= row_value
 		{
-		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2444);
+		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2447);
 		value=row_value();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,63,FOLLOW_63_in_synpred114_SQL92Query2446); if (state.failed) return;
+		match(input,63,FOLLOW_63_in_synpred114_SQL92Query2449); if (state.failed) return;
 
-		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2450);
+		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2453);
 		btw1=row_value();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,59,FOLLOW_59_in_synpred114_SQL92Query2452); if (state.failed) return;
+		match(input,59,FOLLOW_59_in_synpred114_SQL92Query2455); if (state.failed) return;
 
-		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2456);
+		pushFollow(FOLLOW_row_value_in_synpred114_SQL92Query2459);
 		btw2=row_value();
 		state._fsp--;
 		if (state.failed) return;
@@ -11751,7 +11763,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:9: (lv= row_value (op= '=' |op= '<>' |op= '!=' |op= '<' |op= '>' |op= '>=' |op= '<=' ) (ep= 'ALL' |ep= 'SOME' |ep= 'ANY' ) rv= row_value )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:9: lv= row_value (op= '=' |op= '<>' |op= '!=' |op= '<' |op= '>' |op= '>=' |op= '<=' ) (ep= 'ALL' |ep= 'SOME' |ep= 'ANY' ) rv= row_value
 		{
-		pushFollow(FOLLOW_row_value_in_synpred124_SQL92Query2597);
+		pushFollow(FOLLOW_row_value_in_synpred124_SQL92Query2600);
 		lv=row_value();
 		state._fsp--;
 		if (state.failed) return;
@@ -11804,49 +11816,49 @@ public class SQL92QueryParser extends Parser {
 			case 1 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:23: op= '='
 				{
-				op=(Token)match(input,54,FOLLOW_54_in_synpred124_SQL92Query2602); if (state.failed) return;
+				op=(Token)match(input,54,FOLLOW_54_in_synpred124_SQL92Query2605); if (state.failed) return;
 
 				}
 				break;
 			case 2 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:30: op= '<>'
 				{
-				op=(Token)match(input,53,FOLLOW_53_in_synpred124_SQL92Query2606); if (state.failed) return;
+				op=(Token)match(input,53,FOLLOW_53_in_synpred124_SQL92Query2609); if (state.failed) return;
 
 				}
 				break;
 			case 3 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:38: op= '!='
 				{
-				op=(Token)match(input,41,FOLLOW_41_in_synpred124_SQL92Query2610); if (state.failed) return;
+				op=(Token)match(input,41,FOLLOW_41_in_synpred124_SQL92Query2613); if (state.failed) return;
 
 				}
 				break;
 			case 4 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:46: op= '<'
 				{
-				op=(Token)match(input,51,FOLLOW_51_in_synpred124_SQL92Query2614); if (state.failed) return;
+				op=(Token)match(input,51,FOLLOW_51_in_synpred124_SQL92Query2617); if (state.failed) return;
 
 				}
 				break;
 			case 5 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:53: op= '>'
 				{
-				op=(Token)match(input,55,FOLLOW_55_in_synpred124_SQL92Query2618); if (state.failed) return;
+				op=(Token)match(input,55,FOLLOW_55_in_synpred124_SQL92Query2621); if (state.failed) return;
 
 				}
 				break;
 			case 6 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:60: op= '>='
 				{
-				op=(Token)match(input,56,FOLLOW_56_in_synpred124_SQL92Query2622); if (state.failed) return;
+				op=(Token)match(input,56,FOLLOW_56_in_synpred124_SQL92Query2625); if (state.failed) return;
 
 				}
 				break;
 			case 7 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:68: op= '<='
 				{
-				op=(Token)match(input,52,FOLLOW_52_in_synpred124_SQL92Query2626); if (state.failed) return;
+				op=(Token)match(input,52,FOLLOW_52_in_synpred124_SQL92Query2629); if (state.failed) return;
 
 				}
 				break;
@@ -11881,28 +11893,28 @@ public class SQL92QueryParser extends Parser {
 			case 1 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:78: ep= 'ALL'
 				{
-				ep=(Token)match(input,58,FOLLOW_58_in_synpred124_SQL92Query2632); if (state.failed) return;
+				ep=(Token)match(input,58,FOLLOW_58_in_synpred124_SQL92Query2635); if (state.failed) return;
 
 				}
 				break;
 			case 2 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:87: ep= 'SOME'
 				{
-				ep=(Token)match(input,99,FOLLOW_99_in_synpred124_SQL92Query2636); if (state.failed) return;
+				ep=(Token)match(input,99,FOLLOW_99_in_synpred124_SQL92Query2639); if (state.failed) return;
 
 				}
 				break;
 			case 3 :
 				// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:269:97: ep= 'ANY'
 				{
-				ep=(Token)match(input,60,FOLLOW_60_in_synpred124_SQL92Query2640); if (state.failed) return;
+				ep=(Token)match(input,60,FOLLOW_60_in_synpred124_SQL92Query2643); if (state.failed) return;
 
 				}
 				break;
 
 		}
 
-		pushFollow(FOLLOW_row_value_in_synpred124_SQL92Query2645);
+		pushFollow(FOLLOW_row_value_in_synpred124_SQL92Query2648);
 		rv=row_value();
 		state._fsp--;
 		if (state.failed) return;
@@ -11917,14 +11929,14 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:274:9: ( row_value 'LIKE' row_value )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:274:9: row_value 'LIKE' row_value
 		{
-		pushFollow(FOLLOW_row_value_in_synpred131_SQL92Query2734);
+		pushFollow(FOLLOW_row_value_in_synpred131_SQL92Query2737);
 		row_value();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,86,FOLLOW_86_in_synpred131_SQL92Query2736); if (state.failed) return;
+		match(input,86,FOLLOW_86_in_synpred131_SQL92Query2739); if (state.failed) return;
 
-		pushFollow(FOLLOW_row_value_in_synpred131_SQL92Query2739);
+		pushFollow(FOLLOW_row_value_in_synpred131_SQL92Query2742);
 		row_value();
 		state._fsp--;
 		if (state.failed) return;
@@ -11939,7 +11951,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:278:9: ( value_expression )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:278:9: value_expression
 		{
-		pushFollow(FOLLOW_value_expression_in_synpred132_SQL92Query2793);
+		pushFollow(FOLLOW_value_expression_in_synpred132_SQL92Query2796);
 		value_expression();
 		state._fsp--;
 		if (state.failed) return;
@@ -11954,7 +11966,7 @@ public class SQL92QueryParser extends Parser {
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:278:27: ( 'NULL' )
 		// /home/stelios/hg/firethorn-ogsadai/distributed/server/src/main/grammar/SQL92Query.g:278:27: 'NULL'
 		{
-		match(input,91,FOLLOW_91_in_synpred133_SQL92Query2796); if (state.failed) return;
+		match(input,91,FOLLOW_91_in_synpred133_SQL92Query2799); if (state.failed) return;
 
 		}
 
@@ -12341,289 +12353,291 @@ public class SQL92QueryParser extends Parser {
 	public static final BitSet FOLLOW_46_in_select_list730 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420EL});
 	public static final BitSet FOLLOW_derived_column_in_select_list733 = new BitSet(new long[]{0x0000400000000002L});
 	public static final BitSet FOLLOW_44_in_select_list745 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_65_in_derived_column771 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_derived_column773 = new BitSet(new long[]{0x2000000000000000L});
-	public static final BitSet FOLLOW_61_in_derived_column775 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_derived_column779 = new BitSet(new long[]{0x2000000000020002L});
-	public static final BitSet FOLLOW_61_in_derived_column782 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_derived_column787 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_expression_in_derived_column818 = new BitSet(new long[]{0x2000000000020002L});
-	public static final BitSet FOLLOW_61_in_derived_column821 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_derived_column824 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_94_in_order_by858 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
-	public static final BitSet FOLLOW_64_in_order_by860 = new BitSet(new long[]{0x0000000000060000L,0x000004320304400CL});
-	public static final BitSet FOLLOW_ordered_sort_spec_in_order_by862 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_order_by865 = new BitSet(new long[]{0x0000000000060000L,0x000004320304400CL});
-	public static final BitSet FOLLOW_ordered_sort_spec_in_order_by867 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_column_name_in_sort_spec896 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_sort_spec900 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_reserved_word_column_name_in_sort_spec904 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec922 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-	public static final BitSet FOLLOW_69_in_ordered_sort_spec924 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec942 = new BitSet(new long[]{0x4000000000000002L});
-	public static final BitSet FOLLOW_62_in_ordered_sort_spec944 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_reserved_word_column_name974 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_reserved_word_column_name975 = new BitSet(new long[]{0x0000000000000000L,0x000004320304400CL});
-	public static final BitSet FOLLOW_66_in_reserved_word_column_name981 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_101_in_reserved_word_column_name987 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_100_in_reserved_word_column_name993 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_82_in_reserved_word_column_name999 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_106_in_reserved_word_column_name1005 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_89_in_reserved_word_column_name1011 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_67_in_reserved_word_column_name1017 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_78_in_reserved_word_column_name1023 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_88_in_reserved_word_column_name1029 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_97_in_reserved_word_column_name1035 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_string_value_expression_in_value_expression1081 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_numeric_value_expression_in_value_expression1091 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_factor_in_numeric_value_expression1110 = new BitSet(new long[]{0x0000A00000000002L});
-	public static final BitSet FOLLOW_set_in_numeric_value_expression1113 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_factor_in_numeric_value_expression1120 = new BitSet(new long[]{0x0000A00000000002L});
-	public static final BitSet FOLLOW_numeric_primary_in_factor1142 = new BitSet(new long[]{0x0002100000000002L});
-	public static final BitSet FOLLOW_set_in_factor1145 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_numeric_primary_in_factor1152 = new BitSet(new long[]{0x0002100000000002L});
-	public static final BitSet FOLLOW_45_in_numeric_primary1173 = new BitSet(new long[]{0x0000040402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_47_in_numeric_primary1176 = new BitSet(new long[]{0x0000040402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_primary_in_numeric_primary1181 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_42_in_value_expression_primary1201 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_value_expression_primary1204 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_value_expression_primary1206 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_function_in_value_expression_primary1217 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_column_name_in_value_expression_primary1227 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_literal_in_value_expression_primary1237 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sub_query_in_value_expression_primary1247 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_literal1265 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_FLOAT_in_literal1269 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMERIC_in_literal1273 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_STRING_in_literal1277 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_datetime_in_literal1281 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_interval_in_literal1285 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_91_in_literal1289 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_103_in_literal1293 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_73_in_literal1297 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_datetime1315 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_STRING_in_datetime1328 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_datetime1341 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_datetime1342 = new BitSet(new long[]{0x0000000000000000L,0x0000003000000004L});
-	public static final BitSet FOLLOW_66_in_datetime1348 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_101_in_datetime1354 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_100_in_datetime1360 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_82_in_interval1392 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_STRING_in_interval1395 = new BitSet(new long[]{0x0000000000000000L,0x0000040203004008L});
-	public static final BitSet FOLLOW_set_in_interval1397 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_interval1432 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_interval1433 = new BitSet(new long[]{0x0000000000000000L,0x0000040203044008L});
-	public static final BitSet FOLLOW_82_in_interval1439 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_106_in_interval1445 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_89_in_interval1451 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_67_in_interval1457 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_78_in_interval1463 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_88_in_interval1469 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_97_in_interval1475 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_function1513 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_42_in_function1516 = new BitSet(new long[]{0x0000EC0402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_function1518 = new BitSet(new long[]{0x0000480000000000L});
-	public static final BitSet FOLLOW_46_in_function1522 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_function1524 = new BitSet(new long[]{0x0000480000000000L});
-	public static final BitSet FOLLOW_43_in_function1528 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_function1566 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_42_in_function1569 = new BitSet(new long[]{0x0000100000000000L});
-	public static final BitSet FOLLOW_44_in_function1571 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_function1573 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_column_name_in_string_value_expression1603 = new BitSet(new long[]{0x0000000000000000L,0x0000080000000000L});
-	public static final BitSet FOLLOW_STRING_in_string_value_expression1607 = new BitSet(new long[]{0x0000000000000000L,0x0000080000000000L});
-	public static final BitSet FOLLOW_107_in_string_value_expression1611 = new BitSet(new long[]{0x0000000400020000L});
-	public static final BitSet FOLLOW_column_name_in_string_value_expression1615 = new BitSet(new long[]{0x0000000000000002L,0x0000080000000000L});
-	public static final BitSet FOLLOW_STRING_in_string_value_expression1619 = new BitSet(new long[]{0x0000000000000002L,0x0000080000000000L});
-	public static final BitSet FOLLOW_table_reference_in_table_expression1640 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_table_in_table_reference1658 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_table_reference1661 = new BitSet(new long[]{0x0000040000020000L});
-	public static final BitSet FOLLOW_table_reference_in_table_reference1664 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_96_in_join_type1684 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
-	public static final BitSet FOLLOW_95_in_join_type1686 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
-	public static final BitSet FOLLOW_84_in_join_type1689 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_85_in_join_type1704 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
-	public static final BitSet FOLLOW_95_in_join_type1706 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
-	public static final BitSet FOLLOW_84_in_join_type1709 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_75_in_join_type1723 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
-	public static final BitSet FOLLOW_95_in_join_type1725 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
-	public static final BitSet FOLLOW_84_in_join_type1728 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_80_in_join_type1742 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
-	public static final BitSet FOLLOW_84_in_join_type1745 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_non_join_table_in_table1767 = new BitSet(new long[]{0x0000000000000002L,0x0000000100310800L});
-	public static final BitSet FOLLOW_join_type_in_table1770 = new BitSet(new long[]{0x0000040000020000L});
-	public static final BitSet FOLLOW_non_join_table_in_table1773 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-	public static final BitSet FOLLOW_92_in_table1775 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_search_condition_in_table1778 = new BitSet(new long[]{0x0000000000000002L,0x0000000100310800L});
-	public static final BitSet FOLLOW_table_name_in_non_join_table1798 = new BitSet(new long[]{0x2000000000020002L});
-	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1800 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_table_function_in_non_join_table1822 = new BitSet(new long[]{0x2000000000020000L});
-	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1824 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sub_query_in_non_join_table1844 = new BitSet(new long[]{0x2000000000020000L});
-	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1846 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_table_function1876 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_42_in_table_function1878 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_table_function_subquery_in_table_function1880 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_46_in_table_function1884 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_table_function_subquery_in_table_function1886 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_46_in_table_function1891 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_table_function_param_in_table_function1894 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_43_in_table_function1898 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sub_query_in_table_function_subquery1946 = new BitSet(new long[]{0x2000000000020000L});
-	public static final BitSet FOLLOW_correlation_specification_in_table_function_subquery1948 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_search_condition_in_table_function_param1976 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_expression_in_table_function_param1986 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_table_name_in_relation2008 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_table_function_in_relation2026 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_query_in_relation2044 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_boolean_factor_in_search_condition2070 = new BitSet(new long[]{0x0000000000000002L,0x0000000020000000L});
-	public static final BitSet FOLLOW_93_in_search_condition2073 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_boolean_factor_in_search_condition2076 = new BitSet(new long[]{0x0000000000000002L,0x0000000020000000L});
-	public static final BitSet FOLLOW_boolean_term_in_boolean_factor2096 = new BitSet(new long[]{0x0800000000000002L});
-	public static final BitSet FOLLOW_59_in_boolean_factor2099 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_boolean_term_in_boolean_factor2102 = new BitSet(new long[]{0x0800000000000002L});
-	public static final BitSet FOLLOW_boolean_test_in_boolean_term2122 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_90_in_boolean_term2132 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_boolean_term_in_boolean_term2134 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_boolean_primary_in_boolean_test2160 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_predicate_in_boolean_primary2178 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_42_in_boolean_primary2182 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
-	public static final BitSet FOLLOW_search_condition_in_boolean_primary2185 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_boolean_primary2187 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparison_predicate_in_predicate2209 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_like_predicate_in_predicate2213 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_in_predicate_in_predicate2217 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_null_predicate_in_predicate2221 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_exists_predicate_in_predicate2225 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_between_predicate_in_predicate2229 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_null_predicate2247 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-	public static final BitSet FOLLOW_83_in_null_predicate2249 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-	public static final BitSet FOLLOW_91_in_null_predicate2251 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_null_predicate2269 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-	public static final BitSet FOLLOW_83_in_null_predicate2271 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-	public static final BitSet FOLLOW_90_in_null_predicate2273 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-	public static final BitSet FOLLOW_91_in_null_predicate2275 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_in_predicate2305 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-	public static final BitSet FOLLOW_90_in_in_predicate2307 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-	public static final BitSet FOLLOW_79_in_in_predicate2309 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2311 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_in_predicate2347 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-	public static final BitSet FOLLOW_79_in_in_predicate2349 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2351 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sub_query_in_in_predicate_tail2391 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_42_in_in_predicate_tail2402 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2405 = new BitSet(new long[]{0x0000480000000000L});
-	public static final BitSet FOLLOW_46_in_in_predicate_tail2408 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2410 = new BitSet(new long[]{0x0000480000000000L});
-	public static final BitSet FOLLOW_43_in_in_predicate_tail2415 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2444 = new BitSet(new long[]{0x8000000000000000L});
-	public static final BitSet FOLLOW_63_in_between_predicate2446 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2450 = new BitSet(new long[]{0x0800000000000000L});
-	public static final BitSet FOLLOW_59_in_between_predicate2452 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2456 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2496 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-	public static final BitSet FOLLOW_90_in_between_predicate2498 = new BitSet(new long[]{0x8000000000000000L});
-	public static final BitSet FOLLOW_63_in_between_predicate2500 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2504 = new BitSet(new long[]{0x0800000000000000L});
-	public static final BitSet FOLLOW_59_in_between_predicate2506 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_between_predicate2510 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_72_in_exists_predicate2559 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_sub_query_in_exists_predicate2562 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_bind_table_in_comparison_predicate2580 = new BitSet(new long[]{0x0040000000000000L});
-	public static final BitSet FOLLOW_54_in_comparison_predicate2582 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_comparison_predicate2585 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_comparison_predicate2597 = new BitSet(new long[]{0x01F8020000000000L});
-	public static final BitSet FOLLOW_54_in_comparison_predicate2602 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_53_in_comparison_predicate2606 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_41_in_comparison_predicate2610 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_51_in_comparison_predicate2614 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_55_in_comparison_predicate2618 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_56_in_comparison_predicate2622 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_52_in_comparison_predicate2626 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_58_in_comparison_predicate2632 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_99_in_comparison_predicate2636 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_60_in_comparison_predicate2640 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_comparison_predicate2645 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_comparison_predicate2685 = new BitSet(new long[]{0x01F8020000000000L});
-	public static final BitSet FOLLOW_set_in_comparison_predicate2687 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_comparison_predicate2716 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_like_predicate2734 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
-	public static final BitSet FOLLOW_86_in_like_predicate2736 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_like_predicate2739 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_like_predicate2751 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-	public static final BitSet FOLLOW_90_in_like_predicate2753 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
-	public static final BitSet FOLLOW_86_in_like_predicate2755 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_like_predicate2759 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_expression_in_row_value2793 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_91_in_row_value2796 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_68_in_row_value2800 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_57_in_bind_table2818 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_bind_table2821 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_bind_table2822 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_bind_table2825 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_61_in_correlation_specification2860 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_correlation_specification2865 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_table_name2886 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_column_name_in_column_list2905 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2909 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_column_list2913 = new BitSet(new long[]{0x0000000000020000L,0x000004320304400CL});
-	public static final BitSet FOLLOW_column_name_in_column_list2917 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2921 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_ID_in_column_name2945 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_column_name2946 = new BitSet(new long[]{0x0000000000020000L});
-	public static final BitSet FOLLOW_ID_in_column_name2951 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_synpred40_SQL92Query1113 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_factor_in_synpred40_SQL92Query1120 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_42_in_synpred45_SQL92Query1201 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
-	public static final BitSet FOLLOW_value_expression_in_synpred45_SQL92Query1204 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_synpred45_SQL92Query1206 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_function_in_synpred46_SQL92Query1217 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_column_name_in_synpred47_SQL92Query1227 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_literal_in_synpred48_SQL92Query1237 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_synpred59_SQL92Query1315 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_STRING_in_synpred59_SQL92Query1328 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_82_in_synpred68_SQL92Query1392 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_STRING_in_synpred68_SQL92Query1395 = new BitSet(new long[]{0x0000000000000000L,0x0000040203004008L});
-	public static final BitSet FOLLOW_set_in_synpred68_SQL92Query1397 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_46_in_synpred82_SQL92Query1661 = new BitSet(new long[]{0x0000040000020000L});
-	public static final BitSet FOLLOW_table_reference_in_synpred82_SQL92Query1664 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_table_function_subquery_in_synpred94_SQL92Query1880 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_46_in_synpred95_SQL92Query1884 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_table_function_subquery_in_synpred95_SQL92Query1886 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_search_condition_in_synpred98_SQL92Query1976 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_predicate_in_synpred104_SQL92Query2178 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparison_predicate_in_synpred105_SQL92Query2209 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_like_predicate_in_synpred106_SQL92Query2213 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_in_predicate_in_synpred107_SQL92Query2217 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_null_predicate_in_synpred108_SQL92Query2221 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query2247 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-	public static final BitSet FOLLOW_83_in_synpred110_SQL92Query2249 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
-	public static final BitSet FOLLOW_91_in_synpred110_SQL92Query2251 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_synpred111_SQL92Query2305 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-	public static final BitSet FOLLOW_90_in_synpred111_SQL92Query2307 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-	public static final BitSet FOLLOW_79_in_synpred111_SQL92Query2309 = new BitSet(new long[]{0x0000040000000000L});
-	public static final BitSet FOLLOW_in_predicate_tail_in_synpred111_SQL92Query2311 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sub_query_in_synpred112_SQL92Query2391 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2444 = new BitSet(new long[]{0x8000000000000000L});
-	public static final BitSet FOLLOW_63_in_synpred114_SQL92Query2446 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2450 = new BitSet(new long[]{0x0800000000000000L});
-	public static final BitSet FOLLOW_59_in_synpred114_SQL92Query2452 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2456 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_synpred124_SQL92Query2597 = new BitSet(new long[]{0x01F8020000000000L});
-	public static final BitSet FOLLOW_54_in_synpred124_SQL92Query2602 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_53_in_synpred124_SQL92Query2606 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_41_in_synpred124_SQL92Query2610 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_51_in_synpred124_SQL92Query2614 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_55_in_synpred124_SQL92Query2618 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_56_in_synpred124_SQL92Query2622 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_52_in_synpred124_SQL92Query2626 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
-	public static final BitSet FOLLOW_58_in_synpred124_SQL92Query2632 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_99_in_synpred124_SQL92Query2636 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_60_in_synpred124_SQL92Query2640 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_synpred124_SQL92Query2645 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_row_value_in_synpred131_SQL92Query2734 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
-	public static final BitSet FOLLOW_86_in_synpred131_SQL92Query2736 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
-	public static final BitSet FOLLOW_row_value_in_synpred131_SQL92Query2739 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_expression_in_synpred132_SQL92Query2793 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_91_in_synpred133_SQL92Query2796 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_65_in_derived_column769 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_42_in_derived_column772 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_derived_column774 = new BitSet(new long[]{0x2000000000000000L});
+	public static final BitSet FOLLOW_61_in_derived_column776 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_derived_column780 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_derived_column782 = new BitSet(new long[]{0x2000000000020002L});
+	public static final BitSet FOLLOW_61_in_derived_column785 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_derived_column790 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_expression_in_derived_column821 = new BitSet(new long[]{0x2000000000020002L});
+	public static final BitSet FOLLOW_61_in_derived_column824 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_derived_column827 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_94_in_order_by861 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
+	public static final BitSet FOLLOW_64_in_order_by863 = new BitSet(new long[]{0x0000000000060000L,0x000004320304400CL});
+	public static final BitSet FOLLOW_ordered_sort_spec_in_order_by865 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_46_in_order_by868 = new BitSet(new long[]{0x0000000000060000L,0x000004320304400CL});
+	public static final BitSet FOLLOW_ordered_sort_spec_in_order_by870 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_column_name_in_sort_spec899 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_sort_spec903 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_reserved_word_column_name_in_sort_spec907 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec925 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+	public static final BitSet FOLLOW_69_in_ordered_sort_spec927 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sort_spec_in_ordered_sort_spec945 = new BitSet(new long[]{0x4000000000000002L});
+	public static final BitSet FOLLOW_62_in_ordered_sort_spec947 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_reserved_word_column_name977 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_reserved_word_column_name978 = new BitSet(new long[]{0x0000000000000000L,0x000004320304400CL});
+	public static final BitSet FOLLOW_66_in_reserved_word_column_name984 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_101_in_reserved_word_column_name990 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_100_in_reserved_word_column_name996 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_82_in_reserved_word_column_name1002 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_106_in_reserved_word_column_name1008 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_89_in_reserved_word_column_name1014 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_67_in_reserved_word_column_name1020 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_78_in_reserved_word_column_name1026 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_88_in_reserved_word_column_name1032 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_97_in_reserved_word_column_name1038 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_string_value_expression_in_value_expression1084 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_numeric_value_expression_in_value_expression1094 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_factor_in_numeric_value_expression1113 = new BitSet(new long[]{0x0000A00000000002L});
+	public static final BitSet FOLLOW_set_in_numeric_value_expression1116 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_factor_in_numeric_value_expression1123 = new BitSet(new long[]{0x0000A00000000002L});
+	public static final BitSet FOLLOW_numeric_primary_in_factor1145 = new BitSet(new long[]{0x0002100000000002L});
+	public static final BitSet FOLLOW_set_in_factor1148 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_numeric_primary_in_factor1155 = new BitSet(new long[]{0x0002100000000002L});
+	public static final BitSet FOLLOW_45_in_numeric_primary1176 = new BitSet(new long[]{0x0000040402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_47_in_numeric_primary1179 = new BitSet(new long[]{0x0000040402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_primary_in_numeric_primary1184 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_42_in_value_expression_primary1204 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_value_expression_primary1207 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_value_expression_primary1209 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_function_in_value_expression_primary1220 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_column_name_in_value_expression_primary1230 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_literal_in_value_expression_primary1240 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sub_query_in_value_expression_primary1250 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_literal1268 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_FLOAT_in_literal1272 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMERIC_in_literal1276 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_STRING_in_literal1280 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_datetime_in_literal1284 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_interval_in_literal1288 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_91_in_literal1292 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_103_in_literal1296 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_73_in_literal1300 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_datetime1318 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_STRING_in_datetime1331 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_datetime1344 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_datetime1345 = new BitSet(new long[]{0x0000000000000000L,0x0000003000000004L});
+	public static final BitSet FOLLOW_66_in_datetime1351 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_101_in_datetime1357 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_100_in_datetime1363 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_82_in_interval1395 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_STRING_in_interval1398 = new BitSet(new long[]{0x0000000000000000L,0x0000040203004008L});
+	public static final BitSet FOLLOW_set_in_interval1400 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_interval1435 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_interval1436 = new BitSet(new long[]{0x0000000000000000L,0x0000040203044008L});
+	public static final BitSet FOLLOW_82_in_interval1442 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_106_in_interval1448 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_89_in_interval1454 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_67_in_interval1460 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_78_in_interval1466 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_88_in_interval1472 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_97_in_interval1478 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_function1516 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_42_in_function1519 = new BitSet(new long[]{0x0000EC0402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_function1521 = new BitSet(new long[]{0x0000480000000000L});
+	public static final BitSet FOLLOW_46_in_function1525 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_function1527 = new BitSet(new long[]{0x0000480000000000L});
+	public static final BitSet FOLLOW_43_in_function1531 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_function1569 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_42_in_function1572 = new BitSet(new long[]{0x0000100000000000L});
+	public static final BitSet FOLLOW_44_in_function1574 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_function1576 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_column_name_in_string_value_expression1606 = new BitSet(new long[]{0x0000000000000000L,0x0000080000000000L});
+	public static final BitSet FOLLOW_STRING_in_string_value_expression1610 = new BitSet(new long[]{0x0000000000000000L,0x0000080000000000L});
+	public static final BitSet FOLLOW_107_in_string_value_expression1614 = new BitSet(new long[]{0x0000000400020000L});
+	public static final BitSet FOLLOW_column_name_in_string_value_expression1618 = new BitSet(new long[]{0x0000000000000002L,0x0000080000000000L});
+	public static final BitSet FOLLOW_STRING_in_string_value_expression1622 = new BitSet(new long[]{0x0000000000000002L,0x0000080000000000L});
+	public static final BitSet FOLLOW_table_reference_in_table_expression1643 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_table_in_table_reference1661 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_46_in_table_reference1664 = new BitSet(new long[]{0x0000040000020000L});
+	public static final BitSet FOLLOW_table_reference_in_table_reference1667 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_96_in_join_type1687 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
+	public static final BitSet FOLLOW_95_in_join_type1689 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+	public static final BitSet FOLLOW_84_in_join_type1692 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_85_in_join_type1707 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
+	public static final BitSet FOLLOW_95_in_join_type1709 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+	public static final BitSet FOLLOW_84_in_join_type1712 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_75_in_join_type1726 = new BitSet(new long[]{0x0000000000000000L,0x0000000080100000L});
+	public static final BitSet FOLLOW_95_in_join_type1728 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+	public static final BitSet FOLLOW_84_in_join_type1731 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_80_in_join_type1745 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+	public static final BitSet FOLLOW_84_in_join_type1748 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_non_join_table_in_table1770 = new BitSet(new long[]{0x0000000000000002L,0x0000000100310800L});
+	public static final BitSet FOLLOW_join_type_in_table1773 = new BitSet(new long[]{0x0000040000020000L});
+	public static final BitSet FOLLOW_non_join_table_in_table1776 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
+	public static final BitSet FOLLOW_92_in_table1778 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_search_condition_in_table1781 = new BitSet(new long[]{0x0000000000000002L,0x0000000100310800L});
+	public static final BitSet FOLLOW_table_name_in_non_join_table1801 = new BitSet(new long[]{0x2000000000020002L});
+	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1803 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_table_function_in_non_join_table1825 = new BitSet(new long[]{0x2000000000020000L});
+	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1827 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sub_query_in_non_join_table1847 = new BitSet(new long[]{0x2000000000020000L});
+	public static final BitSet FOLLOW_correlation_specification_in_non_join_table1849 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_table_function1879 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_42_in_table_function1881 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_table_function_subquery_in_table_function1883 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_46_in_table_function1887 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_table_function_subquery_in_table_function1889 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_46_in_table_function1894 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_table_function_param_in_table_function1897 = new BitSet(new long[]{0x0200EC0402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_43_in_table_function1901 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sub_query_in_table_function_subquery1949 = new BitSet(new long[]{0x2000000000020000L});
+	public static final BitSet FOLLOW_correlation_specification_in_table_function_subquery1951 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_search_condition_in_table_function_param1979 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_expression_in_table_function_param1989 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_table_name_in_relation2011 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_table_function_in_relation2029 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_query_in_relation2047 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_boolean_factor_in_search_condition2073 = new BitSet(new long[]{0x0000000000000002L,0x0000000020000000L});
+	public static final BitSet FOLLOW_93_in_search_condition2076 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_boolean_factor_in_search_condition2079 = new BitSet(new long[]{0x0000000000000002L,0x0000000020000000L});
+	public static final BitSet FOLLOW_boolean_term_in_boolean_factor2099 = new BitSet(new long[]{0x0800000000000002L});
+	public static final BitSet FOLLOW_59_in_boolean_factor2102 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_boolean_term_in_boolean_factor2105 = new BitSet(new long[]{0x0800000000000002L});
+	public static final BitSet FOLLOW_boolean_test_in_boolean_term2125 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_90_in_boolean_term2135 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_boolean_term_in_boolean_term2137 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_boolean_primary_in_boolean_test2163 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_predicate_in_boolean_primary2181 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_42_in_boolean_primary2185 = new BitSet(new long[]{0x0200A40402060800L,0x000004B20F04431CL});
+	public static final BitSet FOLLOW_search_condition_in_boolean_primary2188 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_boolean_primary2190 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_comparison_predicate_in_predicate2212 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_like_predicate_in_predicate2216 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_in_predicate_in_predicate2220 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_null_predicate_in_predicate2224 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_exists_predicate_in_predicate2228 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_between_predicate_in_predicate2232 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_null_predicate2250 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+	public static final BitSet FOLLOW_83_in_null_predicate2252 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
+	public static final BitSet FOLLOW_91_in_null_predicate2254 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_null_predicate2272 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+	public static final BitSet FOLLOW_83_in_null_predicate2274 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+	public static final BitSet FOLLOW_90_in_null_predicate2276 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
+	public static final BitSet FOLLOW_91_in_null_predicate2278 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_in_predicate2308 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+	public static final BitSet FOLLOW_90_in_in_predicate2310 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+	public static final BitSet FOLLOW_79_in_in_predicate2312 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2314 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_in_predicate2350 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+	public static final BitSet FOLLOW_79_in_in_predicate2352 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_in_predicate_tail_in_in_predicate2354 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sub_query_in_in_predicate_tail2394 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_42_in_in_predicate_tail2405 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2408 = new BitSet(new long[]{0x0000480000000000L});
+	public static final BitSet FOLLOW_46_in_in_predicate_tail2411 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_in_predicate_tail2413 = new BitSet(new long[]{0x0000480000000000L});
+	public static final BitSet FOLLOW_43_in_in_predicate_tail2418 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2447 = new BitSet(new long[]{0x8000000000000000L});
+	public static final BitSet FOLLOW_63_in_between_predicate2449 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2453 = new BitSet(new long[]{0x0800000000000000L});
+	public static final BitSet FOLLOW_59_in_between_predicate2455 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2459 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2499 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+	public static final BitSet FOLLOW_90_in_between_predicate2501 = new BitSet(new long[]{0x8000000000000000L});
+	public static final BitSet FOLLOW_63_in_between_predicate2503 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2507 = new BitSet(new long[]{0x0800000000000000L});
+	public static final BitSet FOLLOW_59_in_between_predicate2509 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_between_predicate2513 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_72_in_exists_predicate2562 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_sub_query_in_exists_predicate2565 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_bind_table_in_comparison_predicate2583 = new BitSet(new long[]{0x0040000000000000L});
+	public static final BitSet FOLLOW_54_in_comparison_predicate2585 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_comparison_predicate2588 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_comparison_predicate2600 = new BitSet(new long[]{0x01F8020000000000L});
+	public static final BitSet FOLLOW_54_in_comparison_predicate2605 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_53_in_comparison_predicate2609 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_41_in_comparison_predicate2613 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_51_in_comparison_predicate2617 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_55_in_comparison_predicate2621 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_56_in_comparison_predicate2625 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_52_in_comparison_predicate2629 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_58_in_comparison_predicate2635 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_99_in_comparison_predicate2639 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_60_in_comparison_predicate2643 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_comparison_predicate2648 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_comparison_predicate2688 = new BitSet(new long[]{0x01F8020000000000L});
+	public static final BitSet FOLLOW_set_in_comparison_predicate2690 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_comparison_predicate2719 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_like_predicate2737 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+	public static final BitSet FOLLOW_86_in_like_predicate2739 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_like_predicate2742 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_like_predicate2754 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+	public static final BitSet FOLLOW_90_in_like_predicate2756 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+	public static final BitSet FOLLOW_86_in_like_predicate2758 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_like_predicate2762 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_expression_in_row_value2796 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_91_in_row_value2799 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_68_in_row_value2803 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_57_in_bind_table2821 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_bind_table2824 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_bind_table2825 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_bind_table2828 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_61_in_correlation_specification2863 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_correlation_specification2868 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_table_name2889 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_column_name_in_column_list2908 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2912 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_46_in_column_list2916 = new BitSet(new long[]{0x0000000000020000L,0x000004320304400CL});
+	public static final BitSet FOLLOW_column_name_in_column_list2920 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_reserved_word_column_name_in_column_list2924 = new BitSet(new long[]{0x0000400000000002L});
+	public static final BitSet FOLLOW_ID_in_column_name2948 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_column_name2949 = new BitSet(new long[]{0x0000000000020000L});
+	public static final BitSet FOLLOW_ID_in_column_name2954 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_synpred40_SQL92Query1116 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_factor_in_synpred40_SQL92Query1123 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_42_in_synpred45_SQL92Query1204 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04420CL});
+	public static final BitSet FOLLOW_value_expression_in_synpred45_SQL92Query1207 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_synpred45_SQL92Query1209 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_function_in_synpred46_SQL92Query1220 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_column_name_in_synpred47_SQL92Query1230 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_literal_in_synpred48_SQL92Query1240 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_synpred59_SQL92Query1318 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_STRING_in_synpred59_SQL92Query1331 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_82_in_synpred68_SQL92Query1395 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_STRING_in_synpred68_SQL92Query1398 = new BitSet(new long[]{0x0000000000000000L,0x0000040203004008L});
+	public static final BitSet FOLLOW_set_in_synpred68_SQL92Query1400 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_46_in_synpred82_SQL92Query1664 = new BitSet(new long[]{0x0000040000020000L});
+	public static final BitSet FOLLOW_table_reference_in_synpred82_SQL92Query1667 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_table_function_subquery_in_synpred94_SQL92Query1883 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_46_in_synpred95_SQL92Query1887 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_table_function_subquery_in_synpred95_SQL92Query1889 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_search_condition_in_synpred98_SQL92Query1979 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_predicate_in_synpred104_SQL92Query2181 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_comparison_predicate_in_synpred105_SQL92Query2212 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_like_predicate_in_synpred106_SQL92Query2216 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_in_predicate_in_synpred107_SQL92Query2220 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_null_predicate_in_synpred108_SQL92Query2224 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_synpred110_SQL92Query2250 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+	public static final BitSet FOLLOW_83_in_synpred110_SQL92Query2252 = new BitSet(new long[]{0x0000000000000000L,0x0000000008000000L});
+	public static final BitSet FOLLOW_91_in_synpred110_SQL92Query2254 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_synpred111_SQL92Query2308 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+	public static final BitSet FOLLOW_90_in_synpred111_SQL92Query2310 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+	public static final BitSet FOLLOW_79_in_synpred111_SQL92Query2312 = new BitSet(new long[]{0x0000040000000000L});
+	public static final BitSet FOLLOW_in_predicate_tail_in_synpred111_SQL92Query2314 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sub_query_in_synpred112_SQL92Query2394 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2447 = new BitSet(new long[]{0x8000000000000000L});
+	public static final BitSet FOLLOW_63_in_synpred114_SQL92Query2449 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2453 = new BitSet(new long[]{0x0800000000000000L});
+	public static final BitSet FOLLOW_59_in_synpred114_SQL92Query2455 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_synpred114_SQL92Query2459 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_synpred124_SQL92Query2600 = new BitSet(new long[]{0x01F8020000000000L});
+	public static final BitSet FOLLOW_54_in_synpred124_SQL92Query2605 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_53_in_synpred124_SQL92Query2609 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_41_in_synpred124_SQL92Query2613 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_51_in_synpred124_SQL92Query2617 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_55_in_synpred124_SQL92Query2621 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_56_in_synpred124_SQL92Query2625 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_52_in_synpred124_SQL92Query2629 = new BitSet(new long[]{0x1400000000000000L,0x0000000800000000L});
+	public static final BitSet FOLLOW_58_in_synpred124_SQL92Query2635 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_99_in_synpred124_SQL92Query2639 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_60_in_synpred124_SQL92Query2643 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_synpred124_SQL92Query2648 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_row_value_in_synpred131_SQL92Query2737 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+	public static final BitSet FOLLOW_86_in_synpred131_SQL92Query2739 = new BitSet(new long[]{0x0000A40402060800L,0x000004B20B04421CL});
+	public static final BitSet FOLLOW_row_value_in_synpred131_SQL92Query2742 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_expression_in_synpred132_SQL92Query2796 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_91_in_synpred133_SQL92Query2799 = new BitSet(new long[]{0x0000000000000002L});
 }

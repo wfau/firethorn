@@ -26,12 +26,20 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
+import adql.query.ADQLList;
+import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
+import adql.query.SelectItem;
+import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.CastFunction;
+import adql.query.operand.function.MathFunction;
+import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -281,16 +289,141 @@ public class OgsaDQPTranslator
             }
         }
 
+    
+
+    public String translate(final CastFunction function)
+    throws TranslationException
+    	{
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append("CAST");
+        builder.append("(");
+        builder.append(
+    		translate(
+				function.oper()
+				)
+    		);
+        builder.append(" AS ");
+        builder.append(
+    		function.type().name()
+    		);
+        builder.append(")");
+
+        return builder.toString();
+    	}
+    
+    @Override
+	public String translate(final UserDefinedFunction function)
+    throws TranslationException
+        {
+        log.debug("translate(UserDefinedFunction)");
+		return getDefaultADQLFunction(
+		    function
+		    );
+        }
+
+	/**
+	 * Gets the default SQL output for the given ADQL function.
+	 *
+	 * @param function The ADQL function to format into SQL.
+	 * @return The corresponding SQL.
+	 * @throws TranslationException	If there is an error during the translation.
+	 *
+	 */
+    @Override
+	protected String getDefaultADQLFunction(final ADQLFunction function)
+    throws TranslationException
+        {
+        final StringBuilder builder = new StringBuilder();
+        //
+        // If the function is user defined.
+//ZRQ-UDF
+      
+
+        builder.append(function.getName());
+        builder.append("(");
+
+        for(int param = 0; param < function.getNbParameters(); param++)
+            {
+            if (param > 0)
+                {
+                builder.append(", ");
+                }
+            builder.append(
+                translate(
+                    function.getParameter(
+                        param
+                        )
+                    )
+                );
+            }
+        builder.append(")");
+		return builder.toString();
+        }
+
+    @Override
+    public String translate(final ADQLFunction function)
+    throws TranslationException
+		{
+    	if (function instanceof CastFunction)
+    		{
+    		return translate(
+				(CastFunction) function
+				);
+    		}
+    	else {
+    		return super.translate(
+				function
+				);
+    		}
+		}
+
+
+    /**
+     * Copy of the PostgreSQLTranslator method ...
+     * @todo Need to catch date fields and format them as strings.
+     *
+    
+    @Override
+	public String translate(final SelectItem item)
+    throws TranslationException
+        {
+        log.debug("translate(SelectItem)");
+        log.debug("  item [{}][{}]", item.getName(), item.getClass().getName());
+        if (item instanceof SelectAllColumns)
+            {
+            return translate((SelectAllColumns)item);
+            }
+
+        final StringBuffer translation = new StringBuffer(
+            translate(
+                item.getOperand()
+                )
+            );
+        if (item.hasAlias())
+            {
+            translation.append(" AS ");
+            appendIdentifier(translation, item.getAlias(), item.isCaseSensitive());
+            }
+        else {
+            translation.append(" AS ").append(item.getName());
+            }
+
+        return translation.toString();
+        }
+     */
+
     /**
      * Override the PostgreSQLTranslator method ...
      *
-     */
+   
     @Override
-    public String translate(final ADQLColumn column)
+	public String translate(final ADQLColumn column)
         throws TranslationException
         {
-//        log.debug("translate(ADQLColumn)");
-//        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
+        log.debug("translate(ADQLColumn)");
+        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
+
         if (column.getDBLink() == null)
             {
             log.warn("ADQLColumn getDBLink() is NULL");
@@ -300,11 +433,23 @@ public class OgsaDQPTranslator
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
             {
-            final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
-            log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
-            return translate(
-                adql
-                );
+            //
+            // If the column table has an alias.
+            if ((column.getAdqlTable() != null)  && (column.getAdqlTable().hasAlias()))
+                {
+                return super.translate(
+                    column
+                    );
+                }
+            //
+            // If the column doesn't have an alias, use the full column name
+            else {
+                final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
+                log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
+                return translate(
+                    adql
+                    );
+                }
             }
         else {
             log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());
@@ -313,29 +458,99 @@ public class OgsaDQPTranslator
                 );
             }
         }
-
-    /*
-     * 
-     * 
-     */
+ 
     public String translate(AdqlColumn column)
     throws TranslationException
         {
-//        log.debug("translate(AdqlColumn)");
-//        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
-//        log.debug("  fullname [{}]", column.namebuilder().toString());
-//        log.debug("  basename [{}]", column.base().namebuilder().toString());
-//        log.debug("  rootname [{}]", column.root().namebuilder().toString());
-        StringBuilder builder = new StringBuilder(
-            column.root().table().alias()
-            );
-        builder.append(
-            '.'
-            );
-        builder.append(
-            column.root().name()
-            );
-//        log.debug("  ogsaname [{}]", builder.toString());
-        return builder.toString();
+        log.debug("translate(AdqlColumn)");
+        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
+        log.debug("  fullname [{}]", column.namebuilder().toString());
+        log.debug("  basename [{}]", column.base().namebuilder().toString());
+        log.debug("  rootname [{}]", column.root().namebuilder().toString());
+
+        return column.root().namebuilder().toString();
+
         }
+ */
+
+    /**
+     * Replacement for the PostgreSQLTranslator method.
+     *
+     *
+  
+    @Override
+    public String translate(final MathFunction funct) throws TranslationException
+        {
+        switch(funct.getType())
+            {
+            case LOG:
+                return "log(" + translate(funct.getParameter(0)) + ")";
+
+            case LOG10:
+                return "log10(" + translate(funct.getParameter(0)) + ")";
+
+            case RAND:
+                return "rand(" + translate(funct.getParameter(0)) + ")";
+
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
+            case ROUND:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+
+            // Extra param to choose the rounding method.
+            // http://technet.microsoft.com/en-us/library/ms175003.aspx
+            case TRUNCATE:
+                return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
+
+            default:
+                return getDefaultADQLFunction(
+                    funct
+                    );
+            }
+        }
+   */
+    
+    
+    /**
+     * Override the PostgreSQLTranslator method to add '()' brackets for a ConstraintsGroup.
+     * @see RedmineBug450TestCase
+     * @see  
+     *   
+     */
+	@Override
+    protected String getDefaultADQLList(ADQLList<? extends ADQLObject> list)
+	throws TranslationException
+	    {
+        StringBuilder builder = new StringBuilder();
+
+        log.debug("translate(ADQLList<>)");
+        log.debug("  list [{}][{}]", list.getName(), list.getClass().getName());
+
+        if (list instanceof ConstraintsGroup)
+            {
+            builder.append(
+                '('
+                );
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            builder.append(
+                ')'
+                );
+            }
+        else {
+            builder.append(
+                super.getDefaultADQLList(
+                    list
+                    )
+                );
+            }
+
+        String result = builder.toString();
+        log.debug("  result [{}]", result);
+        return result;
+	    }
+
     }
