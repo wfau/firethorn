@@ -425,11 +425,6 @@ public class SQLServerTranslator
 			// Use the DBTable if any:
 			else if (dbCol.getTable() != null && dbCol.getTable().getDBName() != null) {
 
-				System.out.println(dbCol.getTable().getDBName());
-				System.out.println(dbCol.getTable().getADQLName());
-				System.out.println(dbCol.getTable().getDBCatalogName());
-				System.out.println(column.getAdqlTable());
-				System.out.println(column.getFullColumnPrefix());
 				
 				if (column.getAdqlTable() != null){
 					colName.append(getQualifiedTableName(dbCol.getTable())).append('.');
