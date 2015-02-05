@@ -111,7 +111,10 @@ class test_firethorn(unittest.TestCase):
                                 data = json.load(data_file)
                             if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
                                 fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'] )
-                                queryrunID = data['queryrunID']
+                                if (config.test_is_continuation):
+                                    queryrunID = data['queryrunID']
+                                else :
+				    queryrunID = get_a_uuid()
 				logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
                                 valid_config_found = True
                             else :
@@ -169,7 +172,7 @@ class test_firethorn(unittest.TestCase):
                     self.total_unique_queries = reporting_sqlEng.execute_sql_query(total_unique_queries_qry, config.reporting_database)[0][0]
                     #total_queries_qry = "select sum(query_count) from queries where  queryrunID='" + queryrunID + "'"
                     #self.total_queries = reporting_sqlEng.execute_sql_query(total_queries_qry, config.reporting_database)[0][0]
-                    total_failed_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "' and test_passed<=0"
+                    total_failed_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "'  and test_passed<=0"
                     self.total_failed = reporting_sqlEng.execute_sql_query(total_failed_qry, config.reporting_database)[0][0]
             except Exception as e:
                 self_total_unique_queries = 0
@@ -188,12 +191,11 @@ class test_firethorn(unittest.TestCase):
                 logging.info("Query : " +  query)
 		self.total_queries = self.total_queries + 1
                 try:
-                    if (config.test_is_continuation):
-                        check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "' and queryrunID='" + queryrunID + "'"		          
-                        query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
-                        query_duplicates_found = query_duplicates_found_row[0]
-                        queryid = query_duplicates_found_row[1]
-                        query_count = query_duplicates_found_row[2]
+                    check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "' and queryrunID='" + queryrunID + "'"		          
+                    query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
+                    query_duplicates_found = query_duplicates_found_row[0]
+                    queryid = query_duplicates_found_row[1]
+                    query_count = query_duplicates_found_row[2]
                 except Exception as e:
                     logging.exception(e)
                     query_duplicates_found = 0
