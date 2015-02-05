@@ -113,7 +113,7 @@ public class MSSQLMetadataScanner
                     {
                     list.add(
                         catalog(
-                            results
+                    		results.getString("TABLE_CAT")
                             )
                         );
                     }
@@ -135,7 +135,9 @@ public class MSSQLMetadataScanner
                 while (results.next())
                     {
                     Catalog catalog = catalog(
-                        results
+                		results.getString(
+            				"TABLE_CAT"
+            				)
                         );
                     if (catalog.name().toUpperCase().equals(name.trim().toUpperCase()))
                         {
@@ -147,7 +149,7 @@ public class MSSQLMetadataScanner
             };
         }
 
-    protected Catalog catalog(final ResultSet results)
+    protected Catalog catalog(final String name)
     throws SQLException
         {
         return new Catalog()
@@ -163,7 +165,7 @@ public class MSSQLMetadataScanner
                 return this ;
                 }
 
-            protected String name = results.getString("TABLE_CAT");
+            //protected String name = results.getString("TABLE_CAT");
             @Override
             public String name()
                 {
@@ -178,27 +180,45 @@ public class MSSQLMetadataScanner
                     @Override
                     public Iterable<Schema> select() throws SQLException
                         {
+                        log.debug("schemas().select() for [{}]", catalog().name());
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
+                    	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final Statement statement = connection().createStatement();
                         final ResultSet results = statement.executeQuery(
-                            "SELECT DISTINCT " +
-                            "  TABLE_SCHEMA " +
-                            "FROM " +
-                            "  {catalog}.INFORMATION_SCHEMA.TABLES"
-                            .replace(
+                            (
+                    		" SELECT DISTINCT" +
+                            "   SCHEMA_NAME" +
+                            " FROM" +
+                            "   {catalog}.INFORMATION_SCHEMA.SCHEMATA"
+                            ).replace(
                                 "{catalog}",
                                 catalog().name()
                                 )
                             );
+                        log.debug("Statement [{}]", statement.toString());
+
                         final List<Schema> list = new ArrayList<Schema>();
                         while (results.next())
                             {
-                            list.add(
-                                schema(
-                                    catalog(),
-                                    results
-                                    )
-                                );
+							//
+							// Check for reserved names.
+							final String schemaname = results.getString(
+								"SCHEMA_NAME"
+								);
+							log.debug("Found schema [{}]", schemaname);
+							if (connector().type().ignore().contains(schemaname))
+								{
+								log.debug(" Ignoring schema [{}]", schemaname);
+								}
+							else {
+								log.debug(" Adding schema [{}]", schemaname);
+	                        	list.add(
+	                                schema(
+	                                    catalog(),
+	                                    schemaname
+	                                    )
+	                                );
+								}
                             }
                         return list ;
                         }
@@ -206,32 +226,53 @@ public class MSSQLMetadataScanner
                     @Override
                     public Schema select(String name) throws SQLException
                         {
+                        log.debug("schemas().select(String) for [{}][{}]", catalog().name(), name);
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
+                    	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final PreparedStatement statement = connection().prepareStatement(
-                            "SELECT DISTINCT " +
-                            "  TABLE_SCHEMA " +
-                            "FROM " +
-                            "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                    		"WHERE " +
-                    		"  TABLE_SCHEMA = ?"
+                    		(
+                    		" SELECT DISTINCT" +
+                    		"   SCHEMA_NAME" +
+                    		" FROM" +
+                    		"   {catalog}.INFORMATION_SCHEMA.SCHEMATA" +
+                    		" WHERE " +
+                        	"   SCHEMA_NAME = ?"
+                    		).replace(
+                                "{catalog}",
+                                catalog().name()
+                                )
                             );
-                        statement.setString(1, name);
+                        statement.setString(
+                			1,
+                			name
+                			);
+                        
                         final ResultSet results = statement.executeQuery();
                         if (results.next())
                             {
-                            return schema(
-                                catalog(),
-                                results
-                                );
+							//
+							// Check for reserved names.
+							final String schemaname = results.getString(
+								"SCHEMA_NAME"
+								);
+							log.debug("Found schema [{}]", schemaname);
+							if (connector().type().ignore().contains(schemaname))
+								{
+								log.debug(" Ignoring schema [{}]", schemaname);
+								}
+							else {
+	                        	return schema(
+	                                catalog(),
+	                                schemaname
+	                                );
+                            	}
                             }
-                        else {
-                            return null;
-                            }
+                        return null;
                         }
                     };
                 }
 
-            protected Schema schema(final Catalog catalog, final ResultSet results)
+            protected Schema schema(final Catalog catalog, final String name)
             throws SQLException
                 {
                 return new Schema()
@@ -246,7 +287,7 @@ public class MSSQLMetadataScanner
                         return this ;
                         }
 
-                    protected String name = results.getString("TABLE_SCHEMA");
+                    //protected String name = results.getString("TABLE_SCHEMA");
                     @Override
                     public String name()
                         {
@@ -255,20 +296,27 @@ public class MSSQLMetadataScanner
                     @Override
                     public Tables tables()
                         {
+                        log.debug("tables() for [{}][{}]", catalog().name(), schema().name());
                         return new Tables()
                             {
                             @Override
                             public Iterable<Table> select()
                                 throws SQLException
                                 {
+                                log.debug("tables().select() for [{}][{}]", catalog().name(), schema().name());
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
-                                    "SELECT DISTINCT " +
-                                    "  TABLE_NAME " +
-                                    "FROM " +
-                                    "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                                    "WHERE " +
-                                    "  TABLE_SCHEMA = ?"
+                                    (
+                            		" SELECT DISTINCT" +
+                                    "   TABLE_NAME" +
+                                    " FROM " +
+                                    "   {catalog}.INFORMATION_SCHEMA.TABLES" +
+                                    " WHERE" +
+                                    "   TABLE_SCHEMA = ?"
+                                    ).replace(
+                                        "{catalog}",
+                                        catalog().name()
+                                        )
                                     );
                                 statement.setString(1, schema().name());
                                 final ResultSet results = statement.executeQuery();
@@ -278,7 +326,9 @@ public class MSSQLMetadataScanner
                                     list.add(
                                         table(
                                             schema(),
-                                            results
+                                            results.getString(
+                                        		"TABLE_NAME"
+                                        		)
                                             )
                                         );
                                     }
@@ -289,25 +339,40 @@ public class MSSQLMetadataScanner
                             public Table select(String name)
                                 throws SQLException
                                 {
+                                log.debug("tables().select(String) for [{}][{}][{}]", catalog().name(), schema().name(), name);
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
-                                    "SELECT DISTINCT " +
-                                    "  TABLE_NAME " +
-                                    "FROM " +
-                                    "  " + catalog().name() + ".INFORMATION_SCHEMA.TABLES " +
-                                    "WHERE " +
-                                    "  TABLE_SCHEMA = ? " +
-                                    "AND " +
-                                    " TABLE_NAME = ?"
+                                    (
+                            		"SELECT DISTINCT" +
+                                    "   TABLE_NAME " +
+                                    " FROM" +
+                                    "   {catalog}.INFORMATION_SCHEMA.TABLES" +
+                                    " WHERE" +
+                                    "   TABLE_SCHEMA = ?" +
+                                    " AND" +
+                                    "   TABLE_NAME = ?"
+                                    ).replace(
+                                        "{catalog}",
+                                        catalog().name()
+                                        )
                                     );
-                                statement.setString(1, schema().name());
-                                statement.setString(2, name);
+                                statement.setString(
+                            		1,
+                            		schema().name()
+                            		);
+                                statement.setString(
+                            		2,
+                            		name
+                            		);
+
                                 final ResultSet results = statement.executeQuery();
                                 if (results.next())
                                     {
                                     return table(
                                         schema(),
-                                        results
+                                        results.getString(
+                                    		"TABLE_NAME"
+                                    		)
                                         );
                                     }
                                 else {
@@ -317,7 +382,7 @@ public class MSSQLMetadataScanner
                             };
                         }
 
-                    protected Table table(final Schema schema, final ResultSet results)
+                    protected Table table(final Schema schema, final String name)
                     throws SQLException
                         {
                         return new Table()
@@ -332,7 +397,7 @@ public class MSSQLMetadataScanner
                                 return this ;
                                 }
 
-                            final String name = results.getString("TABLE_NAME");
+                            //final String name = results.getString("TABLE_NAME");
                             @Override
                             public String name()
                                 {
@@ -341,25 +406,32 @@ public class MSSQLMetadataScanner
                             @Override
                             public Columns columns()
                                 {
+                                log.debug("columns() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
                                 return new Columns()
                                     {
                                     @Override
                                     public Iterable<Column> select()
                                         throws SQLException
                                         {
+                                        log.debug("columns().select() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            "SELECT DISTINCT " +
-                                            "  COLUMN_NAME, " +
-                                            "  DATA_TYPE, " +
-                                            "  NUMERIC_PRECISION, " +
-                                            "  CHARACTER_MAXIMUM_LENGTH " +
-                                            "FROM " +
-                                            "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
-                                            "WHERE " +
-                                            "  TABLE_SCHEMA = ? " +
-                                            "AND " +
-                                            "  TABLE_NAME = ?"
+                                            (
+                                    		" SELECT DISTINCT" +
+                                            "   COLUMN_NAME," +
+                                            "   DATA_TYPE," +
+                                            "   NUMERIC_PRECISION," +
+                                            "   CHARACTER_MAXIMUM_LENGTH" +
+                                            " FROM" +
+                                            "   {catalog}.INFORMATION_SCHEMA.COLUMNS" +
+                                            " WHERE" +
+                                            "   TABLE_SCHEMA = ?" +
+                                            " AND" +
+                                            "   TABLE_NAME = ?"
+                                            ).replace(
+                                                "{catalog}",
+                                                catalog().name()
+                                                )
                                             );
                                         statement.setString(
                                             1,
@@ -369,6 +441,7 @@ public class MSSQLMetadataScanner
                                             2,
                                             table().name()
                                             );
+
                                         final ResultSet results = statement.executeQuery();
                                         final List<Column> list = new ArrayList<Column>();
                                         while (results.next())
@@ -387,21 +460,27 @@ public class MSSQLMetadataScanner
                                     public Column select(String name)
                                         throws SQLException
                                         {
+                                        log.debug("columns().select(String) for [{}][{}][{}][{}]", catalog().name(), schema().name(), table().name(), name);
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            "SELECT DISTINCT " +
-                                            "  COLUMN_NAME, " +
-                                            "  DATA_TYPE, " +
-                                            "  NUMERIC_PRECISION, " +
-                                            "  CHARACTER_MAXIMUM_LENGTH " +
-                                            "FROM " +
-                                            "  " + catalog().name() + ".INFORMATION_SCHEMA.COLUMNS " +
-                                            "WHERE " +
-                                            "  TABLE_SCHEMA = ? " +
-                                            "AND " +
-                                            "  TABLE_NAME = ?" +
-                                            "AND " +
-                                            "  COLUMN_NAME = ?"
+                                    		(
+                                            " SELECT DISTINCT" +
+                                            "   COLUMN_NAME," +
+                                            "   DATA_TYPE," +
+                                            "   NUMERIC_PRECISION," +
+                                            "   CHARACTER_MAXIMUM_LENGTH" +
+                                            " FROM" +
+                                            "   {catalog}.INFORMATION_SCHEMA.COLUMNS" +
+                                            " WHERE " +
+                                            "   TABLE_SCHEMA = ?" +
+                                            " AND" +
+                                            "   TABLE_NAME = ?" +
+                                            " AND" +
+                                            "   COLUMN_NAME = ?"
+                                            ).replace(
+                                                "{catalog}",
+                                                catalog().name()
+                                                )
                                             );
                                         statement.setString(
                                             1,
@@ -415,6 +494,7 @@ public class MSSQLMetadataScanner
                                             3,
                                             name
                                             );
+
                                         final ResultSet results = statement.executeQuery();
                                         if (results.next())
                                             {
