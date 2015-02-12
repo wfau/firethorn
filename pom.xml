@@ -355,8 +355,8 @@
             </dependency>
 
             <!--+
-                | Jadira Type Libraries.
-                | http://blog.jadira.co.uk/
+                | Jadira Hibernate Type Libraries.
+                | http://jadira.sourceforge.net/
                 +-->	
             <dependency>
                 <groupId>org.jadira.usertype</groupId>
