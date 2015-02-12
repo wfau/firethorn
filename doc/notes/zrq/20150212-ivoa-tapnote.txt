@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create the ivoatex project.
+#[user@desktop]
+
+    mkdir ivoadoc
+    pushd ivoadoc
+
+        #
+        # From ivoatex README
+        # https://code.google.com/p/volute/source/browse/trunk/projects/ivoapub/ivoatex/README
+
+        export DOCNAME=ADQL
+
+        export VOLUTEBASE=https://volute.googlecode.com/svn/trunk/projects
+        export WG=dal
+
+        mkdir $DOCNAME
+        svn import -m "Initial import" $DOCNAME $VOLUTEBASE/$WG/$DOCNAME
+
+        rmdir $DOCNAME
+        svn co $VOLUTEBASE/$WG/$DOCNAME $DOCNAME
+
+        pushd $DOCNAME
+            svn propset svn:externals "ivoatex $VOLUTEBASE/ivoapub/ivoatex" .
+            svn update
+        popd
+
+        #
+        # From ivoatex README.
+        # https://code.google.com/p/volute/source/browse/trunk/projects/ivoapub/ivoatex/README
+
+        #
+        # Add our source files.
+        pushd $DOCNAME
+
+            cp ivoatex/Makefile.template Makefile
+            cp ivoatex/document.template ${DOCNAME:?}.tex
+            cp ivoatex/archdiag.png      archdiag.png
+
+            svn add ${DOCNAME:?}.tex
+            svn add archdiag.png
+
+            svn commit -m "Added source files"
+
+        popd
+
+        #
+        # Create our ignore file
+        pushd $DOCNAME
+
+cat > ignore << EOF
+ADQL.pdf
+ADQL.html
+*.aux
+*.bak
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.zip
+ivoatexmeta.tex
+EOF
+           
+            svn propset svn:ignore -F ignore .
+            rm ignore
+
+            svn commit -m "Updated ignore list"
+
+        popd
+    popd
+
+
+# -----------------------------------------------------
+# Create a Docker container.
+#[user@desktop]
+
+
+    texdata="$(pwd)/ivoadoc/${DOCNAME:?}"
+    
+    texuid=$(id --uid)
+
+    #
+    # Run the container as root, and add the packages we need.    
+    # (this will become the basis for the Dockerfile)
+    docker run -it --rm --name ivoatex --env "texuid=${texuid:?}" --volume ${texdata:?}:/var/local/texdata ubuntu /bin/bash
+    docker run -it --rm --name ivoatex --env "texuid=${texuid:?}" --volume ${texdata:?}:/var/local/texdata debian /bin/bash
+
+        apt-get -y install zip
+        apt-get -y install make
+
+        apt-get -y install gcc
+        apt-get -y install libc-dev
+
+        apt-get -y install xsltproc
+        apt-get -y install libxml2-utils
+        apt-get -y install imagemagick
+        apt-get -y install ghostscript
+
+        apt-get -y install texlive-latex-base
+        apt-get -y install latex-xcolor
+        apt-get -y install texlive-latex-extra 	
+        apt-get -y install texlive-fonts-recommended
+        apt-get -y install texlive-bibtex-extra
+
+    #
+    # Join the container and run 'make' as texuser.
+    # (this will be the run script included in the Dockerfile)
+    docker exec -it ivoatex /bin/bash
+
+        #
+        # Add a non-root user account.
+        useradd --create-home --uid "${texuid:?}" 'texuser'
+
+        su - 'texuser'
+        pushd /var/local/texdata
+        
+            make clean
+
+            make 
+            make biblio
+            make forcetex
+
+            make ADQL.bbl
+            make ADQL.pdf
+            make ADQL.html
+
+            rm *.zip
+            make package
+
+        popd
+        
+
+
+
+
+
+
