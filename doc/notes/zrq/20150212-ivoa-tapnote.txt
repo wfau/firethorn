@@ -97,16 +97,13 @@ EOF
 # Create a Docker container.
 #[user@desktop]
 
-
-    texdata="$(pwd)/ivoadoc/${DOCNAME:?}"
-    
-    texuid=$(id --uid)
+    texdata="$(pwd)"
 
     #
     # Run the container as root, and add the packages we need.    
     # (this will become the basis for the Dockerfile)
-    docker run -it --rm --name ivoatex --env "texuid=${texuid:?}" --volume ${texdata:?}:/var/local/texdata ubuntu /bin/bash
-    docker run -it --rm --name ivoatex --env "texuid=${texuid:?}" --volume ${texdata:?}:/var/local/texdata debian /bin/bash
+    # docker run -it --rm --name ivoatex --env "texuid=$(id --uid)" --volume ${texdata:?}:/var/local/texdata ubuntu /bin/bash
+    docker run -it --rm --name ivoatex --env "texuid=$(id --uid)" --volume ${texdata:?}:/var/local/texdata debian /bin/bash
 
         apt-get -y install zip
         apt-get -y install make
@@ -151,10 +148,127 @@ EOF
             make package
 
         popd
+
+# -----------------------------------------------------
+# Create a Docker image.
+#[user@desktop]
+
+user-init.sh << 'EOF'
+#!/bin/bash
+
+#
+# Create our non-root user.
+if [ -z "$(id -u normal 2>/dev/null)" ]
+then
+    echo "Creating user [texuser][${texuid:?}]"
+    useradd \
+        --uid   "${texuid:?}" \
+        --shell '/bin/bash' \
+        --home  '/var/local/texdata'\
+        texuser
+fi
+
+#
+# Run the original command as texuser.
+echo "Running command [${@}]"
+sudo -u texuser "$@"
+
+EOF
+
+        cat > Dockerfile << EOF
+#
+# Docker image for running IvoaTex. 
+FROM debian
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+#
+# Update the system.
+ENV version 01.25
+ENV DEBIAN_FRONTEND noninteractive
+
+#
+# Install apt-utils.
+RUN apt-get update & apt-get -y install \
+    apt-utils \
+
+#
+# Install our build tools.
+RUN apt-get -y install \
+    zip \
+    make \
+    gcc \
+    libc-dev
+
+#
+# Install our HTML tools
+RUN apt-get -y install \
+    xsltproc \
+    libxml2-utils \
+    imagemagick \
+    ghostscript
+
+#
+# Install our LaTex components.
+RUN apt-get -y install \
+    texlive-latex-base \
+    latex-xcolor \
+    texlive-latex-extra \
+    texlive-fonts-recommended \
+    texlive-bibtex-extra
+
+#
+# Clean the apt cache.
+RUN apt-get clean
+
+COPY texuser-init.sh /texuser-init.sh
+ENTRYPOINT ["/texuser-init.sh"]
+
+WORKDIR /var/local/texdata
+
+EOF
+
+        #
+        # Build the docker image.    
+        docker build --tag ivoatex . 
+
+
+    popd
+
+    #
+    # Run the container and run 'make' as texuser.
+
+    texdata="$(pwd)"
+    docker run -it --rm --name ivoatex --env "texuid=$(id -u)" --volume ${texdata:?}:/var/local/texdata ivoatex /bin/bash
+
+    chmod a+x init.sh
+    ./init.sh
         
+            make clean
+
+            make 
+            make biblio
+            make forcetex
+
+            make ADQL.bbl
+            make ADQL.pdf
+            make ADQL.html
+
+            rm *.zip
+            make package
+
+        popd
+        exit
 
 
+    #
+    # Add the image to our repository.
+    docker tag "ivoatex"   "firethorn/ivoatex"
 
+    docker login
 
+        Username: xxxxxxxxx
+        Password: xxxxxxxxx
+        Email:    xxxx@xxxx
 
+    docker push firethorn/ivoatex
 

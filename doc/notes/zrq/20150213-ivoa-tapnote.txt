@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker/debian/notroot
+
+            docker rmi notroot
+            docker build --tag notroot . 
+
+        popd
+
+        pushd docker/debian/ivoatex
+
+            docker rmi ivoatex
+            docker build --tag ivoatex . 
+
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# tag and push our Docker images.
+#[user@desktop]
+
+    docker tag "notroot" "firethorn/notroot"
+    docker tag "ivoatex" "firethorn/ivoatex"
+
+    #
+    # Add the image to our repository.
+    docker login
+
+        Username: xxxxxxxxx
+        Password: xxxxxxxxx
+        Email:    xxxx@xxxx
+
+    docker push "firethorn/notroot"
+    docker push "firethorn/ivoatex"
+
+# -----------------------------------------------------
+# Test our Docker containers.
+#[user@desktop]
+
+    pushd /var/local/projects/edinburgh/wfau/ivoadoc
+        pushd ADQL
+
+            docker run -it --rm \
+                --name debian \
+                --env "useruid=$(id -u)" \
+                --env "usergid=$(id -g)" \
+                debian
+
+            docker run -it --rm \
+                --name notroot \
+                --env "useruid=$(id -u)" \
+                --env "usergid=$(id -g)" \
+                --env "username=$(id -un)" \
+                --env "userhome=/var/local" \
+                notroot
+
+            docker run -it --rm \
+                --name ivoatex \
+                --env "useruid=$(id -u)" \
+                --env "usergid=$(id -g)" \
+                --env "username=$(id -un)" \
+                --volume "$(pwd):/var/local/texdata" \
+                ivoatex
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Use our Docker container to build our IVOA document.
+#[user@desktop]
+
+    pushd /var/local/projects/edinburgh/wfau/ivoadoc
+        pushd ADQL
+
+            docker run -it --rm \
+                --name ivoatex \
+                --env "useruid=$(id -u)" \
+                --env "usergid=$(id -g)" \
+                --env "username=$(id -un)" \
+                --volume "$(pwd):/var/local/texdata" \
+                ivoatex
+
+        popd
+    popd
+
