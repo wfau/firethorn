@@ -81,7 +81,7 @@ class Sql2Json(object):
         try:
             for row in ResultIter(cursor, arraysize=1000):
                 # for row in rows:
-            
+		objects_list = []            
                 d = collections.OrderedDict()
                 d['queryid'] = row.queryid
                 d['queryrunID'] = row.queryrunID
