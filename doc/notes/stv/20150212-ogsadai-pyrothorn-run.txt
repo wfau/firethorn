@@ -1,0 +1,62 @@
+ 
+Pyrothorn test 12 Feb 2015
+--------------------------
+
+Version : 1.11.32-stv-ogsa-parser
+QueryrunID: 125JMf7cRBq8V7Efz6h44A
+Database: ATLASDR1 on ramses2
+Tested queries: userqueries on ramses5 where query database is like "ATLASDR1"
+
+
+
+Results:
+Coverage percentage:
+Success percentage:
+
+
+
+Failed queries to investigate:
+
+1) 
+select   s.ra as raDeg,s.dec as decDeg,gAperMag3,rAperMag3,x,y,s.framesetid from atlasSource as s, atlasMergeLog as l, atlasDetection as d where (priOrSec=0 or priorsec=s.framesetid) and l.frameSetID=s.frameSetID and gmfid >0 and rmfid >0 and ( /*(gapermag3 between 0 and 22 and rapermag3 <0 and gSeqNum=d.seqNum and geNum=d.extnum and gmfid=d.multiframeID) */ (rapermag3 between 0 and 22 and gapermag3 <0 and rSeqNum=d.seqNum and reNum=d.extnum and rmfid=d.multiframeID))                                                                                                                                                                                                                                                                                                                                         
+
+
+2)
+SELECT  * FROM ATLASsource WHERE dec > -31.11251111111111101 and dec < -30.77917777777778241 and RA >= 330.276664568 and RA <= 330.666002099 and ((cx * 0.74625241102539086 + cy * -0.42270232573253347 + cz * -0.51422765664547665 ) >= 0.99999576920548627)  and (priOrSec<=0 OR pr
+iOrSec=frameSetID)           
+
+
+3)
+select * from atlasmergelog where (uenum!=genum and umfid >0 and gmfid >0) or (genum!=renum and gmfid >0 and rmfid >0 ) or (renum!=ienum and rmfid >0 and imfid >0) or (ienum!=zenum and imfid>0 and zmfid>0)
+
+4)
+SELECT  ATLASdetection.*,2*DEGREES(ASIN(sqrt(power(-0.999194395114446-cx,2)+power(1.2236602177028819E-16-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as distance  FROM ATLASdetection WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 179.98331970017435 and RA <= 180.01668029982565 and ((cx * -0.999194395114446 + cy * 1.2236602177028819E-16 + cz * -0.040131792532559725 ) >= 0.9999999576920253)      
+
+5)
+select framesetid,gmfid,genum,rmfid,renum from atlasMergeLog where framesetid in (730144452483,730144452487) 
+
+6)
+select max(utdate) from Multiframe where project like 'atlas' 
+
+
+
+
+Notes: (Lots of failed queries seem to be using atlassource..Could it be that dqp is fetching all rows, then applying functions in select and where clauses?)
+
+
+mysql> select  count(*) AS ct from queries where test_passed<1  and queryrunID like '125JMf7cRBq8V7Efz6h44A' and firethorn_error_message like '%Query error%'  group by firethorn_error_message order by ct desc ;
++-----+
+| ct  |
++-----+
+| 312 |
++-----+
+1 row in set (0.09 sec)
+
+mysql> select  count(*) AS ct from queries where test_passed<1  and queryrunID like '125JMf7cRBq8V7Efz6h44A' and firethorn_error_message like '%Query error%' and query not like "%atlassource%" group by firethorn_error_message order by ct desc ;
++----+
+| ct |
++----+
+| 66 |
++----+
+1 row in set (0.10 sec)
+
