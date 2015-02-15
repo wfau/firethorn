@@ -2,16 +2,17 @@
 Pyrothorn test 12 Feb 2015
 --------------------------
 
-Version : 1.11.32-stv-ogsa-parser
+Version : 1.11.32-stv-ogsadai-parser
 QueryrunID: 125JMf7cRBq8V7Efz6h44A
 Database: ATLASDR1 on ramses2
 Tested queries: userqueries on ramses5 where query database is like "ATLASDR1"
-
+Query select SQL:
+select * from webqueries where dbname like 'ATLAS%'  AND query NOT LIKE '%ROSAT%' AND query NOT LIKE '%BEST%' AND query NOT LIKE '%TWOMASS%' and query NOT LIKE '%WISE%' and query NOT LIKE '%GLIMPSE%' and query NOT LIKE '%as idnum,sourceid%'
 
 
 Results:
-Coverage percentage:
-Success percentage:
+Coverage percentage: 28.7%
+Success percentage: 30.3% 
 
 
 
@@ -38,8 +39,8 @@ select framesetid,gmfid,genum,rmfid,renum from atlasMergeLog where framesetid in
 6)
 select max(utdate) from Multiframe where project like 'atlas' 
 
-
-
+7)
+SELECT top 10 filterid+1 as xxx from filter order by xxx 
 
 Notes: (Lots of failed queries seem to be using atlassource..Could it be that dqp is fetching all rows, then applying functions in select and where clauses?)
 
