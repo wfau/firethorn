@@ -17,8 +17,10 @@
 
 package uk.org.ogsadai.activity.dqp;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,13 +45,19 @@ import uk.org.ogsadai.activity.extension.ResourceActivity;
 import uk.org.ogsadai.activity.extension.ResourceFactoryActivity;
 import uk.org.ogsadai.activity.extension.ResourceManagerActivity;
 import uk.org.ogsadai.activity.extension.SecureActivity;
+import uk.org.ogsadai.activity.io.ActivityIOException;
 import uk.org.ogsadai.activity.io.ActivityInput;
+import uk.org.ogsadai.activity.io.ActivityPipeProcessingException;
 import uk.org.ogsadai.activity.io.BlockReader;
 import uk.org.ogsadai.activity.io.BlockWriter;
+import uk.org.ogsadai.activity.io.PipeClosedException;
+import uk.org.ogsadai.activity.io.PipeIOException;
+import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
 import uk.org.ogsadai.activity.pipeline.ActivityPipeline;
 import uk.org.ogsadai.activity.request.OGSADAIChildRequestConfiguration;
 import uk.org.ogsadai.activity.request.status.SimpleRequestStatusBuilder;
+import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.authorization.AuthorizingTaskFactory;
 import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
@@ -484,14 +492,19 @@ public class SQLQueryActivity extends MatchedIterativeActivity
             PipelineWorkflow workflow, SingleActivityOutput source)
         throws ExecutionException
     {
-        if (source == null)
-        {
-            executeUnconnectedPipeline(workflow);
-        }
-        else
-        {
-            executeConnectedPipeline(workflow, source);
-        }
+    	try {
+	        if (source == null)
+	        {
+	        	executeUnconnectedPipeline(workflow);
+		    }
+	        else
+	        {
+	            executeConnectedPipeline(workflow, source);
+	        }
+        } catch (PipeClosedException e) {
+        	 LOGGER.debug("PipeClosedException in executePipeline()");
+             iterativeStageComplete();
+		}
     }
 
     /**
@@ -503,7 +516,7 @@ public class SQLQueryActivity extends MatchedIterativeActivity
      *             if a problem occured during execution
      */
     private void executeUnconnectedPipeline(PipelineWorkflow workflow) 
-        throws ExecutionException 
+        throws ExecutionException , PipeClosedException
     {
         try
         {
@@ -534,6 +547,7 @@ public class SQLQueryActivity extends MatchedIterativeActivity
         {
             throw new ExecutionException(e.getCause());
         }
+      
     }
 
     /**
@@ -588,6 +602,11 @@ public class SQLQueryActivity extends MatchedIterativeActivity
             {
                 throw new ActivityTerminatedException();
             }
+        }
+        catch (PipeClosedException e)
+        {
+        	 LOGGER.debug("PipeClosedException in executePipeline()");
+             iterativeStageComplete();
         }
         catch (Throwable e)
         {
