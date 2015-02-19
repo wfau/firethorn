@@ -80,7 +80,7 @@
                 --env "usergid=$(id -g)" \
                 --env "username=$(id -un)" \
                 --env "userhome=/var/local" \
-                notroot
+            notroot
 
             docker run -it --rm \
                 --name ivoatex \
@@ -103,10 +103,13 @@
             docker run -it --rm \
                 --name ivoatex \
                 --env "useruid=$(id -u)" \
-                --env "usergid=$(id -g)" \
-                --env "username=$(id -un)" \
                 --volume "$(pwd):/var/local/texdata" \
                 ivoatex
+
+                make clean
+                make biblio
+                make ADQL.pdf
+                make ADQL.html
 
         popd
     popd

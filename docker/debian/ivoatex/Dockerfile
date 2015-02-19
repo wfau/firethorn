@@ -22,7 +22,7 @@
 #
 # Docker container to run the IvoaTex build environment. 
 #
-FROM notroot
+FROM firethorn/notroot
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -49,10 +49,11 @@ RUN apt-get update && apt-get -yq install \
 # Install our LaTex tools.
 RUN apt-get update && apt-get -yq install \
     texlive-latex-base \
-    latex-xcolor \
     texlive-latex-extra \
+    texlive-bibtex-extra \
     texlive-fonts-recommended \
-    texlive-bibtex-extra
+    latex-xcolor \
+    cm-super
 
 #
 # Set our username and home directory.

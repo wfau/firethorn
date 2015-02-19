@@ -71,8 +71,10 @@
         pushd $DOCNAME
 
 cat > ignore << EOF
-ADQL.pdf
-ADQL.html
+.*
+*~
+${DOCNAME:?}.pdf
+${DOCNAME:?}.html
 *.aux
 *.bak
 *.bbl

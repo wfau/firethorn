@@ -19,7 +19,7 @@
 #   </meta:licence>
 # </meta:header>
 #
-# Shell script to create anon-root user.
+# Shell script to create a non-root user.
 #
 
 useruid=${useruid:-1000}
