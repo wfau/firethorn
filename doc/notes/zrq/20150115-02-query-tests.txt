@@ -20,7 +20,6 @@
 #
 #
 
-
 # -----------------------------------------------------
 # Import the ATLAS table metadata.
 #[user@desktop]
