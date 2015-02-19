@@ -40,16 +40,22 @@
 #[user@desktop]
 
 
+    eclipse ...
+
+
 # -----------------------------------------------------
-# Clean build
+# Clean build our OGSA-DAI components
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install eclipse:eclipse
+        pushd firethorn-ogsadai
+            mvn clean install
+        popd
 
     popd
+
 
 # -----------------------------------------------------
 # Setup our test services
@@ -88,6 +94,26 @@
         #
         # Explicit test with delay > timeout 
         #
+
+rowlimit=10
+timelimit=10
+
+delayfirst=5000
+delayevery=1000
+delaylast=5000
+
+        source "${FIRETHORN_TEST:?}/05-05-execute-query.sh" \
+            'AUTO' \
+            "
+            SELECT
+                COUNT(ra)
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
 
 
     popd
