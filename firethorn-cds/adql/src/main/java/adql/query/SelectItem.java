@@ -39,23 +39,19 @@ public class SelectItem implements ADQLObject {
 	/** The corresponding operand. */
 	private ADQLOperand operand;
 
-	/** The parent query */
-	private ADQLQuery query;
-	
 	/** Alias of the operand (ADQL syntax: "AS alias"). */
 	private String alias = null;
 
 	/** Indicates whether the alias is case sensitive (if yes, the alias is written between double-quotes). */
 	private boolean caseSensitive = false;
 
-
 	/**
 	 * Builds a SELECT item just with an operand.
 	 * 
 	 * @param operand	Corresponding operand.
 	 */
-	public SelectItem(ADQLOperand operand, ADQLQuery query){
-		this(operand, null, query);
+	public SelectItem(ADQLOperand operand){
+		this(operand, null);
 	}
 
 	/**
@@ -64,9 +60,8 @@ public class SelectItem implements ADQLObject {
 	 * @param operand	Corresponding operand.
 	 * @param alias		Operand alias.
 	 */
-	public SelectItem(ADQLOperand operand, String alias, ADQLQuery query){
+	public SelectItem(ADQLOperand operand, String alias){
 		this.operand = operand;
-		this.query = query;
 		setAlias(alias);
 	}
 
@@ -76,13 +71,12 @@ public class SelectItem implements ADQLObject {
 	 * @param toCopy		The SELECT item to copy.
 	 * @throws Exception	If there is an error during the copy.
 	 */
-	public SelectItem(SelectItem toCopy, ADQLQuery parentquery) throws Exception {
+	public SelectItem(SelectItem toCopy) throws Exception{
 		if (toCopy.getOperand() != null)
 			operand = (ADQLOperand)toCopy.getOperand().getCopy();
 		else
 			operand = null;
 		alias = toCopy.getAlias();
-		query = parentquery;
 		caseSensitive = toCopy.caseSensitive;
 	}
 
@@ -104,18 +98,6 @@ public class SelectItem implements ADQLObject {
 		return alias != null;
 	}
 
-	/**
-	 * Is query the main one or a subquery?
-	 * @return true/false 
-	 */
-	public boolean isMain(){
-		if (query!=null){
-			return query.isMain();
-		} else {
-			return false;
-		}
-	}
-	
 	/**
 	 * Gets the alias of the corresponding operand.
 	 * 
@@ -140,9 +122,9 @@ public class SelectItem implements ADQLObject {
 			if (a.length() == 0){
 				alias = null;
 				return;
-			}else if (a.length() > 1 && a.charAt(0) == '\"' && a.charAt(a.length()-1) == '\"'){
+			}else if (a.length() > 1 && a.charAt(0) == '\"' && a.charAt(a.length() - 1) == '\"'){
 				a.deleteCharAt(0);
-				a.deleteCharAt(a.length()-1);
+				a.deleteCharAt(a.length() - 1);
 				a.trimToSize();
 				if (a.length() == 0){
 					alias = null;
@@ -172,29 +154,13 @@ public class SelectItem implements ADQLObject {
 		caseSensitive = sensitive;
 	}
 
-	public ADQLObject getCopy() throws Exception {
-		return new SelectItem(this, query);
+	public ADQLObject getCopy() throws Exception{
+		return new SelectItem(this);
 	}
 
+
 	public String getName() {
-	    /*
-	    String operandName = operand.getName();
-	    String newAlias = "";
-		
-		if( Arrays.asList("+","-","*","/", "%").contains(operandName)){
-			String uuid = UUID.randomUUID().toString();
-			char[] uuidChars = uuid.toCharArray();
-	        String newUUID ="";
-	        for(int i = 0; i<8;i++){
-	            newUUID += uuidChars[i];
-	        }       
-	        
-	        newAlias = "col_" + newUUID.replaceAll("[\\s\\-()]", "");
-		} else {
-			newAlias = operandName;
-		}
-		return hasAlias()?alias:newAlias;
-		*/
+
     	if (hasAlias())
     	    {
     	    return getAlias();
@@ -211,43 +177,44 @@ public class SelectItem implements ADQLObject {
     	    }
     	}
 
+
 	public ADQLIterator adqlIterator(){
-		return new ADQLIterator() {
+		return new ADQLIterator(){
 
 			private boolean operandGot = (operand == null);
 
-			public ADQLObject next() throws NoSuchElementException {
+			public ADQLObject next() throws NoSuchElementException{
 				if (operandGot)
 					throw new NoSuchElementException();
 				operandGot = true;
 				return operand;
 			}
 
-			public boolean hasNext() {
+			public boolean hasNext(){
 				return !operandGot;
 			}
 
-			public void replace(ADQLObject replacer) throws UnsupportedOperationException, IllegalStateException {
+			public void replace(ADQLObject replacer) throws UnsupportedOperationException, IllegalStateException{
 				if (replacer == null)
 					remove();
 				else if (!operandGot)
 					throw new IllegalStateException("replace(ADQLObject) impossible: next() has not yet been called !");
 				else if (!(replacer instanceof ADQLOperand))
-					throw new IllegalStateException("Impossible to replace an ADQLOperand by a "+replacer.getClass().getName()+" !");
+					throw new IllegalStateException("Impossible to replace an ADQLOperand by a " + replacer.getClass().getName() + " !");
 				else
 					operand = (ADQLOperand)replacer;
 			}
 
-			public void remove() {
+			public void remove(){
 				if (!operandGot)
 					throw new IllegalStateException("remove() impossible: next() has not yet been called !");
 				else
-					throw new UnsupportedOperationException("Impossible to remove the only operand ("+operand.toADQL()+") from a SelectItem ("+toADQL()+") !");
+					throw new UnsupportedOperationException("Impossible to remove the only operand (" + operand.toADQL() + ") from a SelectItem (" + toADQL() + ") !");
 			}
 		};
 	}
 
-	public String toADQL() {
+	public String toADQL(){
 		StringBuffer adql = new StringBuffer(operand.toADQL());
 		if (hasAlias()){
 			adql.append(" AS ");

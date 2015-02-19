@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institute (ARI)
  */
 
 /*
@@ -24,8 +25,8 @@
 *  The generated parser checks the syntax of the given ADQL query and generates an object representation but no coherence with any database is done.
 *  If the syntax is not conform to the ADQL definition an error message is printed else it will be the message "Correct syntax".
 *
-*  Author:  Gregory Mantelet (CDS) - gregory.mantelet@astro.unistra.fr
-*  Version: January 2012
+*  Author:  Gr&eacute;gory Mantelet (CDS;ARI) - gmantele@ari.uni-heidelberg.de
+*  Version: 1.3 (10/2014)
 */
 
 							/* ########### */
@@ -34,7 +35,7 @@
 options {
 	STATIC = false;
 	IGNORE_CASE = true;
-	DEBUG_PARSER = true;
+	DEBUG_PARSER = false;
 }
 
 							/* ########## */
@@ -44,7 +45,6 @@ PARSER_BEGIN(ADQLParser)
 
 package adql.parser;
 
-import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -52,10 +52,6 @@ import java.util.Collection;
 
 import java.io.FileReader;
 import java.io.IOException;
-import adql.db.DBChecker;
-import adql.db.DBTable;
-import adql.db.SearchColumnList;
-import adql.db.DBChecker.SearchTableHandler;
 
 import adql.db.exception.UnresolvedIdentifiersException;
 
@@ -92,8 +88,8 @@ import adql.translator.TranslationException;
 * @see QueryChecker
 * @see ADQLQueryFactory
 *
-* @author Gr&eacute;gory Mantelet (CDS) - gregory.mantelet@astro.unistra.fr
-* @version January 2012
+* @author Gr&eacute;gory Mantelet (CDS;ARI) - gmantele@ari.uni-heidelberg.de
+* @version 1.3 (10/2014)
 */
 public class ADQLParser {
 	
@@ -112,16 +108,13 @@ public class ADQLParser {
 	/** The first token of a table/column name. This token is extracted by {@link #Identifier()}. */
 	private Token currentIdentifierToken = null;
 	
-	/** List of all allowed coordinate systems. */
-	private ArrayList<String> allowedCoordSys = new ArrayList<String>();
-	
 	/**
 	* Builds an ADQL parser without a query to parse.
 	*/
 	public ADQLParser(){
 		this(new java.io.ByteArrayInputStream("".getBytes()));
 	}
-
+	
 	/**
 	* Builds an ADQL parser without a query to parse but with a QueryChecker and a ADQLQueryFactory.
 	*
@@ -154,7 +147,7 @@ public class ADQLParser {
 	public ADQLParser(ADQLQueryFactory factory) {
 		this((QueryChecker)null, factory);
 	}
-
+	
 	/**
 	* Builds a parser with a stream containing the query to parse.
 	*
@@ -352,24 +345,6 @@ public class ADQLParser {
 		return Query();
 	}
 	
-	public final void addCoordinateSystem(final String coordSys){
-		allowedCoordSys.add(coordSys);
-	}
-	
-	public final void setCoordinateSystems(final Collection<String> coordSys){
-		allowedCoordSys.clear();
-		if (coordSys != null)
-			allowedCoordSys.addAll(coordSys);
-	}
-	
-	public final boolean isAllowedCoordSys(final String coordSys) {
-		for(String cs : allowedCoordSys){
-			if (cs.equalsIgnoreCase(coordSys))
-				return true;
-		}
-		return false;
-	}
-	
 	public final void setDebug(boolean debug){
 		if (debug) enable_tracing();
 		else       disable_tracing();
@@ -543,6 +518,7 @@ TOKEN : {
 |	< BIT_XOR: "^" >
 }
 
+
 /* ******************** */
 /* Comparison operators */
 /* ******************** */
@@ -676,6 +652,7 @@ TOKEN : {
 |	< TAN: "TAN" >
 }
 
+
 /* *************** */
 /* CAST            */
 /* *************** */
@@ -683,6 +660,7 @@ TOKEN : {
     < CAST: "CAST" >
 |   < CAST_TYPE : "SMALLINT"| "SHORT" | "INT" | "INTEGER" | "BIGINT" | "LONG" | "FLOAT" | "DOUBLE" >
 }
+
 
 /* ******* */
 /* Comment */
@@ -729,6 +707,7 @@ TOKEN : {
 |	< #HEX_DIGIT: ["0"-"9","a"-"f","A"-"F"] >
 }
 
+
 							/* ########## */
 							/* # SYNTAX # */
 							/* ########## */
@@ -745,54 +724,24 @@ TOKEN : {
 */
 ADQLQuery Query(): {ADQLQuery q = null;}{
 	q=QueryExpression() (<EOF> | <EOQ>)
-	{ return q; }
+	{
+		// check the query:
+		if (queryChecker != null)
+			queryChecker.check(q);
+			
+		return q;
+	}
 }
 
 ADQLQuery QueryExpression(): {} {
-    {
-    ADQLQuery parentQuery = null;
-    // Create Column list and alias map from the query stack data
-    Stack<ADQLQuery> stackq = stackQuery;
-    DBChecker qCheck = (DBChecker ) queryChecker;
-    SearchColumnList allfromlist =  new SearchColumnList();
-	HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
-
-	for(ADQLQuery o : stackq){
-			//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
-			SearchTableHandler sHandler = new SearchTableHandler();
-
-			sHandler.search(o.getFrom());
-			for(ADQLObject result : sHandler){
-				try{
-					ADQLTable table = (ADQLTable)result;
-					// resolve the table:
-					DBTable dbTable = null;
-					if (table.isSubQuery()){
-						dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
-					}else{
-						dbTable = qCheck.resolveTable(table);
-						if (table.hasAlias())
-							dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
-					}
-					// link with the matched DBTable:
-					table.setDBLink(dbTable);
-					mapTables.put(dbTable, table);
-					allfromlist.addAll(table.getDBColumns());
-
-				}catch(ParseException pe){
-					System.out.println("Parse Exception caught ");
-				}
-			}
-
+	{
+		try{
+			// create the query:
+			query = queryFactory.createQuery();
+			stackQuery.push(query);
+		}catch(Exception ex){
+			throw generateParseException(ex);
 		}
-
-                try{
-                	    	query = queryFactory.createQuery(query,true);
-            		   
-                        stackQuery.push(query);
-                }catch(Exception ex){
-                        throw generateParseException(ex);
-                }
 	}
 	Select()
 	From()
@@ -801,10 +750,6 @@ ADQLQuery QueryExpression(): {} {
 	[Having()]
 	[OrderBy()]
 	{
-		// check the query:
-		if (queryChecker != null)
-			queryChecker.check(query,allfromlist, mapTables);
-			
 		// get the previous query (!= null if the current query is a sub-query):
 		ADQLQuery previousQuery = stackQuery.pop();
 		if (stackQuery.isEmpty())
@@ -853,7 +798,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 			<ASTERISK>
 			{
 				try{;
-					return new SelectAllColumns( queryFactory.createTable(identifiers, null),query );
+					return new SelectAllColumns( queryFactory.createTable(identifiers, null) );
 				}catch(Exception ex) {
 					throw generateParseException(ex);
 				}
@@ -866,7 +811,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 	
 	{
 		try{
-			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier, query);
+			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier);
 			if (label != null)
 				item.setCaseSensitive(label.caseSensitivity);
 			return item;
@@ -892,9 +837,17 @@ void Where(): {ClauseConstraints where = query.getWhere(); ADQLConstraint condit
 
 void GroupBy(): {ClauseADQL<ADQLOperand> groupBy = query.getGroupBy(); ADQLOperand colRef = null;} {
 	<GROUP_BY> colRef=ValueExpression() { groupBy.add(colRef); }
-	( <COMMA> colRef=ValueExpression() { groupBy.add(colRef); } )*}void Having(): {ClauseConstraints having = query.getHaving();} {
-	<HAVING> ConditionsList(having)}void OrderBy(): {ClauseADQL<ADQLOrder> orderBy = query.getOrderBy(); ADQLOrder order = null;} {	<ORDER_BY> order=OrderItem() {orderBy.add(order);}
-	( <COMMA> order=OrderItem() {orderBy.add(order);} )*}
+	( <COMMA> colRef=ValueExpression() { groupBy.add(colRef); } )*
+}
+
+void Having(): {ClauseConstraints having = query.getHaving();} {
+	<HAVING> ConditionsList(having)
+}
+
+void OrderBy(): {ClauseADQL<ADQLOrder> orderBy = query.getOrderBy(); ADQLOrder order = null;} {
+	<ORDER_BY> order=OrderItem() {orderBy.add(order);}
+	( <COMMA> order=OrderItem() {orderBy.add(order);} )*
+}
 
 /* *************************** */
 /* COLUMN AND TABLE REFERENCES */
@@ -1042,8 +995,8 @@ ADQLJoin JoinSpecification(FromContent leftTable): { boolean natural = false; Jo
 /* STRING */
 /* ****** */
 String String(): {Token t; String str="";} {
-	(t=<STRING_LITERAL> {str += t.image;})+
-	{return (str!=null)?str.substring(1,str.length()-1):str;}
+	(t=<STRING_LITERAL> {str += t.image.substring(1,t.image.length()-1).replaceAll("''", "'");})+
+	{return str;}
 }
 
 /* ************* */
@@ -1071,32 +1024,50 @@ String SignedInteger(): {Token sign=null, number;} {
 /* *********** */
 /* EXPRESSIONS */
 /* *********** */
-ADQLOperand ValueExpressionPrimary(): {String expr; ADQLColumn column; ADQLOperand op;} {
-	(
-		try{
-	// unsigned_value_specification
-			expr=UnsignedNumeric() {return queryFactory.createNumericConstant(expr);}
-	| 		expr=String() {return queryFactory.createStringConstant(expr);}
-		}catch(Exception ex){
-			throw generateParseException(ex);
-		}
-	// column_reference
-	| column=Column() {return column;}
-	// set_function_specification
-	| op=SqlFunction() {return op;}
-    | op=CastFunction() {return op;}
-	// LEFT_PAR value_expression RIGHT_PAR
-	| (<LEFT_PAR> op=ValueExpression() <RIGHT_PAR>)
-	  {
-	  return queryFactory.createWrappedOperand(op);
-	  })
+ADQLOperand NumericValueExpressionPrimary(): {String expr; ADQLColumn column; ADQLOperand op;} {
+	try{
+		(// unsigned_value_specification
+		  expr=UnsignedNumeric() {return queryFactory.createNumericConstant(expr);}
+		// column_reference
+		| column=Column() {column.setExpectedType('N'); return column;}
+		// set_function_specification
+		| op=SqlFunction() {return op;}
+		| op=CastFunction() {return op;}
+		// LEFT_PAR value_expression RIGHT_PAR
+		| (<LEFT_PAR> op=NumericExpression() <RIGHT_PAR>) {return queryFactory.createWrappedOperand(op);})
+	}catch(Exception ex){
+		throw generateParseException(ex);
+	}
 }
 
-ADQLOperand ValueExpression(): {ADQLOperand valueExpr = null; } {	(valueExpr=GeometryValueFunction()	| LOOKAHEAD(<PLUS> | <MINUS>) valueExpr=NumericExpression()
-	| LOOKAHEAD(<COORDSYS>) valueExpr=StringExpression()
-	| LOOKAHEAD(StringFactor() <CONCAT>) valueExpr=StringExpression()
-	| valueExpr=NumericExpression())
-	{return valueExpr;}}
+ADQLOperand StringValueExpressionPrimary(): {String expr; ADQLColumn column; ADQLOperand op;} {
+	try{
+		(// string
+		  expr=String() {return queryFactory.createStringConstant(expr);}
+		// column_reference
+		| column=Column() {column.setExpectedType('S'); return column;}
+		// LEFT_PAR value_expression RIGHT_PAR
+		| (<LEFT_PAR> (op=StringExpression()) <RIGHT_PAR>) {return queryFactory.createWrappedOperand(op);})
+	}catch(Exception ex){
+		throw generateParseException(ex);
+	}
+}
+
+ADQLOperand ValueExpression(): {ADQLOperand valueExpr = null; } {
+	try{
+		(LOOKAHEAD((<PLUS>|<MINUS>) | (Factor() (<PLUS>|<MINUS>|<ASTERISK>|<DIVIDE>)) | (BinaryExpression())) valueExpr=NumericExpression()
+		| LOOKAHEAD(<COORDSYS> | (StringFactor() <CONCAT>)) valueExpr=StringExpression()
+		| LOOKAHEAD(<LEFT_PAR>) <LEFT_PAR> valueExpr=ValueExpression() <RIGHT_PAR> { valueExpr = queryFactory.createWrappedOperand(valueExpr); }
+		| LOOKAHEAD(<REGULAR_IDENTIFIER> <LEFT_PAR>) valueExpr=UserDefinedFunction()
+		| valueExpr=GeometryValueFunction()
+		| LOOKAHEAD(Column()) valueExpr=Column()
+		| LOOKAHEAD(String()) valueExpr=StringFactor()
+		| valueExpr=Factor())
+		{return valueExpr;}
+	}catch(Exception ex){
+		throw generateParseException(ex);
+	}
+}
 
 ADQLOperand NumericExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
 	(leftOp=NumericTerm() ((sign=<PLUS> | sign=<MINUS>) rightOp=NumericExpression())?)
@@ -1146,7 +1117,7 @@ ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=nu
 ADQLOperand Factor(): {boolean negative = false;; ADQLOperand op;} {
 	(
 		(<PLUS> | (<MINUS> {negative = true;}))?
-		(LOOKAHEAD(2) op=NumericFunction() | op=ValueExpressionPrimary())
+		(LOOKAHEAD(2) op=NumericFunction() | op=NumericValueExpressionPrimary())
 	)
 	
 	{
@@ -1162,7 +1133,8 @@ ADQLOperand Factor(): {boolean negative = false;; ADQLOperand op;} {
 	}
 }
 
-ADQLOperand StringExpression(): {ADQLOperand leftOp; ADQLOperand rightOp = null;} {	leftOp=StringFactor()
+ADQLOperand StringExpression(): {ADQLOperand leftOp; ADQLOperand rightOp = null;} {
+	leftOp=StringFactor()
 	(
 		<CONCAT>
 		rightOp=StringFactor()
@@ -1179,21 +1151,22 @@ ADQLOperand StringExpression(): {ADQLOperand leftOp; ADQLOperand rightOp = null;
 			((Concatenation)leftOp).add(rightOp);
 		}
 	)*
-	{ return leftOp; }}
+	{ return leftOp; }
+}
 
 ADQLOperand StringFactor(): {ADQLOperand op;} {
 	(op=ExtractCoordSys()
-	| LOOKAHEAD(2) op=UserDefinedFunction()
-	| op=ValueExpressionPrimary())
+	| LOOKAHEAD(2) op=UserDefinedFunction() { ((UserDefinedFunction)op).setExpectedType('S'); }
+	| op=StringValueExpressionPrimary())
 	{return op;}
 }
 
 GeometryValue<GeometryFunction> GeometryExpression(): {ADQLColumn col = null; GeometryFunction gf = null;} {
 	(col=Column() | gf=GeometryValueFunction())
 	{
-		if (col != null)
+		if (col != null){		  	col.setExpectedType('G');
 			return new GeometryValue<GeometryFunction>(col);
-		else
+		}else
 			return new GeometryValue<GeometryFunction>(gf);
 	}
 }
@@ -1319,7 +1292,8 @@ In InEnd(ADQLOperand leftOp): {Token not=null; ADQLQuery q = null; ADQLOperand i
 /* ************* */
 /* SQL FUNCTIONS */
 /* ************* */
-SQLFunction SqlFunction(): {Token fct, all=null, distinct=null; ADQLOperand op=null; SQLFunction funct = null;}{	try{
+SQLFunction SqlFunction(): {Token fct, all=null, distinct=null; ADQLOperand op=null; SQLFunction funct = null;}{
+	try{
 		(
 			(<COUNT> <LEFT_PAR> [distinct=<QUANTIFIER>] (all=<ASTERISK> | op=ValueExpression()) <RIGHT_PAR>
 			{ funct = queryFactory.createSQLFunction((all!=null)?SQLFunctionType.COUNT_ALL:SQLFunctionType.COUNT, op, distinct != null && distinct.image.equalsIgnoreCase("distinct")); })
@@ -1330,7 +1304,8 @@ SQLFunction SqlFunction(): {Token fct, all=null, distinct=null; ADQLOperand op=n
 	}catch(Exception ex){
 		throw generateParseException(ex);
 	}
-	{ return funct; }}
+	{ return funct; }
+}
 
 /* ************* */
 /* CAST FUNCTION */
@@ -1371,24 +1346,26 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 			})
 		// non_predicate_geometry_function
 		|	(<AREA> <LEFT_PAR> gvf1=GeometryExpression() <RIGHT_PAR>) {gf = queryFactory.createArea(gvf1);}
-		|	(<COORD1> <LEFT_PAR> (p1=Point() {gf = queryFactory.createCoord1(p1);} | col1=Column() {gf = queryFactory.createCoord1(col1);}) <RIGHT_PAR>)
-		|	(<COORD2> <LEFT_PAR> (p1=Point() {gf = queryFactory.createCoord2(p1);} | col1=Column() {gf = queryFactory.createCoord2(col1);}) <RIGHT_PAR>)
+		|	(<COORD1> <LEFT_PAR> (p1=Point() {gf = queryFactory.createCoord1(p1);} | col1=Column() {col1.setExpectedType('G'); gf = queryFactory.createCoord1(col1);}) <RIGHT_PAR>)
+		|	(<COORD2> <LEFT_PAR> (p1=Point() {gf = queryFactory.createCoord2(p1);} | col1=Column() {col1.setExpectedType('G'); gf = queryFactory.createCoord2(col1);}) <RIGHT_PAR>)
 		|	(<DISTANCE>
 				<LEFT_PAR>
 				(p1=Point()|col1=Column()) 
 				{
 					if (p1 != null)
 						gvp1 = new GeometryValue<PointFunction>(p1);
-					else
+					else{						col1.setExpectedType('G');
 						gvp1 = new GeometryValue<PointFunction>(col1);
+					}
 				}
 				<COMMA>
 				(p2=Point()|col2=Column())
 				{
 					if (p2 != null)
 						gvp2 = new GeometryValue<PointFunction>(p2);
-					else
+					else{						col2.setExpectedType('G');
 						gvp2 = new GeometryValue<PointFunction>(col2);
+					}
 				} 
 				<RIGHT_PAR>
 				{gf = queryFactory.createDistance(gvp1, gvp2);}
@@ -1401,19 +1378,9 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 	{ return gf; }
 }
 
-ADQLOperand CoordinateSystem(): { Token oldToken = token; ADQLOperand coordSys=null;}{
+ADQLOperand CoordinateSystem(): { ADQLOperand coordSys=null;}{
 	coordSys=StringExpression()
-	{
-		if (allowedCoordSys.size() > 0){
-			TextPosition position = new TextPosition(oldToken.next, token);
-			if (coordSys == null)
-				throw new ParseException("A coordinate system must always be provided !", position);
-			if (coordSys instanceof StringConstant && !isAllowedCoordSys(((StringConstant)coordSys).getValue()))
-				throw new ParseException("\""+coordSys.toADQL()+"\" is not an allowed coordinate systems !", position);
-		}
-			
-		return coordSys;
-	}
+	{ return coordSys; }
 }
 
 GeometryFunction GeometryValueFunction(): {ADQLOperand coordSys; ADQLOperand width, height; ADQLOperand[] coords, tmp; Vector<ADQLOperand> vCoords; ADQLOperand op=null; GeometryValue<GeometryFunction> gvf = null; GeometryFunction gf = null;} {
@@ -1485,7 +1452,7 @@ ADQLFunction NumericFunction(): {ADQLFunction fct;} {
 	(fct=MathFunction()
 	| fct=TrigFunction()
 	| fct=GeometryFunction()
-	| fct=UserDefinedFunction())
+	| fct=UserDefinedFunction() { ((UserDefinedFunction)fct).setExpectedType('N'); })
 	{return fct;}
 }
 
@@ -1504,12 +1471,12 @@ MathFunction MathFunction(): {Token fct=null; ADQLOperand param1=null, param2=nu
 		| (fct=<SIGN> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
 		| (fct=<POWER> <LEFT_PAR> param1=NumericExpression() <COMMA> param2=NumericExpression() <RIGHT_PAR>)
 		| (fct=<RADIANS> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
-		| (fct=<RAND> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
-		| (fct=<ROUND> <LEFT_PAR> param1=NumericExpression() <COMMA> integerValue=SignedInteger() {param2 = queryFactory.createNumericConstant(integerValue);} <RIGHT_PAR>)
+		| (fct=<RAND> <LEFT_PAR> (param1=NumericExpression())? <RIGHT_PAR>)
+		| (fct=<ROUND> <LEFT_PAR> param1=NumericExpression() (<COMMA> integerValue=SignedInteger() {param2 = queryFactory.createNumericConstant(integerValue);})? <RIGHT_PAR>)
 		| (fct=<SQRT> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
-		| (fct=<TRUNCATE> <LEFT_PAR> param1=NumericExpression() <COMMA> integerValue=SignedInteger() {param2 = queryFactory.createNumericConstant(integerValue);} <RIGHT_PAR>))
+		| (fct=<TRUNCATE> <LEFT_PAR> param1=NumericExpression() (<COMMA> integerValue=SignedInteger() {param2 = queryFactory.createNumericConstant(integerValue);})? <RIGHT_PAR>))
 		{
-		return queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
+			return queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
 		}
 	}catch(Exception ex){
 		throw generateParseException(ex);
@@ -1537,17 +1504,22 @@ MathFunction TrigFunction(): {Token fct=null; ADQLOperand param1=null, param2=nu
 	}
 }
 
-/* /!\ WARNING: The function name may be prefixed by "udf_" but there is no way to check it here ! */
 UserDefinedFunction UserDefinedFunction(): {Token fct; Vector<ADQLOperand> params = new Vector<ADQLOperand>(); ADQLOperand op;} {
 	fct=<REGULAR_IDENTIFIER> <LEFT_PAR> (op=ValueExpression() {params.add(op);} (<COMMA> op=ValueExpression() {params.add(op);})*)? <RIGHT_PAR>
 	{
 		//System.out.println("INFO [ADQLParser]: \""+fct.image+"\" (from line "+fct.beginLine+" and column "+fct.beginColumn+" to line "+token.endLine+" and column "+(token.endColumn+1)+") is considered as an user defined function !");
 		try{
+			//  Build the parameters list:
 			ADQLOperand[] parameters = new ADQLOperand[params.size()];
 			for(int i=0; i<params.size(); i++)
 				parameters[i] = params.get(i);
+
+			// Create the UDF function:
 			return queryFactory.createUserDefinedFunction(fct.image, parameters);
 		}catch(UnsupportedOperationException uoe){
+		  	/* This catch clause is just for backward compatibility:
+		  	 * if the createUserDefinedFunction(...) is overridden and
+		  	 * the function can not be identified a such exception may be thrown). */
 			throw new ParseException(uoe.getMessage(), new TextPosition(fct, token));
 		}catch(Exception ex){
 			throw generateParseException(ex);

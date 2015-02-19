@@ -29,7 +29,15 @@ target
 .classpath
 .settings
 .factorypath
+<<<<<<< local
+=======
+.recommenders
+>>>>>>> other
 .metadata
+<<<<<<< local
+=======
+
+>>>>>>> other
 # Java core dumps
 hs_err_*.log
 

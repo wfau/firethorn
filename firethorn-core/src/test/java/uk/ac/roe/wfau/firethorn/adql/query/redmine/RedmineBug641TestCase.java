@@ -42,7 +42,7 @@ public class RedmineBug641TestCase
         {
         validate(
             Level.LEGACY,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " select round(K_1apermag3*20,0)/20.0 as k,round( (Japermag3-K_1apermag3)*20,0)/20.0 as JK,count(*) as count "
             + " FROM gpsJHKsource s WHERE s.l between 19.7500 and 20.2500 and s.b "

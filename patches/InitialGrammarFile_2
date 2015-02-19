@@ -1,0 +1,21 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417620701 -7200
+#      Wed Dec 03 17:31:41 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID 9bf2e3432a445ebb274b0b2ed2b799b56bc1cea8
+# Parent  fa5bcfd32bfc4c0a9d0ad5429bf2d04ceff5b30b
+Run grammar file/fix ADQLParser.java null error(2)
+
+diff -r fa5bcfd32bfc -r 9bf2e3432a44 adql/parser/ADQLParser.java
+--- a/adql/parser/ADQLParser.java	Wed Dec 03 17:31:14 2014 +0200
++++ b/adql/parser/ADQLParser.java	Wed Dec 03 17:31:41 2014 +0200
+@@ -4752,7 +4752,7 @@
+ 
+   /** Constructor with InputStream. */
+   public ADQLParser(java.io.InputStream stream) {
+-     this(stream, String(null));
++     this(stream, (String)null);
+   }
+   /** Constructor with InputStream and supplied encoding */
+   public ADQLParser(java.io.InputStream stream, String encoding) {

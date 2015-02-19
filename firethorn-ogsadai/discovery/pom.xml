@@ -37,7 +37,11 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
+<<<<<<< local
         <version project='firethorn'>1.11.34</version>
+=======
+        <version project='firethorn'>1.11.28-stv-cds-adql-2</version>
+>>>>>>> other
     </parent>
 
     <artifactId>firethorn-ogsadai-discovery</artifactId>

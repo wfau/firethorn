@@ -1,0 +1,75 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417621172 -7200
+#      Wed Dec 03 17:39:32 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID 40a54d10278d8777f71b13c7e4fd2754d0291fd9
+# Parent  9bf2e3432a445ebb274b0b2ed2b799b56bc1cea8
+SearchTableApi change [CDS-Patch]
+
+diff -r 9bf2e3432a44 -r 40a54d10278d adql/db/DBChecker.java
+--- a/adql/db/DBChecker.java	Wed Dec 03 17:31:41 2014 +0200
++++ b/adql/db/DBChecker.java	Wed Dec 03 17:39:32 2014 +0200
+@@ -25,6 +25,7 @@
+ import java.util.Collection;
+ import java.util.HashMap;
+ import java.util.Iterator;
++import java.util.List;
+ import java.util.Map;
+ import java.util.Stack;
+ 
+@@ -99,7 +100,7 @@
+ public class DBChecker implements QueryChecker {
+ 
+ 	/** List of all available tables ({@link DBTable}). */
+-	protected SearchTableList lstTables;
++	protected SearchTableApi lstTables;
+ 
+ 	/** <p>List of all allowed geometrical functions (i.e. CONTAINS, REGION, POINT, COORD2, ...).</p>
+ 	 * <p>
+@@ -568,7 +569,7 @@
+ 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
+ 	 */
+ 	protected DBTable resolveTable(final ADQLTable table) throws ParseException{
+-		ArrayList<DBTable> tables = lstTables.search(table);
++		List<DBTable> tables = lstTables.search(table);
+ 
+ 		// good if only one table has been found:
+ 		if (tables.size() == 1)
+diff -r 9bf2e3432a44 -r 40a54d10278d adql/db/SearchTableApi.java
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/adql/db/SearchTableApi.java	Wed Dec 03 17:39:32 2014 +0200
+@@ -0,0 +1,21 @@
++package adql.db;
++
++import java.util.List;
++
++import adql.query.from.ADQLTable;
++
++public interface SearchTableApi
++    {
++
++    /**
++     * Searches all {@link DBTable} elements corresponding to the given {@link ADQLTable} (case insensitive).
++     * 
++     * @param table	An {@link ADQLTable}.
++     * 
++     * @return		The list of all corresponding {@link DBTable} elements.
++     * 
++     * @see #search(String, String, String, byte)
++     */
++    public List<DBTable> search(final ADQLTable table);
++
++    }
+diff -r 9bf2e3432a44 -r 40a54d10278d adql/db/SearchTableList.java
+--- a/adql/db/SearchTableList.java	Wed Dec 03 17:31:41 2014 +0200
++++ b/adql/db/SearchTableList.java	Wed Dec 03 17:39:32 2014 +0200
+@@ -38,7 +38,7 @@
+  * @author Gr&eacute;gory Mantelet (CDS;ARI)
+  * @version 1.3 (08/2014)
+  */
+-public class SearchTableList extends TextualSearchList<DBTable> {
++public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi{
+ 	private static final long serialVersionUID = 1L;
+ 
+ 	/** Indicates whether multiple occurrences are allowed. */

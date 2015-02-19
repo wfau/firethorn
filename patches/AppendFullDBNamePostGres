@@ -1,0 +1,48 @@
+# HG changeset patch
+# User Stelios Voutsinas <stv@roe.ac.uk>
+# Date 1417623370 -7200
+#      Wed Dec 03 18:16:10 2014 +0200
+# Branch 1.11.28-stv-cds-adql-2
+# Node ID 542b52413e036ffdf1bc66f1621f8e57049568f6
+# Parent  ff3ba2bc9b0e9f33d72bfa8534c827da14e9c916
+appendFullDBName() for PostgreSQLTranslator [CDS-Patch]
+
+diff -r ff3ba2bc9b0e -r 542b52413e03 adql/translator/PostgreSQLTranslator.java
+--- a/adql/translator/PostgreSQLTranslator.java	Wed Dec 03 18:05:45 2014 +0200
++++ b/adql/translator/PostgreSQLTranslator.java	Wed Dec 03 18:16:10 2014 +0200
+@@ -20,6 +20,7 @@
+  *                       Astronomisches Rechen Institut (ARI)
+  */
+ 
++import adql.db.DBTable;
+ import adql.db.DBType;
+ import adql.db.DBType.DBDatatype;
+ import adql.db.STCS.Region;
+@@ -102,6 +103,27 @@
+ 	public boolean isCaseSensitive(final IdentifierField field){
+ 		return field == null ? false : field.isCaseSensitive(caseSensitivity);
+ 	}
++	
++	/**
++	 * Appends the full name of the given table to the given StringBuffer.
++	 * 
++	 * @param str		The string buffer.
++	 * @param dbTable	The table whose the full name must be appended.
++	 * 
++	 * @return			The string buffer + full table name.
++	 */
++	public final StringBuffer appendFullDBName(final StringBuffer str, final DBTable dbTable){
++		if (dbTable != null){
++			if (dbTable.getDBCatalogName() != null)
++				appendIdentifier(str, dbTable.getDBCatalogName(), IdentifierField.CATALOG).append('.');
++
++			if (dbTable.getDBSchemaName() != null)
++				appendIdentifier(str, dbTable.getDBSchemaName(), IdentifierField.SCHEMA).append('.');
++
++			appendIdentifier(str, dbTable.getDBName(), IdentifierField.TABLE);
++		}
++		return str;
++	}
+ 
+ 	@Override
+ 	public String translate(StringConstant strConst) throws TranslationException{

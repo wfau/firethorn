@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
+import adql.db.DBType;
 
 
 /**
@@ -541,5 +542,11 @@ implements AdqlParserTable
                 return AdqlParserTableImpl.this;
                 }
             }
+
+		@Override
+		public DBType getDatatype() {
+			// TODO Auto-generated method stub
+			return null;
+		}
         }
     }

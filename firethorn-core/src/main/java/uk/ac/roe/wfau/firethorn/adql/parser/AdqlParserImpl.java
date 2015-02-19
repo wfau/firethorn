@@ -161,7 +161,6 @@ implements AdqlParser
          * Create a SelectItem.
          *
          */
-        @Override
         public SelectItem createSelectItem(final ADQLOperand operand, final String alias, final ADQLQuery parent)
         throws Exception
             {
@@ -169,8 +168,7 @@ implements AdqlParser
             log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
             return super.createSelectItem(
                 operand,
-                alias,
-                parent
+                alias
                 );
             }
 
@@ -276,6 +274,12 @@ implements AdqlParser
                 // TODO Auto-generated method stub
                 return null;
                 }
+
+			@Override
+			public boolean isGeometry() {
+				// TODO Auto-generated method stub
+				return false;
+			}
 
             }
 
@@ -897,11 +901,11 @@ implements AdqlParser
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-		if (item.item().isMain()){
+		//if (item.item().isMain()){
 			subject.add(
 				item
 				);
-    		}
+    	//	}
         }
 
     /**
@@ -2097,3 +2101,4 @@ implements AdqlParser
 	        }
         }
     }
+

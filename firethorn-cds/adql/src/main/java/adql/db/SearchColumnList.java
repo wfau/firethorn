@@ -16,19 +16,21 @@ package adql.db;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import adql.query.IdentifierField;
-
+import adql.query.from.ADQLJoin;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
-
 import cds.utils.TextualSearchList;
 
 /**
@@ -44,8 +46,8 @@ import cds.utils.TextualSearchList;
  * 	Table aliases can be listed here with their corresponding table name. Consequently, a table alias can be given as table name in the search parameters.
  * </i></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 09/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.2 (11/2013)
  */
 public class SearchColumnList extends TextualSearchList<DBColumn> {
 	private static final long serialVersionUID = 1L;
@@ -54,11 +56,10 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	private boolean distinct = false;
 
 	/** Case-sensitive dictionary of table aliases. (tableAlias <-> TableName) */
-	private final HashMap<String, String> tableAliases = new HashMap<String, String>();
+	private final HashMap<String,String> tableAliases = new HashMap<String,String>();
 
 	/** Case-insensitive dictionary of table aliases. (tablealias <-> List&lt;TableName&gt;) */
-	private final HashMap<String, ArrayList<String>> mapAliases = new HashMap<String, ArrayList<String>>();
-
+	private final HashMap<String,ArrayList<String>> mapAliases = new HashMap<String,ArrayList<String>>();
 
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -66,7 +67,7 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	/**
 	 * Void constructor.
 	 */
-	public SearchColumnList() {
+	public SearchColumnList(){
 		super(new DBColumnKeyExtractor());
 	}
 
@@ -75,7 +76,7 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * 
 	 * @param collection	Collection of {@link DBColumn} to copy.
 	 */
-	public SearchColumnList(final Collection<DBColumn> collection) {
+	public SearchColumnList(final Collection<DBColumn> collection){
 		super(collection, new DBColumnKeyExtractor());
 	}
 
@@ -84,10 +85,9 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * 
 	 * @param initialCapacity	Initial capacity of this list.
 	 */
-	public SearchColumnList(final int initialCapacity) {
+	public SearchColumnList(final int initialCapacity){
 		super(initialCapacity, new DBColumnKeyExtractor());
 	}
-
 
 	/* ******* */
 	/* GETTERS */
@@ -97,7 +97,7 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * 
 	 * @return <i>true</i> means that multiple occurrences are allowed, <i>false</i> otherwise.
 	 */
-	public final boolean isDistinct() {
+	public final boolean isDistinct(){
 		return distinct;
 	}
 
@@ -106,15 +106,33 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * 
 	 * @param distinct <i>true</i> means that multiple occurrences are allowed, <i>false</i> otherwise.
 	 */
-	public final void setDistinct(final boolean distinct) {
+	public final void setDistinct(final boolean distinct){
 		this.distinct = distinct;
 	}
-
 
 	/* ********************** */
 	/* TABLE ALIAS MANAGEMENT */
 	/* ********************** */
+	/**
+	 * Adds the given association between a table name and its alias in a query.
+	 * 
+	 * @param tableAlias	Table alias.
+	 * @param tableName		Table name.
+	 */
+	public final void putTableAlias(final String tableAlias, final String tableName){
+		if (tableAlias != null && tableName != null){
+			tableAliases.put(tableAlias, tableName);
+
+			ArrayList<String> aliases = mapAliases.get(tableAlias.toLowerCase());
+			if (aliases == null){
+				aliases = new ArrayList<String>();
+				mapAliases.put(tableAlias.toLowerCase(), aliases);
+			}
+			aliases.add(tableAlias);
+		}
+	}
 	
+
 	/**
 	 * Adds the given table name / alias list to the existing alias list class variables 
 	 * 
@@ -137,25 +155,6 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 			System.out.println("Exception caught");
 		}
 		
-	}
-
-	/**
-	 * Adds the given association between a table name and its alias in a query.
-	 * 
-	 * @param tableAlias	Table alias.
-	 * @param tableName		Table name.
-	 */
-	public final void putTableAlias(final String tableAlias, final String tableName){
-		if (tableAlias != null && tableName != null){
-			tableAliases.put(tableAlias, tableName);
-
-			ArrayList<String> aliases = mapAliases.get(tableAlias.toLowerCase());
-			if (aliases == null){
-				aliases = new ArrayList<String>();
-				mapAliases.put(tableAlias.toLowerCase(), aliases);
-			}
-			aliases.add(tableAlias);
-		}
 	}
 
 	/**
@@ -245,72 +244,123 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * @see IdentifierField
 	 */
 	public ArrayList<DBColumn> search(final String catalog, final String schema, final String table, final String column, final byte caseSensitivity){
+
 		ArrayList<DBColumn> tmpResult = get(column, IdentifierField.COLUMN.isCaseSensitive(caseSensitivity));
 
+		/* WITH TABLE PREFIX */
 		if (table != null){
-			ArrayList<DBColumn> result = new ArrayList<DBColumn>();
+			/* 1. Figure out the table alias */
+			String tableName = null;
+			ArrayList<String> aliasMatches = null;
 
+			// Case sensitive => tableName is set , aliasMatches = null
+			if (IdentifierField.TABLE.isCaseSensitive(caseSensitivity)){
+				tableName = tableAliases.get(table);
+				if (tableName == null)
+					tableName = table;
+			}
+			// Case INsensitive
+			// a) Alias is found => tableName = null  , aliasMatches contains the list of all tables matching the alias
+			// b) No alias       => tableName = table , aliasMatches = null
+			else{
+				aliasMatches = mapAliases.get(table.toLowerCase());
+				if (aliasMatches == null || aliasMatches.isEmpty())
+					tableName = table;
+			}
+
+			/* 2. For each found column, test whether its table, schema and catalog names match.
+			 *    If it matches, keep the column aside. */
+			ArrayList<DBColumn> result = new ArrayList<DBColumn>();
 			for(DBColumn match : tmpResult){
-				DBTable dbTable = match.getTable();
-				if (IdentifierField.TABLE.isCaseSensitive(caseSensitivity)){
-					String tableName = tableAliases.get(table);
-					if (tableName == null) tableName = table;
-					if (!dbTable.getADQLName().equals(tableName))
-						continue;
-				}else{
-					ArrayList<String> aliases = mapAliases.get(table.toLowerCase());
-					if (aliases == null){
-						if (!dbTable.getADQLName().equalsIgnoreCase(table))
-							continue;
-					}else{
+
+				// Get the list of all tables covered by this column:
+				//   - only 1 if it is a normal column
+				//   - several if it is a common column (= result of table join)
+				Iterator<DBTable> itMatchTables;
+				if (ADQLJoin.isCommonColumn(match))
+					itMatchTables = ((DBCommonColumn)match).getCoveredTables();
+				else
+					itMatchTables = new SingleIterator<DBTable>(match.getTable());
+
+				// Test the matching with every covered tables:
+				DBTable matchTable;
+				while(itMatchTables.hasNext()){
+					// get the table:
+					matchTable = itMatchTables.next();
+
+					// test the table name:
+					if (aliasMatches == null){	// case table name is (sensitive) or (INsensitive with no alias found)
+						if (IdentifierField.TABLE.isCaseSensitive(caseSensitivity)){
+							if (!matchTable.getADQLName().equals(tableName))
+								continue;
+						}else{
+							if (!matchTable.getADQLName().equalsIgnoreCase(tableName))
+								continue;
+						}
+					}else{	// case INsensitive with at least one alias found
 						boolean foundAlias = false;
 						String temp;
-						for(int a=0; !foundAlias && a<aliases.size(); a++){
-							temp = tableAliases.get(aliases.get(a));
-							
-
+						for(int a = 0; !foundAlias && a < aliasMatches.size(); a++){
+							temp = tableAliases.get(aliasMatches.get(a));
 							if (temp != null)
-								foundAlias = dbTable.getDBName().equalsIgnoreCase(temp);
+								foundAlias = matchTable.getADQLName().equalsIgnoreCase(temp);
 						}
 						if (!foundAlias)
 							continue;
 					}
-				}
 
-				if (schema != null){
-					if (IdentifierField.SCHEMA.isCaseSensitive(caseSensitivity)){
-						if (!dbTable.getADQLSchemaName().equals(schema))
-							continue;
-					}else{
-						if (!dbTable.getADQLSchemaName().equalsIgnoreCase(schema))
-							continue;
-					}
-
-					if (catalog != null){
-						if (IdentifierField.CATALOG.isCaseSensitive(caseSensitivity)){
-							if (!dbTable.getADQLCatalogName().equals(catalog))
+					// test the schema name:
+					if (schema != null){
+						if (IdentifierField.SCHEMA.isCaseSensitive(caseSensitivity)){
+							if (!matchTable.getADQLSchemaName().equals(schema))
 								continue;
 						}else{
-							if (!dbTable.getADQLCatalogName().equalsIgnoreCase(catalog))
+							if (!matchTable.getADQLSchemaName().equalsIgnoreCase(schema))
 								continue;
 						}
-					}
-				}
 
-				result.add(match);
+						// test the catalog name:
+						if (catalog != null){
+							if (IdentifierField.CATALOG.isCaseSensitive(caseSensitivity)){
+								if (!matchTable.getADQLCatalogName().equals(catalog))
+									continue;
+							}else{
+								if (!matchTable.getADQLCatalogName().equalsIgnoreCase(catalog))
+									continue;
+							}
+						}
+					}
+
+					// if here, all prefixes are matching and so the column is a good match:
+					DBColumn goodMatch = matchTable.getColumn(match.getADQLName(), true);
+					result.add(goodMatch);
+				}
 			}
 			return result;
 
-		}else{
+		}
+		/* NO TABLE PREFIX */
+		else{
 			// Special case: the columns merged by a NATURAL JOIN or a USING may have no table reference:
 			if (tmpResult.size() > 1){
+				// List all common columns. If there are several, only the list of matching normal columns must be returned.
+				// This list must not contain common columns.
+				// Instead, it must contains all normal columns covered by the common columns.
 				ArrayList<DBColumn> result = new ArrayList<DBColumn>(tmpResult.size());
-				for(int i=0; i<tmpResult.size(); i++){
-					DBTable x = tmpResult.get(i).getTable();
-					if (tmpResult.get(i).getTable() == null)
-						System.out.println(tmpResult.get(i).getTable());
-						result.add(tmpResult.remove(i));
+				for(int i = 0; i < tmpResult.size(); i++){
+					if (ADQLJoin.isCommonColumn(tmpResult.get(i))){
+						// this common column is a good match
+						// => add it into the list of matching common columns
+						//    AND remove it from the normal columns list
+						DBCommonColumn commonColumn = (DBCommonColumn)tmpResult.remove(i);
+						result.add(commonColumn);
+						// then, add all normal columns covered by this common columns:
+						Iterator<DBTable> itCoveredTables = commonColumn.getCoveredTables();
+						while(itCoveredTables.hasNext())
+							tmpResult.add(itCoveredTables.next().getColumn(column, true));
+					}
 				}
+
 				if (result.size() == 1)
 					return result;
 			}
@@ -319,42 +369,25 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 		}
 	}
 
-
 	/* ***************** */
 	/* INHERITED METHODS */
 	/* ***************** */
 	@Override
-	public boolean add(final DBColumn item) {
+	public boolean add(final DBColumn item){
 		if (distinct && contains(item))
 			return false;
 		else
 			return super.add(item);
 	}
-	
-	public boolean addAll(final Collection<? extends DBColumn> c, boolean ignorecheck) {
-		boolean changed = true;
-		if (!ignorecheck){
-			changed = super.addAll(c);
-		} 
-		
-		if (changed){
-			if (c instanceof SearchColumnList){
-				SearchColumnList list = (SearchColumnList)c;
-				for(Map.Entry<String, String> entry : list.tableAliases.entrySet())
-					putTableAlias(entry.getKey(), entry.getValue());
-			}
-		}
 
-		return changed;
-	}
 	@Override
-	public boolean addAll(final Collection<? extends DBColumn> c) {
+	public boolean addAll(final Collection<? extends DBColumn> c){
 		boolean changed = super.addAll(c);
 
 		if (changed){
 			if (c instanceof SearchColumnList){
 				SearchColumnList list = (SearchColumnList)c;
-				for(Map.Entry<String, String> entry : list.tableAliases.entrySet())
+				for(Map.Entry<String,String> entry : list.tableAliases.entrySet())
 					putTableAlias(entry.getKey(), entry.getValue());
 			}
 		}
@@ -363,7 +396,7 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	}
 
 	@Override
-	public boolean removeAll(final Collection<?> c) {
+	public boolean removeAll(final Collection<?> c){
 		boolean changed = super.removeAll(c);
 
 		if (changed){
@@ -377,7 +410,6 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 		return changed;
 	}
 
-
 	/**
 	 * Lets extracting the key to associate with a given {@link DBColumn} instance.
 	 * 
@@ -385,8 +417,46 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	 * @version 09/2011
 	 */
 	private static class DBColumnKeyExtractor implements KeyExtractor<DBColumn> {
-		public String getKey(DBColumn obj) {
+		@Override
+		public String getKey(DBColumn obj){
 			return obj.getADQLName();
+		}
+	}
+
+	/**
+	 * Iterator that iterates over only one item, given in the constructor.
+	 * 
+	 * @param <E> Type of the item that this Iterator must return.
+	 * 
+	 * @author Gr&eacute;gory Mantelet (ARI) - gmantele@ari.uni-heidelberg.de
+	 * @version 1.2 (11/2013)
+	 * @since 1.2
+	 */
+	private static class SingleIterator< E > implements Iterator<E> {
+		private final E item;
+		private boolean done = false;
+
+		public SingleIterator(final E singleItem){
+			item = singleItem;
+		}
+
+		@Override
+		public boolean hasNext(){
+			return !done;
+		}
+
+		@Override
+		public E next(){
+			if (!done){
+				done = true;
+				return item;
+			}else
+				throw new NoSuchElementException();
+		}
+
+		@Override
+		public void remove(){
+			throw new UnsupportedOperationException();
 		}
 	}
 

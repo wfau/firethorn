@@ -16,11 +16,11 @@ package adql.query.operand.function.geometry;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLObject;
-
 import adql.query.operand.ADQLOperand;
 
 /**
@@ -37,14 +37,13 @@ import adql.query.operand.ADQLOperand;
  * <p><b><u>Warning:</u><br />
  * Inappropriate geometries for this construct SHOULD throw an error message, to be defined by the service making use of ADQL.</b></p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 06/2011
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.3 (10/2014)
  */
 public class RegionFunction extends GeometryFunction {
 
 	/** The only parameter of this function. */
 	protected ADQLOperand parameter;
-
 
 	/**
 	 * Builds a REGION function.
@@ -52,7 +51,7 @@ public class RegionFunction extends GeometryFunction {
 	 * @param param				The parameter (a string or a column reference or a concatenation or a user function).
 	 * @throws ParseException	If the given parameter is <i>null</i>.
 	 */
-	public RegionFunction(ADQLOperand param) throws NullPointerException, Exception {
+	public RegionFunction(ADQLOperand param) throws NullPointerException, Exception{
 		super();
 		if (param == null)
 			throw new NullPointerException("The ADQL function REGION must have exactly one parameter !");
@@ -67,58 +66,67 @@ public class RegionFunction extends GeometryFunction {
 	 * @param toCopy		The REGION function to copy.
 	 * @throws Exception	If there is an error during the copy.
 	 */
-	public RegionFunction(RegionFunction toCopy) throws Exception {
+	public RegionFunction(RegionFunction toCopy) throws Exception{
 		super();
 		parameter = (ADQLOperand)(toCopy.parameter.getCopy());
 	}
 
-	public ADQLObject getCopy() throws Exception {
+	@Override
+	public ADQLObject getCopy() throws Exception{
 		return new RegionFunction(this);
 	}
 
-	public String getName() {
+	@Override
+	public String getName(){
 		return "REGION";
 	}
 
-	public boolean isNumeric() {
+	@Override
+	public boolean isNumeric(){
 		return false;
 	}
 
-	public boolean isString() {
+	@Override
+	public boolean isString(){
+		return false;
+	}
+
+	@Override
+	public boolean isGeometry(){
 		return true;
 	}
 
 	@Override
-	public ADQLOperand[] getParameters() {
+	public ADQLOperand[] getParameters(){
 		return new ADQLOperand[]{parameter};
 	}
 
 	@Override
-	public int getNbParameters() {
+	public int getNbParameters(){
 		return 1;
 	}
 
 	@Override
-	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException {
+	public ADQLOperand getParameter(int index) throws ArrayIndexOutOfBoundsException{
 		if (index == 0)
 			return parameter;
 		else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 	}
 
 	@Override
-	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception {
+	public ADQLOperand setParameter(int index, ADQLOperand replacer) throws ArrayIndexOutOfBoundsException, NullPointerException, Exception{
 		if (index == 0){
 			if (replacer == null)
-				throw new NullPointerException("Impossible to remove the only required parameter of a "+getName()+" function !");
+				throw new NullPointerException("Impossible to remove the only required parameter of a " + getName() + " function !");
 			else if (replacer instanceof ADQLOperand){
 				ADQLOperand replaced = parameter;
-				parameter = replaced;
+				parameter = replacer;
 				return replaced;
 			}else
-				throw new Exception("Impossible to replace an ADQLOperand by a "+replacer.getClass().getName()+" ("+replacer.toADQL()+") !");
+				throw new Exception("Impossible to replace an ADQLOperand by a " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 		}else
-			throw new ArrayIndexOutOfBoundsException("No "+index+"-th parameter for the function \""+getName()+"\" !");
+			throw new ArrayIndexOutOfBoundsException("No " + index + "-th parameter for the function \"" + getName() + "\" !");
 	}
 
 }

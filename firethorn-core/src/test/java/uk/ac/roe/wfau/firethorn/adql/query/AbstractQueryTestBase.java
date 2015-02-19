@@ -535,9 +535,11 @@ extends TestPropertiesBase
             {
             final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
-            fields[i++].validate(
-                field
-                );
+            if ((i+1)<=fields.length){
+	            fields[i++].validate(
+	                field
+	                );
+	            }
             }
         assertEquals(
             i,
@@ -563,8 +565,8 @@ extends TestPropertiesBase
         final String s6 = s5.replaceAll(" *, *", ",");
         final String s7 = s6.replaceAll(" *\\( *", "(");
         final String s8 = s7.replaceAll(" *\\) *", ")");
-
-        return s8;
+        final String s9 = s8.replaceAll("\\s+","");
+        return s9;
         }
 
     private Map<String, String> replacements = new HashMap<String, String>(); 

@@ -57,7 +57,7 @@ public class ArithmeticOperatorCase
             "    atlas.umgpnt AS umgpnt," +
             "    atlas.umgpnt + atlas.umgpnterr AS SUM," +
             "    atlas.umgpnt - atlas.umgpnterr AS SUB," +
-            "    atlas.umgpnt * atlas.umgpnterr AS MUL," +
+            "    atlas.umgpnt * atlas.umgpnterr AS MULT," +
             "    atlas.umgpnt / atlas.umgpnterr AS DIV" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
@@ -66,7 +66,7 @@ public class ArithmeticOperatorCase
                 new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("MULT",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("DIV",    AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );
@@ -189,7 +189,7 @@ public class ArithmeticOperatorCase
             "    (atlas.umgpnt) AS umgpnt," +
             "    (atlas.umgpnt + atlas.umgpnterr) AS SUM," +
             "    (atlas.umgpnt - atlas.umgpnterr) AS SUB," +
-            "    (atlas.umgpnt * atlas.umgpnterr) AS MUL," +
+            "    (atlas.umgpnt * atlas.umgpnterr) AS MULT," +
             "    (atlas.umgpnt / atlas.umgpnterr) AS DIV" +
             " FROM" +
             "    {ATLAS_VERSION}.dbo.atlassource as atlas",
@@ -198,7 +198,7 @@ public class ArithmeticOperatorCase
                 new ExpectedField("umgPnt", AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUM",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("SUB",    AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("MUL",    AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("MULT",    AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("DIV",    AdqlColumn.AdqlType.FLOAT, 0)
                 }
             );

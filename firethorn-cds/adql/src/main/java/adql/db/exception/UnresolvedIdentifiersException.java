@@ -51,7 +51,7 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 	/**
 	 * Build an empty {@link UnresolvedIdentifiersException} (that's to say: there is no unresolved identifier).
 	 */
-	public UnresolvedIdentifiersException() {
+	public UnresolvedIdentifiersException(){
 		exceptions = new ArrayList<ParseException>();
 	}
 
@@ -66,11 +66,15 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 			if (pe instanceof UnresolvedColumnException){
 				String colName = ((UnresolvedColumnException)pe).getColumnName();
 				if (colName != null && !colName.trim().isEmpty())
-					addIdentifierName(colName+" "+pe.getPosition());
+					addIdentifierName(colName + " " + pe.getPosition());
 			}else if (pe instanceof UnresolvedTableException){
 				String tableName = ((UnresolvedTableException)pe).getTableName();
 				if (tableName != null && !tableName.trim().isEmpty())
-					addIdentifierName(tableName+" "+pe.getPosition());
+					addIdentifierName(tableName + " " + pe.getPosition());
+				/*}else if (pe instanceof UnresolvedFunction){	// TODO MANAGE ALSO THE UNRESOLVED_FUNCTIONs!
+					String fctName = (((UnresolvedFunction)pe).getFunction() == null) ? null : ((UnresolvedFunction)pe).getFunction().getName();
+					if (fctName != null && !fctName.trim().isEmpty())
+						addIdentifierName(fctName + " " + pe.getPosition());*/
 			}else if (pe instanceof UnresolvedIdentifiersException)
 				addIdentifierName(((UnresolvedIdentifiersException)pe).unresolvedIdentifiers);
 		}
@@ -109,6 +113,7 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 		return exceptions.iterator();
 	}
 
+	@Override
 	public final Iterator<ParseException> iterator(){
 		return getErrors();
 	}
@@ -119,10 +124,12 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 	 * @see java.lang.Throwable#getMessage()
 	 */
 	@Override
-	public String getMessage() {
-		return exceptions.size()+" unresolved identifiers"+((unresolvedIdentifiers!=null)?(": "+unresolvedIdentifiers):"")+" !";
+	public String getMessage(){
+		StringBuffer buf = new StringBuffer();
+		buf.append(exceptions.size()).append(" unresolved identifiers").append(((unresolvedIdentifiers != null) ? (": " + unresolvedIdentifiers) : "")).append('!');
+		for(ParseException pe : exceptions)
+			buf.append("\n  - ").append(pe.getMessage());
+		return buf.toString();
 	}
-
-
 
 }
