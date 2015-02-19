@@ -103,17 +103,31 @@ delayevery=1000
 delaylast=5000
 
         source "${FIRETHORN_TEST:?}/05-05-execute-query.sh" \
-            'AUTO' \
+            "${querymode:-AUTO}" \
             "
             SELECT
-                COUNT(ra)
+                ra,
+                dec
             FROM
                 atlas.atlasSource
             WHERE
-                ra  BETWEEN '56.0' AND '57.9'
+                ra  BETWEEN 180 AND 181
             AND
-                dec BETWEEN '24.0' AND '24.2'
+                dec BETWEEN -3 AND -2
             "
+
+timelimit=30
+rowlimit=100
+querymode=DISTRIBUTED
+
+timelimit=20
+timelimit=0
+rowlimit=0
+querymode=DISTRIBUTED
+
+delayfirst=0
+delayevery=0
+delaylast=0
 
 
     popd
