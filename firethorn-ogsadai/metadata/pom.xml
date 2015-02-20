@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.11.34</version>
+        <version project='firethorn'>1.11.34-zrq-apache-config</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata</artifactId>
