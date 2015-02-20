@@ -106,6 +106,9 @@
 	        <entry key="GROUP_BY">
 	            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.GroupByBuilder"/></entry></map>
 	        </entry>
+	         <entry key="TOP">
+	            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TopBuilder"/></entry></map>
+	        </entry>
 	        <entry key="INNER_THETA_JOIN">
 	            <map>
 	                <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.ProductSelectBuilder" /> </entry>
