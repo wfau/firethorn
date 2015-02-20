@@ -56,6 +56,16 @@
     <dependencies>
 
         <!--+
+            | FireThorn configuration.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-config</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <!--+
             | FireThorn Spring dependencies.
             +-->
         <dependency>
