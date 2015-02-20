@@ -95,13 +95,6 @@
         # Explicit test with delay > timeout 
         #
 
-rowlimit=10
-timelimit=10
-
-delayfirst=5000
-delayevery=1000
-delaylast=5000
-
         source "${FIRETHORN_TEST:?}/05-05-execute-query.sh" \
             "${querymode:-AUTO}" \
             "
@@ -116,40 +109,23 @@ delaylast=5000
                 dec BETWEEN -3 AND -2
             "
 
+#
+# Test different configurations.
+
+delayfirst=5000
+delayevery=1000
+delaylast=5000
+
 timelimit=30
 rowlimit=100
-querymode=DISTRIBUTED
-
-timelimit=20
-timelimit=0
-rowlimit=0
+querymode=DIRECT
 querymode=DISTRIBUTED
 
 delayfirst=0
 delayevery=0
 delaylast=0
 
-
     popd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # -----------------------------------------------------
 # Commit our changes
@@ -159,7 +135,7 @@ delaylast=0
     pushd "${FIRETHORN_CODE:?}"
 
         hg addremove
-        hg commit -m "Imported astro extensions from OGSA-DAI source code"
+        hg commit -m "Added code to implement time limit"
         hg push
         
     popd
