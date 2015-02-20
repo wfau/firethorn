@@ -38,6 +38,7 @@ import uk.org.ogsadai.dqp.lqp.operators.InnerThetaJoinOperator;
 import uk.org.ogsadai.dqp.lqp.operators.IntersectionOperator;
 import uk.org.ogsadai.dqp.lqp.operators.LeftOuterJoinOperator;
 import uk.org.ogsadai.dqp.lqp.operators.LimitOperator;
+import uk.org.ogsadai.dqp.lqp.operators.TopOperator;
 import uk.org.ogsadai.dqp.lqp.operators.NilOperator;
 import uk.org.ogsadai.dqp.lqp.operators.OneRowOnlyOperator;
 import uk.org.ogsadai.dqp.lqp.operators.ProjectOperator;
@@ -140,9 +141,22 @@ public class LQPBuilder
         // Check if we have ORDER_BY or LIMIT
         Operator sortOperator = null;
         Operator limitOperator = null;
+        Operator topOperator = null;
+
+        CommonTree childT = (CommonTree) ast.getChild(0).getChild(0);
+
+        if (ASTConstants.TOP_TOKEN.equals(childT.getChild(0).getText()))
+        {/*
+            topOperator = new TopOperator(
+            		childT.getChild(0).getChild(0).getText());
+            connectUnary(nilOperator, limitOperator);
+        	topOperator.setChild(0, statementRoot);
+         */
+        }
         for (int i=1; i<ast.getChildCount(); i++)
         {
             String astText = ast.getChild(i).getText();
+          
             if (ASTConstants.ORDER_TOKEN.equals(astText))
             {
                 sortOperator = new SortOperator((CommonTree) ast.getChild(i));
@@ -150,6 +164,11 @@ public class LQPBuilder
             else if (ASTConstants.LIMIT_TOKEN.equals(astText))
             {
                 limitOperator = new LimitOperator(
+                        ast.getChild(i).getChild(0).getText());
+            } 
+            else  if (ASTConstants.TOP_TOKEN.equals(astText))
+            {
+                topOperator = new TopOperator(
                         ast.getChild(i).getChild(0).getText());
             }
         }
@@ -165,6 +184,19 @@ public class LQPBuilder
             {
                 limitOperator.setChild(0, statementRoot);
             }
+        } 
+        else  if (topOperator != null)
+        {
+            connectUnary(nilOperator, topOperator);
+            if (sortOperator != null)
+            {
+            	topOperator.setChild(0, sortOperator);
+                sortOperator.setChild(0, statementRoot);
+            }
+            else
+            {
+            	topOperator.setChild(0, statementRoot);
+            }
         }
         else if (sortOperator != null)
         {
@@ -173,8 +205,11 @@ public class LQPBuilder
         }
         else
         {
-            connectUnary(nilOperator, statementRoot);
+           connectUnary(nilOperator, statementRoot);
         }
+        
+   
+      
         
         // We need to validate pre-normalised LQP as the query normaliser
         // expects that we have already detected all the correlated attributes
@@ -335,6 +370,7 @@ public class LQPBuilder
         Operator queryRoot;
         Map<String, CommonTree> queryStructure;
         queryStructure = ASTUtil.getQueryStructure(ast);
+        Operator nilOperator = new NilOperator();
 
         // Split the tree into branches
         CommonTree selectListAST = queryStructure
@@ -344,6 +380,7 @@ public class LQPBuilder
         CommonTree groupByAST = queryStructure.get(ASTConstants.GROUP_BY_TOKEN);
         CommonTree havingAST = queryStructure.get(ASTConstants.HAVING_TOKEN);
         CommonTree whereAST = queryStructure.get(ASTConstants.WHERE_TOKEN);
+        CommonTree topAST = queryStructure.get(ASTConstants.TOP_TOKEN);
 
         // build from list - a list of root operators for each comma separated
         // entry from the query
@@ -527,7 +564,20 @@ public class LQPBuilder
             renameOperator.update();
             queryRoot = renameOperator;
         }
-
+        // Deal with TOP
+       
+       if (selectListAST.getChild(0).getText().toUpperCase().equals(
+           ASTConstants.TOP_TOKEN))
+       {
+          	CommonTree child = (CommonTree) ast.getChild(0).getChild(0);
+     
+         	TopOperator top = new TopOperator(
+        			child.getChild(0).getText(),queryRoot);
+         	top.update();
+           
+           queryRoot = top;
+        }
+        
         // Deal with DISTINCT
         if (selectListAST.getChild(0).getText().toUpperCase().equals(
             ASTConstants.DISTINCT_TOKEN))
@@ -538,6 +588,8 @@ public class LQPBuilder
             duplElimOperator.update();
             queryRoot = duplElimOperator;
         }
+
+    
 
         return queryRoot;
     }

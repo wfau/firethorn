@@ -1,0 +1,40 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+Queries:
+
+SELECT  ra FROM atlasSource WHERE dec > -26.547589000000002 and dec < -26.347589 and RA >= 4.603008432351317 and RA <= 4.867998167648682 and ((cx * 0.8959843237613438 + cy * 0.08446673709804839 + cz * -0.43597874019031785 ) >= 0.999925369660452)
+
+SQL Server: 7 rows
+Ogsadai: 7 rows 
+
+
+--------------
+
+
+SELECT  ra, 2*DEGREES(ASIN(sqrt(power(0.8082885623740281-cx,2))/2))*60 as distance   FROM atlasSource WHERE dec > -26.547589000000002 and dec < -26.347589 and RA >= 4.603008432351317 and RA <= 4.867998167648682 and ((cx * 0.8959843237613438 + cy * 0.08446673709804839 + cz * -0.43597874019031785 ) >= 0.999925369660452)"
+
+Ogsadai: error

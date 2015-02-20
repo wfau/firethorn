@@ -124,7 +124,7 @@ public class ProjectOperator extends UnaryOperator
 
             // Skip DISTINCT and ALL tokens
             if (column.getText().toUpperCase().equals(ASTConstants.DISTINCT_TOKEN)
-                || column.getText().equals(ASTConstants.ALL_TOKEN))
+                || column.getText().equals(ASTConstants.ALL_TOKEN) ||  column.getText().equals(ASTConstants.TOP_TOKEN))
             {
                 continue;
             }
@@ -221,6 +221,13 @@ public class ProjectOperator extends UnaryOperator
             }
             else
             {
+            	 if (column.getText().equals(ASTConstants.TOP_TOKEN))
+                     { 
+            		 child = (CommonTree) column.getChild(0);
+
+
+                     } else {
+            	
                 // we have derived column
                 try
                 {
@@ -233,6 +240,7 @@ public class ProjectOperator extends UnaryOperator
                 {
                     throw new LQPException(e);
                 }
+                  }
             }
         }
 

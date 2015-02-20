@@ -1,0 +1,112 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Branch: 1.11.28-stv-cds-adql2
+Note: Pyrothorn test run on Febuary 4th, 2015
+
+
+
+Top 5 Firethorn error messages:
+
+
+ERROR_MESSAGE (Firethorn error message)
+QUERY: (An SQL Query that produces this error)
+COUNT: (How many times was this error encountered in logs)
+
+------------------------------------------------------------
+
+
+
+
+ERROR MESSAGE:
+--------------
+PARSE_ERROR -  Encountered "from". Was expecting one of: <EOF> ";" "+" "-" "*" "/" "%" "&" "|" "^" "AND" "OR" "GROUP BY" "HAVING" "ORDER BY"                                                                                                                                                                                                                                                                                                                                                                                                            
+
+QUERY:
+--------------
+select ra as radeg, dec as decdeg,d.filterid from atlasDetection as d,multiframe where Multiframe.multiframeID=d.multiframeID and frameType like '%stack' and ra between 31 and 47 and dec between -9.464 and -9.46  /*select g.centralra as gRA, g.centraldec as gDec, r.centralRa as rRA, r.centralDec as RDec,60.0* dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec) as sepArcsec from atlasmergelog as l, CurrentAstrometry as g, CurrentAstrometry as r where g.multiframeID=gmfid and g.extNum=genum and r.multiframeID=rmfid and r.extNum=renum and gmfid>0 and rmfid>0 order by dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec) desc */ /* select s1.ra as radeg,s1.dec as decdeg,s1.gapermag3,s2.rapermag3 from atlassource as s1, atlassource as s2, atlasSourceNeighbours as n where (s1.priorsec=0 or s1.priorsec=s1.framesetid) and s1.gapermag3 between 0 and 22 and s1.rapermag3 <0 and n.masterObjID=s1.sourceID and n.slaveObjID=s2.sourceID and s2.rapermag3>0 and distanceMins<0.03333 and s1.framesetid=s2.frameSetID */ /*select s.ra as radeg,s.dec as decdeg,gAperMag3 ,rAperMag3/*,gmfid,genum*/ from atlassource as s,atlasMergeLog as l  where gAperMag3 between 0 and 20  and l.frameSetID=s.frameSetID  and (priOrSec = 0 or priOrSec=s.frameSetID)*/ /*select s.ra as radeg,s.dec as decdeg,x,y,s.multiframeid,s.extnum  from atlasDetection as s,multiframe as m where s.filterid=2 and s.multiframeid=m.multiframeID and frametype like '%stack' and apermag3 <22 and s.ra between 0 and 2 and s.dec between -11 and -9*/ /*  select s.ra as radeg,s.dec as decdeg,gAperMag3 ,rAperMag3,s.framesetid/*,gmfid,genum*/ from atlassource as s,atlasMergeLog as l  where gAperMag3 between 0 and 21  and l.frameSetID=s.frameSetID and (priOrSec = 0 or priOrSec=s.frameSetID) and s.ra between 0 and 2 and s.dec between -11 and -9 */ /*select s.ra as radeg,s.dec as decdeg,gAperMag3 ,rAperMag3 from atlassource as s,atlasMergeLog as l  where gAperMag3 >0  and l.frameSetID=s.frameSetID  and s.frameSetID=730144458339 */ /*select ra as radeg,dec as decdeg from atlasdetection where multiframeID=20416 and extnum=13 and ra>0 */   /*select g.centralra as gRA, g.centraldec as gDec,  r.centralRa as rRA, r.centralDec as RDec,60.0*  dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec)  as sepArcsec,frameSetID,gmfID,genum,rmfid,renum  from atlasmergelog as l,  CurrentAstrometry as g, CurrentAstrometry as r  where g.multiframeID=gmfid and g.extNum=genum  and r.multiframeID=rmfid and r.extNum=renum  and gmfid>0 and rmfid>0  order by  dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec)  desc */  /*select s.ra as radeg,s.dec as decdeg,gAperMag3 ,rAperMag3/*,gmfid,genum*/ from atlassource as s,atlasMergeLog as l  where gAperMag3 between 0 and 21  and l.frameSetID=s.frameSetID and (priOrSec = 0 or priOrSec=s.frameSetID) */  
+
+COUNT:
+--------------
+22 
+
+
+
+
+
+ERROR MESSAGE:
+--------------
+PARSE_ERROR -  Encountered "(". Was expecting one of: "." "," "+" "-" "*" "/" "%" "&" "|" "^" "FROM" "AS"                                                                                                                                                                                                                                                                                                                                                                                                                                               
+
+QUERY:
+--------------
+select framesetid,gmfid,rmfid,g.centralra as gRA, g.centraldec as gDec,r.centralRa as rRA, r.centralDec as RDec,60.0* dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec) as sepArcsec from atlasmergelog as l,CurrentAstrometry as g, CurrentAstrometry as r where g.multiframeID=gmfid and g.extNum=genum and r.multiframeID=rmfid and r.extNum=renum and gmfid>0 and rmfid>0 order by dbo.fgreatcircledist(g.centralra,g.centraldec,r.centralra,r.centraldec) desc  
+
+COUNT:
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      18 
+
+
+
+
+
+ERROR MESSAGE:
+--------------
+PARSE_ERROR -  Encountered "<EOF>". Was expecting one of: "," "+" "-" "*" "/" "%" "&" "|" "^" "FROM" "AS"      
+
+QUERY:
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                         select 1     
+
+COUNT:
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       14
+
+
+
+
+
+
+ERROR MESSAGE:
+--------------
+PARSE_ERROR -  Encountered "+". Was expecting one of: "," "FROM" "AS" "\'" "||"                        
+
+QUERY:
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+select './imcopy '''+ filename+'['+CAST(genum-1 as varchar(2))+']'' '+CAST(genum-1 as varchar(2))+ '_'+SUBSTRING(filename,charindex('/o2',filename)+1,200)from atlasMergeLog as l, Multiframe as m where gmfID>0 and rmfID>0 and imfID >0 and gmfID=m.multiframeID          
+
+COUNT:
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        12
+
+
+
+
+
+
+ERROR MESSAGE:
+--------------
+Query error: A problem occurred while running your query                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+
+QUERY:
+--------------
+SELECT (s1.ra-s2.ra)*3600.0*COS(RADIANS(s1.dec)) as deltaRA,                 (s1.dec-s2.dec)*3600.0 as deltaDec,                (s1.uAperMag3-s2.uAperMag3) as du,                 (s1.gAperMag3-s2.gAperMag3) as dg,                 (s1.rAperMag3-s2.rAperMag3) as dr,                 (s1.iAperMag3-s2.iAperMag3) as di  FROM atlasSource AS s1, atlasSource AS s2, atlasSourceNeighbours AS x WHERE s1.uAperMag3 > 0 AND s2.uAperMag3 > 0 AND s1.gAperMag3 > 0 AND s2.gAperMag3 > 0                 AND s1.rAperMag3 > 0 AND s2.rAperMag3 > 0 AND s1.iAperMag3 > 0 AND s2.iAperMag3 > 0                AND masterObjID=s1.sourceID AND slaveObjID=s2.sourceID AND s1.priOrSec=s1.frameSetID AND distanceMins<0.01 AND distanceMins IN ( SELECT MIN(distanceMins)  FROM atlasSourceNeighbours WHERE masterObjID=x.masterObjID)         
+
+COUNT:
+--------------                                                                                                                                                                                                                          9
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
