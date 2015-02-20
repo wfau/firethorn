@@ -25,6 +25,7 @@ import uk.org.ogsadai.dqp.common.PhysicalSchema;
 import uk.org.ogsadai.dqp.lqp.Annotation;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.Operator;
+import uk.org.ogsadai.dqp.lqp.OperatorID;
 import uk.org.ogsadai.dqp.lqp.OperatorVisitor;
 import uk.org.ogsadai.dqp.lqp.RenameMap;
 import uk.org.ogsadai.dqp.lqp.exceptions.AmbiguousAttributeException;
@@ -538,6 +539,9 @@ public class CardinalityEstimator implements OperatorVisitor
             Operator operator, int index)
     {
         Operator child = getChild(operator, index);
+        if (child.getID()== OperatorID.TOP){
+        	child = getChild(child, index);
+        }
         return getStatistics(child);
     }
 
