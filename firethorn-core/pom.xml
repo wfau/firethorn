@@ -32,8 +32,8 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.12.5</version>
-    </parent>
+        <version project='firethorn'>1.12.6</version>
+	</parent>
 
     <artifactId>firethorn-core</artifactId>
     <packaging>jar</packaging>

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -29,12 +30,15 @@ import adql.db.DBColumn;
 import adql.db.exception.UnresolvedJoin;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
+import adql.query.ADQLOrder;
 import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
+import adql.query.ColumnReference;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
+import adql.query.from.ADQLJoin;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
@@ -234,7 +238,7 @@ public class OgsaDQPTranslator
                 if (table.hasAlias())
                     {
                     final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
-                    mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
+                    mapAlias.put(key, table.getAlias()+"\"");
                     }
                 }
             else {
@@ -258,7 +262,7 @@ public class OgsaDQPTranslator
                 if (table.hasAlias())
                     {
                     final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
-                    mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
+                    mapAlias.put(key, table.getAlias());
                     }
                 }
             }
@@ -295,7 +299,22 @@ public class OgsaDQPTranslator
             }
         }
 
-    
+	@Override
+	public String translate(SelectItem item) throws TranslationException{
+		if (item instanceof SelectAllColumns)
+			return translate((SelectAllColumns)item);
+
+		StringBuffer translation = new StringBuffer(translate(item.getOperand()));
+		if (item.hasAlias()){
+			translation.append(" AS ");
+			appendIdentifier(translation, item.getAlias(), false);
+		}else{
+			translation.append(" AS ");
+			appendIdentifier(translation, item.getName(), false);
+		}
+
+		return translation.toString();
+	}
 
     public String translate(final CastFunction function)
     throws TranslationException
@@ -384,6 +403,133 @@ public class OgsaDQPTranslator
     		}
 		}
 
+	@Override
+	public String translate(ADQLTable table) throws TranslationException{
+		StringBuffer sql = new StringBuffer();
+
+		// CASE: SUB-QUERY:
+		if (table.isSubQuery())
+			sql.append('(').append(translate(table.getSubQuery())).append(')');
+
+		// CASE: TABLE REFERENCE:
+		else{
+			// Use the corresponding DB table, if known:
+			if (table.getDBLink() != null)
+				sql.append(getQualifiedTableName(table.getDBLink()));
+			// Otherwise, use the whole table name given in the ADQL query:
+			else
+				sql.append(table.getFullTableName());
+		}
+
+		// Add the table alias, if any:
+		if (table.hasAlias()){
+			sql.append(" AS ");
+			appendIdentifier(sql, table.getAlias(), false);
+		}
+
+		return sql.toString();
+	}
+	
+
+	@Override
+	public String translate(ADQLJoin join) throws TranslationException{
+		StringBuffer sql = new StringBuffer(translate(join.getLeftTable()));
+
+		if (join.isNatural())
+			sql.append(" NATURAL");
+
+		sql.append(' ').append(join.getJoinType()).append(' ').append(translate(join.getRightTable())).append(' ');
+
+		if (!join.isNatural()){
+			if (join.getJoinCondition() != null)
+				sql.append(translate(join.getJoinCondition()));
+			else if (join.hasJoinedColumns()){
+				StringBuffer cols = new StringBuffer();
+				Iterator<ADQLColumn> it = join.getJoinedColumns();
+				while(it.hasNext()){
+					ADQLColumn item = it.next();
+					if (cols.length() > 0)
+						cols.append(", ");
+					if (item.getDBLink() == null)
+						appendIdentifier(cols, item.getColumnName(), false);
+					else
+						appendIdentifier(cols, item.getDBLink().getDBName(), IdentifierField.COLUMN);
+				}
+				sql.append("USING (").append(cols).append(')');
+			}
+		}
+
+		return sql.toString();
+	}
+
+
+	@Override
+	public String translate(ADQLColumn column) throws TranslationException{
+		// Use its DB name if known:
+		if (column.getDBLink() != null){
+			DBColumn dbCol = column.getDBLink();
+			StringBuffer colName = new StringBuffer();
+			// Use the table alias if any:
+			if (column.getAdqlTable() != null && column.getAdqlTable().hasAlias())
+				appendIdentifier(colName, column.getAdqlTable().getAlias(), false).append('.');
+
+			// Use the DBTable if any:
+			else if (dbCol.getTable() != null && dbCol.getTable().getDBName() != null)
+				colName.append(getQualifiedTableName(dbCol.getTable())).append('.');
+
+			// Otherwise, use the prefix of the column given in the ADQL query:
+			else if (column.getTableName() != null)
+				colName = column.getFullColumnPrefix().append('.');
+
+			appendIdentifier(colName, dbCol.getDBName(), IdentifierField.COLUMN);
+
+			return colName.toString();
+		}
+		// Otherwise, use the whole name given in the ADQL query:
+		else
+			return column.getFullColumnName();
+	}
+
+	@Override
+	public String translate(ColumnReference ref) throws TranslationException{
+		if (ref instanceof ADQLOrder)
+			return translate((ADQLOrder)ref);
+		else
+			return getDefaultColumnReference(ref);
+	}
+
+	/**
+	 * Gets the default SQL output for a column reference.
+	 * 
+	 * @param ref	The column reference to format into SQL.
+	 * 
+	 * @return		The corresponding SQL.
+	 * 
+	 * @throws TranslationException If there is an error during the translation.
+	 */
+	protected String getDefaultColumnReference(ColumnReference ref) throws TranslationException{
+		if (ref.isIndex()){
+			return "" + ref.getColumnIndex();
+		}else{
+			if (ref.getDBLink() == null){
+				return ref.getColumnName();
+			}else{
+				DBColumn dbCol = ref.getDBLink();
+				StringBuffer colName = new StringBuffer();
+				// Use the table alias if any:
+				if (ref.getAdqlTable() != null && ref.getAdqlTable().hasAlias())
+					appendIdentifier(colName, ref.getAdqlTable().getAlias(), ref.getAdqlTable().isCaseSensitive(IdentifierField.ALIAS)).append('.');
+
+				// Use the DBTable if any:
+				else if (dbCol.getTable() != null)
+					colName.append(getQualifiedTableName(dbCol.getTable())).append('.');
+
+				appendIdentifier(colName, dbCol.getDBName(), IdentifierField.COLUMN);
+
+				return colName.toString();
+			}
+		}
+	}
 
     /**
      * Copy of the PostgreSQLTranslator method ...

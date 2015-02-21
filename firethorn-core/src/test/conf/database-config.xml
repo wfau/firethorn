@@ -73,7 +73,7 @@
 
     </bean>
 
-    <!-- ======== Live ROE database ======== -->
+    <!-- = Live ROE database = -->
 
     <!--+
         | SSH tunnel to ROE database server.

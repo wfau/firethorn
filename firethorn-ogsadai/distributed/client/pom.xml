@@ -32,8 +32,9 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>1.12.5</version>
+		<version project='firethorn'>1.12.6</version>
     </parent>
+
 
     <artifactId>firethorn-ogsadai-dqp-client</artifactId>
     <packaging>jar</packaging>

@@ -27,8 +27,9 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
-        <version project='firethorn'>1.12.5</version>
-    </parent>
+		<version project='firethorn'>1.12.6</version>
+	</parent>
+	
     <artifactId>firethorn-cds-adql</artifactId>
     <packaging>jar</packaging>
 
