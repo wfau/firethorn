@@ -1,10 +1,11 @@
+SELECT 2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as dist FROM atlasdetection WHERE dec > -31.11251111111111101 and dec < -30.77917777777778241 and RA >= 330.276664568 and RA <= 330.666002099  
 select * from Filter
 select filterID, cutOn from Filter where filterID>0
+select filterID, cutOn from Filter where filterID>0 order by filterID asc
 select top 10 ra,dec from atlassource  
 select * from atlasmergelog where (uenum!=genum and umfid >0 and gmfid >0) or (genum!=renum and gmfid >0 and rmfid >0 ) or (renum!=ienum and rmfid >0 and imfid >0) or (ienum!=zenum and imfid>0 and zmfid>0)
 SELECT ra, dec FROM atlasMergeLog WHERE dec BETWEEN -22.5 AND 20.5  
-SELECT  * FROM ATLASsource WHERE dec > -31.11251111111111101 and dec < -30.77917777777778241 and RA >= 330.276664568 and RA <= 330.666002099 and ((cx * 0.74625241102539086 + cy * -0.42270232573253347 + cz * -0.51422765664547665 ) >= 0.99999576920548627)  and (priOrSec<=0 OR pr
-iOrSec=frameSetID)  
+SELECT  * FROM ATLASsource WHERE dec > -31.11251111111111101 and dec < -30.77917777777778241 and RA >= 330.276664568 and RA <= 330.666002099 and ((cx * 0.74625241102539086 + cy * -0.42270232573253347 + cz * -0.51422765664547665 ) >= 0.99999576920548627)  and (priOrSec<=0 OR priOrSec=frameSetID)  
 select max(utdate) from Multiframe where project like 'atlas'
 SELECT AVG(rAperMag3) FROM atlasSource WHERE rAperMag3 > 0.0  
 SELECT ra, dec FROM atlasMergeLog  
