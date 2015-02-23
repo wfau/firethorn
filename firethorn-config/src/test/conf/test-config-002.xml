@@ -21,12 +21,12 @@
 <configuration>
 
     <!--+
-        | Load the Java system properties.
+        | Load the Java System properties.
         +-->
     <system/>
 
     <!--+
-        | Load a properties file from system config.
+        | Load a properties file from Unix config.
         +-->
     <properties fileName="/etc/firethorn.properties">
         <reloadingStrategy
