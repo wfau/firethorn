@@ -21,8 +21,7 @@ import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-
-import uk.ac.roe.wfau.firethorn.config.ConfigInterface;
+import uk.ac.roe.wfau.firethorn.config.ConfigService;
 
 /**
  *
@@ -38,19 +37,19 @@ public class ApacheConfigTestCase
         {
         try {
 
-            ConfigInterface.Factory factory = new ApacheConfig.Factory(
+            ConfigService.Factory factory = ApacheConfig.factory(
                 "test-config-000.xml"
                 );
 
-            log.debug("OS name [{}]",    factory.load().getProperty("os.name"));
-            log.debug("OS arch [{}]",    factory.load().getProperty("os.arch"));
-            log.debug("OS version [{}]", factory.load().getProperty("os.version"));
+            log.debug("OS name [{}]",    factory.load().properties().getProperty("os.name"));
+            log.debug("OS arch [{}]",    factory.load().properties().getProperty("os.arch"));
+            log.debug("OS version [{}]", factory.load().properties().getProperty("os.version"));
 
-            log.debug("Unknown [{}]", factory.load().getProperty("os.unknown"));
-            log.debug("Unknown [{}]", factory.load().getProperty("os.unknown", "unknown"));
+            log.debug("Unknown [{}]", factory.load().properties().getProperty("os.unknown"));
+            log.debug("Unknown [{}]", factory.load().properties().getProperty("os.unknown", "unknown"));
 
             }
-        catch (ConfigInterface.ConfigException ouch)
+        catch (ConfigService.ConfigException ouch)
             {
             log.error("Failed to load config [{}]", ouch.getCause().getMessage());
             }
@@ -61,17 +60,39 @@ public class ApacheConfigTestCase
         {
         try {
 
-            ConfigInterface.Factory factory = new ApacheConfig.Factory();
+            ConfigService.Factory factory = ApacheConfig.factory();
 
-            log.debug("OS name [{}]",    factory.load().getProperty("os.name"));
-            log.debug("OS arch [{}]",    factory.load().getProperty("os.arch"));
-            log.debug("OS version [{}]", factory.load().getProperty("os.version"));
+            log.debug("OS name [{}]",    factory.load().properties().getProperty("os.name"));
+            log.debug("OS arch [{}]",    factory.load().properties().getProperty("os.arch"));
+            log.debug("OS version [{}]", factory.load().properties().getProperty("os.version"));
 
-            log.debug("Unknown [{}]", factory.load().getProperty("os.unknown"));
-            log.debug("Unknown [{}]", factory.load().getProperty("os.unknown", "unknown"));
+            log.debug("Unknown [{}]", factory.load().properties().getProperty("os.unknown"));
+            log.debug("Unknown [{}]", factory.load().properties().getProperty("os.unknown", "unknown"));
 
             }
-        catch (ConfigInterface.ConfigException ouch)
+        catch (ConfigService.ConfigException ouch)
+            {
+            log.error("Failed to load config [{}]", ouch.getCause().getMessage());
+            }
+        }
+
+    @Test
+    public void test002()
+        {
+        try {
+
+            ConfigService.Factory factory = ApacheConfig.factory();
+            ConfigService.Properties properties = factory.load().properties();
+            
+            log.debug("OS name [{}]",    properties.getProperty("os.name"));
+            log.debug("OS arch [{}]",    properties.getProperty("os.arch"));
+            log.debug("OS version [{}]", properties.getProperty("os.version"));
+
+            log.debug("Unknown [{}]", properties.getProperty("os.unknown"));
+            log.debug("Unknown [{}]", properties.getProperty("os.unknown", "unknown"));
+
+            }
+        catch (ConfigService.ConfigException ouch)
             {
             log.error("Failed to load config [{}]", ouch.getCause().getMessage());
             }

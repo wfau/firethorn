@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.config.ConfigInterface.ConfigException;
+import uk.ac.roe.wfau.firethorn.config.ConfigService.ConfigException;
 import uk.ac.roe.wfau.firethorn.config.apache.ApacheConfig;
 
 /**
@@ -57,30 +57,38 @@ public class TestConfigTestCase
     public static class TestConfigImpl
     implements TestConfig
         {
+        
         public static Factory factory()
             {
-            return new Factory();
+            return new Factory(
+                ApacheConfig.factory()
+                );
+            }
+
+        public static Factory factory(final String source)
+            {
+            return new Factory(
+                ApacheConfig.factory(
+                    source
+                    )
+                );
+            }
+
+        public static Factory factory(final ConfigService.Factory inner)
+            {
+            return new Factory(
+                inner
+                );
             }
         
         public static class Factory
         implements TestConfig.Factory
             {
-            protected static final String DEFAULT_SOURCE = "test-config-001.xml"; 
+            private final ConfigService.Factory inner ;
 
-            private final ConfigInterface.Factory inner ;
-
-            public Factory()
+            public Factory(final ConfigService.Factory inner)
                 {
-                this(
-                    DEFAULT_SOURCE
-                    );
-                }
-
-            public Factory(final String source)
-                {
-                inner = new ApacheConfig.Factory(
-                    source
-                    );
+                this.inner = inner;
                 }
 
             public TestConfig load()
@@ -101,13 +109,20 @@ public class TestConfigTestCase
                     );
                 }
             }
-        
-        private TestConfigImpl(final ConfigInterface inner)
+
+        private TestConfigImpl(final ConfigService inner)
+            {
+            this(
+                inner.properties()
+                );
+            }
+
+        private TestConfigImpl(final ConfigService.Properties inner)
             {
             this.inner = inner ;
             }
         
-        private final ConfigInterface inner ;
+        private final ConfigService.Properties inner ;
         
         @Override
         public System system()
@@ -151,12 +166,12 @@ public class TestConfigTestCase
                 };
             }
         }
-    
+
     @Test
     public void test000()
     throws Exception
         {
-        final TestConfig.Factory factory = new TestConfigImpl.Factory();
+        final TestConfig.Factory factory = TestConfigImpl.factory();
 
         log.debug("System name [{}]",    factory.load().system().name());
         log.debug("System arch [{}]",    factory.load().system().arch());
@@ -168,7 +183,7 @@ public class TestConfigTestCase
     public void test001()
     throws Exception
         {
-        final TestConfig.Factory factory = new TestConfigImpl.Factory(
+        final TestConfig.Factory factory = TestConfigImpl.factory(
             "test-config-001.xml"
             );
 
@@ -182,7 +197,7 @@ public class TestConfigTestCase
     public void test002()
     throws Exception
         {
-        final TestConfig.Factory factory = new TestConfigImpl.Factory();
+        final TestConfig.Factory factory = TestConfigImpl.factory();
         final TestConfig config = factory.load();
 
         log.debug("System name [{}]",    config.system().name());
@@ -195,7 +210,7 @@ public class TestConfigTestCase
     public void test003()
     throws Exception
         {
-        final TestConfig.Factory factory = new TestConfigImpl.Factory();
+        final TestConfig.Factory factory = TestConfigImpl.factory();
         final TestConfig config = factory.load(
             "test-config-001.xml"
             );
@@ -210,8 +225,9 @@ public class TestConfigTestCase
     public void test004()
     throws Exception
         {
-        final TestConfig.Factory factory = TestConfigImpl.factory();
-        final TestConfig config = factory.load();
+        final TestConfig config = TestConfigImpl.factory(
+            ApacheConfig.factory()
+            ).load();
 
         log.debug("System name [{}]",    config.system().name());
         log.debug("System arch [{}]",    config.system().arch());
@@ -223,7 +239,11 @@ public class TestConfigTestCase
     public void test005()
     throws Exception
         {
-        final TestConfig config = TestConfigImpl.factory().load();
+        final TestConfig config = TestConfigImpl.factory(
+            ApacheConfig.factory(
+                "test-config-001.xml"
+                )
+            ).load();
 
         log.debug("System name [{}]",    config.system().name());
         log.debug("System arch [{}]",    config.system().arch());
@@ -231,6 +251,19 @@ public class TestConfigTestCase
 
         }
 
-    
-    
+    @Test
+    public void test006()
+    throws Exception
+        {
+        final TestConfig config = TestConfigImpl.factory(
+            ApacheConfig.factory(
+                "test-config-001.xml"
+                )
+            ).load();
+
+        log.debug("System name [{}]",    config.system().name());
+        log.debug("System arch [{}]",    config.system().arch());
+        log.debug("System version [{}]", config.system().version());
+
+        }
     }

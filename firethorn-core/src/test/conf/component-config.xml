@@ -37,10 +37,12 @@
     >
 
     <!--+
-        | Use a local properties file.
+        | Read config from external properties files.
+        | * /etc/firethorn.properties
+        | * ${user.home}/firethorn.properties
         | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
         +-->
-    <cxt:property-placeholder location="file:${user.home}/firethorn.properties"/>
+    <cxt:property-placeholder location="file:/etc/firethorn.properties,file:${user.home}/firethorn.properties"/>
 
     <!--+
         | Scan for Spring annotated classes.

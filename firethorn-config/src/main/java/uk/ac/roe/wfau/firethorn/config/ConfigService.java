@@ -18,37 +18,51 @@
 package uk.ac.roe.wfau.firethorn.config;
 
 /**
- * Configuration interface.
+ * Configuration service interface.
  *
  */
-public interface ConfigInterface
+public interface ConfigService
     {
 
     /**
-     * Get a configuration property.
-     * @return The configuration property, or null if no match.
-     * 
+     * Access to the configuration data as key:value {@link String} properties.
+     *
      */
-    public String getProperty(final String key)
-    throws ConfigException;
+    public static interface Properties
+        {
+        /**
+         * Get a configuration property.
+         * @return The property value, or null if no match.
+         * 
+         */
+        public String getProperty(final String key)
+        throws ConfigException;
+
+        /**
+         * Get a configuration property, fallback value for not found.
+         * @return The property value, or the fallback value if no match.
+         * 
+         */
+        public String getProperty(final String key, final String fallback)
+        throws ConfigException;
+        
+        /**
+         * Set a configuration property.
+         * 
+         */
+        public void setProperty(final String key, final String value)
+        throws ConfigException;
+        
+        }
 
     /**
-     * Get a configuration property, fallback value for not found.
-     * @return The configuration property, or the fallback value if no match.
-     * 
+     * Access to the configuration data as key:value {@link String} properties.
+     *
      */
-    public String getProperty(final String key, final String fallback)
-    throws ConfigException;
-    
-    /**
-     * Set a configuration property.
-     * 
-     */
-    public void setProperty(final String key, final String value)
-    throws ConfigException;
+    public Properties properties();
 
     /**
-     * Configuration factory. 
+     * A {@link ConfigurationService} factory. 
      *
      */
     public static interface Factory
@@ -57,14 +71,14 @@ public interface ConfigInterface
          * Load the default configuration.  
          *
          */
-        public ConfigInterface load()
+        public ConfigService load()
         throws ConfigException;
 
         /**
-         * Load a specific configuration.  
+         * Load a specific configuration. 
          *
          */
-        public ConfigInterface load(final String source)
+        public ConfigService load(final String source)
         throws ConfigException;
         }
  

@@ -21,68 +21,79 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationBuilder;
 import org.apache.commons.configuration.DefaultConfigurationBuilder;
 
-import uk.ac.roe.wfau.firethorn.config.ConfigInterface;
-import uk.ac.roe.wfau.firethorn.config.ConfigInterface.ConfigException;
-import uk.ac.roe.wfau.firethorn.config.ConfigInterface.Factory;
+import uk.ac.roe.wfau.firethorn.config.ConfigService;
 
 /**
- * Implementation of {@link ConfigInterface} based on {@link Configuration} from Apache Commons Configuration. 
+ * Implementation of {@link ConfigService} based on the Apache Commons Configuration {@link Configuration}.
+ * @see https://commons.apache.org/proper/commons-configuration/ 
  *
  */
 public class ApacheConfig
-implements ConfigInterface
+implements ConfigService
     {
     private final Configuration inner ;
+
+    public Configuration apache()
+        {
+        return this.inner ;
+        }
 
     public ApacheConfig(final Configuration inner)
         {
         this.inner = inner;
         }
-    
-    @Override
-    public String getProperty(final String key)
-        throws ConfigException
-        {
-        return inner.getString(
-            key
-            );
-        }
 
-    @Override
-    public String getProperty(final String key, final String fallback)
-        throws ConfigException
+    public ConfigService.Properties properties()
         {
-        return inner.getString(
-            key,
-            fallback
-            );
-        }
-
-    @Override
-    public void setProperty(final String key, final String value)
-        throws ConfigException
-        {
-        try {
-            inner.setProperty(
-                key,
-                value
-                );
-            }
-        catch (Throwable ouch)
+        return new ConfigService.Properties()
             {
-            throw new ConfigException(
-                ouch
-                ); 
-            }
+            @Override
+            public String getProperty(final String key)
+                throws ConfigService.ConfigException
+                {
+                return inner.getString(
+                    key
+                    );
+                }
+
+            @Override
+            public String getProperty(final String key, final String fallback)
+                throws ConfigService.ConfigException
+                {
+                return inner.getString(
+                    key,
+                    fallback
+                    );
+                }
+
+            @Override
+            public void setProperty(final String key, final String value)
+                throws ConfigService.ConfigException
+                {
+                try {
+                    inner.setProperty(
+                        key,
+                        value
+                        );
+                    }
+                catch (Throwable ouch)
+                    {
+                    throw new ConfigService.ConfigException(
+                        ouch
+                        ); 
+                    }
+                }
+            };
         }
 
     public static class Factory
-    implements ConfigInterface.Factory 
+    implements ConfigService.Factory 
         {
-        public static final String DEFAULT_SOURCE = "test-config-001.xml" ;
+        
+        public static final String DEFAULT_SOURCE = "firethorn-configuration.xml" ;
 
         private final String source ;
-        
+
         public Factory()
             {
             this(
@@ -96,8 +107,8 @@ implements ConfigInterface
             }
 
         @Override
-        public synchronized ConfigInterface load()
-        throws ConfigException
+        public synchronized ConfigService load()
+        throws ConfigService.ConfigException
             {
             return load(
                 this.source
@@ -105,8 +116,8 @@ implements ConfigInterface
             }
 
         @Override
-        public synchronized ConfigInterface load(final String source)
-        throws ConfigException
+        public synchronized ConfigService load(final String source)
+        throws ConfigService.ConfigException
             {
             try {
                 ConfigurationBuilder builder = new DefaultConfigurationBuilder(
@@ -123,5 +134,17 @@ implements ConfigInterface
                     ); 
                 }
             }
+        }
+
+    public static Factory factory()
+        {
+        return new Factory();
+        }
+
+    public static Factory factory(final String source)
+        {
+        return new Factory(
+            source
+            );
         }
     }
