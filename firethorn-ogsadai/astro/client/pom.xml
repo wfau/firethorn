@@ -32,9 +32,8 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-astro</artifactId>
-        <version project='firethorn'>1.12.6</version>
+        <version project='firethorn'>1.12.7</version>
     </parent>
-
 
     <artifactId>firethorn-ogsadai-astro-client</artifactId>
     <packaging>jar</packaging>

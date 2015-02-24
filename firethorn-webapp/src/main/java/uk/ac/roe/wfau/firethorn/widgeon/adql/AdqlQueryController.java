@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpRequest;
-import org.springframework.scheduling.quartz.JobMethodInvocationFailedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +28,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -99,7 +98,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
-    
+
     /**
      * MVC property for the delay before the first row, [{@value}].
      * @see AdqlQuery.Delays#first(Integer)
@@ -217,7 +216,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @RequestParam(value=UPDATE_DELAY_LAST, required=false)
         final Integer last,
         @RequestParam(value=UPDATE_STATUS, required=false)
-        final Status status,
+        final Job.Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
         @RequestParam(value=UPDATE_LIMT_ROWS, required=false)
@@ -313,8 +312,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
                     }
                 );
             }
-        
-        
+
         if (status != null)
             {
             factories().queries().executor().update(

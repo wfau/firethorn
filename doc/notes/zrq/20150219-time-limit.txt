@@ -39,15 +39,16 @@
 # Add the new code ..
 #[user@desktop]
 
+    eclipse ...
 
 # -----------------------------------------------------
-# Clean build
+# Clean build ..
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install eclipse:eclipse
+        mvn clean install
 
     popd
 
@@ -89,27 +90,38 @@
         # Explicit test with delay > timeout 
         #
 
+        source "${FIRETHORN_TEST:?}/05-05-execute-query.sh" \
+            "${querymode:-AUTO}" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN 180 AND 181
+            AND
+                dec BETWEEN -3 AND -2
+            "
+
+#
+# Test different configurations.
+
+delayfirst=5000
+delayevery=1000
+delaylast=5000
+
+timelimit=30
+rowlimit=100
+querymode=DIRECT
+
+querymode=DISTRIBUTED
+
+delayfirst=0
+delayevery=0
+delaylast=0
 
     popd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # -----------------------------------------------------
 # Commit our changes
@@ -119,7 +131,7 @@
     pushd "${FIRETHORN_CODE:?}"
 
         hg addremove
-        hg commit -m "Imported astro extensions from OGSA-DAI source code"
+        hg commit -m "Added code to implement time limit"
         hg push
         
     popd
@@ -128,7 +140,7 @@
 # Merge the changes into main.
 #[user@desktop]
 
-    newversion=1.11.xx
+    newversion=1.12.7
 
     # Copy paste instructions
     gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &

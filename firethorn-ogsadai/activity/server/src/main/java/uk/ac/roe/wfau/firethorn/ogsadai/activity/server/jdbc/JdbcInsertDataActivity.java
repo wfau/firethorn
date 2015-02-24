@@ -34,6 +34,7 @@ import uk.org.ogsadai.activity.extension.ResourceActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.ActivityPipeProcessingException;
 import uk.org.ogsadai.activity.io.BlockWriter;
+import uk.org.ogsadai.activity.io.DataError;
 import uk.org.ogsadai.activity.io.PipeClosedException;
 import uk.org.ogsadai.activity.io.PipeIOException;
 import uk.org.ogsadai.activity.io.PipeTerminatedException;
@@ -222,44 +223,55 @@ implements ResourceActivity
             long count = 0 ;
             long total = 0 ;
 
-            for (Tuple tuple = null; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
-                {
-                SQLUtilities.setStatementParameters(statement, tuple, metadata);
-                //
-                // Write the first few rows individually.
-                if (++total <= first)
+            try {
+                for (Tuple tuple = null; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                     {
-                    statement.executeUpdate();
-                    //log.debug("Data first [" + total + "]");
-                    }
-                //
-                // Write the rest in batches.
-                else {
-                    statement.addBatch();
-                    if (++count >= block)
-                    	{
-                    	statement.executeBatch();
-                    	//logger.debug("Data block [" + count + "][" + total + "]");
-                        count = 0;
-                    	}
+                    SQLUtilities.setStatementParameters(statement, tuple, metadata);
+                    //
+                    // Write the first few rows individually.
+                    if (++total <= first)
+                        {
+                        statement.executeUpdate();
+                        //logger.debug("Data first [" + total + "]");
+                        }
+                    //
+                    // Write the rest in batches.
+                    else {
+                        statement.addBatch();
+                        if (++count >= block)
+                        	{
+                        	statement.executeBatch();
+                        	//logger.debug("Data block [" + count + "][" + total + "]");
+                            count = 0;
+                        	}
+                        }
                     }
                 }
-
             //
-            // Write any remaining rows.
-            if (count != 0)
+            // Error reading the tuples.
+            catch (final DataError ouch)
                 {
-                statement.executeBatch();
-                //log.debug("Data last [" + count + "][" + total + "]");
+                logger.debug("DataError reading tuples [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                 }
-
-            writer.write(
-                new Long(
-                    total
-                    )
-                );
-            connection.commit();
-            statement.close();
+            finally {
+                //
+                // Write any remaining rows.
+                if (count != 0)
+                    {
+                    statement.executeBatch();
+                    //logger.debug("Data last [" + count + "][" + total + "]");
+                    logger.debug("Data done [" + total + "]");
+                    }
+                connection.commit();
+                statement.close();
+                //
+                // Pass on our total. 
+                writer.write(
+                    new Long(
+                        total
+                        )
+                    );
+                }
             }
 
         catch (final SQLException ouch)
@@ -271,7 +283,6 @@ implements ResourceActivity
         catch (final PipeClosedException ouch)
             {
             logger.warn("PipeClosedException during processing");
-            iterativeStageComplete();
             }
         catch (final PipeIOException ouch)
             {
@@ -282,6 +293,7 @@ implements ResourceActivity
             }
         catch (final PipeTerminatedException ouch)
             {
+            logger.warn("PipeTerminatedException during processing");
             throw new ActivityTerminatedException();
             }
         catch (final ActivityUserException ouch)
@@ -308,6 +320,7 @@ implements ResourceActivity
             }
         finally
             {
+            iterativeStageComplete();
             }
         }
 

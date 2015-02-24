@@ -18,6 +18,14 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +65,13 @@ extends MatchedIterativeActivity
         );
 
     /**
+     * Our {@link Thread} {@link Executor} service.
+     *
+     */
+    //private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    
+    /**
      * Public constructor.
      *
      */
@@ -65,9 +80,6 @@ extends MatchedIterativeActivity
         super();
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ActivityInput[] getIterationInputs()
         {
@@ -94,14 +106,11 @@ extends MatchedIterativeActivity
         }
 
     /**
-     * Block writer for our output.
+     * Our output {@link BlockWriter}.
      *
      */
     private BlockWriter writer;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
@@ -124,9 +133,6 @@ extends MatchedIterativeActivity
             }
         }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void processIteration(final Object[] inputs)
     throws ActivityProcessingException,
@@ -134,33 +140,244 @@ extends MatchedIterativeActivity
            ActivityUserException
         {
         logger.debug("processIteration(Object[])");
+
+        //
+        // Get our limits.
+        final long maxrows  = (Long) inputs[0];
+        final long maxcells = (Long) inputs[1];
+        final long maxtime  = (Long) inputs[2];
+
+        logger.debug("Max rows  [{}]", maxrows);
+        logger.debug("Max cells [{}]", maxcells);
+        logger.debug("Max time  [{}]", maxtime);
+        
+        //
+        // Get our tuple iterator.
+        final TupleListIterator tuples = (TupleListIterator) inputs[3];
+        //
+        // Send the LIST_BEGIN marker and the tuple metadata.
+        start(tuples);
+        //
+        // Process our tuples.
+        if (maxtime > 0)
+            {
+            outer(tuples, maxrows, maxcells, maxtime);
+            }
+        else {
+            inner(tuples, maxrows, maxcells);
+            }
+        //
+        // Send the LIST_END marker.
+        done();
+        }
+    
+    @Override
+    protected void postprocess()
+    throws ActivityProcessingException
+        {
+        logger.debug("postprocess()");
+        }
+
+    /**
+     * Send the {@link ControlBlock.LIST_BEGIN} signal and tuple metadata.
+     * @throws ActivityProcessingException
+     * @throws ActivityTerminatedException 
+     * @throws ActivityUserException 
+     * 
+     */
+    private void start(final TupleListIterator tuples )
+    throws ActivityProcessingException, ActivityUserException, ActivityTerminatedException
+        {
+        logger.debug("Start");
         try {
-            //
-            // Get our limits.
-            final long maxrows  = (Long) inputs[0];
-            final long maxcells = (Long) inputs[1];
-            final long maxtime  = (Long) inputs[2];
-
-            logger.debug("Max rows  [{}]", maxrows);
-            logger.debug("Max cells [{}]", maxcells);
-            logger.debug("Max time  [{}]", maxtime);
-            
-            //
-            // Get our tuple iterator.
-            final TupleListIterator tuples = (TupleListIterator) inputs[3];
-
-            //
-            // Write the LIST_BEGIN marker and the tuple metadata.
-            logger.debug("Starting");
             writer.write(
                 ControlBlock.LIST_BEGIN
                 );
             writer.write(
                 tuples.getMetadataWrapper()
                 );
+            }
+        catch (PipeClosedException ouch)
+            {
+            logger.debug("PipeClosedException in start() [{}]", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        catch (PipeIOException ouch)
+            {
+            logger.debug("PipeIOException in start() [{}]", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        catch (PipeTerminatedException ouch)
+            {
+            logger.debug("PipeTerminatedException in start() [{}]", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        }
+    
+    /**
+     * Send the {@link ControlBlock.LIST_END} signal and close our pipes.
+     * 
+     */
+    private void done()
+    throws ActivityProcessingException
+        {
+        try {
+            writer.write(
+                ControlBlock.LIST_END
+                );
+            }
+        catch (final PipeClosedException ouch)
+            {
+            logger.warn("PipeClosedException in done");
+            }
+        catch (PipeIOException ouch)
+            {
+            logger.debug("PipeIOException in done() [{}]", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        catch (PipeTerminatedException ouch)
+            {
+            logger.debug("PipeTerminatedException in done() [{}]", ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        finally
+            {
+            iterativeStageComplete();
+            }
+        }
 
-            //
-            // Process our tuples.
+    public static class WrapperException
+    extends RuntimeException
+        {
+        private static final long serialVersionUID = 1L;
+
+        public WrapperException(final Throwable cause)
+            {
+            super(cause);
+            }
+        }
+    
+    private void outer(final TupleListIterator tuples, final long maxrows, final long maxcells, final long maxtime)
+        throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
+        {
+        logger.debug("Starting outer");
+        final Future<?> future = executor.submit(
+            new Runnable ()
+                {
+                public void run()
+                    {
+                    logger.debug("Running runnable");
+                    try {
+                        inner(
+                            tuples,
+                            maxrows,
+                            maxcells
+                            );
+                        }
+                    catch (Throwable ouch)
+                        {
+                        logger.debug("Wrapping exception [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+                        throw new WrapperException(
+                            ouch
+                            ); 
+                        }
+                    finally {
+                        logger.debug("Finished runnable");
+                        }
+                    }
+                }
+            );
+        try {
+            logger.debug("Trying future");
+            future.get(
+                maxtime,
+                TimeUnit.SECONDS
+                );
+            }
+        catch (InterruptedException ouch)
+            {
+            logger.debug("Future interrupted [{}]", ouch.getClass().getName());
+            logger.debug("Cancelling Future");
+            future.cancel(true);
+            logger.debug("Future cancelled");
+            throw new ActivityTerminatedException();
+            }
+        catch (TimeoutException ouch)
+            {
+            logger.debug("STOP -- Time limit reached [{}]", maxtime);
+            logger.debug("Future timeout [{}]", ouch.getClass().getName());
+            logger.debug("Cancelling Future");
+            future.cancel(true);
+            logger.debug("Future cancelled");
+            throw new ActivityTerminatedException();
+            }
+        catch (ExecutionException ouch)
+            {
+            logger.debug("Future ExecutionException [{}]", ouch.getClass().getName());
+            logger.debug("Cancelling Future");
+            logger.debug("Future cancelled");
+            unwrap(ouch);
+            }
+        finally {
+            logger.debug("Finished Future");
+            }
+        }
+
+    /**
+     * Unwrap an Exception from a {@link Future} {@link ExecutionException}.
+     * 
+     */
+    private void unwrap(final Throwable exception)
+    throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException    
+        {
+        logger.debug("Unwrapping exception [{}][{}]", exception.getClass().getName(), exception.getMessage());
+        if (exception instanceof ActivityUserException)
+            {
+            throw (ActivityUserException) exception ; 
+            }
+        else if (exception instanceof ActivityProcessingException)
+            {
+            throw (ActivityProcessingException) exception ; 
+            }
+        else if (exception instanceof ActivityTerminatedException)
+            {
+            throw (ActivityTerminatedException) exception ; 
+            }
+        else if (exception.getCause() != null)
+            {
+            unwrap(
+                exception.getCause()
+                );
+            }
+        else {
+            throw new ActivityProcessingException(
+                exception
+                );
+            }
+        }
+    
+    /**
+     * Process our tuples.
+     * @throws ActivityProcessingException 
+     *  
+     */
+    private void inner(final TupleListIterator tuples, final long maxrows, final long maxcells)
+        throws ActivityProcessingException, ActivityTerminatedException
+        {
+        logger.debug("Starting inner");
+        //
+        // Process our tuples.
+        try {
             long rowcount = 0 ; 
             for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
@@ -173,63 +390,52 @@ extends MatchedIterativeActivity
                     if (rowcount >= maxrows)
                         {
                         logger.debug("STOP -- Row limit reached [{}]", maxrows);
-                        iterativeStageComplete();
                         break ;
                         }
                     }
                 }
-            //
-            // Write the list end marker
-            done();
+            }
+        
+        catch (final ActivityTerminatedException ouch)
+            {
+            logger.warn("ActivityTerminatedException during processing");
+            throw ouch;
             }
         catch (final ActivityProcessingException ouch)
             {
-            throw ouch ;
+            logger.warn("ActivityProcessingException during processing");
+            throw ouch;
             }
         catch (final PipeClosedException ouch)
             {
-            logger.warn("PipeClosed during processing");
-            iterativeStageComplete();
-            done();
-            }
-        catch (final Throwable ouch)
-            {
-            logger.warn("Exception during processing", ouch);
+            logger.warn("PipeClosedException during processing");
             throw new ActivityProcessingException(
                 ouch
                 );
             }
-        }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void postprocess()
-    throws ActivityProcessingException
-        {
-        logger.debug("postprocess()");
-        }
-
-    // Common base class ?
-    private void done()
-    throws ActivityProcessingException
-        {
-        try {
-            writer.write(
-                ControlBlock.LIST_END
-                );
-            }
-        catch (final PipeClosedException ouch)
+        catch (final PipeTerminatedException ouch)
             {
-            logger.warn("PipeClosed during done");
-            }
-        catch (final Throwable ouch)
-            {
-            logger.warn("Exception during closing", ouch);
+            logger.warn("PipeTerminatedException during processing");
             throw new ActivityProcessingException(
                 ouch
                 );
+            }
+        catch (final PipeIOException ouch)
+            {
+            logger.warn("PipeIOException during processing");
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        catch (final Throwable ouch)
+            {
+            logger.warn("Unknown Throwable during processing [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
+        finally {
+            logger.debug("Finished inner");
             }
         }
     }

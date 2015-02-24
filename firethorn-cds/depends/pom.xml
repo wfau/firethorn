@@ -27,9 +27,8 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
-        <version project='firethorn'>1.12.6</version>
+        <version project='firethorn'>1.12.7</version>
     </parent>
-
     <artifactId>firethorn-cds-depends</artifactId>
     <packaging>pom</packaging>
 
