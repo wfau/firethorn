@@ -39,9 +39,7 @@
 # Add the new code ..
 #[user@desktop]
 
-
     eclipse ...
-
 
 # -----------------------------------------------------
 # Clean build our OGSA-DAI components
