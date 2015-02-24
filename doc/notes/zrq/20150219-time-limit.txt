@@ -142,7 +142,7 @@ delaylast=0
 # Merge the changes into main.
 #[user@desktop]
 
-    newversion=1.11.xx
+    newversion=1.12.7
 
     # Copy paste instructions
     gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &
