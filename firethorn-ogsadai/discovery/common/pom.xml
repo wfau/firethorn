@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-discovery</artifactId>
-        <version project='firethorn'>1.12.7</version>
+        <version project='firethorn'>1.12.7-stv-pyro-timelimits</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-discovery-common</artifactId>
