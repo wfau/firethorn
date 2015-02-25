@@ -88,7 +88,7 @@ class QueryEngine(object):
             query_identity = query_create_result["ident"]
             
             # Update query
-            urlenc_updt = { query_limit_rows_param : firethorn_limits_rows_absolute}
+            urlenc_updt = { query_limit_rows_param : firethorn_limits_rows_absolute, query_limit_time_param : firethorn_limits_time }
             data_updt = urllib.urlencode(urlenc_updt)
             request_updt = urllib2.Request(query_identity, data_updt, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
             f_updt = urllib2.urlopen(request_updt)
