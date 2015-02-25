@@ -27,6 +27,9 @@ firethorn_limits_rows_absolute=sql_rowlimit
 firethorn_limits_cells_absolute=0
 firethorn_limits_time_absolute=0
 
+
+firethorn_limits_time = sql_timeout
+
 ### URL, Type and Parameter associations and Information
 get_jdbc_resources_url = "/firethorn/jdbc/resource/select"
 get_adql_resources_url = "/firethorn/adql/resource/select"
@@ -45,6 +48,8 @@ query_create_uri = "/queries/create"
 query_update_uri = "/queries/update"
 query_name_param = "adql.schema.query.create.name"
 query_limit_rows_param = "adql.query.update.limit.rows"
+query_limit_time_param = "adql.query.update.limit.time"
+
 query_param = "adql.schema.query.create.query"
 query_status_update = "adql.query.update.status"
 
