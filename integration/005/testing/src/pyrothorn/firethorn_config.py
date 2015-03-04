@@ -13,7 +13,7 @@ web_services_sys_info = web_services_url + "/system/info"
 MAX_FILE_SIZE = 248576000 
 delay = 3
 MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
-MAX_ELAPSED_TIME = 18000
+MAX_ELAPSED_TIME = firethorn_timeout
 MAX_DELAY = 15
 INITIAL_DELAY = 2
 

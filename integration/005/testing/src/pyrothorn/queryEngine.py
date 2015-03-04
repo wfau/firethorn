@@ -25,6 +25,24 @@ from firethorn_config import *
 from time import gmtime,  strftime
 import logging
 
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+ 
+    def __init__(self, sec):
+        self.sec = sec
+ 
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+ 
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+ 
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
+
 class QueryEngine(object):
     '''
     Query Engine
@@ -125,11 +143,10 @@ class QueryEngine(object):
             else :
                 logging.exception('Query returned an error.. ')
                 return (-1,error_message)
-                
-        except Exception as e:
-            logging.exception('Exception caught in run query:')
-            logging.exception(e) 
-            return (-1, e)
+        except Timeout as t:
+	    raise t     
+	    return (-1,t)	    
+    
         
         if f!='':
             f.close()
@@ -180,7 +197,6 @@ class QueryEngine(object):
                 if elapsed_time>MIN_ELAPSED_TIME_BEFORE_REDUCE and delay<MAX_DELAY:
                     delay = delay + delay
                 elapsed_time = int(time.time() - start_time)
-            
             logging.info("Finished query:" + url)
           
             if query_status=="ERROR" or query_status=="FAILED":
@@ -196,12 +212,10 @@ class QueryEngine(object):
             else:
                 return {'Code' :-1,  'Content' : 'Query error: A problem occurred while running your query' }
             
+        except Timeout as t:
+	    raise t
+            return t
         
-        except Exception as e:
-            logging.exception('Exception caught in start query loop:')  
-            logging.exception(e)     
-            return {'Code' :-1,  'Content' : 'Query error: A problem occurred while running your query' }
-
     
     
           

@@ -72,6 +72,7 @@ class test_firethorn(unittest.TestCase):
         self.use_cached_firethorn_env = config.use_cached_firethorn_env
         self.total_failed = 0
         self.total_queries = 0
+        self.total_skipped = 0
 	self.total_unique_queries = 0
         self.include_neighbours = config.include_neighbour_import
         self.verificationErrors = []
@@ -156,14 +157,7 @@ class test_firethorn(unittest.TestCase):
                 firethorn_changeset = ""
                 firethorn_version = ""
 	        logging.exception(e)
-            logging.info("")
-       
-
-	    #logged_query_sqlEng.execute_sql_query(log_sql_query, config.stored_queries_database, limit=None)           
-	    #logged_queries_cols = logged_query_sqlEng.execute_sql_query("SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('dbo.webqueries') ", config.stored_queries_database, limit=None)
-	    #logging.info(logged_queries_cols)
-            #total_available_queries = 0
-	    #logging.info("Found " + str(total_available_queries)  + " available queries for " + config.stored_queries_database)
+        
 	    logging.info("") 		    
 	    continue_from_here_flag = False
 
@@ -174,12 +168,15 @@ class test_firethorn(unittest.TestCase):
                     self.total_unique_queries = reporting_sqlEng.execute_sql_query(total_unique_queries_qry, config.reporting_database)[0][0]
                     #total_queries_qry = "select sum(query_count) from queries where  queryrunID='" + queryrunID + "'"
                     #self.total_queries = reporting_sqlEng.execute_sql_query(total_queries_qry, config.reporting_database)[0][0]
-                    total_failed_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "'  and test_passed<=0"
+                    total_failed_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "'  and test_passed<=0 and test_passed>-2"
                     self.total_failed = reporting_sqlEng.execute_sql_query(total_failed_qry, config.reporting_database)[0][0]
+                    total_skipped_qry = "select count(*) from queries where  queryrunID='" + queryrunID + "' and test_passed=-2"
+                    self.total_skipped = reporting_sqlEng.execute_sql_query(total_failed_qry, config.reporting_database)[0][0]
             except Exception as e:
                 self_total_unique_queries = 0
                 self.total_queries = 0
-                self.total_failed = 0            
+                self.total_failed = 0  
+                self.total_skipped = 0          
 
 
             with open(config.logged_queries_txt_file ) as f:
@@ -230,7 +227,10 @@ class test_firethorn(unittest.TestCase):
 	            	    logging.info("Completed sql query :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 	            	    logging.info("SQL Query: " + str(sql_row_length) + " row(s) returned. ")
 	            	    sql_duration = float(time.time() - sql_start_time)
-
+          		except Timeout.Timeout:
+ 			    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			    logging.info("Timeout reached..")
+			    test_passed = -2
 	                except Exception as e:
 	            	    logging.info("Error caught while running sql query")
 	            	    logging.info(e)
@@ -242,28 +242,36 @@ class test_firethorn(unittest.TestCase):
                     	    start_time = time.time()
 			    logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    with Timeout(config.firethorn_timeout):
-			        firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+                                 firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+			   
 			    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
 			    firethorn_duration = float(time.time() - start_time)
 
-
 			    logging.info("")
-                        
+                        except Timeout.Timeout:
+			    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			    logging.info("Timeout reached..")
+			    test_passed = -2
                         except Exception as e:
 			    logging.info("Error caught while running the firethorn query")
 			    logging.info(e)
 
+                        if test_passed!=-2:
+                            test_passed = (sql_row_length == firethorn_row_length)
 
-                        test_passed = (sql_row_length == firethorn_row_length)
                         logging.info("---------------------- End Query Test ----------------------")
-                        if test_passed:                    
-			    logging.info("Query Successful !!")
-		        else:
-			    logging.info("Query Failed..")
+		        if test_passed and test_passed!=-2:		
+                            logging.info("Query Successful !!")
+                        elif test_passed==-2:
+		            logging.info("Query Skipped..")
+                            self.total_skipped = self.total_skipped + 1
+                        else:
+            		    logging.info("Query Failed..")
 
-                        if (not test_passed):
+                        if (not test_passed and test_passed!=-2):
 			    self.total_failed = self.total_failed + 1
+
                         logging.info("")
                         logging.info("")
                         logging.info("")
@@ -284,9 +292,12 @@ class test_firethorn(unittest.TestCase):
                     logging.info("Total queries: "  + str(self.total_queries))
                     logging.info("Total unique queries: "  + str(self.total_unique_queries))
                     logging.info("Total failed: " + str(self.total_failed))
+                    logging.info("Total skipped: " + str(self.total_skipped))
 
-		logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
-
+                if (self.total_unique_queries-self.total_skipped>0):
+		    logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries-self.total_skipped))*100,2)) + "%")
+	        else :
+                    logging.info("Success percentage: 0%")
 
         except Exception as e:
             logging.exception(e)    

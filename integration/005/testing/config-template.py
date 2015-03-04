@@ -31,7 +31,7 @@ sample_query_expected_rows=0
 limit_query = None
 sql_rowlimit = 1000
 sql_timeout = 240
-firethorn_timeout = 1000
+firethorn_timeout = 800
 
 #------------------- Test Configurations ----------------------------------#
 

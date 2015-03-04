@@ -128,7 +128,7 @@ class Sql2Json(object):
                 sum[queryrun]['total_firethorn_querytime'] = float(sum[queryrun]['total_firethorn_querytime']) + float(row.firethorn_duration)
                 sum[queryrun]['query_timestamp'] = row.query_timestamp
 
-                if row.test_passed!=1:
+                if row.test_passed!=1 and row.test_passed!=-2:
                     failed_list.append(d)
                     sum[queryrun]['total_failed'] = sum[queryrun]['total_failed'] + 1
                     failed_queries_per_run[queryrun].append(d) 
