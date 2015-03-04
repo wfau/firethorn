@@ -1,0 +1,403 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Manually create the OGSA-DAI resources vosi data.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        pushd "tomcat/webapps/ogsa-dai//WEB-INF/etc/dai"
+
+cat > resources/gaia-tap << EOF
+id=gaia-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://geadev.esac.esa.int/tap-dev/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/gavo-tap << EOF
+id=gavo-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/vizier-tap << EOF
+id=vizier-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://tapvizier.u-strasbg.fr/TAPVizieR/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource 
+EOF
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Manually load the IVOA vosi data.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        #
+        # Run the tests in Maven.
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update default
+
+            pushd firethorn-core
+
+                mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+            popd
+        popd
+    exit
+    
+# -----------------------------------------------------
+# IvoaResourceLoader results.
+#
+
+    Resource [cadc-tap][26279936] 
+        Schema [caom][26312704] 
+        Schema [caom2][26312705] 
+        Schema [cfht][26312706] 
+        Schema [ivoa][26312707] 
+        Schema [TAP_SCHEMA][26312708] 
+
+    Resource [gaia-tap][26279937] 
+        Schema [public][26312709] 
+        Schema [tap_schema][26312710] 
+
+    Resource [gavo-tap][26279938] 
+        Schema [amanda][26312711] 
+        Schema [apo][26312712] 
+        Schema [arigfh][26312713] 
+        Schema [arihip][26312714] 
+        Schema [auger][26312715] 
+        Schema [basti][26312716] 
+        Schema [browndwarfs][26312717] 
+        Schema [califadr1][26312718] 
+        Schema [cars][26312719] 
+        Schema [carsarcs][26312720] 
+        Schema [danish][26312721] 
+        Schema [dmubin][26312722] 
+        Schema [emi][26312723] 
+        Schema [feros][26312724] 
+        Schema [fk6][26312725] 
+        Schema [flashheros][26312726] 
+        Schema [gcpms][26312727] 
+        Schema [glots][26312728] 
+        Schema [gums][26312729] 
+        Schema [hiicounter][26312730] 
+        Schema [hipparcos][26312731] 
+        Schema [icecube][26312732] 
+        Schema [inflight][26312733] 
+        Schema [ivoa][26312734] 
+        Schema [katkat][26312735] 
+        Schema [lightmeter][26312736] 
+        Schema [liverpool][26312737] 
+        Schema [lspm][26312738] 
+        Schema [lsw][26312739] 
+        Schema [maidanak][26312740] 
+        Schema [mcextinct][26312741] 
+        Schema [mlqso][26312742] 
+        Schema [mpc][26312743] 
+        Schema [mwsc][26312744] 
+        Schema [obscode][26312745] 
+        Schema [ohmaser][26312746] 
+        Schema [plc][26312747] 
+        Schema [plctmp][26312748] 
+        Schema [potsdam][26312749] 
+        Schema [ppmx][26312750] 
+        Schema [ppmxl][26312751] 
+        Schema [rave][26312752] 
+        Schema [rr][26312753] 
+        Schema [sasmirala][26312754] 
+        Schema [sdssdr7][26312755] 
+        Schema [spm4][26312756] 
+        Schema [supercosmos][26312757] 
+        Schema [tap_schema][26312758] 
+        Schema [taptest][26312759] 
+        Schema [theossa][26312760] 
+        Schema [twomass][26312761] 
+        Schema [ucac3][26312762] 
+        Schema [ucac4][26312763] 
+        Schema [usnob][26312764] 
+        Schema [veronqsos][26312765] 
+        Schema [wise][26312766] 
+
+    Resource [vizier-tap][26279939] 
+        Schema [vizls][26312767] 
+
+# -----------------------------------------------------
+# Import the TAP resources and try some queries.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            #
+            # Load the TAP resources.
+            gaiaschema=${endpointurl:?}/ivoa/schema/26312709
+            gavoschema=${endpointurl:?}/ivoa/schema/26312761
+            vizischema=${endpointurl:?}/ivoa/schema/26312767
+
+            POST "${queryspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=gaia" \
+                --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+                | ./pp | tee query-schema.json
+
+            POST "${queryspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=gavo" \
+                --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+                | ./pp | tee query-schema.json
+
+            POST "${queryspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=vizier" \
+                --data   "adql.resource.schema.import.base=${vizischema:?}" \
+                | ./pp | tee query-schema.json
+
+            #
+            # Works
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    TOP 123
+                    ra,
+                    decl
+                FROM
+                    gaia.twomass_psc
+                "
+
+            #
+            # Works
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    TOP 123
+                    raj2000,
+                    dej2000
+                FROM
+                    gavo.data
+                "
+
+# -----------------------------------------------------
+# Add the GACS public schema to the atlas schema list.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            adqlspace=/adql/resource/25591809
+
+            ivoaname=GACS
+            ivoaschema=/ivoa/schema/26312709
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+                --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+                | ./pp | tee query-schema.json
+
+
+            ivoaname=ICECUBE
+            ivoaschema=/ivoa/schema/26312732
+
+            POST "${adqlspace:?}/schemas/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+                --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+                --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+                | ./pp | tee query-schema.json
+
+
+        #
+        # Run tests via GUI
+
+    -- fast (< 10 sec)
+    SELECT
+        TOP 123
+        galactic_lat,
+        galactic_lon
+    FROM
+        GACS.igsl_source
+
+    -- SLOW (> 10 min)
+    -- lat and lon are not indexed ?
+    SELECT
+        TOP 123
+        galactic_lat,
+        galactic_lon
+    FROM
+        GACS.igsl_source
+    ORDER BY
+        galactic_lat,
+        galactic_lon
+
+
+    -- SLOW (> 10 min)
+    -- lat and lon are not indexed ?
+    SELECT
+        galactic_lat,
+        galactic_lon
+    FROM
+        GACS.igsl_source
+    WHERE
+        galactic_lat BETWEEN -3.7 AND -3.6
+    AND
+        galactic_lon BETWEEN 27.3 AND 27.4
+
+
+
+
+
+    -- fast (< 10 sec)
+    SELECT
+        TOP 123
+        nualpha,
+        nudelta
+    FROM
+        ICECUBE.nucand
+
+
+    -- FAIL
+    -- ORDER BY triggers a bug ?
+    SELECT
+        TOP 123
+        nualpha,
+        nudelta
+    FROM
+        ICECUBE.nucand
+    ORDER BY
+        nualpha,
+        nudelta
+
+    -- fast (< 10 sec)
+    SELECT
+        nualpha,
+        nudelta
+    FROM
+        ICECUBE.nucand
+    WHERE
+        nualpha BETWEEN 263.0 AND 263.9
+    AND
+        nudelta BETWEEN 19.0 AND 19.9
+
+
+    -- FAIL
+    -- ORDER BY triggers a bug ?
+    SELECT
+        nualpha,
+        nudelta
+    FROM
+        ICECUBE.nucand
+    WHERE
+        nualpha BETWEEN 263.0 AND 263.9
+    AND
+        nudelta BETWEEN 19.0 AND 19.9
+    ORDER BY
+        nualpha,
+        nudelta
+
+
+
+
