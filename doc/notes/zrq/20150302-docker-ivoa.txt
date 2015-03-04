@@ -1,0 +1,302 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Move the NotRoot project into a separate GitHub repostory.
+#
+# 1) We want random 'others' to be able to copy and modify the code. 
+# 2) NotRoot will be used as the base for different projects
+#    a) IVOA LaTex tools 
+#    b) Firethorn build tools 
+#    c) MetaGrid desktop tools 
+
+
+    GitHub account
+    https://github.com/Zarquan
+
+        MetaGrid GitHub
+        https://github.com/metagrid
+
+        IVOA GitHub
+        https://github.com/ivoa
+
+
+    Docker account
+    Yrvafhom
+
+        FireThorn Docker
+        https://registry.hub.docker.com/repos/firethorn/
+
+        MetaGrid Docker
+        https://registry.hub.docker.com/repos/metagrid/
+
+        IVOA Docker
+        https://registry.hub.docker.com/repos/ivoa/
+
+
+    #
+    # NotRoot project.
+
+        #
+        # Portable create user script.
+        notroot.sh
+        
+            -useruid   int
+            -usergid   int
+            -usersys   true/false
+            -username  ''
+            -userhome  ''
+            -usershell ''
+
+        #
+        # notroot-debian
+        debian/Dockerfile
+
+            FROM debian
+
+        #
+        # fedora-notroot
+        fedora/Dockerfile
+
+            FROM fedora
+
+    #
+    # IvoaTex project
+
+            FROM metagrid/notroot-debian
+
+# -----------------------------------------------------
+# Create our GitHub repository.
+#[user@desktop]
+    
+    #
+    # Create the repository on GitHub.
+    
+    #
+    # Create a local clone.
+    pushd /var/local/projects/metagrid/docker
+
+        git clone git@github.com:metagrid/notroot.git
+
+        #
+        # Create new code ....
+        #
+
+    popd
+
+# -----------------------------------------------------
+# Test the Debian container.
+#[user@desktop]
+
+    pushd /var/local/projects/metagrid/docker
+        pushd notroot
+
+            docker build --tag "notroot-debian" debian
+
+        popd
+    popd
+
+    docker run -it --rm \
+        "notroot-debian" \
+        bash
+
+    docker run -it --rm \
+        -e useruid=500 \
+        -e usergid=100 \
+        -e username=frog \
+        -e userhome=/tmp/toad \
+        -e usertype=normal \
+        "notroot-debian" \
+        bash
+
+# -----------------------------------------------------
+# Test the Fedora container.
+#[user@desktop]
+
+    pushd /var/local/projects/metagrid/docker
+        pushd notroot
+
+            docker build --tag "notroot-fedora" fedora
+
+        popd
+    popd
+
+    docker run -it --rm \
+        "notroot-fedora" \
+        bash
+
+    docker run -it --rm \
+        -e useruid=500 \
+        -e usergid=100 \
+        -e username=frog \
+        -e userhome=/tmp/toad \
+        -e usertype=normal \
+        "notroot-fedora" \
+        bash
+
+# -----------------------------------------------------
+# Commit and push to GitHub.
+#[user@desktop]
+
+    pushd /var/local/projects/metagrid/docker
+        pushd notroot
+
+            git commit -m "Initial code"
+
+            git status
+
+                # On branch master
+                # Your branch is ahead of 'origin/master' by 1 commit.
+                #
+                nothing to commit (working directory clean)
+
+            git push
+
+                Counting objects: 9, done.
+                Delta compression using up to 4 threads.
+                Compressing objects: 100% (7/7), done.
+                Writing objects: 100% (8/8), 1.84 KiB, done.
+                Total 8 (delta 2), reused 0 (delta 0)
+                To git@github.com:metagrid/notroot.git
+                   4a708b2..63b1019  master -> master
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Docker hub automatic build.
+#
+
+    https://registry.hub.docker.com/u/metagrid/notroot-debian/
+        https://github.com/metagrid/notroot.git
+        /debian/Dockerfile
+
+    https://registry.hub.docker.com/u/metagrid/notroot-fedora/
+        https://github.com/metagrid/notroot.git
+        /fedora/Dockerfile
+
+# -----------------------------------------------------
+# Pull resulting images from Docker hub.
+#[user@desktop]
+
+    docker run -it --rm \
+        -e "useruid=$(id -u)" \
+        -e "usergid=$(id -g)" \
+        "metagrid/notroot-debian" \
+        bash
+
+    docker run -it --rm \
+        -e "useruid=$(id -u)" \
+        -e "usergid=$(id -g)" \
+        "metagrid/notroot-fedora" \
+        bash
+
+# -----------------------------------------------------
+# Update our ivoatex container to use notroot-debian.
+#[user@desktop]
+
+
+    #
+    # Create our GitHub repository.
+    https://github.com/ivoa/ivoatex
+    
+    #
+    # Create a local clone
+    pushd /var/local/projects/edinburgh/wfau
+        
+        git clone git@github.com:ivoa/ivoatex.git
+
+    popd        
+
+    #
+    # Copy the Docker file from FireThorn.
+    pushd /var/local/projects/edinburgh/wfau/ivoatex
+
+        mkdir docker
+        cp ../firethorn/devel/docker/debian/ivoatex/Dockerfile docker/Dockerfile
+        gedit docker/Dockerfile
+        
+    popd
+
+    #
+    # Test build.
+    pushd /var/local/projects/edinburgh/wfau/ivoatex
+
+        docker build --tag ivoatex-test docker
+
+    popd
+
+    pushd /var/local/projects/edinburgh/wfau/ivoadoc/ADQL
+
+        docker run -it --rm \
+            -e "useruid=$(id -u)" \
+            -v "$(pwd):/var/local/texdata" \
+            ivoatex-test
+
+            make clean
+            make biblio
+            make
+
+    popd
+
+    #
+    # Git commit.
+    pushd /var/local/projects/edinburgh/wfau/ivoatex
+
+        cat > .gitignore << EOF
+        *~
+        *.bak
+        EOF
+            
+        git add .
+        git status
+        git push
+
+    popd
+
+    #
+    # Create DockerHub repository and automated build.
+    https://registry.hub.docker.com/u/ivoa
+
+
+    #
+    # Test run ...
+    pushd /var/local/projects/edinburgh/wfau/ivoadoc/ADQL
+
+        docker run -it --rm \
+            -e "useruid=$(id -u)" \
+            -v "$(pwd):/var/local/texdata" \
+            ivoa/ivoatex
+
+            make ivoatex/tth_C/tth
+            make clean
+            make biblio
+            make
+
+    popd
+        
+
+
+
+
+
+
