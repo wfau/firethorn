@@ -32,6 +32,7 @@ limit_query = None
 sql_rowlimit = 1000
 sql_timeout = 240
 firethorn_timeout = 800
+query_mode = "DISTRIBUTED"
 
 #------------------- Test Configurations ----------------------------------#
 
