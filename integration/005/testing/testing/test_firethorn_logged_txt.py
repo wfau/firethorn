@@ -241,7 +241,7 @@ class test_firethorn(unittest.TestCase):
                         try:                    
                     	    start_time = time.time()
 			    logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-			    with Timeout(config.sql_timeout):
+			    with Timeout(config.firethorn_timeout):
 			        firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
 			    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
