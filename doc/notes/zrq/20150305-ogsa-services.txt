@@ -75,7 +75,9 @@
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-01-test-workspace.txt" &
 
     source "${HOME:?}/firethorn.settings"
-    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt" &
+    #source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt" &
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt" &
+
 
     querymode=DISTRIBUTED
     source "${HOME:?}/firethorn.settings"

@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -21,27 +21,24 @@
 #
 
 # -----------------------------------------------------
-# Run our FireThorn service
-# http://askubuntu.com/questions/351097/passing-multiple-commands-to-gnome-terminal-from-a-script
+# Clean build
 #[user@desktop]
 
-    mytemp=$(mktemp)
-    cat > "${mytemp:?}" << 'EOF'
-    
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        pushd 'firethorn-webapp'
+        mvn clean install eclipse:eclipse
 
-            MAVEN_OPTS=-Xmx128m
-            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
-
-        popd
     popd
-EOF
 
-    gnome-terminal --geometry='200x20+350+250' -x bash -c "source ${mytemp:?}"
+# -----------------------------------------------------
+# Code changes   ....
+#[user@desktop]
 
+    #
+    # Eclipse
+    #
+    
 # -----------------------------------------------------
 # Run our OGSA-DAI service  ....
 #[user@desktop]
@@ -52,26 +49,24 @@ EOF
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
     pushd "${FIRETHORN_CODE:?}"
+        pushd 'firethorn-ogsadai'
+            pushd 'webapp'
 
-        pushd 'firethorn-ogsadai/webapp'
+                source src/test/bin/jdbc-functions.sh
+                pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
 
-            mvn clean compile war:war
+                    jdbcconfig atlas         firethorn.atlas
+                    jdbcconfig userdata      firethorn.user
 
-            source src/test/bin/jdbc-functions.sh
-            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
-
-                jdbcconfig atlas         firethorn.atlas
-                jdbcconfig userdata      firethorn.user
-
-            popd
-            
-            export MAVEN_OPTS=-Xmx128m
-            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+                popd
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
 
         popd
     popd
 EOF
 
-    gnome-terminal --geometry='200x20+300+590' -x bash -c "source ${mytemp:?}"
+    gnome-terminal --geometry=200x20 -x bash -c "source ${mytemp:?}"
 
 

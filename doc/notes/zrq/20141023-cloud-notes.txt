@@ -79,7 +79,6 @@ Docker
     Docker's killer feature - robust API
     https://www.joyent.com/blog/dockers-killer-feature
 
-
 Rocket
 
     Like Docker, only simpler
@@ -93,8 +92,6 @@ Rocket
 
         The Ruby on Rails weeny
         http://tech.slashdot.org/comments.pl?sid=6261907&cid=48504227
-
-
 
 Google
 
@@ -118,4 +115,20 @@ Other
     Docker-nVidia
     https://github.com/thewtex/docker-opengl-nvidia/blob/master/Dockerfile
 
+CoreOS
+
+    Launching containers with Fleet
+    https://coreos.com/docs/launching-containers/launching/launching-containers-fleet/
+
+    Running CoreOS on EC2
+    https://coreos.com/docs/running-coreos/cloud-providers/ec2/
+
+    Jenkins CoreOS and Docker
+    http://www.redguava.com.au/2014/03/jenkins-slaves-running-coreos-and-docker/
+
+
+Mesosphere
+
+    Mesosphere Datacenter Operating System (DCOS)
+    http://mesosphere.com/
 

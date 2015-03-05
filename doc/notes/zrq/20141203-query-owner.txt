@@ -400,3 +400,25 @@
 
 
 
+
+Stelios request
+
+    [save] button on a query page
+        saves the AdqlTable, so it appears in the list
+        
+    [my saved tables] link in the navigation
+        simple list of tables
+        tools to view, delete, query
+
+
+    Save is per user (or session for anon)
+    Load the table into the current workspace, alongside atlas.
+
+    Delete - hides it from list and sets the lifetime lower
+ 
+    
+
+
+
+
+
