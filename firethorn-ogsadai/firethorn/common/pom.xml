@@ -31,33 +31,36 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-ogsadai-firethorn</artifactId>
         <version project='firethorn'>1.12.8-zrq-ogsa-packages</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-dqp</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+    <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries</name>
+    <name>OGSA-DAI FireThorn components (common)</name>
     <description>
         <![CDATA[
-        Components for the FireThorn OGSA-DAI distributed query processor.
-        Based on a clone of the OGSA-DAI code in svn.
+        Common (OGSA-DAI) components for FireThorn.
         ]]>
     </description>
 
-    <!--+
-        | Maven parent/child projects.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
-    <modules>
-        <module>client</module>
-        <module>common</module>
-        <module>server</module>
-    </modules>
-
     <properties>
     </properties>
+
+    <dependencies>
+
+        <!--+
+            | OGSA-DAI DQP components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+    </dependencies>
 
 </project>
 

@@ -31,18 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-dqp</artifactId>
+        <artifactId>firethorn-ogsadai-firethorn</artifactId>
         <version project='firethorn'>1.12.8-zrq-ogsa-packages</version>
-	</parent>
+    </parent>
 
-    <artifactId>firethorn-ogsadai-dqp-firethorn</artifactId>
+    <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (firethorn)</name>
+    <name>OGSA-DAI FireThorn components (server)</name>
     <description>
         <![CDATA[
-        This package is needed to resolve circular dependencies between the OGSA-DAI DQP server components,
-        OGSA-DAI Astronomy extensions and the FireThorn metadata client.
+        Server (OGSA-DAI) components for FireThorn.
         ]]>
     </description>
 
@@ -52,6 +51,16 @@
     <dependencies>
 
         <!--+
+            | OGSA-DAI DQP common components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <!--+
             | OGSA-DAI DQP server components.
             +-->
         <dependency>
@@ -59,6 +68,15 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
+        </dependency>
+
+        <!--+
+            | OGSA-DAI FireThorn common classes.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+
