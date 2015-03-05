@@ -240,7 +240,7 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
             else {
                 try {
                     login = provider.getLogin(
-                        template,
+                        uniqueid,
                         context
                         );
                     }
