@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.12.8</version>
+        <version project='firethorn'>1.12.9</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -86,11 +86,11 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-dqp-firethorn</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency-->
 
         <!--+
             | Our Astronomy extenstions.
@@ -98,6 +98,20 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-astro-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | Our FireThorn extenstions.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
             <version>${project.version}</version>
         </dependency>
 

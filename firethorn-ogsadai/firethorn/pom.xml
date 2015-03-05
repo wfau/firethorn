@@ -26,31 +26,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | Maven parent project.
+        | Maven parent/child projects.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-metadata</artifactId>
+        <artifactId>firethorn-ogsadai</artifactId>
         <version project='firethorn'>1.12.9</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-metadata-server</artifactId>
+    <artifactId>firethorn-ogsadai-firethorn</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI metadata service (server)</name>
+    <name>OGSA-DAI FireThorn components</name>
     <description>
         <![CDATA[
-        Server (Firethorn) components for the FireThorn OGSA-DAI metadata service.
+        OGSA-DAI FireThorn components.
         ]]>
     </description>
+
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <modules>
+        <module>client</module>
+        <module>common</module>
+        <module>server</module>
+    </modules>
     
-    <properties>
-    </properties>
-
-    <dependencies>
-    </dependencies>
-
 </project>
 
 

@@ -1,0 +1,128 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Fix circular dependencies in our ogsadai packages.
+    #
+
+    #
+    # Old packages
+
+        firethorn-ogsadai/distributed/client
+        firethorn-ogsadai/distributed/common
+        firethorn-ogsadai/distributed/server
+     ** firethorn-ogsadai/distributed/firethorn **
+    
+    #
+    # New packages
+
+        firethorn-ogsadai/distributed/client
+        firethorn-ogsadai/distributed/common
+        firethorn-ogsadai/distributed/server
+
+        firethorn-ogsadai/firethorn/client
+        firethorn-ogsadai/firethorn/common
+        firethorn-ogsadai/firethorn/server
+
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-ogsa-packages
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Create the new Maven package and move the files.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mkdir firethorn-ogsadai/firethorn/client
+        mkdir firethorn-ogsadai/firethorn/common
+        mkdir firethorn-ogsadai/firethorn/server
+ 
+        gedit firethorn-ogsadai/firethorn/client/pom.xml
+        gedit firethorn-ogsadai/firethorn/common/pom.xml
+        gedit firethorn-ogsadai/firethorn/server/pom.xml
+
+        #
+        # Move the files manually.
+        # Fixing Java package references.
+
+    popd
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150115-01-gnome-tests.txt" &
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-01-test-workspace.txt" &
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt" &
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt" &
+
+# -----------------------------------------------------
+# Commit our changes
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg addremove
+        hg commit -m "Repackaged OGSA-DAI components"
+        hg push
+        
+    popd
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.11.32
+
+    # Copy paste instructions
+    gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &
+
+

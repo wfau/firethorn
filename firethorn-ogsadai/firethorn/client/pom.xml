@@ -31,18 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-dqp</artifactId>
+        <artifactId>firethorn-ogsadai-firethorn</artifactId>
         <version project='firethorn'>1.12.9</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-dqp-server</artifactId>
+    <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (server)</name>
+    <name>OGSA-DAI FireThorn components (client)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
-        Based on a clone of the OGSA-DAI code in svn.
+        Client (OGSA-DAI) components for FireThorn.
         ]]>
     </description>
 
@@ -52,60 +51,88 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | OGSA-DAI DQP common components.
+            | OGSA-DAI DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-dqp-common</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+
-            | OGSA-DAI DQP bindings.
+            | OGSA-DAI activity components.
             +-->
         <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-dqp-bindings</artifactId>
-            <version>${ogsadai.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-activity-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+
-            | 3rd party dependencies.
+            | OGSA-DAI astronomy extensions.
             +-->
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlrworks</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-graph-impl</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>3.0.1.RELEASE</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-astro-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!--+
-            | OGSA-DAI dependencies.
+            | OGSA-DAI FireThorn common classes.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | FireThorn logging dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn spring dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn testing dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | The Sun Jersey client.
+            +-->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${ogsadai.jersey.version}</version>
+        </dependency>
+
+        <!--+
+            | The OGSA-DAI components used by our Activity.
+            | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
@@ -119,17 +146,17 @@
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-basic-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-basic-server</artifactId>
+            <artifactId>ogsadai-jersey-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-common</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
         <dependency>
@@ -140,11 +167,6 @@
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-relational-server</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
 

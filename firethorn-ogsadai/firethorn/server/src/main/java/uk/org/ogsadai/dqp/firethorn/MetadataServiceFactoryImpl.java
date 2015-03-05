@@ -32,7 +32,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.StatisticsServiceIm
 import uk.org.ogsadai.dqp.common.RequestDetails;
 //import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
-
 class MetadataServiceFactoryImpl
 implements MetadataServiceFactory
     {

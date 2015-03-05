@@ -2,12 +2,14 @@ package uk.org.ogsadai.dqp.firethorn;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.AttributeService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMapping;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMappingService;
+import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.dqp.common.DataDictionary;
 import uk.org.ogsadai.dqp.common.DataNode;
 import uk.org.ogsadai.dqp.common.RequestDetails;
@@ -21,6 +23,10 @@ import uk.org.ogsadai.dqp.lqp.udf.FunctionRepository;
 
 public class MetadataServiceDataDictionary implements DataDictionary
 {
+    /** Logger. */
+    private static final DAILogger LOG = 
+        DAILogger.getLogger(MetadataServiceDataDictionary.class);
+
     /** The DQP federation. */
     private MetadataServiceDQPFederation mFederation;
     /** Request details of the client. Not used at the moment. */
@@ -29,6 +35,12 @@ public class MetadataServiceDataDictionary implements DataDictionary
     private AttributeService mAttributeService;
     private StatisticsService mStatisticsService;
 
+    public MetadataServiceDataDictionary()
+        {
+        // ZRQ
+        LOG.debug("MetadataServiceDataDictionary()");
+        }
+    
     @Override
     public Heading getHeading(String tableName) throws TableNotFoundException 
     {
@@ -45,6 +57,28 @@ public class MetadataServiceDataDictionary implements DataDictionary
         {
             throw new TableNotFoundException(tableName);
         }
+        // ++ ZRQ
+        LOG.debug("getTableSchema()");
+        LOG.debug("  TableName [" + tableName + "]");
+        LOG.debug("  TableMapping name  [" + tableMapping.tableName() + "]");
+        LOG.debug("  TableMapping alias [" + tableMapping.tableAlias() + "]");
+        LOG.debug("  TableMapping ident [" + tableMapping.resourceIdent() + "]");
+
+        LOG.debug("  Federation [" + mFederation + "]");
+        LOG.debug("  ++ Nodes ");
+        Map<String, DataNode> nodes = mFederation.getDataNodesMap();
+        for (String key : nodes.keySet())
+            {
+            DataNode node = nodes.get(
+                key
+                ); 
+            LOG.debug("  DataNode [" + node + "]");
+            LOG.debug("  DataNode ident [" + node.getResourceID() + "]");
+            LOG.debug("  DataNode EvalNode [" + node.getEvaluationNode() + "]");
+            }
+        LOG.debug("  -- Nodes ");
+        //-- ZRQ
+
         MetadataServiceTableSchema tableSchema = 
                 new MetadataServiceTableSchema(
                         tableName, 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--+
     |
-    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
     | All rights reserved.
     |
     | This program is free software: you can redistribute it and/or modify
@@ -31,24 +31,35 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-metadata</artifactId>
+        <artifactId>firethorn-ogsadai-firethorn</artifactId>
         <version project='firethorn'>1.12.9</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai-metadata-server</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+    <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI metadata service (server)</name>
+    <name>OGSA-DAI FireThorn components (common)</name>
     <description>
         <![CDATA[
-        Server (Firethorn) components for the FireThorn OGSA-DAI metadata service.
+        Common (OGSA-DAI) components for FireThorn.
         ]]>
     </description>
-    
+
     <properties>
     </properties>
 
     <dependencies>
+
+        <!--+
+            | OGSA-DAI DQP components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-dqp-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
 </project>

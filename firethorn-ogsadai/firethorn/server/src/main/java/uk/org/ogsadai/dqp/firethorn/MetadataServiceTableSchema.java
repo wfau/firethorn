@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.dqp.common.DataNode;
 import uk.org.ogsadai.dqp.common.DataNodeTable;
 import uk.org.ogsadai.dqp.common.LogicalSchema;
@@ -27,6 +28,10 @@ import uk.org.ogsadai.dqp.lqp.cardinality.SimpleStatisticsPhysicalSchema;
  */
 public class MetadataServiceTableSchema implements TableSchema 
 {
+    /** Logger. */
+    private static final DAILogger LOG = 
+        DAILogger.getLogger(MetadataServiceTableSchema.class);
+
     /** Name of the table in the federation. */
     private String mTableName;
     /** List of data node tables that can access the table. */
@@ -46,6 +51,19 @@ public class MetadataServiceTableSchema implements TableSchema
             String localName, 
             DataNode dataNode) 
     {
+    // ++ ZRQ
+    LOG.debug("MetadataServiceTableSchema()");
+    LOG.debug("  TableName [" + tableName + "]");
+    LOG.debug("  LocalName [" + localName + "]");
+    LOG.debug("  DataNode  [" + dataNode + "]");
+    if (dataNode ==null)
+        {
+        throw new RuntimeException(
+            "DataNodeTable with null DataNode"
+            ); 
+        }
+    //-- ZRQ
+
         mTableName = tableName;
         mDataNodeTables = Arrays.<DataNodeTable>asList(
                 new SimpleDataNodeTable(dataNode, localName));
