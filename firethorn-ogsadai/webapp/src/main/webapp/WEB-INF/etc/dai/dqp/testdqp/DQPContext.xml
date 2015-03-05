@@ -146,17 +146,6 @@
     </bean>
 
     <!--+
-        | Local user data node.
-        +-->
-    <bean id="userd-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="userdata"/>
-        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
-        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
-        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
-        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-    </bean>
-
-    <!--+
         | DQP federation.
         +-->
     <bean id="federation" 
@@ -170,51 +159,12 @@
 
         <property name="dataNodesMap">
             <map>
-<!--
-                <entry key="twomassjdbc">
-                    <ref bean="twomassjdbc"/>
-                </entry>
-                <entry key="twomasswfau">
-                    <ref bean="twomasswfau"/>
-                </entry>
-                <entry key="twomassgavo">
-                    <ref bean="twomassgavo"/>
-                </entry>
-                <entry key="atlas">
-                    <ref bean="atlas"/>
-                </entry>
-                <entry key="wfau">
-                    <ref bean="wfau"/>
-                </entry>
-
-                <entry key="cadc-tap">
-                    <ref bean="cadc-tap"/>
-                </entry>
-                <entry key="gaia-tap">
-                    <ref bean="gaia-tap"/>
-                </entry>
-                <entry key="gavo-tap">
-                    <ref bean="gav-tap"/>
-                </entry>
-                <entry key="vizier-tap">
-                    <ref bean="vizier-tap"/>
-                </entry>
-                <entry key="wfau-tap">
-                    <ref bean="wfau-tap"/>
-                </entry>
--->
-
                 <entry key="atlas">
                     <ref bean="atlas-bean"/>
                 </entry>
                 <entry key="ukidss">
                     <ref bean="ukidss-bean"/>
                 </entry>
-                <entry key="userdata">
-                    <ref bean="userd-bean"/>
-                </entry>
-
-
             </map>
         </property>
 

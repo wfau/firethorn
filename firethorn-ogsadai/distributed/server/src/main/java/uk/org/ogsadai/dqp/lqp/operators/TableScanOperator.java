@@ -144,8 +144,13 @@ public class TableScanOperator extends UnaryOperator implements ScanOperator
      */
     public DataNode getDataNode()
     {
+        LOG.debug("getDataNode()");
+
         DataNode dataNode = Annotation.getDataNodeAnnotation(this);
         EvaluationNode evalNode = Annotation.getEvaluationNodeAnnotation(this);
+        
+        LOG.debug("  DataNode [" + dataNode  + "]");
+        LOG.debug("  EvalNode [" + evalNode  + "]");
         
         if(dataNode != null)
         {
@@ -173,7 +178,11 @@ public class TableScanOperator extends UnaryOperator implements ScanOperator
         }
         else
         {
-            return mDataNodeTables.get(0).getDataNode();
+            DataNodeTable table = mDataNodeTables.get(0);
+            LOG.debug("  DataNodeTable [" + table + "]");
+            DataNode node = table.getDataNode();
+            LOG.debug("  DataNode [" + node  + "]");
+            return node;
         }
     }
 

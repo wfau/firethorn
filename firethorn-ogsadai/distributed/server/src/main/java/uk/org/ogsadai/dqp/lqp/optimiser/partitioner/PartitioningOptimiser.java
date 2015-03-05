@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.dqp.common.CompilerConfiguration;
 import uk.org.ogsadai.dqp.common.DataNode;
 import uk.org.ogsadai.dqp.common.EvaluationNode;
@@ -34,6 +35,7 @@ import uk.org.ogsadai.dqp.lqp.operators.BinaryOperator;
 import uk.org.ogsadai.dqp.lqp.operators.ExchangeOperator;
 import uk.org.ogsadai.dqp.lqp.optimiser.Optimiser;
 import uk.org.ogsadai.dqp.lqp.optimiser.OptimiserUtils;
+import uk.org.ogsadai.dqp.lqp.optimiser.join.BatchTableScanOptimiser;
 import uk.org.ogsadai.resource.dataresource.dqp.RequestDQPFederation;
 
 /**
@@ -58,6 +60,10 @@ public class PartitioningOptimiser implements Optimiser
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE = 
         "Copyright (c) The University of Edinburgh, 2008";
+
+    /** Logger. */
+    private static final DAILogger LOG = 
+        DAILogger.getLogger(PartitioningOptimiser.class);
 
     /** Evaluation node with most scans. */
     Map<EvaluationNode, Integer> mEvaluationNodeScanCountMap;
@@ -144,15 +150,27 @@ public class PartitioningOptimiser implements Optimiser
         mEvaluationNodeScanCountMap = new HashMap<EvaluationNode, Integer>();
         for (Operator o : scans)
         {
-            EvaluationNode en = ((ScanOperator) o).getDataNode().getEvaluationNode();
-            Integer cnt = mEvaluationNodeScanCountMap.get(en);
+            //EvaluationNode en = ((ScanOperator) o).getDataNode().getEvaluationNode();
+            ScanOperator oper = (ScanOperator) o;
+            LOG.debug("ScanOperator [" + oper + "]");
+            LOG.debug("ScanOperator [" + oper.toString() + "]");
+
+            DataNode data = oper.getDataNode();
+            LOG.debug("DataNode [" + data + "]");
+            LOG.debug("DataNode [" + data.toString() + "]");
+
+            EvaluationNode eval = data.getEvaluationNode();
+            LOG.debug("EvalNode [" + eval + "]");
+            LOG.debug("EvalNode [" + eval.toString() + "]");
+        
+            Integer cnt = mEvaluationNodeScanCountMap.get(eval);
             if (cnt == null)
             {
-                mEvaluationNodeScanCountMap.put(en, 1);
+                mEvaluationNodeScanCountMap.put(eval, 1);
             }
             else
             {
-                mEvaluationNodeScanCountMap.put(en, ++cnt);
+                mEvaluationNodeScanCountMap.put(eval, ++cnt);
             }
         }
     }

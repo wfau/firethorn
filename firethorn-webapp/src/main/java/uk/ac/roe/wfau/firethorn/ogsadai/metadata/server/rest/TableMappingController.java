@@ -130,6 +130,7 @@ public class TableMappingController
 
         /**
          * Get the target resource identifier.
+         * TODO What if table.resource() maps to more than one OGSA-DAI resource. 
          * @return The target resource identifier.
          *
          */

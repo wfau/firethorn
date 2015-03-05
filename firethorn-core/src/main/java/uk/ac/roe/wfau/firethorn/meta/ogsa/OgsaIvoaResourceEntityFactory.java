@@ -42,13 +42,6 @@ implements OgsaIvoaResource.EntityFactory
         }
 
     @Autowired
-    private OgsaIvoaResource.NameFactory names;
-    public OgsaIvoaResource.NameFactory names()
-        {
-        return this.names;
-        }
-
-    @Autowired
     private OgsaIvoaResource.IdentFactory idents;
     @Override
     public OgsaIvoaResource.IdentFactory idents()
@@ -81,6 +74,22 @@ implements OgsaIvoaResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaIvoaResource-select-service"
+                ).setEntity(
+                    "service",
+                    service
+                    )
+            );
+        }
+
+    @Override
+    public Iterable<OgsaIvoaResource> select(IvoaResource source)
+        {
+        return super.iterable(
+            super.query(
+                "OgsaIvoaResource-select-source"
+                ).setEntity(
+                    "source",
+                    source
                 )
             );
         }
@@ -92,6 +101,12 @@ implements OgsaIvoaResource.EntityFactory
         return super.iterable(
             super.query(
                 "OgsaIvoaResource-select-service-source"
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
                 )
             );
         }
@@ -103,22 +118,45 @@ implements OgsaIvoaResource.EntityFactory
         return super.insert(
             new OgsaIvoaResourceEntity(
                 service,
-                source,
-                names.name()
+                source
                 )
             );
         }
 
     @Override
     @CreateMethod
-    public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name)
+    public OgsaIvoaResource primary(IvoaResource source)
         {
-        return super.insert(
-            new OgsaIvoaResourceEntity(
-                service,
-                source,
-                name
+        return this.primary(
+            factories().ogsa().services().primary(),
+            source
+            );
+        }
+
+    @Override
+    @CreateMethod
+    public OgsaIvoaResource primary(OgsaService service, IvoaResource source)
+        {
+        // Really really simple - just get the first. 
+        OgsaIvoaResource found = super.first(
+            super.query(
+                "OgsaIvoaResource-select-service-source"
+                ).setEntity(
+                    "service",
+                    service
+                ).setEntity(
+                    "source",
+                    source
                 )
             );
+        // If we don't have one, create one.
+        if (found == null)
+            {
+            found = create(
+                service,
+                source
+                );
+            }
+        return found ;
         }
     }

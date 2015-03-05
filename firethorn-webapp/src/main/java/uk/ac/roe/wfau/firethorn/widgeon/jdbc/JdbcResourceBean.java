@@ -58,11 +58,6 @@ extends BaseResourceBean<JdbcResource>
             );
         }
 
-    public String getOgsadai()
-        {
-        return entity().ogsaid();
-        }
-
     public class ConnectionBean
         {
         public String getUri()

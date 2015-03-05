@@ -11,7 +11,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
@@ -42,8 +42,10 @@ extends IvoaResourceTestBase
                 config().endpoint()
                 )
             );
-        final CreateResourceResult ivoadata = ivoacreator.execute(
-            source
+        final SimpleResourceWorkflowResult ivoadata = ivoacreator.execute(
+            new IvoaCreateResourceWorkflow.SimpleParam(
+                source.endpoint()
+                )
             );
         assertNotNull(
             ivoadata
@@ -53,7 +55,7 @@ extends IvoaResourceTestBase
             ivoadata.status()
             );
         assertNotNull(
-            ivoadata.resource()
+            ivoadata.result()
             );
 
         final JdbcCreateResourceWorkflow jdbccreator = new JdbcCreateResourceWorkflow(
@@ -61,7 +63,7 @@ extends IvoaResourceTestBase
                 config().endpoint()
                 )
             );
-        final CreateResourceResult userdata = jdbccreator.execute(
+        final SimpleResourceWorkflowResult userdata = jdbccreator.execute(
             config().jdbc().databases().get("user")
             );
         assertNotNull(
@@ -72,7 +74,7 @@ extends IvoaResourceTestBase
             userdata.status()
             );
         assertNotNull(
-            userdata.resource()
+            userdata.result()
             );
 
         long time = System.currentTimeMillis();         
@@ -105,7 +107,7 @@ extends IvoaResourceTestBase
                 )
             ); 
         final WorkflowResult selected = selector.execute(
-            ivoadata.resource(),
+            ivoadata.result(),
             new IvoaSelectDataWorkflow.Param()
                 {
                 @Override
@@ -148,9 +150,9 @@ extends IvoaResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
-                            return userdata.resource().toString();
+                            return userdata.result().toString();
                             }
                         @Override
                         public String table()
@@ -165,9 +167,9 @@ extends IvoaResourceTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
-                            return userdata.resource().toString();
+                            return userdata.result().toString();
                             }
                         @Override
                         public String table()

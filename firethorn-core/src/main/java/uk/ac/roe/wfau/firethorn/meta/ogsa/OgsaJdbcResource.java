@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -34,15 +35,6 @@ public interface OgsaJdbcResource
      */
     public static interface IdentFactory
     extends Entity.IdentFactory<OgsaJdbcResource>
-        {
-        }
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-     */
-    public static interface NameFactory
-    extends NamedEntity.NameFactory<OgsaJdbcResource>
         {
         }
     
@@ -63,47 +55,62 @@ public interface OgsaJdbcResource
     extends Entity.EntityFactory<OgsaJdbcResource>
         {
         /**
-         * Select all the resources.
+         * Select all the {@link OgsaJdbcResource}(s).
          * @return An {@link Iterable} set of {@link OgsaJdbcResource}(s). 
          *
          */
         public Iterable<OgsaJdbcResource> select();
 
         /**
-         * Select the {@link OgsaJdbcResource}(s) provided by a {@link OgsaService}.
-         * @param service The parent service.
+         * Select the {@link OgsaJdbcResource}(s) for a {@link OgsaService}.
+         * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
          *
          */
         public Iterable<OgsaJdbcResource> select(final OgsaService service);
 
         /**
-         * Create a new {@link OgsaJdbcResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link JdbcResource}.
+         * Select all the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
+         * @param source The {@link JdbcResource} resource.
+         * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+         *
+         */
+        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+
+        /**
+        * Select the {@link OgsaJdbcResource}(s) for an {@link OgsaService} and {@link JdbcResource}.
+        * @param service The {@link OgsaService}.
+        * @param source  The {@link JdbcResource}.
+        * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+        *
+        */
+       public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source);
+
+        /**
+         * Create a new {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}..
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link JdbcResource}.
          * @return A new {@link OgsaJdbcResource}.
          *
          */
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource source);
 
         /**
-         * Create a new {@link OgsaJdbcResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link JdbcResource}.
-         * @param name The resource name.
-         * @return A new {@link OgsaJdbcResource}.
+         * Select the primary {@link OgsaJdbcResource} for a {@link JdbcResource}.
+         * @param source The {@link JdbcResource} resource.
+         * @return The primary {@link OgsaJdbcResource}.
          *
          */
-        public OgsaJdbcResource create(final OgsaService service, final JdbcResource source, final String name);
+        public OgsaJdbcResource primary(final JdbcResource source);
 
         /**
-         * Select the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
-         * @param service The parent {@link OgsaService}.
-         * @param source  The source {@link JdbcResource}.
-         * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+         * Select the primary {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link JdbcResource}.
+         * @return The primary {@link OgsaJdbcResource}.
          *
          */
-        public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source);
+        public OgsaJdbcResource primary(final OgsaService service, final JdbcResource source);
         
         }
     
@@ -113,4 +120,18 @@ public interface OgsaJdbcResource
      */
     public JdbcResource source();
 
+    /**
+     * Initialise the OGSA-DAI resource, creating a new one if needed.
+     * @return The resource status.
+     *  
+     */
+    public Status connect();
+
+    /**
+     * Release the OGSA-DAI resource.
+     * @return The resource status.
+     * 
+     */
+    public Status release();
+    
     }

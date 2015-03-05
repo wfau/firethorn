@@ -127,7 +127,7 @@ extends SimpleQueryTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return unique("user");
                             }
@@ -208,7 +208,7 @@ extends SimpleQueryTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
                             return unique("user");
                             }

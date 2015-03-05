@@ -61,12 +61,14 @@ implements TableMappingService
         {
         log.debug("getTableMapping(String)");
         log.debug("  Source [" + source  + "]");
-        return rest().getForObject(
-            endpoint(
-                SOURCE_NAME_PATH
-                ),
-            TableMappingBean.class,
-            source
+        return debug(
+            rest().getForObject(
+                endpoint(
+                    SOURCE_NAME_PATH
+                    ),
+                TableMappingBean.class,
+                source
+                )
             );
         }
 
@@ -112,5 +114,15 @@ implements TableMappingService
             return this.name;
             }
         }
+
+    public TableMapping debug(final TableMapping mapping)
+        {
+        log.debug("TableMapping");
+        log.debug("  Name  [" + mapping.tableName() + "]");
+        log.debug("  Alias [" + mapping.tableAlias() + "]");
+        log.debug("  Resource [" + mapping.resourceIdent() + "]");
+        return mapping;
+        }
+    
     }
 

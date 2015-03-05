@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.net.MalformedURLException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -27,14 +29,18 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -46,7 +52,19 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
         {
         @NamedQuery(
             name  = "OgsaIvoaResource-select-all",
-            query = "FROM OgsaIvoaResourceEntity ORDER BY name asc, ident desc"
+            query = "FROM OgsaIvoaResourceEntity ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-service",
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-source",
+            query = "FROM OgsaIvoaResourceEntity WHERE source = :source ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaIvoaResource-select-service-source",
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
             ),
         }
     )
@@ -78,18 +96,14 @@ public class OgsaIvoaResourceEntity
    /**
      *
      * Public constructor.
-     * @param name The resource name.
      * @param service The parent {@link OgsaService}
      * @param source  The source {@link IvoaResource}
-     * @throws NameFormatException
      *
      */
-    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source, final String name)
-    throws NameFormatException
+    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source)
         {
         super(
-            service,
-            name
+            service
             );
         this.source = source  ;
         }
@@ -114,15 +128,92 @@ public class OgsaIvoaResourceEntity
     @Override
     public String link()
         {
-        return factories().ogsa().resources().ivoa().links().link(
+        return factories().ogsa().factories().ivoa().links().link(
             this
             );
         }
 
     @Override
-    public Status ping()
+    public Status create()
         {
-        // TODO Auto-generated method stub
-        return null;
+        //
+        // If we already have an ODSA-DAI resource ID.
+        if (ogsaid() != null)
+            {
+            return status() ;
+            }
+        //
+        // If we don't have an ODSA-DAI resource ID.
+        else {
+            IvoaCreateResourceWorkflow workflow = null;
+            try {
+                workflow = new IvoaCreateResourceWorkflow(
+                    service().endpoint()
+                    );
+                }
+            catch (MalformedURLException ouch)
+                {
+                return status(
+                    Status.ERROR
+                    );
+                }
+
+            final SimpleResourceWorkflowResult response = workflow.execute(
+                new IvoaCreateResourceWorkflow.Param()
+                    {
+                    @Override
+                    public String endpoint()
+                        {
+                        // Just use the first endpoint.
+                        return source().endpoints().select().iterator().next().endpoint();
+                        }
+
+                    @Override
+                    public Boolean quickstart()
+                        {
+                        return Boolean.FALSE;
+                        }
+
+                    @Override
+                    public Integer interval()
+                        {
+                        return new Integer(10);
+                        }
+
+                    @Override
+                    public Integer timeout()
+                        {
+                        return new Integer(300);
+                        }
+                    }
+                );
+
+            log.debug("Status  [{}]", response.status());
+            log.debug("Created [{}]", response.result());
+    
+            if (response.status() == WorkflowResult.Status.COMPLETED)
+                {
+                ogsaid(
+                    response.result().toString()
+                    );
+                return status(
+                    Status.ACTIVE
+                    );
+                }
+    
+            else {
+                return status(
+                    Status.ERROR
+                    );
+                }
+            }
+        }
+
+    @Override
+    public Status release()
+        {
+        throw new UnsupportedOperationException(
+            "Release not implemented yet"
+            );
         }
     }
