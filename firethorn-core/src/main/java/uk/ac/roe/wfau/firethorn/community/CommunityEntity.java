@@ -102,7 +102,7 @@ implements Community
         @CreateMethod
         public Community create(final String uri)
             {
-            log.debug("create(String) [{}][{}]", uri);
+            log.debug("create(String) [{}]", uri);
             return create(
                 uri,
                 uri
@@ -125,7 +125,7 @@ implements Community
         @CreateMethod
         public Community create(final String uri, final String name, final JdbcResource space)
             {
-            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", space, name, uri);
+            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);
             final Community community = this.select(
                 uri
                 );
@@ -136,9 +136,9 @@ implements Community
             else {
                 return super.insert(
                     new CommunityEntity(
-                        space,
+                        uri,
                         name,
-                        uri
+                        space
                         )
                     );
                 }
@@ -198,12 +198,12 @@ implements Community
      * Create a new Community.
      *
      */
-    protected CommunityEntity(final JdbcResource space, final String name, final String uri)
+    protected CommunityEntity(final String uri, final String name, final JdbcResource space)
         {
         super(
             name
             );
-        log.debug("CommunityEntity(JdbcResource, String, String) [{}][{}]", uri, name);
+        log.debug("CommunityEntity(String, String. JdbcResource) [{}][{}]", uri, name, space);
         this.space = space ;
         this.uri = uri ;
         }
@@ -276,6 +276,7 @@ implements Community
     @Override
     public JdbcResource space(final boolean create)
         {
+        log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))
             {
             this.space = factories().jdbc().resources().userdata() ;

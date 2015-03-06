@@ -87,6 +87,14 @@ public interface OgsaJdbcResource
        public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source);
 
         /**
+         * Create a new {@link OgsaJdbcResource} for a {@link JdbcResource}..
+         * @param source  The {@link JdbcResource}.
+         * @return A new {@link OgsaJdbcResource}.
+         *
+         */
+        public OgsaJdbcResource create(final JdbcResource source);
+
+        /**
          * Create a new {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}..
          * @param service The {@link OgsaService}.
          * @param source  The {@link JdbcResource}.

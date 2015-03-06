@@ -30,7 +30,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -40,7 +48,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
 /**
- *
+ * {@link OgsaJdbcResource} implementation.
  *
  */
 @Slf4j
@@ -79,13 +87,179 @@ implements OgsaJdbcResource
      * Hibernate table mapping, {@value}.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaJdbcResource";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaJdbcResourceEntity";
     
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_RESOURCE_SOURCE_COL = "source";
+
+    /**
+     * {@link OgsaJdbcResource.EntityFactory} implementation.
+     *
+     */
+    @Component
+    @Repository
+    public static class OgsaJdbcResourceEntityFactory
+    extends AbstractEntityFactory<OgsaJdbcResource>
+    implements OgsaJdbcResource.EntityFactory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return OgsaJdbcResourceEntity.class;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.IdentFactory idents;
+        @Override
+        public OgsaJdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        private OgsaJdbcResource.LinkFactory links;
+        @Override
+        public OgsaJdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+        
+        @Override
+        @SelectMethod
+        public Iterable<OgsaJdbcResource> select()
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaJdbcResource-select-all"
+                    )
+                );
+            }
+        
+        @Override
+        @SelectMethod
+        public Iterable<OgsaJdbcResource> select(final OgsaService service)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaJdbcResource-select-service"
+                    ).setEntity(
+                        "service",
+                        service
+                        )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<OgsaJdbcResource> select(JdbcResource source)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaJdbcResource-select-source"
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaJdbcResource-select-service-source"
+                    ).setEntity(
+                        "service",
+                        service
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            }
+
+        @Override
+        @CreateAtomicMethod
+        public OgsaJdbcResource create(final JdbcResource source)
+            {
+            log.debug("create(JdbcResource) [{}]", source);
+            return create(
+                factories().ogsa().services().primary(),
+                source
+                );
+            }
+        
+        @Override
+        @CreateAtomicMethod
+        public OgsaJdbcResource create(final OgsaService service, final JdbcResource source)
+            {
+            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service, source);
+            return super.insert(
+                new OgsaJdbcResourceEntity(
+                    service,
+                    source
+                    )
+                );
+            }
+        
+        @Override
+        @CreateMethod
+        public OgsaJdbcResource primary(final JdbcResource source)
+            {
+            log.debug("primary(JdbcResource) [{}]", source);
+            // Really really simple - just get the first. 
+            OgsaJdbcResource found = super.first(
+                super.query(
+                    "OgsaJdbcResource-select-source"
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            // If we don't have one, create one.
+            if (found == null)
+                {
+                found = create(
+                    source
+                    );
+                }
+            return found ;
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaJdbcResource primary(OgsaService service, JdbcResource source)
+            {
+            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service, source);
+            // Really really simple - just get the first. 
+            OgsaJdbcResource found = super.first(
+                super.query(
+                    "OgsaJdbcResource-select-service-source"
+                    ).setEntity(
+                        "service",
+                        service
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            // If we don't have one, create one.
+            if (found == null)
+                {
+                //found = create(
+                found = factories().ogsa().factories().jdbc().create(
+                    service,
+                    source
+                    );
+                }
+            return found ;
+            }
+        }
     
     /**
      * Protected constructor. 

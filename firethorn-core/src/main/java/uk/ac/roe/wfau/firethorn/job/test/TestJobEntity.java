@@ -357,4 +357,10 @@ implements TestJob
     	{
 		return this.factory;
 		}
+
+    @Override
+    public Status prepare(boolean run)
+        {
+        return prepare();
+        }
     }

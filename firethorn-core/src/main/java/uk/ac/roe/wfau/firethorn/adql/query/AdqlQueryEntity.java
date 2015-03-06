@@ -76,9 +76,12 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
@@ -1083,7 +1086,73 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
+    //@Transient
+    //private String ogsourceid ;
+    //@Transient
+    //private String ogtargetid ;
+    
+    @Override
+    public Status prepare(boolean run)
+        {
+        log.debug("prepare(boolean)");
+        log.debug(" ident [{}]", ident());
 
+        //
+        // Validate the query.
+        Status result = prepare();
+
+        //
+        // Prepare our resources.
+        if (result == Status.READY)
+            {
+            //
+            // Is this where we create the table ?
+            //
+
+/*
+ * Should these references be properties of the query ?
+ *     OgsaBaseResource source
+ *     OgsaBaseResource target
+ */                  
+            
+            //
+            // Load these here (in transaction/session)
+            // Use them in later execute Thread.
+            String ogsourceid ;
+            String ogtargetid ; 
+            
+            // Get the OGSA-DAI ident from our primary resource.
+            // Fails for DISTRIBUTED, needs to create a new DQP.
+            log.debug("++++++++ Checking source OgsaBaseResource ++++++++");
+            BaseResource<?> base = primary();
+            OgsaBaseResource ogsa = base.ogsa().primary();
+            ogsourceid = ogsa.ogsaid();
+            log.debug("++ Query source [{}]", ogsourceid );
+
+            log.debug("++++++++ Checking target OgsaJdbcResource ++++++++");
+            BaseResource<?> aaa = jdbctable.resource();
+            OgsaBaseResource bbb = aaa.ogsa().primary() ;
+            ogtargetid = bbb.ogsaid() ;
+            log.debug("++ Query target [{}]", ogtargetid);
+
+            if (ogsourceid == null)
+                {
+                result = status(
+                    Status.ERROR
+                    );
+                }
+
+            if (ogtargetid == null)
+                {
+                result = status(
+                    Status.ERROR
+                    );
+                }
+            }
+        
+        return result ;
+        }
+    
     @Override
     public Status execute()
         {
@@ -1126,26 +1195,53 @@ implements AdqlQuery, AdqlParserQuery
                     log.debug("-- AdqlQuery executing [{}]", ident());
                     log.debug("-- Mode     [{}]", query.mode());
                     log.debug("-- Endpoint [{}]", params().endpoint());
-    
-                    // Get the OGSA-DAI ident from our primary resource.
-                    // Fails for DISTRIBUTED, needs to create a new DQP.
-                    final String source = primary().ogsa().primary().ogsaid();
-                    log.debug("-- Query source [{}]", primary().name());
-                    log.debug("-- Query source [{}]", source );
 
-                    final String ogtablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
-                    log.debug("-- User table   [{}]", ogtablename);
-                    final String ogresource = AdqlQueryEntity.this.jdbctable.resource().ogsa().primary().ogsaid() ;
-                    log.debug("-- User store   [{}]", AdqlQueryEntity.this.jdbctable.resource().name());
-                    log.debug("-- User store   [{}]", ogresource);
-    
+/*
+ * Should these references be properties of the query ?
+ *     OgsaBaseResource source
+ *     OgsaBaseResource target
+ *     
+ * These refer to state in the OGSA-DAI service.
+ * If OGSA-DAI service resources are reset, then these will be invalid.
+ * Need to be able to test status and re-create ..
+ * 
+ * Error callback from OGSA-DAI service with resource ID ?
+ * Resource xxyyzz not found ..
+ * Internal error, need to retry query.
+ * 
+ *  Or ... create all the resources on demand, nothing stored.
+ * 
+ */                  
+                    //
+                    // Need these in execute() Thread.
+                    // Created them in prepare() Thread.
+                    final String ogsourceid ;
+                    final String ogtargetid ; 
+                    
+                    log.debug("-------- Checking source OgsaBaseResource --------");
+                    BaseResource<?> base = primary();
+                    OgsaBaseResource ogsa = base.ogsa().primary();
+                    ogsourceid = ogsa.ogsaid();
+                    log.debug("-- Query source [{}]", ogsourceid);
+
+                    log.debug("-------- Checking target OgsaJdbcResource  --------");
+                    BaseResource<?>  aaa = jdbctable.resource();
+                    OgsaBaseResource bbb = aaa.ogsa().primary() ;
+                    ogtargetid = bbb.ogsaid() ;
+                    log.debug("-- Query target [{}]", ogtargetid);
+                    
+                    log.debug("++++++++ Checking target JdbcTable ++++++++");
+                    final String ogtablename = jdbctable.namebuilder().toString() ;
+                    log.debug("-- Output table [{}]", ogtablename);
+                    log.debug("-- Output table [{}]", jdbctable.resource().name());
+                    
                     final PipelineResult frog = pipeline.execute(
                         new PipelineParam()
                             {
                             @Override
                             public String source()
                                 {
-                                return source ;
+                                return ogsourceid ;
                                 }
                             @Override
                             public String query()
@@ -1159,7 +1255,7 @@ implements AdqlQuery, AdqlParserQuery
                                     {
                                     public String ogsaid()
                                         {
-                                        return ogresource;
+                                        return ogtargetid;
                                         }
                                     @Override
                                     public String table()

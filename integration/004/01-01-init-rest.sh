@@ -113,6 +113,8 @@ runquery()
             | status
             )
 
+    #sleep 20
+    
     while [ "${status:?}" == 'PENDING' -o "${status:?}" == 'RUNNING' ]
     do
         sleep 1

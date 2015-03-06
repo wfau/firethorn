@@ -253,6 +253,7 @@ public class JdbcResourceEntity
         public JdbcResource userdata()
             {
             log.debug("userdata()");
+            log.debug(" url [{}]", udurl);
             JdbcResource userdata = super.first(
                 super.query(
                     "JdbcResource-select-userdata"

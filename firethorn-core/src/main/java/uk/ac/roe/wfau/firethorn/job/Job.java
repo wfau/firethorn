@@ -141,11 +141,17 @@ extends Entity
         public Status update(final Identifier ident, final Job.Status next, final Integer timeout);
 
         /**
-         * Prepare a job.
+         * Validate a Job parameters.
          *
          */
-        public Status prepare(final Identifier iadent);
+        public Status prepare(final Identifier ident);
 
+        /**
+         * Prepare a Job for execution.
+         *
+         */
+        public Status prepare(final Identifier ident, boolean run);
+        
         /**
          * Execute a job.
          *
@@ -248,10 +254,16 @@ extends Entity
     public DateTime finished();
 
     /**
-     * Prepare the Job.
+     * Validate the Job parameters.
      *
      */
     public Status prepare();
+
+    /**
+     * Prepare the Job for execution.
+     *
+     */
+    public Status prepare(boolean run);
 
     /**
      * Execute the Job.

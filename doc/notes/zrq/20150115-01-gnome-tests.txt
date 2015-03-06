@@ -57,13 +57,13 @@ EOF
 
             mvn clean compile war:war
 
-            source src/test/bin/jdbc-functions.sh
-            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
-
-                jdbcconfig atlas         firethorn.atlas
-                jdbcconfig userdata      firethorn.user
-
-            popd
+#            source src/test/bin/jdbc-functions.sh
+#            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+#
+#                jdbcconfig atlas         firethorn.atlas
+#                jdbcconfig userdata      firethorn.user
+#
+#            popd
             
             export MAVEN_OPTS=-Xmx128m
             mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
@@ -72,6 +72,6 @@ EOF
     popd
 EOF
 
-    gnome-terminal --geometry='200x20+300+590' -x bash -c "source ${mytemp:?}"
+    gnome-terminal --geometry='200x20+350+590' -x bash -c "source ${mytemp:?}"
 
 

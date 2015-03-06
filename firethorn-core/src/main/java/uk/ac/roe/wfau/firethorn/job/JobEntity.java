@@ -274,7 +274,7 @@ implements Job
 
             if (next == Status.READY)
                 {
-                log.debug("Preparing job");
+                log.debug("Valiating job params");
                 result = executor().prepare(
                     ident
                     );
@@ -282,9 +282,10 @@ implements Job
 
             else if (next == Status.RUNNING)
                 {
-                log.debug("Preparing job");
+                log.debug("Preparing job for execution");
                 result = executor().prepare(
-                    ident
+                    ident,
+                    true
                     );
 
                 if (result == Status.READY)
@@ -360,6 +361,39 @@ implements Job
 
         @Override
         @UpdateAtomicMethod
+        public Status prepare(final Identifier ident, boolean run)
+            {
+            log.debug("prepare(Identifier)");
+            log.debug("  Ident [{}]", ident);
+            try {
+                final Job job = resolver().select(
+                    ident
+                    );
+                if (job != null)
+                    {
+                    return job.prepare(
+                        run
+                        );
+                    }
+                else {
+                    log.debug("Unable to find job [{}]", ident);
+                    return Status.ERROR;
+                    }
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            catch (final Exception ouch)
+                {
+                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            }
+
+        @Override
+        @UpdateAtomicMethod
         public Status prepare(final Identifier ident)
             {
             log.debug("prepare(Identifier)");
@@ -368,15 +402,15 @@ implements Job
                 final Job job = resolver().select(
                     ident
                     );
-if (job != null)
-    {
-    log.debug("Found [{}][{}]", job.ident(), job.getClass().getName());
-    return job.prepare();
-    }
-else {
-    log.debug("NOT FOUND");
-    return Status.ERROR;
-    }
+                if (job != null)
+                    {
+                    //log.debug("Found [{}][{}]", job.ident(), job.getClass().getName());
+                    return job.prepare();
+                    }
+                else {
+                    log.debug("Unable to find job [{}]", ident);
+                    return Status.ERROR;
+                    }
                 }
             catch (final EntityNotFoundException ouch)
                 {

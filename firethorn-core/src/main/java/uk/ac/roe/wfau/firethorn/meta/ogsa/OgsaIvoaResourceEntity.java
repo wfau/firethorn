@@ -29,7 +29,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
@@ -37,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
 
 /**
- *
+ * {@link OgsaIvoaResource} implementation.
  *
  */
 @Slf4j
@@ -76,13 +84,150 @@ public class OgsaIvoaResourceEntity
      * Hibernate table mapping, {@value}.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaIvoaResource";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaIvoaResourceEntity";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_RESOURCE_SOURCE_COL = "source";
+    
+    /**
+     * {@link OgsaIvoaResource.EntityFactory} implementation.
+     *
+     */
+    @Component
+    @Repository
+    public static class OgsaIvoaResourceEntityFactory
+    extends AbstractEntityFactory<OgsaIvoaResource>
+    implements OgsaIvoaResource.EntityFactory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return OgsaIvoaResourceEntity.class;
+            }
+
+        @Autowired
+        private OgsaIvoaResource.IdentFactory idents;
+        @Override
+        public OgsaIvoaResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        private OgsaIvoaResource.LinkFactory links;
+        @Override
+        public OgsaIvoaResource.LinkFactory links()
+            {
+            return this.links;
+            }
+        
+        @Override
+        @SelectMethod
+        public Iterable<OgsaIvoaResource> select()
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaIvoaResource-select-all"
+                    )
+                );
+            }
+        
+        @Override
+        @SelectMethod
+        public Iterable<OgsaIvoaResource> select(final OgsaService service)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaIvoaResource-select-service"
+                    ).setEntity(
+                        "service",
+                        service
+                        )
+                );
+            }
+
+        @Override
+        public Iterable<OgsaIvoaResource> select(IvoaResource source)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaIvoaResource-select-source"
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaIvoaResource-select-service-source"
+                    ).setEntity(
+                        "service",
+                        service
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source)
+            {
+            return super.insert(
+                new OgsaIvoaResourceEntity(
+                    service,
+                    source
+                    )
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaIvoaResource primary(IvoaResource source)
+            {
+            return this.primary(
+                factories().ogsa().services().primary(),
+                source
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaIvoaResource primary(OgsaService service, IvoaResource source)
+            {
+            // Really really simple - just get the first. 
+            OgsaIvoaResource found = super.first(
+                super.query(
+                    "OgsaIvoaResource-select-service-source"
+                    ).setEntity(
+                        "service",
+                        service
+                    ).setEntity(
+                        "source",
+                        source
+                    )
+                );
+            // If we don't have one, create one.
+            if (found == null)
+                {
+                found = create(
+                    service,
+                    source
+                    );
+                }
+            return found ;
+            }
+        }
     
     /**
      * Protected constructor. 
