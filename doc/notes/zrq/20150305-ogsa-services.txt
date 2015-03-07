@@ -88,12 +88,6 @@
         source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
     done
 
-
-
-
-
-
-
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
 
 
