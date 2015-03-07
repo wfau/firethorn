@@ -214,9 +214,10 @@ public class CreateFireThornDQPActivity
             "uk.ac.roe.wfau.firethorn.DQP_RESOURCE_TEMPLATE"
             );
 
-        String configFilename  = null ;
+        //String configFilename  = null ;
         String contextFilename = null ;
 
+        /*
         final Reader stringReader = new StringReader(
             "<DQPResourceConfig>" +
             "    <gregor>" +
@@ -229,10 +230,11 @@ public class CreateFireThornDQPActivity
             "    </dataResources>" +
             "</DQPResourceConfig>"
             );
+         */
 
         try {
-            configFilename  = writeConfig((Reader)stringReader, resourceID);
-            contextFilename = writeContext(resourceID, configFilename);
+            //configFilename  = writeConfig((Reader)stringReader, resourceID);
+            contextFilename = writeContext(resourceID);
             }
         catch (IOException e)
             {
@@ -245,7 +247,7 @@ public class CreateFireThornDQPActivity
 
         LOG.debug("Resource ID  [" + resourceID + "]");
         LOG.debug("Template ID  [" + templateID + "]");
-        LOG.debug("Config  file [" + configFilename  + "]");
+        //LOG.debug("Config  file [" + configFilename  + "]");
         LOG.debug("Context file [" + contextFilename + "]");
 
         try {
@@ -268,6 +270,7 @@ public class CreateFireThornDQPActivity
                 );
             DQPFederation federation = resource.getFederation();
             LOG.debug("Federation [" + federation + "]");
+            
             //
             // Add data nodes.
             if (federation instanceof MetadataServiceDQPFederation)
@@ -379,7 +382,7 @@ public class CreateFireThornDQPActivity
         return configFileName;
         }
     
-    private String writeContext(ResourceID resourceID, String configFileName)
+    private String writeContext(ResourceID resourceID)
     throws IOException, FileNotFoundException
         {
         // copy the context template to the resource config directory
@@ -393,11 +396,12 @@ public class CreateFireThornDQPActivity
             (File)OGSADAIContext.getInstance().get(OGSADAIConstants.CONFIG_DIR);
         DQPEditor editor = new DQPEditor();
         editor.initialize(ogsadaiConfigDir);
+/*
         editor.setFederationFile(
                 resourceID.toString(),
                 mEvaluationNodeFactoryClass,
                 configFileName);
-        
+ */        
         LOG.debug("Wrote context to " + contextFile);
         
         return mConfigDir + "/" + resourceID.toString() + "/DQPContext.xml";

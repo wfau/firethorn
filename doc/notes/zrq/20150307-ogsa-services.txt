@@ -1,0 +1,104 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #--------------
+
+    Keeping bith set of data in sync for OgsaJdbcResource will cause problems.
+    If we don't check, then if OGSA-DAI temp data gets damaged, FireThorn won't know.
+    If we check during a query - we know it is damaged, but retyring the query isn't easy.
+    If we check before the query - making the call is expensive.
+    
+    If we are going to check each time, why not create each time ?
+    Make *all* of the OGSA-DAI resources transient.
+
+    Try making DQP resources transient, and apply it to OgsaJdbcResource later.
+
+    #--------------
+
+    Steps needed
+
+        Create the DQP.
+
+        *Select required DataNodes
+        *Create required DataNodes
+
+        Add DataNodes to the DQPFederation.
+
+        Execute a query
+
+
+    #--------------
+
+
+        Create empty DQP
+        Add a resource for each target (Jdbc or Ivoa).
+
+
+        Execute the query
+
+
+        SQLQueryActivity
+
+                createDataSources(List<String> dataSourceNames)
+
+                processIteration(Object[] iterationData)
+                    coordinator = new Coordinator();
+                    sql = (String)iterationData[0];
+                    coordinator.execute(sql, mRequestDetails);
+
+
+
+
+
+    #--------------
+
+        Activity interfaces
+        
+            RequestActivity
+            ResourceActivity
+            SessionActivity
+            ResourceManagerActivity
+            ConfigurableActivity
+
+
+        Stuff for later ..
+
+            SimpleResourceAuthorizer        
+            SimpleFileLoginProvider
+
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}
+        pushd firethonr-ogsadai
+            mvn clean install
+        popd
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150307-01-ogsadai-gnome.txt"
+
+
