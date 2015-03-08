@@ -142,6 +142,13 @@ public interface Entity
         throws IdentifierNotFoundException;
 
         /**
+         * Search for a specific Entity by Identifier.
+         * @return The matching Entity, or null if not found.
+         *
+         */
+        public EntityType search(final Identifier ident);
+
+        /**
          * Our local Identifier factory.
          *
          */

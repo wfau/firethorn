@@ -39,7 +39,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 @Slf4j
 @Ignore
 @Transactional(
-    readOnly=false,
+    readOnly=true,
     propagation=Propagation.REQUIRES_NEW
     )
 @TransactionConfiguration(
@@ -132,7 +132,7 @@ extends TestRoot
      * @throws Exception
      *
      */
-    @Test
+    //@Test
     public void notest()
     throws Exception
         {

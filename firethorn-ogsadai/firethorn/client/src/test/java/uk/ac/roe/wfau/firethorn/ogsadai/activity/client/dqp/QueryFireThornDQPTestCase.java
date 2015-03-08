@@ -5,7 +5,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -15,17 +14,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateFireThornDQPClient.Param;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
-import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
-import uk.org.ogsadai.client.toolkit.RequestExecutionType;
-import uk.org.ogsadai.client.toolkit.RequestResource;
-import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-import uk.org.ogsadai.resource.ResourceID;
-import uk.org.ogsadai.resource.request.RequestExecutionStatus;
 
 /**
  * Test for JdbcCreateResource activity.
@@ -72,6 +61,43 @@ extends OgsaResourceTestBase
 
     @Test
     public void test002()
+    throws Exception
+        {
+/*
+        final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
+            new URL(
+                config().endpoint()
+                )
+            );
+
+        final ResourceWorkflowResult created = workflow.execute(
+            config().jdbc().databases().get("atlas")
+            );
+
+        log.debug("Status  [{}]", created.status());
+        log.debug("Request [{}]", created.request());
+        log.debug("Created [{}]", created.result());
+
+        assertNotNull(
+            created
+            );
+        assertEquals(
+            WorkflowResult.Status.COMPLETED,            
+            created.status()
+            );
+        assertNotNull(
+            created.request()
+            );
+        assertNotNull(
+            created.result()
+            );
+ */
+        
+        }
+    
+    
+    @Test
+    public void test003()
     throws Exception
         {
         //final String query = "SELECT COUNT(*) FROM AtlasSource" ;
