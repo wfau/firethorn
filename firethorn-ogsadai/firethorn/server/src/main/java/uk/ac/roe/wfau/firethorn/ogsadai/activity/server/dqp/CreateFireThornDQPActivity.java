@@ -182,7 +182,7 @@ public class CreateFireThornDQPActivity
         return new ActivityInput[] 
             {
             new TypedOptionalActivityInput(
-                CreateFireThornDQPParam.INPUT_ID,
+                CreateFireThornDQPParam.TARGET_RESOURCES,
                 String.class
                 )
             };
@@ -206,7 +206,7 @@ public class CreateFireThornDQPActivity
         ActivityTerminatedException,
         ActivityUserException
         {
-        // Get resource ID.
+        // Get DQP resource ID.
         final ResourceID resourceID = mResourceManager.createUniqueID();
 
         // Get template ID.
@@ -275,10 +275,13 @@ public class CreateFireThornDQPActivity
             // Add data nodes.
             if (federation instanceof MetadataServiceDQPFederation)
                 {
-                LOG.debug(" Adding DataNodes ....");
+                LOG.debug(" Adding DataNode");
+                String nodename = (String)iterationData[0];                
+                LOG.debug(" Adding DataNode [" +nodename + "]");
+                
                 Map<String, DataNode> map = ((MetadataServiceDQPFederation) federation).getDataNodesMap();
                 DataNode node = new SimpleDataNode(
-                    "atlas",
+                    nodename,
                     federation.getLocalNode()
                     );
                 map.put(

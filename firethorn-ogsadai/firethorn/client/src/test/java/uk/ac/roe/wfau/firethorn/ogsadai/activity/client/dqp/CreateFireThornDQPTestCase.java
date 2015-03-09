@@ -32,67 +32,8 @@ import uk.org.ogsadai.resource.request.RequestExecutionStatus;
 public class CreateFireThornDQPTestCase
 extends OgsaResourceTestBase
     {
-    public static final String RESOURCE_DRER_ID = "";
-    public static final String RESOURCE_ATLAS_ID = "atlas";
+    public static final String RESOURCE_ATLAS_ID = "ogsadai-e42abaff-24f9-4848-88db-6e00c12714e4";
 
-    @Test
-    public void test000()
-    throws Exception
-        {
-        CreateOriginalDQPClient create = new CreateOriginalDQPClient();
-        create.addConfiguration(
-            "<DQPResourceConfig>" +
-            "    <dataResources>" +
-            "        <resource " +
-            "            url=\"" + config().endpoint() + "\"" +
-            "            dsis=\"dataSinks\"" +
-            "            dsos=\"dataSources\"" +
-            "            drerID=\"" + RESOURCE_DRER_ID + "\"" + 
-            "            resourceID=\"" + RESOURCE_ATLAS_ID + "\"" +
-            "            isLocal=\"true\"" +
-            "            />" +
-            "    </dataResources>" +
-            "</DQPResourceConfig>"
-            );
-
-        final ResourceID created = create(create);
-        log.debug("DQP ID [{}]", created.toString());
-
-        }
-    
-    private ResourceID create(final CreateOriginalDQPClient create)
-    throws Exception
-        {
-        DeliverToRequestStatus deliver = new DeliverToRequestStatus();
-        deliver.connectInput(create.getResultOutput());
-        PipelineWorkflow pipeline = new PipelineWorkflow();
-        pipeline.add(create);
-        pipeline.add(deliver);
-
-        OgsaServiceClient service = new OgsaServiceClient(
-            new URL(
-                config().endpoint()
-                )
-            );
-
-        RequestResource request = service.drer().execute(
-            pipeline,
-            RequestExecutionType.SYNCHRONOUS
-            );
-
-        assertEquals(
-            "CreateDQPResource workflow - request status",
-            RequestExecutionStatus.COMPLETED, 
-            request.getRequestExecutionStatus()
-            );
-        assertTrue(
-            "New resource ID found",
-            create.hasNextResult()
-            );
-
-        return create.nextResult();
-        }
-    
     @Test
     public void test001()
     throws Exception
@@ -104,7 +45,7 @@ extends OgsaResourceTestBase
             );
 
         final ResourceWorkflowResult result = workflow.execute(
-            "albert"
+            RESOURCE_ATLAS_ID
             );
 
         log.debug("Status  [{}]", result.status());

@@ -20,6 +20,7 @@ import uk.org.ogsadai.dqp.lqp.HeadingImpl;
 import uk.org.ogsadai.dqp.lqp.exceptions.AttributeNotFoundException;
 import uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException;
 import uk.org.ogsadai.dqp.lqp.udf.FunctionRepository;
+import uk.org.ogsadai.dqp.presentation.common.SimpleDataNode;
 
 public class MetadataServiceDataDictionary implements DataDictionary
 {
@@ -79,12 +80,30 @@ public class MetadataServiceDataDictionary implements DataDictionary
         LOG.debug("  -- Nodes ");
         //-- ZRQ
 
-        MetadataServiceTableSchema tableSchema = 
-                new MetadataServiceTableSchema(
-                        tableName, 
-                        tableMapping.tableName(), 
-                        mFederation.getDataNodesMap().get(
-                                tableMapping.resourceIdent()));
+        // ZRQ
+        // Populate the data nodes on the fly.
+        DataNode node = mFederation.getDataNodesMap().get(
+            tableMapping.resourceIdent()
+            );
+        LOG.debug(" Found [" + node + "]");
+        if (node == null)
+            {
+            node = new SimpleDataNode(
+                tableMapping.resourceIdent(),
+                mFederation.getLocalNode()
+                );
+            LOG.debug(" Created [" + node + "]");
+            mFederation.getDataNodesMap().put(
+                tableMapping.resourceIdent(),
+                node
+                );
+            }
+        
+        MetadataServiceTableSchema tableSchema = new MetadataServiceTableSchema(
+            tableName, 
+            tableMapping.tableName(), 
+            node
+            );
         tableSchema.setDataDictionary(this);
         return tableSchema;
 //        List<Attribute> attributes = getAttributes(tableName);

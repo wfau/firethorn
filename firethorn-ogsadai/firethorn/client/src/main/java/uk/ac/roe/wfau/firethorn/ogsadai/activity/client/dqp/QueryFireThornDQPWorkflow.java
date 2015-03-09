@@ -134,7 +134,7 @@ extends BaseWorkflow
     
     protected ResourceWorkflowResult create(final Param param)
         {
-        log.debug("Creating DQP [{}]", param.create().ident());
+        log.debug("Creating DQP [{}]", param.create().target());
         //
         // Create our pipeline.
         final PipelineWorkflow workflow = new PipelineWorkflow();
@@ -153,7 +153,7 @@ extends BaseWorkflow
             deliver
             );
         deliver.connectInput(
-            create.getResultOutput()
+            create.output()
             );
 
         //
@@ -166,7 +166,7 @@ extends BaseWorkflow
             return new SimpleResourceWorkflowResult(
                 request,
                 new ResourceID(
-                    create.getResultOutput().getDataValueIterator().nextAsString()
+                    create.output().getDataValueIterator().nextAsString()
                     )
                 );
             }

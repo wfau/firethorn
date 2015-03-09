@@ -120,6 +120,7 @@ implements OgsaJdbcResource
             return this.idents;
             }
 
+        @Autowired
         private OgsaJdbcResource.LinkFactory links;
         @Override
         public OgsaJdbcResource.LinkFactory links()
@@ -208,7 +209,7 @@ implements OgsaJdbcResource
             }
         
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public OgsaJdbcResource primary(final JdbcResource source)
             {
             log.debug("primary(JdbcResource) [{}]", source);
@@ -232,7 +233,7 @@ implements OgsaJdbcResource
             }
 
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public OgsaJdbcResource primary(OgsaService service, JdbcResource source)
             {
             log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service, source);

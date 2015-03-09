@@ -127,7 +127,7 @@ extends OgsaResourceTestBase
                     return new Param()
                         {
                         @Override
-                        public String ident()
+                        public String target()
                             {
                             return "no-ident";
                             }

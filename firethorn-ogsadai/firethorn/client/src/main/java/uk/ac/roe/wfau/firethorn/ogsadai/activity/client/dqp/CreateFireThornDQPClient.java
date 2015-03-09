@@ -47,10 +47,10 @@ extends BaseActivity
     public interface Param
         {
         /**
-         * The resource identifier.
+         * Target resource(s).
          * 
          */
-        public String ident();
+        public String target();
         }
 
     /**
@@ -77,19 +77,15 @@ extends BaseActivity
                 )
             );
         input = new SimpleActivityInput(
-            CreateFireThornDQPParam.INPUT_ID,
-            SimpleActivityInput.OPTIONAL
+            CreateFireThornDQPParam.TARGET_RESOURCES,
+            SimpleActivityInput.REQUIRED
             );
 
-        if (param.ident() != null)
-            {
-            this.input.add(
-                new StringData(
-                    param.ident()
-                    )
-                );
-            }
-
+        input.add(
+            new StringData(
+                param.target()
+                )
+            );
         
         output = new SimpleActivityOutput(
             CreateFireThornDQPParam.OUTPUT_ID
@@ -124,7 +120,7 @@ extends BaseActivity
      * Get the activity's result output.
      * 
      */
-    public SingleActivityOutput getResultOutput()
+    public SingleActivityOutput output()
         {
         return output.getSingleActivityOutputs()[0];
         }
@@ -145,7 +141,7 @@ extends BaseActivity
      * Get the next resource ID from the output.
      * 
      */
-    public ResourceID nextResult() 
+    public ResourceID getNextResult() 
     throws DataStreamErrorException, 
            UnexpectedDataValueException, 
            DataSourceUsageException
@@ -156,8 +152,7 @@ extends BaseActivity
         }
 
     @Override
-    protected void validateIOState()
-    throws ActivityIOIllegalStateException
+    protected void validateIOState() throws ActivityIOIllegalStateException
         {
         }
 
@@ -165,15 +160,16 @@ extends BaseActivity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]
-            {
-            input
-            };
+             {
+             input
+             };
         }
 
     @Override
     protected ActivityOutput[] getOutputs()
         {
-        return new ActivityOutput[]{
+        return new ActivityOutput[]
+            {
             output
             };
         }

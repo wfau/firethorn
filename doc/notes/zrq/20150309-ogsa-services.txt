@@ -1,0 +1,151 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+#----------------------
+# WHY
+
+    JdbcResource
+        |
+        +-- OgsaJdbdResource
+        |       |
+        |       +-- osaid
+        |       |
+        |       +-- OgsaService
+        |               |
+        |               +-- endpoint
+        |
+        +-- JdbcSchema
+                |
+                +-- JdbcTable
+                        |
+                        +-- alias
+
+
+    Longer term issue - many OgsaJdbdResource/OgsaService for one JdbcResource
+
+
+
+
+
+#----------------------
+# WHAT
+
+    Create JdbcResource
+
+    During AdqlQuery.prepare(true)
+    Create on demand OgsaJdbdResource
+        Create on demand OgsaService
+        Assign osaid
+
+    Start AdqlQuery workflow.
+
+        DIRECT
+            use JdbdResource->OgsaJdbdResource->osaid
+
+        DISTRIBUTED
+            Create DQP with list of osaid
+                JdbdResource->OgsaJdbdResource->osaid
+                JdbdResource->OgsaJdbdResource->osaid
+                JdbdResource->OgsaJdbdResource->osaid
+
+            use DQPResource->osaid
+
+        How much can we collapse into one step ?
+        Create the DQP and use it directly ?
+        At the moment we need to hand the DQP to the framework to be managed.
+
+        Create DQP and execute SQLQuery activity on it ..
+
+        Manual dev/testing
+
+            Create a set of JDBC osaid
+                JdbdResource->OgsaJdbdResource->osaid
+                JdbdResource->OgsaJdbdResource->osaid
+                JdbdResource->OgsaJdbdResource->osaid
+
+            Create DQP with list of osaid
+
+            Execute SQLQueryActivity on the DQP
+
+#----------------------
+# HOW
+
+    Execute AdqlQuery direct from JUnit - locks up in the excution thread.
+    Transaction / database locks ? ..
+
+            
+    Execute SQLQueryAcrivity direct from JUnit
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        mvn clean install
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core ; mvn clean install ; popd
+
+        pushd firethorn-webapp ; mvn clean install ; popd
+
+        pushd firethorn-ogsadai ; mvn clean install ; popd
+
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150307-01-firethorn-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150307-02-ogsadai-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150305-01-test-workspace.txt"
+
+
+
+    http://localhost:8080/firethorn/jdbc/resource/10551296
+    http://localhost:8080/firethorn/adql/resource/10551297
+
+        atlasjdbc
+            /jdbc/resource/10551296
+        atlasadql
+            /adql/resource/10551297
+        atlaspublic
+            /adql/schema/10584146
+        twomasspublic
+            /adql/schema/10584147
+
+
+            /ogsa/jdbc/10747904
+                ogsaid  :  ogsadai-e42abaff-24f9-4848-88db-6e00c12714e4
+
+
+
+
+

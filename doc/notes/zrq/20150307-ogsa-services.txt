@@ -98,7 +98,7 @@
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-        pushd firethonr-ogsadai
+        pushd firethorn-ogsadai
             mvn clean install
         popd
     popd
@@ -108,6 +108,15 @@
 
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150307-02-ogsadai-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+            mvn -D skipTests=false -D test=CombinedQueryTestCase test
+        popd
+    popd
+
+
 
 
 

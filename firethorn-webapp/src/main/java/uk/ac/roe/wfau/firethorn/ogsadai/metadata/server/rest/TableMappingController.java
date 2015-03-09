@@ -136,7 +136,8 @@ public class TableMappingController
          */
         public String getResource()
             {
-            return this.table.resource().meta().ogsa().id();
+            //return this.table.resource().meta().ogsa().id();
+            return this.table.resource().ogsa().primary().ogsaid();
             }
         }
     }

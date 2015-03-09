@@ -89,7 +89,7 @@ extends BaseWorkflow
             new CreateFireThornDQPClient.Param()
                 {
                 @Override
-                public String ident()
+                public String target()
                     {
                     return ident;
                     }
@@ -109,7 +109,7 @@ extends BaseWorkflow
         
         DeliverToRequestStatus deliver = new DeliverToRequestStatus();
         deliver.connectInput(
-            create.getResultOutput()
+            create.output()
             );
 
         PipelineWorkflow workflow = new PipelineWorkflow();
@@ -123,7 +123,7 @@ extends BaseWorkflow
                     RequestExecutionType.SYNCHRONOUS
                     ),
                 new ResourceID(
-                    create.getResultOutput().getDataValueIterator().nextAsString()
+                    create.output().getDataValueIterator().nextAsString()
                     )
                 );
             }

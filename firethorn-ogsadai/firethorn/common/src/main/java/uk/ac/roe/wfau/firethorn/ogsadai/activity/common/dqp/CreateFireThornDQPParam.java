@@ -26,28 +26,16 @@ public class CreateFireThornDQPParam
     {
 
     /**
-     * Parameter name for the input resource ID.
+     * Parameter name for the target resources.
      * 
      */
-    public static final String INPUT_ID = "input.id" ;
+    public static final String TARGET_RESOURCES = "target.resources" ;
 
     /**
      * Parameter name for the output resource ID.
      * 
      */
     public static final String OUTPUT_ID = "output.id" ;
-
-    /**
-     * Parameter name for the input tuples.
-     * 
-     */
-    public static final String TUPLE_INPUT  = "tuples" ;
-
-    /**
-     * Parameter name for the output tuples.
-     * 
-     */
-    public static final String TUPLE_OUTPUT = "tuples" ;
 
     /**
      * Default Activity name.
