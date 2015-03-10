@@ -74,8 +74,16 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
             query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY ident desc"
             ),
         @NamedQuery(
+            name  = "OgsaJdbcResource-select-source-status",
+            query = "FROM OgsaJdbcResourceEntity WHERE source = :source AND status = :status ORDER BY ident desc"
+            ),
+        @NamedQuery(
             name  = "OgsaJdbcResource-select-service-source",
             query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "OgsaJdbcResource-select-service-source-status",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source AND status = :status ORDER BY ident desc"
             )
         }
     )
@@ -212,15 +220,24 @@ implements OgsaJdbcResource
         @CreateAtomicMethod
         public OgsaJdbcResource primary(final JdbcResource source)
             {
+            return primary(
+                factories().ogsa().services().primary(),
+                source
+                );
+/*
+ * 
             log.debug("primary(JdbcResource) [{}]", source);
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
-                    "OgsaJdbcResource-select-source"
+                    "OgsaJdbcResource-select-source-status"
                     ).setEntity(
                         "source",
                         source
-                    )
+                    ).setString(
+                        "status",
+                        Status.ACTIVE.name()
+                        )
                 );
             if (found != null)
                 {
@@ -233,6 +250,8 @@ implements OgsaJdbcResource
                     source
                     );
                 }
+ *             
+ */
             }
 
         @Override
@@ -243,13 +262,16 @@ implements OgsaJdbcResource
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
-                    "OgsaJdbcResource-select-service-source"
+                    "OgsaJdbcResource-select-service-source-status"
                     ).setEntity(
                         "service",
                         service
                     ).setEntity(
                         "source",
                         source
+                    ).setString(
+                        "status",
+                        Status.ACTIVE.name()
                     )
                 );
             if (found != null)

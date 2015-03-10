@@ -177,12 +177,11 @@ public class OgsaServiceEntity
         private String endpoint ;
 
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public OgsaService primary()
             {
             log.debug("primary()");
             // Really really simple - just get the first ACTIVE service.
-/*
             OgsaService service = super.first(
                 super.query(
                     "OgsaService-select-status"
@@ -190,12 +189,6 @@ public class OgsaServiceEntity
                         "status",
                         OgsaService.Status.ACTIVE.name()
                         )
-                );
- */
-            OgsaService service = super.first(
-                super.query(
-                    "OgsaService-select-all"
-                    )
                 );
             
             // If we don't have an ACTIVE service, create a new one.
@@ -212,8 +205,8 @@ public class OgsaServiceEntity
                     }
                 else {
                     try {
-                      //service = create(
-                        service = factories().ogsa().services().create(
+                      service = create(
+                      //service = factories().ogsa().services().create(
                             endpoint
                             );
                         }
