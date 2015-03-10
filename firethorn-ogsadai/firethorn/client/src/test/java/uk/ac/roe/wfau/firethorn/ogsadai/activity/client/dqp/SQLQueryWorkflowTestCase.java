@@ -28,6 +28,11 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcResourceTestBas
 public class SQLQueryWorkflowTestCase
 extends JdbcResourceTestBase
     {
+
+    protected static final String ATLAS_RESOURCEID  = "ogsadai-0fa43253-938d-4072-9b28-06c6de74b990";
+    protected static final String ATLAS_TABLE_ALIAS = "JDBC_TABLE_11534337" ;
+    protected static final String DQP_RESOURCEID    = "ogsadai-8f1f002d-64e8-4e15-ba05-e79eb36dcee0";
+    
     public static class SQLQueryParam
     implements SQLQueryWorkflow.Param
         {
@@ -52,11 +57,10 @@ extends JdbcResourceTestBase
             }
         }
 
-    //
-    // Create new JDBC resource for Atlas ..
-    // Actually, we should call FireThorn to get this.
-    //
-    
+    /**
+     * Create new JDBC resource for Atlas.
+     * Replace with a call to FireThorn.
+     *
     @Test
     public void test000()
     throws Exception
@@ -82,19 +86,17 @@ extends JdbcResourceTestBase
             result.result()
             );
         }
-/*
- * http://localhost:8080/firethorn/jdbc/table/10616833
- * ATLASDR1.dbo.atlasSource
- * JDBC_TABLE_11534337
- * ogsadai-a33b80bd-3a40-447b-80bd-31bb5d16d066
- * 
- */
+     */
     
     protected final SQLQueryParam DIRECT = new SQLQueryParam(
-        "ogsadai-a33b80bd-3a40-447b-80bd-31bb5d16d066",
+        ATLAS_RESOURCEID,
         "SELECT COUNT(ra) FROM atlassource WHERE ra BETWEEN 80.0 AND 80.1"
         );
     
+    /**
+     * DIRECT query to Atlas Source table.
+     *
+     */
     @Test
     public void test001()
     throws Exception
@@ -117,6 +119,10 @@ extends JdbcResourceTestBase
             );
         }
     
+    /**
+     * Create a new empty DQP.
+     * 
+     */
     @Test
     public void test002()
     throws Exception
@@ -142,13 +148,10 @@ extends JdbcResourceTestBase
             result.result()
             );
         }
-    
-    protected static final String TABLE_ALIAS = "JDBC_TABLE_11534337" ;
-    protected static final String DQP_RESOURCEID = "ogsadai-8e545c64-f56b-4376-8bed-956c6412c3b3";
 
     protected final SQLQueryParam INDIRECT = new SQLQueryParam(
         DQP_RESOURCEID,
-        "SELECT COUNT(ra) FROM " + TABLE_ALIAS + " WHERE ra BETWEEN 80.0 AND 80.1"
+        "SELECT COUNT(ra) FROM " + ATLAS_TABLE_ALIAS + " WHERE ra BETWEEN 80.0 AND 80.1"
         );
     
     @Test

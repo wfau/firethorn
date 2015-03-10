@@ -273,6 +273,10 @@ public class CreateFireThornDQPActivity
             
             //
             // Add data nodes.
+/*
+ * DataNode is generated on a per request basis ..
+ * No longer part of the DQP.
+ * 
             if (federation instanceof MetadataServiceDQPFederation)
                 {
                 LOG.debug(" Adding DataNode");
@@ -295,6 +299,7 @@ public class CreateFireThornDQPActivity
                     null
                     );
                 }
+ */
             // Add the resource to the OGSA-DAI resource manager
             // via the resource factory utility.
             mResourceFactory.addResource(
