@@ -43,11 +43,18 @@ public interface OgsaBaseResource
     public BaseResource<?> source();
 
     /**
-     * The OGSA-DAI resource identifier.
+     * Get the OGSA-DAI resource identifier.
      * @return The identifier
      *
      */
     public String ogsaid();
+
+    /**
+     * Set the OGSA-DAI resource identifier.
+     * @return The resource status.
+     *
+     */
+    public Status ogsaid(final Status status, final String ogsaid);
 
     /**
      * OGSA-DAI resource status.
@@ -55,11 +62,22 @@ public interface OgsaBaseResource
      */
     public static enum Status
         {
-        CREATED(),
-        ACTIVE(),
-        INACTIVE(),
-        ERROR(),
-        UNKNOWN();
+        CREATED(true),
+        ACTIVE(true),
+        INACTIVE(false),
+        ERROR(false),
+        UNKNOWN(false);
+        
+        private boolean active ;
+        public boolean active()
+            {
+            return this.active;
+            }
+        
+        private Status(boolean active)
+            {
+            this.active = active ;
+            }
         }
 
     /**
@@ -68,5 +86,12 @@ public interface OgsaBaseResource
      *
      */
     public Status status();
+
+    /**
+     * Set the resource status.
+     * @return The resource status.
+     *
+     */
+    public Status status(final Status status);
 
     }

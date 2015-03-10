@@ -142,8 +142,93 @@
             /adql/schema/10584147
 
 
-            /ogsa/jdbc/10747904
-                ogsaid  :  ogsadai-e42abaff-24f9-4848-88db-6e00c12714e4
+        /ogsa/jdbc/10747904
+            ogsaid  :  ogsadai-e42abaff-24f9-4848-88db-6e00c12714e4
+
+#----------------------
+# NOTES
+
+    At the moment, a new JdbcOgsaResource is created by call to primary() by the TableMappingService
+    ** multiple times within a single workflow **
+
+
+    Federation still contains dataNodes for all the previous JdbcOgsaResource resources.
+    Which implies it is a single instance re-used.
+
+
+
+
+    Looks like we can use a generic DQP with an empty list of nodes.
+    Create an instance and populate it with resources on the fly.
+
+
+    DQP resource
+    if (ogsa().dqp().primary() == null)
+        {
+        // Create a new DQP from template.
+        }
+
+
+    Populate the DataNode list in MetadataServiceDataDictionary
+    At the moment, this is based on
+    
+        tableMapping.resourceIdent()
+
+    Which relies on FireThorn keeping track of the OGSA-DAI resource identifiers.
+    What if ... another service
+
+        ResourceMappingService
+
+            HashMap of OGSADAI resources mapped to FireThorn identifiers. 
+
+        tableMapping.resourceIdent()
+            => FireThorn identifier
+
+        MetadataServiceDataDictionary
+            contains
+            
+                HashMap<String, xxxx>
+
+    #
+    # At the moment, the DQPFederation is persistent in memory.
+    MetadataServiceDQPFederation
+
+    #
+    # In theory, this gets a request specific DataDictionary.
+    public DataDictionary getDataDictionary(RequestDetails requestDetails);
+
+
+
+
+    MetadataServiceDQPFederation persists in memory.
+    Part of the DQP configured from context.
+
+    DataDictionary is transient, per request.
+
+    Ok, as long as DQPFederation.getDataNodes() is not used.
+    
+        Used twice,
+        
+            SimpleRequestDQPFederation (per request -- used by optimisers)
+            SimpleDQPFederation (not used)
+
+        In thory we could change the API to be per request.
+
+#----------------------
+# NOTES
+
+    At the moment, a new JdbcOgsaResource is created by call to primary() by the TableMappingService
+    ** multiple times within a single workflow **
+    ** because the first instance is not comitted in the database **
+    ** transaction boundaries **
+
+
+
+
+
+
+
+
 
 
 

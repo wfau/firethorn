@@ -117,7 +117,6 @@ extends JdbcResourceTestBase
             );
         }
     
-    
     @Test
     public void test002()
     throws Exception

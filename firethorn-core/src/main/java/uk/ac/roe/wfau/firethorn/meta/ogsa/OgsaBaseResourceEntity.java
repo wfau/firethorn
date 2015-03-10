@@ -30,12 +30,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.extern.slf4j.Slf4j;
+
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -119,10 +122,22 @@ implements OgsaBaseResource
        {
        return this.ogsaid;
        }
-   protected String ogsaid(String value)
+   @Override
+   public Status ogsaid(final Status status, final String ogsaid)
        {
-       this.ogsaid = value ;
-       return this.ogsaid;
+       log.debug("ogsaid(status, ogsaid) [{}][{}]", status, ogsaid);
+       factories().spring().transactor().update(
+           new Runnable()
+               {
+                @Override
+                public void run()
+                    {
+                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogsaid = ogsaid ;
+                    }
+                }
+           );
+       return this.status;
        }
 
    @Column(
@@ -140,9 +155,20 @@ implements OgsaBaseResource
        {
        return this.status;
        }
-   protected Status status(Status value)
+   @Override
+   public Status status(final Status status)
        {
-       this.status = value ;
+       log.debug("status(status) [{}]", status);
+       factories().spring().transactor().update(
+           new Runnable()
+               {
+                @Override
+                public void run()
+                    {
+                    OgsaBaseResourceEntity.this.status = status ;
+                    }
+                }
+           );
        return this.status;
        }
     }

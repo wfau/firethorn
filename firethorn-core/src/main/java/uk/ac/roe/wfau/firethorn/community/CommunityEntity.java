@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -99,7 +100,7 @@ implements Community
             }
 
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public Community create(final String uri)
             {
             log.debug("create(String) [{}]", uri);
@@ -110,19 +111,30 @@ implements Community
             }
 
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public Community create(final String uri, final String name)
             {
             log.debug("create(String, String) [{}][{}]", name, uri);
-            return create(
-                uri,
-                name,
-                factories().jdbc().resources().userdata()
+            final Community community = this.select(
+                uri
                 );
+            if (community != null)
+                {
+                log.debug("Found existing community [{}][{}]", uri, community.ident());
+                return community ;
+                }
+            else {
+                log.debug("Creating new community [{}]", uri);
+                return create(
+                    uri,
+                    name,
+                    factories().jdbc().resources().userdata()
+                    );
+                }
             }
 
         @Override
-        @CreateMethod
+        @CreateAtomicMethod
         public Community create(final String uri, final String name, final JdbcResource space)
             {
             log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);
@@ -131,9 +143,11 @@ implements Community
                 );
             if (community != null)
                 {
+                log.debug("Found existing community [{}][{}]", uri, community.ident());
                 return community ;
                 }
             else {
+                log.debug("Creating new community [{}]", uri);
                 return super.insert(
                     new CommunityEntity(
                         uri,

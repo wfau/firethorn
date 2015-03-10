@@ -59,7 +59,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
     @Override
     public Set<DataNode> getDataNodes() 
     {
-        log.debug("getDataNodes()");
+        log.debug("-------- --------");
+        log.debug("<getDataNodes>");
         if (mDataNodes == null)
             {
             log.debug("  DataNodes [null]");
@@ -70,6 +71,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
                 log.debug("  DataNode [" + key + "][" + mDataNodes.get(key) + "]");
                 }
             }
+        log.debug("</getDataNodes>");
+        log.debug("-------- --------");
         return new HashSet<DataNode>(mDataNodes.values());
     }
 
@@ -84,6 +87,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
     @Override
     public DataDictionary getDataDictionary(RequestDetails requestDetails) 
     {
+        log.debug("-------- --------");
+        log.debug("<getDataDictionary>");
         MetadataServiceDataDictionary dataDictionary = 
                 new MetadataServiceDataDictionary();
         dataDictionary.setFederation(this);
@@ -94,6 +99,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
                 mMetadataServiceFactory.getAttributeService(requestDetails));
         dataDictionary.setStatisticsService(
                 mMetadataServiceFactory.getStatisticsService(requestDetails));
+        log.debug("</getDataDictionary>");
+        log.debug("-------- --------");
         return dataDictionary;
     }
 
@@ -117,6 +124,9 @@ public class MetadataServiceDQPFederation implements DQPFederation
     
     public Map<String, DataNode> getDataNodesMap()
     {
+    log.debug("-------- --------");
+    log.debug("<getDataNodesMap/>");
+    log.debug("-------- --------");
         return mDataNodes;
     }
     
@@ -146,6 +156,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
      */
     public void setDataNodesMap(Map<String, DataNode> dataNodes)
     {
+    log.debug("-------- --------");
+    log.debug("<setDataNodesMap>");
         // ++ ZRQ
         log.debug("setDataNodesMap()");
         for (String key : dataNodes.keySet())
@@ -155,6 +167,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
         // -- ZRQ
         mDataNodes.clear();
         mDataNodes.putAll(dataNodes);
+    log.debug("</setDataNodesMap>");
+    log.debug("-------- --------");
     }
     
     /**

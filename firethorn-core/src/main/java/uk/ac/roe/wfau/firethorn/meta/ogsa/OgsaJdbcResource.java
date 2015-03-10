@@ -132,14 +132,14 @@ public interface OgsaJdbcResource
      * Initialise the OGSA-DAI resource, creating a new one if needed.
      * @return The resource status.
      *  
-     */
     public Status connect();
+     */
 
     /**
      * Release the OGSA-DAI resource.
      * @return The resource status.
      * 
-     */
     public Status release();
+     */
     
     }

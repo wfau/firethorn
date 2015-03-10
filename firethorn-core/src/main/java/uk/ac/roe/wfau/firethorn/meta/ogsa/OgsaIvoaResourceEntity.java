@@ -338,11 +338,9 @@ public class OgsaIvoaResourceEntity
     
             if (response.status() == WorkflowResult.Status.COMPLETED)
                 {
-                ogsaid(
+                return ogsaid(
+                    Status.ACTIVE,
                     response.result().toString()
-                    );
-                return status(
-                    Status.ACTIVE
                     );
                 }
     

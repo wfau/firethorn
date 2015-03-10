@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa ;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -65,9 +66,8 @@ extends TestBase
             target.status()
             );
 
-        assertEquals(
-            OgsaBaseResource.Status.ACTIVE,
-            target.connect()
+        assertNotNull(
+            target.ogsaid()
             );
 
         assertEquals(
@@ -106,9 +106,8 @@ extends TestBase
             target.status()
             );
 
-        assertEquals(
-            OgsaBaseResource.Status.ACTIVE,
-            target.connect()
+        assertNotNull(
+            target.ogsaid()
             );
 
         assertEquals(

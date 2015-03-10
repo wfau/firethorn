@@ -222,14 +222,17 @@ implements OgsaJdbcResource
                         source
                     )
                 );
-            // If we don't have one, create one.
-            if (found == null)
+            if (found != null)
                 {
-                found = create(
+                log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
+                return found ;
+                }
+            else {
+                log.debug("No primary OgsaJdbcResource, creating a new one");
+                return create(
                     source
                     );
                 }
-            return found ;
             }
 
         @Override
@@ -249,16 +252,18 @@ implements OgsaJdbcResource
                         source
                     )
                 );
-            // If we don't have one, create one.
-            if (found == null)
+            if (found != null)
                 {
-                //found = create(
-                found = factories().ogsa().factories().jdbc().create(
+                log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
+                return found ;
+                }
+            else {
+                log.debug("No primary OgsaJdbcResource, creating a new one");
+                return create(
                     service,
                     source
                     );
                 }
-            return found ;
             }
         }
     
@@ -314,23 +319,12 @@ implements OgsaJdbcResource
     @Override
     public String ogsaid()
         {
-        if (this.ogsaid == null)
+        log.debug("ogsaid [{}][{}]", this.status(), this.ogsaid);
+        if ((this.ogsaid == null) && this.status().active()) 
             {
             this.init();
             }
         return this.ogsaid;
-        }
-
-    @Override
-    public Status connect()
-        {
-        if (this.ogsaid != null)
-            {
-            return status() ;
-            }
-        else {
-            return this.init();
-            }
         }
 
     protected Status init()
@@ -347,6 +341,9 @@ implements OgsaJdbcResource
                 Status.ERROR
                 );
             }
+
+        log.debug("Creating OGSA-DAI JDBC resource");
+        log.debug("Executing JdbcCreateResourceWorkflow");
 
         final SimpleResourceWorkflowResult response = workflow.execute(
             new JdbcCreateResourceWorkflow.Param()
@@ -384,11 +381,9 @@ implements OgsaJdbcResource
 
         if (response.status() == WorkflowResult.Status.COMPLETED)
             {
-            ogsaid(
+            return ogsaid(
+                Status.ACTIVE,
                 response.result().toString()
-                );
-            return status(
-                Status.ACTIVE
                 );
             }
 
@@ -397,14 +392,6 @@ implements OgsaJdbcResource
                 Status.ERROR
                 );
             }
-        }
-
-    @Override
-    public Status release()
-        {
-        throw new UnsupportedOperationException(
-            "Release not implemented yet"
-            );
         }
     }
         

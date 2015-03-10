@@ -131,7 +131,7 @@
             FROM
                 sys.master_files 
             WHERE
-                name LIKE 'FirethornMetadataZRQ%'
+                name LIKE 'FirethornMetadataZRQ2015%'
             ORDER BY 
                 name
             go
