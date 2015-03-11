@@ -64,14 +64,13 @@ implements AttributeService
             endpoint,
             request
             );
-        log.debug("AttributeServiceImpl()");
         }
 
     protected AttributeBean bean(final String source, final String attrib)
         {
-        log.debug("bean(String, String)");
-        log.debug("  Source [" + source + "]");
-        log.debug("  Attrib [" + attrib + "]");
+        log.trace("bean(String, String)");
+        log.trace("  Source [" + source + "]");
+        log.trace("  Attrib [" + attrib + "]");
         return rest().getForObject(
             endpoint(
                 ATTRIBUTE_NAME_PATH
@@ -84,8 +83,8 @@ implements AttributeService
 
     protected AttributeBean[] array(final String source)
         {
-        log.debug("array(String)");
-        log.debug("  Source [" + source + "]");
+        log.trace("array(String)");
+        log.trace("  Source [" + source + "]");
         return rest().getForObject(
             endpoint(
                 ATTRIBUTE_LIST_PATH
@@ -98,9 +97,9 @@ implements AttributeService
     @Override
     public Attribute getAttribute(final String source, final String attrib)
         {
-        log.debug("getAttribute(String, String)");
-        log.debug("  Source [" + source + "]");
-        log.debug("  Attrib [" + attrib + "]");
+        log.trace("getAttribute(String, String)");
+        log.trace("  Source [" + source + "]");
+        log.trace("  Attrib [" + attrib + "]");
         return BeanWrapper.wrap(
             bean(
                 source,
@@ -112,8 +111,8 @@ implements AttributeService
     @Override
     public Iterable<Attribute> getAttributes(final String source)
         {
-        log.debug("getAttributes(String)");
-        log.debug("  Source [" + source + "]");
+        log.trace("getAttributes(String)");
+        log.trace("  Source [" + source + "]");
         return BeanWrapper.wrap(
             array(
                 source
@@ -244,10 +243,10 @@ implements AttributeService
     
     public static Attribute debug(final Attribute attribute)
         {
-        log.debug("Attribute");
-        log.debug("  Name [" + attribute.getName() + "]");
-        log.debug("  Type [" + attribute.getType() + "]");
-        log.debug("  Source [" + attribute.getSource() + "]");
+        log.trace("Attribute");
+        log.trace("  Name [" + attribute.getName() + "]");
+        log.trace("  Type [" + attribute.getType() + "]");
+        log.trace("  Source [" + attribute.getSource() + "]");
         return attribute ;
         }
 
