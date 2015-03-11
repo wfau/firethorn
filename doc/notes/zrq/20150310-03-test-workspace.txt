@@ -1,0 +1,82 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=${identity:-$(pwgen 16 1)}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        databasekey='firethorn.atlas'
+        databasecfg="${HOME:?}/firethorn.properties"
+
+        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
+        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
+        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
+        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
+        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
+        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
+
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "${databaseurl:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*' \
+            'nilbert'
+
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasSource.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasTwomass.xml"
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TwomassPsc.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        cat "${HOME:?}/firethorn.spaces"
+
+    popd
+
+

@@ -1,0 +1,172 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Set the new database name.
+        dbversion=SHEP011128ALPHA
+        metadataname="FirethornMetadata${dbversion:?}"
+        userdataname="FirethornUserdata${dbversion:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update default
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Update our database properties.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        vi "${HOME:?}/firethorn.properties"
+
+            firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataXXXXxxxx
+            firethorn.meta.user=FirethornMetadataXXXXxxxx
+            firethorn.meta.pass=FirethornMetadataXXXXxxxx
+
+            firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataXXXXxxxx
+            firethorn.user.user=FirethornUserdataXXXXxxxx
+            firethorn.user.pass=FirethornUserdataXXXXxxxx
+
+        exit
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        vi "${HOME:?}/firethorn.properties"
+
+            firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataXXXXxxxx
+            firethorn.meta.user=FirethornMetadataXXXXxxxx
+            firethorn.meta.pass=FirethornMetadataXXXXxxxx
+
+            firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataXXXXxxxx
+            firethorn.user.user=FirethornUserdataXXXXxxxx
+            firethorn.user.pass=FirethornUserdataXXXXxxxx
+
+        exit
+
+

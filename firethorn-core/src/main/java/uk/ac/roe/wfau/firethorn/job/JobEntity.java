@@ -363,7 +363,7 @@ implements Job
         @UpdateAtomicMethod
         public Status prepare(final Identifier ident, boolean run)
             {
-            log.debug("prepare(Identifier)");
+            log.debug("prepare(Identifier, boolean)");
             log.debug("  Ident [{}]", ident);
             try {
                 final Job job = resolver().select(
@@ -388,6 +388,7 @@ implements Job
             catch (final Exception ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                log.error("Exception", ouch);
                 return Status.ERROR;
                 }
             }

@@ -177,7 +177,7 @@ public class OgsaServiceEntity
         private String endpoint ;
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaService primary()
             {
             log.debug("primary()");
@@ -205,8 +205,8 @@ public class OgsaServiceEntity
                     }
                 else {
                     try {
-                      service = create(
-                      //service = factories().ogsa().services().create(
+                      //service = create(
+                      service = factories().ogsa().services().create(
                             endpoint
                             );
                         }
@@ -229,9 +229,10 @@ public class OgsaServiceEntity
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaService create(final String endpoint)
             {
+            log.debug("create(String)");
             return create(
                 endpoint,
                 endpoint
@@ -239,9 +240,12 @@ public class OgsaServiceEntity
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaService create(final String name, final String endpoint)
             {
+            log.debug("create(String, String)");
+            log.debug("  name [{}]", name);
+            log.debug("  endpoint [{}]", endpoint);
             return super.insert(
                 new OgsaServiceEntity(
                     name,
@@ -251,9 +255,10 @@ public class OgsaServiceEntity
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaService create(final String proto, final String host, final Integer port, final String path)
             {
+            log.debug("create(String, String, Integer, String)");
             return this.create(
                 endpoint(
                     proto,
@@ -265,9 +270,10 @@ public class OgsaServiceEntity
         }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path)
             {
+            log.debug("create(String, String, String, Integer, String)");
             return this.create(
                 name,
                 endpoint(

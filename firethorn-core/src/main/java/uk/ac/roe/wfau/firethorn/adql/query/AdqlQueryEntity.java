@@ -172,9 +172,9 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
-    protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
+    protected static final String DB_OGSADAI_SOURCE_COL   = "ogsadaisource";
+    protected static final String DB_OGSADAI_TARGET_COL   = "ogsadaitarget";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
-    protected static final String DB_OGSADAI_RESOURCE_COL = "ogsadairesource";
 
     /**
      * Param factory implementation.
@@ -197,9 +197,6 @@ implements AdqlQuery, AdqlParserQuery
 
         @Value("${firethorn.ogsadai.mode:AUTO}")
         private Mode mode;
-
-        @Value("${firethorn.ogsadai.store}")
-        private String store ;
 
         @Value("${firethorn.ogsadai.endpoint}")
         private String endpoint ;
@@ -547,7 +544,7 @@ implements AdqlQuery, AdqlParserQuery
        }
 
     /**
-     * The query mode (DIRECT|DISTRIBUTED).
+     * The query mode (AUTO|DIRECT|DISTRIBUTED).
      *
      */
     @Column(
@@ -666,16 +663,21 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String dqp ;
 
-/*
- * 
-        name = DB_OGSADAI_STORE_COL,
+    @Column(
+        name = DB_OGSADAI_SOURCE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String store ;
- *
- */
+    private String source ;
+
+    @Column(
+        name = DB_OGSADAI_TARGET_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String target ;
 
     @Column(
         name = DB_OGSADAI_ENDPOINT_COL,
@@ -684,18 +686,6 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String endpoint ;
-
-/*
- *     
-    @Column(
-        name = DB_OGSADAI_RESOURCE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ogsaid ;
- *     
- */
 
     protected void params(final AdqlQuery.QueryParam params)
         {
@@ -974,7 +964,8 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our primary resource.
-                    // this.ogsaid = primary().meta().ogsa().id();
+                    //this.mode   = Mode.DIRECT;
+                    //this.source = primary().ogsa().primary().ogsaid();
                     }
                 else if (this.mode == Mode.DISTRIBUTED)
                     {
@@ -984,7 +975,8 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our DQP resource.
-                    // this.ogsaid = this.dqp;
+                    //this.mode   = Mode.DISTRIBUTED;
+                    //this.source = this.dqp;
                     }
                 else {
                     log.debug("Processing as [DIRECT] query");
@@ -993,10 +985,10 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     if (this.resources.size() == 1)
                         {
+                        this.mode = Mode.DIRECT;
                         //
                         // Use our primary resource.
-                        this.mode = Mode.DIRECT;
-                        // this.ogsaid = primary().meta().ogsa().id();
+                        //this.source = primary().ogsa().primary().ogsaid();
                         }
                     else {
                         //
@@ -1005,10 +997,10 @@ implements AdqlQuery, AdqlParserQuery
                         distrib.process(
                             this
                             );
+                        this.mode = Mode.DISTRIBUTED;
                         //
                         // Use our DQP resource.
-                        this.mode = Mode.DISTRIBUTED;
-                        // this.ogsaid = this.dqp;
+                        //this.source = this.dqp;
                         }
                     }
                 //
@@ -1086,11 +1078,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    //@Transient
-    //private String ogsourceid ;
-    //@Transient
-    //private String ogtargetid ;
-    
     @Override
     public Status prepare(boolean run)
         {
@@ -1110,11 +1097,7 @@ implements AdqlQuery, AdqlParserQuery
             //
 
 /*
- * Should these references be properties of the query ?
- *     OgsaBaseResource source
- *     OgsaBaseResource target
- */                  
-            
+ *
             //
             // Load these here (in transaction/session)
             // Use them in later execute Thread.
@@ -1122,7 +1105,6 @@ implements AdqlQuery, AdqlParserQuery
             String ogtargetid ; 
             
             // Get the OGSA-DAI ident from our primary resource.
-            // Fails for DISTRIBUTED, needs to create a new DQP.
             log.debug("++++++++ Checking source OgsaBaseResource ++++++++");
             BaseResource<?> base = primary();
             OgsaBaseResource ogsa = base.ogsa().primary();
@@ -1134,15 +1116,37 @@ implements AdqlQuery, AdqlParserQuery
             OgsaBaseResource bbb = aaa.ogsa().primary() ;
             ogtargetid = bbb.ogsaid() ;
             log.debug("++ Query target [{}]", ogtargetid);
+ *
+ */
 
-            if (ogsourceid == null)
+            if (this.mode == Mode.DIRECT)
+                {
+                //this.source = primary().ogsa().primary().ogsaid();
+                BaseResource<?> base = this.primary();
+                OgsaBaseResource ogsa = base.ogsa().primary();
+                this.source = ogsa.ogsaid();
+                }
+            else {
+                this.source = this.dqp;
+                }
+            log.debug("++ Query source [{}]", this.source);
+
+            if (this.target == null)
+                {
+                BaseResource<?> base = jdbctable.resource();
+                OgsaBaseResource ogsa = base.ogsa().primary() ;
+                this.target = ogsa.ogsaid() ;
+                }
+            log.debug("++ Query target [{}]", this.target);
+
+            if (this.source == null)
                 {
                 result = status(
                     Status.ERROR
                     );
                 }
 
-            if (ogtargetid == null)
+            if (this.target == null)
                 {
                 result = status(
                     Status.ERROR
@@ -1210,8 +1214,7 @@ implements AdqlQuery, AdqlParserQuery
  * Internal error, need to retry query.
  * 
  *  Or ... create all the resources on demand, nothing stored.
- * 
- */                  
+ *  
                     //
                     // Need these in execute() Thread.
                     // Created them in prepare() Thread.
@@ -1234,6 +1237,15 @@ implements AdqlQuery, AdqlParserQuery
                     final String ogtablename = jdbctable.namebuilder().toString() ;
                     log.debug("-- Output table [{}]", ogtablename);
                     log.debug("-- Output table [{}]", jdbctable.resource().name());
+ * 
+ */                  
+                    log.debug("-- Query source [{}]", this.source);
+                    log.debug("-- Query target [{}]", this.target);
+                    
+                    log.debug("++++++++ Checking target JdbcTable ++++++++");
+                    final String ogtablename = jdbctable.namebuilder().toString() ;
+                    log.debug("-- Output table [{}]", ogtablename);
+                    log.debug("-- Output table [{}]", jdbctable.resource().name());
                     
                     final PipelineResult frog = pipeline.execute(
                         new PipelineParam()
@@ -1241,7 +1253,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public String source()
                                 {
-                                return ogsourceid ;
+                                return AdqlQueryEntity.this.source ;
                                 }
                             @Override
                             public String query()
@@ -1255,7 +1267,7 @@ implements AdqlQuery, AdqlParserQuery
                                     {
                                     public String ogsaid()
                                         {
-                                        return ogtargetid;
+                                        return AdqlQueryEntity.this.target;
                                         }
                                     @Override
                                     public String table()

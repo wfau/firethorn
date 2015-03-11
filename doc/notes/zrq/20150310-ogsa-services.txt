@@ -34,4 +34,48 @@
         firethorn.ogsadai.dqp=firethorn-dqp-001
         firethorn.ogsadai.endpoint=http://localhost:8081/albert/services
 
-        
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        mvn clean install
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-01-firethorn-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-02-ogsadai-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-03-test-workspace.txt"
+
+
+
+    querymode=DIRECT
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+
+
+    querymode=DIRECT
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
+
+
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
+
+
+
+

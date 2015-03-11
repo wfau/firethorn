@@ -86,10 +86,11 @@ extends BaseResourceBean<JdbcResource>
                 }
             };
         }
-
+/*
+ * 
     public interface OgsaJdbdResources
         {
-        public String getPrimary();
+        //public String getPrimary();
         //public OgsaJdbcResourceBean.Iter getSelect();
         }
 
@@ -102,7 +103,7 @@ extends BaseResourceBean<JdbcResource>
                 //return entity().ogsa().primary().link();
                 return entity().ogsa().primary().ogsaid();
                 }
-/*            
+ *            
             public OgsaJdbcResourceBean.Iter getSelect()
                 {
                 log.debug("getSelect()");
@@ -110,7 +111,9 @@ extends BaseResourceBean<JdbcResource>
                     entity().ogsa().select()
                     );
                 }
- */                    
+ *                    
             };
         }
+ * 
+ */
     }

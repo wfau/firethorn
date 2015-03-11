@@ -193,10 +193,10 @@ implements OgsaJdbcResource
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaJdbcResource create(final JdbcResource source)
             {
-            log.debug("create(JdbcResource) [{}]", source);
+            log.debug("create(JdbcResource) [{}]", source.ident());
             return create(
                 factories().ogsa().services().primary(),
                 source
@@ -204,10 +204,10 @@ implements OgsaJdbcResource
             }
         
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource source)
             {
-            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service, source);
+            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service.ident(), source.ident());
             return super.insert(
                 new OgsaJdbcResourceEntity(
                     service,
@@ -217,9 +217,10 @@ implements OgsaJdbcResource
             }
         
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaJdbcResource primary(final JdbcResource source)
             {
+            log.debug("primary(JdbcResource) [{}]", source.ident());
             return primary(
                 factories().ogsa().services().primary(),
                 source
@@ -255,10 +256,10 @@ implements OgsaJdbcResource
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public OgsaJdbcResource primary(OgsaService service, JdbcResource source)
             {
-            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service, source);
+            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service.ident(), source.ident());
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
