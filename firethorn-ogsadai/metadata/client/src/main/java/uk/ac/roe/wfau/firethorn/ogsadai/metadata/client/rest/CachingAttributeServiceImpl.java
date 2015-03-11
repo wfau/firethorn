@@ -38,7 +38,7 @@ implements AttributeService
      * Debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(CachingAttributeServiceImpl.class);
+    //private static Log log = LogFactory.getLog(CachingAttributeServiceImpl.class);
 
     /**
      * Internal AttributeService.
@@ -94,9 +94,9 @@ implements AttributeService
     @Override
     public Attribute getAttribute(final String source, final String attrib)
         {
-        log.debug("getAttribute(String, String)");
-        log.debug("  Source [" + source + "]");
-        log.debug("  Attrib [" + attrib + "]");
+        //log.trace("getAttribute(String, String)");
+        //log.trace("  Source [" + source + "]");
+        //log.trace("  Attrib [" + attrib + "]");
         return inner(
             source
             ).get(
@@ -107,8 +107,8 @@ implements AttributeService
     @Override
     public Iterable<Attribute> getAttributes(final String source)
         {
-        log.debug("getAttributes(String)");
-        log.debug("  Source [" + source + "]");
+        //log.trace("getAttributes(String)");
+        //log.trace("  Source [" + source + "]");
         return inner(
             source
             ).values();

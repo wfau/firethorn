@@ -35,7 +35,7 @@ extends MetadataServiceBase
 implements StatisticsService
     {
 
-    private static Log log = LogFactory.getLog(StatisticsServiceImpl.class);
+    //private static Log log = LogFactory.getLog(StatisticsServiceImpl.class);
 
     /*
      *
@@ -52,8 +52,8 @@ implements StatisticsService
     @Override
     public AttributeStatistics getStatistics(final Attribute attrib)
         {
-        log.trace("getStatistics(Attribute)");
-        log.trace("  Attrib [" + attrib.getSource()  + "][" + attrib.getName() + "]");
+        //log.trace("getStatistics(Attribute)");
+        //log.trace("  Attrib [" + attrib.getSource()  + "][" + attrib.getName() + "]");
         return getStatistics(
             attrib.getSource(),
             attrib.getName()
@@ -63,9 +63,9 @@ implements StatisticsService
     @Override
     public AttributeStatistics getStatistics(final String table, final String column)
         {
-        log.trace("getStatistics(String, String)");
-        log.trace("  Table  [" + table  + "]");
-        log.trace("  Column [" + column + "]");
+        //log.trace("getStatistics(String, String)");
+        //log.trace("  Table  [" + table  + "]");
+        //log.trace("  Column [" + column + "]");
         return new HistogramBasedAttributeStatistics();
         }
     }

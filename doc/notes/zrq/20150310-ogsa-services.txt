@@ -79,3 +79,52 @@
 
 
 
+# -----------------------------------------------------
+# Fix JDBC metadata
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to our metadata database.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+
+            /*
+             * Select our metadata database.
+             *
+             */
+            use [FirethornMetadataZRQ20150311DEV]
+            go
+
+
+            /*
+             * Get a list of services.
+             *
+             */
+            SELECT * FROM FT011209OgsaServiceEntity
+            go
+
+            SELECT * FROM FT011209OgsaJdbcResourceEntity
+            go
+
+            SELECT * FROM FT011209JdbcResourceEntity
+            go
+
+            /*
+             * Delete the OGSA-DAI resources.
+             *
+             */
+            DELETE FROM FT011209OgsaJdbcResourceEntity
+            go
+
