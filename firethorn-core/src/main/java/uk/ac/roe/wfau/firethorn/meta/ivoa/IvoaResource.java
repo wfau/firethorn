@@ -67,13 +67,13 @@ extends BaseResource<IvoaSchema>
          * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String ogsaid, final String ivoaid);
+        public IvoaResource create(final String ivoaid);
 
         /**
          * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String ogsaid, final String ivoaid, final String name);
+        public IvoaResource create(final String ivoaid, final String name);
 
         /**
          * Our local {@link IvoaSchema.EntityFactory} implementation.

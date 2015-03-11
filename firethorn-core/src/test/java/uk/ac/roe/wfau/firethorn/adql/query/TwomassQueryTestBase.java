@@ -57,7 +57,6 @@ extends TestBase
         //
         // Create our JDBC resources.
         this.twomass = factories().jdbc().resources().create(
-            "ogsa-id",
             "TWOMASS",
             "twomass",
             config().property(

@@ -40,7 +40,6 @@ extends TestBase
         final OgsaService service = factories().ogsa().services().primary();
 
         final JdbcResource resource = factories().jdbc().resources().create(
-            "ogsa-id",
             "ATLASDR1",
             "atlas",
             config().property(
@@ -82,7 +81,6 @@ extends TestBase
     throws Exception
         {
         final JdbcResource resource = factories().jdbc().resources().create(
-            "ogsa-id",
             "ATLASDR1",
             "atlas",
             config().property(

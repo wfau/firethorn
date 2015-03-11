@@ -55,7 +55,6 @@ extends TestBase
     throws Exception
         {
         this.jdbcResource = factories().jdbc().resources().create(
-            "test:ogsaid",
             "test:catalog",
             "test:resource",
             "test:database"

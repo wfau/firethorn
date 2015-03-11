@@ -104,46 +104,11 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
-     * Get the OGSA-DAI resource ID.
-     * @too Move this to an OGSA-DAI specific resource.
-     *
-     */
-    @Deprecated
-    public String ogsaid();
-
-    /**
-     * Set the OGSA-DAI resource ID.
-     * @too Move this to an OGSA-DAI specific resource.
-     *
-     */
-    @Deprecated
-    public void ogsaid(final String ogsaid);
-
-    /**
      * The {@link BaseResource} metadata.
      *
      */
     public interface Metadata
         {
-        /**
-         * The OGSA-DAI metadata.
-         * 
-         */
-        public interface Ogsa
-            {
-            /**
-             * Get the OGSA-DAI resource ID.
-             *
-             */
-            @Deprecated
-            public String id();
-            }
-        /**
-         * The OGSA-DAI metadata.
-         * 
-         */
-        @Deprecated
-        public Ogsa ogsa();
         }
 
     /**

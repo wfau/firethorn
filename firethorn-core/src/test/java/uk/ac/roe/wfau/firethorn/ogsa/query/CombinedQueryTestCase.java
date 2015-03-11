@@ -59,7 +59,6 @@ public class CombinedQueryTestCase
         {
         jdbc = jdbcResource(
             "albert.atlas.jdbc", 
-            "albert.ogsa", 
             ATLAS_VERSION, 
             "Atlas JDBC", 
             config.property("firethorn.atlas.url"),            

@@ -95,8 +95,8 @@ public class JdbcResourceEntity
     /**
      * Hibernate column mapping, {@value}.
      *
-     */
     protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
+     */
 
     /**
      * Resource factory implementation.
@@ -128,10 +128,9 @@ public class JdbcResourceEntity
 
         @Override
         @CreateMethod
-        public JdbcResource create(final String ogsaid, final String name, final String url)
+        public JdbcResource create(final String name, final String url)
             {
             return this.create(
-                ogsaid,
                 null,
                 name,
                 url
@@ -140,11 +139,10 @@ public class JdbcResourceEntity
 
         @Override
         @CreateMethod
-        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url)
+        public JdbcResource create(final String catalog, final String name, final String url)
             {
             return super.insert(
                 new JdbcResourceEntity(
-                    ogsaid,
                     catalog,
                     name,
                     url
@@ -154,11 +152,10 @@ public class JdbcResourceEntity
 
 		@Override
         @CreateMethod
-        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
+        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
 		    {
 		    return super.insert(
                 new JdbcResourceEntity(
-                    ogsaid,
                     catalog,
                     name,
                     url,
@@ -170,11 +167,10 @@ public class JdbcResourceEntity
 
 		@Override
 	    @CreateMethod
-	    public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+	    public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
 		    {
 		    return super.insert(
 		        new JdbcResourceEntity(
-		            ogsaid,
 		            catalog,
 		            name,
 		            url,
@@ -274,7 +270,6 @@ public class JdbcResourceEntity
                 log.debug(" driver [{}]", uddriver);
                 
                 userdata = this.create(
-                    "NOID",
                     udcat,
                     "Userdata resource",
                     udurl,
@@ -301,10 +296,9 @@ public class JdbcResourceEntity
      * Protected constructor. 
      *
      */
-    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final  String url)
+    protected JdbcResourceEntity(final String catalog, final String name, final  String url)
         {
         super(name);
-        this.ogsaid  = ogsaid  ;
         this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
@@ -316,10 +310,9 @@ public class JdbcResourceEntity
      * Protected constructor. 
      *
      */
-    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
+    protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass)
 	    {
 	    super(name);
-        this.ogsaid  = ogsaid  ;
         this.catalog = catalog ;
 	    this.connection = new JdbcConnectionEntity(
 	        this,
@@ -333,10 +326,9 @@ public class JdbcResourceEntity
      * Protected constructor. 
      *
      */
-    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+    protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
         {
         super(name);
-        this.ogsaid  = ogsaid  ;
         this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
@@ -709,14 +701,9 @@ public class JdbcResourceEntity
         return new JdbcResource.Metadata()
             {
             @Override
-            public Jdbc jdbc()
+            public JdbcResource.Metadata.Jdbc jdbc()
                 {
                 return jdbcmeta();
-                }
-            @Override
-            public Ogsa ogsa()
-                {
-                return ogsameta();
                 }
             };
         }

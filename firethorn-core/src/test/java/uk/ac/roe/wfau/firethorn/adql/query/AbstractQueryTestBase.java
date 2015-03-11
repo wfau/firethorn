@@ -88,8 +88,7 @@ extends TestPropertiesBase
      * Load a {@link JdbcResource}.
      * @throws IdentifierNotFoundException 
      * 
-     */
-    protected JdbcResource jdbcResource(final String tag, final String name, final String ogsaid, final String url)
+    protected JdbcResource jdbcResource(final String tag, final String name, final String url)
     throws IdentifierNotFoundException
         {
         JdbcResource found = jdbc.get(
@@ -112,7 +111,6 @@ extends TestPropertiesBase
                 log.debug("Creating new JDBC resource [{}]", tag);
                 found = factories().jdbc().resources().create(
                     tag,
-                    ogsaid,
                     name,
                     url
                     );
@@ -124,13 +122,14 @@ extends TestPropertiesBase
             }
         return found ;
         }
+     */
 
     /**
      * Load a {@link JdbcResource}.
      * @throws IdentifierNotFoundException 
      * 
      */
-    protected JdbcResource jdbcResource(final String tag, final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+    protected JdbcResource jdbcResource(final String tag, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
     throws IdentifierNotFoundException
         {
         JdbcResource found = jdbc.get(
@@ -152,7 +151,6 @@ extends TestPropertiesBase
                 {
                 log.debug("Creating new JDBC resource [{}]", tag);
                 found = factories().jdbc().resources().create(
-                    ogsaid,
                     catalog,
                     name,
                     url,

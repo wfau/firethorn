@@ -78,12 +78,6 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     public static final String CREATE_NAME = "jdbc.resource.create.name" ;
 
     /**
-     * MVC property for the initial OGSA-DAI resource.
-     *
-     */
-    public static final String CREATE_OGSADAI = "jdbc.resource.create.ogsadai" ;
-
-    /**
      * MVC property for the initial catalog name.
      *
      */
@@ -161,13 +155,10 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         @RequestParam(value=CREATE_DRIVER, required=false)
         final String driver,
         @RequestParam(value=CREATE_CATALOG, required=false)
-        final String catalog,
-        @RequestParam(value=CREATE_OGSADAI, required=false)
-        final String ogsadai
+        final String catalog
         ){
         return created(
             factories().jdbc().resources().create(
-                ogsadai,
                 catalog,
                 name,
                 url,

@@ -115,7 +115,6 @@ public class JdbcResourceInportTestCase
     throws Exception
         {
         final JdbcResource created = factories().jdbc().resources().create(
-            "test:atlas",
             "TWOMASS",
             "test:atlas",
             "spring:RoeATLAS"

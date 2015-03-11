@@ -312,7 +312,6 @@ extends TestBase
     throws Exception
         {
     	final JdbcResource jdbcResource = factories().jdbc().resources().create(
-            "test:ogsaid",
             "test:catalog",
 			"test:resource",
 			"test:database"

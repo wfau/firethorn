@@ -58,25 +58,23 @@
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
 
-
-
     querymode=DISTRIBUTED
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
-
-
 
     querymode=DIRECT
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
 
-
-
     querymode=DISTRIBUTED
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
 
-
+    #
+    # Simple repeat loop
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150311-01-test-queries.txt"
 
 
 # -----------------------------------------------------
@@ -127,4 +125,6 @@
              */
             DELETE FROM FT011209OgsaJdbcResourceEntity
             go
+
+
 

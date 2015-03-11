@@ -111,11 +111,10 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String ogsaid, final String ivoaid)
+        public IvoaResource create(final String ivoaid)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ogsaid,
                     ivoaid,
                     ivoaid
                     )
@@ -124,11 +123,10 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String ogsaid, final String ivoaid, final String name)
+        public IvoaResource create(final String ivoaid, final String name)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ogsaid,
                     ivoaid,
                     name
                     )
@@ -173,12 +171,11 @@ public class IvoaResourceEntity
      * Protected constructor.
      *
      */
-    protected IvoaResourceEntity(final String ogsaid, final String ivoaid, final String name)
+    protected IvoaResourceEntity(final String ivoaid, final String name)
         {
         super(
             name
             );
-        this.ogsaid = ogsaid;
         this.ivoaid = ivoaid;
         }
 
@@ -306,16 +303,11 @@ public class IvoaResourceEntity
         return new IvoaResource.Metadata()
             {
             @Override
-            public Ivoa ivoa()
+            public IvoaResource.Metadata.Ivoa ivoa()
                 {
                 return new Ivoa()
                     {
                     };
-                }
-            @Override
-            public Ogsa ogsa()
-                {
-                return ogsameta();
                 }
             };
         }
