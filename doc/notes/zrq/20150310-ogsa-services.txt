@@ -40,7 +40,7 @@
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-        mvn clean install
+        mvn -P all clean install eclipse:eclipse
     popd
 
     source "${HOME:?}/firethorn.settings"
@@ -52,7 +52,12 @@
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-03-test-workspace.txt"
 
-
+#
+# Need to deactivate old JdbcOgsaResource(s)
+# (see below)
+# Needs automatic ping test.
+# http://redmine.roe.ac.uk/issues/788
+#
 
     querymode=DIRECT
     source "${HOME:?}/firethorn.settings"
@@ -119,8 +124,16 @@
             SELECT * FROM FT011209JdbcResourceEntity
             go
 
+
             /*
-             * Delete the OGSA-DAI resources.
+             * Mark the OGSA-DAI resources as INACTIVE.
+             *
+             */
+            UPDATE FT011209OgsaJdbcResourceEntity set status = 'INACTIVE' 
+            go
+
+            /*
+             * OR - delete the OGSA-DAI resources.
              *
              */
             DELETE FROM FT011209OgsaJdbcResourceEntity

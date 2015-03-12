@@ -39,7 +39,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 @Slf4j
 @Ignore
 @Transactional(
-    readOnly=true,
+    readOnly=false,
     propagation=Propagation.REQUIRES_NEW
     )
 @TransactionConfiguration(

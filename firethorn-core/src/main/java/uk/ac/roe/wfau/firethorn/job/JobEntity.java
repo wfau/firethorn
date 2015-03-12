@@ -274,7 +274,7 @@ implements Job
 
             if (next == Status.READY)
                 {
-                log.debug("Valiating job params");
+                log.debug("Validating job params");
                 result = executor().prepare(
                     ident
                     );

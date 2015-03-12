@@ -57,6 +57,15 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
      * Our test configuration.
      *
      */
-    public abstract OgsaTestConfig config();
-    
+    @Autowired
+    private OgsaTestConfig config;
+
+    /**
+     * Our test configuration.
+     *
+     */
+    public OgsaTestConfig config()
+        {
+        return config;
+        }
     }

@@ -100,7 +100,7 @@ implements Community
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public Community create(final String uri)
             {
             log.debug("create(String) [{}]", uri);
@@ -111,7 +111,7 @@ implements Community
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public Community create(final String uri, final String name)
             {
             log.debug("create(String, String) [{}][{}]", name, uri);
@@ -134,7 +134,7 @@ implements Community
             }
 
         @Override
-        @CreateAtomicMethod
+        @CreateMethod
         public Community create(final String uri, final String name, final JdbcResource space)
             {
             log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);

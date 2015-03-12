@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
@@ -38,7 +40,58 @@ public class QueryResultsTestCase
      * TODO
      *
      */
+    @Test
     public void test001()
+    throws Exception
+        {
+        final AdqlQuery query = validate(
+            Level.LEGACY,
+            State.VALID,
+
+            " SELECT" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    ATLASDR1.AtlasSource" +
+            " WHERE" +
+            "    ra  BETWEEN '56.0' AND '57.9'" +
+            " AND" +
+            "    dec BETWEEN '24.0' AND '24.2'",
+
+            " SELECT" +
+            "    ATLASDR1.dbo.AtlasSource.ra  AS ra," +
+            "    ATLASDR1.dbo.AtlasSource.dec AS dec" +
+            " FROM" +
+            "    ATLASDR1.dbo.AtlasSource" +
+            " WHERE" +
+            "    ATLASDR1.dbo.AtlasSource.ra BETWEEN '56.0' AND '57.9'" +
+            " AND" +
+            "    ATLASDR1.dbo.AtlasSource.dec BETWEEN '24.0' and '24.2'",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0),
+                }
+            );
+
+        assertEquals(
+            AdqlTable.TableStatus.CREATED,
+            query.results().adql().meta().adql().status()
+            );
+
+        assertEquals(
+            AdqlTable.TableStatus.CREATED,
+            query.results().jdbc().meta().adql().status()
+            );
+        assertEquals(
+            JdbcTable.TableStatus.CREATED,
+            query.results().jdbc().meta().jdbc().status()
+            );
+
+        }
+
+    @Test
+    public void test002()
     throws Exception
         {
         final AdqlQuery query = validate(
