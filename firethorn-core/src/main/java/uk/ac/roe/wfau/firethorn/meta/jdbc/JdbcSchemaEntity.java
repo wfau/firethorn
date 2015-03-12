@@ -309,21 +309,6 @@ public class JdbcSchemaEntity
                 );
             }
 
-        /*
-        @CreateMethod
-        protected JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
-            {
-            return this.insert(
-                new JdbcSchemaEntity(
-                    parent,
-                    catalog,
-                    schema,
-                    name
-                    )
-                );
-            }
-         */
-
         @Override
         @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent)
@@ -348,11 +333,6 @@ public class JdbcSchemaEntity
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
 
-            if ("FIRETHORN_TEST_DATA".equals(catalog))
-                {
-                log.debug("FIRETHORN_TEST_DATA");
-                }
-            
             final JdbcSchema found = search(
                 parent,
                 catalog,

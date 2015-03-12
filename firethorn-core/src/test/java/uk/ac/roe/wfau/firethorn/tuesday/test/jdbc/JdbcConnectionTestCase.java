@@ -46,7 +46,6 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "test:ogsa",
             "test:catalog",
             "test:resource",
             "test:uri"
@@ -91,7 +90,6 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "test:ogsa",
             "test:catalog",
             "test:resource",
             "test:uri"
@@ -136,7 +134,6 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "test:ogsa",
             "test:catalog",
             "test:resource",
             "test:uri"

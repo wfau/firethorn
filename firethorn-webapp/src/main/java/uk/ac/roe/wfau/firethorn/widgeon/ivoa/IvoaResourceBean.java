@@ -62,9 +62,4 @@ extends BaseResourceBean<IvoaResource>
             entity
             );
         }
-
-    public String getOgsadai()
-        {
-        return entity().meta().ogsa().id();
-        }
     }

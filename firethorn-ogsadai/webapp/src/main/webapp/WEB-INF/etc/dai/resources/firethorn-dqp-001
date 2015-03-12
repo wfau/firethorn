@@ -1,0 +1,13 @@
+id=firethorn-dqp-001
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=1425994884641
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dqp.config.path=dqp/firethorn-dqp-001/DQPContext.xml
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQueryDQP
+END
+dataResourceClass=uk.org.ogsadai.resource.dataresource.dqp.DQPResource

@@ -60,7 +60,6 @@ extends TestBase
             "spring:RoeTWOMASS"
             );
         this.wfau = factories().jdbc().resources().create(
-            "wfau",
             JdbcResource.ALL_CATALOGS,
             "test:wfau",
             "spring:RoeWFAU"

@@ -139,17 +139,17 @@
         source "bin/util.sh"
 
         docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn"
-        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
+        #docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn:latest"
 
         docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai"
-        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
+        #docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai:latest"
 
     popd
 
     docker images
 
 # -------------------------------------------------------------------------------------------
-# Push our webapp images to Docker Hub.
+# Push our images to Docker Hub.
 # https://docs.docker.com/userguide/dockerhub/
 #[user@desktop]
 

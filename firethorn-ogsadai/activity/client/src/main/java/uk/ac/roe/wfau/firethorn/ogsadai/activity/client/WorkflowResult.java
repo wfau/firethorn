@@ -45,7 +45,7 @@ public interface WorkflowResult
     public Status status();
 
     /**
-     * The workflow request resource ID.
+     * The request resource ID.
      *
      */
     public ResourceID request();

@@ -88,8 +88,7 @@ extends TestPropertiesBase
      * Load a {@link JdbcResource}.
      * @throws IdentifierNotFoundException 
      * 
-     */
-    protected JdbcResource jdbcResource(final String tag, final String name, final String prefix, final String url)
+    protected JdbcResource jdbcResource(final String tag, final String name, final String url)
     throws IdentifierNotFoundException
         {
         JdbcResource found = jdbc.get(
@@ -112,9 +111,52 @@ extends TestPropertiesBase
                 log.debug("Creating new JDBC resource [{}]", tag);
                 found = factories().jdbc().resources().create(
                     tag,
-                    prefix,
                     name,
                     url
+                    );
+                }
+            jdbc.put(
+                tag,
+                found
+                );
+            }
+        return found ;
+        }
+     */
+
+    /**
+     * Load a {@link JdbcResource}.
+     * @throws IdentifierNotFoundException 
+     * 
+     */
+    protected JdbcResource jdbcResource(final String tag, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+    throws IdentifierNotFoundException
+        {
+        JdbcResource found = jdbc.get(
+            tag
+            );
+        if (found == null)
+            {
+            final String ident = testprops().getProperty(tag);
+            log.debug("Loading JDBC resource [{}][{}]", tag, ident);
+            if (ident != null)
+                {
+                found = factories().jdbc().resources().search(
+                    factories().jdbc().resources().idents().ident(
+                        ident
+                        )
+                    );
+                }
+            if (found == null)
+                {
+                log.debug("Creating new JDBC resource [{}]", tag);
+                found = factories().jdbc().resources().create(
+                    catalog,
+                    name,
+                    url,
+                    user,
+                    pass,
+                    driver
                     );
                 }
             jdbc.put(
@@ -172,7 +214,7 @@ extends TestPropertiesBase
             log.debug("Loading ADQL resource [{}][{}]", tag, ident);
             if (ident != null)
                 {
-                found = factories().adql().resources().select(
+                found = factories().adql().resources().search(
                     factories().adql().resources().idents().ident(
                         ident
                         )
@@ -420,6 +462,8 @@ extends TestPropertiesBase
             ); 
         if (found == null)
             {
+// Changed to use 'catalog.schema' rather than 'catalog' and 'schema'.
+// Still not ..
             found = parent.schemas().create(
                 BaseComponent.CopyDepth.THIN,        
                 adql,

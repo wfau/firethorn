@@ -34,8 +34,8 @@
 
     pushd $(mktemp --directory)
 
-        identity=$(pwgen 16 1)
-        community=$(date '+%A')
+        identity=${identity:-$(pwgen 16 1)}
+        community=${community:-$(date '+%A %-d %B %Y')}
 
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 

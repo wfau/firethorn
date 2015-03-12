@@ -33,7 +33,7 @@
 
         #
         # Set the new database name.
-        dbversion=ZRQ011130DEV
+        dbversion=ZRQ20150311DEV
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 
@@ -142,6 +142,7 @@ cat  "${databasefile:?}"
         firethorn.meta.pass=FirethornMetadataXXXXxxxx
 
         firethorn.user.url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataXXXXxxxx
+        firethorn.user.cat=FirethornUserdataXXXXxxxx
         firethorn.user.user=FirethornUserdataXXXXxxxx
         firethorn.user.pass=FirethornUserdataXXXXxxxx
 

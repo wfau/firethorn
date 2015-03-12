@@ -55,13 +55,23 @@ implements Entity.EntityFactory<EntityType>
 
     @Override
     @SelectMethod
+    @SuppressWarnings("unchecked")
+    public EntityType search(final Identifier ident)
+        {
+        //log.debug("search() [{}]", (ident != null) ? ident.value() : null);
+        return (EntityType) factories().hibernate().select(
+            etype(),
+            ident
+            );
+        }
+    
+    @Override
+    @SelectMethod
     public EntityType select(final Identifier ident)
     throws IdentifierNotFoundException
         {
-        log.debug("select() [{}]", (ident != null) ? ident.value() : null);
-        @SuppressWarnings("unchecked")
-        final EntityType result = (EntityType) factories().hibernate().select(
-            etype(),
+        //log.debug("select() [{}]", (ident != null) ? ident.value() : null);
+        final EntityType result = search(
             ident
             );
         if (result != null)

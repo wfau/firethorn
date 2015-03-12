@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -26,50 +25,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
  *
  */
 public interface OgsaBaseResource
-    extends NamedEntity
+    extends Entity
     {
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory<OgsaBaseResource>
-        {
-        }
-
-    /**
-     * {@link Entity.LinkFactory} interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<OgsaBaseResource>
-        {
-
-        }
-
-    /**
-     * {@link Entity.EntityFactory} interface.
-     *
-     */
-    public static interface EntityFactory
-    extends Entity.EntityFactory<OgsaBaseResource>
-        {
-        /**
-         * Select all the {@link OgsaBaseResource}(s).
-         * @return An {@link Iterable} set of {@link OgsaBaseResource}(s). 
-         *
-         */
-        public Iterable<OgsaBaseResource> select();
-
-        /**
-         * Select the {@link OgsaBaseResource}(s) provided by a {@link OgsaService}.
-         * @param service The parent service.
-         * @return An {@link Iterable} list of {@link OgsaBaseResource}(s).
-         *
-         */
-        public Iterable<OgsaBaseResource> select(final OgsaService service);
-
-        }
 
     /**
      * The parent {@link OgsaService}.
@@ -86,11 +43,18 @@ public interface OgsaBaseResource
     public BaseResource<?> source();
 
     /**
-     * The OGSA-DAI resource identifier.
+     * Get the OGSA-DAI resource identifier.
      * @return The identifier
      *
      */
     public String ogsaid();
+
+    /**
+     * Set the OGSA-DAI resource identifier.
+     * @return The resource status.
+     *
+     */
+    public Status ogsaid(final Status status, final String ogsaid);
 
     /**
      * OGSA-DAI resource status.
@@ -98,10 +62,22 @@ public interface OgsaBaseResource
      */
     public static enum Status
         {
-        CREATED(),
-        ACTIVE(),
-        FAILED(),
-        UNKNOWN();
+        CREATED(true),
+        ACTIVE(true),
+        INACTIVE(false),
+        ERROR(false),
+        UNKNOWN(false);
+        
+        private boolean active ;
+        public boolean active()
+            {
+            return this.active;
+            }
+        
+        private Status(boolean active)
+            {
+            this.active = active ;
+            }
         }
 
     /**
@@ -112,10 +88,10 @@ public interface OgsaBaseResource
     public Status status();
 
     /**
-     * Check the resource status.
+     * Set the resource status.
      * @return The resource status.
      *
      */
-    public Status ping();
-    
+    public Status status(final Status status);
+
     }

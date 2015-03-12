@@ -35,7 +35,6 @@ public class MetadataServiceDQPFederation implements DQPFederation
 
     public MetadataServiceDQPFederation()
         {
-        // ZRQ
         log.debug("MetadataServiceDQPFederation()");
         }
     
@@ -59,18 +58,14 @@ public class MetadataServiceDQPFederation implements DQPFederation
     @Override
     public Set<DataNode> getDataNodes() 
     {
-        log.debug("getDataNodes()");
-        if (mDataNodes == null)
-            {
-            log.debug("  DataNodes [null]");
-            }
-        else {
-            for (String key : mDataNodes.keySet())
-                {
-                log.debug("  DataNode [" + key + "][" + mDataNodes.get(key) + "]");
-                }
-            }
-        return new HashSet<DataNode>(mDataNodes.values());
+        log.debug("-------- --------");
+        log.debug("<getDataNodes/>");
+        log.debug("-------- --------");
+        //return new HashSet<DataNode>(mDataNodes.values());
+        throw new UnsupportedOperationException(
+            "This federation does not contain a DataNodesMap"
+            );
+
     }
 
     @Override
@@ -84,6 +79,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
     @Override
     public DataDictionary getDataDictionary(RequestDetails requestDetails) 
     {
+        log.debug("-------- --------");
+        log.debug("<getDataDictionary>");
         MetadataServiceDataDictionary dataDictionary = 
                 new MetadataServiceDataDictionary();
         dataDictionary.setFederation(this);
@@ -94,6 +91,8 @@ public class MetadataServiceDQPFederation implements DQPFederation
                 mMetadataServiceFactory.getAttributeService(requestDetails));
         dataDictionary.setStatisticsService(
                 mMetadataServiceFactory.getStatisticsService(requestDetails));
+        log.debug("</getDataDictionary>");
+        log.debug("-------- --------");
         return dataDictionary;
     }
 
@@ -115,9 +114,15 @@ public class MetadataServiceDQPFederation implements DQPFederation
         return mFunctionRepository;
     }
     
-    public Map<String, DataNode> getDataNodesMap()
+    protected Map<String, DataNode> getDataNodesMap()
     {
-        return mDataNodes;
+        log.debug("-------- --------");
+        log.debug("<getDataNodesMap/>");
+        log.debug("-------- --------");
+        //return mDataNodes;
+        throw new UnsupportedOperationException(
+            "This federation does not contain a DataNodesMap"
+            );
     }
     
     public void setMetadataServiceFactory(MetadataServiceFactory factory)
@@ -138,23 +143,25 @@ public class MetadataServiceDQPFederation implements DQPFederation
     }
     
     /**
-     * Specifies the data nodes in this federation. Data nodes are identified
-     * by names that the table mapping service uses.
+     * No longer used - DataNodesMap is held by the DataDictionary not the Federation.
      * 
      * @param dataNodes
      *            data node mapping
      */
     public void setDataNodesMap(Map<String, DataNode> dataNodes)
     {
+    log.debug("-------- --------");
+    log.debug("<setDataNodesMap>");
         // ++ ZRQ
-        log.debug("setDataNodesMap()");
         for (String key : dataNodes.keySet())
             {
             log.debug("  DataNode [" + key + "][" + dataNodes.get(key) + "]");
             }
         // -- ZRQ
-        mDataNodes.clear();
-        mDataNodes.putAll(dataNodes);
+        //mDataNodes.clear();
+        //mDataNodes.putAll(dataNodes);
+    log.debug("</setDataNodesMap>");
+    log.debug("-------- --------");
     }
     
     /**

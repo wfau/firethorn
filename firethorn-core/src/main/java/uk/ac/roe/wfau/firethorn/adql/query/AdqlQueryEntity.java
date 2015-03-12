@@ -76,9 +76,12 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
@@ -118,7 +121,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
             ),
         @NamedQuery(
             name  = "AdqlQuery-select-schema",
-            query = "FROM AdqlQueryEntity WHERE schema= :schema ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE schema = :schema ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "AdqlQuery-select-schema.name",
@@ -151,7 +154,6 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_ROWID_COL  = "rowid";
 
     protected static final String DB_INPUT_ADQL_COL  = "inputadql";
-    //protected static final String DB_INPUT_MODE_COL  = "inputmode";
 
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
@@ -170,9 +172,9 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
-    protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
+    protected static final String DB_OGSADAI_SOURCE_COL   = "ogsadaisource";
+    protected static final String DB_OGSADAI_TARGET_COL   = "ogsadaitarget";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
-    protected static final String DB_OGSADAI_RESOURCE_COL = "ogsadairesource";
 
     /**
      * Param factory implementation.
@@ -196,9 +198,6 @@ implements AdqlQuery, AdqlParserQuery
         @Value("${firethorn.ogsadai.mode:AUTO}")
         private Mode mode;
 
-        @Value("${firethorn.ogsadai.store}")
-        private String store ;
-
         @Value("${firethorn.ogsadai.endpoint}")
         private String endpoint ;
 
@@ -221,11 +220,6 @@ implements AdqlQuery, AdqlParserQuery
                 public Mode mode()
                     {
                     return ParamFactory.this.mode;
-                    }
-                @Override
-                public String store()
-                    {
-                    return ParamFactory.this.store;
                     }
                 @Override
                 public Level level()
@@ -254,11 +248,6 @@ implements AdqlQuery, AdqlParserQuery
                 public Mode mode()
                     {
                     return (mode != null) ? mode : ParamFactory.this.mode ;
-                    }
-                @Override
-                public String store()
-                    {
-                    return ParamFactory.this.store;
                     }
                 @Override
                 public Level level()
@@ -331,37 +320,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         return factories().queries();
         }
-
-    /**
-     * Resolver implementation.
-     *
-    @Repository
-    public static class Resolver
-    extends AbstractEntityFactory<AdqlQuery>
-    implements AdqlQuery.Resolver
-        {
-        @Override
-        public Class<?> etype()
-            {
-            return AdqlQueryEntity.class ;
-            }
-
-        @Autowired
-        private AdqlQuery.IdentFactory idents;
-        @Override
-        public AdqlQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-        @Autowired
-        private AdqlQuery.LinkFactory links;
-        @Override
-        public AdqlQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-        }
-     */
 
     /**
      * Factory implementation.
@@ -586,7 +544,7 @@ implements AdqlQuery, AdqlParserQuery
        }
 
     /**
-     * The query mode (DIRECT|DISTRIBUTED).
+     * The query mode (AUTO|DIRECT|DISTRIBUTED).
      *
      */
     @Column(
@@ -706,12 +664,20 @@ implements AdqlQuery, AdqlParserQuery
     private String dqp ;
 
     @Column(
-        name = DB_OGSADAI_STORE_COL,
+        name = DB_OGSADAI_SOURCE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String store ;
+    private String source ;
+
+    @Column(
+        name = DB_OGSADAI_TARGET_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String target ;
 
     @Column(
         name = DB_OGSADAI_ENDPOINT_COL,
@@ -721,19 +687,10 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
-    @Column(
-        name = DB_OGSADAI_RESOURCE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String resource ;
-
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.mode     = params.mode();
-        this.store    = params.store();
         this.level    = params.level();
         this.endpoint = params.endpoint();
         }
@@ -757,11 +714,6 @@ implements AdqlQuery, AdqlParserQuery
             public Mode mode()
                 {
                 return AdqlQueryEntity.this.mode;
-                }
-            @Override
-            public String store()
-                {
-                return AdqlQueryEntity.this.store;
                 }
             @Override
             public AdqlQuery.Syntax.Level level()
@@ -1012,7 +964,8 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our primary resource.
-                    this.resource = primary().meta().ogsa().id();
+                    //this.mode   = Mode.DIRECT;
+                    //this.source = primary().ogsa().primary().ogsaid();
                     }
                 else if (this.mode == Mode.DISTRIBUTED)
                     {
@@ -1022,7 +975,8 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     //
                     // Use our DQP resource.
-                    this.resource = this.dqp;
+                    //this.mode   = Mode.DISTRIBUTED;
+                    //this.source = this.dqp;
                     }
                 else {
                     log.debug("Processing as [DIRECT] query");
@@ -1031,10 +985,10 @@ implements AdqlQuery, AdqlParserQuery
                         );
                     if (this.resources.size() == 1)
                         {
+                        this.mode = Mode.DIRECT;
                         //
                         // Use our primary resource.
-                        this.mode = Mode.DIRECT;
-                        this.resource = primary().meta().ogsa().id();
+                        //this.source = primary().ogsa().primary().ogsaid();
                         }
                     else {
                         //
@@ -1043,10 +997,10 @@ implements AdqlQuery, AdqlParserQuery
                         distrib.process(
                             this
                             );
+                        this.mode = Mode.DISTRIBUTED;
                         //
                         // Use our DQP resource.
-                        this.mode = Mode.DISTRIBUTED;
-                        this.resource = this.dqp;
+                        //this.source = this.dqp;
                         }
                     }
                 //
@@ -1124,7 +1078,85 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
+    @Override
+    public Status prepare(boolean run)
+        {
+        log.debug("prepare(boolean)");
+        log.debug(" ident [{}]", ident());
 
+        //
+        // Validate the query.
+        Status result = prepare();
+
+        //
+        // Prepare our resources.
+        if (result == Status.READY)
+            {
+            //
+            // Is this where we create the table ?
+            //
+
+/*
+ *
+            //
+            // Load these here (in transaction/session)
+            // Use them in later execute Thread.
+            String ogsourceid ;
+            String ogtargetid ; 
+            
+            // Get the OGSA-DAI ident from our primary resource.
+            log.debug("++++++++ Checking source OgsaBaseResource ++++++++");
+            BaseResource<?> base = primary();
+            OgsaBaseResource ogsa = base.ogsa().primary();
+            ogsourceid = ogsa.ogsaid();
+            log.debug("++ Query source [{}]", ogsourceid );
+
+            log.debug("++++++++ Checking target OgsaJdbcResource ++++++++");
+            BaseResource<?> aaa = jdbctable.resource();
+            OgsaBaseResource bbb = aaa.ogsa().primary() ;
+            ogtargetid = bbb.ogsaid() ;
+            log.debug("++ Query target [{}]", ogtargetid);
+ *
+ */
+
+            if (this.mode == Mode.DIRECT)
+                {
+                //this.source = primary().ogsa().primary().ogsaid();
+                BaseResource<?> base = this.primary();
+                OgsaBaseResource ogsa = base.ogsa().primary();
+                this.source = ogsa.ogsaid();
+                }
+            else {
+                this.source = this.dqp;
+                }
+            log.debug("++ Query source [{}]", this.source);
+
+            if (this.target == null)
+                {
+                BaseResource<?> base = jdbctable.resource();
+                OgsaBaseResource ogsa = base.ogsa().primary() ;
+                this.target = ogsa.ogsaid() ;
+                }
+            log.debug("++ Query target [{}]", this.target);
+
+            if (this.source == null)
+                {
+                result = status(
+                    Status.ERROR
+                    );
+                }
+
+            if (this.target == null)
+                {
+                result = status(
+                    Status.ERROR
+                    );
+                }
+            }
+        
+        return result ;
+        }
+    
     @Override
     public Status execute()
         {
@@ -1133,6 +1165,10 @@ implements AdqlQuery, AdqlParserQuery
         try {
             this.timings().querystart();
 
+            //
+            // Create the JdbcTable at this point ?
+            //
+            
             Status result = services().executor().status(
                 ident(),
                 Status.RUNNING
@@ -1162,24 +1198,62 @@ implements AdqlQuery, AdqlParserQuery
     
                     log.debug("-- AdqlQuery executing [{}]", ident());
                     log.debug("-- Mode     [{}]", query.mode());
-                    log.debug("-- Store    [{}]", params().store());
                     log.debug("-- Endpoint [{}]", params().endpoint());
-    
-    
-                    // TODO - Check for valid resource ident in prepare().
-                    // TODO - Make the target ogsa resource a property. 
-                    //final String source = ((mode() == Mode.DIRECT) ? primary().meta().ogsa().id() : params().dqp());
-                    log.debug("-- Resource [{}]", AdqlQueryEntity.this.resource);
-                    final String tablename = AdqlQueryEntity.this.jdbctable.namebuilder().toString() ;
-                    log.debug("-- Table    [{}]", tablename);
-    
+
+/*
+ * Should these references be properties of the query ?
+ *     OgsaBaseResource source
+ *     OgsaBaseResource target
+ *     
+ * These refer to state in the OGSA-DAI service.
+ * If OGSA-DAI service resources are reset, then these will be invalid.
+ * Need to be able to test status and re-create ..
+ * 
+ * Error callback from OGSA-DAI service with resource ID ?
+ * Resource xxyyzz not found ..
+ * Internal error, need to retry query.
+ * 
+ *  Or ... create all the resources on demand, nothing stored.
+ *  
+                    //
+                    // Need these in execute() Thread.
+                    // Created them in prepare() Thread.
+                    final String ogsourceid ;
+                    final String ogtargetid ; 
+                    
+                    log.debug("-------- Checking source OgsaBaseResource --------");
+                    BaseResource<?> base = primary();
+                    OgsaBaseResource ogsa = base.ogsa().primary();
+                    ogsourceid = ogsa.ogsaid();
+                    log.debug("-- Query source [{}]", ogsourceid);
+
+                    log.debug("-------- Checking target OgsaJdbcResource  --------");
+                    BaseResource<?>  aaa = jdbctable.resource();
+                    OgsaBaseResource bbb = aaa.ogsa().primary() ;
+                    ogtargetid = bbb.ogsaid() ;
+                    log.debug("-- Query target [{}]", ogtargetid);
+                    
+                    log.debug("++++++++ Checking target JdbcTable ++++++++");
+                    final String ogtablename = jdbctable.namebuilder().toString() ;
+                    log.debug("-- Output table [{}]", ogtablename);
+                    log.debug("-- Output table [{}]", jdbctable.resource().name());
+ * 
+ */                  
+                    log.debug("-- Query source [{}]", this.source);
+                    log.debug("-- Query target [{}]", this.target);
+                    
+                    log.debug("++++++++ Checking target JdbcTable ++++++++");
+                    final String ogtablename = jdbctable.namebuilder().toString() ;
+                    log.debug("-- Output table [{}]", ogtablename);
+                    log.debug("-- Output table [{}]", jdbctable.resource().name());
+                    
                     final PipelineResult frog = pipeline.execute(
                         new PipelineParam()
                             {
                             @Override
                             public String source()
                                 {
-                                return AdqlQueryEntity.this.resource ;
+                                return AdqlQueryEntity.this.source ;
                                 }
                             @Override
                             public String query()
@@ -1191,14 +1265,14 @@ implements AdqlQuery, AdqlParserQuery
                                 {
                                 return new JdbcInsertDataClient.Param()
                                     {
-                                    public String store()
+                                    public String ogsaid()
                                         {
-                                        return params().store();
+                                        return AdqlQueryEntity.this.target;
                                         }
                                     @Override
                                     public String table()
                                         {
-                                        return tablename;
+                                        return ogtablename;
                                         }
                                     @Override
                                     public Integer first()
@@ -1375,27 +1449,23 @@ implements AdqlQuery, AdqlParserQuery
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-// TODO
-// Global shared 'default' space.
             JdbcSchema space = identity.space(
                 true
                 );
-
-            //
-            // Create our tables.
+            log.debug(" Identity space [{}][{}]", space.ident(), space.name());
 
 //TODO
-//Much better error handling - null pointer if create() fails.
+// Much better error handling - null pointer if create() fails.
             
             
 //TODO
 //Why does the query need to know where the JdbcTable is ?
-            log.debug(" Identity space [{}][{}]", space.ident(), space.name());
             this.jdbctable = space.tables().create(
                 this
                 );
 //TODO
 // Should this be FULL or THIN ?
+// Can the ADQL table be created without the JdbcTable underneath ?             
             this.adqltable = this.schema().tables().create(
                 this
                 );

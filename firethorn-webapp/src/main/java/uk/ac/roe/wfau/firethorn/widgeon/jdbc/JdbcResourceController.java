@@ -78,12 +78,6 @@ public class JdbcResourceController
     public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
 
     /**
-     * MVC property for updating the OGSA-DAI resource.
-     *
-     */
-    public static final String UPDATE_OGSADAI = "jdbc.resource.update.ogsadai" ;
-
-    /**
      * MVC property for updating the status.
      *
      */
@@ -176,8 +170,6 @@ public class JdbcResourceController
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
-        @RequestParam(value=UPDATE_OGSADAI, required=false) final
-        String ogsadai,
         @RequestParam(value=UPDATE_CONN_URL, required=false) final
         String url,
         @RequestParam(value=UPDATE_CONN_USER, required=false) final
@@ -194,16 +186,6 @@ public class JdbcResourceController
                 {
                 entity.name(
                     name
-                    );
-                }
-            }
-
-        if (ogsadai != null)
-            {
-            if (ogsadai.length() > 0)
-                {
-                entity.ogsaid(
-                    ogsadai
                     );
                 }
             }

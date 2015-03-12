@@ -85,9 +85,12 @@ extends AbstractQueryTestBase
 
         JdbcResource resource = jdbcResource(
             "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
             "*",
-            "spring:RoeATLAS"
+            "Atlas JDBC",
+            config().property("firethorn.atlas.url"),
+            config().property("firethorn.atlas.user"),
+            config().property("firethorn.atlas.pass"),
+            config().property("firethorn.atlas.driver")
             );
 
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
@@ -132,11 +135,14 @@ extends AbstractQueryTestBase
 
         JdbcResource resource = jdbcResource(
             "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
             "*",
-            "spring:RoeATLAS"
+            "Atlas JDBC",
+            config().property("firethorn.atlas.url"),
+            config().property("firethorn.atlas.user"),
+            config().property("firethorn.atlas.pass"),
+            config().property("firethorn.atlas.driver")
             );
-
+        
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(
             resource.connection()
             );
@@ -161,9 +167,12 @@ extends AbstractQueryTestBase
 
         JdbcResource resource = jdbcResource(
             "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
             "*",
-            "spring:RoeATLAS"
+            "Atlas JDBC",
+            config().property("firethorn.atlas.url"),
+            config().property("firethorn.atlas.user"),
+            config().property("firethorn.atlas.pass"),
+            config().property("firethorn.atlas.driver")
             );
 
         MSSQLMetadataScanner meta = new MSSQLMetadataScanner(

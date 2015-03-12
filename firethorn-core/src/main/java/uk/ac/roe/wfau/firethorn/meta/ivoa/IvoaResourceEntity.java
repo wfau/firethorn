@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
@@ -110,11 +111,10 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String ogsaid, final String ivoaid)
+        public IvoaResource create(final String ivoaid)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ogsaid,
                     ivoaid,
                     ivoaid
                     )
@@ -123,11 +123,10 @@ public class IvoaResourceEntity
 
         @Override
         @CreateMethod
-        public IvoaResource create(final String ogsaid, final String ivoaid, final String name)
+        public IvoaResource create(final String ivoaid, final String name)
             {
             return super.insert(
                 new IvoaResourceEntity(
-                    ogsaid,
                     ivoaid,
                     name
                     )
@@ -172,12 +171,11 @@ public class IvoaResourceEntity
      * Protected constructor.
      *
      */
-    protected IvoaResourceEntity(final String ogsaid, final String ivoaid, final String name)
+    protected IvoaResourceEntity(final String ivoaid, final String name)
         {
         super(
             name
             );
-        this.ogsaid = ogsaid;
         this.ivoaid = ivoaid;
         }
 
@@ -305,16 +303,34 @@ public class IvoaResourceEntity
         return new IvoaResource.Metadata()
             {
             @Override
-            public Ivoa ivoa()
+            public IvoaResource.Metadata.Ivoa ivoa()
                 {
                 return new Ivoa()
                     {
                     };
                 }
+            };
+        }
+
+    @Override
+    public OgsaIvoaResources ogsa()
+        {
+        return new OgsaIvoaResources()
+            {
             @Override
-            public Ogsa ogsa()
+            public OgsaIvoaResource primary()
                 {
-                return ogsameta();
+                return factories().ogsa().factories().ivoa().primary(
+                    IvoaResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select()
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    IvoaResourceEntity.this
+                    );
                 }
             };
         }

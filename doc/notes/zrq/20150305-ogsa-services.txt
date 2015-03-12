@@ -1,0 +1,185 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Import changes from old dev branch.
+    #
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-ogsa-services
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Transfer the changes from previous branch.
+#[user@desktop]
+
+    #
+    # ... manual selection using Meld ...
+    #
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Start a new database
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20150113-01-clean-database.txt" &
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150115-01-gnome-tests.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150305-01-test-workspace.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    for i in {0..5}
+    do
+        echo $i
+        source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+    done
+
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
+
+
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-02-test-queries.txt"
+
+
+
+
+
+
+# -----------------------------------------------------
+# Check metadata
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Login to our metadata database.
+        sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+
+            /*
+             * Get a list of databases.
+             *
+             */
+            SELECT
+                name
+            FROM
+                sys.master_files 
+            WHERE
+                name LIKE 'FirethornMetadataZRQ2015%'
+            ORDER BY 
+                name
+            go
+
+            ....
+            FirethornMetadataZRQ20150306DEV
+            FirethornMetadataZRQ20150306DEV_log
+
+            /*
+             * Select our metadata database.
+             *
+             */
+            use [FirethornMetadataZRQ20150306DEV]
+            go
+
+
+            /*
+             * Get a list of tables.
+             *
+             */
+            SELECT DISTINCT
+                TABLE_NAME
+            FROM
+                INFORMATION_SCHEMA.TABLES
+            ORDER BY
+                TABLE_NAME
+            go
+
+            ....                                                                                                                                                                                                                                      
+            FT011209OgsaIvoaResourceEntity
+            FT011209OgsaJdbcResourceEntity
+            FT011209OgsaServiceEntity
+            ....                                                                                                                                                                                                                                      
+
+            /*
+             * Get a list of services.
+             *
+             */
+            SELECT * FROM FT011209OgsaServiceEntity
+            go
+
+            SELECT * FROM FT011209OgsaJdbcResourceEntity
+            go
+
+            SELECT * FROM FT011209JdbcResourceEntity
+            go
+
+            DELETE FROM FT011209OgsaJdbcResourceEntity
+            DELETE FROM FT011209OgsaServiceEntity
+            go
+

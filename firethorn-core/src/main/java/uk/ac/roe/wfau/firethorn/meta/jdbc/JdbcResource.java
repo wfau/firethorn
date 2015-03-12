@@ -22,8 +22,8 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
  *
@@ -69,27 +69,33 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url)
          *
          */
-        public JdbcResource create(final String ogsaid, final String name, final String url);
+        public JdbcResource create(final String name, final String url);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, catalog)
          *
          */
-        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url);
+        public JdbcResource create(final String catalog, final String name, final String url);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, user, pass)
+         * @todo Re-order the params (name, url, catalog, user, pass)
          *
          */
-        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass);
+        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass);
 
         /**
          * Create a new {@link JdbcResource}.
+         * @todo Re-order the params (name, url, driver, user, pass)
+         * @todo Re-order the params (name, url, driver, catalog, user, pass)
          *
          */
-        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass, final String driver);
+        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver);
 
         /**
          * Our local {@link JdbcSchema.EntityFactory} implementation.
@@ -103,6 +109,7 @@ extends BaseResource<JdbcSchema>
          * @todo Move this to a data space interface.
          *
          */
+        @Deprecated
         public JdbcResource userdata();
 
         }
@@ -189,27 +196,6 @@ extends BaseResource<JdbcSchema>
     public void catalog(final String catalog);
 
     /**
-     * Get the JDBC type for an ADQL type.
-     * Do we need this here ?
-     *
-    public JdbcColumn.OldJdbcType jdbctype(final AdqlColumn.OldAdqlType type);
-     */
-
-    /**
-     * Get the JDBC size/precision for an ADQL type.
-     * Do we need this here ?
-     *
-    public Integer jdbcsize(final AdqlColumn.OldAdqlType type);
-     */
-
-    /**
-     * Get the JDBC size/precision for a JDBC type.
-     * Do we need this here ?
-     *
-    public Integer jdbcsize(final JdbcColumn.OldJdbcType type);
-     */
-
-    /**
      * The {@link JdbcResource} metadata.
      *
      */
@@ -217,14 +203,14 @@ extends BaseResource<JdbcSchema>
     extends BaseResource.Metadata
         {
         /**
-         * The JDBC metadata.
+         * JDBC specific metadata.
          * 
          */
         public interface Jdbc
-            {
-            }
+            {}
+
         /**
-         * The JDBC metadata.
+         * Access to the JDBC specific metadata.
          * 
          */
         public Jdbc jdbc();
@@ -233,4 +219,31 @@ extends BaseResource<JdbcSchema>
     @Override
     public JdbcResource.Metadata meta();
     
+    /**
+     * Interface to access the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
+     * 
+     */
+    public interface OgsaJdbcResources
+    extends OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaJdbcResource} OGSA-DAI resource.
+         * 
+         */
+        public OgsaJdbcResource primary();
+        
+        /**
+         * Select all the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
+         * 
+         */
+        public Iterable<OgsaJdbcResource> select();
+
+    }
+
+    /**
+     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * 
+     */
+    public OgsaJdbcResources ogsa();
+
     }

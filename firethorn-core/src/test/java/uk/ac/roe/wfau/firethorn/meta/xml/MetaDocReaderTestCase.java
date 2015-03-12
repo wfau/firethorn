@@ -55,7 +55,6 @@ extends TestBase
         //
         // Create our JDBC resources.
         resource = factories().jdbc().resources().create(
-            "twomass",
             "TWOMASS",
             "twomass",
             "spring:RoeTWOMASS"

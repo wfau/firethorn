@@ -32,7 +32,6 @@
 
     <!--+
         | MetaData database.
-        | ssh -L 1439:ramses9:1433 fenrir.roe.ac.uk
         +-->
     <bean id="FireThornMetaData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
@@ -56,52 +55,5 @@
 
     </bean>
 
-    <!--+
-        | UserData database.
-        | ssh -L 1439:ramses9:1433 fenrir.roe.ac.uk
-        +-->
-    <bean id="FireThornUserData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <!--+
-            | DataSource properties.
-            +-->
-        <property name="jdbcUrl"     value="${firethorn.user.url}"/>
-        <property name="user"        value="${firethorn.user.user}"/>
-        <property name="password"    value="${firethorn.user.pass}"/>
-        <property name="driverClass" value="${firethorn.user.driver}"/>
-
-        <!--+
-            | C3P0 connection pool.
-            +-->
-        <property name="minPoolSize"   value="${firethorn.user.c3p0.min.size:5}" />
-        <property name="maxPoolSize"   value="${firethorn.user.c3p0.max.size:20}" />
-        <property name="maxIdleTime"   value="${firethorn.user.c3p0.max.idle:300}" />
-
-    </bean>
-
-    <!-- = Live ROE database = -->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1435:ramses5:1433 fenrir.roe.ac.uk
-        +-->
-    <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-
-        <!--+
-            | DataSource properties.
-            +-->
-        <property name="jdbcUrl"     value="${firethorn.atlas.url}"/>
-        <property name="user"        value="${firethorn.atlas.user}"/>
-        <property name="password"    value="${firethorn.atlas.pass}"/>
-        <property name="driverClass" value="${firethorn.atlas.driver}"/>
-
-        <!--+
-            | C3P0 connection pool.
-            +-->
-        <property name="minPoolSize"   value="${firethorn.atlas.c3p0.min.size:5}" />
-        <property name="maxPoolSize"   value="${firethorn.atlas.c3p0.max.size:20}" />
-        <property name="maxIdleTime"   value="${firethorn.atlas.c3p0.max.idle:300}" />
-
-    </bean>
 </beans>
 

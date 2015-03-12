@@ -1,5 +1,6 @@
 package uk.org.ogsadai.dqp.firethorn;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import uk.org.ogsadai.dqp.lqp.HeadingImpl;
 import uk.org.ogsadai.dqp.lqp.exceptions.AttributeNotFoundException;
 import uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException;
 import uk.org.ogsadai.dqp.lqp.udf.FunctionRepository;
+import uk.org.ogsadai.dqp.presentation.common.SimpleDataNode;
 
 public class MetadataServiceDataDictionary implements DataDictionary
 {
@@ -47,6 +49,13 @@ public class MetadataServiceDataDictionary implements DataDictionary
         return new HeadingImpl(getAttributes(tableName));
     }
 
+    
+    /**
+     * This DataDictionary contains a local Map of DataNode indexed by ResourceID.
+     *  
+     */
+    private Map<String, DataNode> mLocalNodes = new HashMap<String, DataNode>(); 
+    
     @Override
     public TableSchema getTableSchema(String tableName)
             throws TableNotFoundException 
@@ -64,27 +73,42 @@ public class MetadataServiceDataDictionary implements DataDictionary
         LOG.debug("  TableMapping alias [" + tableMapping.tableAlias() + "]");
         LOG.debug("  TableMapping ident [" + tableMapping.resourceIdent() + "]");
 
-        LOG.debug("  Federation [" + mFederation + "]");
         LOG.debug("  ++ Nodes ");
-        Map<String, DataNode> nodes = mFederation.getDataNodesMap();
-        for (String key : nodes.keySet())
+        for (String key : mLocalNodes.keySet())
             {
-            DataNode node = nodes.get(
+            DataNode node = mLocalNodes.get(
                 key
                 ); 
-            LOG.debug("  DataNode [" + node + "]");
-            LOG.debug("  DataNode ident [" + node.getResourceID() + "]");
-            LOG.debug("  DataNode EvalNode [" + node.getEvaluationNode() + "]");
+            LOG.debug("  DataNode [" + key + "][" + node.getResourceID() + "]");
             }
         LOG.debug("  -- Nodes ");
         //-- ZRQ
 
-        MetadataServiceTableSchema tableSchema = 
-                new MetadataServiceTableSchema(
-                        tableName, 
-                        tableMapping.tableName(), 
-                        mFederation.getDataNodesMap().get(
-                                tableMapping.resourceIdent()));
+        // ZRQ
+        // Populate the data nodes on the fly.
+        DataNode node = mLocalNodes.get(
+            tableMapping.resourceIdent()
+            );
+        if (node == null)
+            {
+            node = new SimpleDataNode(
+                tableMapping.resourceIdent(),
+                mFederation.getLocalNode()
+                );
+            LOG.debug(" Created DataNode [" + node.getResourceID() + "]");
+            mLocalNodes.put(
+                tableMapping.resourceIdent(),
+                node
+                );
+            }
+        else {
+            LOG.debug(" Found DataNode [" + node.getResourceID() + "]");
+            }        
+        MetadataServiceTableSchema tableSchema = new MetadataServiceTableSchema(
+            tableName, 
+            tableMapping.tableName(), 
+            node
+            );
         tableSchema.setDataDictionary(this);
         return tableSchema;
 //        List<Attribute> attributes = getAttributes(tableName);

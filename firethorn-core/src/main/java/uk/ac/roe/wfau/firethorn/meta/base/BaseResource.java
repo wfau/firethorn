@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 
 /**
  *
@@ -28,24 +29,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 public interface BaseResource<SchemaType extends BaseSchema<SchemaType,?>>
 extends BaseComponent
     {
-
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<ResourceType extends BaseResource<?>>
-    extends Entity.IdentFactory<ResourceType>
-        {
-        }
-     */
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<ResourceType extends BaseResource<?>>
-    extends NamedEntity.NameFactory<ResourceType>
-        {
-        }
-     */
     
     /**
      * {@link Entity.LinkFactory} interface.
@@ -121,56 +104,11 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
-     * Get the OGSA-DAI resource ID.
-     * @too Move this to an OGSA-DAI specific resource.
-     *
-     */
-    @Deprecated
-    public String ogsaid();
-
-    /**
-     * Set the OGSA-DAI resource ID.
-     * @too Move this to an OGSA-DAI specific resource.
-     *
-     */
-    @Deprecated
-    public void ogsaid(final String ogsaid);
-
-    /**
      * The {@link BaseResource} metadata.
      *
      */
     public interface Metadata
         {
-        /**
-         * The resource name.
-         * 
-        public String name();
-         */
-
-        /**
-         * The resource description.
-         * 
-        public String text();
-         */
-
-        /**
-         * The OGSA-DAI metadata.
-         * 
-         */
-        public interface Ogsa
-            {
-            /**
-             * Get the OGSA-DAI resource ID.
-             *
-             */
-            public String id();
-            }
-        /**
-         * The OGSA-DAI metadata.
-         * 
-         */
-        public Ogsa ogsa();
         }
 
     /**
@@ -178,5 +116,26 @@ extends BaseComponent
      *
      */
     public BaseResource.Metadata meta();
+    
+    /**
+     * Interface to access the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
+     * @todo Move this to RootResource rather than BaseResource.
+     * 
+     */
+    public interface OgsaBaseResources
+        {
+        /**
+         * Select the primary {@link OgsaBaseResource} OGSA-DAI resource for this {@link BaseResource}.
+         * 
+         */
+        public OgsaBaseResource primary();
+        }
+
+    /**
+     * Access to the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
+     * @todo Move this to {@link RootResource} rather than {@link BaseResource}.
+     * 
+     */
+    public OgsaBaseResources ogsa();
     
     }

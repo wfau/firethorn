@@ -96,14 +96,14 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.transaction.interceptor">
-		<level value="WARN" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+
 	    | Hibernate loggers.
 	    +-->
 	<logger name="org.hibernate">
-		<level value="info" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.hibernate.SQL">
 		<level value="INFO" />

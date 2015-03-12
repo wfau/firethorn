@@ -65,10 +65,14 @@ extends AtlasQueryTestBase
         log.debug("loadRemoteTwomass()");
         JdbcResource jdbcspace = jdbcResource(
             "twomass.jdbc.resource",
-            "twomass.jdbc.resource",
             "*",
-            "spring:RoeTWOMASS"
+            "TWOMASS JDBC",
+            config().property("firethorn.twomass.url"),
+            config().property("firethorn.twomass.user"),
+            config().property("firethorn.twomass.pass"),
+            config().property("firethorn.twomass.driver")
             );
+        
         AdqlResource adqlspace = adqlResource(
             "twomass.adql.resource",
             "twomass.adql.resource"

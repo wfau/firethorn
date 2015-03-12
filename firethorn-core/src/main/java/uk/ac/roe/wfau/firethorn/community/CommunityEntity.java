@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -102,7 +103,7 @@ implements Community
         @CreateMethod
         public Community create(final String uri)
             {
-            log.debug("create(String) [{}][{}]", uri);
+            log.debug("create(String) [{}]", uri);
             return create(
                 uri,
                 uri
@@ -114,31 +115,44 @@ implements Community
         public Community create(final String uri, final String name)
             {
             log.debug("create(String, String) [{}][{}]", name, uri);
-            return create(
-                uri,
-                name,
-                factories().jdbc().resources().userdata()
+            final Community community = this.select(
+                uri
                 );
+            if (community != null)
+                {
+                log.debug("Found existing community [{}][{}]", uri, community.ident());
+                return community ;
+                }
+            else {
+                log.debug("Creating new community [{}]", uri);
+                return create(
+                    uri,
+                    name,
+                    factories().jdbc().resources().userdata()
+                    );
+                }
             }
 
         @Override
         @CreateMethod
         public Community create(final String uri, final String name, final JdbcResource space)
             {
-            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", space, name, uri);
+            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);
             final Community community = this.select(
                 uri
                 );
             if (community != null)
                 {
+                log.debug("Found existing community [{}][{}]", uri, community.ident());
                 return community ;
                 }
             else {
+                log.debug("Creating new community [{}]", uri);
                 return super.insert(
                     new CommunityEntity(
-                        space,
+                        uri,
                         name,
-                        uri
+                        space
                         )
                     );
                 }
@@ -198,12 +212,12 @@ implements Community
      * Create a new Community.
      *
      */
-    protected CommunityEntity(final JdbcResource space, final String name, final String uri)
+    protected CommunityEntity(final String uri, final String name, final JdbcResource space)
         {
         super(
             name
             );
-        log.debug("CommunityEntity(JdbcResource, String, String) [{}][{}]", uri, name);
+        log.debug("CommunityEntity(String, String. JdbcResource) [{}][{}]", uri, name, space);
         this.space = space ;
         this.uri = uri ;
         }
@@ -276,6 +290,7 @@ implements Community
     @Override
     public JdbcResource space(final boolean create)
         {
+        log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))
             {
             this.space = factories().jdbc().resources().userdata() ;

@@ -94,20 +94,20 @@
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.springframework.transaction.interceptor">
-		<level value="TRACE" />
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+
 	    | Hibernate loggers.
 	    +-->
 	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.hibernate.SQL">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+

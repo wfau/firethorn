@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
 
 /**
  *
@@ -34,15 +35,6 @@ public interface OgsaIvoaResource
      */
     public static interface IdentFactory
     extends Entity.IdentFactory<OgsaIvoaResource>
-        {
-        }
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-     */
-    public static interface NameFactory
-    extends NamedEntity.NameFactory<OgsaIvoaResource>
         {
         }
     
@@ -63,47 +55,62 @@ public interface OgsaIvoaResource
     extends Entity.EntityFactory<OgsaIvoaResource>
         {
         /**
-         * Select all the resources.
+         * Select all the {@link OgsaIvoaResource}(s).
          * @return An {@link Iterable} set of {@link OgsaIvoaResource}(s). 
          *
          */
         public Iterable<OgsaIvoaResource> select();
 
         /**
-         * Select the {@link OgsaIvoaResource}(s) provided by a {@link OgsaService}.
-         * @param service The parent service.
+         * Select the {@link OgsaIvoaResource}(s) for a {@link OgsaService}.
+         * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
          *
          */
         public Iterable<OgsaIvoaResource> select(final OgsaService service);
 
         /**
-         * Create a new {@link OgsaIvoaResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link IvoaResource}.
+         * Select the {@link OgsaIvoaResource}(s) for an {@link IvoaResource}.
+         * @param source  The {@link IvoaResource}.
+         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         *
+         */
+        public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+
+        /**
+         * Select the {@link OgsaIvoaResource}(s) for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link IvoaResource}.
+         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         *
+         */
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+
+        /**
+         * Create a new {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The parent {@link OgsaService}.
+         * @param source  The source {@link IvoaResource}.
          * @return A new {@link OgsaIvoaResource}.
          *
          */
         public OgsaIvoaResource create(final OgsaService service, final IvoaResource source);
 
         /**
-         * Create a new {@link OgsaIvoaResource}.
-         * @param service The parent service.
-         * @param source  The corresponding {@link IvoaResource}.
-         * @param name The resource name.
-         * @return A new {@link OgsaIvoaResource}.
+         * Select the primary {@link OgsaIvoaResource} for a {@link IvoaResource}.
+         * @param source The {@link IvoaResource} resource.
+         * @return The primary {@link OgsaIvoaResource}.
          *
          */
-        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source, final String name);
+        public OgsaIvoaResource primary(final IvoaResource source);
 
         /**
-         * Select the {@link OgsaIvoaResource}(s) for a {@link IvoaResource}.
-         * @param service The parent {@link OgsaService}.
-         * @param source  The source {@link IvoaResource}.
-         * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         * Select the primary {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
+         * @param service The {@link OgsaService}.
+         * @param source  The {@link IvoaResource}.
+         * @return The primary {@link OgsaIvoaResource}.
          *
          */
-        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+        public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source);
         
         }
     
@@ -112,5 +119,19 @@ public interface OgsaIvoaResource
      *  
      */
     public IvoaResource source();
+
+    /**
+     * Initialise the OGSA-DAI resource, creating a new one if needed.
+     * @return The resource status.
+     *  
+     */
+    public Status create();
+
+    /**
+     * Release the OGSA-DAI resource.
+     * @return The resource status.
+     * 
+     */
+    public Status release();
 
     }

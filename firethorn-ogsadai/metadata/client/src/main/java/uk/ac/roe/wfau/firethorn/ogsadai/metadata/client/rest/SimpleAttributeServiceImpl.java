@@ -40,7 +40,7 @@ implements AttributeService
      * Debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(SimpleAttributeServiceImpl.class);
+    //private static Log log = LogFactory.getLog(SimpleAttributeServiceImpl.class);
 
     /**
      * Webservice path for an indiviual attribute.
@@ -64,14 +64,13 @@ implements AttributeService
             endpoint,
             request
             );
-        log.debug("AttributeServiceImpl()");
         }
 
     protected AttributeBean bean(final String source, final String attrib)
         {
-        log.debug("bean(String, String)");
-        log.debug("  Source [" + source + "]");
-        log.debug("  Attrib [" + attrib + "]");
+        //log.trace("bean(String, String)");
+        //log.trace("  Source [" + source + "]");
+        //log.trace("  Attrib [" + attrib + "]");
         return rest().getForObject(
             endpoint(
                 ATTRIBUTE_NAME_PATH
@@ -84,8 +83,8 @@ implements AttributeService
 
     protected AttributeBean[] array(final String source)
         {
-        log.debug("array(String)");
-        log.debug("  Source [" + source + "]");
+        //log.trace("array(String)");
+        //log.trace("  Source [" + source + "]");
         return rest().getForObject(
             endpoint(
                 ATTRIBUTE_LIST_PATH
@@ -98,9 +97,9 @@ implements AttributeService
     @Override
     public Attribute getAttribute(final String source, final String attrib)
         {
-        log.debug("getAttribute(String, String)");
-        log.debug("  Source [" + source + "]");
-        log.debug("  Attrib [" + attrib + "]");
+        //log.trace("getAttribute(String, String)");
+        //log.trace("  Source [" + source + "]");
+        //log.trace("  Attrib [" + attrib + "]");
         return BeanWrapper.wrap(
             bean(
                 source,
@@ -112,8 +111,8 @@ implements AttributeService
     @Override
     public Iterable<Attribute> getAttributes(final String source)
         {
-        log.debug("getAttributes(String)");
-        log.debug("  Source [" + source + "]");
+        //log.trace("getAttributes(String)");
+        //log.trace("  Source [" + source + "]");
         return BeanWrapper.wrap(
             array(
                 source
@@ -185,8 +184,10 @@ implements AttributeService
          */
         public static Attribute wrap(final AttributeBean bean)
             {
-            return new BeanWrapper(
+            return debug(
+                new BeanWrapper(
                 bean
+                    )
                 );
             }
 
@@ -238,6 +239,53 @@ implements AttributeService
             {
             return this.key;
             }
+        }
+    
+    public static Attribute debug(final Attribute attribute)
+        {
+        //log.trace("Attribute");
+        //log.trace("  Name [" + attribute.getName() + "]");
+        //log.trace("  Type [" + attribute.getType() + "]");
+        //log.trace("  Source [" + attribute.getSource() + "]");
+        return attribute ;
+        }
+
+    public static Iterable<Attribute> debug(final Iterable<Attribute> inner)
+        {
+        return new Iterable<Attribute>()
+            {
+            @Override
+            public Iterator<Attribute> iterator()
+                {
+                return debug(
+                    inner.iterator()
+                    );
+                }
+            };
+        }
+
+    public static Iterator<Attribute> debug(final Iterator<Attribute> inner)
+        {
+        return new Iterator<Attribute>()
+            {
+            @Override
+            public boolean hasNext()
+                {
+                return inner.hasNext();
+                }
+            @Override
+            public Attribute next()
+                {
+                return debug(
+                    inner.next()
+                    );
+                }
+            @Override
+            public void remove()
+                {
+                inner.remove();
+                }
+            };
         }
     }
 

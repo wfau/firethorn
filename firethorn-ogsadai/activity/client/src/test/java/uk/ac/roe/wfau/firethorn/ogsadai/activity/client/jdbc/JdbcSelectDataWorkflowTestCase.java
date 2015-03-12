@@ -12,12 +12,8 @@ import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.CreateResourceResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
@@ -50,7 +46,7 @@ extends JdbcResourceTestBase
                 )
             );
 
-        final CreateResourceResult atlasdata = creator.execute(
+        final SimpleResourceWorkflowResult atlasdata = creator.execute(
             config().jdbc().databases().get("atlas")
             );
         assertNotNull(
@@ -61,10 +57,10 @@ extends JdbcResourceTestBase
             atlasdata.status()
             );
         assertNotNull(
-            atlasdata.resource()
+            atlasdata.result()
             );
         
-        final CreateResourceResult userdata = creator.execute(
+        final SimpleResourceWorkflowResult userdata = creator.execute(
             config().jdbc().databases().get("user")
             );
         assertNotNull(
@@ -75,7 +71,7 @@ extends JdbcResourceTestBase
             userdata.status()
             );
         assertNotNull(
-            userdata.resource()
+            userdata.result()
             );
 
         long time = System.currentTimeMillis();         
@@ -118,7 +114,7 @@ extends JdbcResourceTestBase
                 )
             ); 
         final WorkflowResult selected = selector.execute(
-            atlasdata.resource(),
+            atlasdata.result(),
             new JdbcSelectDataWorkflow.Param()
                 {
                 @Override
@@ -163,9 +159,9 @@ extends JdbcResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
-                            return userdata.resource().toString();
+                            return userdata.result().toString();
                             }
                         @Override
                         public String table()
@@ -180,9 +176,9 @@ extends JdbcResourceTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String store()
+                        public String ogsaid()
                             {
-                            return userdata.resource().toString();
+                            return userdata.result().toString();
                             }
                         @Override
                         public String table()

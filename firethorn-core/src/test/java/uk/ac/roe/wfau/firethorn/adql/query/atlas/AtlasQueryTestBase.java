@@ -55,9 +55,12 @@ extends AbstractQueryTestBase
 
         JdbcResource jdbcspace = jdbcResource(
             "atlas.jdbc.resource",
-            "atlas.jdbc.resource",
             "*",
-            "spring:RoeATLAS"
+            "Atlas JDBC",
+            config().property("firethorn.atlas.url"),
+            config().property("firethorn.atlas.user"),
+            config().property("firethorn.atlas.pass"),
+            config().property("firethorn.atlas.driver")
             );
 
         AdqlResource adqlspace = adqlResource(

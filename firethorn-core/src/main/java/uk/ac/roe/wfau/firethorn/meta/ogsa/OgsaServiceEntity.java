@@ -37,20 +37,29 @@ import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
- *
+ * {@link OgsaService} implementation.
  *
  */
 @Slf4j
@@ -65,8 +74,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
         {
         @NamedQuery(
             name  = "OgsaService-select-all",
-            query = "FROM OgsaServiceEntity ORDER BY name asc, ident desc"
+            query = "FROM OgsaServiceEntity ORDER BY ident DESC"
             ),
+        @NamedQuery(
+            name  = "OgsaService-select-status",
+            query = "FROM OgsaServiceEntity WHERE status = :status ORDER BY ident DESC"
+            )
         }
     )
 public class OgsaServiceEntity
@@ -96,6 +109,267 @@ public class OgsaServiceEntity
      *
      */
     protected static final String DB_SERVICE_STATUS_COL = "status";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_HTTP_STATUS_COL = "http";
+
+    /**
+     * {@link OgsaService.EntityFactory} implementation.
+     *
+     */
+    @Component
+    @Repository
+    public static class OgsaServiceEntityFactory
+    extends AbstractEntityFactory<OgsaService>
+    implements OgsaService.EntityFactory, OgsaService.EndpointFactory
+        {
+        @Override
+        public Class<?> etype()
+            {
+            return OgsaServiceEntity.class ;
+            }
+
+        @Autowired
+        private OgsaService.IdentFactory idents;
+        @Override
+        public OgsaService.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaService.LinkFactory links;
+        @Override
+        public OgsaService.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<OgsaService> select()
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaService-select-all"
+                    )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<OgsaService> select(final Status status)
+            {
+            return super.iterable(
+                super.query(
+                    "OgsaService-select-status"
+                    ).setEntity(
+                        "status",
+                        status
+                        )
+                );
+            }
+
+        @Value("${firethorn.ogsadai.endpoint}")
+        private String endpoint ;
+
+        @Override
+        @CreateMethod
+        public OgsaService primary()
+            {
+            log.debug("primary()");
+            // Really really simple - just get the first ACTIVE service.
+            OgsaService service = super.first(
+                super.query(
+                    "OgsaService-select-status"
+                    ).setString(
+                        "status",
+                        OgsaService.Status.ACTIVE.name()
+                        )
+                );
+            
+            // If we don't have an ACTIVE service, create a new one.
+            // Bug - this can create multiple broken services.
+            if (service == null)
+                {
+                log.debug("-------------------------------------------------");
+                log.debug("No primary OgsaService found - creating a new one");
+                if (endpoint == null)
+                    {
+                    throw new PrimaryServiceException(
+                        "Primary OGSA-DAI service endpoint is null"
+                        ); 
+                    }
+                else {
+                    try {
+                      //service = create(
+                      service = factories().ogsa().services().create(
+                            endpoint
+                            );
+                        }
+                    catch (Exception ouch)
+                        {
+                        throw new PrimaryServiceException(
+                            "Unable to create primary OGSA-DAI service",
+                            ouch
+                            ); 
+                        }
+                    if (service.status() != Status.ACTIVE)
+                        {
+                        throw new PrimaryServiceException(
+                            "Unable to create ACTIVE OGSA-DAI service"
+                            ); 
+                        }
+                    }
+                }
+            return service ;
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaService create(final String endpoint)
+            {
+            log.debug("create(String)");
+            return create(
+                endpoint,
+                endpoint
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaService create(final String name, final String endpoint)
+            {
+            log.debug("create(String, String)");
+            log.debug("  name [{}]", name);
+            log.debug("  endpoint [{}]", endpoint);
+            return super.insert(
+                new OgsaServiceEntity(
+                    name,
+                    endpoint
+                    )
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public OgsaService create(final String proto, final String host, final Integer port, final String path)
+            {
+            log.debug("create(String, String, Integer, String)");
+            return this.create(
+                endpoint(
+                    proto,
+                    host,
+                    port,
+                    path
+                    )
+                );
+        }
+
+        @Override
+        @CreateMethod
+        public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path)
+            {
+            log.debug("create(String, String, String, Integer, String)");
+            return this.create(
+                name,
+                endpoint(
+                    proto,
+                    host,
+                    port,
+                    path
+                    )
+                );
+            }
+        
+        @Value("${ogsadai.endpoint.proto:http}")
+        private String DEFAULT_PROTO ;
+
+        @Value("${ogsadai.endpoint.host:localhost}")
+        private String DEFAULT_HOST ;
+        
+        @Value("${ogsadai.endpoint.port:8080}")
+        private Integer DEFAULT_PORT ;
+
+        @Value("${ogsadai.endpoint.path:ogsadai}")
+        private String DEFAULT_PATH ;
+
+        @Override
+        public String endpoint(final String proto, final String host, final Integer port, final String path)
+            {
+            String endpoint = "{proto}://{host}:{port}/{path}";
+
+            if (proto != null)
+                {
+                endpoint = endpoint.replace("{proto}", proto.trim());
+                }
+            else {
+                endpoint = endpoint.replace("{proto}", DEFAULT_PROTO);
+                }
+
+            if (host != null)
+                {
+                endpoint = endpoint.replace("{host}", host.trim());
+                }
+            else {
+                endpoint = endpoint.replace("{host}", DEFAULT_HOST);
+                }
+
+            if (port != null)
+                {
+                endpoint = endpoint.replace("{port}", port.toString());
+                }
+            else {
+                endpoint = endpoint.replace("{port}", DEFAULT_PORT.toString());
+                }
+
+            if (path != null)
+                {
+                endpoint = endpoint.replace("{path}", path.trim());
+                }
+            else {
+                endpoint = endpoint.replace("{path}", DEFAULT_PATH);
+                }
+
+            return endpoint;
+            }
+
+        
+        public static class PrimaryServiceException
+        extends EntityServiceException
+            {
+            /**
+             * Generated serialzable version UID.
+             *
+             */
+            private static final long serialVersionUID = 8735295340800854889L;
+
+            /**
+             * Protected constructor.
+             * 
+             */
+            protected PrimaryServiceException(final String message)
+                {
+                super(message);
+                }
+
+            /**
+             * Protected constructor.
+             * 
+             */
+            protected PrimaryServiceException(final String message, final Throwable cause)
+                {
+                super(
+                    message,
+                    cause
+                    );
+                }
+            }
+        }
+    
     
     /**
      * Protected constructor. 
@@ -111,15 +385,43 @@ public class OgsaServiceEntity
      * @param name The service name.
      * @param endpoint The service endpoint.
      * @throws NameFormatException
+     * @todo Start status as CREATED, explicitly set to ACTIVE.
      *
      */
-    public OgsaServiceEntity(final String endpoint, final String name) throws NameFormatException
+    public OgsaServiceEntity(final String name, final String endpoint) throws NameFormatException
         {
         super(
             name
             );
+        this.status = Status.ACTIVE;
         this.endpoint = endpoint; 
         }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_SERVICE_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Status status ;
+    @Override
+    public Status status()
+        {
+        return this.status ;
+        }
+    @Override
+    public Status status(final Status value)
+        {
+        this.status = value ;
+        return this.status ;
+        }
+
 
     @Basic(
         fetch = FetchType.EAGER
@@ -153,8 +455,11 @@ public class OgsaServiceEntity
         return this.version;
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = DB_SERVICE_STATUS_COL,
+        name = DB_HTTP_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -175,57 +480,6 @@ public class OgsaServiceEntity
         return factories().ogsa().services().links().link(
             this
             );
-        }
-
-    @Override
-    public Resources resources()
-        {
-        return new Resources()
-            {
-            @Override
-            public Iterable<OgsaBaseResource> select()
-                {
-                return factories().ogsa().resources().base().select(
-                    OgsaServiceEntity.this
-                    );
-                }
-
-            @Override
-            public OgsaJdbcResource create(final JdbcResource source)
-                {
-                return factories().ogsa().resources().jdbc().create(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public OgsaIvoaResource create(final IvoaResource source)
-                {
-                return factories().ogsa().resources().ivoa().create(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public Iterable<OgsaJdbcResource> select(final JdbcResource source)
-                {
-                return factories().ogsa().resources().jdbc().select(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-
-            @Override
-            public Iterable<OgsaIvoaResource> select(final IvoaResource source)
-                {
-                return factories().ogsa().resources().ivoa().select(
-                    OgsaServiceEntity.this,
-                    source
-                    );
-                }
-            };
         }
 
     @Override
@@ -267,7 +521,7 @@ public class OgsaServiceEntity
         try {
             ClientHttpRequest request = factory.createRequest(
                 baseuri().resolve(
-                    "services/version"
+                    "version"
                     ),
                 HttpMethod.GET
                 );
@@ -297,5 +551,80 @@ public class OgsaServiceEntity
             this.http = HttpStatus.BAD_REQUEST;
             }
         return this.http ;
+        }
+
+    @Override
+    public OgsaIvoaResources ivoa()
+        {
+        return new OgsaIvoaResources()
+            {
+            @Override
+            public OgsaIvoaResource create(IvoaResource source)
+                {
+                return factories().ogsa().factories().ivoa().create(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select()
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    OgsaServiceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaIvoaResource> select(IvoaResource source)
+                {
+                return factories().ogsa().factories().ivoa().select(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+            };
+        }
+
+    @Override
+    public OgsaJdbcResources jdbc()
+        {
+        return new OgsaJdbcResources()
+            {
+            @Override
+            public OgsaJdbcResource create(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().create(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select()
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    OgsaServiceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<OgsaJdbcResource> select(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().select(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+
+            @Override
+            public OgsaJdbcResource primary(JdbcResource source)
+                {
+                return factories().ogsa().factories().jdbc().primary(
+                    OgsaServiceEntity.this,
+                    source
+                    );
+                }
+            };
         }
     }

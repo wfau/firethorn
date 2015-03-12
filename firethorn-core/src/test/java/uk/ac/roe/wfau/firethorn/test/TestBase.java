@@ -26,7 +26,9 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
@@ -47,18 +49,53 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 public abstract class TestBase
 extends TestRoot
     {
-    public static final String TEST_OPER_TARGET = "test" ;
-    public static final String TEST_OPER_METHOD = "test" ;
-    public static final String TEST_OPER_SOURCE = "test" ;
-
-    public static final String TEST_AUTH_METHOD    = "test" ;
-    public static final String TEST_IDENTITY_NAME  = "Tester (identity)" ;
-    public static final String TEST_COMMUNITY_URI  = "test" ;
-    public static final String TEST_COMMUNITY_NAME = "Tester (group)" ;
 
     /**
-     * Initialise our operation and identity.
+     * Test {@link Operation} target.
+     *
+     */
+    public static final String TEST_OPER_TARGET = "test" ;
+    
+    /**
+     * Test {@link Operation} method.
+     *
+     */
+    public static final String TEST_OPER_METHOD = "test" ;
+    
+    /**
+     * Test {@link Operation} source.
+     *
+     */
+    public static final String TEST_OPER_SOURCE = "test" ;
+
+    /**
+     * Test {@link Authentication} method.
+     *
+     */
+    public static final String TEST_AUTH_METHOD    = "test" ;
+
+    /**
+     * Test {@link Identity} name.
+     *
+     */
+    public static final String TEST_IDENTITY_NAME  = "Tester (identity)" ;
+
+    /**
+     * Test {@link Community} URI.
+     *
+     */
+    public static final String TEST_COMMUNITY_URI  = "test" ;
+
+    /**
+     * Test {@link Community} name.
+     *
+     */
+    public static final String TEST_COMMUNITY_NAME = "Tester (community)" ;
+
+    /**
+     * Initialise our {@link Operation} and {@link Identity}.
      * http://stackoverflow.com/questions/6076599/what-order-are-the-junit-before-after-called
+     * @todo Why does this need to be final ?
      *
      */
     @Before
@@ -95,7 +132,7 @@ extends TestRoot
      * @throws Exception
      *
      */
-    @Test
+    //@Test
     public void notest()
     throws Exception
         {

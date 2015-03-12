@@ -66,7 +66,11 @@ public class MetadataServiceTableSchema implements TableSchema
 
         mTableName = tableName;
         mDataNodeTables = Arrays.<DataNodeTable>asList(
-                new SimpleDataNodeTable(dataNode, localName));
+            new SimpleDataNodeTable(
+                dataNode,
+                localName
+                )
+            );
     }
     
     public void setDataDictionary(MetadataServiceDataDictionary dataDictionary)

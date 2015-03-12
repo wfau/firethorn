@@ -20,7 +20,8 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
 
 /**
  *
- *
+ * @deprecated Use {@link WorkflowResult}
+ * 
  */
 public interface PipelineResult
     {
@@ -28,7 +29,6 @@ public interface PipelineResult
     /**
      * Factory interface.
      *
-     */
     public interface Factory
         {
         public PipelineResult create(final Throwable cause);
@@ -36,6 +36,7 @@ public interface PipelineResult
         public PipelineResult create(final Result result, final String message);
         public PipelineResult create(final Result result, final String message, final Throwable cause);
         }
+     */
 
     public enum Result {
         EDITING(),

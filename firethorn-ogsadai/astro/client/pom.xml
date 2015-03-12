@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-astro</artifactId>
-        <version project='firethorn'>1.12.9</version>
+        <version project='firethorn'>1.13.2</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-astro-client</artifactId>
@@ -84,7 +84,7 @@
         </dependency>
 
         <!--+
-            | The StarLink VOTAble library, used by our TAP client. 
+            | The StarLink VOTable library, used by our TAP client. 
             +-->
         <dependency>
             <groupId>uk.ac.starlink</groupId>

@@ -73,42 +73,4 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
             this.name()
             );
         }
-
-    /**
-     * The OGSA-DAI resource ID.
-     *
-     */
-    @Column(
-        name = DB_OGSAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected String ogsaid;
-    @Override
-    public String ogsaid()
-        {
-        return this.ogsaid;
-        }
-    @Override
-    public void ogsaid(final String ogsaid)
-        {
-        this.ogsaid = ogsaid;
-        }
-
-    /**
-     * Generate the {@link BaseResource.Metadata.Ogsa ogsa} metadata.
-     *
-     */
-    protected BaseResource.Metadata.Ogsa ogsameta()
-        {
-        return new BaseResource.Metadata.Ogsa()
-            {
-            @Override
-            public String id()
-                {
-                return BaseResourceEntity.this.ogsaid;
-                }
-            };
-        }
     }

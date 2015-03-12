@@ -216,7 +216,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @RequestParam(value=UPDATE_DELAY_LAST, required=false)
         final Integer last,
         @RequestParam(value=UPDATE_STATUS, required=false)
-        final Job.Status status,
+        final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
         @RequestParam(value=UPDATE_LIMT_ROWS, required=false)

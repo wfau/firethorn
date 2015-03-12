@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -277,11 +278,19 @@ implements AdqlResource
         {
         return new AdqlResource.Metadata()
             {
-            @Override
-            public Ogsa ogsa()
-                {
-                return ogsameta();
-                }
             };
+        }
+
+    /**
+     * This method does not make sense for an {@link AdqlResource}.
+     * @throws UnsupportedOperationException
+     *  
+     */
+    @Override
+    public BaseResource.OgsaBaseResources ogsa()
+        {
+        throw new UnsupportedOperationException(
+            "AdqlResource does not support OgsaBaseResources"
+            );
         }
     }

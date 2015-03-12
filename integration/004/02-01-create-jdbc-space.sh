@@ -19,6 +19,10 @@
 #
 #
 
+echo "-------- -------- -------- --------"
+echo "WARN this script is deprecated"
+echo "WARN the service interface has changed"
+echo "-------- -------- -------- --------"
 
 resourcename=${1:?}
 resourceuri=${2:?}

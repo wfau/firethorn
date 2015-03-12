@@ -49,16 +49,16 @@ public class JdbcResourceInportTestCase
         final JdbcResource resource = factories().jdbc().resources().create(
             "test:ogsa",
             "test:resource",
-            "spring:RoeWFAU"
+            "spring:RoeATLAS"
             );
         resource.connection().user(
-            config().getProperty(
-                "firethorn.wfau.user"
+            config().property(
+                "firethorn.atlas.user"
                 )
             );
         resource.connection().pass(
-            this.config().getProperty(
-                "firethorn.wfau.pass"
+            this.config().property(
+                "firethorn.atlas.pass"
                 )
             );
         try {
@@ -66,7 +66,7 @@ public class JdbcResourceInportTestCase
             }
         catch(final Exception ouch)
             {
-            log.debug("Failed to import resource [{}]", ouch.getMessage());
+            log.debug("Failed to import resource catalog [{}][{}]", catalog, ouch.getMessage());
             }
         finally {
             resource.connection().close();
@@ -74,7 +74,7 @@ public class JdbcResourceInportTestCase
         return resource;
         }
 
-    //@Test
+    @Test
     public void test001()
     throws Exception
         {
@@ -85,12 +85,12 @@ public class JdbcResourceInportTestCase
             );
         }
 
-    //@Test
+    @Test
     public void test002()
     throws Exception
         {
         final JdbcConnector connection = new JdbcConnectionEntity(
-            "spring:RoeTWOMASS"
+            "spring:RoeATLAS"
             );
         final List<JdbcResource> resources = new ArrayList<JdbcResource>();
 
@@ -104,15 +104,9 @@ public class JdbcResourceInportTestCase
             }
         for (final JdbcResource resource : resources)
             {
-            try {
                 display(
                     resource
                     );
-                }
-            catch(final Exception ouch)
-                {
-
-                }
             }
         }
 
@@ -120,30 +114,27 @@ public class JdbcResourceInportTestCase
     public void test003()
     throws Exception
         {
-        final JdbcResource resource = factories().jdbc().resources().create(
-            "test:atlas",
-            "*",
+        final JdbcResource created = factories().jdbc().resources().create(
+            "TWOMASS",
             "test:atlas",
             "spring:RoeATLAS"
             );
         assertNotNull(
-            resource
+            created
             );
 
-        final JdbcSchema s1 =resource.schemas().select(
+        final JdbcSchema s1 = created.schemas().select(
             "TWOMASS.dbo"
             );
         assertNotNull(
             s1
             );
 
-
-        final JdbcSchema s2 =resource.schemas().select(
+        final JdbcSchema s2 = created.schemas().select(
             "TWOMASS.dbo"
             );
         assertNotNull(
             s2
             );
-
         }
     }

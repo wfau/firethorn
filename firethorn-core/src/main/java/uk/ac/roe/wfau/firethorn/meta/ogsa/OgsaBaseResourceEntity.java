@@ -30,13 +30,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import lombok.extern.slf4j.Slf4j;
+
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -45,7 +47,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class OgsaBaseResourceEntity
-extends AbstractNamedEntity
+extends AbstractEntity
 implements OgsaBaseResource
     {
     /**
@@ -78,17 +80,13 @@ implements OgsaBaseResource
     /**
     *
     * Protected constructor.
-    * @param name The resource name.
-    * @param service The parent {@link OgsaService}
-    * @throws NameFormatException
+    * @param service The parent {@link OgsaService}.
     *
     */
-   protected OgsaBaseResourceEntity(final OgsaService service, final String name)
-   throws NameFormatException
+   protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(
-           name
-           );
+       super(true);
+       this.status  = Status.CREATED ;
        this.service = service ;
        }
 
@@ -118,11 +116,28 @@ implements OgsaBaseResource
        nullable = true,
        updatable = true
        )
-   private String ogsaid;
+   protected String ogsaid;
    @Override
    public String ogsaid()
        {
-       return ogsaid;
+       return this.ogsaid;
+       }
+   @Override
+   public Status ogsaid(final Status status, final String ogsaid)
+       {
+       log.debug("ogsaid(status, ogsaid) [{}][{}]", status, ogsaid);
+       factories().spring().transactor().update(
+           new Runnable()
+               {
+                @Override
+                public void run()
+                    {
+                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogsaid = ogsaid ;
+                    }
+                }
+           );
+       return this.status;
        }
 
    @Column(
@@ -134,10 +149,26 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   private Status status = Status.CREATED ;
+   private Status status = Status.UNKNOWN ;
    @Override
    public Status status()
        {
+       return this.status;
+       }
+   @Override
+   public Status status(final Status status)
+       {
+       log.debug("status(status) [{}]", status);
+       factories().spring().transactor().update(
+           new Runnable()
+               {
+                @Override
+                public void run()
+                    {
+                    OgsaBaseResourceEntity.this.status = status ;
+                    }
+                }
+           );
        return this.status;
        }
     }

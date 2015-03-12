@@ -17,14 +17,17 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
+import uk.ac.roe.wfau.firethorn.widgeon.ogsa.OgsaJdbcResourceBean;
 
 /**
  * Bean wrapper for <code>JdbcResource</code>.
  *
  */
+@Slf4j
 public class JdbcResourceBean
 extends BaseResourceBean<JdbcResource>
     {
@@ -58,25 +61,59 @@ extends BaseResourceBean<JdbcResource>
             );
         }
 
-    public String getOgsadai()
+    public interface ConnectionBean
         {
-        return entity().ogsaid();
-        }
-
-    public class ConnectionBean
-        {
-        public String getUri()
-            {
-            return entity().connection().uri();
-            }
-        public String getUser()
-            {
-            return entity().connection().user();
-            }
+        public String getUri();
+        public String getUser();
+        public String getPass();
         }
 
     public ConnectionBean getConnection()
         {
-        return new ConnectionBean();
+        return new ConnectionBean()
+            {
+            public String getUri()
+                {
+                return entity().connection().uri();
+                }
+            public String getUser()
+                {
+                return entity().connection().user();
+                }
+            public String getPass()
+                {
+                return "########";
+                }
+            };
         }
+/*
+ * 
+    public interface OgsaJdbdResources
+        {
+        //public String getPrimary();
+        //public OgsaJdbcResourceBean.Iter getSelect();
+        }
+
+    public OgsaJdbdResources getOgsaResources()
+        {
+        return new OgsaJdbdResources()
+            {
+            public String getPrimary()
+                {
+                //return entity().ogsa().primary().link();
+                return entity().ogsa().primary().ogsaid();
+                }
+ *            
+            public OgsaJdbcResourceBean.Iter getSelect()
+                {
+                log.debug("getSelect()");
+                return new OgsaJdbcResourceBean.Iter(
+                    entity().ogsa().select()
+                    );
+                }
+ *                    
+            };
+        }
+ * 
+ */
     }
