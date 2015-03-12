@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-	<version project='firethorn'>1.12.9-zrq-ogsa-services</version>
+	<version project='firethorn'>1.13.1</version>
     </parent>
 
     <artifactId>firethorn-annotations</artifactId>

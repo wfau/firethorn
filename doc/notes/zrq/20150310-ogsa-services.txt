@@ -140,4 +140,12 @@
             go
 
 
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.1
+
+    # Copy paste instructions
+    gedit 'doc/notes/zrq/20141130-03-hg-merge.txt' &
 
