@@ -43,7 +43,7 @@
 
         <property name="metadataServiceFactory">
             <bean id="noid" class="uk.org.ogsadai.dqp.firethorn.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/>
+                <!--constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/-->
             </bean>
         </property>
 

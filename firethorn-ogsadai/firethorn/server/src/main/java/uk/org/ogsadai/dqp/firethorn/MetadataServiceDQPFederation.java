@@ -84,16 +84,28 @@ public class MetadataServiceDQPFederation implements DQPFederation
         log.debug("-------- --------");
         log.debug("<getDataDictionary>");
 
-        MetadataServiceDataDictionary dataDictionary = 
-                new MetadataServiceDataDictionary();
-        dataDictionary.setFederation(this);
-        dataDictionary.setRequestDetails(requestDetails);
+        MetadataServiceDataDictionary dataDictionary = new MetadataServiceDataDictionary();
+        dataDictionary.setFederation(
+            this
+            );
+        dataDictionary.setRequestDetails(
+            requestDetails
+            );
         dataDictionary.setTableMappingService(
-                mMetadataServiceFactory.getTableMappingService(requestDetails));
+            mMetadataServiceFactory.getTableMappingService(
+                requestDetails
+                )
+            );
         dataDictionary.setAttributeService(
-                mMetadataServiceFactory.getAttributeService(requestDetails));
+            mMetadataServiceFactory.getAttributeService(
+                requestDetails
+                )
+            );
         dataDictionary.setStatisticsService(
-                mMetadataServiceFactory.getStatisticsService(requestDetails));
+            mMetadataServiceFactory.getStatisticsService(
+                requestDetails
+                )
+            );
         log.debug("</getDataDictionary>");
         log.debug("-------- --------");
         return dataDictionary;

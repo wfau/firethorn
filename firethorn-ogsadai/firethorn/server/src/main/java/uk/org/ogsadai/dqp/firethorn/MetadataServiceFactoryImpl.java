@@ -39,19 +39,32 @@ implements MetadataServiceFactory
     {
     private static Log log = LogFactory.getLog(MetadataServiceFactoryImpl.class);
 
-    /*
+    public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
+
+    /**
      *
      *
      */
     private final String endpoint ;
 
-    /*
+    /**
      *
      *
      */
     public  String endpoint()
         {
         return this.endpoint ;
+        }
+
+    /**
+     * Public constructor.
+     *
+     */
+    public MetadataServiceFactoryImpl()
+        {
+        this(
+            DEFAULT_ENDPOINT
+            );
         }
 
     /**
@@ -70,10 +83,9 @@ implements MetadataServiceFactory
         final SecurityContext vanilla = request.getSecurityContext();
         if ((vanilla != null) && (vanilla instanceof FirethornSecurityContext))
             {
+            log.debug("Found FirethornSecurityContext");
             final FirethornSecurityContext secure = (FirethornSecurityContext) vanilla ;
-            log.debug("++++++++ ++++++++ ++++++++");
             log.debug("Callback endpoint [" + secure.endpoint() + "]");
-            log.debug("++++++++ ++++++++ ++++++++");
             return secure.endpoint();
             }
         else {
