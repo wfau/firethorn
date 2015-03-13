@@ -28,7 +28,9 @@ import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.TableMappingService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.CachingAttributeServiceImpl;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.CachingTableMappingServiceImpl;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.StatisticsServiceImpl;
+import uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContext;
 
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 //import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
@@ -63,13 +65,31 @@ implements MetadataServiceFactory
         this.endpoint = endpoint ;
         }
 
+    private String endpoint(final RequestDetails request)
+        {
+        final SecurityContext vanilla = request.getSecurityContext();
+        if ((vanilla != null) && (vanilla instanceof FirethornSecurityContext))
+            {
+            final FirethornSecurityContext secure = (FirethornSecurityContext) vanilla ;
+            log.debug("++++++++ ++++++++ ++++++++");
+            log.debug("Callback endpoint [" + secure.endpoint() + "]");
+            log.debug("++++++++ ++++++++ ++++++++");
+            return secure.endpoint();
+            }
+        else {
+            return this.endpoint ;
+            }
+        }
+    
     @Override
     public AttributeService getAttributeService(final RequestDetails request)
         {
         log.debug("getAttributeService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new CachingAttributeServiceImpl(
-            this.endpoint,
+            endpoint(
+                request
+                ),
             request
             );
         }
@@ -80,7 +100,9 @@ implements MetadataServiceFactory
         log.debug("getTableMappingService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new CachingTableMappingServiceImpl(
-            this.endpoint,
+            endpoint(
+                request
+                ),
             request
             );
         }
@@ -91,7 +113,9 @@ implements MetadataServiceFactory
         log.debug("getStatisticsService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new StatisticsServiceImpl(
-            this.endpoint,
+            endpoint(
+                request
+                ),
             request
             );
         }

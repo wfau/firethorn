@@ -172,6 +172,8 @@
                                 <exclude>WEB-INF/lib/ogsadai-basic-client-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-basic-server-4.2.jar</exclude>
 
+                                <!--exclude>WEB-INF/lib/ogsadai-jersey-server-4.2.jar</exclude-->
+
                                 <exclude>WEB-INF/lib/ogsadai-relational-client-4.2.jar</exclude>
                                 <exclude>WEB-INF/lib/ogsadai-relational-server-4.2.jar</exclude>
 

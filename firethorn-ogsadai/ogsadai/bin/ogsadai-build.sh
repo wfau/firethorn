@@ -385,6 +385,10 @@ else
                 'src/presentation/jersey/common/build/lib/ogsadai-jersey-common-4.2.jar'
 
             mvninstall \
+                'ogsadai-jersey-server' \
+                'src/presentation/jersey/server/build/lib/ogsadai-jersey-server-4.2.jar'
+
+            mvninstall \
                 'ogsadai-server' \
                 'src/core/server/build/lib/ogsadai-server-4.2.jar'
 
