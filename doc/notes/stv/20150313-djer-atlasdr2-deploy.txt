@@ -1,0 +1,177 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Our current release branch.
+#[user@desktop]
+
+    newrelease=1.11.28-release
+    newversion=1.11.28-release
+
+
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/${deploytype:?}.machines"
+    deployprop="${HOME:?}/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+#
+# Temp fix - use metadata code on a specific branch
+pushd "${FIRETHORN_CODE:?}"
+    hg pull
+    hg update -C 'default'
+popd
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+     
+            datetime=$(date +%Y%m%d%H%M%S)
+      	    source "${HOME:?}/firethorn.spaces"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR2' 'dbo' "${FIRETHORN_META:?}/ATLASDR2_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlasprotected=${adqlschema:?}
+EOF
+
+        popd
+
+
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Configure Python service.
+# (need to be member of group 'users')
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/${deploytype:?}.machines"
+    deployprop="${HOME:?}/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${wepyuser}@${wepyhost:?}" 
+
+        vi /var/www/osa/firethorn.ini
+
+		...
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# SSH tunnel to access Tomcat.
+#[user@desktop]
+
+    deploytype=live
+    deploylist="${HOME:?}/${deploytype:?}.machines"
+    deployprop="${HOME:?}/${deploytype:?}.properties"
+
+
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+    deploytype=live
+    deploylist="${HOME:?}/${deploytype:?}.machines"
+    deployprop="${HOME:?}/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser}@${testhost:?}" 
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+            source "${HOME:?}/firethorn.spaces"
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test query workspace'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
+
+            #12278
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND (dec < -2 OR dec < -3))
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    ((dec > -3 AND dec < -2) OR dec < -3)
+                "
+
+            #180146
+            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
+                SELECT
+                    COUNT(*)
+                FROM
+                    atlasSource
+                WHERE
+                    (ra > 180 AND ra < 181)
+                AND
+                    (dec > -3 AND dec < -2 OR dec < -3)
+                "
+
+        popd
+    exit
+
