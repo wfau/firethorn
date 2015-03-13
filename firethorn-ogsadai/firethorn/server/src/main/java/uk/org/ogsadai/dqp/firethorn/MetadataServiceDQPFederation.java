@@ -9,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.SimpleTableMappingServiceImpl;
+import uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContext;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.context.OGSADAIContext;
 import uk.org.ogsadai.dqp.common.DataDictionary;
 import uk.org.ogsadai.dqp.common.DataNode;
@@ -81,16 +83,29 @@ public class MetadataServiceDQPFederation implements DQPFederation
     {
         log.debug("-------- --------");
         log.debug("<getDataDictionary>");
-        MetadataServiceDataDictionary dataDictionary = 
-                new MetadataServiceDataDictionary();
-        dataDictionary.setFederation(this);
-        dataDictionary.setRequestDetails(requestDetails);
+
+        MetadataServiceDataDictionary dataDictionary = new MetadataServiceDataDictionary();
+        dataDictionary.setFederation(
+            this
+            );
+        dataDictionary.setRequestDetails(
+            requestDetails
+            );
         dataDictionary.setTableMappingService(
-                mMetadataServiceFactory.getTableMappingService(requestDetails));
+            mMetadataServiceFactory.getTableMappingService(
+                requestDetails
+                )
+            );
         dataDictionary.setAttributeService(
-                mMetadataServiceFactory.getAttributeService(requestDetails));
+            mMetadataServiceFactory.getAttributeService(
+                requestDetails
+                )
+            );
         dataDictionary.setStatisticsService(
-                mMetadataServiceFactory.getStatisticsService(requestDetails));
+            mMetadataServiceFactory.getStatisticsService(
+                requestDetails
+                )
+            );
         log.debug("</getDataDictionary>");
         log.debug("-------- --------");
         return dataDictionary;
