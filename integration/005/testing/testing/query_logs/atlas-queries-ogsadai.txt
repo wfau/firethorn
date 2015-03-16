@@ -1,3 +1,4 @@
+select framesetid,gmfid,genum,rmfid,renum from atlasMergeLog where framesetid in (730144452483,730144452487)
 select top 10 ra,dec from atlassource  
 select filterID, cutOn from Filter where filterID>0
 SELECT 2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as dist FROM atlasdetection WHERE dec > -31.11251111111111101 and dec < -30.77917777777778241 and RA >= 330.276664568 and RA <= 330.666002099  
