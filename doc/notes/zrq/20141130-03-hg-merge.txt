@@ -138,9 +138,9 @@
 
         source "bin/util.sh"
 
-        docker tag "firethorn/firethorn:$(getversion)"  "firethorn/firethorn"
+        docker tag -f "firethorn/firethorn:$(getversion)"  "firethorn/firethorn"
 
-        docker tag "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai"
+        docker tag -f "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai"
 
     popd
 

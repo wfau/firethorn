@@ -94,4 +94,13 @@
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
 
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.5
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
 
