@@ -1,0 +1,97 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-gnu-terrypratchett
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Code change
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # .... Add filter class ....
+        #
+
+        gedit firethorn-webapp/src/main/webapp/WEB-INF/web.xml
+
+        +    <filter>
+        +        <filter-name>GNU-TerryPratchett</filter-name>
+        +        <filter-class>uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett</filter-class>
+        +    </filter>
+        +    <filter-mapping>
+        +        <filter-name>GNU-TerryPratchett</filter-name>
+        +        <url-pattern>/*</url-pattern>
+        +    </filter-mapping>
+
+
+    popd
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-01-firethorn-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-02-ogsadai-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-03-test-workspace.txt"
+
+#
+# Need to deactivate old JdbcOgsaResource(s)
+# (see below)
+# Needs automatic ping test.
+# http://redmine.roe.ac.uk/issues/788
+#
+
+    querymode=DIRECT
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+
