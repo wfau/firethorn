@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -30,19 +29,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
@@ -387,12 +384,6 @@ implements OgsaJdbcResource
                 OgStatus.ERROR
                 );
             }
-        }
-
-	@Override
-	protected void scanimpl()
-        {
-        // TODO Auto-generated method stub
         }
     }
         

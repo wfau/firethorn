@@ -45,17 +45,6 @@ implements TreeComponent
      */
     public static final String DB_BASE_COL   = "base";
     public static final String DB_PARENT_COL = "parent";
-    public static final String DB_STATUS_COL = "status";
-    public static final String DB_ALIAS_COL  = "alias";
-
-    protected static final String DB_NAME_IDX        = "IndexByName";
-    protected static final String DB_PARENT_IDX      = "IndexByParent";
-    protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
-
-    protected static final String DB_RESOURCE_COL = "resource";
-    protected static final String DB_SCHEMA_COL   = "schema";
-    protected static final String DB_TABLE_COL    = "table";
-    protected static final String DB_COLUMN_COL   = "column";
 
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 

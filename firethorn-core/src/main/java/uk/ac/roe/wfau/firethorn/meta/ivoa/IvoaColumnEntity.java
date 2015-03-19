@@ -46,7 +46,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
 /**
@@ -86,7 +85,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
             ),
         @NamedQuery(
             name  = "IvoaColumn-select-parent.name",
-            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE ((parentAdql = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "IvoaColumn-search-parent.name",

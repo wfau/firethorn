@@ -42,19 +42,19 @@
         -   extends AbstractEntity
         +   extends BaseComponentEntity
 
-        name() = ogsaid()
-
         BaseTable
         -   extends BaseComponent
         +   extends TreeComponent
-
-        SyncComponent
-
         
         TreeComponent
 
             enum CopyDepth {}
             CopyDepth depth();
             void depth(CopyDepth depth);
+
+
+        todo
+            name() = ogsaid() ??
+
 
 

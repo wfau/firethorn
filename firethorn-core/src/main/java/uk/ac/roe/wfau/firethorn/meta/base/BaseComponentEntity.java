@@ -55,19 +55,7 @@ implements BaseComponent
      * Hibernate column mapping.
      *
      */
-    public static final String DB_BASE_COL   = "base";
-    public static final String DB_PARENT_COL = "parent";
     public static final String DB_STATUS_COL = "status";
-    public static final String DB_ALIAS_COL  = "alias";
-
-    protected static final String DB_NAME_IDX        = "IndexByName";
-    protected static final String DB_PARENT_IDX      = "IndexByParent";
-    protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
-
-    protected static final String DB_RESOURCE_COL = "resource";
-    protected static final String DB_SCHEMA_COL   = "schema";
-    protected static final String DB_TABLE_COL    = "table";
-    protected static final String DB_COLUMN_COL   = "column";
 
     protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
@@ -88,13 +76,26 @@ implements BaseComponent
      */
     protected BaseComponentEntity(final String name)
         {
+        this(
+            name,
+            DEFAULT_SCAN_PERIOD
+            );
+        }
+
+    /**
+     * Protected constructor, owner defaults to the current actor.
+     *
+     */
+    protected BaseComponentEntity(final String name, final Period scanperiod)
+        {
         super(
             name
             );
-        log.debug("BaseComponentEntity(String)");
+        this.scanperiod = scanperiod;
+        log.debug("BaseComponentEntity(String, Period)");
         log.debug("  Name  [{}]", name);
         }
-
+    
     /**
      * The component status.
      *

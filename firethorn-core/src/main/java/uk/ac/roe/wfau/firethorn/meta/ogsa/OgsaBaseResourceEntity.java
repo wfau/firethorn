@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,8 +35,14 @@ import javax.persistence.ManyToOne;
 
 import lombok.extern.slf4j.Slf4j;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
+import org.joda.time.Period;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
@@ -56,8 +65,14 @@ implements OgsaBaseResource
 	 * Default component name.
 	 * 
 	 */
-	protected static final String DEFAULT_NAME = "no-id" ;
-	
+	protected static final String DEFAULT_NAME = "OGSA-DAI resource" ;
+
+    /**
+     * The default re-scan interval.
+     * 
+     */
+    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+
     /**
      * Hibernate column mapping, {@value}.
      *
@@ -93,7 +108,10 @@ implements OgsaBaseResource
     */
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(DEFAULT_NAME);
+       super(
+           DEFAULT_NAME,
+           DEFAULT_SCAN_PERIOD
+           );
        this.ogstatus  = OgStatus.CREATED ;
        this.ogservice = service ;
        }
@@ -178,5 +196,67 @@ implements OgsaBaseResource
                 }
            );
        return this.ogstatus;
+       }
+
+   @Override
+   protected void scanimpl()
+       {
+       log.debug("Scanning OgsaBaseResource [{}][{}]", this.name(), this.ogsaid());
+
+       if (this.ogstatus.active() && (this.ogsaid() != null))
+           {
+           final HttpStatus http = ping(); 
+           switch(http)
+               {
+               case OK :
+                   this.ogstatus = OgStatus.ACTIVE;
+                   break ;
+    
+               default :
+                   this.ogstatus = OgStatus.ERROR;
+                   break ;
+               }
+           }
+       }
+
+   /**
+    *  Our local HTTP request factory.
+    *
+    */
+   private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+   
+   /**
+    *  Check our OGSA-DAI resource.
+    *
+    */
+   protected HttpStatus ping()
+       {
+       try {
+           ClientHttpRequest request = factory.createRequest(
+               service().baseuri().resolve(
+                   "services/dataResources/" + ogsaid()
+                   ),
+               HttpMethod.GET
+               );
+
+           log.debug("Service request [{}][{}]", this.ident(), request.getURI());
+           ClientHttpResponse response = request.execute();
+
+           HttpStatus http = response.getStatusCode();
+           log.debug("Service response [{}][{}]", this.ident(), response.getStatusText());
+
+           return http ;
+
+           }
+       catch (URISyntaxException ouch)
+           {
+           log.warn("Problem occured parsing service endpoint [{}][{}]", this.ident(), ouch.getReason());
+           return HttpStatus.BAD_REQUEST;
+           }
+       catch (IOException ouch)
+           {
+           log.error("Problem occured sending service request [{}][{}]", this.ident(), ouch.getMessage());
+           return HttpStatus.BAD_REQUEST;
+           }
        }
     }
