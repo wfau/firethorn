@@ -33,7 +33,7 @@
 
         #
         # Set the new database name.
-        dbversion=ZRQ20150311DEV
+        dbversion=ZRQ20150319DEV
         metadataname="FirethornMetadata${dbversion:?}"
         userdataname="FirethornUserdata${dbversion:?}"
 

@@ -80,7 +80,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
             ),
         @NamedQuery(
             name  = "OgsaService-select-status",
-            query = "FROM OgsaServiceEntity WHERE ogstatus = :status ORDER BY ident DESC"
+            query = "FROM OgsaServiceEntity WHERE ogstatus = :ogstatus ORDER BY ident DESC"
             )
         }
     )

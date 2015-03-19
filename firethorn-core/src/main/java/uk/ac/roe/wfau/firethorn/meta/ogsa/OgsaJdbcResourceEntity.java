@@ -72,7 +72,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-resource-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource AND status = :status ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service-resource",
@@ -80,7 +80,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service-resource-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource AND status = :status ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
             )
         }
     )
@@ -240,7 +240,7 @@ implements OgsaJdbcResource
                         "resource",
                         resource
                     ).setString(
-                        "status",
+                        "ogstatus",
                         OgStatus.ACTIVE.name()
                     )
                 );
@@ -311,10 +311,18 @@ implements OgsaJdbcResource
     @Override
     public String ogsaid()
         {
-        log.debug("ogsaid [{}][{}]", this.ogStatus(), this.ogsaid);
-        if ((this.ogsaid == null) && this.ogStatus().active()) 
+        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
+        if (this.ogstatus.active()) 
             {
-            this.init();
+            if (this.ogsaid == null) 
+                {
+                this.init();
+                }
+            else {
+                // Recursion danger ..
+                // Need to ensure scan() does not call ogsaid()  
+                this.scantest();
+                }
             }
         return this.ogsaid;
         }

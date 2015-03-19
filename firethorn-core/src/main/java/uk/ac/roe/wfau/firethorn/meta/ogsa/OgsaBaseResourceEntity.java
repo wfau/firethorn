@@ -71,7 +71,7 @@ implements OgsaBaseResource
      * The default re-scan interval.
      * 
      */
-    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 1, 0, 0);
 
     /**
      * Hibernate column mapping, {@value}.
@@ -175,7 +175,7 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   private OgStatus ogstatus = OgStatus.UNKNOWN ;
+   protected OgStatus ogstatus = OgStatus.UNKNOWN ;
    @Override
    public OgStatus ogStatus()
        {
@@ -198,22 +198,36 @@ implements OgsaBaseResource
        return this.ogstatus;
        }
 
+   protected OgStatus init()
+       {
+       log.debug("init()");
+       return this.ogstatus;
+       }
+
    @Override
    protected void scanimpl()
        {
-       log.debug("Scanning OgsaBaseResource [{}][{}]", this.name(), this.ogsaid());
+       log.debug("Scanning OgsaBaseResource [{}][{}]", this.name(), this.ogsaid);
 
-       if (this.ogstatus.active() && (this.ogsaid() != null))
+       if (this.ogstatus.active() && (this.ogsaid != null))
            {
            final HttpStatus http = ping(); 
            switch(http)
                {
                case OK :
-                   this.ogstatus = OgStatus.ACTIVE;
+                   ogStatus(
+                       OgStatus.ACTIVE
+                       );
                    break ;
-    
+
+               case NOT_FOUND:
+                   this.init();
+                   break ;
+
                default :
-                   this.ogstatus = OgStatus.ERROR;
+                   ogStatus(
+                       OgStatus.ERROR
+                       );
                    break ;
                }
            }
@@ -234,7 +248,7 @@ implements OgsaBaseResource
        try {
            ClientHttpRequest request = factory.createRequest(
                service().baseuri().resolve(
-                   "services/dataResources/" + ogsaid()
+                   "services/dataResources/" + this.ogsaid
                    ),
                HttpMethod.GET
                );

@@ -214,8 +214,8 @@ public class JdbcResourceEntity
          * The default 'userdata' JDBC catalog.
          *
          */
-        @Value("${firethorn.user.cat}")
-        public String udcat;
+        //@Value("${firethorn.user.cat}")
+        public String udcat = null;
 
         /**
          * The default 'userdata' JDBC username.
@@ -556,10 +556,14 @@ public class JdbcResourceEntity
         try {
             //
             // Default to our Connection catalog name.
+            log.debug("catalog [{}] for [{}]", this.catalog, this.namebuilder());
             if (this.catalog == null)
                 {
                 try {
+                    log.debug("Null catalog for [{}][{}]", this.ident(), this.namebuilder());
+                    log.debug("Fetching default from connection");
                     this.catalog = connection().catalog();
+                    log.debug("Default catalog from connection [{}]", this.catalog);
                     }
                 catch (MetadataException ouch)
                     {
