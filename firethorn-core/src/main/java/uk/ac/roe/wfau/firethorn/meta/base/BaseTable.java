@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
  *
  */
 public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
-extends BaseComponent
+extends TreeComponent
     {
 
     /**

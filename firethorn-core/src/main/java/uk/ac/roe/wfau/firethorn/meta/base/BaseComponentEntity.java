@@ -17,11 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -71,8 +68,6 @@ implements BaseComponent
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
 
-    protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
-
     protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
 
@@ -93,25 +88,11 @@ implements BaseComponent
      */
     protected BaseComponentEntity(final String name)
         {
-        this(
-            CopyDepth.FULL,
-            name
-            );
-        }
-
-    /**
-     * Protected constructor, owner defaults to the current actor.
-     *
-     */
-    protected BaseComponentEntity(final CopyDepth depth, final String name)
-        {
         super(
             name
             );
-        this.depth = depth;
-        log.debug("BaseComponentEntity(CopyDepth, String)");
+        log.debug("BaseComponentEntity(String)");
         log.debug("  Name  [{}]", name);
-        log.debug("  Depth [{}]", depth);
         }
 
     /**
@@ -146,29 +127,6 @@ implements BaseComponent
      *
      */
     protected abstract void scanimpl();
-
-    @Column(
-        name = DB_COPY_DEPTH_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    protected CopyDepth depth = CopyDepth.FULL ;
-
-    @Override
-    public CopyDepth depth()
-        {
-        return this.depth;
-        }
-
-    @Override
-    public void depth(final CopyDepth type)
-        {
-        this.depth = type;
-        }
     
     /**
      * Exception thrown if loading self() fails.

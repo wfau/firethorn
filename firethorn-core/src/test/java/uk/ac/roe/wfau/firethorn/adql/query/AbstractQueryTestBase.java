@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -397,7 +398,7 @@ extends TestPropertiesBase
         if (found == null)
             {
             found = testspace().schemas().create(
-                BaseComponent.CopyDepth.THIN,        
+                TreeComponent.CopyDepth.THIN,        
                 adql,
                 adqlSchema(
                     parent,
@@ -429,7 +430,7 @@ extends TestPropertiesBase
         if (found == null)
             {
             found = testspace().schemas().create(
-                BaseComponent.CopyDepth.THIN,        
+                TreeComponent.CopyDepth.THIN,        
                 adql,
                 adqlSchema(
                     parent,
@@ -465,7 +466,7 @@ extends TestPropertiesBase
 // Changed to use 'catalog.schema' rather than 'catalog' and 'schema'.
 // Still not ..
             found = parent.schemas().create(
-                BaseComponent.CopyDepth.THIN,        
+                TreeComponent.CopyDepth.THIN,        
                 adql,
                 source.schemas().select(
                     catalog,
@@ -496,7 +497,7 @@ extends TestPropertiesBase
         if (found == null)
             {
             found = parent.schemas().create(
-                BaseComponent.CopyDepth.THIN,        
+                TreeComponent.CopyDepth.THIN,        
                 adql,
                 source.schemas().select(
                     schema

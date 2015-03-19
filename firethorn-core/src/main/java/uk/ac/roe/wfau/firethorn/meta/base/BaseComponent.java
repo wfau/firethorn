@@ -161,7 +161,6 @@ extends NamedEntity
     /**
      * The persistence level, or depth of copy, of a entity.
      *
-     */
     enum CopyDepth
         {
         PROXY(),
@@ -169,17 +168,18 @@ extends NamedEntity
         PARTIAL(),
         FULL();
         }
+     */
 
     /**
      * The copy depth.
      *
-     */
     public CopyDepth depth();
+     */
 
     /**
      * The copy depth.
      *
-     */
     public void depth(final CopyDepth depth);
+     */
 
     }

@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseColumnEntity<ColumnType extends BaseColumn<ColumnType>>
-extends BaseComponentEntity<ColumnType>
+extends TreeComponentEntity<ColumnType>
     implements BaseColumn<ColumnType>
     {
     /**

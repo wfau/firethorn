@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 
 /**
  *
@@ -172,7 +172,7 @@ public class AdqlTableImporter
                 // If we found the corresponding base table.
                 else {
                     match = schema.tables().create(
-                        CopyDepth.PARTIAL,
+                        TreeComponent.CopyDepth.PARTIAL,
                         base,
                         name
                         );

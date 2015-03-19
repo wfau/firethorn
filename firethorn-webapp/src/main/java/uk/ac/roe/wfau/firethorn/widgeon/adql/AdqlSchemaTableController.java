@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -175,7 +175,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
-     * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
@@ -188,14 +188,14 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth type,
+        final TreeComponent.CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
         return created(
             schema.tables().create(
-                ((type != null) ? type : CopyDepth.FULL),
+                ((type != null) ? type : TreeComponent.CopyDepth.FULL),
                 factories().base().tables().resolve(
                     base
                     )
@@ -209,7 +209,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
-     * @param depth  The {@link CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @param name   The name of the new {@link AdqlTable}, [{@value #IMPORT_TABLE_NAME}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
@@ -224,7 +224,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth type,
+        final TreeComponent.CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base,
         @RequestParam(value=IMPORT_NAME, required=true)
