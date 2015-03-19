@@ -163,7 +163,7 @@ implements OgsaJdbcResource
 
         @Override
         @SelectMethod
-        public Iterable<OgsaJdbcResource> select(JdbcResource resource)
+        public Iterable<OgsaJdbcResource> select(final JdbcResource resource)
             {
             return super.iterable(
                 super.query(

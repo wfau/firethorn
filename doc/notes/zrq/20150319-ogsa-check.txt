@@ -38,18 +38,18 @@
         -   extends Entity
         +   extends BaseComponent
 
-
         OgsaBaseResourceEntity
         -   extends AbstractEntity
         +   extends BaseComponentEntity
 
-        @Deprecated
-        ogsaid()
-        name()
+        name() = ogsaid()
 
         BaseTable
         -   extends BaseComponent
         +   extends TreeComponent
+
+        SyncComponent
+
         
         TreeComponent
 

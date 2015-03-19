@@ -142,92 +142,7 @@ implements BaseComponent
         }
 
     /**
-     * The polling interval for waiting scans.
-     *
-     */
-    private static final long POLL_WAIT = 1000 ;
-
-    /**
-     * Synchronised set of Identifiers for active scans.
-     *
-     */
-    private static Set<String> scanset = Collections.synchronizedSet(
-        new HashSet<String>()
-        );
-
-    /**
-     * Synchronise our metadata scans.
-     *
-    public void scansync()
-        {
-        log.debug("scansync() for [{}]", ident());
-        boolean doscan = false ;
-        final String ident = this.ident().toString();
-        //
-        // Sync on the set and check for active scans.
-        synchronized (scanset)
-            {
-            //
-            // If we are already scanning, wait for notification.
-            log.debug("Checking for existing scan [{}]", ident);
-            if (scanset.contains(ident))
-                {
-                do {
-                    try {
-                        log.debug("Scan wait start [{}]", ident);
-                        scanset.wait(POLL_WAIT);
-                        log.debug("Scan wait woken [{}]", ident);
-                        }
-                    catch (final Exception ouch)
-                        {
-                        log.warn("Scan wait interrupted [{}][{}]", ident, ouch.getMessage());
-                        }
-                    }
-                while (scanset.contains(ident));
-                log.debug("Scan wait done [{}]", ident);
-                }
-            //
-            // If not already scanning, add our Identifier to the Set and run a scan.
-            else {
-                log.debug("Adding new scan [{}]", ident);
-                doscan = true ;
-                scanset.add(
-                    ident
-                    );
-                }
-            }
-        //
-        // If we are due to run a scan.
-        if (doscan)
-            {
-            //
-            // Run our scan ...
-            try {
-                log.debug("Running scan [{}]", ident);
-                scanimpl();
-                scantime(
-                    System.currentTimeMillis()
-                    );
-                }
-            //
-            // Remove ourselves from the Set and notify anyone else waiting.
-            finally {
-                log.debug("Completed scan [{}]", ident);
-                synchronized (scanset)
-                    {
-                    scanset.remove(
-                        ident
-                        );
-                    scanset.notifyAll();
-                    }
-                }
-            }
-        }
-     */
-
-    /**
      * Metadata scan implementation.
-     * @todo Not null when we re-build DB.
      *
      */
     protected abstract void scanimpl();
@@ -338,7 +253,7 @@ implements BaseComponent
         }
 
     /**
-     * Synchronised Map of scan blocks.
+     * Synchronized Map of scan blocks.
      *
      */
     private static Map<Identifier, Object> blocks = new HashMap<Identifier, Object>();
