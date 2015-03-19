@@ -38,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
+ * Base class for a metadata component.
  *
  *
  */
@@ -70,7 +71,6 @@ implements BaseComponent
 
     protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
-
     
     /**
      * Default constructor needs to be protected not private.
@@ -122,12 +122,6 @@ implements BaseComponent
         this.status = status;
         }
 
-    /**
-     * Metadata scan implementation.
-     *
-     */
-    protected abstract void scanimpl();
-    
     /**
      * Exception thrown if loading self() fails.
      * 
@@ -186,7 +180,6 @@ implements BaseComponent
      * Load a persistent reference for this Entity.
      * @return The persistent instance or proxy for the entity.
      * @see Session#load(Class, java.io.Serializable)
-     * @todo Delegate to each entity class.
      * @todo Check for recursion.
      *
      */
@@ -211,37 +204,37 @@ implements BaseComponent
         }
 
     /**
-     * Synchronized Map of scan blocks.
+     * Synchronized Map of scan locks.
      *
      */
-    private static Map<Identifier, Object> blocks = new HashMap<Identifier, Object>();
+    private static Map<Identifier, Object> locks = new HashMap<Identifier, Object>();
 
     /**
-     * Check for an existing block, or create a new one.
+     * Check for an existing lock, or create a new one.
      *
      */
-    protected Object block(boolean create)
+    protected Object lock(boolean create)
         {
-        log.debug("Checking for existing block [{}][{}]", this.ident(), this.name());
-        synchronized (blocks)
+        log.debug("Checking for existing lock [{}][{}]", this.ident(), this.name());
+        synchronized (locks)
             {
-            Object block = blocks.get(
+            Object lock = locks.get(
                 this.ident()
                 );
-            if (block != null)
+            if (lock != null)
                 {
-                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
-                return block;
+                log.debug("Found existing lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                return lock;
                 }
             else {
-                log.debug("No existing block found [{}][{}]", this.ident(), this.name());
+                log.debug("No existing lock found [{}][{}]", this.ident(), this.name());
                 if (create)
                     {
-                    block = new DateTime();
-                    log.debug("Adding new block [{}][{}][{}]", this.ident(), this.name(), block);
-                    blocks.put(
+                    lock = new DateTime();
+                    log.debug("Adding new lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                    locks.put(
                         this.ident(),
-                        block
+                        lock
                         );
                     }
                 return null ;
@@ -250,30 +243,30 @@ implements BaseComponent
         }
 
     /**
-     * Release waiting blocks.
+     * Release waiting locks.
      * 
      */
-    protected void release()
+    protected void unlock()
         {
-        log.debug("Releasing blocks [{}][{}]", this.ident(), this.name());
-        synchronized (blocks)
+        log.debug("Releasing locks [{}][{}]", this.ident(), this.name());
+        synchronized (locks)
             {
-            Object block = blocks.get(
+            Object lock = locks.get(
                 this.ident()
                 );
-            if (block != null)
+            if (lock != null)
                 {
-                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
+                log.debug("Found existing lock [{}][{}][{}]", this.ident(), this.name(), lock);
                 log.debug("Removing ....");
-                blocks.remove(this.ident());
+                locks.remove(this.ident());
                 log.debug("Notifying ....");
-                synchronized (block)
+                synchronized (lock)
                     {
-                    block.notifyAll();
+                    lock.notifyAll();
                     }
                 }
             else {
-                log.debug("No blocks found [{}][{}]", this.ident(), this.name());
+                log.debug("No locks found [{}][{}]", this.ident(), this.name());
                 }
             }
         }
@@ -285,10 +278,10 @@ implements BaseComponent
     protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
 
     /**
-     * The blocking timeout.
+     * The lock timeout.
      * 
      */
-    protected static final long BLOCKING_TIMEOUT = 500 ;
+    protected static final long LOCK_TIMEOUT = 500 ;
     
     /**
      * The data/time of the last scan.
@@ -341,8 +334,8 @@ implements BaseComponent
         if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
             {
             log.debug("scandate is in the past");
-            Object block = block(true);
-            if (block == null)
+            Object lock = lock(true);
+            if (lock == null)
                 {
                 try {
                     log.debug("Running scan [{}][{}]", this.ident(), this.name());
@@ -350,31 +343,38 @@ implements BaseComponent
                     }
                 finally {
                     scantime = new DateTime();
-                    release();
+                    unlock();
                     }
                 }
             else {
-                log.debug("Found block [{}][{}][{}]", this.ident(), this.name(), block);
-                while (block != null)
+                log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                while (lock != null)
                     {
                     try {
-                        log.debug("Waiting on block [{}][{}][{}]", this.ident(), this.name(), block);
-                        synchronized (block)
+                        log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                        synchronized (lock)
                             {
-                            block.wait(BLOCKING_TIMEOUT);
+                            lock.wait(LOCK_TIMEOUT);
                             }
                         }
                     catch (Exception ouch)
                         {
-                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), block, ouch.getMessage());
+                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
                         }
-                    block = block(false);
+                    lock = lock(false);
                     }
-                log.debug("No more blocks [{}][{}]", this.ident(), this.name());
+                log.debug("No more locks [{}][{}]", this.ident(), this.name());
                 }
             }
         else {
             log.debug("scandate is recent [{}][{}]", this.ident(), this.name());
             }
         }
+
+    /**
+     * Metadata scan implementation.
+     *
+     */
+    protected abstract void scanimpl();
+
     }

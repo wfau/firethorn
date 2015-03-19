@@ -157,29 +157,4 @@ extends NamedEntity
             return this.status;
             }
         }
-
-    /**
-     * The persistence level, or depth of copy, of a entity.
-     *
-    enum CopyDepth
-        {
-        PROXY(),
-        THIN(),
-        PARTIAL(),
-        FULL();
-        }
-     */
-
-    /**
-     * The copy depth.
-     *
-    public CopyDepth depth();
-     */
-
-    /**
-     * The copy depth.
-     *
-    public void depth(final CopyDepth depth);
-     */
-
     }
