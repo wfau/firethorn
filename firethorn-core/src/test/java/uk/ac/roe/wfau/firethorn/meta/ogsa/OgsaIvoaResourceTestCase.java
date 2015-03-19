@@ -48,7 +48,7 @@ extends TestBase
             resource
             );
 
-        target.create();
+        target.init();
         
         }
 
@@ -71,9 +71,8 @@ extends TestBase
             resource
             );
 
-        target.create();
-        
-        }
+        target.init();
 
+        }
     }
 

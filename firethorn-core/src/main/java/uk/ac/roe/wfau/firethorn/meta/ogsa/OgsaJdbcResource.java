@@ -126,7 +126,7 @@ public interface OgsaJdbcResource
      * The parent {@link JdbcResource}.
      *  
      */
-    public JdbcResource source();
+    public JdbcResource resource();
 
     /**
      * Initialise the OGSA-DAI resource, creating a new one if needed.

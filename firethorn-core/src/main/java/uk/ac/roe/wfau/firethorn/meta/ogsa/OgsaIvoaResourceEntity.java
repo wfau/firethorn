@@ -67,17 +67,17 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceW
             query = "FROM OgsaIvoaResourceEntity WHERE service = :service ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaIvoaResource-select-source",
-            query = "FROM OgsaIvoaResourceEntity WHERE source = :source ORDER BY ident desc"
+            name  = "OgsaIvoaResource-select-resource",
+            query = "FROM OgsaIvoaResourceEntity WHERE resource = :resource ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaIvoaResource-select-service-source",
-            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
+            name  = "OgsaIvoaResource-select-service-resource",
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND resource = :resource ORDER BY ident desc"
             ),
         }
     )
 public class OgsaIvoaResourceEntity
-    extends OgsaBaseResourceEntity
+    extends OgsaBaseResourceEntity<OgsaIvoaResource>
     implements OgsaIvoaResource
     {
     /**
@@ -90,7 +90,7 @@ public class OgsaIvoaResourceEntity
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_SOURCE_COL = "source";
+    protected static final String DB_RESOURCE_RESOURCE_COL = "resource";
     
     /**
      * {@link OgsaIvoaResource.EntityFactory} implementation.
@@ -150,71 +150,71 @@ public class OgsaIvoaResourceEntity
             }
 
         @Override
-        public Iterable<OgsaIvoaResource> select(IvoaResource source)
+        public Iterable<OgsaIvoaResource> select(final IvoaResource resource)
             {
             return super.iterable(
                 super.query(
-                    "OgsaIvoaResource-select-source"
+                    "OgsaIvoaResource-select-resource"
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     )
                 );
             }
 
         @Override
         @SelectMethod
-        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source)
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource resource)
             {
             return super.iterable(
                 super.query(
-                    "OgsaIvoaResource-select-service-source"
+                    "OgsaIvoaResource-select-service-resource"
                     ).setEntity(
                         "service",
                         service
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     )
                 );
             }
 
         @Override
         @CreateMethod
-        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source)
+        public OgsaIvoaResource create(final OgsaService service, final IvoaResource resource)
             {
             return super.insert(
                 new OgsaIvoaResourceEntity(
                     service,
-                    source
+                    resource
                     )
                 );
             }
 
         @Override
         @CreateMethod
-        public OgsaIvoaResource primary(IvoaResource source)
+        public OgsaIvoaResource primary(IvoaResource resource)
             {
             return this.primary(
                 factories().ogsa().services().primary(),
-                source
+                resource
                 );
             }
 
         @Override
         @CreateMethod
-        public OgsaIvoaResource primary(OgsaService service, IvoaResource source)
+        public OgsaIvoaResource primary(OgsaService service, IvoaResource resource)
             {
             // Really really simple - just get the first. 
             OgsaIvoaResource found = super.first(
                 super.query(
-                    "OgsaIvoaResource-select-service-source"
+                    "OgsaIvoaResource-select-service-resource"
                     ).setEntity(
                         "service",
                         service
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     )
                 );
             // If we don't have one, create one.
@@ -222,7 +222,7 @@ public class OgsaIvoaResourceEntity
                 {
                 found = create(
                     service,
-                    source
+                    resource
                     );
                 }
             return found ;
@@ -242,15 +242,15 @@ public class OgsaIvoaResourceEntity
      *
      * Public constructor.
      * @param service The parent {@link OgsaService}
-     * @param source  The source {@link IvoaResource}
+     * @param resource  The source {@link IvoaResource}
      *
      */
-    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource source)
+    public OgsaIvoaResourceEntity(final OgsaService service, final IvoaResource resource)
         {
         super(
             service
             );
-        this.source = source  ;
+        this.resource = resource  ;
         }
 
     @ManyToOne(
@@ -258,16 +258,16 @@ public class OgsaIvoaResourceEntity
         targetEntity = IvoaResourceEntity.class
         )
     @JoinColumn(
-        name = DB_RESOURCE_SOURCE_COL,
+        name = DB_RESOURCE_RESOURCE_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-    private IvoaResource source;
+    private IvoaResource resource;
     @Override
-    public IvoaResource source()
+    public IvoaResource resource()
         {
-        return this.source;
+        return this.resource;
         }
 
     @Override
@@ -279,13 +279,13 @@ public class OgsaIvoaResourceEntity
         }
 
     @Override
-    public Status create()
+    public OgStatus init()
         {
         //
         // If we already have an ODSA-DAI resource ID.
         if (ogsaid() != null)
             {
-            return status() ;
+            return ogStatus() ;
             }
         //
         // If we don't have an ODSA-DAI resource ID.
@@ -298,8 +298,8 @@ public class OgsaIvoaResourceEntity
                 }
             catch (MalformedURLException ouch)
                 {
-                return status(
-                    Status.ERROR
+                return ogStatus(
+                    OgStatus.ERROR
                     );
                 }
 
@@ -310,7 +310,7 @@ public class OgsaIvoaResourceEntity
                     public String endpoint()
                         {
                         // Just use the first endpoint.
-                        return source().endpoints().select().iterator().next().endpoint();
+                        return resource().endpoints().select().iterator().next().endpoint();
                         }
 
                     @Override
@@ -339,24 +339,22 @@ public class OgsaIvoaResourceEntity
             if (response.status() == WorkflowResult.Status.COMPLETED)
                 {
                 return ogsaid(
-                    Status.ACTIVE,
+                    OgStatus.ACTIVE,
                     response.result().toString()
                     );
                 }
     
             else {
-                return status(
-                    Status.ERROR
+                return ogStatus(
+                    OgStatus.ERROR
                     );
                 }
             }
         }
 
-    @Override
-    public Status release()
-        {
-        throw new UnsupportedOperationException(
-            "Release not implemented yet"
-            );
-        }
+	@Override
+	protected void scanimpl()
+		{
+		// TODO Auto-generated method stub
+		}
     }

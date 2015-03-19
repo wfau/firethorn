@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * Generic interface for a component in a metadata tree.
+ * Base class interface for a metadata component.
  *
  */
 public interface BaseComponent

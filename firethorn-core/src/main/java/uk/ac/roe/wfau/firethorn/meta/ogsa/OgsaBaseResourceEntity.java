@@ -33,6 +33,8 @@ import javax.persistence.ManyToOne;
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
@@ -46,27 +48,33 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 @Inheritance(
     strategy = InheritanceType.TABLE_PER_CLASS
     )
-public abstract class OgsaBaseResourceEntity
-extends AbstractEntity
+public abstract class OgsaBaseResourceEntity<ResourceType extends OgsaBaseResource>
+extends BaseComponentEntity<ResourceType>
 implements OgsaBaseResource
     {
+	/**
+	 * Default component name.
+	 * 
+	 */
+	protected static final String DEFAULT_NAME = "no-id" ;
+	
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_OGSAID_COL = "ogsaid";
+    protected static final String DB_OGSA_RESOURCE_OGSAID_COL = "ogsaid";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_STATUS_COL = "status";
+    protected static final String DB_OGSA_RESOURCE_STATUS_COL = "ogstatus";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_SERVICE_COL = "service";
+    protected static final String DB_OGSA_RESOURCE_SERVICE_COL = "service";
 
     /**
      * Protected constructor.
@@ -85,9 +93,9 @@ implements OgsaBaseResource
     */
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(true);
-       this.status  = Status.CREATED ;
-       this.service = service ;
+       super(DEFAULT_NAME);
+       this.ogstatus  = OgStatus.CREATED ;
+       this.ogservice = service ;
        }
 
    @ManyToOne(
@@ -95,23 +103,23 @@ implements OgsaBaseResource
        targetEntity = OgsaServiceEntity.class
        )
    @JoinColumn(
-       name = DB_RESOURCE_SERVICE_COL,
+       name = DB_OGSA_RESOURCE_SERVICE_COL,
        unique = false,
        nullable = false,
        updatable = false
        )
-   private OgsaService service;
+   private OgsaService ogservice;
    @Override
    public OgsaService service()
        {
-       return this.service;
+       return this.ogservice;
        }
 
    @Basic(
        fetch = FetchType.EAGER
        )
    @Column(
-       name = DB_RESOURCE_OGSAID_COL,
+       name = DB_OGSA_RESOURCE_OGSAID_COL,
        unique = false,
        nullable = true,
        updatable = true
@@ -123,7 +131,7 @@ implements OgsaBaseResource
        return this.ogsaid;
        }
    @Override
-   public Status ogsaid(final Status status, final String ogsaid)
+   public OgStatus ogsaid(final OgStatus status, final String ogsaid)
        {
        log.debug("ogsaid(status, ogsaid) [{}][{}]", status, ogsaid);
        factories().spring().transactor().update(
@@ -132,16 +140,16 @@ implements OgsaBaseResource
                 @Override
                 public void run()
                     {
-                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogstatus = status ;
                     OgsaBaseResourceEntity.this.ogsaid = ogsaid ;
                     }
                 }
            );
-       return this.status;
+       return this.ogstatus;
        }
 
    @Column(
-       name = DB_RESOURCE_STATUS_COL,
+       name = DB_OGSA_RESOURCE_STATUS_COL,
        unique = false,
        nullable = false,
        updatable = true
@@ -149,14 +157,14 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   private Status status = Status.UNKNOWN ;
+   private OgStatus ogstatus = OgStatus.UNKNOWN ;
    @Override
-   public Status status()
+   public OgStatus ogStatus()
        {
-       return this.status;
+       return this.ogstatus;
        }
    @Override
-   public Status status(final Status status)
+   public OgStatus ogStatus(final OgStatus status)
        {
        log.debug("status(status) [{}]", status);
        factories().spring().transactor().update(
@@ -165,10 +173,10 @@ implements OgsaBaseResource
                 @Override
                 public void run()
                     {
-                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogstatus = status ;
                     }
                 }
            );
-       return this.status;
+       return this.ogstatus;
        }
     }

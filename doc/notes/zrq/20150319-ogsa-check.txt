@@ -20,45 +20,32 @@
 #
 #
 
-#-------------------------------------
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
 
-    Regular status checks
+    devname=zrq-ogsa-check
     
-        OgsaBaseResourceEntity
-        -   extends AbstractEntity
-        +   extends AbstractNamedEntity
-        
-            name() = ogsaid()
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
-        BaseComponentEntity
-        -   extends AbstractNamedEntity
-        +   extends AbstractScannedEntity
-
-
-        AbstractScannedEntity
-           extends AbstractNamedEntity
-
-            scantime
-            scanperiod
-
-        BaseComponent
-
-            Move CopyDepth to ???
-
-#-------------------------------------
-
-    Simple - just replicate the functionality ?
-    Not so simple - scan() has complex parts to it.
+# -----------------------------------------------------
+# Code change
+#[user@desktop]
 
         OgsaBaseResource
         -   extends Entity
         +   extends BaseComponent
 
+
         OgsaBaseResourceEntity
         -   extends AbstractEntity
         +   extends BaseComponentEntity
 
-    IF we move copy depth out of BaseComponent into TreeComponent ?
+        @Deprecated
+        ogsaid()
+        name()
 
         BaseTable
         -   extends BaseComponent
