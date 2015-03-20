@@ -195,7 +195,7 @@ implements AdqlQuery, AdqlParserQuery
         //
         // Replace DQP name with OgsaDqpResource
         // http://redmine.roe.ac.uk/issues/820
-        @Value("${firethorn.ogsadai.dqp:firethorn-dqp-001}")
+        @Value("${firethorn.ogsadai.dqp-name:firethorn-dqp-001}")
         private String dqp ;
 
         @Value("${firethorn.ogsadai.mode:AUTO}")
