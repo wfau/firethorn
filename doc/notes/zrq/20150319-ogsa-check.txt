@@ -67,6 +67,11 @@
 
     popd
 
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core   ; mvn clean install ; popd
+        pushd firethorn-webapp ; mvn clean install ; popd
+    popd
+
 # -----------------------------------------------------
 # Testing ...
 #[user@desktop]
