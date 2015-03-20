@@ -31,26 +31,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
  *
  */
 public interface BaseSchema<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-extends BaseComponent
+extends TreeComponent
     {
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<SchemaType extends BaseSchema<?,?>>
-    extends Entity.IdentFactory<SchemaType>
-        {
-        }
-     */
-    
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<SchemaType extends BaseSchema<?,?>>
-    extends NamedEntity.NameFactory<SchemaType>
-        {
-        }
-     */
-
     /**
      * {@link Entity.LinkFactory} interface.
      *

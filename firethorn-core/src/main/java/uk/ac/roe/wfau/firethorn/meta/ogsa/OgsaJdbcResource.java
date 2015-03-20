@@ -18,8 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -126,20 +124,6 @@ public interface OgsaJdbcResource
      * The parent {@link JdbcResource}.
      *  
      */
-    public JdbcResource source();
+    public JdbcResource resource();
 
-    /**
-     * Initialise the OGSA-DAI resource, creating a new one if needed.
-     * @return The resource status.
-     *  
-    public Status connect();
-     */
-
-    /**
-     * Release the OGSA-DAI resource.
-     * @return The resource status.
-     * 
-    public Status release();
-     */
-    
     }

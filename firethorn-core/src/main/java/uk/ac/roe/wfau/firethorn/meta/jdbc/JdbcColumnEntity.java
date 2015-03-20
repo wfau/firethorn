@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
@@ -48,9 +47,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
@@ -71,8 +68,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
+                JdbcColumnEntity.DB_NAME_COL,
+                JdbcColumnEntity.DB_PARENT_COL
                 }
             )
         }

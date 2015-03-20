@@ -34,8 +34,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -209,7 +209,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
-     * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
@@ -223,14 +223,14 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth depth,
+        final TreeComponent.CopyDepth depth,
         @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
         return created(
             resource.schemas().create(
-                ((depth != null) ? depth : CopyDepth.FULL),
+                ((depth != null) ? depth : TreeComponent.CopyDepth.FULL),
                 factories().base().schema().resolve(
                     base
                     )
@@ -244,7 +244,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
-     * @param depth    The {@link CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
      * @param name     The name of the new {@link AdqlSchema}, [{@value #IMPORT_SCHEMA_NAME}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
@@ -259,7 +259,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth depth,
+        final TreeComponent.CopyDepth depth,
         @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base,
         @RequestParam(value=IMPORT_SCHEMA_NAME, required=true)
@@ -268,7 +268,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(
-                ((depth != null) ? depth : CopyDepth.FULL),
+                ((depth != null) ? depth : TreeComponent.CopyDepth.FULL),
                 name,
                 factories().base().schema().resolve(
                     base

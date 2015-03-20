@@ -37,6 +37,7 @@ import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -50,13 +51,14 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
 
 /**
  * {@link OgsaService} implementation.
@@ -78,13 +80,13 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
             ),
         @NamedQuery(
             name  = "OgsaService-select-status",
-            query = "FROM OgsaServiceEntity WHERE status = :status ORDER BY ident DESC"
+            query = "FROM OgsaServiceEntity WHERE ogstatus = :ogstatus ORDER BY ident DESC"
             )
         }
     )
 public class OgsaServiceEntity
-    extends AbstractNamedEntity
-    implements OgsaService
+extends BaseComponentEntity<OgsaService>
+implements OgsaService
     {
     /**
      * Hibernate table mapping, {@value}.
@@ -108,7 +110,7 @@ public class OgsaServiceEntity
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_SERVICE_STATUS_COL = "status";
+    protected static final String DB_SERVICE_OGSTATUS_COL = "ogstatus";
 
     /**
      * Hibernate column mapping, {@value}.
@@ -116,6 +118,12 @@ public class OgsaServiceEntity
      */
     protected static final String DB_HTTP_STATUS_COL = "http";
 
+    /**
+     * The default re-scan interval.
+     * 
+     */
+    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+    
     /**
      * {@link OgsaService.EntityFactory} implementation.
      *
@@ -161,14 +169,14 @@ public class OgsaServiceEntity
 
         @Override
         @SelectMethod
-        public Iterable<OgsaService> select(final Status status)
+        public Iterable<OgsaService> select(final OgsaService.OgStatus ogstatus)
             {
             return super.iterable(
                 super.query(
                     "OgsaService-select-status"
                     ).setEntity(
-                        "status",
-                        status
+                        "ogstatus",
+                        ogstatus
                         )
                 );
             }
@@ -186,8 +194,8 @@ public class OgsaServiceEntity
                 super.query(
                     "OgsaService-select-status"
                     ).setString(
-                        "status",
-                        OgsaService.Status.ACTIVE.name()
+                        "ogstatus",
+                        OgsaService.OgStatus.ACTIVE.name()
                         )
                 );
             
@@ -205,8 +213,7 @@ public class OgsaServiceEntity
                     }
                 else {
                     try {
-                      //service = create(
-                      service = factories().ogsa().services().create(
+                        service = factories().ogsa().services().create(
                             endpoint
                             );
                         }
@@ -217,7 +224,7 @@ public class OgsaServiceEntity
                             ouch
                             ); 
                         }
-                    if (service.status() != Status.ACTIVE)
+                    if (service.ogstatus() != OgStatus.ACTIVE)
                         {
                         throw new PrimaryServiceException(
                             "Unable to create ACTIVE OGSA-DAI service"
@@ -388,12 +395,14 @@ public class OgsaServiceEntity
      * @todo Start status as CREATED, explicitly set to ACTIVE.
      *
      */
-    public OgsaServiceEntity(final String name, final String endpoint) throws NameFormatException
+    public OgsaServiceEntity(final String name, final String endpoint)
+    throws NameFormatException
         {
         super(
-            name
+            name,
+            DEFAULT_SCAN_PERIOD
             );
-        this.status = Status.ACTIVE;
+        this.ogstatus = OgStatus.ACTIVE;
         this.endpoint = endpoint; 
         }
 
@@ -401,7 +410,7 @@ public class OgsaServiceEntity
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_SERVICE_STATUS_COL,
+        name = DB_SERVICE_OGSTATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -409,17 +418,17 @@ public class OgsaServiceEntity
     @Enumerated(
         EnumType.STRING
         )
-    private Status status ;
+    private OgStatus ogstatus ;
     @Override
-    public Status status()
+    public OgStatus ogstatus()
         {
-        return this.status ;
+        return this.ogstatus ;
         }
     @Override
-    public Status status(final Status value)
+    public OgStatus ogstatus(final OgStatus ogstatus)
         {
-        this.status = value ;
-        return this.status ;
+        this.ogstatus = ogstatus ;
+        return this.ogstatus ;
         }
 
 
@@ -468,8 +477,7 @@ public class OgsaServiceEntity
         EnumType.STRING
         )
     private HttpStatus http ;
-    @Override
-    public HttpStatus http()
+    protected HttpStatus http()
         {
         return http ;
         }
@@ -515,8 +523,7 @@ public class OgsaServiceEntity
      */
     private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
     
-    @Override
-    public HttpStatus ping()
+    protected HttpStatus ping()
         {
         try {
             ClientHttpRequest request = factory.createRequest(
@@ -626,5 +633,22 @@ public class OgsaServiceEntity
                     );
                 }
             };
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        log.debug("Scanning OgsaService [{}][{}]", this.name(), this.endpoint());
+        final HttpStatus http = ping(); 
+        switch(http)
+            {
+            case OK :
+                this.ogstatus = OgStatus.ACTIVE;
+                break ;
+ 
+            default :
+                this.ogstatus = OgStatus.ERROR;
+                break ;
+            }
         }
     }

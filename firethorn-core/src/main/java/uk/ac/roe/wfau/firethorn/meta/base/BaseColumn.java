@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 public interface BaseColumn<ColumnType extends BaseColumn<ColumnType>>
-extends BaseComponent
+extends TreeComponent
     {
 
     /**

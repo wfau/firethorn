@@ -17,11 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -41,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
+ * Base class for a metadata component.
  *
  *
  */
@@ -57,25 +55,10 @@ implements BaseComponent
      * Hibernate column mapping.
      *
      */
-    public static final String DB_BASE_COL   = "base";
-    public static final String DB_PARENT_COL = "parent";
     public static final String DB_STATUS_COL = "status";
-    public static final String DB_ALIAS_COL  = "alias";
-
-    protected static final String DB_NAME_IDX        = "IndexByName";
-    protected static final String DB_PARENT_IDX      = "IndexByParent";
-    protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
-
-    protected static final String DB_RESOURCE_COL = "resource";
-    protected static final String DB_SCHEMA_COL   = "schema";
-    protected static final String DB_TABLE_COL    = "table";
-    protected static final String DB_COLUMN_COL   = "column";
-
-    protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
     protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
-
     
     /**
      * Default constructor needs to be protected not private.
@@ -94,8 +77,8 @@ implements BaseComponent
     protected BaseComponentEntity(final String name)
         {
         this(
-            CopyDepth.FULL,
-            name
+            name,
+            DEFAULT_SCAN_PERIOD
             );
         }
 
@@ -103,17 +86,16 @@ implements BaseComponent
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected BaseComponentEntity(final CopyDepth depth, final String name)
+    protected BaseComponentEntity(final String name, final Period scanperiod)
         {
         super(
             name
             );
-        this.depth = depth;
-        log.debug("BaseComponentEntity(CopyDepth, String)");
+        this.scanperiod = scanperiod;
+        log.debug("BaseComponentEntity(String, Period)");
         log.debug("  Name  [{}]", name);
-        log.debug("  Depth [{}]", depth);
         }
-
+    
     /**
      * The component status.
      *
@@ -141,120 +123,6 @@ implements BaseComponent
         this.status = status;
         }
 
-    /**
-     * The polling interval for waiting scans.
-     *
-     */
-    private static final long POLL_WAIT = 1000 ;
-
-    /**
-     * Synchronised set of Identifiers for active scans.
-     *
-     */
-    private static Set<String> scanset = Collections.synchronizedSet(
-        new HashSet<String>()
-        );
-
-    /**
-     * Synchronise our metadata scans.
-     *
-    public void scansync()
-        {
-        log.debug("scansync() for [{}]", ident());
-        boolean doscan = false ;
-        final String ident = this.ident().toString();
-        //
-        // Sync on the set and check for active scans.
-        synchronized (scanset)
-            {
-            //
-            // If we are already scanning, wait for notification.
-            log.debug("Checking for existing scan [{}]", ident);
-            if (scanset.contains(ident))
-                {
-                do {
-                    try {
-                        log.debug("Scan wait start [{}]", ident);
-                        scanset.wait(POLL_WAIT);
-                        log.debug("Scan wait woken [{}]", ident);
-                        }
-                    catch (final Exception ouch)
-                        {
-                        log.warn("Scan wait interrupted [{}][{}]", ident, ouch.getMessage());
-                        }
-                    }
-                while (scanset.contains(ident));
-                log.debug("Scan wait done [{}]", ident);
-                }
-            //
-            // If not already scanning, add our Identifier to the Set and run a scan.
-            else {
-                log.debug("Adding new scan [{}]", ident);
-                doscan = true ;
-                scanset.add(
-                    ident
-                    );
-                }
-            }
-        //
-        // If we are due to run a scan.
-        if (doscan)
-            {
-            //
-            // Run our scan ...
-            try {
-                log.debug("Running scan [{}]", ident);
-                scanimpl();
-                scantime(
-                    System.currentTimeMillis()
-                    );
-                }
-            //
-            // Remove ourselves from the Set and notify anyone else waiting.
-            finally {
-                log.debug("Completed scan [{}]", ident);
-                synchronized (scanset)
-                    {
-                    scanset.remove(
-                        ident
-                        );
-                    scanset.notifyAll();
-                    }
-                }
-            }
-        }
-     */
-
-    /**
-     * Metadata scan implementation.
-     * @todo Not null when we re-build DB.
-     *
-     */
-    protected abstract void scanimpl();
-
-    @Column(
-        name = DB_COPY_DEPTH_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    protected CopyDepth depth = CopyDepth.FULL ;
-
-    @Override
-    public CopyDepth depth()
-        {
-        return this.depth;
-        }
-
-    @Override
-    public void depth(final CopyDepth type)
-        {
-        this.depth = type;
-        }
-    
     /**
      * Exception thrown if loading self() fails.
      * 
@@ -313,7 +181,6 @@ implements BaseComponent
      * Load a persistent reference for this Entity.
      * @return The persistent instance or proxy for the entity.
      * @see Session#load(Class, java.io.Serializable)
-     * @todo Delegate to each entity class.
      * @todo Check for recursion.
      *
      */
@@ -338,37 +205,37 @@ implements BaseComponent
         }
 
     /**
-     * Synchronised Map of scan blocks.
+     * Synchronized Map of scan locks.
      *
      */
-    private static Map<Identifier, Object> blocks = new HashMap<Identifier, Object>();
+    private static Map<Identifier, Object> locks = new HashMap<Identifier, Object>();
 
     /**
-     * Check for an existing block, or create a new one.
+     * Check for an existing lock, or create a new one.
      *
      */
-    protected Object block(boolean create)
+    protected Object lock(boolean create)
         {
-        log.debug("Checking for existing block [{}][{}]", this.ident(), this.name());
-        synchronized (blocks)
+        log.debug("Checking for existing lock [{}][{}]", this.ident(), this.name());
+        synchronized (locks)
             {
-            Object block = blocks.get(
+            Object lock = locks.get(
                 this.ident()
                 );
-            if (block != null)
+            if (lock != null)
                 {
-                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
-                return block;
+                log.debug("Found existing lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                return lock;
                 }
             else {
-                log.debug("No existing block found [{}][{}]", this.ident(), this.name());
+                log.debug("No existing lock found [{}][{}]", this.ident(), this.name());
                 if (create)
                     {
-                    block = new DateTime();
-                    log.debug("Adding new block [{}][{}][{}]", this.ident(), this.name(), block);
-                    blocks.put(
+                    lock = new DateTime();
+                    log.debug("Adding new lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                    locks.put(
                         this.ident(),
-                        block
+                        lock
                         );
                     }
                 return null ;
@@ -377,30 +244,30 @@ implements BaseComponent
         }
 
     /**
-     * Release waiting blocks.
+     * Release waiting locks.
      * 
      */
-    protected void release()
+    protected void unlock()
         {
-        log.debug("Releasing blocks [{}][{}]", this.ident(), this.name());
-        synchronized (blocks)
+        log.debug("Releasing locks [{}][{}]", this.ident(), this.name());
+        synchronized (locks)
             {
-            Object block = blocks.get(
+            Object lock = locks.get(
                 this.ident()
                 );
-            if (block != null)
+            if (lock != null)
                 {
-                log.debug("Found existing block [{}][{}][{}]", this.ident(), this.name(), block);
+                log.debug("Found existing lock [{}][{}][{}]", this.ident(), this.name(), lock);
                 log.debug("Removing ....");
-                blocks.remove(this.ident());
+                locks.remove(this.ident());
                 log.debug("Notifying ....");
-                synchronized (block)
+                synchronized (lock)
                     {
-                    block.notifyAll();
+                    lock.notifyAll();
                     }
                 }
             else {
-                log.debug("No blocks found [{}][{}]", this.ident(), this.name());
+                log.debug("No locks found [{}][{}]", this.ident(), this.name());
                 }
             }
         }
@@ -412,10 +279,10 @@ implements BaseComponent
     protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
 
     /**
-     * The blocking timeout.
+     * The lock timeout.
      * 
      */
-    protected static final long BLOCKING_TIMEOUT = 500 ;
+    protected static final long LOCK_TIMEOUT = 500 ;
     
     /**
      * The data/time of the last scan.
@@ -468,8 +335,8 @@ implements BaseComponent
         if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
             {
             log.debug("scandate is in the past");
-            Object block = block(true);
-            if (block == null)
+            Object lock = lock(true);
+            if (lock == null)
                 {
                 try {
                     log.debug("Running scan [{}][{}]", this.ident(), this.name());
@@ -477,31 +344,38 @@ implements BaseComponent
                     }
                 finally {
                     scantime = new DateTime();
-                    release();
+                    unlock();
                     }
                 }
             else {
-                log.debug("Found block [{}][{}][{}]", this.ident(), this.name(), block);
-                while (block != null)
+                log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                while (lock != null)
                     {
                     try {
-                        log.debug("Waiting on block [{}][{}][{}]", this.ident(), this.name(), block);
-                        synchronized (block)
+                        log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                        synchronized (lock)
                             {
-                            block.wait(BLOCKING_TIMEOUT);
+                            lock.wait(LOCK_TIMEOUT);
                             }
                         }
                     catch (Exception ouch)
                         {
-                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), block, ouch.getMessage());
+                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
                         }
-                    block = block(false);
+                    lock = lock(false);
                     }
-                log.debug("No more blocks [{}][{}]", this.ident(), this.name());
+                log.debug("No more locks [{}][{}]", this.ident(), this.name());
                 }
             }
         else {
             log.debug("scandate is recent [{}][{}]", this.ident(), this.name());
             }
         }
+
+    /**
+     * Metadata scan implementation.
+     *
+     */
+    protected abstract void scanimpl();
+
     }

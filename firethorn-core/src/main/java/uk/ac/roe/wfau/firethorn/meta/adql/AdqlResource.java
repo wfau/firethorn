@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 
 
 /**
@@ -118,7 +119,7 @@ extends BaseResource<AdqlSchema>
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final BaseSchema<?,?> base);
+        public AdqlSchema create(final TreeComponent.CopyDepth depth, final BaseSchema<?,?> base);
 
         /**
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
@@ -130,7 +131,7 @@ extends BaseResource<AdqlSchema>
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final TreeComponent.CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
         /**
          * Import a {@link BaseSchema}.

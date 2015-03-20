@@ -18,9 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
 
 /**
  *
@@ -118,20 +116,13 @@ public interface OgsaIvoaResource
      * The parent {@link IvoaResource}.
      *  
      */
-    public IvoaResource source();
+    public IvoaResource resource();
 
     /**
-     * Initialise the OGSA-DAI resource, creating a new one if needed.
+     * Initialize the OGSA-DAI resource, creating a new one if needed.
      * @return The resource status.
      *  
      */
-    public Status create();
-
-    /**
-     * Release the OGSA-DAI resource.
-     * @return The resource status.
-     * 
-     */
-    public Status release();
+    public OgStatus init();
 
     }

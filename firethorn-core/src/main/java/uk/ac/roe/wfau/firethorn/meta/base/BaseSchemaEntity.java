@@ -48,7 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-extends BaseComponentEntity<SchemaType>
+extends TreeComponentEntity<SchemaType>
 implements BaseSchema<SchemaType, TableType>
     {
     /**

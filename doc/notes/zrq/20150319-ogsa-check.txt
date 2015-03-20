@@ -1,0 +1,106 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-ogsa-check
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Code change
+#[user@desktop]
+
+        OgsaBaseResource
+        -   extends Entity
+        +   extends BaseComponent
+
+        OgsaBaseResourceEntity
+        -   extends AbstractEntity
+        +   extends BaseComponentEntity
+
+        BaseTable
+        -   extends BaseComponent
+        +   extends TreeComponent
+        
+        TreeComponent
+
+            enum CopyDepth {}
+            CopyDepth depth();
+            void depth(CopyDepth depth);
+
+
+        todo
+            name() = ogsaid() ??
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core   ; mvn clean install ; popd
+        pushd firethorn-webapp ; mvn clean install ; popd
+    popd
+
+# -----------------------------------------------------
+# Testing ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-01-firethorn-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-02-ogsadai-gnome.txt"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150310-03-test-workspace.txt"
+
+    querymode=DIRECT
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+    querymode=DISTRIBUTED
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/doc/notes/zrq/20150116-03-single-test-query.txt"
+
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.6
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
+

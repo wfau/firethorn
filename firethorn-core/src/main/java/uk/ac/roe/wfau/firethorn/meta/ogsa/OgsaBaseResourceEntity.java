@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,7 +35,15 @@ import javax.persistence.ManyToOne;
 
 import lombok.extern.slf4j.Slf4j;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import org.joda.time.Period;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
@@ -46,27 +57,39 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 @Inheritance(
     strategy = InheritanceType.TABLE_PER_CLASS
     )
-public abstract class OgsaBaseResourceEntity
-extends AbstractEntity
+public abstract class OgsaBaseResourceEntity<ResourceType extends OgsaBaseResource>
+extends BaseComponentEntity<ResourceType>
 implements OgsaBaseResource
     {
+	/**
+	 * Default component name.
+	 * 
+	 */
+	protected static final String DEFAULT_NAME = "OGSA-DAI resource" ;
+
     /**
-     * Hibernate column mapping, {@value}.
-     *
+     * The default re-scan interval.
+     * 
      */
-    protected static final String DB_RESOURCE_OGSAID_COL = "ogsaid";
+    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 1, 0, 0);
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_STATUS_COL = "status";
+    protected static final String DB_OGSA_RESOURCE_OGSAID_COL = "ogsaid";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_SERVICE_COL = "service";
+    protected static final String DB_OGSA_RESOURCE_STATUS_COL = "ogstatus";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_OGSA_RESOURCE_SERVICE_COL = "service";
 
     /**
      * Protected constructor.
@@ -85,9 +108,12 @@ implements OgsaBaseResource
     */
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(true);
-       this.status  = Status.CREATED ;
-       this.service = service ;
+       super(
+           DEFAULT_NAME,
+           DEFAULT_SCAN_PERIOD
+           );
+       this.ogstatus  = OgStatus.CREATED ;
+       this.ogservice = service ;
        }
 
    @ManyToOne(
@@ -95,23 +121,23 @@ implements OgsaBaseResource
        targetEntity = OgsaServiceEntity.class
        )
    @JoinColumn(
-       name = DB_RESOURCE_SERVICE_COL,
+       name = DB_OGSA_RESOURCE_SERVICE_COL,
        unique = false,
        nullable = false,
        updatable = false
        )
-   private OgsaService service;
+   private OgsaService ogservice;
    @Override
    public OgsaService service()
        {
-       return this.service;
+       return this.ogservice;
        }
 
    @Basic(
        fetch = FetchType.EAGER
        )
    @Column(
-       name = DB_RESOURCE_OGSAID_COL,
+       name = DB_OGSA_RESOURCE_OGSAID_COL,
        unique = false,
        nullable = true,
        updatable = true
@@ -123,7 +149,7 @@ implements OgsaBaseResource
        return this.ogsaid;
        }
    @Override
-   public Status ogsaid(final Status status, final String ogsaid)
+   public OgStatus ogsaid(final OgStatus status, final String ogsaid)
        {
        log.debug("ogsaid(status, ogsaid) [{}][{}]", status, ogsaid);
        factories().spring().transactor().update(
@@ -132,16 +158,16 @@ implements OgsaBaseResource
                 @Override
                 public void run()
                     {
-                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogstatus = status ;
                     OgsaBaseResourceEntity.this.ogsaid = ogsaid ;
                     }
                 }
            );
-       return this.status;
+       return this.ogstatus;
        }
 
    @Column(
-       name = DB_RESOURCE_STATUS_COL,
+       name = DB_OGSA_RESOURCE_STATUS_COL,
        unique = false,
        nullable = false,
        updatable = true
@@ -149,14 +175,14 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   private Status status = Status.UNKNOWN ;
+   protected OgStatus ogstatus = OgStatus.UNKNOWN ;
    @Override
-   public Status status()
+   public OgStatus ogStatus()
        {
-       return this.status;
+       return this.ogstatus;
        }
    @Override
-   public Status status(final Status status)
+   public OgStatus ogStatus(final OgStatus status)
        {
        log.debug("status(status) [{}]", status);
        factories().spring().transactor().update(
@@ -165,10 +191,86 @@ implements OgsaBaseResource
                 @Override
                 public void run()
                     {
-                    OgsaBaseResourceEntity.this.status = status ;
+                    OgsaBaseResourceEntity.this.ogstatus = status ;
                     }
                 }
            );
-       return this.status;
+       return this.ogstatus;
+       }
+
+   protected OgStatus init()
+       {
+       log.debug("init()");
+       return this.ogstatus;
+       }
+
+   @Override
+   protected void scanimpl()
+       {
+       log.debug("Scanning OgsaBaseResource [{}][{}]", this.name(), this.ogsaid);
+
+       if (this.ogstatus.active() && (this.ogsaid != null))
+           {
+           final HttpStatus http = ping(); 
+           switch(http)
+               {
+               case OK :
+                   ogStatus(
+                       OgStatus.ACTIVE
+                       );
+                   break ;
+
+               case NOT_FOUND:
+                   this.init();
+                   break ;
+
+               default :
+                   ogStatus(
+                       OgStatus.ERROR
+                       );
+                   break ;
+               }
+           }
+       }
+
+   /**
+    *  Our local HTTP request factory.
+    *
+    */
+   private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+   
+   /**
+    *  Check our OGSA-DAI resource.
+    *
+    */
+   protected HttpStatus ping()
+       {
+       try {
+           ClientHttpRequest request = factory.createRequest(
+               service().baseuri().resolve(
+                   "dataResources/" + this.ogsaid
+                   ),
+               HttpMethod.GET
+               );
+
+           log.debug("Service request [{}][{}]", this.ident(), request.getURI());
+           ClientHttpResponse response = request.execute();
+
+           HttpStatus http = response.getStatusCode();
+           log.debug("Service response [{}][{}]", this.ident(), response.getStatusText());
+
+           return http ;
+
+           }
+       catch (URISyntaxException ouch)
+           {
+           log.warn("Problem occured parsing service endpoint [{}][{}]", this.ident(), ouch.getReason());
+           return HttpStatus.BAD_REQUEST;
+           }
+       catch (IOException ouch)
+           {
+           log.error("Problem occured sending service request [{}][{}]", this.ident(), ouch.getMessage());
+           return HttpStatus.BAD_REQUEST;
+           }
        }
     }

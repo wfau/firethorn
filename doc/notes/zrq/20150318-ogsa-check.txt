@@ -54,7 +54,7 @@
         -   extends Entity
         +   extends BaseComponent
 
-            OgsaBaseResourceEntity
+        OgsaBaseResourceEntity
         -   extends AbstractEntity
         +   extends BaseComponentEntity
 

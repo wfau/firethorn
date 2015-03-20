@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
@@ -32,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 public interface OgsaService
-    extends NamedEntity
+extends BaseComponent
     {
 
     /**
@@ -106,7 +107,7 @@ public interface OgsaService
          * @return An {@link Iterable} set of {@link OgsaService}(s). 
          *
          */
-        public Iterable<OgsaService> select(final Status status);
+        public Iterable<OgsaService> select(final OgStatus status);
 
         /**
          * Create a new service.
@@ -154,7 +155,7 @@ public interface OgsaService
      * Enum for the service status.
      * 
      */
-    public enum Status
+    public enum OgStatus
         {
         ACTIVE(),
         INACTIVE(),
@@ -166,13 +167,13 @@ public interface OgsaService
      * Get the service status.
      * 
      */
-    public Status status();
+    public OgStatus ogstatus();
 
     /**
      * Set the service status.
      * 
      */
-    public Status status(final Status status);
+    public OgStatus ogstatus(final OgStatus status);
 
     /**
      * The OGSA-DAI service endpoint URL.
@@ -201,15 +202,15 @@ public interface OgsaService
      * Get the latest HTTP status code.
      * @return The HTTP status code.
      *
-     */
     public HttpStatus http();
+     */
 
     /**
      * Check the HTTP status.
      * @return The HTTP status code.
      *
-     */
     public HttpStatus ping();
+     */
 
     /**
      * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.

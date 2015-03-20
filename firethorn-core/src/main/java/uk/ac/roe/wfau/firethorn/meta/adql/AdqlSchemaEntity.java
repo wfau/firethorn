@@ -45,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -72,8 +71,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
+                AdqlSchemaEntity.DB_NAME_COL,
+                AdqlSchemaEntity.DB_PARENT_COL
                 }
             )
         }

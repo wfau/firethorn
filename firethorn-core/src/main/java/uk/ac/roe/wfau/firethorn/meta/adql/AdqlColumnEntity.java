@@ -17,11 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import javax.persistence.Index;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -40,12 +40,11 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
@@ -71,8 +70,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
+                AdqlColumnEntity.DB_NAME_COL,
+                AdqlColumnEntity.DB_PARENT_COL
                 }
             )
         }

@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
  *
  */
 public interface OgsaBaseResource
-    extends Entity
+    extends BaseComponent
     {
 
     /**
@@ -40,7 +40,7 @@ public interface OgsaBaseResource
      * @return The {@link BaseResource}.
      *
      */
-    public BaseResource<?> source();
+    public BaseResource<?> resource();
 
     /**
      * Get the OGSA-DAI resource identifier.
@@ -54,13 +54,13 @@ public interface OgsaBaseResource
      * @return The resource status.
      *
      */
-    public Status ogsaid(final Status status, final String ogsaid);
+    public OgStatus ogsaid(final OgStatus status, final String ogsaid);
 
     /**
      * OGSA-DAI resource status.
      *
      */
-    public static enum Status
+    public static enum OgStatus
         {
         CREATED(true),
         ACTIVE(true),
@@ -74,7 +74,7 @@ public interface OgsaBaseResource
             return this.active;
             }
         
-        private Status(boolean active)
+        private OgStatus(boolean active)
             {
             this.active = active ;
             }
@@ -85,13 +85,13 @@ public interface OgsaBaseResource
      * @return The resource status.
      *
      */
-    public Status status();
+    public OgStatus ogStatus();
 
     /**
      * Set the resource status.
      * @return The resource status.
      *
      */
-    public Status status(final Status status);
+    public OgStatus ogStatus(final OgStatus status);
 
     }

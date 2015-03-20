@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
  *
  */
 public interface BaseResource<SchemaType extends BaseSchema<SchemaType,?>>
-extends BaseComponent
+extends TreeComponent
     {
     
     /**

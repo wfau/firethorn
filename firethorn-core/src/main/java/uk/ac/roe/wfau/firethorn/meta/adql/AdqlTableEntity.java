@@ -47,7 +47,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -67,7 +66,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
             columnList = AdqlTableEntity.DB_BASE_COL
             ),
         @Index(
-            columnList = AdqlTableEntity.DB_PARENT_COL
+            columnList = AdqlTableEntity.DB_PARENT_COL 
             ),
         @Index(
             columnList = AdqlTableEntity.DB_ADQL_QUERY_COL
@@ -76,8 +75,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
+                AdqlTableEntity.DB_NAME_COL,
+                AdqlTableEntity.DB_PARENT_COL
                 }
             )
         }

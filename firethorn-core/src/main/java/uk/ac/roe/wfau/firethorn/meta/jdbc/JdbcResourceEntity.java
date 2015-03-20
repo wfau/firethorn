@@ -44,12 +44,10 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
@@ -209,35 +207,35 @@ public class JdbcResourceEntity
          * The default 'userdata' JDBC URL.
          *
          */
-        @Value("${firethorn.user.url}")
+        @Value("${firethorn.user.url:#{null}}")
         public String udurl ;
 
         /**
          * The default 'userdata' JDBC catalog.
          *
          */
-        @Value("${firethorn.user.cat}")
-        public String udcat;
+        @Value("${firethorn.user.cat:#{null}}")
+        public String udcat = null;
 
         /**
          * The default 'userdata' JDBC username.
          *
          */
-        @Value("${firethorn.user.user}")
+        @Value("${firethorn.user.user:#{null}}")
         public String uduser ;
 
         /**
          * The default 'userdata' JDBC password.
          *
          */
-        @Value("${firethorn.user.pass}")
+        @Value("${firethorn.user.pass:#{null}}")
         public String udpass ;
 
         /**
          * The default 'userdata' JDBC driver.
          *
          */
-        @Value("${firethorn.user.driver}")
+        @Value("${firethorn.user.driver:#{null}}")
         public String uddriver ;
 
         /**
@@ -558,10 +556,14 @@ public class JdbcResourceEntity
         try {
             //
             // Default to our Connection catalog name.
+            log.debug("catalog [{}] for [{}]", this.catalog, this.namebuilder());
             if (this.catalog == null)
                 {
                 try {
+                    log.debug("Null catalog for [{}][{}]", this.ident(), this.namebuilder());
+                    log.debug("Fetching default from connection");
                     this.catalog = connection().catalog();
+                    log.debug("Default catalog from connection [{}]", this.catalog);
                     }
                 catch (MetadataException ouch)
                     {

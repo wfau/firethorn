@@ -192,7 +192,10 @@ implements AdqlQuery, AdqlParserQuery
         @Value("${firethorn.adql.level:LEGACY}")
         private Level level ;
 
-        @Value("${firethorn.ogsadai.dqp}")
+        //
+        // Replace DQP name with OgsaDqpResource
+        // http://redmine.roe.ac.uk/issues/820
+        @Value("${firethorn.ogsadai.dqp-name:firethorn-dqp-001}")
         private String dqp ;
 
         @Value("${firethorn.ogsadai.mode:AUTO}")
@@ -1127,6 +1130,7 @@ implements AdqlQuery, AdqlParserQuery
                 this.source = ogsa.ogsaid();
                 }
             else {
+                // http://redmine.roe.ac.uk/issues/820
                 this.source = this.dqp;
                 }
             log.debug("++ Query source [{}]", this.source);

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * Generic interface for a component in a metadata tree.
+ * Base class interface for a metadata component.
  *
  */
 public interface BaseComponent
@@ -157,29 +157,4 @@ extends NamedEntity
             return this.status;
             }
         }
-
-    /**
-     * The persistence level, or depth of copy, of a entity.
-     *
-     */
-    enum CopyDepth
-        {
-        PROXY(),
-        THIN(),
-        PARTIAL(),
-        FULL();
-        }
-
-    /**
-     * The copy depth.
-     *
-     */
-    public CopyDepth depth();
-
-    /**
-     * The copy depth.
-     *
-     */
-    public void depth(final CopyDepth depth);
-
     }

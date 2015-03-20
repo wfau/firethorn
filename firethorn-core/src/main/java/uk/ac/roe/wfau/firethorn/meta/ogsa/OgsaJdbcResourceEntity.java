@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -30,19 +29,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.Status;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
@@ -70,25 +67,25 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
             query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaJdbcResource-select-source",
-            query = "FROM OgsaJdbcResourceEntity WHERE source = :source ORDER BY ident desc"
+            name  = "OgsaJdbcResource-select-resource",
+            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaJdbcResource-select-source-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE source = :source AND status = :status ORDER BY ident desc"
+            name  = "OgsaJdbcResource-select-resource-status",
+            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaJdbcResource-select-service-source",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source ORDER BY ident desc"
+            name  = "OgsaJdbcResource-select-service-resource",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "OgsaJdbcResource-select-service-source-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND source = :source AND status = :status ORDER BY ident desc"
+            name  = "OgsaJdbcResource-select-service-resource-status",
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
             )
         }
     )
 public class OgsaJdbcResourceEntity
-extends OgsaBaseResourceEntity
+extends OgsaBaseResourceEntity<OgsaJdbcResource>
 implements OgsaJdbcResource
     {
     /**
@@ -101,7 +98,7 @@ implements OgsaJdbcResource
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_RESOURCE_SOURCE_COL = "source";
+    protected static final String DB_RESOURCE_RESOURCE_COL = "resource";
 
     /**
      * {@link OgsaJdbcResource.EntityFactory} implementation.
@@ -163,116 +160,88 @@ implements OgsaJdbcResource
 
         @Override
         @SelectMethod
-        public Iterable<OgsaJdbcResource> select(JdbcResource source)
+        public Iterable<OgsaJdbcResource> select(final JdbcResource resource)
             {
             return super.iterable(
                 super.query(
-                    "OgsaJdbcResource-select-source"
+                    "OgsaJdbcResource-select-resource"
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     )
                 );
             }
 
         @Override
         @SelectMethod
-        public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source)
+        public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource resource)
             {
             return super.iterable(
                 super.query(
-                    "OgsaJdbcResource-select-service-source"
+                    "OgsaJdbcResource-select-service-resource"
                     ).setEntity(
                         "service",
                         service
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     )
                 );
             }
 
         @Override
         @CreateMethod
-        public OgsaJdbcResource create(final JdbcResource source)
+        public OgsaJdbcResource create(final JdbcResource resource)
             {
-            log.debug("create(JdbcResource) [{}]", source.ident());
+            log.debug("create(JdbcResource) [{}]", resource.ident());
             return create(
                 factories().ogsa().services().primary(),
-                source
+                resource
                 );
             }
         
         @Override
         @CreateMethod
-        public OgsaJdbcResource create(final OgsaService service, final JdbcResource source)
+        public OgsaJdbcResource create(final OgsaService service, final JdbcResource resource)
             {
-            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service.ident(), source.ident());
+            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
             return super.insert(
                 new OgsaJdbcResourceEntity(
                     service,
-                    source
+                    resource
                     )
                 );
             }
         
         @Override
         @CreateMethod
-        public OgsaJdbcResource primary(final JdbcResource source)
+        public OgsaJdbcResource primary(final JdbcResource resource)
             {
-            log.debug("primary(JdbcResource) [{}]", source.ident());
+            log.debug("primary(JdbcResource) [{}]", resource.ident());
             return primary(
                 factories().ogsa().services().primary(),
-                source
+                resource
                 );
-/*
- * 
-            log.debug("primary(JdbcResource) [{}]", source);
-            // Really really simple - just get the first. 
-            OgsaJdbcResource found = super.first(
-                super.query(
-                    "OgsaJdbcResource-select-source-status"
-                    ).setEntity(
-                        "source",
-                        source
-                    ).setString(
-                        "status",
-                        Status.ACTIVE.name()
-                        )
-                );
-            if (found != null)
-                {
-                log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
-                return found ;
-                }
-            else {
-                log.debug("No primary OgsaJdbcResource, creating a new one");
-                return create(
-                    source
-                    );
-                }
- *             
- */
             }
 
         @Override
         @CreateMethod
-        public OgsaJdbcResource primary(OgsaService service, JdbcResource source)
+        public OgsaJdbcResource primary(OgsaService service, JdbcResource resource)
             {
-            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service.ident(), source.ident());
+            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
-                    "OgsaJdbcResource-select-service-source-status"
+                    "OgsaJdbcResource-select-service-resource-status"
                     ).setEntity(
                         "service",
                         service
                     ).setEntity(
-                        "source",
-                        source
+                        "resource",
+                        resource
                     ).setString(
-                        "status",
-                        Status.ACTIVE.name()
+                        "ogstatus",
+                        OgStatus.ACTIVE.name()
                     )
                 );
             if (found != null)
@@ -284,7 +253,7 @@ implements OgsaJdbcResource
                 log.debug("No primary OgsaJdbcResource, creating a new one");
                 return create(
                     service,
-                    source
+                    resource
                     );
                 }
             }
@@ -303,15 +272,15 @@ implements OgsaJdbcResource
      *
      * Public constructor.
      * @param service The parent {@link OgsaService}
-     * @param source  The source {@link JdbcResource}
+     * @param resource  The source {@link JdbcResource}
      *
      */
-    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource source)
+    public OgsaJdbcResourceEntity(final OgsaService service, final JdbcResource resource)
         {
         super(
             service
             );
-        this.source = source  ;
+        this.resource = resource  ;
         }
 
     @ManyToOne(
@@ -319,16 +288,16 @@ implements OgsaJdbcResource
         targetEntity = JdbcResourceEntity.class
         )
     @JoinColumn(
-        name = DB_RESOURCE_SOURCE_COL,
+        name = DB_RESOURCE_RESOURCE_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-    private JdbcResource source;
+    private JdbcResource resource;
     @Override
-    public JdbcResource source()
+    public JdbcResource resource()
         {
-        return this.source;
+        return this.resource;
         }
 
     @Override
@@ -342,15 +311,23 @@ implements OgsaJdbcResource
     @Override
     public String ogsaid()
         {
-        log.debug("ogsaid [{}][{}]", this.status(), this.ogsaid);
-        if ((this.ogsaid == null) && this.status().active()) 
+        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
+        if (this.ogstatus.active()) 
             {
-            this.init();
+            if (this.ogsaid == null) 
+                {
+                this.init();
+                }
+            else {
+                // Recursion danger ..
+                // Need to ensure scan() does not call ogsaid()  
+                this.scantest();
+                }
             }
         return this.ogsaid;
         }
 
-    protected Status init()
+    protected OgStatus init()
         {
         JdbcCreateResourceWorkflow workflow = null;
         try {
@@ -360,8 +337,8 @@ implements OgsaJdbcResource
             }
         catch (MalformedURLException ouch)
             {
-            return status(
-                Status.ERROR
+            return ogStatus(
+                OgStatus.ERROR
                 );
             }
 
@@ -374,22 +351,22 @@ implements OgsaJdbcResource
                 @Override
                 public String jdbcurl()
                     {
-                    return source.connection().uri();
+                    return resource.connection().uri();
                     }
                 @Override
                 public String username()
                     {
-                    return source.connection().user();
+                    return resource.connection().user();
                     }
                 @Override
                 public String password()
                     {
-                    return source.connection().pass();
+                    return resource.connection().pass();
                     }
                 @Override
                 public String driver()
                     {
-                    return source.connection().driver();
+                    return resource.connection().driver();
                     }
                 @Override
                 public boolean writable()
@@ -405,14 +382,14 @@ implements OgsaJdbcResource
         if (response.status() == WorkflowResult.Status.COMPLETED)
             {
             return ogsaid(
-                Status.ACTIVE,
+                OgStatus.ACTIVE,
                 response.result().toString()
                 );
             }
 
         else {
-            return status(
-                Status.ERROR
+            return ogStatus(
+                OgStatus.ERROR
                 );
             }
         }
