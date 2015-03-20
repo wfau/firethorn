@@ -207,35 +207,35 @@ public class JdbcResourceEntity
          * The default 'userdata' JDBC URL.
          *
          */
-        @Value("${firethorn.user.url}")
+        @Value("${firethorn.user.url:#{null}}")
         public String udurl ;
 
         /**
          * The default 'userdata' JDBC catalog.
          *
          */
-        //@Value("${firethorn.user.cat}")
+        @Value("${firethorn.user.cat:#{null}}")
         public String udcat = null;
 
         /**
          * The default 'userdata' JDBC username.
          *
          */
-        @Value("${firethorn.user.user}")
+        @Value("${firethorn.user.user:#{null}}")
         public String uduser ;
 
         /**
          * The default 'userdata' JDBC password.
          *
          */
-        @Value("${firethorn.user.pass}")
+        @Value("${firethorn.user.pass:#{null}}")
         public String udpass ;
 
         /**
          * The default 'userdata' JDBC driver.
          *
          */
-        @Value("${firethorn.user.driver}")
+        @Value("${firethorn.user.driver:#{null}}")
         public String uddriver ;
 
         /**

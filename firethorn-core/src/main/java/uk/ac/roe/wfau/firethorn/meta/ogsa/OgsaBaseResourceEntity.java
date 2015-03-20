@@ -248,7 +248,7 @@ implements OgsaBaseResource
        try {
            ClientHttpRequest request = factory.createRequest(
                service().baseuri().resolve(
-                   "services/dataResources/" + this.ogsaid
+                   "dataResources/" + this.ogsaid
                    ),
                HttpMethod.GET
                );
