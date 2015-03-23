@@ -1,0 +1,11 @@
+
+    SELECT
+        *
+    FROM
+        twomass.twomass_psc AS twomass
+    WHERE
+        twomass.ra  BETWEEN '324.0' AND '355.0'
+    AND
+        twomass.dec BETWEEN '-32.0' AND '-30.0'
+
+

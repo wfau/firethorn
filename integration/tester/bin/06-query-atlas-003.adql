@@ -1,0 +1,24 @@
+
+    SELECT
+        twomass.*
+    FROM
+        twomass.twomass_psc AS twomass,
+        atlas.atlasSource AS source,
+        atlas.atlasSourceXtwomass_psc AS neighbour
+    WHERE
+        twomass.ra BETWEEN '324.0' AND '355.0'
+    AND
+        twomass.dec BETWEEN '-32.0' AND '-30.0'
+    AND
+        source.ra BETWEEN '324.0' AND '355.0'
+    AND
+        source.dec BETWEEN '-32.0' AND '-30.0'
+    AND
+        neighbour.masterObjID = source.sourceID
+    AND
+        neighbour.slaveObjID = twomass.pts_key
+    AND
+        neighbour.distanceMins < 1E-4
+
+
+
