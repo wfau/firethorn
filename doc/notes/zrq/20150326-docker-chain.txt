@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,66 +20,6 @@
 #
 #
 
-    #
-    # Create a build a linked chain of services ...
-    #
-
-# -----------------------------------------------------
-# Create a new development branch.
-#[user@desktop]
-
-    devname=zrq-docker-chain
-    
-    # Copy paste instructions
-    source "${HOME:?}/firethorn.settings"
-    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
-
-# -----------------------------------------------------
-# Clean build.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-
-    popd
-
-# -------------------------------------------------------------------------------------------
-# Build our Docker images.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        unset MAVEN_OPTS
-
-        pushd firethorn-ogsadai/webapp
-            mvn docker:package
-        popd
-        
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
-        
-    popd
-    
-    docker images
-
-# -------------------------------------------------------------------------------------------
-# Push our images to Docker Hub.
-# https://docs.docker.com/userguide/dockerhub/
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source "bin/util.sh"
-
-        docker push "firethorn/firethorn:$(getversion)"
-        docker push "firethorn/ogsadai:$(getversion)"
-
-    popd
 
 # -----------------------------------------------------
 # Clean VM.
@@ -95,7 +35,14 @@
         INFO : Disc size [8G]
 
 # -----------------------------------------------------
-# Configure the VM.
+# Install any tools we need.
+#[root@virtual]
+
+    yum install -y htop
+    yum install -y docker-io
+    
+# -----------------------------------------------------
+# Start the Docker daemon.
 #[root@virtual]
 
     systemctl enable docker.service
@@ -111,57 +58,52 @@
                    └─22256 /usr/bin/docker -d -H fd:// --selinux-enabled
 
 # -----------------------------------------------------
-# Create our PostgreSQL metadata database.
+# Set up our container names.
 #[root@virtual]
 
-    metaname=bethany
+    metahost=bethany
+    userhost=patricia
+    datahost=elayne
+    ogsahost=jarmila
+    firehost=gillian
+    testhost=amanda
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+    testlink=gilbert
+
+# -----------------------------------------------------
+# Run our PostgreSQL metadata container.
+#[root@virtual]
+
     metauser=miranda
-    metapass=miranda-secret
+    metapass=bethany-miranda-secret
     
     #
     # Run our database container.
     docker run \
         --detach \
-        --name "${metaname:?}" \
+        --name "${metahost:?}" \
         --env "POSTGRES_USER=${metauser:?}" \
         --env "POSTGRES_PASSWORD=${metapass:?}" \
         postgres
 
 # -----------------------------------------------------
-# Create a container with SSH client installed.
-#[user@desktop]
-
-    pushd $(mktemp -d)
-
-        cat > Dockerfile << EOF
-FROM firethorn/fedora:20
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-RUN yum -y install openssh-clients
-
-EOF
-
-        docker build --tag firethorn/ssh .
-        docker push firethorn/ssh
-
-    popd
-
-
-# -----------------------------------------------------
-# Use SSH tunnel to tunnel connection to SQLServer.
+# Run our UserData SSH tunnel container.
 #[root@virtual]
 
-    dataname=elayne
-
-    username=dave
-    hostname=fenrir.roe.ac.uk
-    hostkey=$(mktemp)
-    ssh-keyscan "${hostname:?}" > "${hostkey:?}" 2> /dev/null
+    userhostuser=dave
+    userhostname=fenrir.roe.ac.uk
+    userhostkey=$(mktemp)
+    ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
 
     #
     # http://www.projectatomic.io/docs/docker-and-selinux/
     # http://opensource.com/business/13/11/selinux-policy-guide
-    chcon -t svirt_sandbox_file_t "${hostkey:?}" 
+    chcon -t svirt_sandbox_file_t "${userhostkey:?}" 
     chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
 
     #
@@ -171,109 +113,119 @@ EOF
     docker run \
         --detach \
         --interactive \
-        --name "${dataname:?}" \
+        --name "${userhost:?}" \
         --expose 1433 \
         --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
         --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        --volume "${userhostkey:?}:/etc/ssh/ssh_known_hosts" \
         firethorn/ssh \
-        ssh -v -C -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+        ssh -v -C -L '*:1433:ramses2:1433' "${userhostuser:?}@${userhostname:?}"
 
 # -----------------------------------------------------
-# Create our properties file.
+# Run our ScienceData SSH tunnel container.
 #[root@virtual]
 
-    ogsaname=jarmila
-    firename=gillian
+    datahostuser=dave
+    datahostname=fenrir.roe.ac.uk
+    datahostkey=$(mktemp)
+    ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
 
-    config=$(mktemp)
-    cat > "${config:?}" << EOF
+    #
+    # http://www.projectatomic.io/docs/docker-and-selinux/
+    # http://opensource.com/business/13/11/selinux-policy-guide
+    chcon -t svirt_sandbox_file_t "${datahostkey:?}" 
+    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
 
-firethorn.ogsadai.endpoint=http://ogsadai:8080/ogsadai/services
+    #
+    # chcon not quite enough :-(
+    setenforce permissive
 
-firethorn.meta.url=jdbc:postgresql://metadata/postgres
+    docker run \
+        --detach \
+        --interactive \
+        --name "${datahost:?}" \
+        --expose 1433 \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${datahostkey:?}:/etc/ssh/ssh_known_hosts" \
+        firethorn/ssh \
+        ssh -v -C -L '*:1433:ramses2:1433' "${datahostuser:?}@${datahostname:?}"
+
+# -----------------------------------------------------
+# Run our OGSA-DAI container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${ogsahost:?}" \
+        --link "${datahost:?}:${datalink:?}" \
+        --link "${userhost:?}:${userlink:?}" \
+        --expose 8080 \
+        firethorn/ogsadai:1.13.6-zrq-docker-chain 
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[root@virtual]
+
+    fireprop=$(mktemp)
+    cat > "${fireprop:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/postgres
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=org.postgresql.Driver
-firethorn.meta.c3p0.max.size=20
-firethorn.meta.c3p0.min.size=5
-firethorn.meta.c3p0.max.idle=1800
 
-firethorn.user.url=jdbc:jtds:sqlserver://sqlserver:1433/FirethornUserdataXXXX
-firethorn.user.user=XXXX
-firethorn.user.pass=XXXX
+firethorn.user.url=jdbc:jtds:sqlserver://${datalink:?}:1433/FirethornUserdataZRQ20150319DEV
+firethorn.user.user=FirethornUserdataZRQ20150319DEVLogin
+firethorn.user.pass=FirethornUserdataZRQ20150319DEVKSdcr1ri
 firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
 firethorn.user.type=pgsql
 
 EOF
 
-    chmod a+r "${config:?}" 
-    chcon -t svirt_sandbox_file_t "${config:?}" 
+    chmod a+r "${fireprop:?}" 
+    chcon -t svirt_sandbox_file_t "${fireprop:?}" 
+
+    cat "${fireprop:?}" 
 
 # -----------------------------------------------------
-# Run our service containers.
+# Run our FireThorn container.
 #[root@virtual]
-
-    docker run \
-        --detach \
-        --name "${ogsaname:?}" \
-        --expose 8080 \
-        firethorn/ogsadai:1.13.6-zrq-docker-chain 
         
     docker run \
         --detach \
         --expose 8080 \
-        --name "${firename:?}" \
-        --link "${ogsaname:?}:ogsadai" \
-        --link "${metaname:?}:metadata" \
-        --link "${dataname:?}:sqlserver" \
-        --volume "${config:?}:/etc/firethorn.properties" \
+        --name "${firehost:?}" \
+        --link "${ogsahost:?}:${ogsalink:?}" \
+        --link "${metahost:?}:${metalink:?}" \
+        --link "${datahost:?}:${datalink:?}" \
+        --link "${userhost:?}:${userlink:?}" \
+        --volume "${fireprop:?}:/etc/firethorn.properties" \
         firethorn/firethorn:1.13.6-zrq-docker-chain 
 
 # -----------------------------------------------------
-# Create our test runner.
+# Tail our logs (separate terminals).
 #[root@virtual]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    docker logs -f gillian
 
-        mkdir integration/tester
-        cp -r integration/004   integration/tester/bin
-        cp -r metadata/metadocs integration/tester/meta
-
-        pushd integration/tester
-
-            cat > Dockerfile << EOF
-FROM firethorn/fedora:20
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-RUN yum -y install perl
-RUN yum -y install perl-JSON
-
-COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
-WORKDIR /tester
-EOF
-
-            docker build --tag "firethorn/tester" .
-            docker push "firethorn/tester" .
-
-        popd
-    popd
+    docker logs -f jarmila
 
 # -----------------------------------------------------
-# Run our test container.
+# Create our test config.
 #[root@virtual]
 
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
 
-firethorn.webapp.endpoint=http://firethorn:8080/firethorn
+firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
 
-firethorn.atlas.url=jdbc:jtds:sqlserver://sqlserver:1433/ATLASDR1
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}:1433/ATLASDR1
 firethorn.atlas.name=ATLASDR1
-firethorn.atlas.user=xxxx
-firethorn.atlas.pass=xxxx
+firethorn.atlas.user=atlasro
+firethorn.atlas.pass=atlasropw
 firethorn.atlas.type=mssql
 firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
 
@@ -282,15 +234,23 @@ EOF
     chmod a+r "${testcfg:?}" 
     chcon -t svirt_sandbox_file_t "${testcfg:?}" 
 
+# -----------------------------------------------------
+# Run our test container.
+#[root@virtual]
+
     docker run \
         --rm \
         --tty \
         --interactive \
-        --name "tester" \
-        --link "${firename:?}:firethorn" \
+        --name "${testhost:?}" \
+        --link "${firehost:?}:${firelink:?}" \
         --volume "${testcfg:?}:/root/firethorn.properties" \
         firethorn/tester \
         bash
+
+# -----------------------------------------------------
+# Run our tests.
+#[root@tester]
 
         identity=${identity:-$(date '+%H:%M:%S')}
         community=${community:-$(date '+%A %-d %B %Y')}
