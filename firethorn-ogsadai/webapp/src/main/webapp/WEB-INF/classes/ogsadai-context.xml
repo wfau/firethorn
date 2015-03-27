@@ -10,12 +10,12 @@
     <!--+
         | Use a local properties file.
         | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
-    <context:property-placeholder location="file:${user.home}/firethorn.properties"/>
         +-->
+    <context:property-placeholder location="file:${user.home}/ogsadai.properties"/>
 
-    <!--bean id="uk.org.ogsadai.CONFIG_DIR"  class="java.io.File">
-        <constructor-arg value="${user.home}/albert"/>
-    </bean-->
+    <bean id="uk.org.ogsadai.CONFIG_DIR"  class="java.io.File">
+        <constructor-arg value="${user.home}/config"/>
+    </bean>
 
     <bean id="uk.org.ogsadai.CORE_VERSION"  class="java.lang.String">
         <constructor-arg value="4.2"/>
@@ -79,11 +79,10 @@
         | Actually, this should be the context URL not the service endpoint URL.
         | + http://hostname:port/context
         | - http://hostname:port/context/services
-        | Need to check this works ok.
-    <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
-        <constructor-arg value="${firethorn.ogsadai.endpoint}"/>
-    </bean>
         +-->
+    <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
+        <constructor-arg value="${ogsadai.endpoint}"/>
+    </bean>
 
     <!--
     <bean id="uk.org.ogsadai.MONITORING_FRAMEWORK" 

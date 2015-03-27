@@ -61,6 +61,7 @@
 # Set up our container names.
 #[root@virtual]
 
+cat > "${HOME?:}/hostnames" << EOF
     metahost=bethany
     userhost=patricia
     datahost=elayne
@@ -74,10 +75,13 @@
     ogsalink=timothy
     firelink=peter
     testlink=gilbert
+EOF
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
 #[root@virtual]
+
+    source "${HOME?:}/hostnames"
 
     metauser=miranda
     metapass=bethany-miranda-secret
@@ -94,6 +98,8 @@
 # -----------------------------------------------------
 # Run our UserData SSH tunnel container.
 #[root@virtual]
+
+    source "${HOME?:}/hostnames"
 
     userhostuser=dave
     userhostname=fenrir.roe.ac.uk
@@ -125,6 +131,8 @@
 # Run our ScienceData SSH tunnel container.
 #[root@virtual]
 
+    source "${HOME?:}/hostnames"
+
     datahostuser=dave
     datahostname=fenrir.roe.ac.uk
     datahostkey=$(mktemp)
@@ -155,8 +163,11 @@
 # Run our OGSA-DAI container.
 #[root@virtual]
 
+    source "${HOME?:}/hostnames"
+
     docker run \
-        --detach \
+        #--detach \
+        --tty --interactive \
         --name "${ogsahost:?}" \
         --link "${datahost:?}:${datalink:?}" \
         --link "${userhost:?}:${userlink:?}" \
@@ -166,6 +177,8 @@
 # -----------------------------------------------------
 # Create our FireThorn config.
 #[root@virtual]
+
+    source "${HOME?:}/hostnames"
 
     fireprop=$(mktemp)
     cat > "${fireprop:?}" << EOF
@@ -193,9 +206,12 @@ EOF
 # -----------------------------------------------------
 # Run our FireThorn container.
 #[root@virtual]
+
+    source "${HOME?:}/hostnames"
         
     docker run \
-        --detach \
+        #--detach \
+        --tty --interactive \
         --expose 8080 \
         --name "${firehost:?}" \
         --link "${ogsahost:?}:${ogsalink:?}" \
@@ -306,6 +322,20 @@ EOF
 
         source "bin/05-03-execute-query.sh" \
             "DIRECT" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "DISTRIBUTED" \
             "
             SELECT
                 ra,

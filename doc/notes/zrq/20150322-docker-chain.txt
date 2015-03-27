@@ -55,10 +55,12 @@
         unset MAVEN_OPTS
 
         pushd firethorn-ogsadai/webapp
+            mvn clean install
             mvn docker:package
         popd
         
         pushd firethorn-webapp
+            mvn clean install
             mvn docker:package
         popd
         
