@@ -391,4 +391,13 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.7
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
 
