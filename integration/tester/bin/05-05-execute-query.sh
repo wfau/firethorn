@@ -30,7 +30,7 @@ curl \
     --data   "adql.schema.query.create.mode=${createmode:?}" \
     --data-urlencode "adql.schema.query.create.query=${createadql:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | ./pp | tee query-job.json
+     | bin/pp | tee query-job.json
 
 queryident=$(
     cat query-job.json | self | node

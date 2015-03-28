@@ -28,7 +28,7 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | ./pp | tee query-job.json
+     | bin/pp | tee query-job.json
 
 queryident=$(
     cat query-job.json | self | node
@@ -41,7 +41,7 @@ curl \
     --data-urlencode "adql.query.update.delay.every=10" \
     --data-urlencode "adql.query.update.delay.last=10000"  \
     "${endpointurl:?}/${queryident:?}" \
-     | ./pp
+     | bin/pp
 
 #
 # Run the query.

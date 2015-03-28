@@ -28,7 +28,7 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | ./pp | tee query-job.json
+     | bin/pp | tee query-job.json
 
 queryident=$(
     cat query-job.json | self | node

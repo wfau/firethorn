@@ -22,14 +22,13 @@
 
 #
 # Download the 'resty' wrapper for curl.
-curl -# -L http://github.com/micha/resty/raw/master/resty > resty
-source resty
+#curl -# -L https://github.com/micha/resty/raw/master/resty > resty
+source bin/resty
 
 #
 # Download the 'pp' pretty print script.
-curl -# -L http://github.com/micha/resty/raw/master/pp > pp
-chmod a+x pp
-
+#curl -# -L https://github.com/micha/resty/raw/master/pp > pp
+#chmod a+x pp
 
 #
 # The service endpoint URL.
@@ -64,7 +63,7 @@ define()
 # Function to get the htp ident from a JSON response.
 self()
     {
-    ./pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
+    bin/pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
     }
 
 
@@ -79,14 +78,14 @@ node()
 # Function to get the name from a JSON response.
 name()
     {
-    ./pp | sed -n 's|^ *"name" : "\([^"]*\)".*|\1|p'
+    bin/pp | sed -n 's|^ *"name" : "\([^"]*\)".*|\1|p'
     }
 
 #
 # Function to get the job status from a JSON response.
 status()
     {
-    ./pp | sed -n '
+    bin/pp | sed -n '
         /^ *"syntax" : {/, /^ *}/ d
         s|^ *"status" : "\([^"]*\)".*|\1|p
         '
@@ -96,7 +95,7 @@ status()
 # Function to get the votable URL from a query.
 votable()
     {
-    ./pp | sed -n 's|^ *"votable" : "\([^"]*\)".*|\1|p'
+    bin/pp | sed -n 's|^ *"votable" : "\([^"]*\)".*|\1|p'
     }
 
 #

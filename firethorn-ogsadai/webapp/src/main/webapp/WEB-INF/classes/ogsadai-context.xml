@@ -13,9 +13,9 @@
         +-->
     <context:property-placeholder location="file:${user.home}/ogsadai.properties"/>
 
-    <bean id="uk.org.ogsadai.CONFIG_DIR"  class="java.io.File">
+    <!--bean id="uk.org.ogsadai.CONFIG_DIR"  class="java.io.File">
         <constructor-arg value="${user.home}/config"/>
-    </bean>
+    </bean-->
 
     <bean id="uk.org.ogsadai.CORE_VERSION"  class="java.lang.String">
         <constructor-arg value="4.2"/>

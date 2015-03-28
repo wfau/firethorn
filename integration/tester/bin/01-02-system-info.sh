@@ -23,7 +23,7 @@ curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     "${endpointurl:?}/system/info" \
-    | ./pp | tee system-info.json
+    | bin/pp | tee system-info.json
 
 
 

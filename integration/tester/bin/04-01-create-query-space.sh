@@ -27,7 +27,7 @@ curl \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.create.name=${resourcename:?}" \
     "${endpointurl:?}/adql/resource/create" \
-    | ./pp | tee query-space.json
+    | bin/pp | tee query-space.json
 
 queryspace=$(
     cat query-space.json | self | node

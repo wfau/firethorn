@@ -38,7 +38,7 @@ curl \
     --data   "jdbc.resource.create.catalog=${catalogname:?}" \
     --data   "jdbc.resource.create.ogsadai=${ogsadainame:?}" \
     "${endpointurl:?}/jdbc/resource/create" \
-    | ./pp | tee jdbc-space.json
+    | bin/pp | tee jdbc-space.json
 
 jdbcspace=$(
     cat jdbc-space.json | self | node

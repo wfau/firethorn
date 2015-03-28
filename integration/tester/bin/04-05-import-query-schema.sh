@@ -27,7 +27,7 @@ POST "${basespace:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
-    | ./pp | tee base-schema.json
+    | bin/pp | tee base-schema.json
 
 baseschema=$(
     cat base-schema.json | self
@@ -39,7 +39,7 @@ POST "${queryspace:?}/schemas/import" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
-    | ./pp | tee query-schema.json
+    | bin/pp | tee query-schema.json
 
 
 queryschema=$(

@@ -27,7 +27,7 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
     "${endpointurl:?}/${adqlspace:?}/schemas/select" \
-    | ./pp | tee base-schema.json
+    | bin/pp | tee base-schema.json
 
 baseschema=$(
     cat base-schema.json | self
@@ -40,7 +40,7 @@ curl \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     "${endpointurl:?}/${queryspace:?}/schemas/import" \
-    | ./pp | tee query-schema.json
+    | bin/pp | tee query-schema.json
 
 
 queryschema=$(

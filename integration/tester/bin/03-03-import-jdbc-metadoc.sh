@@ -30,7 +30,7 @@ curl \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
     --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
     "${endpointurl:?}/${jdbcspace:?}/schemas/select" \
-    | ./pp | tee jdbc-schema.json
+    | bin/pp | tee jdbc-schema.json
 
 jdbcschemaident=$(
     cat jdbc-schema.json | self
@@ -42,7 +42,7 @@ curl \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \
     --form   "urn:schema.metadoc.file=@${metadocfile:?}" \
     "${endpointurl:?}/${adqlspace:?}/metadoc/import" \
-    | ./pp | tee adql-schema.json
+    | bin/pp | tee adql-schema.json
 
 adqlschema=$(
     cat adql-schema.json | self | node

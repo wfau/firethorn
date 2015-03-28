@@ -20,9 +20,46 @@
 #
 #
 
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-webapp
+            mvn clean install
+            mvn docker:package
+        popd
+
+        pushd firethorn-ogsadai/webapp
+            mvn clean install
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Push our images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/ogsadai:$(getversion)"
+
+    popd
 
 # -----------------------------------------------------
-# Clean VM.
+# Start a clean VM.
 #[root@desktop]
 
     ischnura-createvm
@@ -35,16 +72,31 @@
         INFO : Disc size [8G]
 
 # -----------------------------------------------------
-# Install any tools we need.
+# Install or update our tools.
 #[root@virtual]
 
     yum install -y htop
-    yum install -y docker-io
-    
+
 # -----------------------------------------------------
-# Start the Docker daemon.
+# Install and start the HAVEGE entropy tool.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
 #[root@virtual]
 
+    yum install -y haveged
+    systemctl start haveged.service
+
+#
+# Alternative is to use non-blocking version of /dev/random
+# /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.25.x86_64/jre/lib/security/java.security 
+# https://wiki.apache.org/tomcat/HowTo/FasterStartUp#Entropy_Source
+# https://stackoverflow.com/questions/26431922/tomcat7-starts-too-late-on-ubuntu-14-04-x64-digitalocean/26432537#26432537
+    
+# -----------------------------------------------------
+# Install and start the Docker daemon.
+#[root@virtual]
+
+    yum install -y docker-io
     systemctl enable docker.service
     systemctl start  docker.service
     systemctl status docker.service
@@ -75,6 +127,10 @@ cat > "${HOME?:}/hostnames" << EOF
     ogsalink=timothy
     firelink=peter
     testlink=gilbert
+
+    metauser=miranda
+    metapass=bethany-miranda-secret
+
 EOF
 
 # -----------------------------------------------------
@@ -82,9 +138,6 @@ EOF
 #[root@virtual]
 
     source "${HOME?:}/hostnames"
-
-    metauser=miranda
-    metapass=bethany-miranda-secret
     
     #
     # Run our database container.
@@ -163,11 +216,12 @@ EOF
 # Run our OGSA-DAI container.
 #[root@virtual]
 
+        #--detach \
+
     source "${HOME?:}/hostnames"
 
     docker run \
-        #--detach \
-        --tty --interactive \
+        --rm --tty --interactive \
         --name "${ogsahost:?}" \
         --link "${datahost:?}:${datalink:?}" \
         --link "${userhost:?}:${userlink:?}" \
@@ -207,11 +261,12 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
+        #--detach \
+
     source "${HOME?:}/hostnames"
         
     docker run \
-        #--detach \
-        --tty --interactive \
+        --rm --tty --interactive \
         --expose 8080 \
         --name "${firehost:?}" \
         --link "${ogsahost:?}:${ogsalink:?}" \
@@ -232,6 +287,8 @@ EOF
 # -----------------------------------------------------
 # Create our test config.
 #[root@virtual]
+
+    source "${HOME?:}/hostnames"
 
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
