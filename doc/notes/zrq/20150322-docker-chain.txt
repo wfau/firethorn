@@ -1,0 +1,363 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Create a build a linked chain of services ...
+    #
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-docker-chain
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-ogsadai/webapp
+            mvn clean install
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn clean install
+            mvn docker:package
+        popd
+        
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Push our images to Docker Hub.
+# https://docs.docker.com/userguide/dockerhub/
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/ogsadai:$(getversion)"
+
+    popd
+
+# -----------------------------------------------------
+# Clean VM.
+#[root@desktop]
+
+    ischnura-createvm
+
+        ....
+
+        INFO : Node name [nu]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [nu.qcow]
+        INFO : Disc size [8G]
+
+# -----------------------------------------------------
+# Configure the VM.
+#[root@virtual]
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+        * docker.service - Docker Application Container Engine
+           Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled)
+           Active: active (running) since Sun 2015-03-22 17:59:01 GMT; 2min 53s ago
+             Docs: http://docs.docker.com
+         Main PID: 22256 (docker)
+           CGroup: /system.slice/docker.service
+                   └─22256 /usr/bin/docker -d -H fd:// --selinux-enabled
+
+# -----------------------------------------------------
+# Create our PostgreSQL metadata database.
+#[root@virtual]
+
+    metaname=bethany
+    metauser=miranda
+    metapass=miranda-secret
+    
+    #
+    # Run our database container.
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Create a container with SSH client installed.
+#[user@desktop]
+
+    pushd $(mktemp -d)
+
+        cat > Dockerfile << EOF
+FROM firethorn/fedora:20
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+RUN yum -y install openssh-clients
+
+EOF
+
+        docker build --tag firethorn/ssh .
+        docker push firethorn/ssh
+
+    popd
+
+
+# -----------------------------------------------------
+# Use SSH tunnel to tunnel connection to SQLServer.
+#[root@virtual]
+
+    dataname=elayne
+
+    username=dave
+    hostname=fenrir.roe.ac.uk
+    hostkey=$(mktemp)
+    ssh-keyscan "${hostname:?}" > "${hostkey:?}" 2> /dev/null
+
+    #
+    # http://www.projectatomic.io/docs/docker-and-selinux/
+    # http://opensource.com/business/13/11/selinux-policy-guide
+    chcon -t svirt_sandbox_file_t "${hostkey:?}" 
+    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
+
+    #
+    # chcon not quite enough :-(
+    setenforce permissive
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --expose 1433 \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${hostkey:?}:/etc/ssh/ssh_known_hosts" \
+        firethorn/ssh \
+        ssh -v -C -L '*:1433:ramses2:1433' "${username:?}@${hostname:?}"
+
+# -----------------------------------------------------
+# Create our properties file.
+#[root@virtual]
+
+    ogsaname=jarmila
+    firename=gillian
+
+    config=$(mktemp)
+    cat > "${config:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://ogsadai:8080/ogsadai/services
+
+firethorn.meta.url=jdbc:postgresql://metadata/postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.c3p0.max.size=20
+firethorn.meta.c3p0.min.size=5
+firethorn.meta.c3p0.max.idle=1800
+
+firethorn.user.url=jdbc:jtds:sqlserver://sqlserver:1433/FirethornUserdataXXXX
+firethorn.user.user=XXXX
+firethorn.user.pass=XXXX
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.type=pgsql
+
+EOF
+
+    chmod a+r "${config:?}" 
+    chcon -t svirt_sandbox_file_t "${config:?}" 
+
+# -----------------------------------------------------
+# Run our service containers.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${ogsaname:?}" \
+        --expose 8080 \
+        firethorn/ogsadai:1.13.6-zrq-docker-chain 
+        
+    docker run \
+        --detach \
+        --expose 8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:ogsadai" \
+        --link "${metaname:?}:metadata" \
+        --link "${dataname:?}:sqlserver" \
+        --volume "${config:?}:/etc/firethorn.properties" \
+        firethorn/firethorn:1.13.6-zrq-docker-chain 
+
+# -----------------------------------------------------
+# Create our test runner.
+#[root@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mkdir integration/tester
+        cp -r integration/004   integration/tester/bin
+        cp -r metadata/metadocs integration/tester/meta
+
+        pushd integration/tester
+
+            cat > Dockerfile << EOF
+FROM firethorn/fedora:20
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+RUN yum -y install perl
+RUN yum -y install perl-JSON
+
+COPY bin/  /tester/bin 
+COPY meta/ /tester/meta 
+WORKDIR /tester
+EOF
+
+            docker build --tag "firethorn/tester" .
+            docker push "firethorn/tester" .
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run our test container.
+#[root@virtual]
+
+    testcfg=$(mktemp)
+    cat > "${testcfg:?}" << EOF
+
+firethorn.webapp.endpoint=http://firethorn:8080/firethorn
+
+firethorn.atlas.url=jdbc:jtds:sqlserver://sqlserver:1433/ATLASDR1
+firethorn.atlas.name=ATLASDR1
+firethorn.atlas.user=xxxx
+firethorn.atlas.pass=xxxx
+firethorn.atlas.type=mssql
+firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    chmod a+r "${testcfg:?}" 
+    chcon -t svirt_sandbox_file_t "${testcfg:?}" 
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --name "tester" \
+        --link "${firename:?}:firethorn" \
+        --volume "${testcfg:?}:/root/firethorn.properties" \
+        firethorn/tester \
+        bash
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+        databasekey='firethorn.atlas'
+        databasecfg="${HOME:?}/firethorn.properties"
+
+        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
+        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
+        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
+        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
+        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
+        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "${databaseurl:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*'
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        cat "${HOME:?}/firethorn.spaces"
+
+        querymode=DIRECT
+        source "${HOME:?}/firethorn.spaces"
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "DIRECT" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+

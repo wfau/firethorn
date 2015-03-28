@@ -1,0 +1,29 @@
+
+    SELECT
+        DistanceMins
+    FROM
+        ukidss.lasSourceXDR7PhotoObj as CrossMatch,
+        (
+        SELECT
+            s.SourceId as id
+        FROM
+            ukidss.lasSource AS s
+        WHERE
+            ra > 0 AND ra < 13.94
+        AND
+	        dec > -12.0 AND dec < -8.5
+        AND
+            mergedclass = 1
+	    GROUP BY
+	        s.SourceId
+        ) AS T
+    WHERE
+        DistanceMins < 2/60.0
+    AND
+        sdsstype =3
+    AND
+        sdssPrimary = 1
+    AND
+        T.id = CrossMatch.masterObjID
+
+

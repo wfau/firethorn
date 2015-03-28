@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,16 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+ADD ${project.build.finalName} /var/local/tomcat/webapps/ogsadai
 
+#
+# Make our webapp directory writeable.
+USER root
+RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+USER tomcat
+
+#
+# Add our config properties
+COPY ogsadai.properties /var/local/tomcat/ogsadai.properties
 

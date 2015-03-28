@@ -16,7 +16,7 @@
         | Use a local properties file.
         | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
         +-->
-    <context:property-placeholder location="file:${user.home}/firethorn.properties"/>
+    <context:property-placeholder location="file:${user.home}/ogsadai.properties"/>
 
     <!--+
         | Feature support helper - default can be configured here
@@ -28,34 +28,12 @@
         | Jersey evaluation node.
         +-->
     <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="default-eval-node">
-        <constructor-arg name="url"     value="${firethorn.ogsadai.endpoint}"/>
+        <constructor-arg name="url"     value="${ogsadai.endpoint}"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>
         <constructor-arg name="isLocal" type="boolean" value="true"/>
     </bean>
-
-    <!--+
-        | ATLAS data node.
-    <bean id="atlas-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="atlas"/>
-        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
-        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
-        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
-        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-    </bean>
-        +-->
-
-    <!--+
-        | UKIDSS data node.
-    <bean id="ukidss-bean" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="ukidss"/>
-        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
-        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
-        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
-        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-    </bean>
-        +-->
 
     <!--+
         | DQP federation.
@@ -65,21 +43,7 @@
 
         <property name="metadataServiceFactory">
             <bean id="noid" class="uk.org.ogsadai.dqp.firethorn.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/>
             </bean>
-        </property>
-
-        <property name="dataNodesMap">
-            <map>
-                <!--+
-                <entry key="atlas">
-                    <ref bean="atlas-bean"/>
-                </entry>
-                <entry key="ukidss">
-                    <ref bean="ukidss-bean"/>
-                </entry>
-                    +-->
-            </map>
         </property>
 
         <property name="evaluationNodes">
