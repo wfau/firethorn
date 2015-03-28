@@ -99,21 +99,13 @@
     yum install -y docker-io
     systemctl enable docker.service
     systemctl start  docker.service
-    systemctl status docker.service
-
-        * docker.service - Docker Application Container Engine
-           Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled)
-           Active: active (running) since Sun 2015-03-22 17:59:01 GMT; 2min 53s ago
-             Docs: http://docs.docker.com
-         Main PID: 22256 (docker)
-           CGroup: /system.slice/docker.service
-                   └─22256 /usr/bin/docker -d -H fd:// --selinux-enabled
 
 # -----------------------------------------------------
 # Set up our container names.
 #[root@virtual]
 
-cat > "${HOME?:}/hostnames" << EOF
+cat > "${HOME?:}/settings" << EOF
+
     metahost=bethany
     userhost=patricia
     datahost=elayne
@@ -137,7 +129,7 @@ EOF
 # Run our PostgreSQL metadata container.
 #[root@virtual]
 
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
     
     #
     # Run our database container.
@@ -152,7 +144,7 @@ EOF
 # Run our UserData SSH tunnel container.
 #[root@virtual]
 
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
 
     userhostuser=dave
     userhostname=fenrir.roe.ac.uk
@@ -184,7 +176,7 @@ EOF
 # Run our ScienceData SSH tunnel container.
 #[root@virtual]
 
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
 
     datahostuser=dave
     datahostname=fenrir.roe.ac.uk
@@ -216,12 +208,10 @@ EOF
 # Run our OGSA-DAI container.
 #[root@virtual]
 
-        #--detach \
-
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
 
     docker run \
-        --rm --tty --interactive \
+        --detach \
         --name "${ogsahost:?}" \
         --link "${datahost:?}:${datalink:?}" \
         --link "${userhost:?}:${userlink:?}" \
@@ -232,7 +222,7 @@ EOF
 # Create our FireThorn config.
 #[root@virtual]
 
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
 
     fireprop=$(mktemp)
     cat > "${fireprop:?}" << EOF
@@ -261,12 +251,10 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
-        #--detach \
-
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
         
     docker run \
-        --rm --tty --interactive \
+        --detach \
         --expose 8080 \
         --name "${firehost:?}" \
         --link "${ogsahost:?}:${ogsalink:?}" \
@@ -288,7 +276,7 @@ EOF
 # Create our test config.
 #[root@virtual]
 
-    source "${HOME?:}/hostnames"
+    source "${HOME?:}/settings"
 
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
