@@ -366,8 +366,6 @@ EOF
 twomasspublic=${adqlschema:?}
 EOF
 
-        cat "${HOME:?}/firethorn.spaces"
-
         querymode=DIRECT
         source "${HOME:?}/firethorn.spaces"
 

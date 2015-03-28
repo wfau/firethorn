@@ -3,7 +3,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 RUN yum -y install perl
 RUN yum -y install perl-JSON
-ENV a 3
+
 COPY bin/  /tester/bin 
 COPY meta/ /tester/meta 
 
