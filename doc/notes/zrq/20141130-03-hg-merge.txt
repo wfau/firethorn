@@ -107,7 +107,7 @@
     popd
 
 # -------------------------------------------------------------------------------------------
-# Build our Docker images.
+# Build our Docker service images.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -122,6 +122,19 @@
         pushd firethorn-webapp
             mvn docker:package
         popd
+
+    popd
+    
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Build our Docker tester image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build --tag "firethorn/tester:$(getversion)" integration/tester
         
     popd
     
@@ -142,6 +155,8 @@
 
         docker tag -f "firethorn/ogsadai:$(getversion)"    "firethorn/ogsadai"
 
+        docker tag -f "firethorn/tester:$(getversion)"     "firethorn/tester"
+
     popd
 
     docker images
@@ -161,6 +176,9 @@
 
         docker push "firethorn/ogsadai:$(getversion)"
         docker push "firethorn/ogsadai:latest"
+
+        docker push "firethorn/tester:$(getversion)"
+        docker push "firethorn/tester:latest"
 
     popd
 
