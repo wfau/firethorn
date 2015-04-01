@@ -1,0 +1,638 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Push new tar file
+
+    ssh Zarquan@tyrosine
+
+        pushd /home/Zarquan/frog/
+
+            rsync \
+                --stats \
+                --checksum \
+                --progress \
+                --human-readable \
+                fedora-21-base-20150317.tar.gz \
+                data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+
+        popd
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    #
+    # Found the raw images.
+
+    ls -alh /shepseskaf/virtual-machines
+
+        root          10G Dec  2  2013 pyratest
+        libvirt-qemu  10G Mar 31 15:23 pyratest1
+        root          10G Aug 26  2013 pyratest1-backup
+        libvirt-qemu  10G Mar 31 15:23 pyratest2
+        root          10G Aug 26  2013 pyratest2-backup
+        libvirt-qemu  10G Mar 31 15:23 pyratest3
+        root          10G Aug 26  2013 pyratest3-backup
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    #
+    # Details of an exiting virtual machine.
+    virsh -c 'qemu:///system' dumpxml pyratest1
+                
+        <domain type='kvm' id='6'>
+            <name>pyratest1</name>
+            <uuid>67d47c1b-e3cc-0a8b-a620-61be3ae5ab52</uuid>
+            <memory unit='KiB'>1048576</memory>
+            <currentMemory unit='KiB'>1048576</currentMemory>
+            <vcpu placement='static'>2</vcpu>
+            <resource>
+                <partition>/machine</partition>
+            </resource>
+            <os>
+                <type arch='x86_64' machine='pc-1.1'>hvm</type>
+                <boot dev='hd'/>
+            </os>
+            <features>
+                <acpi/>
+                <apic/>
+                <pae/>
+            </features>
+            <clock offset='utc'/>
+            <on_poweroff>destroy</on_poweroff>
+            <on_reboot>restart</on_reboot>
+            <on_crash>restart</on_crash>
+            <devices>
+                <emulator>/usr/bin/kvm</emulator>
+                <disk type='file' device='disk'>
+                    <driver name='qemu' type='raw'/>
+                    <source file='/shepseskaf/virtual-machines/pyratest1'/>
+                    <backingStore/>
+                    <target dev='vda' bus='virtio'/>
+                    <alias name='virtio-disk0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+                </disk>
+                <disk type='block' device='cdrom'>
+                    <driver name='qemu' type='raw'/>
+                    <backingStore/>
+                    <target dev='hdc' bus='ide'/>
+                    <readonly/>
+                    <alias name='ide0-1-0'/>
+                    <address type='drive' controller='0' bus='1' target='0' unit='0'/>
+                </disk>
+                <controller type='usb' index='0'>
+                    <alias name='usb0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+                </controller>
+                <controller type='ide' index='0'>
+                    <alias name='ide0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+                </controller>
+                <controller type='pci' index='0' model='pci-root'>
+                    <alias name='pci.0'/>
+                </controller>
+                <interface type='network'>
+                    <mac address='52:54:00:ab:08:21'/>
+                    <source network='default'/>
+                    <target dev='vnet0'/>
+                    <model type='virtio'/>
+                    <alias name='net0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+                </interface>
+                <serial type='pty'>
+                    <source path='/dev/pts/0'/>
+                    <target port='0'/>
+                    <alias name='serial0'/>
+                </serial>
+                <console type='pty' tty='/dev/pts/0'>
+                    <source path='/dev/pts/0'/>
+                    <target type='serial' port='0'/>
+                    <alias name='serial0'/>
+                </console>
+                <input type='tablet' bus='usb'>
+                    <alias name='input0'/>
+                </input>
+                <input type='mouse' bus='ps2'/>
+                <input type='keyboard' bus='ps2'/>
+                <graphics type='vnc' port='5900' autoport='yes' listen='127.0.0.1'>
+                    <listen type='address' address='127.0.0.1'/>
+                </graphics>
+                <sound model='ich6'>
+                    <alias name='sound0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+                </sound>
+                <video>
+                    <model type='cirrus' vram='9216' heads='1'/>
+                    <alias name='video0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+                </video>
+                <memballoon model='virtio'>
+                    <alias name='balloon0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+                </memballoon>
+            </devices>
+        </domain>
+
+
+        #
+        # VM network interface definition.
+        <domain type='kvm' id='6'>
+            ....
+            <devices>
+                ....
+                <interface type='network'>
+                    <mac address='52:54:00:ab:08:21'/>
+                    <source network='default'/>
+                    <target dev='vnet0'/>
+                    <model type='virtio'/>
+                    <alias name='net0'/>
+                    <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+                </interface>
+                ....
+            </devices>
+        </domain>
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    #
+    # Current MAC address allocations (random?).
+    virsh -c 'qemu:///system' dumpxml pyratest1 | grep 'mac address'
+
+      <mac address='52:54:00:ab:08:21'/>
+
+    virsh -c 'qemu:///system' dumpxml pyratest2 | grep 'mac address'
+
+      <mac address='52:54:00:b7:a7:0c'/>
+
+    virsh -c 'qemu:///system' dumpxml pyratest3 | grep 'mac address'
+      
+      <mac address='52:54:00:65:fb:c4'/>
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    #
+    # List the exiting virtual networks.
+    virsh -c 'qemu:///system' net-list 
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         default              active     yes           yes
+
+    #
+    # Details of the 'default' virtual network.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+        <network connections='3'>
+            <name>default</name>
+            <uuid>568ff68c-af99-479c-9773-cca331a3d46f</uuid>
+            <forward mode='nat'>
+            <nat>
+                <port start='1024' end='65535'/>
+            </nat>
+            </forward>
+            <bridge name='virbr0' stp='on' delay='0'/>
+            <ip address='192.168.122.1' netmask='255.255.255.0'>
+                <dhcp>
+                    <range start='192.168.122.2' end='192.168.122.254'/>
+                </dhcp>
+            </ip>
+        </network>
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    #
+    # DNS on Shepeskaf is managed from a hosts file.
+    cat /etc/hosts
+
+        #Private Network
+        ....
+        192.168.137.20  ramses1
+        192.168.137.21  ramses2
+        192.168.137.22  ramses3
+        192.168.137.23  ramses4
+        192.168.137.24  ramses5
+        192.168.137.25  ramses6
+        192.168.137.26  ramses7
+        192.168.137.27  ramses8
+        ....
+
+        # VM's
+        192.168.122.2   pyratest1
+        192.168.122.3   pyratest2
+        192.168.122.4   pyratest3
+
+# -----------------------------------------
+# Exploring ...
+#[root@pyratest3] 
+
+    #
+    # Network config inside the VM is static
+    cat /etc/network/interfaces 
+
+        # This file describes the network interfaces available on your system
+        # and how to activate them. For more information, see interfaces(5).
+
+        # The loopback network interface
+        auto lo
+        iface lo inet loopback
+
+        # The primary network interface
+        allow-hotplug eth0
+        iface eth0 inet static
+	        address 192.168.122.4
+	        netmask 255.255.255.0
+	        network 192.168.122.0
+	        broadcast 192.168.122.255
+	        gateway 192.168.122.1
+	        # dns-* options are implemented by the resolvconf package, if installed
+	        dns-nameservers 192.168.122.1
+	        dns-search roe.ac.uk
+
+# -----------------------------------------
+# Exploring ...
+#[user@shep] 
+
+    <!--+
+        | https://en.wikipedia.org/wiki/Category:Cities_in_Ancient_Egypt
+        |  1 amarna
+        |  2 badari
+        |  3 desouk
+        |  4 edfu
+        |  5 hebenu
+        |  6 kerma
+        |  7 mendes
+        |  8 nekhen
+        |  9 thebes
+        | 10 zawty
+        +-->
+
+    #
+    # Can we add our own DHCP allocations to the local network.
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+        <range start='192.168.122.2' end='192.168.122.254'/>
+        <host mac="52:54:00:00:00:02" name="badari" ip="192.168.122.2" />
+        <host mac="52:54:00:00:00:03" name="desouk" ip="192.168.122.3" />
+        <host mac="52:54:00:00:00:04" name="edfu"   ip="192.168.122.4" />
+        <host mac="52:54:00:00:00:05" name="hebenu" ip="192.168.122.5" />
+        <host mac="52:54:00:00:00:06" name="kerma"  ip="192.168.122.6" />
+        <host mac="52:54:00:00:00:07" name="mendes" ip="192.168.122.7" />
+        <host mac="52:54:00:00:00:08" name="nekhen" ip="192.168.122.8" />
+        <host mac="52:54:00:00:00:09" name="thebes" ip="192.168.122.9" />
+        <host mac="52:54:00:00:00:0A" name="zawty"  ip="192.168.122.10"/>
+    </dhcp>
+</ip>
+EOF
+
+    virsh -c 'qemu:///system' \
+        net-update 'default' \
+        modify ip  "${xmltext:?}" \
+        --live --config
+
+        error: Failed to update network default
+        error: this function is not supported by the connection driver: can't update 'ip' section of network 'default'
+
+    #
+    # Can we add DHCP allocations one at a time.
+    virsh -c 'qemu:///system' \
+        net-update 'default' \
+        add ip-dhcp-host '<host mac="52:54:00:00:00:02" name="badari" ip="192.168.122.2" />' \
+        --live --config
+
+        Updated network default persistent config and live state
+
+    #
+    # Add the rest ....
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:03" name="desouk" ip="192.168.122.3" />
+<host mac="52:54:00:00:00:04" name="edfu"   ip="192.168.122.4" />
+<host mac="52:54:00:00:00:05" name="hebenu" ip="192.168.122.5" />
+<host mac="52:54:00:00:00:06" name="kerma"  ip="192.168.122.6" />
+<host mac="52:54:00:00:00:07" name="mendes" ip="192.168.122.7" />
+<host mac="52:54:00:00:00:08" name="nekhen" ip="192.168.122.8" />
+<host mac="52:54:00:00:00:09" name="thebes" ip="192.168.122.9" />
+<host mac="52:54:00:00:00:0A" name="zawty"  ip="192.168.122.10"/>
+EOF
+
+    addhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            add ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do addhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Check the results.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+    #
+    # Can we modify a DHCP allocation.
+    virsh -c 'qemu:///system' \
+        net-update 'default' \
+        modify ip-dhcp-host '<host mac="52:54:00:00:00:02" name="pyratest1" ip="192.168.122.2" />' \
+        --live --config
+
+        Updated network default persistent config and live state
+
+    #
+    # Modify our hosts ....
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:01" name="amarna" ip="192.168.122.10" />
+<host mac="52:54:00:00:00:02" name="badari" ip="192.168.122.11" />
+<host mac="52:54:00:00:00:04" name="edfu"   ip="192.168.122.12" />
+<host mac="52:54:00:00:00:05" name="hebenu" ip="192.168.122.13" />
+<host mac="52:54:00:00:00:06" name="kerma"  ip="192.168.122.14" />
+<host mac="52:54:00:00:00:07" name="mendes" ip="192.168.122.15" />
+<host mac="52:54:00:00:00:08" name="nekhen" ip="192.168.122.16" />
+<host mac="52:54:00:00:00:09" name="thebes" ip="192.168.122.17" />
+<host mac="52:54:00:00:00:0A" name="zawty"  ip="192.168.122.18"/>
+EOF
+
+    modhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            modify ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do modhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Check the results.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+    #
+    # Remove and start again ..
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:01"/>
+<host mac="52:54:00:00:00:02"/>
+<host mac="52:54:00:00:00:03"/>
+<host mac="52:54:00:00:00:04"/>
+<host mac="52:54:00:00:00:05"/>
+<host mac="52:54:00:00:00:06"/>
+<host mac="52:54:00:00:00:07"/>
+<host mac="52:54:00:00:00:08"/>
+<host mac="52:54:00:00:00:09"/>
+<host mac="52:54:00:00:00:0A"/>
+EOF
+
+    delhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            delete ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do delhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Check the results.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+    #
+    # Add our hosts ....
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:01" name="amarna" ip="192.168.122.10" />
+<host mac="52:54:00:00:00:02" name="badari" ip="192.168.122.11" />
+<host mac="52:54:00:00:00:03" name="edfu"   ip="192.168.122.12" />
+<host mac="52:54:00:00:00:04" name="hebenu" ip="192.168.122.13" />
+<host mac="52:54:00:00:00:05" name="kerma"  ip="192.168.122.14" />
+<host mac="52:54:00:00:00:06" name="mendes" ip="192.168.122.15" />
+<host mac="52:54:00:00:00:07" name="nekhen" ip="192.168.122.16" />
+<host mac="52:54:00:00:00:08" name="thebes" ip="192.168.122.17" />
+<host mac="52:54:00:00:00:09" name="zawty"  ip="192.168.122.18"/>
+EOF
+
+    addhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            add ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do addhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Check the results.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+        <network>
+          <name>default</name>
+          <uuid>568ff68c-af99-479c-9773-cca331a3d46f</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <ip address='192.168.122.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.122.2' end='192.168.122.254'/>
+              <host mac='52:54:00:00:00:01' name='amarna' ip='192.168.122.10'/>
+              <host mac='52:54:00:00:00:02' name='badari' ip='192.168.122.11'/>
+              <host mac='52:54:00:00:00:03' name='edfu' ip='192.168.122.12'/>
+              <host mac='52:54:00:00:00:04' name='hebenu' ip='192.168.122.13'/>
+              <host mac='52:54:00:00:00:05' name='kerma' ip='192.168.122.14'/>
+              <host mac='52:54:00:00:00:06' name='mendes' ip='192.168.122.15'/>
+              <host mac='52:54:00:00:00:07' name='nekhen' ip='192.168.122.16'/>
+              <host mac='52:54:00:00:00:08' name='thebes' ip='192.168.122.17'/>
+              <host mac='52:54:00:00:00:09' name='zawty' ip='192.168.122.18'/>
+            </dhcp>
+          </ip>
+        </network>
+
+# -----------------------------------------
+# Create our 'base' pool.
+#[user@shep] 
+
+    mkdir "${HOME:?}/libvirt"
+    mkdir "${HOME:?}/libvirt/base"
+    mkdir "${HOME:?}/libvirt/live"
+
+    poolname=base
+    poolpath=${HOME:?}/libvirt/base
+
+    poolxml=$(mktemp)
+    cat > "${poolxml:?}" << EOF
+<pool type='dir'>
+    <name>${poolname:?}</name>
+    <uuid></uuid>
+    <source/>
+    <target>
+        <path>${poolpath:?}</path>
+    </target>
+</pool>
+EOF
+
+    virsh -c 'qemu:///system' pool-define  "${poolxml}"
+    virsh -c 'qemu:///system' pool-dumpxml "${poolname}"
+
+# -----------------------------------------
+# Create our 'live' pool.
+#[user@shep] 
+
+    poolname=live
+    poolpath=${HOME:?}/libvirt/live
+
+    poolxml=$(mktemp)
+    cat > "${poolxml:?}" << EOF
+<pool type='dir'>
+    <name>${poolname:?}</name>
+    <uuid></uuid>
+    <source/>
+    <target>
+        <path>${poolpath:?}</path>
+    </target>
+</pool>
+EOF
+
+    virsh -c 'qemu:///system' pool-define  "${poolxml}"
+    virsh -c 'qemu:///system' pool-dumpxml "${poolname}"
+
+# -----------------------------------------
+# Check our pool definitions.
+#[user@shep] 
+
+    virsh -c 'qemu:///system' pool-dumpxml base
+
+        <pool type='dir'>
+          <name>base</name>
+          <uuid>ad13b665-76a1-430c-a72c-83fcc9436e54</uuid>
+          <capacity unit='bytes'>0</capacity>
+          <allocation unit='bytes'>0</allocation>
+          <available unit='bytes'>0</available>
+          <source>
+          </source>
+          <target>
+            <path>/home/dave/libvirt/base</path>
+            <permissions>
+              <mode>0755</mode>
+              <owner>-1</owner>
+              <group>-1</group>
+            </permissions>
+          </target>
+        </pool>
+
+
+    virsh -c 'qemu:///system' pool-dumpxml live
+
+        <pool type='dir'>
+          <name>live</name>
+          <uuid>89203d16-c546-4bc3-adf8-557d5ae0e4a8</uuid>
+          <capacity unit='bytes'>0</capacity>
+          <allocation unit='bytes'>0</allocation>
+          <available unit='bytes'>0</available>
+          <source>
+          </source>
+          <target>
+            <path>/home/dave/libvirt/live</path>
+            <permissions>
+              <mode>0755</mode>
+              <owner>-1</owner>
+              <group>-1</group>
+            </permissions>
+          </target>
+        </pool>
+
+    #
+    # Start our pools.
+    virsh -c 'qemu:///system' pool-start base
+    virsh -c 'qemu:///system' pool-start live
+
+# -----------------------------------------
+# Download our base image and install it.
+#[user@shep] 
+
+    volpool=base        
+    volname=fedora-21-base-20150317
+    volfile=${volname:?}.qcow
+
+    archive=http://data.metagrid.co.uk/ischnura/base
+    tarfile=${volname:?}.tar.gz
+
+    pushd "$(mktemp --directory)"
+
+        wget "${archive:?}/${tarfile:?}"
+
+        tar \
+            --gzip \
+            --extract \
+            --verbose \
+            --file "${tarfile:?}"
+
+        virsh -c 'qemu:///system' vol-create-as     "${volpool:?}" "${volfile:?}" 8GiB --allocation 0 --format qcow2
+        virsh -c 'qemu:///system' vol-upload --pool "${volpool:?}" "${volfile:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-info   --pool "${volpool:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-path   --pool "${volpool:?}" "${volfile:?}"
+
+    popd
+    
+# -----------------------------------------
+# Install an Atomic base image.
+#[user@shep] 
+
+    #
+    # http://download.fedoraproject.org/pub/fedora/linux/releases/21/Cloud/Images/x86_64/Fedora-Cloud-Atomic-20141203-21.x86_64.raw.xz
+    # https://getfedora.org/en/verify
+
+    #
+    # ....
+    #
+
+# -----------------------------------------
+# Install a boot2docker base image.
+#[user@shep] 
+
+    #
+    # http://boot2docker.io/
+    # https://github.com/boot2docker/boot2docker/releases/download/v1.5.0/boot2docker.iso
+    #
+
+
+
+
+

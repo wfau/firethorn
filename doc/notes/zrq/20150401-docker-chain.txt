@@ -20,60 +20,35 @@
 #
 #
 
-# -------------------------------------------------------------------------------------------
-# Build our Docker images.
-#[user@desktop]
+# -----------------------------------------
+# Configure our path
+#[user@shep]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        unset MAVEN_OPTS
-
-        pushd firethorn-webapp
-            mvn clean install
-            mvn docker:package
-        popd
-
-        pushd firethorn-ogsadai/webapp
-            mvn clean install
-            mvn docker:package
-        popd
-        
-    popd
-    
-    docker images
-
-# -------------------------------------------------------------------------------------------
-# Push our images to Docker Hub.
-# https://docs.docker.com/userguide/dockerhub/
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source "bin/util.sh"
-
-        docker push "firethorn/firethorn:$(getversion)"
-        docker push "firethorn/ogsadai:$(getversion)"
-
-    popd
+    export PATH=${PATH}:${HOME}/projects/ischnura-kvm/src/bin
 
 # -----------------------------------------------------
 # Start a clean VM.
-#[root@desktop]
+#[user@shep]
 
-    ischnura-createvm
+    createvm
 
         ....
 
-        INFO : Node name [nu]
+        INFO : Node name [edfu]
         INFO : Base name [fedora-21-base-20150317.qcow]
-        INFO : Disc name [nu.qcow]
+        INFO : Disc name [edfu.qcow]
         INFO : Disc size [8G]
+
+
+# -----------------------------------------------------
+# Set the target version.
+#[root@edfu]
+
+    version=1.13.6-zrq-docker-chain
 
 # -----------------------------------------------------
 # Install or update our tools.
-#[root@virtual]
+#[root@edfu]
 
     yum install -y htop
 
@@ -81,10 +56,10 @@
 # Install and start the HAVEGE entropy tool.
 # http://redmine.roe.ac.uk/issues/828
 # http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
-#[root@virtual]
+#[root@edfu]
 
-    yum install -y haveged
-    systemctl start haveged.service
+    #yum install -y haveged
+    #systemctl start haveged.service
 
 #
 # Alternative is to use non-blocking version of /dev/random
@@ -94,24 +69,30 @@
     
 # -----------------------------------------------------
 # Install and start the Docker daemon.
-#[root@virtual]
+#[root@edfu]
 
     yum install -y docker-io
     systemctl enable docker.service
     systemctl start  docker.service
 
 # -----------------------------------------------------
+# Install password generator.
+#[root@edfu]
+
+    yum install -y pwgen
+
+# -----------------------------------------------------
 # Set up our container names.
-#[root@virtual]
+#[root@edfu]
 
 cat > "${HOME?:}/settings" << EOF
 
-    metahost=bethany
-    userhost=patricia
-    datahost=elayne
-    ogsahost=jarmila
-    firehost=gillian
-    testhost=amanda
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=amanda
 
     metalink=albert
     userlink=edward
@@ -120,18 +101,30 @@ cat > "${HOME?:}/settings" << EOF
     firelink=peter
     testlink=gilbert
 
-    metauser=miranda
-    metapass=bethany-miranda-secret
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
 
+    mssqlhost=ramses2
+    mssqlport=1433
+    
     userdata=FirethornUserdataZRQ20150319DEV
     useruser=FirethornUserdataZRQ20150319DEVLogin
     userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+    userhost=\${mssqlhost:?}
+    userport=\${mssqlport:?}
+
+    datadata=ATLASDR1
+    datauser=atlasro
+    datapass=atlasropw
+    datahost=\${mssqlhost:?}
+    dataport=\${mssqlport:?}
 
 EOF
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
-#[root@virtual]
+#[root@edfu]
 
     source "${HOME?:}/settings"
     
@@ -139,92 +132,57 @@ EOF
     # Run our database container.
     docker run \
         --detach \
-        --name "${metahost:?}" \
+        --name "${metaname:?}" \
         --env "POSTGRES_USER=${metauser:?}" \
         --env "POSTGRES_PASSWORD=${metapass:?}" \
         postgres
 
+#
+# TODO use firethorn/postgres with config
+
 # -----------------------------------------------------
-# Run our UserData SSH tunnel container.
-#[root@virtual]
+# Run our userdata ambassador.
+#[root@edfu]
 
     source "${HOME?:}/settings"
 
-    userhostuser=dave
-    userhostname=fenrir.roe.ac.uk
-    userhostkey=$(mktemp)
-    ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
-
-    #
-    # http://www.projectatomic.io/docs/docker-and-selinux/
-    # http://opensource.com/business/13/11/selinux-policy-guide
-    chcon -t svirt_sandbox_file_t "${userhostkey:?}" 
-    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
-
-    #
-    # chcon not quite enough :-(
-    setenforce permissive
-
     docker run \
         --detach \
-        --interactive \
-        --name "${userhost:?}" \
-        --expose 1433 \
-        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
-        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --volume "${userhostkey:?}:/etc/ssh/ssh_known_hosts" \
-        firethorn/ssh \
-        ssh -v -C -L '*:1433:ramses2:1433' "${userhostuser:?}@${userhostname:?}"
+        --name "${username:?}" \
+        --expose ${userport:?} \
+        --env "SQL_PORT_1433_TCP=tcp://$(host -t A ${userhost:?} | cut -d ' ' -f 4):${userport:?}" \
+        svendowideit/ambassador
 
 # -----------------------------------------------------
-# Run our ScienceData SSH tunnel container.
-#[root@virtual]
+# Run our science data ambassador.
+#[root@edfu]
 
     source "${HOME?:}/settings"
 
-    datahostuser=dave
-    datahostname=fenrir.roe.ac.uk
-    datahostkey=$(mktemp)
-    ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
-
-    #
-    # http://www.projectatomic.io/docs/docker-and-selinux/
-    # http://opensource.com/business/13/11/selinux-policy-guide
-    chcon -t svirt_sandbox_file_t "${datahostkey:?}" 
-    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
-
-    #
-    # chcon not quite enough :-(
-    setenforce permissive
-
     docker run \
         --detach \
-        --interactive \
-        --name "${datahost:?}" \
-        --expose 1433 \
-        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
-        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --volume "${datahostkey:?}:/etc/ssh/ssh_known_hosts" \
-        firethorn/ssh \
-        ssh -v -C -L '*:1433:ramses2:1433' "${datahostuser:?}@${datahostname:?}"
+        --name "${dataname:?}" \
+        --expose ${dataport:?} \
+        --env "SQL_PORT_1433_TCP=tcp://$(host -t A ${datahost:?} | cut -d ' ' -f 4):${dataport:?}" \
+        svendowideit/ambassador
 
 # -----------------------------------------------------
 # Run our OGSA-DAI container.
-#[root@virtual]
+#[root@edfu]
 
     source "${HOME?:}/settings"
 
     docker run \
         --detach \
-        --name "${ogsahost:?}" \
-        --link "${datahost:?}:${datalink:?}" \
-        --link "${userhost:?}:${userlink:?}" \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
         --expose 8080 \
-        firethorn/ogsadai:1.13.6-zrq-docker-chain 
+        "firethorn/ogsadai:${version}"
 
 # -----------------------------------------------------
 # Create our FireThorn config.
-#[root@virtual]
+#[root@edfu]
 
     source "${HOME?:}/settings"
 
@@ -233,12 +191,12 @@ EOF
 
 firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
-firethorn.meta.url=jdbc:postgresql://${metalink:?}/postgres
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=org.postgresql.Driver
 
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}:1433/${userdata:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
@@ -249,36 +207,40 @@ EOF
     chmod a+r "${fireprop:?}" 
     chcon -t svirt_sandbox_file_t "${fireprop:?}" 
 
-    cat "${fireprop:?}" 
-
 # -----------------------------------------------------
 # Run our FireThorn container.
-#[root@virtual]
+#[root@edfu]
 
     source "${HOME?:}/settings"
         
     docker run \
         --detach \
         --expose 8080 \
-        --name "${firehost:?}" \
-        --link "${ogsahost:?}:${ogsalink:?}" \
-        --link "${metahost:?}:${metalink:?}" \
-        --link "${datahost:?}:${datalink:?}" \
-        --link "${userhost:?}:${userlink:?}" \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
         --volume "${fireprop:?}:/etc/firethorn.properties" \
-        firethorn/firethorn:1.13.6-zrq-docker-chain 
+        "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
 # Tail our logs (separate terminals).
-#[root@virtual]
+#[user@desktop]
 
-    docker logs -f gillian
+    ssh edfu
 
-    docker logs -f jarmila
+        source "${HOME?:}/settings"
+        docker logs -f "${firename}"
+
+    ssh edfu 
+
+        source "${HOME?:}/settings"
+        docker logs -f "${ogsaname}"
 
 # -----------------------------------------------------
 # Create our test config.
-#[root@virtual]
+#[root@edfu]
 
     source "${HOME?:}/settings"
 
@@ -287,10 +249,10 @@ EOF
 
 firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
 
-firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}:1433/ATLASDR1
-firethorn.atlas.name=ATLASDR1
-firethorn.atlas.user=atlasro
-firethorn.atlas.pass=atlasropw
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.name=${datadata:?}
+firethorn.atlas.user=${datauser:?}
+firethorn.atlas.pass=${datapass:?}
 firethorn.atlas.type=mssql
 firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
 
@@ -301,14 +263,14 @@ EOF
 
 # -----------------------------------------------------
 # Run our test container.
-#[root@virtual]
+#[root@edfu]
 
     docker run \
         --rm \
         --tty \
         --interactive \
-        --name "${testhost:?}" \
-        --link "${firehost:?}:${firelink:?}" \
+        --name "${testname:?}" \
+        --link "${firename:?}:${firelink:?}" \
         --volume "${testcfg:?}:/root/firethorn.properties" \
         firethorn/tester \
         bash
@@ -358,7 +320,6 @@ EOF
 twomasspublic=${adqlschema:?}
 EOF
 
-        querymode=DIRECT
         source "${HOME:?}/firethorn.spaces"
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
@@ -394,14 +355,4 @@ EOF
             AND
                 dec BETWEEN '24.0' AND '24.2'
             "
-
-# -----------------------------------------------------
-# Merge the changes into main.
-#[user@desktop]
-
-    newversion=1.13.7
-
-    # Copy paste instructions
-    source "${HOME:?}/firethorn.settings"
-    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
 

@@ -1,0 +1,272 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Much of what we are doing is covered by docker-machine
+    # https://github.com/docker/machine
+
+    #
+    # Support for libvirt and KVM is currently on a fork
+    # https://github.com/dhiltgen/machine/commit/e5d159c17fc9ef497a1933c83b69d2b8d1e6f168
+    
+    #
+    # Would need to build a new binary from the fork.
+
+    #
+    # TODO ... later
+    #
+
+# -----------------------------------------
+# Install a local copy of ischnura-kvm
+# https://github.com/Zarquan/ischnura-kvm
+#[user@shep] 
+
+    pushd "${HOME}"
+
+        mkdir projects
+        pushd projects
+
+            git clone git@github.com:Zarquan/ischnura-kvm.git
+
+        popd
+    popd
+    
+# -----------------------------------------
+# Modify our local copy of ischnura-kvm
+#[user@shep] 
+
+    pushd "${HOME}"
+        pushd projects/ischnura-kvm
+
+            #
+            # Create the temp directory.
+            sed -i '
+                /^basepool=/ i\
+                    bsp;tempdir=\${HOME}/ischnura\
+                    bsp;if [ ! -e "${tempdir:?}" ]\
+                    bsp;then\
+                    bsp;    mkdir "${tempdir:?}"\
+                    bsp;fi\
+                ' src/bin/createvm
+
+            #
+            # Modify the script to use 'system' connection.
+            sed -i '
+                s/virsh \([^-]\)/virsh --connect "${connection:?}" \1/
+                ' src/bin/createvm
+
+            sed -i '
+                /^basepool=/ i\
+                    bsp;connection='\''qemu:///system'\''
+                ' src/bin/createvm
+
+            #
+            # Remove the isroot check.
+            sed -i '
+                /^if isroot/,/^fi/ {
+                    s/^\(.*\)$/#\1/
+                    }
+                ' src/bin/createvm
+
+            #
+            # Remove the call to uidgen.
+            sed -i '
+                /uidgen/d
+                ' src/bin/createvm
+
+            #
+            # Create the new data file.
+            cat > src/dat/shepseskaf-domains.txt << 'EOF'
+shepseskaf  amarna   52:54:00:00:00:01   192.168.122.10
+shepseskaf  badari   52:54:00:00:00:02   192.168.122.11
+shepseskaf  edfu     52:54:00:00:00:03   192.168.122.12
+shepseskaf  hebenu   52:54:00:00:00:04   192.168.122.13
+shepseskaf  kerma    52:54:00:00:00:05   192.168.122.14
+shepseskaf  mendes   52:54:00:00:00:06   192.168.122.15
+shepseskaf  nekhen   52:54:00:00:00:07   192.168.122.16
+shepseskaf  thebes   52:54:00:00:00:08   192.168.122.17
+shepseskaf  zawty    52:54:00:00:00:09   192.168.122.18
+EOF
+
+            #
+            # Change the data file.
+            sed -i '
+                s/^datfile=.*$/datfile=\${datpath}\/shepseskaf-domains.txt/
+                ' src/bin/createvm
+
+            sed -i '
+                s/^datfile=.*$/datfile=\${datpath}\/shepseskaf-domains.txt/
+                ' src/bin/netinfo
+
+            #
+            # Create a new template.
+            cat > src/dat/shepseskaf-template.xml << 'EOF'
+<domain type='kvm'>
+  <name></name>
+  <uuid></uuid>
+  <memory unit='MiB'>1024</memory>
+  <vcpu placement='static'>2</vcpu>
+  <resource>
+    <partition>/machine</partition>
+  </resource>
+  <os>
+    <type arch='x86_64' machine='pc-1.1'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/bin/kvm</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <target dev='vda' bus='virtio'/>
+      <source file='/var/lib/libvirt/base/unknown.qcow'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </disk>
+    <interface type='network'>
+      <mac address='52:54:00:00:00:00'/>
+      <source network='default'/>
+      <target dev='vnet0'/>
+      <model type='virtio'/>
+      <alias name='net0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </interface>
+    <serial type='pty'>
+      <source path='/dev/pts/0'/>
+      <target port='0'/>
+      <alias name='serial0'/>
+    </serial>
+    <console type='pty' tty='/dev/pts/0'>
+      <source path='/dev/pts/0'/>
+      <target type='serial' port='0'/>
+      <alias name='serial0'/>
+    </console>
+    <input type='keyboard' bus='ps2'/>
+    <graphics type='vnc' port='-1' autoport='yes'/>
+    <video>
+      <model type='cirrus' vram='9216' heads='1'/>
+      <alias name='video0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </video>
+    <memballoon model='virtio'>
+      <alias name='balloon0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </memballoon>
+  </devices>
+</domain>
+EOF
+
+            #
+            # Change the template file.
+            sed -i '
+                s|\${datpath}/base-vm.xml|${template}|
+                ' src/bin/createvm
+
+            sed -i '
+                /^basepool=/ i\
+                    bsp;template=${datpath}/shepseskaf-template.xml
+                ' src/bin/createvm
+
+            #
+            # Remove inserted spaces.
+            sed -i '
+                s/^ *bsp;//
+                ' src/bin/createvm
+
+            #
+            # Remove trailing spaces.
+            sed -i '
+                s/ *$//
+                ' src/bin/createvm
+
+        popd
+    popd    
+     
+# -----------------------------------------
+# Make our local copy of ischnura-kvm executable.
+#[user@shep] 
+
+    pushd "${HOME}"
+        pushd ischnura-kvm
+
+            chmod a+x src/bin/createvm
+            chmod a+x src/bin/netinfo
+
+        popd
+    popd    
+
+# -----------------------------------------
+# Test ....
+#[user@shep] 
+
+    "${HOME}/projects/ischnura-kvm/src/bin/createvm"
+
+# -----------------------------------------
+# Configure our path
+#[user@shep]
+
+    export PATH=${PATH}:${HOME}/projects/ischnura-kvm/src/bin
+
+# -----------------------------------------
+# Configure our SSH client 
+#[user@desktop] 
+
+    gedit "${HOME}/.ssh/config"
+
+        Host amarna
+            HostName 192.168.122.10
+        Host badari
+            HostName 192.168.122.11
+        Host edfu
+            HostName 192.168.122.12
+        Host hebenu
+            HostName 192.168.122.13
+        Host kerma
+            HostName 192.168.122.14
+        Host mendes
+            HostName 192.168.122.15
+        Host nekhen
+            HostName 192.168.122.16
+        Host thebes
+            HostName 192.168.122.17
+        Host zawty
+            HostName 192.168.122.18
+
+        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+            User root
+            ProxyCommand ssh -q shepseskaf nc %h %p
+            IdentityFile ~/.ssh/xxxxxxxx
+            Protocol 2
+            Compression no
+            PasswordAuthentication no
+            ServerAliveInterval 60
+            ServerAliveCountMax 5
+
+
+

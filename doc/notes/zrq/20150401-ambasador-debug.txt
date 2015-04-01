@@ -1,0 +1,87 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # svendowideit/ambassador containers do not resolve hostnames,
+    # they can only handle IPV4 IP addresses
+    #    
+
+# -----------------------------------------------------
+# Debug ambasador container.
+#[root@edfu]
+
+    #
+    # Get the IP address of our FireThorn container.
+    docker inspect --format='{{.NetworkSettings.IPAddress}}' gillian
+
+        172.17.0.21
+
+    #
+    # Run an ambassador
+    docker stop albert
+    docker rm albert
+
+    docker run \
+        --detach \
+        --name albert \
+        --link "${metahost:?}:${metalink:?}" \
+        --expose 80 \
+        --env T0_PORT_80_TCP=tcp://172.17.0.21:8080 \
+        --expose 81 \
+        --env T1_PORT_81_TCP=tcp://gillian:8080 \
+        --expose 82 \
+        --env T2_PORT_82_TCP=tcp://metagrid.co.uk:80 \
+        --expose 83 \
+        --env T3_PORT_83_TCP=tcp://shepseskaf:80 \
+        svendowideit/ambassador
+
+    docker logs albert
+
+    #
+    # Run an client
+    docker run \
+        -it --rm \
+        --link albert:albert \
+        fedora \
+        bash
+
+        curl --head 'http://albert:80/'
+
+            HTTP/1.1 404 Not Found
+            Server: Apache-Coyote/1.1
+            Content-Length: 0
+            Date: Wed, 01 Apr 2015 14:03:39 GMT
+
+        curl --head 'http://albert:81/'
+
+            curl: (52) Empty reply from server
+
+        curl --head 'http://albert:82/'
+
+            curl: (52) Empty reply from server
+
+        curl --head 'http://albert:83/'
+
+            curl: (52) Empty reply from server
+        
+        
+
