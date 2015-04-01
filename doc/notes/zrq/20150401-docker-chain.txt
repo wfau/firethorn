@@ -39,7 +39,6 @@
         INFO : Disc name [edfu.qcow]
         INFO : Disc size [8G]
 
-
 # -----------------------------------------------------
 # Set the target version.
 #[root@edfu]
@@ -92,14 +91,12 @@ cat > "${HOME?:}/settings" << EOF
     dataname=elayne
     ogsaname=jarmila
     firename=gillian
-    testname=amanda
 
     metalink=albert
     userlink=edward
     datalink=sebastien
     ogsalink=timothy
     firelink=peter
-    testlink=gilbert
 
     metadata=postgres
     metauser=$(pwgen 20 1)
@@ -127,9 +124,7 @@ EOF
 #[root@edfu]
 
     source "${HOME?:}/settings"
-    
-    #
-    # Run our database container.
+
     docker run \
         --detach \
         --name "${metaname:?}" \
@@ -265,11 +260,12 @@ EOF
 # Run our test container.
 #[root@edfu]
 
+    source "${HOME?:}/settings"
+
     docker run \
         --rm \
         --tty \
         --interactive \
-        --name "${testname:?}" \
         --link "${firename:?}:${firelink:?}" \
         --volume "${testcfg:?}:/root/firethorn.properties" \
         firethorn/tester \
@@ -355,4 +351,5 @@ EOF
             AND
                 dec BETWEEN '24.0' AND '24.2'
             "
+
 
