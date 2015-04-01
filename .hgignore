@@ -7,6 +7,9 @@ syntax: glob
 # Python code.
 *.pyc
 
+# Java .classe
+*.class
+
 # Webpy sessions
 /firethorn-gui/firethorn-webpy-gui/sessions
 
