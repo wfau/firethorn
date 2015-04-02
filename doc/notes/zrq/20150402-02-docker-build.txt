@@ -1,0 +1,177 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# ** Do all of this in a VM/container at ROE
+# Needs Maven container
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-docker-build
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -------------------------------------------------------------------------------------------
+# Clear our image cache.
+#[user@desktop]
+
+    #
+    # Remove existing containers
+    docker stop $(docker ps -q)
+    docker rm   $(docker ps -qa)
+
+    #
+    # Remove existing images
+    docker rmi  $(docker images)
+
+# -------------------------------------------------------------------------------------------
+# Build our base images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:21 \
+            docker/fedora/21
+
+        docker build \
+            --tag firethorn/java:8 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgres:9 \
+            docker/postgres/9
+
+        docker build \
+            --tag firethorn/ssh-client:1 \
+            docker/ssh-client
+
+        docker build \
+            --tag firethorn/ambassador:1 \
+            docker/ambassador
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Tag and push our base images.
+#[user@desktop]
+
+
+    docker tag -f "firethorn/fedora:21"    "firethorn/fedora:latest"
+    docker tag -f "firethorn/java:8"       "firethorn/java:latest"
+    docker tag -f "firethorn/tomcat:8"     "firethorn/tomcat:latest"
+    docker tag -f "firethorn/postgres:9"   "firethorn/postgres:latest"
+    docker tag -f "firethorn/ssh-client:1" "firethorn/ssh-client:latest"
+    docker tag -f "firethorn/ambassador:1" "firethorn/ambassador:latest"
+
+    docker push firethorn/fedora:latest
+    docker push firethorn/java:latest
+    docker push firethorn/tomcat:latest
+    docker push firethorn/postgres:latest
+    docker push firethorn/ssh-client:latest
+    docker push firethorn/ambassador:latest
+
+# -------------------------------------------------------------------------------------------
+# Build our service images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        unset MAVEN_OPTS
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our tester image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Run a local chain using these images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit  "doc/notes/zrq/20150402-02-local-chain.txt" &
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.8
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
+
+# -------------------------------------------------------------------------------------------
+# Tag and push our service images.
+#[user@desktop]
+
+    echo "newversion [${newversion:?}]"
+    echo "oldversion [${oldversion:?}]"
+
+    docker tag -f "firethorn/firethorn:${oldversion:?}" "firethorn/firethorn:${newversion:?}"
+    docker tag -f "firethorn/ogsadai:${oldversion:?}"   "firethorn/ogsadai:${newversion:?}"
+    docker tag -f "firethorn/tester:${oldversion:?}"    "firethorn/tester:${newversion:?}"
+
+    docker push "firethorn/firethorn:${newversion:?}"
+    docker push "firethorn/ogsadai:${newversion:?}"
+    docker push "firethorn/tester:${newversion:?}"
+
+    docker tag -f "firethorn/firethorn:${newversion:?}" "firethorn/firethorn:latest"
+    docker tag -f "firethorn/ogsadai:${newversion:?}"   "firethorn/ogsadai:latest"
+    docker tag -f "firethorn/tester:${newversion:?}"    "firethorn/tester:latest"
+
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/tester:latest"
+
+

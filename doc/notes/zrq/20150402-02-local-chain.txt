@@ -20,115 +20,64 @@
 #
 #
 
-# -----------------------------------------
-# Configure our path
-#[user@shep]
-
-    export PATH=${PATH}:${HOME}/projects/ischnura-kvm/src/bin
-
-# -----------------------------------------------------
-# Start a clean VM.
-#[user@shep]
-
-    createvm
-
-        ....
-
-        INFO : Node name [edfu]
-        INFO : Base name [fedora-21-base-20150317.qcow]
-        INFO : Disc name [edfu.qcow]
-        INFO : Disc size [8G]
-
-# -----------------------------------------------------
-# Set the target version.
-#[root@edfu]
-
-    version=1.13.6-zrq-docker-chain
-
-# -----------------------------------------------------
-# Install or update our tools.
-#[root@edfu]
-
-    yum install -y htop
-
-# -----------------------------------------------------
-# Install and start the HAVEGE entropy tool.
-# http://redmine.roe.ac.uk/issues/828
-# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
-# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
-#[root@edfu]
-
-    #yum install -y haveged
-    #systemctl start haveged.service
-
-#
-# Alternative is to use non-blocking version of /dev/random
-# /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.25.x86_64/jre/lib/security/java.security 
-# https://wiki.apache.org/tomcat/HowTo/FasterStartUp#Entropy_Source
-# https://stackoverflow.com/questions/26431922/tomcat7-starts-too-late-on-ubuntu-14-04-x64-digitalocean/26432537#26432537
-    
-# -----------------------------------------------------
-# Install and start the Docker daemon.
-#[root@edfu]
-
-    yum install -y docker-io
-    systemctl enable docker.service
-    systemctl start  docker.service
-
-# -----------------------------------------------------
-# Install config tools.
-#[root@edfu]
-
-    yum install -y pwgen
-    yum install -y bind-utils
-
 # -----------------------------------------------------
 # Configuration settings.
-#[root@edfu]
+#[user@desktop]
 
-cat > "${HOME?:}/settings" << EOF
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    metaname=bethany
-    username=patricia
-    dataname=elayne
-    ogsaname=jarmila
-    firename=gillian
+        source bin/util.sh 
+        version=$(getversion)
 
-    metalink=albert
-    userlink=edward
-    datalink=sebastien
-    ogsalink=timothy
-    firelink=peter
+    popd
 
-    metadata=postgres
-    metauser=$(pwgen 20 1)
-    metapass=$(pwgen 20 1)
+    settings=$(mktemp)
+    cat > "${settings:?}" << EOF
 
-    mssqlhost=ramses2
-    mssqlport=1433
-    mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
-    
-    userdata=FirethornUserdataZRQ20150319DEV
-    useruser=FirethornUserdataZRQ20150319DEVLogin
-    userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
-    userhost=\${mssqlhost:?}
-    userport=\${mssqlport:?}
-    useripv4=\${mssqlipv4:?}
+        version=${version}
 
-    datadata=ATLASDR1
-    datauser=atlasro
-    datapass=atlasropw
-    datahost=\${mssqlhost:?}
-    dataport=\${mssqlport:?}
-    dataipv4=\${mssqlipv4:?}
+        metaname=bethany
+        username=patricia
+        dataname=elayne
+        ogsaname=jarmila
+        firename=gillian
+
+        metalink=albert
+        userlink=edward
+        datalink=sebastien
+        ogsalink=timothy
+        firelink=peter
+
+        metadata=postgres
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        mssqlhost=ramses2
+        mssqlport=1433
+        mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
+        
+        userdata=FirethornUserdataZRQ20150319DEV
+        useruser=FirethornUserdataZRQ20150319DEVLogin
+        userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+        userhost=\${mssqlhost:?}
+        userport=\${mssqlport:?}
+        useripv4=\${mssqlipv4:?}
+
+        datadata=ATLASDR1
+        datauser=atlasro
+        datapass=atlasropw
+        datahost=\${mssqlhost:?}
+        dataport=\${mssqlport:?}
+        dataipv4=\${mssqlipv4:?}
 
 EOF
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
-#[root@edfu]
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
 
     docker run \
         --detach \
@@ -141,36 +90,70 @@ EOF
 # TODO use firethorn/postgres with config
 
 # -----------------------------------------------------
-# Run our userdata ambassador.
-#[root@edfu]
+# Run our user data SSH tunnel.
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
+
+    userhostuser=dave
+    userhostname=fenrir.roe.ac.uk
+    userhostkey=$(mktemp)
+    ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
+
+    #
+    # http://www.projectatomic.io/docs/docker-and-selinux/
+    # http://opensource.com/business/13/11/selinux-policy-guide
+    chcon -t svirt_sandbox_file_t "${userhostkey:?}" 
+    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
 
     docker run \
         --detach \
+        --interactive \
         --name "${username:?}" \
-        --expose ${userport:?} \
-        --env "SQL_PORT_1433_TCP=tcp://${useripv4:?}:${userport:?}" \
-        svendowideit/ambassador
+        --expose "${userport:?}" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${userhostkey:?}:/etc/ssh/ssh_known_hosts" \
+        firethorn/ssh-client:1 \
+        ssh -v -C -L \
+            "*:${userport:?}:${userhost:?}:${userport:?}" \
+            "${userhostuser:?}@${userhostname:?}"
 
 # -----------------------------------------------------
-# Run our science data ambassador.
-#[root@edfu]
+# Run our science data SSH tunnel.
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
+
+    datahostuser=dave
+    datahostname=fenrir.roe.ac.uk
+    datahostkey=$(mktemp)
+    ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
+
+    #
+    # http://www.projectatomic.io/docs/docker-and-selinux/
+    # http://opensource.com/business/13/11/selinux-policy-guide
+    chcon -t svirt_sandbox_file_t "${datahostkey:?}" 
+    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
 
     docker run \
         --detach \
+        --interactive \
         --name "${dataname:?}" \
-        --expose ${dataport:?} \
-        --env "SQL_PORT_1433_TCP=tcp://${dataipv4}:${dataport:?}" \
-        svendowideit/ambassador
+        --expose "${dataport:?}" \
+        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume "${datahostkey:?}:/etc/ssh/ssh_known_hosts" \
+        firethorn/ssh-client:1 \
+        ssh -v -C -L \
+            "*:${dataport:?}:${datahost:?}:${dataport:?}" \
+            "${datahostuser:?}@${datahostname:?}"
 
 # -----------------------------------------------------
 # Run our OGSA-DAI container.
-#[root@edfu]
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
 
     docker run \
         --detach \
@@ -182,9 +165,9 @@ EOF
 
 # -----------------------------------------------------
 # Create our FireThorn config.
-#[root@edfu]
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
 
     fireprop=$(mktemp)
     cat > "${fireprop:?}" << EOF
@@ -209,9 +192,9 @@ EOF
 
 # -----------------------------------------------------
 # Run our FireThorn container.
-#[root@edfu]
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
         
     docker run \
         --detach \
@@ -225,24 +208,10 @@ EOF
         "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
-# Tail our logs (separate terminals).
+# Create our test config.
 #[user@desktop]
 
-    ssh edfu
-
-        source "${HOME?:}/settings"
-        docker logs -f "${firename}"
-
-    ssh edfu 
-
-        source "${HOME?:}/settings"
-        docker logs -f "${ogsaname}"
-
-# -----------------------------------------------------
-# Create our test config.
-#[root@edfu]
-
-    source "${HOME?:}/settings"
+    source "${settings:?}"
 
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
@@ -263,9 +232,9 @@ EOF
 
 # -----------------------------------------------------
 # Run our test container.
-#[root@edfu]
+#[user@desktop]
 
-    source "${HOME?:}/settings"
+    source "${settings:?}"
 
     docker run \
         --rm \
@@ -273,7 +242,7 @@ EOF
         --interactive \
         --link "${firename:?}:${firelink:?}" \
         --volume "${testcfg:?}:/root/firethorn.properties" \
-        firethorn/tester \
+        "firethorn/tester:${version:?}" \
         bash
 
 # -----------------------------------------------------
@@ -356,5 +325,6 @@ EOF
             AND
                 dec BETWEEN '24.0' AND '24.2'
             "
+
 
 

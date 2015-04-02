@@ -15,10 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM postgres:9
+FROM fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Add our configuration scripts.
-COPY init /docker-entrypoint-initdb.d
+# Update the system
+# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
+RUN yum -y -x filesystem update
+
+#
+# Enable delta rpms.
+RUN yum -y install deltarpm
+
+#
+# Clear the cache.
+RUN yum clean all
+
 
