@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:20
+FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV JAVA_VERSION 1.8.0
