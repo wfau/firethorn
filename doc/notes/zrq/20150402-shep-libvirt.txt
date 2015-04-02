@@ -1,0 +1,370 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Push the changes back into GitHub
+
+    #
+    # Update the data files location ?
+
+            /src
+            /src/dat
+                $(hostname)-template.xml
+                $(hostname)-machines.txt
+
+# -----------------------------------------
+# Modify our local copy of ischnura-kvm
+#[user@shep] 
+
+    #
+    # ....
+    #
+
+    git add .
+    git commit -m "Updated to fit shepseskaf"
+    git push --set-upstream origin shep
+
+
+# -----------------------------------------
+# Create our 'iso' pool.
+#[user@shep] 
+
+    basepath=${HOME:?}/projects/libvirt
+
+    poolname=iso
+    poolpath=${basepath:?}/${poolname:?}
+
+    if [ ! -e "${poolpath}" ]
+    then
+        mkdir -p "${poolpath}"
+    fi
+
+    poolxml=$(mktemp)
+    cat > "${poolxml:?}" << EOF
+<pool type='dir'>
+    <name>${poolname:?}</name>
+    <uuid></uuid>
+    <source/>
+    <target>
+        <path>${poolpath:?}</path>
+    </target>
+</pool>
+EOF
+
+    virsh -c 'qemu:///system' pool-define  "${poolxml}"
+    virsh -c 'qemu:///system' pool-dumpxml "${poolname}"
+    virsh -c 'qemu:///system' pool-start   "${poolname}"
+
+
+# -----------------------------------------
+# Create our 'base' pool.
+#[user@shep] 
+
+    poolname=base
+    poolpath=${basepath:?}/${poolname:?}
+
+    if [ ! -e "${poolpath}" ]
+    then
+        mkdir -p "${poolpath}"
+    fi
+
+    poolxml=$(mktemp)
+    cat > "${poolxml:?}" << EOF
+<pool type='dir'>
+    <name>${poolname:?}</name>
+    <uuid></uuid>
+    <source/>
+    <target>
+        <path>${poolpath:?}</path>
+    </target>
+</pool>
+EOF
+
+    virsh -c 'qemu:///system' pool-define  "${poolxml}"
+    virsh -c 'qemu:///system' pool-dumpxml "${poolname}"
+    virsh -c 'qemu:///system' pool-start   "${poolname}"
+
+# -----------------------------------------
+# Create our 'live' pool.
+#[user@shep] 
+
+    poolname=live
+    poolpath=${basepath:?}/${poolname:?}
+
+    if [ ! -e "${poolpath}" ]
+    then
+        mkdir -p "${poolpath}"
+    fi
+
+    poolxml=$(mktemp)
+    cat > "${poolxml:?}" << EOF
+<pool type='dir'>
+    <name>${poolname:?}</name>
+    <uuid></uuid>
+    <source/>
+    <target>
+        <path>${poolpath:?}</path>
+    </target>
+</pool>
+EOF
+
+    virsh -c 'qemu:///system' pool-define  "${poolxml}"
+    virsh -c 'qemu:///system' pool-dumpxml "${poolname}"
+    virsh -c 'qemu:///system' pool-start   "${poolname}"
+
+# -----------------------------------------
+# Check our pool definitions.
+#[user@shep] 
+
+    virsh -c 'qemu:///system' pool-dumpxml iso
+
+        <pool type='dir'>
+          <name>iso</name>
+          <uuid>c30f4db5-9a8f-40c9-bd04-b58ff3135d62</uuid>
+          <capacity unit='bytes'>98492944384</capacity>
+          <allocation unit='bytes'>7027363840</allocation>
+          <available unit='bytes'>91465580544</available>
+          <source>
+          </source>
+          <target>
+            <path>/home/dave/projects/libvirt/iso</path>
+            <permissions>
+              <mode>0755</mode>
+              <owner>-1</owner>
+              <group>-1</group>
+            </permissions>
+          </target>
+        </pool>
+
+    virsh -c 'qemu:///system' pool-dumpxml base
+
+        <pool type='dir'>
+          <name>base</name>
+          <uuid>2b7e5d3b-43fe-4715-a4c2-b3d298e802b9</uuid>
+          <capacity unit='bytes'>98492944384</capacity>
+          <allocation unit='bytes'>7027363840</allocation>
+          <available unit='bytes'>91465580544</available>
+          <source>
+          </source>
+          <target>
+            <path>/home/dave/projects/libvirt/base</path>
+            <permissions>
+              <mode>0755</mode>
+              <owner>-1</owner>
+              <group>-1</group>
+            </permissions>
+          </target>
+        </pool>
+
+    virsh -c 'qemu:///system' pool-dumpxml live
+
+        <pool type='dir'>
+          <name>live</name>
+          <uuid>ff716d75-a519-4fe8-9c5f-1893796673db</uuid>
+          <capacity unit='bytes'>98492944384</capacity>
+          <allocation unit='bytes'>7027363840</allocation>
+          <available unit='bytes'>91465580544</available>
+          <source>
+          </source>
+          <target>
+            <path>/home/dave/projects/libvirt/live</path>
+            <permissions>
+              <mode>0755</mode>
+              <owner>-1</owner>
+              <group>-1</group>
+            </permissions>
+          </target>
+        </pool>
+
+# -----------------------------------------
+# Install our Fedora QCOW image.
+#[user@shep] 
+
+    volpool=base        
+    volname=fedora-21-base-20150317
+    volfile=${volname:?}.qcow
+
+    archive=http://data.metagrid.co.uk/ischnura/base
+    tarfile=${volname:?}.tar.gz
+    srcfile=${volname:?}.qcow
+
+    pushd "$(mktemp --directory)"
+
+        wget "${archive:?}/${tarfile:?}"
+
+        tar \
+            --gzip \
+            --extract \
+            --verbose \
+            --file "${tarfile:?}"
+
+        virsh -c 'qemu:///system' vol-create-as     "${volpool:?}" "${volfile:?}" 8GiB --allocation 0 --format qcow2
+        virsh -c 'qemu:///system' vol-upload --pool "${volpool:?}" "${volfile:?}" "${srcfile:?}"
+        virsh -c 'qemu:///system' vol-info   --pool "${volpool:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-path   --pool "${volpool:?}" "${volfile:?}"
+
+    popd
+
+# -----------------------------------------
+# Install our Ubuntu QCOW image.
+#[user@shep] 
+    
+    #
+    # TODO
+    #
+    
+# -----------------------------------------
+# Install an Atomic QCOW image.
+#[user@shep] 
+
+    #
+    # http://www.projectatomic.io/
+    #
+
+    #
+    # ** Need to add a cloud-init config.
+    # https://www.technovelty.org//linux/running-cloud-images-locally.html
+    #
+
+    volpool=base        
+    volname=Fedora-Cloud-Atomic-20141203-21.x86_64
+    volfile=${volname:?}.qcow
+
+    archive=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Cloud/Images
+    srcfile=Fedora-Cloud-Atomic-20141203-21.x86_64.qcow2
+
+    pushd "$(mktemp --directory)"
+
+        wget "${archive:?}/${srcfile:?}"
+
+        virsh -c 'qemu:///system' vol-create-as     "${volpool:?}" "${volfile:?}" 8GiB --allocation 0 --format qcow2
+        virsh -c 'qemu:///system' vol-upload --pool "${volpool:?}" "${volfile:?}" "${srcfile:?}"
+        virsh -c 'qemu:///system' vol-info   --pool "${volpool:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-path   --pool "${volpool:?}" "${volfile:?}"
+                
+    popd
+
+# -----------------------------------------
+# Install the boot2docker ISO image.
+#[user@shep] 
+
+    #
+    # http://boot2docker.io/
+    # https://github.com/boot2docker/boot2docker/releases/download/v1.5.0/boot2docker.iso
+    #
+
+    #
+    # Calculating 'capacity' for an ISO
+    # http://askubuntu.com/q/299570
+
+    volpool=iso
+    volname=boot2docker
+    volfile=${volname:?}.iso
+
+    archive=https://github.com/boot2docker/boot2docker/releases/download/v1.5.0/
+    srcfile=boot2docker.iso
+
+    pushd "$(mktemp --directory)"
+
+        wget "${archive:?}/${srcfile:?}"
+
+        volsize=$(stat -Lc%s ${srcfile:?})
+        
+        virsh -c 'qemu:///system' vol-create-as     "${volpool:?}" "${volfile:?}" "${volsize:?}" --format raw
+        virsh -c 'qemu:///system' vol-upload --pool "${volpool:?}" "${volfile:?}" "${srcfile:?}"
+        virsh -c 'qemu:///system' vol-info   --pool "${volpool:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-path   --pool "${volpool:?}" "${volfile:?}"
+                
+    popd
+
+# -----------------------------------------
+# Create a boot2docker QCOW image.
+#[user@shep] 
+
+    volpool=base        
+    volname=boot2docker
+    volfile=${volname:?}.qcow
+
+    archive=https://github.com/boot2docker/boot2docker/releases/download/v1.5.0/
+    srcfile=boot2docker.iso
+
+    pushd "$(mktemp --directory)"
+
+        wget "${archive:?}/${srcfile:?}"
+
+        qemu-img convert -O qcow2 "${srcfile:?}" "${volfile:?}"
+
+        qemu-img info --output json "${volfile:?}"
+
+        volsize=$(qemu-img info --output json "${volfile:?}" | sed -n 's/.*"virtual-size": \([0-9]*\).*/\1/p')
+
+        virsh -c 'qemu:///system' vol-create-as     "${volpool:?}" "${volfile:?}" "${volsize:?}" --format qcow2
+        virsh -c 'qemu:///system' vol-upload --pool "${volpool:?}" "${volfile:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-info   --pool "${volpool:?}" "${volfile:?}"
+        virsh -c 'qemu:///system' vol-path   --pool "${volpool:?}" "${volfile:?}"
+
+    popd
+
+# -----------------------------------------
+# Configure our boot2docker QCOW image.
+#[user@desktop] 
+
+    #
+    # http://tinycorelinux.net/
+    # http://serverascode.com/2014/03/13/boot2docker-qemu.html
+    
+#
+# Disable publickey auth to login.
+# (default user/pass is docker/tcuser)
+ssh -v -o PasswordAuthentication=yes -o PubkeyAuthentication=no docker@badari
+
+# -----------------------------------------
+# Configure our boot2docker QCOW image.
+#[user@boot2docker] 
+
+    sudo hostname badari
+
+    #
+    # Making a customised boot2docker iso
+    # https://github.com/boot2docker/boot2docker/blob/master/doc/BUILD.md#making-your-own-customised-boot2docker-iso
+
+    #
+    # Finding TC extensions
+    # http://blog.novatec-gmbh.de/not-found-errors-executing-shell-scripts-dockers-boot2docker/
+
+    #
+    # Work around - set passwords and IP addresses manually.
+    # Use a container to generate our config ?
+    
+    #
+    # Needs extra space for our docker images
+    # FATA[0018] Error pulling image (latest) from firethorn/ogsadai
+    #   Untar exit status 1 write /usr/lib64/python2.7/pydoc_data/topics.py:
+    #     no space left on device 
+
+
+
+
+
+
+
+

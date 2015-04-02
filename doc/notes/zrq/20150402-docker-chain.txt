@@ -1,0 +1,77 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Configure our SSH client 
+#[user@desktop] 
+
+    gedit "${HOME}/.ssh/config"
+
+        Host amarna
+            HostName 192.168.122.10
+        Host badari
+            HostName 192.168.122.11
+        Host edfu
+            HostName 192.168.122.12
+        Host hebenu
+            HostName 192.168.122.13
+        Host kerma
+            HostName 192.168.122.14
+        Host mendes
+            HostName 192.168.122.15
+        Host nekhen
+            HostName 192.168.122.16
+        Host thebes
+            HostName 192.168.122.17
+        Host zawty
+            HostName 192.168.122.18
+
+        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+            User root
+            ProxyCommand ssh -q shepseskaf nc %h %p
+            IdentityFile ~/.ssh/xxxxxxxx
+            Protocol 2
+            Compression no
+            PasswordAuthentication no
+            ServerAliveInterval 60
+            ServerAliveCountMax 5
+
+# -----------------------------------------
+# Configure our path
+#[user@shep]
+
+    export PATH=${PATH}:/home/dave/projects/ischnura-kvm/src/bin
+
+# -----------------------------------------------------
+# Start a clean VM.
+#[user@shep]
+
+    createvm
+
+        ....
+
+        INFO : Node name [amarna]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [amarna.qcow]
+        INFO : Disc size [8G]
+
+
