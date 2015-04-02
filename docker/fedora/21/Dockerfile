@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21
+FROM fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN yum -y install perl
-RUN yum -y install perl-JSON
+#
+# Update the system
+# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
+RUN yum -y -x filesystem update
 
-COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
+#
+# Enable delta rpms.
+RUN yum -y install deltarpm
 
-ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
-ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
+#
+# Clear the cache.
+RUN yum clean all
 
-RUN chmod a+x /tester/bin/pp
-RUN chmod a+x /tester/bin/resty
 
-WORKDIR /tester

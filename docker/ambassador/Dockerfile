@@ -15,19 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21
+FROM svendowideit/ambassador
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN yum -y install perl
-RUN yum -y install perl-JSON
 
-COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
-
-ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
-ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
-
-RUN chmod a+x /tester/bin/pp
-RUN chmod a+x /tester/bin/resty
-
-WORKDIR /tester
