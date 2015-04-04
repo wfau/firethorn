@@ -95,7 +95,6 @@ EOF
 
     source "${settings:?}"
 
-    userhostuser=dave
     userhostname=fenrir.roe.ac.uk
     userhostkey=$(mktemp)
     ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
@@ -125,7 +124,6 @@ EOF
 
     source "${settings:?}"
 
-    datahostuser=dave
     datahostname=fenrir.roe.ac.uk
     datahostkey=$(mktemp)
     ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null

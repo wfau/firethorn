@@ -42,13 +42,10 @@
         Scripted configuration, tagged versions.
 
         Test a new version in a VM
-        
 
 
-
-
-
-    Fixed slow moving versions, tags follow the upstream versions
+    Development tools and glue apps
+    Fixed slow moving versions, tags follow the upstream version
 
         fedora:21
         ssh:1,
@@ -56,12 +53,54 @@
         postgres:9
         mysql:x
         ..
-    
-    Dynamic fast moving versions, tags follow the buyild versions
+
+        Development process
+
+            Create branch (xx.yy.zz-aaa-bbbbbb-cccc)
+                Edit Docker file
+                Build containers
+                Run test chain
+                Push containers
+            Merge branch (xx.yy.zz')
+
+    Webapps apps services
+    Dynamic fast moving versions, tags follow the build version
 
         firethorn
         ogsadai
         tester
         ...
+
+        Development process
+
+            Create branch (xx.yy.zz-aaa-bbbbbb-cccc)
+                Edit service code
+                Build services   (Maven)
+                Build containers (Maven)
+                Run test chain
+                Do not push branch containers
+            Merge branch (xx.yy.zz')
+            Build services   (Maven)
+            Build containers (Maven)
+            Run test chain
+            Push containers (xx.yy.zz')
     
+
+    Development containers
+
+        Mercurial
+        Docker
+
+        Mercurial
+        Java
+        Maven
+        Docker
+
+        Mercurial
+        Java
+        Eclipse
+
+
+
+
 

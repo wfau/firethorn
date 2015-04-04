@@ -1,0 +1,114 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Development containers
+
+        Mercurial
+        Docker
+
+        Mercurial
+        Java
+        Maven
+        Docker
+
+        Mercurial
+        Java
+        Eclipse
+
+# -----------------------------------------------------
+# Start a clean VM.
+#[root@server]
+
+    ischnura-createvm
+
+        INFO : Node name [tau]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [tau.qcow]
+        INFO : Disc size [8G]
+
+# -----------------------------------------------------
+# Create our developer account.
+#[root@virtual]
+
+    useradd --create-home developer
+
+    mkdir -p /var/local/projects
+    chown -R developer /var/local/projects
+
+# -----------------------------------------------------
+# Install and start the Docker daemon.
+#[root@edfu]
+
+    yum install -y docker-io
+    systemctl enable docker.service
+    systemctl start  docker.service
+
+# -----------------------------------------------------
+# Run a base container.
+#[root@virtual]
+
+##
+    docker run \
+        -it --rm \
+        --env uid=$(id -u developer) \
+        --env "useruid=$(id -u developer)" \
+        --env "username=developer" \
+        --volume /var/local/projects:/projects \
+        metagrid/notroot-fedora:21
+##
+
+    docker run \
+        -it --rm \
+        --volume /var/local/projects:/projects \
+        fedora:21 \
+        bash
+
+    #
+    # Install Mercurial
+    yum -y install mercurial
+
+    #
+    # Install Java
+    yum -y install java-1.8.0-openjdk-headless
+
+    #
+    # Install Docker client.
+    yum install -y docker-io
+
+    #
+    # Install Maven ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

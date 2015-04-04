@@ -85,6 +85,12 @@
 # Tag and push our base images.
 #[user@desktop]
 
+    docker push firethorn/fedora:21
+    docker push firethorn/java:8
+    docker push firethorn/tomcat:8
+    docker push firethorn/postgres:9
+    docker push firethorn/ssh-client:1
+    docker push firethorn/ambassador:1
 
     docker tag -f "firethorn/fedora:21"    "firethorn/fedora:latest"
     docker tag -f "firethorn/java:8"       "firethorn/java:latest"
@@ -106,8 +112,6 @@
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-
-        unset MAVEN_OPTS
 
         pushd firethorn-ogsadai/webapp
             mvn docker:package
@@ -152,23 +156,63 @@
     gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
 
 # -------------------------------------------------------------------------------------------
+# Build our service images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our tester image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Run a local chain using these images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit  "doc/notes/zrq/20150402-02-local-chain.txt" &
+
+# -------------------------------------------------------------------------------------------
 # Tag and push our service images.
 #[user@desktop]
 
-    echo "newversion [${newversion:?}]"
-    echo "oldversion [${oldversion:?}]"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    docker tag -f "firethorn/firethorn:${oldversion:?}" "firethorn/firethorn:${newversion:?}"
-    docker tag -f "firethorn/ogsadai:${oldversion:?}"   "firethorn/ogsadai:${newversion:?}"
-    docker tag -f "firethorn/tester:${oldversion:?}"    "firethorn/tester:${newversion:?}"
+        source bin/util.sh 
+        version=$(getversion)
 
-    docker push "firethorn/firethorn:${newversion:?}"
-    docker push "firethorn/ogsadai:${newversion:?}"
-    docker push "firethorn/tester:${newversion:?}"
+    popd
 
-    docker tag -f "firethorn/firethorn:${newversion:?}" "firethorn/firethorn:latest"
-    docker tag -f "firethorn/ogsadai:${newversion:?}"   "firethorn/ogsadai:latest"
-    docker tag -f "firethorn/tester:${newversion:?}"    "firethorn/tester:latest"
+    docker tag -f "firethorn/firethorn:${version:?}" "firethorn/firethorn:latest"
+    docker tag -f "firethorn/ogsadai:${version:?}"   "firethorn/ogsadai:latest"
+    docker tag -f "firethorn/tester:${version:?}"    "firethorn/tester:latest"
+
+    docker push "firethorn/firethorn:${version:?}"
+    docker push "firethorn/ogsadai:${version:?}"
+    docker push "firethorn/tester:${version:?}"
 
     docker push "firethorn/firethorn:latest"
     docker push "firethorn/ogsadai:latest"
