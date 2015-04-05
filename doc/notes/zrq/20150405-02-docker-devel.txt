@@ -297,8 +297,8 @@ EOF
 
     #
     # Testing...
+    # local-chain or remote-chain
     #
-
 
 
     #

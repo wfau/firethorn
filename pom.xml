@@ -201,6 +201,8 @@
 
         <!--+
             | Docker host.
+            | Making it a propery means it can be overridden on the command line.
+            | mvn -D "docker.host=http://172.17.0.2:2375/" ....
             +-->
         <docker.host>http://127.0.0.1:2375</docker.host>
 

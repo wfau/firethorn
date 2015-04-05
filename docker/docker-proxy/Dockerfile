@@ -22,5 +22,7 @@ RUN yum -y install socat
 
 EXPOSE 2375
 
+# Add a proxy from the unix socket to tcp/ip.
+# http://www.dest-unreach.org/socat/doc/socat.html
 CMD socat TCP-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
 

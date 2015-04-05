@@ -497,10 +497,13 @@ EOF
 
     2.2.k) Create a Dockerfile
 
+
         FROM firethorn/fedora:21
         MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
         RUN yum -y install socat
 
+        # Add a proxy from the unix socket to tcp/ip.
+        # http://www.dest-unreach.org/socat/doc/socat.html
         CMD socat TCP-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
 
