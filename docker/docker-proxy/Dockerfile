@@ -20,5 +20,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 RUN yum -y install socat
 
+EXPOSE 2375
+
 CMD socat TCP-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
 
