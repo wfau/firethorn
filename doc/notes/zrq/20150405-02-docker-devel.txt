@@ -211,7 +211,7 @@ EOF
 
         docker build \
             --tag firethorn/docker-proxy:1 \
-            docker/ssh-client
+            docker/docker-proxy
 
         docker build \
             --tag firethorn/ambassador:1 \
@@ -221,16 +221,73 @@ EOF
 
     #
     # Tag our toolkit images.
-    docker tag "firethorn/fedora:21"      "firethorn/fedora:latest"
-    docker tag "firethorn/java:8"         "firethorn/java:latest"
-    docker tag "firethorn/tomcat:8"       "firethorn/tomcat:latest"
-    docker tag "firethorn/postgres:9"     "firethorn/postgres:latest"
-    docker tag "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
-    docker tag "firethorn/docker-proxy:1" "firethorn/docker-proxy"
-    docker tag "firethorn/ambassador:1"   "firethorn/ambassador:latest"
+    docker tag -f "firethorn/fedora:21"      "firethorn/fedora:latest"
+    docker tag -f "firethorn/java:8"         "firethorn/java:latest"
+    docker tag -f "firethorn/tomcat:8"       "firethorn/tomcat:latest"
+    docker tag -f "firethorn/postgres:9"     "firethorn/postgres:latest"
+    docker tag -f "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
+    docker tag -f "firethorn/docker-proxy:1" "firethorn/docker-proxy"
+    docker tag -f "firethorn/ambassador:1"   "firethorn/ambassador:latest"
 
     #
-    # Push our toolkit images.
+    # Start our docker-proxy container.
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+    #
+    # Build our webapp services.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+    #
+    # Build our webapp containers.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip}:2375/" docker:package
+        popd
+
+    popd
+
+    #
+    # Build our tester comtainer.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+    #
+    # Testing...
+    #
+
+    #
+    # Push our Docker images.
+    # ONLY DO THIS IF TESTS PASS
     docker login
 
         Username: xxxx
@@ -252,42 +309,25 @@ EOF
     docker push "firethorn/ssh-client:1"
     docker push "firethorn/ssh-client:latest"
 
+    docker push "firethorn/docker-proxy:1"
+    docker push "firethorn/docker-proxy:latest"
+
     docker push "firethorn/ambassador:1"
     docker push "firethorn/ambassador:latest"
 
-    #
-    # Build our webapp services.
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn clean install
+        source bin/util.sh
 
-    popd
+        docker push "firethorn/firethorn"
+        docker push "firethorn/firethorn:latest"
+        docker push "firethorn/firethorn:$(getversion)"
 
-    #
-    # Start our docker-proxy container.
-    docker run \
-        --detach \
-        --name "docker-proxy" \
-        --expose 2375 \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/docker-proxy
-
-
-    #
-    # Build our webapp containers.
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        pushd firethorn-ogsadai/webapp
-
-            mvn -D "docker.host=http://docker-proxy:2375/" docker:package
-
-        popd
-        
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
+        docker push "firethorn/ogsadai"
+        docker push "firethorn/ogsadai:latest"
+        docker push "firethorn/ogsadai:$(getversion)"
 
     popd
 
