@@ -257,19 +257,17 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         pushd firethorn-ogsadai/webapp
-
             mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
-
         popd
         
         pushd firethorn-webapp
-            mvn -D "docker.host=http://${dockerip}:2375/" docker:package
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
         popd
 
     popd
 
     #
-    # Build our tester comtainer.
+    # Build our tester container.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -282,8 +280,26 @@ EOF
     popd
 
     #
+    # Tag our comtainers.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker tag -f "firethorn/tester:$(getversion)"    "firethorn/tester:latest"
+        docker tag -f "firethorn/ogsadai:$(getversion)"   "firethorn/ogsadai:latest"
+        docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
+
+    popd
+
+
+
+
+    #
     # Testing...
     #
+
+
 
     #
     # Push our Docker images.
@@ -321,13 +337,14 @@ EOF
 
         source bin/util.sh
 
-        docker push "firethorn/firethorn"
         docker push "firethorn/firethorn:latest"
         docker push "firethorn/firethorn:$(getversion)"
 
-        docker push "firethorn/ogsadai"
         docker push "firethorn/ogsadai:latest"
         docker push "firethorn/ogsadai:$(getversion)"
+
+        docker push "firethorn/tester:latest"
+        docker push "firethorn/tester:$(getversion)"
 
     popd
 
