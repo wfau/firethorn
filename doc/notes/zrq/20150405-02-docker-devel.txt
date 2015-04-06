@@ -95,13 +95,9 @@
 # Run a base container.
 #[root@virtual]
 
-    dockerip=$(ifconfig docker0 | sed -n 's/\s*inet \(\S*\)\s*.*/\1/p')
-
     docker run \
         -it --rm \
-        --add-host "docker:${dockerip:?}" \
         --volume /var/local/projects:/projects \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
         fedora:21 \
         bash
 
@@ -280,7 +276,7 @@ EOF
     popd
 
     #
-    # Tag our comtainers.
+    # Tag our containers.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -291,9 +287,6 @@ EOF
         docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
 
     popd
-
-
-
 
     #
     # Testing...
