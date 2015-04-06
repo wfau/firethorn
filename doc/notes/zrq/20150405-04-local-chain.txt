@@ -81,68 +81,30 @@
 EOF
 
 # -----------------------------------------------------
-# Run our user data SSH tunnel.
-#[root@virtual]
+# Run our userdata ambassador.
+#[root@edfu]
 
     source "${settings:?}"
 
-    userhostuser=dave
-    userhostname=fenrir.roe.ac.uk
-    userhostkey=$(mktemp)
-    ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
-
-    #
-    # http://www.projectatomic.io/docs/docker-and-selinux/
-    # http://opensource.com/business/13/11/selinux-policy-guide
-    chcon -t svirt_sandbox_file_t "${userhostkey:?}" 
-    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
-
-setenforce permissive
-
     docker run \
         --detach \
-        --interactive \
         --name "${username:?}" \
-        --expose "${userport:?}" \
-        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
-        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --volume "${userhostkey:?}:/etc/ssh/ssh_known_hosts" \
-        firethorn/ssh-client:1 \
-        ssh -v -C -L \
-            "*:${userport:?}:${userhost:?}:${userport:?}" \
-            "${userhostuser:?}@${userhostname:?}"
+        --expose ${userport:?} \
+        --env "SQL_PORT_1433_TCP=tcp://${useripv4:?}:${userport:?}" \
+        firethorn/ambassador
 
 # -----------------------------------------------------
-# Run our science data SSH tunnel.
-#[root@virtual]
+# Run our science data ambassador.
+#[root@edfu]
 
     source "${settings:?}"
 
-    datahostuser=dave
-    datahostname=fenrir.roe.ac.uk
-    datahostkey=$(mktemp)
-    ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
-
-    #
-    # http://www.projectatomic.io/docs/docker-and-selinux/
-    # http://opensource.com/business/13/11/selinux-policy-guide
-    chcon -t svirt_sandbox_file_t "${datahostkey:?}" 
-    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
-
-setenforce permissive
-
     docker run \
         --detach \
-        --interactive \
         --name "${dataname:?}" \
-        --expose "${dataport:?}" \
-        --env    "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
-        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --volume "${datahostkey:?}:/etc/ssh/ssh_known_hosts" \
-        firethorn/ssh-client:1 \
-        ssh -v -C -L \
-            "*:${dataport:?}:${datahost:?}:${dataport:?}" \
-            "${datahostuser:?}@${datahostname:?}"
+        --expose ${dataport:?} \
+        --env "SQL_PORT_1433_TCP=tcp://${dataipv4}:${dataport:?}" \
+        firethorn/ambassador
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
