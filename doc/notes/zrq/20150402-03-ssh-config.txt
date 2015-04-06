@@ -56,6 +56,41 @@
             ServerAliveCountMax 5
 
 # -----------------------------------------
+# Configure our SSH client 
+#[user@shep]
+
+    vi "${HOME}/.ssh/config"
+
+        Host amarna
+            HostName 192.168.122.10
+        Host badari
+            HostName 192.168.122.11
+        Host edfu
+            HostName 192.168.122.12
+        Host hebenu
+            HostName 192.168.122.13
+        Host kerma
+            HostName 192.168.122.14
+        Host mendes
+            HostName 192.168.122.15
+        Host nekhen
+            HostName 192.168.122.16
+        Host thebes
+            HostName 192.168.122.17
+        Host zawty
+            HostName 192.168.122.18
+
+        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+            User root
+            ProxyCommand ssh -q shepseskaf nc %h %p
+            IdentityFile ~/.ssh/xxxxxxxx
+            Protocol 2
+            Compression no
+            PasswordAuthentication no
+            ServerAliveInterval 60
+            ServerAliveCountMax 5
+
+# -----------------------------------------
 # Configure our path
 #[user@shep]
 
