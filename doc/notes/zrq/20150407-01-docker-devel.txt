@@ -30,10 +30,11 @@
     source "${HOME:?}/firethorn.settings"
     gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
+# -----------------------------------------
+# Login to shep
+#[user@shep]
 
-
-
-
+    ssh shep
 
 # -----------------------------------------
 # Configure our path
@@ -60,282 +61,33 @@
     ....
     ....
 
+# -----------------------------------------
+# Login to the the VM
+#[user@shep]
+
+    ssh amarna
+
+# -----------------------------------------------------
+# Create our projects directory.
+#[root@virtual]
+
+    mkdir -p /var/local/projects
+    chown -R developer:users /var/local/projects
+
+# -----------------------------------------------------
+# Allow access to Docker containers.
+#[root@virtual]
+
+    chcon -t svirt_sandbox_file_t "/var/local/projects" 
+
 # -----------------------------------------------------
 # Install and run Docker.
 #[root@virtual]
 
     yum -y install docker-io
+
     systemctl enable docker.service
     systemctl start  docker.service
-
-# -----------------------------------------------------
-# Install config tools.
-#[root@virtual]
-
-    yum -y install pwgen
-
-# -----------------------------------------------------
-# Configuration settings.
-#[root@virtual]
-
-    version=1.13.8
-
-    settings=$(mktemp)
-    cat > "${settings:?}" << EOF
-
-        metaname=bethany
-        username=patricia
-        dataname=elayne
-        ogsaname=jarmila
-        firename=gillian
-
-        metalink=albert
-        userlink=edward
-        datalink=sebastien
-        ogsalink=timothy
-        firelink=peter
-
-        metadata=postgres
-        metauser=$(pwgen 20 1)
-        metapass=$(pwgen 20 1)
-
-        mssqlhost=ramses2
-        mssqlport=1433
-        mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
-        
-        userdata=FirethornUserdataZRQ20150319DEV
-        useruser=FirethornUserdataZRQ20150319DEVLogin
-        userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
-        userhost=\${mssqlhost:?}
-        userport=\${mssqlport:?}
-        useripv4=\${mssqlipv4:?}
-
-        datadata=ATLASDR1
-        datauser=atlasro
-        datapass=atlasropw
-        datahost=\${mssqlhost:?}
-        dataport=\${mssqlport:?}
-        dataipv4=\${mssqlipv4:?}
-
-EOF
-
-# -----------------------------------------------------
-# Run our userdata ambassador.
-#[root@edfu]
-
-    source "${settings:?}"
-
-    docker run \
-        --detach \
-        --name "${username:?}" \
-        --expose ${userport:?} \
-        --env "SQL_PORT_1433_TCP=tcp://${useripv4:?}:${userport:?}" \
-        firethorn/ambassador
-
-# -----------------------------------------------------
-# Run our science data ambassador.
-#[root@edfu]
-
-    source "${settings:?}"
-
-    docker run \
-        --detach \
-        --name "${dataname:?}" \
-        --expose ${dataport:?} \
-        --env "SQL_PORT_1433_TCP=tcp://${dataipv4}:${dataport:?}" \
-        firethorn/ambassador
-
-# -----------------------------------------------------
-# Run our PostgreSQL metadata container.
-#[root@virtual]
-
-    source "${settings:?}"
-
-    docker run \
-        --detach \
-        --name "${metaname:?}" \
-        --env "POSTGRES_USER=${metauser:?}" \
-        --env "POSTGRES_PASSWORD=${metapass:?}" \
-        postgres
-
-#
-# TODO use firethorn/postgres with config
-
-# -----------------------------------------------------
-# Run our OGSA-DAI container.
-#[root@virtual]
-
-    source "${settings:?}"
-
-    docker run \
-        --detach \
-        --name "${ogsaname:?}" \
-        --link "${dataname:?}:${datalink:?}" \
-        --link "${username:?}:${userlink:?}" \
-        --expose 8080 \
-        "firethorn/ogsadai:${version:?}"
-
-# -----------------------------------------------------
-# Create our FireThorn config.
-#[root@virtual]
-
-    source "${settings:?}"
-
-    fireprop=$(mktemp)
-    cat > "${fireprop:?}" << EOF
-
-firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
-
-firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
-firethorn.meta.user=${metauser:?}
-firethorn.meta.pass=${metapass:?}
-firethorn.meta.driver=org.postgresql.Driver
-
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
-firethorn.user.user=${useruser:?}
-firethorn.user.pass=${userpass:?}
-firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
-firethorn.user.type=mssql
-
-EOF
-
-    chmod a+r "${fireprop:?}" 
-    chcon -t svirt_sandbox_file_t "${fireprop:?}" 
-
-# -----------------------------------------------------
-# Run our FireThorn container.
-#[root@virtual]
-
-    source "${settings:?}"
-        
-    docker run \
-        --detach \
-        --expose 8080 \
-        --name "${firename:?}" \
-        --link "${ogsaname:?}:${ogsalink:?}" \
-        --link "${metaname:?}:${metalink:?}" \
-        --link "${dataname:?}:${datalink:?}" \
-        --link "${username:?}:${userlink:?}" \
-        --volume "${fireprop:?}:/etc/firethorn.properties" \
-        "firethorn/firethorn:${version:?}"
-
-# -----------------------------------------------------
-# Create our test config.
-#[root@virtual]
-
-    source "${settings:?}"
-
-    testcfg=$(mktemp)
-    cat > "${testcfg:?}" << EOF
-
-firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
-
-firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
-firethorn.atlas.name=${datadata:?}
-firethorn.atlas.user=${datauser:?}
-firethorn.atlas.pass=${datapass:?}
-firethorn.atlas.type=mssql
-firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
-
-EOF
-
-    chmod a+r "${testcfg:?}" 
-    chcon -t svirt_sandbox_file_t "${testcfg:?}" 
-
-# -----------------------------------------------------
-# Run our test container.
-#[root@virtual]
-
-    source "${settings:?}"
-
-    docker run \
-        --rm \
-        --tty \
-        --interactive \
-        --link "${firename:?}:${firelink:?}" \
-        --volume "${testcfg:?}:/root/firethorn.properties" \
-        "firethorn/tester:${version:?}" \
-        bash
-
-# -----------------------------------------------------
-# Run our tests.
-#[root@tester]
-
-        identity=${identity:-$(date '+%H:%M:%S')}
-        community=${community:-$(date '+%A %-d %B %Y')}
-
-        source "bin/01-01-init-rest.sh"
-
-        databasekey='firethorn.atlas'
-        databasecfg="${HOME:?}/firethorn.properties"
-
-        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
-        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
-        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
-        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
-        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
-        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
-
-        source "bin/02-02-create-jdbc-space.sh" \
-            'Atlas JDBC conection' \
-            "${databaseurl:?}" \
-            "${databaseuser:?}" \
-            "${databasepass:?}" \
-            "${databasedriver:?}" \
-            '*'
-        cat >  "${HOME:?}/firethorn.spaces" << EOF
-atlasjdbc=${jdbcspace:?}
-EOF
-
-        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-atlasadql=${adqlspace:?}
-EOF
-
-        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-atlaspublic=${adqlschema:?}
-EOF
-
-        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-twomasspublic=${adqlschema:?}
-EOF
-
-        source "${HOME:?}/firethorn.spaces"
-
-        source "bin/04-01-create-query-space.sh" 'Test workspace'
-
-        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
-
-        source "bin/04-03-create-query-schema.sh"
-
-        source "bin/05-03-execute-query.sh" \
-            "DIRECT" \
-            "
-            SELECT
-                ra,
-                dec
-            FROM
-                atlas.atlasSource
-            WHERE
-                ra  BETWEEN '56.0' AND '57.9'
-            AND
-                dec BETWEEN '24.0' AND '24.2'
-            "
-
-        source "bin/05-03-execute-query.sh" \
-            "DISTRIBUTED" \
-            "
-            SELECT
-                ra,
-                dec
-            FROM
-                atlas.atlasSource
-            WHERE
-                ra  BETWEEN '56.0' AND '57.9'
-            AND
-                dec BETWEEN '24.0' AND '24.2'
-            "
+    systemctl status docker.service
 
 
