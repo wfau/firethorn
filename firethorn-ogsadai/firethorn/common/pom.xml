@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-firethorn</artifactId>
-        <version project='firethorn'>1.13.8</version>
+        <version project='firethorn'>1.13.8-zrq-docker-devel</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn-common</artifactId>

@@ -92,7 +92,7 @@
     popd
 
 # -----------------------------------------------------
-# Run a base container.
+# Run our build container.
 #[root@virtual]
 
     docker run \
@@ -100,6 +100,10 @@
         --volume /var/local/projects:/projects \
         fedora:21 \
         bash
+
+# -----------------------------------------------------
+# Build our project.
+#[root@container]
 
     #
     # Install Docker client.
