@@ -95,15 +95,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
         {
         @NamedQuery(
             name  = "JdbcTable-select-parent",
-            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY ident asc"
+            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcTable-select-parent.name",
-            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
+            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcTable-search-parent.name",
-            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcTable-pending-parent.created",

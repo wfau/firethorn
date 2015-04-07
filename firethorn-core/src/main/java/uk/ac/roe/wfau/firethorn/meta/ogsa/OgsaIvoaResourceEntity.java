@@ -60,19 +60,19 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceW
         {
         @NamedQuery(
             name  = "OgsaIvoaResource-select-all",
-            query = "FROM OgsaIvoaResourceEntity ORDER BY ident desc"
+            query = "FROM OgsaIvoaResourceEntity ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaIvoaResource-select-service",
-            query = "FROM OgsaIvoaResourceEntity WHERE service = :service ORDER BY ident desc"
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaIvoaResource-select-resource",
-            query = "FROM OgsaIvoaResourceEntity WHERE resource = :resource ORDER BY ident desc"
+            query = "FROM OgsaIvoaResourceEntity WHERE resource = :resource ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaIvoaResource-select-service-resource",
-            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND resource = :resource ORDER BY ident desc"
+            query = "FROM OgsaIvoaResourceEntity WHERE service = :service AND resource = :resource ORDER BY name desc"
             ),
         }
     )

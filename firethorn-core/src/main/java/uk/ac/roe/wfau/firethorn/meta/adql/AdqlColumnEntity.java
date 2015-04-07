@@ -80,15 +80,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
         {
         @NamedQuery(
             name  = "AdqlColumn-select-parent",
-            query = "FROM AdqlColumnEntity WHERE parent = :parent ORDER BY ident asc"
+            query = "FROM AdqlColumnEntity WHERE parent = :parent ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "AdqlColumn-select-parent.name",
-            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "AdqlColumn-search-parent.text",
-            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc"
             )
         }
     )

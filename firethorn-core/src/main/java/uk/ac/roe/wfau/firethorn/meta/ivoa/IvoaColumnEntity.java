@@ -77,15 +77,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
         {
         @NamedQuery(
             name  = "IvoaColumn-select-parent",
-            query = "FROM IvoaColumnEntity WHERE (parent = :parent) ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE (parent = :parent) ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "IvoaColumn-select-parent.ident",
-            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "IvoaColumn-select-parent.name",
-            query = "FROM IvoaColumnEntity WHERE ((parentAdql = :parent) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE ((parentAdql = :parent) AND (name = :name)) ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "IvoaColumn-search-parent.name",

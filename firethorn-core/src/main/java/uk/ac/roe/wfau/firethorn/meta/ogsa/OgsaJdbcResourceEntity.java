@@ -60,27 +60,27 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceW
         {
         @NamedQuery(
             name  = "OgsaJdbcResource-select-all",
-            query = "FROM OgsaJdbcResourceEntity ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-resource",
-            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-resource-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE resource = :resource AND ogstatus = :ogstatus ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service-resource",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource ORDER BY name desc"
             ),
         @NamedQuery(
             name  = "OgsaJdbcResource-select-service-resource-status",
-            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource AND ogstatus = :ogstatus ORDER BY ident desc"
+            query = "FROM OgsaJdbcResourceEntity WHERE service = :service AND resource = :resource AND ogstatus = :ogstatus ORDER BY name desc"
             )
         }
     )
