@@ -352,8 +352,6 @@ EOF
 #        firethorn/sql-proxy:1 \
 #        bash
 #
-#socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
-#
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
@@ -409,7 +407,7 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
-        --publish 8080:8080 \
+# --publish 8080:8080 \
 
     docker run \
         --detach \
