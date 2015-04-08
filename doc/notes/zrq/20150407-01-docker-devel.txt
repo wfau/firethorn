@@ -284,6 +284,11 @@ EOF
         firethorn/fedora:21 \
         bash
 
+# Missing tools
+yum -y install iputils
+yum -y install bind-utils
+yum -y install docker-io
+
 # -----------------------------------------------------
 # Create our chain settings.
 #[root@builder]
@@ -337,7 +342,7 @@ EOF
         --detach \
         --name "${username:?}" \
         --env "target=${userhost:?}" \
-        firethorn/sql-proxy
+        firethorn/sql-proxy:1
 
 # -----------------------------------------------------
 # Run our science data ambassador.

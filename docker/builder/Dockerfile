@@ -29,6 +29,11 @@ RUN chgrp users /projects
 RUN chmod g+rwx /projects
 
 #
+# Install system tools.
+RUN yum -y install iputils
+RUN yum -y install bind-utils
+
+#
 # Install Docker client.
 RUN yum -y install docker-io
 
