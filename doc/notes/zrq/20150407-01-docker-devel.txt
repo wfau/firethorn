@@ -68,6 +68,12 @@
     ssh amarna
 
 # -----------------------------------------------------
+# Set our target version.
+#[root@virtual]
+
+    version=1.13.8-zrq-docker-devel
+
+# -----------------------------------------------------
 # Create our projects directory.
 #[root@virtual]
 
@@ -120,6 +126,7 @@
 
     docker run \
         -it --rm \
+        --env "version=${version:?}" \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         firethorn/builder:1 \
@@ -163,7 +170,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update '1.13.8-zrq-docker-devel'
+        hg update "${version:?}"
     
     popd
 
@@ -284,8 +291,6 @@ EOF
 # Create our chain settings.
 #[root@virtual]
 
-    version=1.13.8-zrq-docker-devel
-
     metaname=bethany
     username=patricia
     dataname=elayne
@@ -337,13 +342,15 @@ EOF
         --env  "target=${datahost:?}" \
         firethorn/sql-proxy:1
 
-    docker run \
-        --rm -it \
-        --env  "target=${datahost:?}" \
-        firethorn/sql-proxy:1 \
-        bash
-
-socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
+#
+#    docker run \
+#        --rm -it \
+#        --env  "target=${datahost:?}" \
+#        firethorn/sql-proxy:1 \
+#        bash
+#
+#socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
+#
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
@@ -399,10 +406,11 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
+        --publish 8080:8080 \
+
     docker run \
         --detach \
         --expose 8080 \
-        --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
         --link "${metaname:?}:${metalink:?}" \
