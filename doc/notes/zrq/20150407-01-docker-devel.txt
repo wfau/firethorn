@@ -68,6 +68,12 @@
     ssh amarna
 
 # -----------------------------------------------------
+# Install missing tools.
+#[root@virtual]
+
+    yum -y install pwgen
+
+# -----------------------------------------------------
 # Set our target version.
 #[root@virtual]
 
@@ -285,12 +291,6 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Install missing tools.
-#[root@virtual]
-
-    yum -y install pwgen
-
-# -----------------------------------------------------
 # Create our chain settings.
 #[root@virtual]
 
@@ -346,11 +346,11 @@ EOF
         firethorn/sql-proxy:1
 
 #
-    docker run \
-        --rm -it \
-        --env  "target=${datahost:?}" \
-        firethorn/sql-proxy:1 \
-        bash
+#    docker run \
+#        --rm -it \
+#        --env  "target=${datahost:?}" \
+#        firethorn/sql-proxy:1 \
+#        bash
 #
 #socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
 #
@@ -546,19 +546,6 @@ EOF
 
 
 
-
-
-
-
-    docker run \
-        --detach \
-        --name "sql-test" \
-        --env target=ramses2 \
-        firethorn/sql-proxy:1
-
-    docker run \
-        --detach \
-        --name "sql-test" \
-        --env target=ramses2 \
-        firethorn/sql-proxy:1
+docker stop $(docker ps -q)
+docker rm $(docker ps -qa)
 

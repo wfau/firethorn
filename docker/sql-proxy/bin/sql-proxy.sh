@@ -21,7 +21,11 @@
 #
 #
 
+targetip=$(host -t A ${target:?} | cut -d ' ' -f 4)
+echo "Target name [${target:?}]"
+echo "Target IP   [${targetip:?}]"
+
 #
 # Proxy a SQLServer connection.
-socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
+socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:${targetip:?}:1433"
 
