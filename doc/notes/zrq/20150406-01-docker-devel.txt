@@ -1,0 +1,68 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Virtual
+    
+        List active machines
+        Stop active machine
+        Select ssh keys
+        Merge git branch        
+
+    Create our own ambassador container.
+
+        Create a SQLServer proxy
+            hostname
+
+        Create a SQLServer tunnel
+            tunnelhost
+            tunneluser
+            hostname
+            
+    Create our base development container
+        Add pwgen
+
+    Firethorn
+
+        Configure ogsadai via webservice API 
+        Configure userdata via webservice API 
+
+        1000 query test
+
+        Postgresql user data
+        Postgresql science data
+
+    Developer
+    
+        Create a developer container
+            notroot
+        
+            tar
+            wget
+            Docker
+            Mercurial
+            Java
+            Maven
+
+            volume /toolkits
+            volume /projects
+
+

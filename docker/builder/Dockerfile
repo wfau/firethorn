@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,28 +15,42 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:21
+FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Update (almost) everything (excluding filesystem).
-# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
-RUN yum -y -x filesystem update
+# Create our projects directory.
+VOLUME /projects
+RUN chgrp users /projects
+RUN chmod g+rwx /projects
 
 #
-# Enable delta rpms.
-RUN yum -y install deltarpm
+# Create our cache directory.
+VOLUME /cache
+RUN chgrp users /cache
+RUN chmod g+rwx /cache
 
 #
-# Add common tools.
-RUN yum -y install sed
-RUN yum -y install tar
-RUN yum -y install wget
-RUN yum -y install gzip
-RUN yum -y install pwgen
+# Install system tools.
+RUN yum -y install iputils
+RUN yum -y install bind-utils
 
 #
-# Clear the cache.
-RUN yum -y clean all
+# Install Docker client.
+RUN yum -y install docker-io
+
+#
+# Install Mercurial
+RUN yum -y install mercurial
+
+#
+# Install Java
+RUN yum -y install java-1.8.0-openjdk-devel
+RUN yum -y install java-1.8.0-openjdk-headless
+
+#
+# Install Maven
+COPY bin/install-maven.sh /tmp/install-maven.sh
+RUN /bin/bash -c 'source /tmp/install-maven.sh'
 
 

@@ -1,0 +1,127 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Virtual machine out of disc space.
+    #
+
+# -----------------------------------------------------
+# Create a larger virtual filesystem.
+#[root@server]
+
+    volpool=base
+    oldname=fedora-21-8G-20150317.qcow
+    newname=fedora-21-16G-20150407.qcow
+    newsize=16G
+
+    #
+    # Create an empty volume.
+    virsh -c 'qemu:///system' vol-create-as --pool "${volpool:?}" "${newname:?}" "${newsize:?}" --format qcow2
+
+    #
+    # Get the path of the files. 
+    oldpath=$(virsh -c 'qemu:///system' vol-path --pool "${volpool:?}" "${oldname:?}")
+    newpath=$(virsh -c 'qemu:///system' vol-path --pool "${volpool:?}" "${newname:?}")
+
+    #
+    # List the partitions within the virtual filesystem.
+    virt-filesystems --long -h --all -a "${oldpath:?}"
+
+        Name       Type        VFS   Label  MBR  Size  Parent
+        /dev/sda1  filesystem  ext4  -      -    512M  -
+        /dev/sda2  filesystem  swap  -      -    512M  -
+        /dev/sda3  filesystem  ext4  -      -    6.9G  -
+        /dev/sda1  partition   -     -      83   512M  /dev/sda
+        /dev/sda2  partition   -     -      82   512M  /dev/sda
+        /dev/sda3  partition   -     -      83   6.9G  /dev/sda
+        /dev/sda   device      -     -      -    7.9G  -
+
+    virt-filesystems --long --block-devices -a "${newpath:?}"
+
+        Name      Type    Size         Parent
+        /dev/sda  device  17179869184  -
+
+
+    #
+    # Copy the filesystem from the old volume to the new.
+    virt-resize --expand /dev/sda3 "${oldpath:?}" "${newpath:?}"
+
+    #
+    # Check the resulting volumes.
+    virsh -c 'qemu:///system' vol-info --pool "${volpool:?}" "${oldname:?}"
+    virsh -c 'qemu:///system' vol-info --pool "${volpool:?}" "${newname:?}"
+
+
+#
+# Change the size calculation in createvm
+
+    -   volsize=8G
+    +   volsize=$(virsh -c 'qemu:///system' vol-info --pool "${basepool:?}" "${basename:?}" | sed -n 's/Capacity: *\([0-9]*\)\.\([0-9]*\) \([^ ]*\)/\1\3/p')
+    +   volsize=$(virt-filesystems --long --block-devices -a "${newpath:?}" | sed -n 's|/dev/[a-z]*\s*device\s*\([0-9]*\)\s.*|\1|p')
+
+
+
+
+# -----------------------------------------------------
+# Create a larger virtual filesystem.
+#[user@shep]
+
+    #
+    # virt-filesystems and virt-resize not installed on shep :-(
+
+
+    #
+    # Use a container :-)
+    docker run -it --rm \
+        -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
+        -v /home/dave/projects/libvirt:/libvirt \
+        fedora:21 bash
+
+        yum install libguestfs-tools
+
+        volpool=base
+        oldname=fedora-21-8G-20150317.qcow
+        newname=fedora-21-16G-20150407.qcow
+        newsize=16G
+
+        basepath=/libvirt/base
+
+        oldpath=${basepath}/${oldname}
+        newpath=${basepath}/${newname}
+
+        export LIBGUESTFS_BACKEND=direct
+
+        virt-filesystems --long --all -a "${oldpath:?}"
+        virt-filesystems --long --all -a "${newpath:?}"
+
+        virt-filesystems --long --block-devices -a "${oldpath:?}"
+        virt-filesystems --long --block-devices -a "${newpath:?}"
+
+        virt-resize --expand /dev/sda3 "${oldpath:?}" "${newpath:?}"
+
+
+    #
+    # Does this mean we could run createvm from within a container ?
+    # tempting to try .... later
+    
+
+

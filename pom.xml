@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.13.8</version>
+    <version project='firethorn'>1.13.9</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -1032,6 +1032,17 @@
             <id>database</id>
             <modules>
                 <module>firethorn-database</module>
+            </modules>
+        </profile>
+
+        <!--+
+            | Build the webapps.
+            +-->
+        <profile>
+            <id>webapps</id>
+            <modules>
+                <module>firethorn-ogsadai/webapp</module>
+                <module>firethorn-webapp</module>
             </modules>
         </profile>
 

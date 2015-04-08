@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,28 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:21
+FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Update (almost) everything (excluding filesystem).
-# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
-RUN yum -y -x filesystem update
+EXPOSE 1433
 
-#
-# Enable delta rpms.
-RUN yum -y install deltarpm
+RUN yum -y install openssh-clients
 
-#
-# Add common tools.
-RUN yum -y install sed
-RUN yum -y install tar
-RUN yum -y install wget
-RUN yum -y install gzip
-RUN yum -y install pwgen
+# Add a tunnel to the SQLServer server.
+ENV SSH_AUTH_SOCK /ssh_auth_sock" \
 
-#
-# Clear the cache.
-RUN yum -y clean all
+CMD ssh -v -C -L "*:1433:\${target:?}:1433" "\${tunnel:?}"
 
 

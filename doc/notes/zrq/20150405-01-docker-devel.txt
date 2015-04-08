@@ -32,10 +32,8 @@
         INFO : Disc size [8G]
 
 # -----------------------------------------------------
-# Create our developer account.
+# Create our projects directory.
 #[root@virtual]
-
-    useradd --create-home developer
 
     mkdir -p /var/local/projects
     chown -R developer:users /var/local/projects
