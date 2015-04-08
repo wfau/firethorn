@@ -19,10 +19,6 @@ FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Create our toolkits directory.
-VOLUME /toolkits
-
-#
 # Create our projects directory.
 VOLUME /projects
 RUN chgrp users /projects
