@@ -275,93 +275,79 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Run our test builder.
+# Install missing tools.
 #[root@virtual]
 
-    docker run \
-        -it --rm \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/fedora:21 \
-        bash
-
-# Missing tools
-yum -y install iputils
-yum -y install bind-utils
-yum -y install docker-io
+    yum -y install pwgen
 
 # -----------------------------------------------------
 # Create our chain settings.
-#[root@builder]
+#[root@virtual]
 
-    settings=/settings
-    cat > "${settings:?}" << EOF
+    version=1.13.8-zrq-docker-devel
 
-        metaname=bethany
-        username=patricia
-        dataname=elayne
-        ogsaname=jarmila
-        firename=gillian
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
 
-        metalink=albert
-        userlink=edward
-        datalink=sebastien
-        ogsalink=timothy
-        firelink=peter
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
 
-        metadata=postgres
-        metauser=$(pwgen 20 1)
-        metapass=$(pwgen 20 1)
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
 
-        mssqlhost=ramses2
-        mssqlport=1433
-        mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
-        
-        userdata=FirethornUserdataZRQ20150319DEV
-        useruser=FirethornUserdataZRQ20150319DEVLogin
-        userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
-        userhost=\${mssqlhost:?}
-        userport=\${mssqlport:?}
-        useripv4=\${mssqlipv4:?}
+    mssqlhost=ramses2
+    mssqlport=1433
+    
+    userdata=FirethornUserdataZRQ20150319DEV
+    useruser=FirethornUserdataZRQ20150319DEVLogin
+    userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+    userhost=${mssqlhost:?}
+    userport=${mssqlport:?}
 
-        datadata=ATLASDR1
-        datauser=atlasro
-        datapass=atlasropw
-        datahost=\${mssqlhost:?}
-        dataport=\${mssqlport:?}
-        dataipv4=\${mssqlipv4:?}
-
-EOF
+    datadata=ATLASDR1
+    datauser=atlasro
+    datapass=atlasropw
+    datahost=${mssqlhost:?}
+    dataport=${mssqlport:?}
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
-#[root@builder]
-
-    source "${settings:?}"
+#[root@virtual]
 
     docker run \
         --detach \
         --name "${username:?}" \
-        --env "target=${userhost:?}" \
+        --env  "target=${userhost:?}" \
         firethorn/sql-proxy:1
 
 # -----------------------------------------------------
 # Run our science data ambassador.
-#[root@edfu]
-
-    source "${settings:?}"
+#[root@virtual]
 
     docker run \
         --detach \
         --name "${dataname:?}" \
-        --expose ${dataport:?} \
-        --env "SQL_PORT_1433_TCP=tcp://${dataipv4}:${dataport:?}" \
-        firethorn/ambassador
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1
+
+    docker run \
+        --rm -it \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1 \
+        bash
+
+socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
 #[root@virtual]
-
-    source "${settings:?}"
 
     docker run \
         --detach \
@@ -377,24 +363,19 @@ EOF
 # Run our OGSA-DAI container.
 #[root@virtual]
 
-    source "${settings:?}"
-
     docker run \
         --detach \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        --expose 8080 \
         "firethorn/ogsadai:${version:?}"
 
 # -----------------------------------------------------
 # Create our FireThorn config.
 #[root@virtual]
 
-    source "${settings:?}"
-
-    fireprop=$(mktemp)
-    cat > "${fireprop:?}" << EOF
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
 
 firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
@@ -403,7 +384,7 @@ firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=org.postgresql.Driver
 
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}:${userport:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
@@ -411,38 +392,35 @@ firethorn.user.type=mssql
 
 EOF
 
-    chmod a+r "${fireprop:?}" 
-    chcon -t svirt_sandbox_file_t "${fireprop:?}" 
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
 
 # -----------------------------------------------------
 # Run our FireThorn container.
 #[root@virtual]
 
-    source "${settings:?}"
-        
     docker run \
         --detach \
         --expose 8080 \
+        --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
         --link "${metaname:?}:${metalink:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        --volume "${fireprop:?}:/etc/firethorn.properties" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
         "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
 # Create our test config.
 #[root@virtual]
 
-    source "${settings:?}"
-
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
 
 firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
 
-firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}:${dataport:?}/${datadata:?}
 firethorn.atlas.name=${datadata:?}
 firethorn.atlas.user=${datauser:?}
 firethorn.atlas.pass=${datapass:?}
@@ -457,8 +435,6 @@ EOF
 # -----------------------------------------------------
 # Run our test container.
 #[root@virtual]
-
-    source "${settings:?}"
 
     docker run \
         --rm \
