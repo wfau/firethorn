@@ -24,10 +24,10 @@ RUN yum -y install socat
 RUN yum -y install bind-utils
 
 COPY bin/sql-proxy.sh /bin/sql-proxy.sh
+RUN chmod a+x /bin/sql-proxy.sh
 
 # Add a proxy to the SQLServer server.
 # http://www.dest-unreach.org/socat/doc/socat.html
-#CMD socat 'TCP-LISTEN:1433,fork,reuseaddr' 'TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433'
 CMD /bin/sql-proxy.sh
 
 

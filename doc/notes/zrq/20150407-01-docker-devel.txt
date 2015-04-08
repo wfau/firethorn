@@ -77,9 +77,12 @@
 # Create our projects directory.
 #[root@virtual]
 
-    mkdir -p /var/local/projects
-    chgrp -R users /var/local/projects
-    chmod -R g+rwx /var/local/projects
+    if [ ! -e /var/local/projects ]
+    then
+        mkdir -p /var/local/projects
+        chgrp -R users /var/local/projects
+        chmod -R g+rwx /var/local/projects
+    fi
 
 # -----------------------------------------------------
 # Allow access to Docker containers.
@@ -343,11 +346,11 @@ EOF
         firethorn/sql-proxy:1
 
 #
-#    docker run \
-#        --rm -it \
-#        --env  "target=${datahost:?}" \
-#        firethorn/sql-proxy:1 \
-#        bash
+    docker run \
+        --rm -it \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1 \
+        bash
 #
 #socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:$(host -t A ${target:?} | cut -d ' ' -f 4):1433"
 #
