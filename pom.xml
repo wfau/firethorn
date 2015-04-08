@@ -1035,6 +1035,17 @@
             </modules>
         </profile>
 
+        <!--+
+            | Build the webapps.
+            +-->
+        <profile>
+            <id>webapps</id>
+            <modules>
+                <module>firethorn-ogsadai/webapp</module>
+                <module>firethorn-webapp</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 </project>

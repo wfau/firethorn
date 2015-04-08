@@ -122,7 +122,7 @@
         -it --rm \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1 \
+        firethorn/fedora:21 \
         bash
 
 # -----------------------------------------------------
