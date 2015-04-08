@@ -196,7 +196,7 @@
         <!--+
             | Build for Java 1.7.
             +-->
-        <project.javaversion>1.8</project.javaversion>
+        <project.javaversion>1.7</project.javaversion>
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
 
         <!--+
