@@ -195,7 +195,8 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update "${version:?}"
+        #hg update "${version:?}"
+        hg update default
         hg branch
     
     popd
@@ -238,6 +239,10 @@ EOF
         docker build \
             --tag firethorn/sql-tunnel:1 \
             docker/sql-tunnel
+
+        docker build \
+            --tag firethorn/ssh-client:1 \
+            docker/ssh-client
 
     popd
 
@@ -548,36 +553,80 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Exit virtual machine.
+# Tag our toolkit images.
+# ** ONLY DO THIS IF TESTS PASS **
+# ** ONLY DO THIS FOR A RELEASE **
 #[root@virtual]
 
-    exit
+    docker tag -f "firethorn/fedora:21"      "firethorn/fedora:latest"
+    docker tag -f "firethorn/java:8"         "firethorn/java:latest"
+    docker tag -f "firethorn/tomcat:8"       "firethorn/tomcat:latest"
+    docker tag -f "firethorn/postgres:9"     "firethorn/postgres:latest"
+    docker tag -f "firethorn/builder:1"      "firethorn/builder:latest"
+    docker tag -f "firethorn/docker-proxy:1" "firethorn/docker-proxy:latest"
+    docker tag -f "firethorn/sql-proxy:1"    "firethorn/sql-proxy:latest"
+    docker tag -f "firethorn/sql-tunnel:1"   "firethorn/sql-tunnel:latest"
+    docker tag -f "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
 
 # -----------------------------------------------------
-# Exit shepskaf.
-#[user@shep]
+# Tag our webservice images.
+# ** ONLY DO THIS IF TESTS PASS **
+# ** ONLY DO THIS FOR A RELEASE **
+#[root@virtual]
 
-    exit
-
-
-# -----------------------------------------------------
-# Bug fixes and testing .....
-#[user@desktop]
-
-    #
-    # ....
-    # ....
-    #
+    docker tag -f "firethorn/firethorn:${version}" "firethorn/firethorn:latest"
+    docker tag -f "firethorn/ogsadai:${version}"   "firethorn/ogsadai:latest"
+    docker tag -f "firethorn/tester:${version}"    "firethorn/tester:latest"
 
 # -----------------------------------------------------
-# Merge the changes into main.
-#[user@desktop]
+# Push our images.
+# ** ONLY DO THIS IF TESTS PASS **
+# ** ONLY DO THIS FOR A RELEASE **
+#[root@virtual]
 
-    newversion=1.13.9
+    docker login
 
-    # Copy paste instructions
-    source "${HOME:?}/firethorn.settings"
-    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
+        Username: xxxx
+        Password: xxxx
+        Email: xxxx@xxxx
+
+    docker push "firethorn/fedora:21"
+    docker push "firethorn/fedora:latest"
+
+    docker push "firethorn/java:8"
+    docker push "firethorn/java:latest"
+
+    docker push "firethorn/tomcat:8"
+    docker push "firethorn/tomcat:latest"
+
+    docker push "firethorn/postgres:9"
+    docker push "firethorn/postgres:latest"
+
+    docker push "firethorn/builder:1"
+    docker push "firethorn/builder:latest"
+
+    docker push "firethorn/docker-proxy:1"
+    docker push "firethorn/docker-proxy:latest"
+
+    docker push "firethorn/sql-proxy:1"
+    docker push "firethorn/sql-proxy:latest"
+
+    docker push "firethorn/sql-tunnel:1"
+    docker push "firethorn/sql-tunnel:latest"
+
+    docker push "firethorn/ssh-client:1"
+    docker push "firethorn/ssh-client:latest"
+
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/firethorn:${version:?}"
+
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/ogsadai:${version:?}"
+
+    docker push "firethorn/tester:latest"
+    docker push "firethorn/tester:${version:?}"
+
+
 
 
 
