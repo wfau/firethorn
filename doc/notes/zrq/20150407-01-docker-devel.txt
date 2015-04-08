@@ -30,6 +30,13 @@
     source "${HOME:?}/firethorn.settings"
     gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
+
+
+
+
+
+
+
 # -----------------------------------------
 # Login to shep
 #[user@shep]
@@ -200,7 +207,7 @@ EOF
     fi
 
     #
-    # Change to the development branch
+    # Pull and update from branch.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -318,7 +325,7 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Create our chain settings.
+# Configure our chain.
 #[root@virtual]
 
     metaname=bethany
@@ -372,14 +379,6 @@ EOF
         --env  "target=${datahost:?}" \
         firethorn/sql-proxy:1
 
-#
-#    docker run \
-#        --rm -it \
-#        --env  "target=${datahost:?}" \
-#        firethorn/sql-proxy:1 \
-#        bash
-#
-
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
 #[root@virtual]
@@ -390,9 +389,6 @@ EOF
         --env "POSTGRES_USER=${metauser:?}" \
         --env "POSTGRES_PASSWORD=${metapass:?}" \
         postgres
-
-#
-# TODO use firethorn/postgres with config
 
 # -----------------------------------------------------
 # Run our OGSA-DAI container.
@@ -562,15 +558,16 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
+# -----------------------------------------------------
+# Exit our tester.
+#[root@tester]
 
+    exit
 
+# -----------------------------------------------------
+# Delete containers.
+#[root@virtual]
 
-
-
-
-
-
-
-docker stop $(docker ps -q)
-docker rm $(docker ps -qa)
+    docker stop $(docker ps -q)
+    docker rm   $(docker ps -qa)
 
