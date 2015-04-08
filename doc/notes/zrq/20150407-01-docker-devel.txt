@@ -30,13 +30,6 @@
     source "${HOME:?}/firethorn.settings"
     gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
-
-
-
-
-
-
-
 # -----------------------------------------
 # Login to shep
 #[user@shep]
@@ -565,9 +558,36 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Delete containers.
+# Exit virtual machine.
 #[root@virtual]
 
-    docker stop $(docker ps -q)
-    docker rm   $(docker ps -qa)
+    exit
+
+# -----------------------------------------------------
+# Exit shepskaf.
+#[user@shep]
+
+    exit
+
+
+# -----------------------------------------------------
+# Bug fixes and testing .....
+#[user@desktop]
+
+    #
+    # ....
+    # ....
+    #
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    newversion=1.13.9
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-03-hg-merge.txt" &
+
+
 
