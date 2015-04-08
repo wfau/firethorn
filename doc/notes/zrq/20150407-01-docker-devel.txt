@@ -133,6 +133,9 @@
 # https://github.com/dpw/selinux-dockersock
 #[root@virtual]
 
+    # Test if present
+    # semodule -l | grep dockersock
+
     yum install -y git
     yum install -y make
     yum install -y checkpolicy

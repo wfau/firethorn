@@ -44,9 +44,24 @@ pushd /toolkits
 
         #
         # Set the repository path.
+        # This doesn't work .. need to uncomment the element.
         sed -n '
-            s|<localRepository>.*</localRepository>|<localRepository>/cache/maven<\/localRepository>|
+            s|<localRepository>.*</localRepository>|<localRepository>/cache/maven</localRepository>|
             ' "${current:?}/conf/settings.xml"
+
+#
+# Temp fix.
+mkdir /root/.m2/
+cat > /root/.m2/settings.xml<< 'EOF'
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://maven.apache.org/SETTINGS/1.0.0
+        http://maven.apache.org/xsd/settings-1.0.0.xsd
+        ">
+    <localRepository>/cache/maven</localRepository>
+</settings>
+EOF
 
         #
         # Update the executable path.
