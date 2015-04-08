@@ -98,6 +98,7 @@
     docker run \
         -it --rm \
         --volume /var/local/projects:/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
         fedora:21 \
         bash
 
@@ -220,16 +221,6 @@ EOF
     popd
 
     #
-    # Tag our toolkit images.
-    docker tag -f "firethorn/fedora:21"      "firethorn/fedora:latest"
-    docker tag -f "firethorn/java:8"         "firethorn/java:latest"
-    docker tag -f "firethorn/tomcat:8"       "firethorn/tomcat:latest"
-    docker tag -f "firethorn/postgres:9"     "firethorn/postgres:latest"
-    docker tag -f "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
-    docker tag -f "firethorn/docker-proxy:1" "firethorn/docker-proxy"
-    docker tag -f "firethorn/ambassador:1"   "firethorn/ambassador:latest"
-
-    #
     # Start our docker-proxy container.
     docker run \
         --detach \
@@ -296,6 +287,21 @@ EOF
     # Testing...
     # local-chain or remote-chain
     #
+
+
+
+
+
+    #
+    # Tag our toolkit images.
+    # ONLY DO THIS IF TESTS PASS
+    docker tag -f "firethorn/fedora:21"      "firethorn/fedora:latest"
+    docker tag -f "firethorn/java:8"         "firethorn/java:latest"
+    docker tag -f "firethorn/tomcat:8"       "firethorn/tomcat:latest"
+    docker tag -f "firethorn/postgres:9"     "firethorn/postgres:latest"
+    docker tag -f "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
+    docker tag -f "firethorn/docker-proxy:1" "firethorn/docker-proxy"
+    docker tag -f "firethorn/ambassador:1"   "firethorn/ambassador:latest"
 
 
     #

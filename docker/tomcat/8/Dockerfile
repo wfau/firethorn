@@ -45,46 +45,47 @@ WORKDIR /tmp
 
 #
 # Download the tar file
-ADD https://archive.apache.org/dist/tomcat/tomcat-8/v$TOMCAT_VERSION/bin//apache-tomcat-$TOMCAT_VERSION.tar.gz     /tmp/
-ADD https://archive.apache.org/dist/tomcat/tomcat-8/v$TOMCAT_VERSION/bin//apache-tomcat-$TOMCAT_VERSION.tar.gz.md5 /tmp/
+ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
+ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}     /tmp/
+ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5 /tmp/
 
 #
 # Check the checksum.
-RUN md5sum -c "apache-tomcat-$TOMCAT_VERSION.tar.gz.md5"
+RUN md5sum -c "${TOMCAT_TARFILE}.md5"
 
 #
 # Unpack the tar file.
-RUN tar -zxf  apache-tomcat-$TOMCAT_VERSION.tar.gz
-RUN rm apache-tomcat-$TOMCAT_VERSION.tar.gz
-RUN rm apache-tomcat-$TOMCAT_VERSION.tar.gz.md5
+RUN tar -zxf  ${TOMCAT_TARFILE}
+RUN rm ${TOMCAT_TARFILE}
+RUN rm ${TOMCAT_TARFILE}.md5
 
 #
 # Relocate the unpacked directory
-RUN mv apache-tomcat-$TOMCAT_VERSION $TOMCAT_ROOT
+RUN mv apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
 
 #
 # Remove the default webapps.
-RUN rm -rf $TOMCAT_ROOT/webapps/docs
-RUN rm -rf $TOMCAT_ROOT/webapps/ROOT
-RUN rm -rf $TOMCAT_ROOT/webapps/examples
-RUN rm -rf $TOMCAT_ROOT/webapps/manager
-RUN rm -rf $TOMCAT_ROOT/webapps/host-manager
+RUN rm -rf ${TOMCAT_ROOT}/webapps/docs
+RUN rm -rf ${TOMCAT_ROOT}/webapps/ROOT
+RUN rm -rf ${TOMCAT_ROOT}/webapps/examples
+RUN rm -rf ${TOMCAT_ROOT}/webapps/manager
+RUN rm -rf ${TOMCAT_ROOT}/webapps/host-manager
 
 #
 # Allow read access to the config files.
-RUN chmod a+r $TOMCAT_ROOT/conf/*
+RUN chmod a+r ${TOMCAT_ROOT}/conf/*
 
 #
 # Allow write access to the working directories.
-RUN chown -R $TOMCAT_USER:$TOMCAT_USER $TOMCAT_ROOT/logs
-RUN chown -R $TOMCAT_USER:$TOMCAT_USER $TOMCAT_ROOT/work
-RUN chown -R $TOMCAT_USER:$TOMCAT_USER $TOMCAT_ROOT/temp
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
 
 #
 # Create our deployment directory.
-RUN mkdir $TOMCAT_ROOT/conf/Catalina
-RUN mkdir $TOMCAT_ROOT/conf/Catalina/localhost
-RUN chown $TOMCAT_USER:$TOMCAT_USER $TOMCAT_ROOT/conf/Catalina/localhost
+RUN mkdir ${TOMCAT_ROOT}/conf/Catalina
+RUN mkdir ${TOMCAT_ROOT}/conf/Catalina/localhost
+RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/conf/Catalina/localhost
 
 #
 # Expose our data volumes.

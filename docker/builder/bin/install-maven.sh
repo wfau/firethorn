@@ -45,7 +45,7 @@ pushd /toolkits
         #
         # Set the repository path.
         sed -n '
-            s|<localRepository>.*</localRepository>|<localRepository>'$(pwd)'/repository<\/localRepository>| p
+            s|<localRepository>.*</localRepository>|<localRepository>'$(pwd)'/repository<\/localRepository>|
             ' "${current:?}/conf/settings.xml"
 
         #

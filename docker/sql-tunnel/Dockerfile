@@ -18,5 +18,13 @@
 FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
+EXPOSE 1433
+
 RUN yum -y install openssh-clients
+
+# Add a tunnel to the SQLServer server.
+ENV SSH_AUTH_SOCK /ssh_auth_sock" \
+
+CMD ssh -v -C -L "*:1433:\${target:?}:1433" "\${tunnel:?}"
+
 

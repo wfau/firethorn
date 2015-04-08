@@ -19,6 +19,16 @@ FROM firethorn/fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
+# Create our toolkits directory.
+VOLUME /toolkits
+
+#
+# Create our projects directory.
+VOLUME /projects
+RUN chgrp users /projects
+RUN chmod g+rwx /projects
+
+#
 # Install Docker client.
 RUN yum -y install docker-io
 
@@ -34,5 +44,6 @@ RUN yum -y install java-1.8.0-openjdk-headless
 #
 # Install Maven
 COPY bin/install-maven.sh /tmp/install-maven.sh
-#RUN chmod a+x /tmp/install-maven.sh
-RUN /bin/bash -c "source /tmp/install-maven.sh"
+RUN /bin/bash -c 'source /tmp/install-maven.sh'
+
+
