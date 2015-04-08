@@ -28,7 +28,6 @@
         | Jersey evaluation node.
         +-->
     <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="default-eval-node">
-        <constructor-arg name="url"     value="${ogsadai.endpoint}"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>

@@ -74,6 +74,16 @@
     yum -y install pwgen
 
 # -----------------------------------------------------
+# Install and start the HAVEGE entropy tool.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
 # Set our target version.
 #[root@virtual]
 
@@ -180,6 +190,7 @@ EOF
 
         hg pull
         hg update "${version:?}"
+        hg branch
     
     popd
 
