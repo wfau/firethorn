@@ -20,7 +20,6 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
 
-RUN yum -y install top
 RUN yum -y install socat
 RUN yum -y install bind-utils
 

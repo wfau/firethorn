@@ -27,7 +27,6 @@
     yum -y install docker-io
     systemctl enable docker.service
     systemctl start  docker.service
-    
 
 # -----------------------------------------------------
 # Install config tools.
