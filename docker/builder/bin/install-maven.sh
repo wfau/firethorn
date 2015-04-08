@@ -33,19 +33,19 @@ pushd /toolkits
     mkdir maven
     pushd maven
         
-        wget "http://apache.mirrors.tds.net/maven/maven-3/3.3.1/binaries/${tarfile:?}"
+        wget "http://apache.mirrors.tds.net/maven/maven-3/${version:?}/binaries/${tarfile:?}"
 
         tar -xvzf "${tarfile:?}"
         ln -s "${current:?}" current
 
-        mkdir repository
-        chgrp users repository
-        chmod g+rws repository
+        mkdir /cache/maven
+        chgrp users /cache/maven
+        chmod g+rws /cache/maven
 
         #
         # Set the repository path.
         sed -n '
-            s|<localRepository>.*</localRepository>|<localRepository>'$(pwd)'/repository<\/localRepository>|
+            s|<localRepository>.*</localRepository>|<localRepository>/cache/maven<\/localRepository>|
             ' "${current:?}/conf/settings.xml"
 
         #

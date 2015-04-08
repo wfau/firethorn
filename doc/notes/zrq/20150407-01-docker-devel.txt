@@ -101,10 +101,22 @@
     fi
 
 # -----------------------------------------------------
+# Create our cache directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/cache ]
+    then
+        mkdir -p /var/local/cache
+        chgrp -R users /var/local/cache
+        chmod -R g+rwx /var/local/cache
+    fi
+
+# -----------------------------------------------------
 # Allow access to Docker containers.
 #[root@virtual]
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
+    chcon -t svirt_sandbox_file_t "/var/local/cache" 
 
 # -----------------------------------------------------
 # Install and run Docker.
@@ -146,6 +158,7 @@
     docker run \
         -it --rm \
         --env "version=${version:?}" \
+        --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         firethorn/builder:1 \

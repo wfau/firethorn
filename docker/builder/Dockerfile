@@ -25,6 +25,12 @@ RUN chgrp users /projects
 RUN chmod g+rwx /projects
 
 #
+# Create our cache directory.
+VOLUME /cache
+RUN chgrp users /cache
+RUN chmod g+rwx /cache
+
+#
 # Install system tools.
 RUN yum -y install iputils
 RUN yum -y install bind-utils
