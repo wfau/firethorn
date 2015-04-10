@@ -22,9 +22,8 @@ EXPOSE 1433
 
 RUN yum -y install openssh-clients
 
-# Add a tunnel to the SQLServer server.
-ENV SSH_AUTH_SOCK /ssh_auth_sock" \
+COPY bin/sql-tunnel.sh /bin/sql-tunnel.sh
+RUN chmod a+x /bin/sql-tunnel.sh
 
-CMD ssh -v -C -L "*:1433:\${target:?}:1433" "\${tunnel:?}"
-
+CMD /bin/sql-tunnel.sh
 
