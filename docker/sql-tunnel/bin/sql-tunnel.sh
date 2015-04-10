@@ -23,14 +23,13 @@
 
 echo "Tunnel user [${tunneluser:?}]"
 echo "Tunnel host [${tunnelhost:?}]"
-echo "Tunnel scan [${tunnelscan:?}]"
 echo "Target host [${targethost:?}]"
 
 #
 # Tunnel a SQLServer connection.
 
 export SSH_AUTH_SOCK=/tmp/ssh_auth_sock
-echo "${tunnelscan:?}" >> /etc/ssh/ssh_known_hosts
+ssh-keyscan "${tunnelhost:?}" 2> /dev/null >> /etc/ssh/ssh_known_hosts
 
 ssh -v -C -L "*:1433:${targethost:?}:1433" "${tunneluser:?}@${tunnelhost:?}"
 
