@@ -63,16 +63,16 @@
         mssqlport=1433
         mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
         
-        userdata=FirethornUserdataZRQ20150319DEV
-        useruser=FirethornUserdataZRQ20150319DEVLogin
-        userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+        userdata=FirethornUserdata********
+        useruser=FirethornUserdata********
+        userpass=FirethornUserdata********
         userhost=\${mssqlhost:?}
         userport=\${mssqlport:?}
         useripv4=\${mssqlipv4:?}
 
         datadata=ATLASDR1
-        datauser=atlasro
-        datapass=atlasropw
+        datauser=********
+        datapass=********
         datahost=\${mssqlhost:?}
         dataport=\${mssqlport:?}
         dataipv4=\${mssqlipv4:?}

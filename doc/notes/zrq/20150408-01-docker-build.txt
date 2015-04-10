@@ -151,6 +151,7 @@
 
     docker run \
         -it --rm \
+        --name builder
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
         --volume /var/local/cache:/cache \
@@ -336,15 +337,15 @@ EOF
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=FirethornUserdataZRQ20150319DEV
-    useruser=FirethornUserdataZRQ20150319DEVLogin
-    userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+    userdata=FirethornUserdata********
+    useruser=FirethornUserdata********
+    userpass=FirethornUserdata********
     userhost=${mssqlhost:?}
     userport=${mssqlport:?}
 
     datadata=ATLASDR1
-    datauser=atlasro
-    datapass=atlasropw
+    datauser=********
+    datapass=********
     datahost=${mssqlhost:?}
     dataport=${mssqlport:?}
 

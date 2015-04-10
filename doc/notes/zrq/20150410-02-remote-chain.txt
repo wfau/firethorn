@@ -100,15 +100,15 @@
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=FirethornUserdataZRQ20150319DEV
-    useruser=FirethornUserdataZRQ20150319DEVLogin
-    userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+    userdata=FirethornUserdata********
+    useruser=FirethornUserdata********
+    userpass=FirethornUserdata********
     userhost=${mssqlhost:?}
     userport=${mssqlport:?}
 
     datadata=ATLASDR1
-    datauser=atlasro
-    datapass=atlasropw
+    datauser=********
+    datapass=********
     datahost=${mssqlhost:?}
     dataport=${mssqlport:?}
 
@@ -116,13 +116,8 @@
 # Configure our SSH tunnel.
 #[root@virtual]
 
-    tunneluser=dave
-    tunnelhost=fenrir.roe.ac.uk
-    tunnelscan=$(ssh-keyscan "${tunnelhost:?}" 2> /dev/null)
-
-    tunneluser=Zarquan
-    tunnelhost=threonine.metagrid.co.uk
-    tunnelscan=$(ssh-keyscan "${tunnelhost:?}" 2> /dev/null)
+    tunneluser=********
+    tunnelhost=********
 
     #
     # http://www.projectatomic.io/docs/docker-and-selinux/
@@ -135,14 +130,14 @@
 #[root@virtual]
 
     docker run \
-        -it --rm \
+        --detach \
+        --interactive \
         --name "${username:?}" \
         --env  "tunneluser=${tunneluser:?}" \
         --env  "tunnelhost=${tunnelhost:?}" \
         --env  "targethost=${userhost:?}" \
         --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        firethorn/sql-tunnel:1 \
-        bash
+        firethorn/sql-tunnel:1
 
 # -----------------------------------------------------
 # Run our science data ambassador.
@@ -150,9 +145,12 @@
 
     docker run \
         --detach \
+        --interactive \
         --name "${dataname:?}" \
-        --env  "tunnel=${tunnel:?}" \
-        --env  "target=${datahost:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         firethorn/sql-tunnel:1
 
 # -----------------------------------------------------

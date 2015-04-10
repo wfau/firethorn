@@ -55,9 +55,9 @@
         mssqlport=1433
         mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
         
-        userdata=FirethornUserdataZRQ20150319DEV
-        useruser=FirethornUserdataZRQ20150319DEVLogin
-        userpass=FirethornUserdataZRQ20150319DEVKSdcr1ri
+        userdata=********
+        useruser=********
+        userpass=********
         userhost=\${mssqlhost:?}
         userport=\${mssqlport:?}
         useripv4=\${mssqlipv4:?}
@@ -77,8 +77,8 @@ EOF
 
     source "${settings:?}"
 
-    userhostuser=dave
-    userhostname=fenrir.roe.ac.uk
+    userhostuser=********
+    userhostname=********
     userhostkey=$(mktemp)
     ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
 
@@ -87,8 +87,7 @@ EOF
     # http://opensource.com/business/13/11/selinux-policy-guide
     chcon -t svirt_sandbox_file_t "${userhostkey:?}" 
     chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
-
-setenforce permissive
+    setenforce permissive
 
     docker run \
         --detach \
@@ -109,8 +108,8 @@ setenforce permissive
 
     source "${settings:?}"
 
-    datahostuser=dave
-    datahostname=fenrir.roe.ac.uk
+    datahostuser=********
+    datahostname=********
     datahostkey=$(mktemp)
     ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
 
