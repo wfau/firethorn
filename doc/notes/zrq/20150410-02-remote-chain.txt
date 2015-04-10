@@ -120,6 +120,10 @@
     tunnelhost=fenrir.roe.ac.uk
     tunnelscan=$(ssh-keyscan "${tunnelhost:?}" 2> /dev/null)
 
+    tunneluser=Zarquan
+    tunnelhost=threonine.metagrid.co.uk
+    tunnelscan=$(ssh-keyscan "${tunnelhost:?}" 2> /dev/null)
+
     #
     # http://www.projectatomic.io/docs/docker-and-selinux/
     # http://opensource.com/business/13/11/selinux-policy-guide
