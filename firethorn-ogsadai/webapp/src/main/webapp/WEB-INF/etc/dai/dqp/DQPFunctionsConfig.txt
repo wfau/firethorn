@@ -6,6 +6,7 @@ uk.org.ogsadai.dqp.lqp.udf.aggregate.Sum
 uk.org.ogsadai.dqp.lqp.udf.aggregate.StandardDeviation
 uk.org.ogsadai.dqp.lqp.udf.aggregate.Variance
 uk.org.ogsadai.dqp.lqp.udf.aggregate.Median
+uk.org.ogsadai.dqp.lqp.udf.aggregate.StringAggregate
 uk.org.ogsadai.dqp.lqp.udf.scalar.GetHourOfDay
 uk.org.ogsadai.dqp.lqp.udf.scalar.GetDate
 uk.org.ogsadai.dqp.lqp.udf.scalar.SubDays
@@ -36,3 +37,4 @@ uk.org.ogsadai.dqp.lqp.udf.scalar.SquareRoot
 uk.org.ogsadai.dqp.lqp.udf.scalar.Truncate
 uk.org.ogsadai.dqp.lqp.udf.scalar.RadDeg
 uk.org.ogsadai.dqp.lqp.udf.scalar.DegRad
+
