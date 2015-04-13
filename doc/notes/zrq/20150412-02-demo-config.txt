@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,64 +20,31 @@
 #
 #
 
-# -----------------------------------------
-# Login to shep
-#[user@shep]
+Sub-query
 
-    ssh shep
+    SELECT ATLASDR1.dbo.atlasSource ....  WHERE table_4.slaveObjID_3 IN ($REPLACE(dqpBatchData_267276))
 
-# -----------------------------------------
-# Configure our path
-#[user@shep]
+Is replaced with a comma separated list of IDs created by
 
-    export PATH=${PATH}:${HOME}/projects/ischnura-kvm/src/bin
+    STRING_AGGREGATE(JDBC_TABLE_197096.pts_key)
 
-# -----------------------------------------
-# Create a new VM
-#[user@shep]
+Which not in the function list
+ 
+    STRING_AGGREGATE()
 
-    createvm
+add
 
-        INFO : Node name [amarna]
-        INFO : Base name [fedora-21-base-20150317.qcow]
-        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-base-20150317.qcow]
-        INFO : Disc name [amarna.qcow]
-        INFO : Disc size [8G]
+    uk.org.ogsadai.dqp.lqp.udf.aggregate.StringAggregate
 
-# -----------------------------------------
-# Update known hosts.
-#[user@shep]
+to the list of functions
 
-    ....
-    ....
-
-# -----------------------------------------
-# Login to the the VM
-#[user@shep]
-
-    ssh amarna
-
-# -----------------------------------------------------
-# Install missing tools.
-#[root@virtual]
-
-    yum -y install pwgen
-
-# -----------------------------------------------------
-# Install and start the HAVEGE entropy tool.
-# http://redmine.roe.ac.uk/issues/828
-# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
-# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
-#[root@edfu]
-
-    yum install -y haveged
-    systemctl start haveged.service
+    WEB-INF/etc/dai/dqp/DQPFunctionsConfig.txt
 
 # -----------------------------------------------------
 # Set our target version.
 #[root@virtual]
 
-    branch=default
+    branch=1.13.9-zrq-demo-config
     version=1.13.9
 
 # -----------------------------------------------------
@@ -108,16 +75,6 @@
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
     chcon -t svirt_sandbox_file_t "/var/local/cache" 
-
-# -----------------------------------------------------
-# Install and run Docker.
-#[root@virtual]
-
-    yum -y install docker-io
-
-    systemctl enable docker.service
-    systemctl start  docker.service
-    systemctl status docker.service
 
 # -----------------------------------------------------
 # Install the selinux-dockersock SELinux policy.
@@ -204,51 +161,6 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Build our toolkit containers.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        docker build \
-            --tag firethorn/fedora:21 \
-            docker/fedora/21
-
-        docker build \
-            --tag firethorn/java:8 \
-            docker/java/8
-
-        docker build \
-            --tag firethorn/tomcat:8 \
-            docker/tomcat/8
-
-        docker build \
-            --tag firethorn/postgres:9 \
-            docker/postgres/9
-
-        docker build \
-            --tag firethorn/builder:1 \
-            docker/builder
-
-        docker build \
-            --tag firethorn/docker-proxy:1 \
-            docker/docker-proxy
-
-        docker build \
-            --tag firethorn/sql-proxy:1 \
-            docker/sql-proxy
-
-        docker build \
-            --tag firethorn/sql-tunnel:1 \
-            docker/sql-tunnel
-
-        docker build \
-            --tag firethorn/ssh-client:1 \
-            docker/ssh-client
-
-    popd
-
-# -----------------------------------------------------
 # Start our docker-proxy container.
 #[root@builder]
 
@@ -294,21 +206,6 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Build our tester container.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source "bin/util.sh"
-
-        docker build \
-            --tag firethorn/tester:$(getversion) \
-            integration/tester
-
-    popd
-
-# -----------------------------------------------------
 # Exit our builder.
 #[root@builder]
 
@@ -337,17 +234,12 @@ EOF
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=FirethornUserdata********
-    useruser=FirethornUserdata********
-    userpass=FirethornUserdata********
+    userdata=FirethornUserdataZRQ20150311DEV
+    useruser=FirethornUserdataZRQ20150311DEVLogin
+    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
     userhost=${mssqlhost:?}
-    userport=${mssqlport:?}
 
-    datadata=ATLASDR1
-    datauser=********
-    datapass=********
     datahost=${mssqlhost:?}
-    dataport=${mssqlport:?}
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
@@ -389,7 +281,7 @@ EOF
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        "firethorn/ogsadai:${version:?}"
+        "firethorn/ogsadai:${branch:?}"
 
 # -----------------------------------------------------
 # Create our FireThorn config.
@@ -405,7 +297,7 @@ firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=org.postgresql.Driver
 
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}:${userport:?}/${userdata:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
@@ -420,39 +312,17 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
-# --publish 8080:8080 \
-
     docker run \
         --detach \
         --expose 8080 \
+        --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
         --link "${metaname:?}:${metalink:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
         --volume "${properties:?}:/etc/firethorn.properties" \
-        "firethorn/firethorn:${version:?}"
-
-# -----------------------------------------------------
-# Create our test config.
-#[root@virtual]
-
-    testcfg=$(mktemp)
-    cat > "${testcfg:?}" << EOF
-
-firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
-
-firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}:${dataport:?}/${datadata:?}
-firethorn.atlas.name=${datadata:?}
-firethorn.atlas.user=${datauser:?}
-firethorn.atlas.pass=${datapass:?}
-firethorn.atlas.type=mssql
-firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
-
-EOF
-
-    chmod a+r "${testcfg:?}" 
-    chcon -t svirt_sandbox_file_t "${testcfg:?}" 
+        "firethorn/firethorn:${branch:?}"
 
 # -----------------------------------------------------
 # Run our test container.
@@ -462,13 +332,13 @@ EOF
         --rm \
         --tty \
         --interactive \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        --volume "${testcfg:?}:/root/firethorn.properties" \
         "firethorn/tester:${version:?}" \
         bash
 
 # -----------------------------------------------------
-# Run our tests.
+# Configure our data resources.
 #[root@tester]
 
         identity=${identity:-$(date '+%H:%M:%S')}
@@ -476,52 +346,48 @@ EOF
 
         source "bin/01-01-init-rest.sh"
 
-        databasekey='firethorn.atlas'
-        databasecfg="${HOME:?}/firethorn.properties"
+        databasename=ATLASDR1
+        databasehost=sebastien
+        databaseuser=atlasro
+        databasepass=atlasropw
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
 
-        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
-        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
-        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
-        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
-        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
-        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
+#
+# Load the Atlas resource
 
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
-            "${databaseurl:?}" \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
             "${databaseuser:?}" \
             "${databasepass:?}" \
             "${databasedriver:?}" \
             '*'
-        cat >  "${HOME:?}/firethorn.spaces" << EOF
-atlasjdbc=${jdbcspace:?}
-EOF
+        atlasjdbc=${jdbcspace:?}
 
         source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-atlasadql=${adqlspace:?}
-EOF
+        atlasadql=${adqlspace:?}
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-atlaspublic=${adqlschema:?}
-EOF
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+        atlasschema=${adqlschema:?}
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-twomasspublic=${adqlschema:?}
-EOF
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+        atlasschema=${adqlschema:?}
 
-        source "${HOME:?}/firethorn.spaces"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        atlastwomass=${adqlschema:?}
+
+#
+# Run the test queries
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
 
         source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
 
         source "bin/04-03-create-query-schema.sh"
 
         source "bin/05-03-execute-query.sh" \
-            "DIRECT" \
+            "AUTO" \
             "
             SELECT
                 ra,
@@ -535,7 +401,81 @@ EOF
             "
 
         source "bin/05-03-execute-query.sh" \
-            "DISTRIBUTED" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                atlasSource.dec BETWEEN '24.0' AND '24.2'
+            AND
+                twomass_psc.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                twomass_psc.dec BETWEEN '24.0' AND '24.2'
+            "
+
+#
+# Load the TWOMASS resource
+
+        databasename=TWOMASS
+        databasehost=sebastien
+        databaseuser=palro
+        databasepass=palropw
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            "${databasename:?}"
+        twomassjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        twomassadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${twomassjdbc:?}" "${twomassadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        twomassschema=${adqlschema:?}
+
+#
+# Run the test queries
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
             "
             SELECT
                 ra,
@@ -548,87 +488,78 @@ EOF
                 dec BETWEEN '24.0' AND '24.2'
             "
 
-# -----------------------------------------------------
-# Exit our tester.
-#[root@tester]
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
 
-    exit
-
-# -----------------------------------------------------
-# Tag our toolkit images.
-# ** ONLY DO THIS IF TESTS PASS **
-# ** ONLY DO THIS FOR A RELEASE **
-#[root@virtual]
-
-    docker tag -f "firethorn/fedora:21"      "firethorn/fedora:latest"
-    docker tag -f "firethorn/java:8"         "firethorn/java:latest"
-    docker tag -f "firethorn/tomcat:8"       "firethorn/tomcat:latest"
-    docker tag -f "firethorn/postgres:9"     "firethorn/postgres:latest"
-    docker tag -f "firethorn/builder:1"      "firethorn/builder:latest"
-    docker tag -f "firethorn/docker-proxy:1" "firethorn/docker-proxy:latest"
-    docker tag -f "firethorn/sql-proxy:1"    "firethorn/sql-proxy:latest"
-    docker tag -f "firethorn/sql-tunnel:1"   "firethorn/sql-tunnel:latest"
-    docker tag -f "firethorn/ssh-client:1"   "firethorn/ssh-client:latest"
-
-# -----------------------------------------------------
-# Tag our webservice images.
-# ** ONLY DO THIS IF TESTS PASS **
-# ** ONLY DO THIS FOR A RELEASE **
-#[root@virtual]
-
-    docker tag -f "firethorn/firethorn:${version}" "firethorn/firethorn:latest"
-    docker tag -f "firethorn/ogsadai:${version}"   "firethorn/ogsadai:latest"
-    docker tag -f "firethorn/tester:${version}"    "firethorn/tester:latest"
-
-# -----------------------------------------------------
-# Push our images.
-# ** ONLY DO THIS IF TESTS PASS **
-# ** ONLY DO THIS FOR A RELEASE **
-#[root@virtual]
-
-    docker login
-
-        Username: xxxx
-        Password: xxxx
-        Email: xxxx@xxxx
-
-    docker push "firethorn/fedora:21"
-    docker push "firethorn/fedora:latest"
-
-    docker push "firethorn/java:8"
-    docker push "firethorn/java:latest"
-
-    docker push "firethorn/tomcat:8"
-    docker push "firethorn/tomcat:latest"
-
-    docker push "firethorn/postgres:9"
-    docker push "firethorn/postgres:latest"
-
-    docker push "firethorn/builder:1"
-    docker push "firethorn/builder:latest"
-
-    docker push "firethorn/docker-proxy:1"
-    docker push "firethorn/docker-proxy:latest"
-
-    docker push "firethorn/sql-proxy:1"
-    docker push "firethorn/sql-proxy:latest"
-
-    docker push "firethorn/sql-tunnel:1"
-    docker push "firethorn/sql-tunnel:latest"
-
-    docker push "firethorn/ssh-client:1"
-    docker push "firethorn/ssh-client:latest"
-
-    docker push "firethorn/firethorn:latest"
-    docker push "firethorn/firethorn:${version:?}"
-
-    docker push "firethorn/ogsadai:latest"
-    docker push "firethorn/ogsadai:${version:?}"
-
-    docker push "firethorn/tester:latest"
-    docker push "firethorn/tester:${version:?}"
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 300 AND 360
+            AND
+                atlasSource.dec BETWEEN -40 AND -30
+            "
 
 
+            
+            AND
+                twomass_psc.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                twomass_psc.dec BETWEEN '24.0' AND '24.2'
+            "
+
+
+
+
+
+
+
+
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                count(atlasSource.ra) as countra,
+                max(atlasSource.ra) as maxra,
+                min(atlasSource.ra) as minra,
+                max(atlasSource.dec) as maxdec,
+                min(atlasSource.dec) as mindec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            WHERE
+                atlasSource.ra  BETWEEN 300 AND 360
+            AND
+                atlasSource.dec BETWEEN -40 AND -30
+            "
 
 
 
