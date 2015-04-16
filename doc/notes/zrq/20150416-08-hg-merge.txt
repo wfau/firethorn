@@ -1,0 +1,352 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Create a new virtual machine
+#[user@shep]
+
+    createvm
+
+        ....
+        ....
+        
+        INFO : Node name [desouk]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [desouk.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Install missing tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Set our target versions.
+#[root@virtual]
+
+    branch=1.13.9-zrq-demo-config
+    version=1.13.10
+
+# -----------------------------------------------------
+# Create our projects directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/projects ]
+    then
+        mkdir -p /var/local/projects
+        chgrp -R users /var/local/projects
+        chmod -R g+rwx /var/local/projects
+    fi
+
+# -----------------------------------------------------
+# Create our cache directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/cache ]
+    then
+        mkdir -p /var/local/cache
+        chgrp -R users /var/local/cache
+        chmod -R g+rwx /var/local/cache
+    fi
+
+# -----------------------------------------------------
+# Allow access to Docker containers.
+#[root@virtual]
+
+    chcon -t svirt_sandbox_file_t "/var/local/projects" 
+    chcon -t svirt_sandbox_file_t "/var/local/cache" 
+
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+#[root@virtual]
+
+    # Test if present
+    # semodule -l | grep dockersock
+
+    if [ $(semodule -l | grep -c dockersock) -eq 0 ]
+    then
+        yum install -y git
+        yum install -y make
+        yum install -y checkpolicy
+        yum install -y policycoreutils policycoreutils-python
+        
+        pushd /var/local/projects
+
+            if [ ! -e selinux-dockersock ]
+            then
+                git clone https://github.com/dpw/selinux-dockersock
+            fi
+
+            pushd selinux-dockersock
+
+                make dockersock.pp
+
+                semodule -i dockersock.pp
+
+            popd
+        popd
+    fi
+
+# -----------------------------------------------------
+# Run our build container.
+#[root@virtual]
+
+    docker run \
+        -it --rm \
+        --name builder \
+        --env "branch=${branch:?}" \
+        --env "version=${version:?}" \
+        --volume /var/local/cache:/cache \
+        --volume /var/local/projects:/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/builder:1 \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/projects/firethorn
+EOF
+    fi
+
+    #
+    # Clone our repository.
+    source "${HOME:?}/firethorn.settings"
+    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+
+        popd
+    fi
+
+    #
+    # Pull and update from branch.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update "${branch:?}"
+        hg branch
+    
+    popd
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    echo "newversion [${newversion:?}]"
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Merge and commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+        hg push
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+        hg push
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+        hg push
+
+    popd
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[root@builder]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our webapp services.
+#[root@builder]
+
+    #
+    # Build our webapp services.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+
+
+
+
+
+
+
+
+
+# -------------------------------------------------------------------------------------------
+# Commit our changes to our Mercurial repo.
+
+
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to the Docker repo.
+
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+
