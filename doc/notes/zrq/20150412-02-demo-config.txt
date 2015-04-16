@@ -84,23 +84,30 @@ to the list of functions
     # Test if present
     # semodule -l | grep dockersock
 
-    yum install -y git
-    yum install -y make
-    yum install -y checkpolicy
-    yum install -y policycoreutils policycoreutils-python
-    
-    pushd /var/local/projects
+    if [ $(semodule -l | grep -c dockersock) -eq 0 ]
+    then
+        yum install -y git
+        yum install -y make
+        yum install -y checkpolicy
+        yum install -y policycoreutils policycoreutils-python
+        
+        pushd /var/local/projects
 
-        git clone https://github.com/dpw/selinux-dockersock
+            if [ ! -e selinux-dockersock ]
+            then
+                git clone https://github.com/dpw/selinux-dockersock
+            fi
 
-        pushd selinux-dockersock
+            pushd selinux-dockersock
 
-            make dockersock.pp
+                make dockersock.pp
 
-            semodule -i dockersock.pp
+                semodule -i dockersock.pp
 
+            popd
         popd
-    popd
+    fi
+
 
 # -----------------------------------------------------
 # Run our build container.
@@ -215,6 +222,7 @@ EOF
 # Configure our chain.
 #[root@virtual]
 
+cat > settings << EOF
     metaname=bethany
     username=patricia
     dataname=elayne
@@ -237,9 +245,12 @@ EOF
     userdata=FirethornUserdataZRQ20150311DEV
     useruser=FirethornUserdataZRQ20150311DEVLogin
     userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
-    userhost=${mssqlhost:?}
+    userhost=\${mssqlhost:?}
 
-    datahost=${mssqlhost:?}
+    datahost=\${mssqlhost:?}
+EOF
+
+    source "${HOME:?}/settings"
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
@@ -346,14 +357,14 @@ EOF
 
         source "bin/01-01-init-rest.sh"
 
+#
+# Load the Atlas resource
+
         databasename=ATLASDR1
         databasehost=sebastien
         databaseuser=atlasro
         databasepass=atlasropw
         databasedriver=net.sourceforge.jtds.jdbc.Driver
-
-#
-# Load the Atlas resource
 
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
@@ -478,28 +489,41 @@ EOF
             "AUTO" \
             "
             SELECT
-                ra,
-                dec
+                atlasSource.ra,
+                atlasSource.dec
             FROM
                 atlas.atlasSource
             WHERE
-                ra  BETWEEN '56.0' AND '57.9'
+                atlasSource.ra  BETWEEN 300 AND 360
             AND
-                dec BETWEEN '24.0' AND '24.2'
+                atlasSource.dec BETWEEN -40 AND -30
             "
 
         source "bin/05-03-execute-query.sh" \
             "AUTO" \
             "
             SELECT
-                ra,
-                dec
+                count(atlasSource.ra)
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 300 AND 360
+            AND
+                atlasSource.dec BETWEEN -40 AND -30
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                twomass_psc.ra,
+                twomass_psc.dec
             FROM
                 twomass.twomass_psc
             WHERE
-                ra  BETWEEN '56.0' AND '57.9'
+                twomass_psc.ra  BETWEEN 300 AND 360
             AND
-                dec BETWEEN '24.0' AND '24.2'
+                twomass_psc.dec BETWEEN -40 AND -30
             "
 
         source "bin/05-03-execute-query.sh" \
@@ -522,44 +546,10 @@ EOF
                 atlasSource.ra  BETWEEN 300 AND 360
             AND
                 atlasSource.dec BETWEEN -40 AND -30
-            "
-
-
-            
             AND
-                twomass_psc.ra  BETWEEN '56.0' AND '57.9'
+                twomass_psc.ra  BETWEEN 300 AND 360
             AND
-                twomass_psc.dec BETWEEN '24.0' AND '24.2'
+                twomass_psc.dec BETWEEN -40 AND -30
             "
-
-
-
-
-
-
-
-
-
-        source "bin/05-03-execute-query.sh" \
-            "AUTO" \
-            "
-            SELECT
-                count(atlasSource.ra) as countra,
-                max(atlasSource.ra) as maxra,
-                min(atlasSource.ra) as minra,
-                max(atlasSource.dec) as maxdec,
-                min(atlasSource.dec) as mindec
-            FROM
-                atlasSource
-            JOIN
-                atlasSourceXtwomass_psc
-            ON
-                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
-            WHERE
-                atlasSource.ra  BETWEEN 300 AND 360
-            AND
-                atlasSource.dec BETWEEN -40 AND -30
-            "
-
 
 
