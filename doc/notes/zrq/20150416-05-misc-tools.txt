@@ -1,0 +1,145 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# List our running containers
+#[root@virtual]
+
+    docker ps
+
+# -----------------------------------------------------
+# Stop all our running containers
+#[root@virtual]
+
+    docker stop $(docker ps -q)
+
+# -----------------------------------------------------
+# List all our cached containers
+#[root@virtual]
+
+    docker images
+
+# -----------------------------------------------------
+# Delete a cached container
+#[root@virtual]
+
+    docker rmi firethorn/tester:1.13.9
+
+# -----------------------------------------------------
+# Delete all our cached containers
+#[root@virtual]
+
+    docker rmi $(docker images -q)
+
+# -----------------------------------------------------
+# Architecture ..
+#
+
+
+
+
+     | machines
+     |<-------------- physical ----------------------->|<------- virtual ------>|<------ docker ------>|
+
+     | network
+     |<--- local --->|<--- vpn --->|<--- roe.ac.uk -------------->|<--- docker ----------------------->|
+
+        +-----------+               +------------+           +-----------+
+        | laptop    |               |            |           | amarna    |
+        |           |-- ssh/vpn --->| shepseskaf |--- ssh -->| fedora    |
+        |           |               |            |           |           |
+        | localhost |               | ssh        |           | docker    |
+        | 9091      |----- vpn ---->| 9091:8080  |--- ssh -->| 8080:8080 |---\
+                                    |            |           |           |   |
+                                                 |                       |   |
+                                                                             |
+                                    +------------+                           |    +-------------+
+                                    | ramses2    |                           |    | patricia    |
+                                    | UserData   |<--------------------------|----| (edward)    |<--\
+                                    |            |                           |    | sql-proxy   |   |
+                                                 |                           |    +----------- -+   |
+                                                                             |                      |
+                                    +------------+                           |    +-------------+   |
+                                    | ramses2    |                           |    | elayne      |   |
+                                    | ATLASDR1   |<--------------------------|----| (sebastien) |<--|-\
+                                    | TWOMASS    |                           |    | sql-proxy   |   | |
+                                    |            |                           |    +-------------+   | |
+                                                 |                           |                      | |
+                                                                             |    +-------------+   | |
+                                                                             |    | bethany     |   | |
+                                                                             |    | (albert)    |   | |
+                                                                             |    | postgres    |<--|-|-\
+                                                                             |    +-------------+   | | |
+                                                                             |                      | | |
+                                                                             |    +-------------+   | | |
+                                                                             |    | jarmila     |   | | |
+                                                                             |    | (timothy)   |   | | |
+                                                                             |    | ogsa-dai    |<--|-|-|-\
+                                                                             |    +-------------+   | | | |
+                                                                             |                      | | | |
+                                                                             |    +-------------+   | | | |
+                                                                             |    | gillian     |---|-|-|-/
+                                                                             |    | (peter)     |---|-|-/
+                                                                             |    | firethorn   |---|-/
+                                                                             |    |             |---/
+                                                                             |    |  tomcat     |
+                                                                             \--->|   8080      |<--\
+                                                                                  +-------------+   |
+                                                                                                    |
+                                                                                  +-------------+   |
+                                                                                  | tester      |---/
+                                                                                  | RESTY       |
+                                                                                  +-------------+
+
+
+
+
+
+
+
+
+
+
+
+    <!--+
+        | https://en.wikipedia.org/wiki/Category:Cities_in_Ancient_Egypt
+        |  1 amarna
+        |  2 badari
+        |  3 desouk
+        |  4 edfu
+        |  5 hebenu
+        |  6 kerma
+        |  7 mendes
+        |  8 nekhen
+        |  9 thebes
+        | 10 zawty
+        +-->
+
+
+
+
+
+
+
+
+

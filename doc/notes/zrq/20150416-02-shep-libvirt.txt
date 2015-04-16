@@ -1,0 +1,97 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Using the ischnura-kvm tools to manage virtual machines on shep.
+    # https://github.com/Zarquan/ischnura-kvm
+    #
+
+# -----------------------------------------
+# Add the ischnura-kvm tools to our path
+#[user@shep]
+
+    vi "${HOME}/.bashrc"
+
+    +   #
+    +   # ischnura-kvm tools
+    +   export PATH=${PATH}:/home/dave/projects/ischnura-kvm/src/bin
+
+# -----------------------------------------
+# List the virtual machines
+#[user@shep]
+
+    virsh -c 'qemu:///system' list
+
+         Id    Name                           State
+        ----------------------------------------------------
+         6     pyratest1                      running
+         7     pyratest2                      running
+         8     pyratest3                      running
+         36    badari                         running
+
+# -----------------------------------------
+# Delete a virtual machine
+#[user@shep]
+
+    #
+    # Stop a VM nicely
+    virsh -c 'qemu:///system' shutdown badari
+
+    #
+    # Kill a VM (pull the plug)
+    virsh -c 'qemu:///system' destroy  badari
+
+    #
+    # Delete a VM definition
+    virsh -c 'qemu:///system' undefine badari
+
+# -----------------------------------------
+# Create a new virtual machine
+#[user@shep]
+
+    createvm
+
+        ....
+        ....
+        
+        INFO : Node name [badari]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [badari.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Update the local SSH fingerprint.
+# TODO automate the IP address selection.
+#[user@shep]
+
+    # http://linux.die.net/man/1/ssh-keygen
+    # http://linux.die.net/man/1/ssh-keyscan
+
+    ssh-keygen -f "${HOME:?}/.ssh/known_hosts" -R "192.168.122.11"
+
+# -----------------------------------------
+# Login to the new virtual machine
+#[user@shep]
+
+    ssh badari
+

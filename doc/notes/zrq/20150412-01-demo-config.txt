@@ -147,9 +147,9 @@
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=FirethornUserdataZRQ20150311DEV
-    useruser=FirethornUserdataZRQ20150311DEVLogin
-    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
+    userdata=xxxx
+    useruser=xxxx
+    userpass=xxxx
     userhost=${mssqlhost:?}
 
     datahost=${mssqlhost:?}
@@ -261,8 +261,8 @@ EOF
 
         databasename=ATLASDR1
         databasehost=sebastien
-        databaseuser=atlasro
-        databasepass=atlasropw
+        databaseuser=xxxx
+        databasepass=xxxx
         databasedriver=net.sourceforge.jtds.jdbc.Driver
 
 #

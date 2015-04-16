@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,32 +20,13 @@
 #
 #
 
-Sub-query
-
-    SELECT ATLASDR1.dbo.atlasSource ....  WHERE table_4.slaveObjID_3 IN ($REPLACE(dqpBatchData_267276))
-
-Is replaced with a comma separated list of IDs created by
-
-    STRING_AGGREGATE(JDBC_TABLE_197096.pts_key)
-
-Which not in the function list
- 
-    STRING_AGGREGATE()
-
-add
-
-    uk.org.ogsadai.dqp.lqp.udf.aggregate.StringAggregate
-
-to the list of functions
-
-    WEB-INF/etc/dai/dqp/DQPFunctionsConfig.txt
 
 # -----------------------------------------------------
 # Set our target version.
 #[root@virtual]
 
     branch=1.13.9-zrq-demo-config
-    version=1.13.9
+    version=1.13.9-zrq-demo-config
 
 # -----------------------------------------------------
 # Create our projects directory.
@@ -116,7 +97,6 @@ to the list of functions
         -it --rm \
         --name builder \
         --env "branch=${branch:?}" \
-        --env "version=${version:?}" \
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
