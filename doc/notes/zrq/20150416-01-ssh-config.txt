@@ -20,8 +20,12 @@
 #
 #
 
+#
+# Configure local SSH client to connect to virtual machines on shepseskaf.
+#
+
 # -----------------------------------------
-# Configure our SSH client 
+# Configure SSH client on desktop/laptop
 #[user@desktop] 
 
     gedit "${HOME}/.ssh/config"
@@ -47,7 +51,7 @@
         Host zawty
             HostName 192.168.122.19
 
-        Host amarna badari desouk edfu hebenu kerma mendes nekhen thebes zawty
+        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
             User root
             ProxyCommand ssh -q shepseskaf nc %h %p
             IdentityFile ~/.ssh/xxxxxxxx
@@ -57,8 +61,26 @@
             ServerAliveInterval 60
             ServerAliveCountMax 5
 
+        Host shepvms
+            User xxxx
+            IdentityFile ~/.ssh/xxxxxxxx
+            HostName shepseskaf.roe.ac.uk
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+            LocalForward 9090 192.168.122.10:8080
+            LocalForward 9091 192.168.122.11:8080
+            LocalForward 9092 192.168.122.12:8080
+            LocalForward 9093 192.168.122.13:8080
+            LocalForward 9094 192.168.122.14:8080
+            LocalForward 9095 192.168.122.15:8080
+            LocalForward 9096 192.168.122.16:8080
+            LocalForward 9097 192.168.122.17:8080
+            LocalForward 9098 192.168.122.18:8080
+            LocalForward 9099 192.168.122.19:8080
+
 # -----------------------------------------
-# Configure our SSH client 
+# Configure SSH client on shepseskaf
 #[user@shep]
 
     vi "${HOME}/.ssh/config"
@@ -71,7 +93,7 @@
             HostName 192.168.122.12
         Host edfu
             HostName 192.168.122.13
-        Host heben
+        Host hebenu
             HostName 192.168.122.14
         Host kerma
             HostName 192.168.122.15
@@ -84,33 +106,10 @@
         Host zawty
             HostName 192.168.122.19
 
-        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+        Host amarna badari desouk edfu hebenu kerma mendes nekhen thebes zawty
             User root
-            ProxyCommand ssh -q shepseskaf nc %h %p
-            IdentityFile ~/.ssh/xxxxxxxx
             Protocol 2
             Compression no
             PasswordAuthentication no
-            ServerAliveInterval 60
-            ServerAliveCountMax 5
-
-# -----------------------------------------
-# Configure our path
-#[user@shep]
-
-    export PATH=${PATH}:/home/dave/projects/ischnura-kvm/src/bin
-
-# -----------------------------------------------------
-# Start a clean VM.
-#[user@shep]
-
-    createvm
-
-        ....
-
-        INFO : Node name [amarna]
-        INFO : Base name [fedora-21-base-20150317.qcow]
-        INFO : Disc name [amarna.qcow]
-        INFO : Disc size [8G]
 
 

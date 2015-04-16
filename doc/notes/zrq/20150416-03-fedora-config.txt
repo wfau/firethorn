@@ -1,0 +1,73 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------
+# Install missing tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+        * docker.service - Docker Application Container Engine
+           Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled)
+           Active: active (running) since Thu 2015-04-16 13:37:07 BST; 15ms ago
+             Docs: http://docs.docker.com
+         Main PID: 22157 (docker)
+           CGroup: /system.slice/docker.service
+                   └─22157 /usr/bin/docker -d --selinux-enabled
+
+        Apr 16 13:36:57 badari docker[22157]: time="2015-04-16T13:36:57+01:00" level="info" msg="+job serveapi(unix:///var/run/docker.sock)"
+        Apr 16 13:36:57 badari docker[22157]: time="2015-04-16T13:36:57+01:00" level="info" msg="Listening for HTTP on unix (/var/run/docker.sock)"
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="+job init_networkdriver()"
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="-job init_networkdriver() = OK (0)"
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="Loading containers: start."
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="Loading containers: done."
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="docker daemon: 1.5.0 a8a31ef/1.5.0; execdriver: native-0.2; graphdriver: devicemapper"
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="+job acceptconnections()"
+        Apr 16 13:37:07 badari docker[22157]: time="2015-04-16T13:37:07+01:00" level="info" msg="-job acceptconnections() = OK (0)"
+
+
+
+
+

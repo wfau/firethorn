@@ -1,0 +1,1175 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    1) Local TWOMASS as part of the main resource
+    2) Local TWOMASS as a separate resource
+    3) Remote TWOMASS as a separate resource
+
+    Using container based chain.
+
+    Configure TAP endpoints on demand
+    Scan and refresh on TAP metadata
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-demo-config
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------
+# Login to shep
+#[user@shep]
+
+    ssh shep
+
+# -----------------------------------------
+# Configure our path
+#[user@shep]
+
+    export PATH=${PATH}:${HOME}/projects/ischnura-kvm/src/bin
+
+# -----------------------------------------
+# Create a new VM
+#[user@shep]
+
+    virsh -c 'qemu:///system' list
+
+         Id    Name                           State
+        ----------------------------------------------------
+         6     pyratest1                      running
+         7     pyratest2                      running
+         8     pyratest3                      running
+         32    amarna                         running
+         34    badari                         running
+
+    virsh -c 'qemu:///system' shutdown amarna
+    virsh -c 'qemu:///system' destroy  badari
+    virsh -c 'qemu:///system' undefine amarna
+    virsh -c 'qemu:///system' undefine badari --remove-all-storage
+
+    createvm
+
+        INFO : Node name [badari]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [badari.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Update known hosts.
+#[user@shep]
+
+    ....
+    ....
+
+# -----------------------------------------
+# Login to the the VM
+#[user@shep]
+
+    ssh badari
+
+# -----------------------------------------------------
+# Install missing tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy tool.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Set our target version.
+#[root@virtual]
+
+    version=1.13.9
+
+# -----------------------------------------------------
+# Configure our chain.
+#[root@virtual]
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+
+    mssqlhost=ramses2
+    mssqlport=1433
+    
+    userdata=xxxx
+    useruser=xxxx
+    userpass=xxxx
+    userhost=${mssqlhost:?}
+
+    datahost=${mssqlhost:?}
+
+# -----------------------------------------------------
+# Run our userdata ambassador.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${username:?}" \
+        --env  "target=${userhost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Run our science data ambassador.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${dataname:?}" \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Run our PostgreSQL metadata container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Run our OGSA-DAI container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[root@virtual]
+
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=org.postgresql.Driver
+
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}:${userport:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.type=mssql
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Run our FireThorn container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --expose 8080 \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Run our test container.
+#[root@virtual]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our data resources.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+        databasename=ATLASDR1
+        databasehost=sebastien
+        databaseuser=xxxx
+        databasepass=xxxx
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
+
+#
+# Load the Atlas resource
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+        atlasschema=${adqlschema:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+        atlasschema=${adqlschema:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        atlastwomass=${adqlschema:?}
+
+#
+# Run the test queries
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                atlasSource.dec BETWEEN '24.0' AND '24.2'
+            AND
+                twomass_psc.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                twomass_psc.dec BETWEEN '24.0' AND '24.2'
+            "
+
+#
+# Load the TWOMASS resource
+
+        databasename=TWOMASS
+        databasehost=sebastien
+        databaseuser=palro
+        databasepass=palropw
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            "${databasename:?}"
+        twomassjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        twomassadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${twomassjdbc:?}" "${twomassadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        twomassschema=${adqlschema:?}
+
+#
+# Run the test queries
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ra,
+                dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                ra  BETWEEN '56.0' AND '57.9'
+            AND
+                dec BETWEEN '24.0' AND '24.2'
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                atlasSource.dec BETWEEN '24.0' AND '24.2'
+            AND
+                twomass_psc.ra  BETWEEN '56.0' AND '57.9'
+            AND
+                twomass_psc.dec BETWEEN '24.0' AND '24.2'
+            "
+
+Exception
+
+    2015-04-12 03:17:59,566 DEBUG event.LoggingActivityListener [pool-1-thread-54,debug:84] uk.org.ogsadai.activity.ActivityUserException: A user problem has occured during activity processing.
+	    at uk.org.ogsadai.activity.relational.GroupByActivity.getAggregateFunctions(GroupByActivity.java:339)
+	    at uk.org.ogsadai.activity.relational.GroupByActivity.processIteration(GroupByActivity.java:215)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	    at java.lang.Thread.run(Thread.java:745)
+    Caused by: uk.org.ogsadai.expression.arithmetic.ExpressionException: [1428823079562:300] uk.org.ogsadai.EXPRESSION_ERROR
+	    at uk.org.ogsadai.expression.arithmetic.ArithmeticExpressionFactory.buildArithmeticExpression(ArithmeticExpressionFactory.java:142)
+	    at uk.org.ogsadai.activity.relational.GroupByActivity.getAggregateFunctions(GroupByActivity.java:322)
+	    ... 10 more
+    Caused by: uk.org.ogsadai.dqp.lqp.udf.repository.NoSuchFunctionException: No such function in repository: STRING_AGGREGATE
+	    at uk.org.ogsadai.dqp.lqp.udf.repository.SimpleFunctionRepository.getFunctionInstanceByName(SimpleFunctionRepository.java:50)
+	    at uk.org.ogsadai.expression.arithmetic.ArithmeticExpressionFactory.buildArithmeticExpression(ArithmeticExpressionFactory.java:124)
+	    ... 11 more
+
+
+Clue earlier in the logs ..
+
+2015-04-12 03:17:59,185 DEBUG common.SimpleDQPWorkflowTransformer [pool-1-thread-43,debug:84] Pipeline workflow
+2015-04-12 03:17:59,194 DEBUG common.SimpleDQPWorkflowTransformer [pool-1-thread-43,debug:84] Transformed workflow is:
+PipelineWorkflow {
+  Activity {
+    name = uk.org.ogsadai.CreateEmptyTupleList
+    instance name = uk.org.ogsadai.CreateEmptyTupleList-ogsadai-b702973d-b6ed-4785-b6cc-0af0a406b0be
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = resultColumnNames
+        literals:
+          [
+          JDBC_TABLE_196685.dec
+          JDBC_TABLE_196685.ra
+          JDBC_TABLE_196695.slaveObjID
+          ]
+      }
+      Occurrence with index 0:
+      Input {
+        name = resultColumnTypes
+        literals:
+          [
+          8
+          8
+          5
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-d1048846-9e34-4f3e-98b0-e2ffdf3007ad]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.IfEmptyList
+    instance name = uk.org.ogsadai.IfEmptyList-ogsadai-846cee0f-f5be-4958-a0e5-58e203e44d09
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-cb178467-7f8e-4b93-bec1-c080780b48f4
+      }
+      Occurrence with index 0:
+      Input {
+        name = content
+        pipe = ogsadai-d1048846-9e34-4f3e-98b0-e2ffdf3007ad
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = outputNonEmpty
+        connected = true
+        pipe = Pipe[ogsadai-208e6c55-f6a2-4f9e-b54b-240e1b51a547]
+      }
+      Occurrence with index 0:
+      Output {
+        name = outputEmpty
+        connected = true
+        pipe = Pipe[ogsadai-87033871-720e-4032-9bd7-9717f7a612fe]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-b49dcd34-2ad0-436b-82d5-b2ea933f0b01
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-208e6c55-f6a2-4f9e-b54b-240e1b51a547
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          SELECT table_4.dec_1, table_4.ra_2, table_4.slaveObjID_3 FROM (SELECT ATLASDR1.dbo.atlasSource.dec AS dec_1, ATLASDR1.dbo.atlasSource.ra AS ra_2, ATLASDR1.dbo.atlasSourceXtwomass_psc.slaveObjID AS slaveObjID_3 FROM ATLASDR1.dbo.atlasSource, ATLASDR1.dbo.atlasSourceXtwomass_psc WHERE  ( ATLASDR1.dbo.atlasSource.ra < 57.9 )  AND  ( ATLASDR1.dbo.atlasSource.ra > 56.0 )  AND  ( ATLASDR1.dbo.atlasSource.dec < 24.2 )  AND  ( ATLASDR1.dbo.atlasSource.dec > 24.0 )  AND  ( ATLASDR1.dbo.atlasSource.sourceID = ATLASDR1.dbo.atlasSourceXtwomass_psc.masterObjID ) ) AS table_4 WHERE table_4.slaveObjID_3 IN ($REPLACE(dqpBatchData_267276))
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-bb7b70be-04c8-4fa2-bf4d-99461496615a]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-e4983f2e-667e-4e9b-b1c9-f5087c3aa831]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.StringReplace
+    instance name = uk.org.ogsadai.StringReplace-ogsadai-31ea30c6-07f9-4150-a494-b6f337e22bcd
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = template
+        pipe = ogsadai-e4983f2e-667e-4e9b-b1c9-f5087c3aa831
+      }
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-bb7b70be-04c8-4fa2-bf4d-99461496615a
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-f2428e77-959e-4d83-96ba-7092a2007c8e]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.SQLQuery
+    instance name = uk.org.ogsadai.SQLQuery-ogsadai-8d1cc3b2-899d-4fdd-8098-7806d01afba7
+    resource ID = ogsadai-4cafdbe9-f7b4-455f-a08a-ac35e6ff7239
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = expression
+        pipe = ogsadai-f2428e77-959e-4d83-96ba-7092a2007c8e
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = data
+        connected = true
+        pipe = Pipe[ogsadai-320ca0e3-b104-4287-8bb4-3720f17b292f]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.MetadataRename
+    instance name = uk.org.ogsadai.MetadataRename-ogsadai-bc5dd7ab-a044-4e46-8268-848924b84838
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = resultColumnNames
+        pipe = ogsadai-ae7fc231-b122-4427-a44f-fab3a4573194
+      }
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-eb0d8c55-5e82-437a-8dab-2e1a4fc40288
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-2a01049e-5fcb-4d37-83ba-cb8ef6e7e653]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-60f7d4ef-0cfe-4b47-8ca3-4dc6c4bc0bb4
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-320ca0e3-b104-4287-8bb4-3720f17b292f
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          [
+          JDBC_TABLE_196685.dec
+          JDBC_TABLE_196685.ra
+          JDBC_TABLE_196695.slaveObjID
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-eb0d8c55-5e82-437a-8dab-2e1a4fc40288]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-ae7fc231-b122-4427-a44f-fab3a4573194]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.EndIf
+    instance name = uk.org.ogsadai.EndIf-ogsadai-afaace08-dff2-4b30-8df3-6be5e272be39
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = falseInput
+        pipe = ogsadai-87033871-720e-4032-9bd7-9717f7a612fe
+      }
+      Occurrence with index 0:
+      Input {
+        name = trueInput
+        pipe = ogsadai-2a01049e-5fcb-4d37-83ba-cb8ef6e7e653
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-5c71cfc5-913e-4826-bfe1-929c3ced948e]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.SQLQuery
+    instance name = uk.org.ogsadai.SQLQuery-ogsadai-79b0de50-3e47-4cbe-b806-443346b1ebba
+    resource ID = ogsadai-1e321581-6b01-4cb9-aa99-92235a0fa475
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = expression
+        literals:
+          SELECT TWOMASS.dbo.twomass_psc.pts_key FROM TWOMASS.dbo.twomass_psc WHERE  ( TWOMASS.dbo.twomass_psc.dec < '24.2' )  AND  ( TWOMASS.dbo.twomass_psc.dec > '24.0' )  AND  ( TWOMASS.dbo.twomass_psc.ra < '57.9' )  AND  ( TWOMASS.dbo.twomass_psc.ra > '56.0' ) 
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = data
+        connected = true
+        pipe = Pipe[ogsadai-59db060e-e804-4e02-9874-11d7de44b225]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.MetadataRename
+    instance name = uk.org.ogsadai.MetadataRename-ogsadai-6dea963e-27ac-4401-a053-39ce16dce74d
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = resultColumnNames
+        literals:
+          [
+          JDBC_TABLE_197096.pts_key
+          ]
+      }
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-59db060e-e804-4e02-9874-11d7de44b225
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-3fd45174-f432-44ca-a6f6-b1d1ebea2bff]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-095b1b9e-e8dc-49db-b66a-d12c0b3aa5ac
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-256b94cc-8040-425f-8a37-7224935fa087
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          JDBC_TABLE_197096.pts_key = JDBC_TABLE_196695.slaveObjID
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-dc0922e7-2401-4bd5-8543-e01d901e1c39]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-e127d988-6e97-43f0-8f14-fc4eb4c66913]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-596c9400-96a9-455a-ab06-9f94a61500d1
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-dc0922e7-2401-4bd5-8543-e01d901e1c39
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          data1
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-34bc56db-9ea9-49dd-90cf-8793a7ddef10]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-04fd0765-87ba-457a-9302-b5a62d1a30f3]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-3dd4e461-2da2-41e6-afb9-4a5ad4f85e89
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-34bc56db-9ea9-49dd-90cf-8793a7ddef10
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          pts_key
+      JDBC_TABLE_197096
+      null
+      null
+      4
+      2
+      0
+      0
+      
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-c88f8d00-9c91-4435-8669-ffd2a3bb6351]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-3659d46c-4b00-4b9c-a48a-261bdc507947]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-72218846-1ffe-4671-be66-390282c708c1
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-c88f8d00-9c91-4435-8669-ffd2a3bb6351
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          dec
+      JDBC_TABLE_196685
+      null
+      null
+      8
+      2
+      0
+      0
+      ra
+      JDBC_TABLE_196685
+      null
+      null
+      8
+      2
+      0
+      0
+      slaveObjID
+      JDBC_TABLE_196695
+      null
+      null
+      5
+      2
+      0
+      0
+      
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-ac4fe80e-0aa6-46c0-b68f-22eba5ba396d]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-1c3cc6ec-4007-4009-9b9c-588cc4cc8602]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.TupleThetaJoin
+    instance name = uk.org.ogsadai.TupleThetaJoin-ogsadai-095ec8ad-2c15-40a9-89b4-1146ef15de96
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = condition
+        pipe = ogsadai-e127d988-6e97-43f0-8f14-fc4eb4c66913
+      }
+      Occurrence with index 0:
+      Input {
+        name = data1Metadata
+        pipe = ogsadai-3659d46c-4b00-4b9c-a48a-261bdc507947
+      }
+      Occurrence with index 0:
+      Input {
+        name = data2
+        pipe = ogsadai-5c71cfc5-913e-4826-bfe1-929c3ced948e
+      }
+      Occurrence with index 0:
+      Input {
+        name = readFirst
+        pipe = ogsadai-04fd0765-87ba-457a-9302-b5a62d1a30f3
+      }
+      Occurrence with index 0:
+      Input {
+        name = data1
+        pipe = ogsadai-ac4fe80e-0aa6-46c0-b68f-22eba5ba396d
+      }
+      Occurrence with index 0:
+      Input {
+        name = data2Metadata
+        pipe = ogsadai-1c3cc6ec-4007-4009-9b9c-588cc4cc8602
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-dd3f724e-6156-4ef2-9b05-e230e2457ea4]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ListSplit
+    instance name = uk.org.ogsadai.ListSplit-ogsadai-97de87d4-71b4-41aa-bddf-985813750871
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-3fd45174-f432-44ca-a6f6-b1d1ebea2bff
+      }
+      Occurrence with index 0:
+      Input {
+        name = size
+        literals:
+          10000
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-76ae0423-5f81-41b8-9666-617d0e02598f]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.Tee
+    instance name = uk.org.ogsadai.Tee-ogsadai-74a688c4-9ed5-49a9-a162-6a0dded2f5ff
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-76ae0423-5f81-41b8-9666-617d0e02598f
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-256b94cc-8040-425f-8a37-7224935fa087]
+      }
+      Occurrence with index 1:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-e297aecd-d897-414e-9167-3fc1843bced1]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ToSingleList
+    instance name = uk.org.ogsadai.ToSingleList-ogsadai-eff3810b-b58a-4fe4-b7bc-164dd3e57fd3
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-dd3f724e-6156-4ef2-9b05-e230e2457ea4
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-15318e15-516d-45b9-99c5-92e482108514]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.GroupBy
+    instance name = uk.org.ogsadai.GroupBy-ogsadai-7fb67b83-066e-4b4e-8273-b9061946dca6
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = resultColumnNames
+        pipe = ogsadai-33b4edd9-44b1-48ec-937b-c4494944d48d
+      }
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-079960b4-ba8d-41fc-8094-d8f7f2646353
+      }
+      Occurrence with index 0:
+      Input {
+        name = columnIds
+        pipe = ogsadai-89652a3c-ee90-41d7-ad4d-48ed089c5b22
+      }
+      Occurrence with index 0:
+      Input {
+        name = aggregates
+        pipe = ogsadai-40a87d21-377a-491d-b9b9-3d13cffabbb5
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = true
+        pipe = Pipe[ogsadai-cb178467-7f8e-4b93-bec1-c080780b48f4]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-60fefec0-f5b2-46f9-bf3b-fc8b8224adea
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-e297aecd-d897-414e-9167-3fc1843bced1
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          [
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-efbbc7f1-3cb0-4255-994a-91e50319ae98]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-89652a3c-ee90-41d7-ad4d-48ed089c5b22]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-a95148ba-6ffc-4b66-81b9-6bd72733c8c2
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-efbbc7f1-3cb0-4255-994a-91e50319ae98
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          [
+          STRING_AGGREGATE(JDBC_TABLE_197096.pts_key)
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-d9d7dda0-ee85-45dc-b1d5-dc44c862c198]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-40a87d21-377a-491d-b9b9-3d13cffabbb5]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.ControlledRepeat
+    instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-d1afdea8-e445-4069-8651-e80d486b6807
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = input
+        pipe = ogsadai-d9d7dda0-ee85-45dc-b1d5-dc44c862c198
+      }
+      Occurrence with index 0:
+      Input {
+        name = repeatedInput
+        literals:
+          [
+          dqpBatchData_267276
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = output
+        connected = true
+        pipe = Pipe[ogsadai-079960b4-ba8d-41fc-8094-d8f7f2646353]
+      }
+      Occurrence with index 0:
+      Output {
+        name = repeatedOutput
+        connected = true
+        pipe = Pipe[ogsadai-33b4edd9-44b1-48ec-937b-c4494944d48d]
+      }
+  }
+  Activity {
+    name = uk.org.ogsadai.TupleArithmeticProject
+    instance name = uk.org.ogsadai.TupleArithmeticProject-ogsadai-233c1a48-57b0-4ccb-a9ed-c73b2c2f7509
+    status = none
+    inputs:
+      Occurrence with index 0:
+      Input {
+        name = resultColumnNames
+        literals:
+          [
+          JDBC_TABLE_196685.ra
+          JDBC_TABLE_196685.dec
+          ]
+      }
+      Occurrence with index 0:
+      Input {
+        name = data
+        pipe = ogsadai-15318e15-516d-45b9-99c5-92e482108514
+      }
+      Occurrence with index 0:
+      Input {
+        name = expressions
+        literals:
+          [
+          JDBC_TABLE_196685.ra
+          JDBC_TABLE_196685.dec
+          ]
+      }
+    outputs:
+      Occurrence with index 0:
+      Output {
+        name = result
+        connected = false
+        pipe = Pipe[ogsadai-fde51046-2cfa-4d54-b127-1c1275501542]
+      }
+  }
+}
+
+Guess is this
+
+    SELECT ATLASDR1.dbo.atlasSource ....  WHERE table_4.slaveObjID_3 IN ($REPLACE(dqpBatchData_267276))
+
+Is replaced with a comma separated list of IDs created by
+
+    STRING_AGGREGATE(JDBC_TABLE_197096.pts_key)
+
+So we need to figure out where 
+
+    STRING_AGGREGATE()
+    
+would normally come from ....
+
+
+

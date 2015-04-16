@@ -1,0 +1,115 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Update our network settings to include desouk.
+#[user@shep] 
+
+    #
+    # List our virtual MAC address mappings
+    virsh -c 'qemu:///system' net-dumpxml default
+
+    #
+    # Remove and start again ..
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:01"/>
+<host mac="52:54:00:00:00:02"/>
+<host mac="52:54:00:00:00:03"/>
+<host mac="52:54:00:00:00:04"/>
+<host mac="52:54:00:00:00:05"/>
+<host mac="52:54:00:00:00:06"/>
+<host mac="52:54:00:00:00:07"/>
+<host mac="52:54:00:00:00:08"/>
+<host mac="52:54:00:00:00:09"/>
+<host mac="52:54:00:00:00:0A"/>
+EOF
+
+    delhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            delete ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do delhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Add our hosts ....
+    xmltext=$(mktemp)
+    cat > "${xmltext:?}" << 'EOF'
+<host mac="52:54:00:00:00:01" name="amarna" ip="192.168.122.10" />
+<host mac="52:54:00:00:00:02" name="badari" ip="192.168.122.11" />
+<host mac="52:54:00:00:00:03" name="desouk" ip="192.168.122.12" />
+<host mac="52:54:00:00:00:04" name="edfu"   ip="192.168.122.13" />
+<host mac="52:54:00:00:00:05" name="hebenu" ip="192.168.122.14" />
+<host mac="52:54:00:00:00:06" name="kerma"  ip="192.168.122.15" />
+<host mac="52:54:00:00:00:07" name="mendes" ip="192.168.122.16" />
+<host mac="52:54:00:00:00:08" name="nekhen" ip="192.168.122.17" />
+<host mac="52:54:00:00:00:09" name="thebes" ip="192.168.122.18" />
+<host mac="52:54:00:00:00:0A" name="zawty"  ip="192.168.122.19"/>
+EOF
+
+    addhost()
+        {
+        local xml=${1}
+        virsh -c 'qemu:///system' \
+            net-update 'default' \
+            add ip-dhcp-host "${xml}" \
+            --live --config
+        }
+
+    while read line; do addhost "${line}"; done < "${xmltext:?}"
+
+    #
+    # Check the results.
+    virsh -c 'qemu:///system' net-dumpxml default
+
+        <network>
+          <name>default</name>
+          <uuid>568ff68c-af99-479c-9773-cca331a3d46f</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <ip address='192.168.122.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.122.2' end='192.168.122.254'/>
+              <host mac='52:54:00:00:00:01' name='amarna' ip='192.168.122.10'/>
+              <host mac='52:54:00:00:00:02' name='badari' ip='192.168.122.11'/>
+              <host mac='52:54:00:00:00:03' name='desouk' ip='192.168.122.12'/>
+              <host mac='52:54:00:00:00:04' name='edfu' ip='192.168.122.13'/>
+              <host mac='52:54:00:00:00:05' name='hebenu' ip='192.168.122.14'/>
+              <host mac='52:54:00:00:00:06' name='kerma' ip='192.168.122.15'/>
+              <host mac='52:54:00:00:00:07' name='mendes' ip='192.168.122.16'/>
+              <host mac='52:54:00:00:00:08' name='nekhen' ip='192.168.122.17'/>
+              <host mac='52:54:00:00:00:09' name='thebes' ip='192.168.122.18'/>
+              <host mac='52:54:00:00:00:0A' name='zawty' ip='192.168.122.19'/>
+            </dhcp>
+          </ip>
+        </network>
+
+

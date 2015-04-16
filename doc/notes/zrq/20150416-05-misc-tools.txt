@@ -1,0 +1,128 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# List our running containers
+#[root@virtual]
+
+    docker ps
+
+# -----------------------------------------------------
+# Stop all our running containers
+#[root@virtual]
+
+    docker stop $(docker ps -q)
+
+# -----------------------------------------------------
+# List all our cached containers
+#[root@virtual]
+
+    docker images
+
+# -----------------------------------------------------
+# Delete a cached container
+#[root@virtual]
+
+    docker rmi firethorn/tester:1.13.9
+
+# -----------------------------------------------------
+# Delete all our cached containers
+#[root@virtual]
+
+    docker rmi $(docker images -q)
+
+# -----------------------------------------------------
+# VM names
+#
+
+    https://en.wikipedia.org/wiki/Category:Cities_in_Ancient_Egypt
+
+    amarna  192.168.122.10      http://localhost:9090/firethorn
+    badari  192.168.122.11      http://localhost:9091/firethorn
+    desouk  192.168.122.12      http://localhost:9092/firethorn
+    edfu    192.168.122.13      http://localhost:9093/firethorn
+    hebenu  192.168.122.14      http://localhost:9094/firethorn
+    kerma   192.168.122.15      http://localhost:9095/firethorn      
+    mendes  192.168.122.16      http://localhost:9096/firethorn
+    nekhen  192.168.122.17      http://localhost:9097/firethorn
+    thebes  192.168.122.18      http://localhost:9098/firethorn
+    zawty   192.168.122.19      http://localhost:9099/firethorn
+
+# -----------------------------------------------------
+# Container architecture ..
+#
+
+
+     |<-------------- physical ----------------------->|<------- virtual ------>|<------ docker ------>|
+
+        +-----------+               +------------+           +-----------+
+        | laptop    |               |            |           | amarna    |
+        |           |-- ssh/vpn --->| shepseskaf |--- ssh -->| fedora    |
+        |           |               |            |           |           |
+        | localhost |               | ssh        |           | docker    |
+        | 9091      |----- vpn ---->| 9091:8080  |--- ssh -->| 8080:8080 |---\
+                                    |            |           |           |   |
+                                                 |                       |   |
+                                                                             |
+                                    +------------+                           |    +-------------+
+                                    | ramses2    |                           |    | patricia    |
+                                    | UserData   |<--------------------------|----| (edward)    |<--\
+                                    |            |                           |    | sql-proxy   |   |
+                                                 |                           |    +----------- -+   |
+                                                                             |                      |
+                                    +------------+                           |    +-------------+   |
+                                    | ramses2    |                           |    | elayne      |   |
+                                    | ATLASDR1   |<--------------------------|----| (sebastien) |<--|-\
+                                    | TWOMASS    |                           |    | sql-proxy   |   | |
+                                    |            |                           |    +-------------+   | |
+                                                 |                           |                      | |
+                                                                             |    +-------------+   | |
+                                                                             |    | bethany     |   | |
+                                                                             |    | (albert)    |   | |
+                                                                             |    | postgres    |<--|-|-\
+                                                                             |    +-------------+   | | |
+                                                                             |                      | | |
+                                                                             |    +-------------+   | | |
+                                                                             |    | jarmila     |   | | |
+                                                                             |    | (timothy)   |   | | |
+                                                                             |    | ogsa-dai    |<--|-|-|-\
+                                                                             |    +-------------+   | | | |
+                                                                             |                      | | | |
+                                                                             |    +-------------+   | | | |
+                                                                             |    | gillian     |---|-|-|-/
+                                                                             |    | (peter)     |---|-|-/
+                                                                             |    | firethorn   |---|-/
+                                                                             |    |             |---/
+                                                                             |    |  tomcat     |
+                                                                             \--->|   8080      |<--\
+                                                                                  +-------------+   |
+                                                                                                    |
+                                                                                  +-------------+   |
+                                                                                  | tester      |---/
+                                                                                  | RESTY       |
+                                                                                  +-------------+
+
+
+
+
+
