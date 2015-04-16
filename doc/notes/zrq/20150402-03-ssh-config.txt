@@ -30,22 +30,24 @@
             HostName 192.168.122.10
         Host badari
             HostName 192.168.122.11
-        Host edfu
+        Host desouk
             HostName 192.168.122.12
-        Host hebenu
+        Host edfu
             HostName 192.168.122.13
-        Host kerma
+        Host hebenu
             HostName 192.168.122.14
-        Host mendes
+        Host kerma
             HostName 192.168.122.15
-        Host nekhen
+        Host mendes
             HostName 192.168.122.16
-        Host thebes
+        Host nekhen
             HostName 192.168.122.17
-        Host zawty
+        Host thebes
             HostName 192.168.122.18
+        Host zawty
+            HostName 192.168.122.19
 
-        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+        Host amarna badari desouk edfu hebenu kerma mendes nekhen thebes zawty
             User root
             ProxyCommand ssh -q shepseskaf nc %h %p
             IdentityFile ~/.ssh/xxxxxxxx
@@ -65,20 +67,22 @@
             HostName 192.168.122.10
         Host badari
             HostName 192.168.122.11
-        Host edfu
+        Host desouk
             HostName 192.168.122.12
-        Host hebenu
+        Host edfu
             HostName 192.168.122.13
-        Host kerma
+        Host heben
             HostName 192.168.122.14
-        Host mendes
+        Host kerma
             HostName 192.168.122.15
-        Host nekhen
+        Host mendes
             HostName 192.168.122.16
-        Host thebes
+        Host nekhen
             HostName 192.168.122.17
-        Host zawty
+        Host thebes
             HostName 192.168.122.18
+        Host zawty
+            HostName 192.168.122.19
 
         Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
             User root
