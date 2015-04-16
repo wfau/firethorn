@@ -192,16 +192,28 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Exit our builder.
+# Build our tester container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Exit our builder container.
 #[root@builder]
 
     exit
 
 # -----------------------------------------------------
-# Configure our chain.
+# Configure our docker chain.
 #[root@virtual]
 
-cat > settings << EOF
     metaname=bethany
     username=patricia
     dataname=elayne
@@ -221,15 +233,12 @@ cat > settings << EOF
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=xxxx
-    useruser=xxxx
-    userpass=xxxx
-    userhost=\${mssqlhost:?}
+    userdata=FirethornUserdataZRQ20150311DEV
+    useruser=FirethornUserdataZRQ20150311DEVLogin
+    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
+    userhost=${mssqlhost:?}
 
-    datahost=\${mssqlhost:?}
-EOF
-
-    source "${HOME:?}/settings"
+    datahost=${mssqlhost:?}
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
@@ -268,10 +277,11 @@ EOF
 
     docker run \
         --detach \
+        --publish 8081:8080 \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        "firethorn/ogsadai:${branch:?}"
+        "firethorn/ogsadai:${version:?}"
 
 # -----------------------------------------------------
 # Create our FireThorn config.
@@ -304,7 +314,6 @@ EOF
 
     docker run \
         --detach \
-        --expose 8080 \
         --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
@@ -312,7 +321,7 @@ EOF
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
         --volume "${properties:?}:/etc/firethorn.properties" \
-        "firethorn/firethorn:${branch:?}"
+        "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
 # Run our test container.
@@ -328,7 +337,7 @@ EOF
         bash
 
 # -----------------------------------------------------
-# Configure our data resources.
+# Configure our identity.
 #[root@tester]
 
         identity=${identity:-$(date '+%H:%M:%S')}
@@ -336,13 +345,14 @@ EOF
 
         source "bin/01-01-init-rest.sh"
 
-#
-# Load the Atlas resource
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
 
         databasename=ATLASDR1
         databasehost=sebastien
-        databaseuser=xxxx
-        databasepass=xxxx
+        databaseuser=atlasro
+        databasepass=atlasropw
         databasedriver=net.sourceforge.jtds.jdbc.Driver
 
         source "bin/02-02-create-jdbc-space.sh" \
@@ -361,13 +371,14 @@ EOF
         atlasschema=${adqlschema:?}
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
-        atlasschema=${adqlschema:?}
+        atlascross=${adqlschema:?}
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
         atlastwomass=${adqlschema:?}
 
-#
-# Run the test queries
+# -----------------------------------------------------
+# Run our ATLASDR1 queries
+#[root@tester]
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
 
@@ -380,8 +391,8 @@ EOF
             "AUTO" \
             "
             SELECT
-                ra,
-                dec
+                atlasSource.ra,
+                atlasSource.dec
             FROM
                 atlas.atlasSource
             WHERE
@@ -394,8 +405,8 @@ EOF
             "AUTO" \
             "
             SELECT
-                ra,
-                dec
+                twomass_psc.ra,
+                twomass_psc.dec
             FROM
                 twomass.twomass_psc
             WHERE
@@ -408,8 +419,10 @@ EOF
             "AUTO" \
             "
             SELECT
-                atlasSource.ra,
-                atlasSource.dec
+                atlasSource.ra  as atlasra,
+                atlasSource.dec as atlasdec,
+                twomass_psc.ra  as twomassra,
+                twomass_psc.dec as twomassdec
             FROM
                 atlasSource
             JOIN
@@ -430,8 +443,9 @@ EOF
                 twomass_psc.dec BETWEEN -40 AND -39
             "
 
-#
-# Load the TWOMASS resource
+# -----------------------------------------------------
+# Load the TWOMASS resource.
+#[root@tester]
 
         databasename=TWOMASS
         databasehost=sebastien
@@ -454,8 +468,9 @@ EOF
         source "bin/03-04-import-jdbc-metadoc.sh" "${twomassjdbc:?}" "${twomassadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
         twomassschema=${adqlschema:?}
 
-#
-# Run the test queries
+# -----------------------------------------------------
+# Run our ATLASDR1/TWOMASS queries
+#[root@tester]
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
 
@@ -496,8 +511,11 @@ EOF
             "AUTO" \
             "
             SELECT
-                atlasSource.ra,
-                atlasSource.dec
+                atlasSource.ra  as atra,
+                atlasSource.dec as atdec,
+                twomass_psc.ra  as tmra,
+                twomass_psc.dec as tmdec,
+                atlasSourceXtwomass_psc.distanceMins as dist
             FROM
                 atlasSource
             JOIN
@@ -517,5 +535,7 @@ EOF
             AND
                 twomass_psc.dec BETWEEN -40 AND -39
             "
+
+
 
 

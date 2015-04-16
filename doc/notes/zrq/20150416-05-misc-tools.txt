@@ -52,17 +52,28 @@
     docker rmi $(docker images -q)
 
 # -----------------------------------------------------
-# Architecture ..
+# VM names
+#
+
+    https://en.wikipedia.org/wiki/Category:Cities_in_Ancient_Egypt
+
+    amarna  192.168.122.10      http://localhost:9090/firethorn
+    badari  192.168.122.11      http://localhost:9091/firethorn
+    desouk  192.168.122.12      http://localhost:9092/firethorn
+    edfu    192.168.122.13      http://localhost:9093/firethorn
+    hebenu  192.168.122.14      http://localhost:9094/firethorn
+    kerma   192.168.122.15      http://localhost:9095/firethorn      
+    mendes  192.168.122.16      http://localhost:9096/firethorn
+    nekhen  192.168.122.17      http://localhost:9097/firethorn
+    thebes  192.168.122.18      http://localhost:9098/firethorn
+    zawty   192.168.122.19      http://localhost:9099/firethorn
+
+# -----------------------------------------------------
+# Container architecture ..
 #
 
 
-
-
-     | machines
      |<-------------- physical ----------------------->|<------- virtual ------>|<------ docker ------>|
-
-     | network
-     |<--- local --->|<--- vpn --->|<--- roe.ac.uk -------------->|<--- docker ----------------------->|
 
         +-----------+               +------------+           +-----------+
         | laptop    |               |            |           | amarna    |
@@ -110,34 +121,6 @@
                                                                                   | tester      |---/
                                                                                   | RESTY       |
                                                                                   +-------------+
-
-
-
-
-
-
-
-
-
-
-
-    <!--+
-        | https://en.wikipedia.org/wiki/Category:Cities_in_Ancient_Egypt
-        |  1 amarna
-        |  2 badari
-        |  3 desouk
-        |  4 edfu
-        |  5 hebenu
-        |  6 kerma
-        |  7 mendes
-        |  8 nekhen
-        |  9 thebes
-        | 10 zawty
-        +-->
-
-
-
-
 
 
 
