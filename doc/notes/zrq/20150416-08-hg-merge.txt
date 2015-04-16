@@ -188,19 +188,11 @@ EOF
     
     popd
 
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Merge the changes into main.
-#[user@desktop]
+#[root@builder]
 
-    echo "newversion [${newversion:?}]"
+    newversion=${version:?}
 
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
@@ -237,30 +229,12 @@ EOF
         # Update the main version.
         setversion "${newversion:?}"
 
-        #
-        # Commit the merge.
-        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
-        hg push
-
-        #
-        # Close the dev branch.
-        hg update "${devbranch:?}"
-        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
-        hg push
-
-        #
-        # Update the main tag.
-        hg update 'default'
-        hg tag -f "version-$(getversion)"
-        hg push
-
     popd
 
-
-
-
-
-
+#
+# Testing should go here
+# Merge and commit after
+#
 
 
 # -----------------------------------------------------
@@ -321,18 +295,346 @@ EOF
 
     popd
 
+# -----------------------------------------------------
+# Exit our builder container.
+#[root@builder]
 
+    exit
 
+# -----------------------------------------------------
+# Configure our docker chain.
+#[root@virtual]
 
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
 
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
 
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
 
+    mssqlhost=ramses2
+    mssqlport=1433
+    
+    userdata=FirethornUserdataZRQ20150311DEV
+    useruser=FirethornUserdataZRQ20150311DEVLogin
+    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
+    userhost=${mssqlhost:?}
 
+    datahost=${mssqlhost:?}
 
+# -----------------------------------------------------
+# Run our userdata ambassador.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${username:?}" \
+        --env  "target=${userhost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Run our science data ambassador.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${dataname:?}" \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Run our PostgreSQL metadata container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Run our OGSA-DAI container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[root@virtual]
+
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=org.postgresql.Driver
+
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.type=mssql
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Run our FireThorn container.
+#[root@virtual]
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Run our test container.
+#[root@virtual]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        databasename=ATLASDR1
+        databasehost=sebastien
+        databaseuser=atlasro
+        databasepass=atlasropw
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+        atlasschema=${adqlschema:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+        atlascross=${adqlschema:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        atlastwomass=${adqlschema:?}
+
+# -----------------------------------------------------
+# Run our ATLASDR1 queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                twomass_psc.ra,
+                twomass_psc.dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                twomass_psc.ra  BETWEEN 354 AND 355
+            AND
+                twomass_psc.dec BETWEEN -40 AND -39
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra  as atlasra,
+                atlasSource.dec as atlasdec,
+                twomass_psc.ra  as twomassra,
+                twomass_psc.dec as twomassdec
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            AND
+                twomass_psc.ra  BETWEEN 354 AND 355
+            AND
+                twomass_psc.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load the TWOMASS resource.
+#[root@tester]
+
+        databasename=TWOMASS
+        databasehost=sebastien
+        databaseuser=palro
+        databasepass=palropw
+        databasedriver=net.sourceforge.jtds.jdbc.Driver
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            "${databasename:?}"
+        twomassjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        twomassadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${twomassjdbc:?}" "${twomassadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+        twomassschema=${adqlschema:?}
+
+# -----------------------------------------------------
+# Run our ATLASDR1/TWOMASS queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                twomass_psc.ra,
+                twomass_psc.dec
+            FROM
+                twomass.twomass_psc
+            WHERE
+                twomass_psc.ra  BETWEEN 354 AND 355
+            AND
+                twomass_psc.dec BETWEEN -40 AND -39
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra  as atra,
+                atlasSource.dec as atdec,
+                twomass_psc.ra  as tmra,
+                twomass_psc.dec as tmdec,
+                atlasSourceXtwomass_psc.distanceMins as dist
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            AND
+                twomass_psc.ra  BETWEEN 354 AND 355
+            AND
+                twomass_psc.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Exit from our tester container
+#[root@tester]
+
+    exit
 
 # -------------------------------------------------------------------------------------------
-# Commit our changes to our Mercurial repo.
-
+# Push our changes to or Mercurial repo.
 
 
 # -------------------------------------------------------------------------------------------
