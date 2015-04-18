@@ -155,8 +155,8 @@ EOF
 
     dataname=elayne
 
-    username=dave
-    hostname=fenrir.roe.ac.uk
+    username=xxxxxxxx
+    hostname=xxxxxxxx
     hostkey=$(mktemp)
     ssh-keyscan "${hostname:?}" > "${hostkey:?}" 2> /dev/null
 
@@ -201,9 +201,9 @@ firethorn.meta.c3p0.max.size=20
 firethorn.meta.c3p0.min.size=5
 firethorn.meta.c3p0.max.idle=1800
 
-firethorn.user.url=jdbc:jtds:sqlserver://sqlserver:1433/FirethornUserdataXXXX
-firethorn.user.user=XXXX
-firethorn.user.pass=XXXX
+firethorn.user.url=jdbc:jtds:sqlserver://sqlserver:1433/xxxx-xxxx-xxxx-xxxx
+firethorn.user.user=xxxx-xxxx-xxxx-xxxx
+firethorn.user.pass=xxxx-xxxx-xxxx-xxxx
 firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
 firethorn.user.type=pgsql
 
@@ -274,8 +274,8 @@ firethorn.webapp.endpoint=http://firethorn:8080/firethorn
 
 firethorn.atlas.url=jdbc:jtds:sqlserver://sqlserver:1433/ATLASDR1
 firethorn.atlas.name=ATLASDR1
-firethorn.atlas.user=xxxx
-firethorn.atlas.pass=xxxx
+firethorn.atlas.user=xxxx-xxxx-xxxx-xxxx
+firethorn.atlas.pass=xxxx-xxxx-xxxx-xxxx
 firethorn.atlas.type=mssql
 firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
 

@@ -108,16 +108,16 @@ cat > "${HOME?:}/settings" << EOF
     mssqlport=1433
     mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
     
-    userdata=FirethornUserdata********
-    useruser=FirethornUserdata********
-    userpass=FirethornUserdata********
+    userdata=xxxx-xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx-xxxx
     userhost=\${mssqlhost:?}
     userport=\${mssqlport:?}
     useripv4=\${mssqlipv4:?}
 
     datadata=ATLASDR1
-    datauser=********
-    datapass=********
+    datauser=xxxx-xxxx-xxxx-xxxx
+    datapass=xxxx-xxxx-xxxx-xxxx
     datahost=\${mssqlhost:?}
     dataport=\${mssqlport:?}
     dataipv4=\${mssqlipv4:?}

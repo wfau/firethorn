@@ -105,13 +105,14 @@
     metapass=$(pwgen 20 1)
 
     userhost=ramses2
-    userdata=FirethornUserdataZRQ20150311DEV
-    useruser=FirethornUserdataZRQ20150311DEVLogin
-    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
+    userdata=xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx
 
     datahost=ramses2
-    datauser=atlasro
-    datapass=atlasropw
+    datauser=xxxx-xxxx-xxxx
+    datapass=xxxx-xxxx-xxxx
+    datadriver=net.sourceforge.jtds.jdbc.Driver
 
 # -----------------------------------------------------
 # Run our userdata ambassador.

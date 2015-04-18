@@ -239,16 +239,16 @@ EOF
     metadata=postgres
     metauser=$(pwgen 20 1)
     metapass=$(pwgen 20 1)
-
-    mssqlhost=ramses2
-    mssqlport=1433
     
-    userdata=FirethornUserdataZRQ20150311DEV
-    useruser=FirethornUserdataZRQ20150311DEVLogin
-    userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
-    userhost=${mssqlhost:?}
+    userhost=ramses2
+    userdata=xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx
 
-    datahost=${mssqlhost:?}
+    datahost=ramses2
+    datauser=xxxx-xxxx-xxxx
+    datapass=xxxx-xxxx-xxxx
+    datadriver=net.sourceforge.jtds.jdbc.Driver
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
@@ -340,6 +340,10 @@ EOF
         --rm \
         --tty \
         --interactive \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         "firethorn/tester:${version:?}" \
@@ -358,18 +362,14 @@ EOF
 # Load the ATLASDR1 resource.
 #[root@tester]
 
-        databasename=ATLASDR1
-        databasehost=sebastien
-        databaseuser=atlasro
-        databasepass=atlasropw
-        databasedriver=net.sourceforge.jtds.jdbc.Driver
+        database=ATLASDR1
 
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
-            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
-            "${databaseuser:?}" \
-            "${databasepass:?}" \
-            "${databasedriver:?}" \
+            "jdbc:jtds:sqlserver://${datahost:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
             '*'
         atlasjdbc=${jdbcspace:?}
 
@@ -456,19 +456,15 @@ EOF
 # Load the TWOMASS resource.
 #[root@tester]
 
-        databasename=TWOMASS
-        databasehost=sebastien
-        databaseuser=palro
-        databasepass=palropw
-        databasedriver=net.sourceforge.jtds.jdbc.Driver
+        database=TWOMASS
 
         source "bin/02-02-create-jdbc-space.sh" \
             'TWOMASS JDBC conection' \
-            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
-            "${databaseuser:?}" \
-            "${databasepass:?}" \
-            "${databasedriver:?}" \
-            "${databasename:?}"
+            "jdbc:jtds:sqlserver://${datahost:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            "${database:?}"
         twomassjdbc=${jdbcspace:?}
 
         source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'

@@ -358,8 +358,8 @@ EOF
 
         databasename=TWOMASS
         databasehost=sebastien
-        databaseuser=palro
-        databasepass=palropw
+        databaseuser=xxxx
+        databasepass=xxxx
         databasedriver=net.sourceforge.jtds.jdbc.Driver
 
         source "bin/02-02-create-jdbc-space.sh" \

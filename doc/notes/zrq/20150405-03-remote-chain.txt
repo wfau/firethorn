@@ -55,16 +55,16 @@
         mssqlport=1433
         mssqlipv4=\$(host -t A \${mssqlhost:?} | cut -d ' ' -f 4)
         
-        userdata=********
-        useruser=********
-        userpass=********
+        userdata=xxxx-xxxx-xxxx-xxxx
+        useruser=xxxx-xxxx-xxxx-xxxx
+        userpass=xxxx-xxxx-xxxx-xxxx
         userhost=\${mssqlhost:?}
         userport=\${mssqlport:?}
         useripv4=\${mssqlipv4:?}
 
         datadata=ATLASDR1
-        datauser=atlasro
-        datapass=atlasropw
+        datauser=xxxx-xxxx-xxxx-xxxx
+        datapass=xxxx-xxxx-xxxx-xxxx
         datahost=\${mssqlhost:?}
         dataport=\${mssqlport:?}
         dataipv4=\${mssqlipv4:?}
@@ -77,8 +77,8 @@ EOF
 
     source "${settings:?}"
 
-    userhostuser=********
-    userhostname=********
+    userhostuser=xxxx-xxxx-xxxx-xxxx
+    userhostname=xxxx-xxxx-xxxx-xxxx
     userhostkey=$(mktemp)
     ssh-keyscan "${userhostname:?}" > "${userhostkey:?}" 2> /dev/null
 
@@ -108,8 +108,8 @@ EOF
 
     source "${settings:?}"
 
-    datahostuser=********
-    datahostname=********
+    datahostuser=xxxx-xxxx-xxxx-xxxx
+    datahostname=xxxx-xxxx-xxxx-xxxx
     datahostkey=$(mktemp)
     ssh-keyscan "${datahostname:?}" > "${datahostkey:?}" 2> /dev/null
 

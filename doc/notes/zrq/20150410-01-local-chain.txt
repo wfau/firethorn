@@ -113,15 +113,15 @@
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=FirethornUserdata********
-    useruser=FirethornUserdata********
-    userpass=FirethornUserdata********
+    userdata=xxxx-xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx-xxxx
     userhost=${mssqlhost:?}
     userport=${mssqlport:?}
 
     datadata=ATLASDR1
-    datauser=********
-    datapass=********
+    datauser=xxxx-xxxx-xxxx-xxxx
+    datapass=xxxx-xxxx-xxxx-xxxx
     datahost=${mssqlhost:?}
     dataport=${mssqlport:?}
 

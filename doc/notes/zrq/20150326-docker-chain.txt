@@ -123,9 +123,9 @@ cat > "${HOME?:}/settings" << EOF
     metauser=miranda
     metapass=bethany-miranda-secret
 
-    userdata=FirethornUserdata********
-    useruser=FirethornUserdata********
-    userpass=FirethornUserdata********
+    userdata=xxxx-xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx-xxxx
 
 EOF
 
@@ -289,8 +289,8 @@ firethorn.webapp.endpoint=http://${firelink:?}:8080/firethorn
 
 firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}:1433/ATLASDR1
 firethorn.atlas.name=ATLASDR1
-firethorn.atlas.user=********
-firethorn.atlas.pass=********
+firethorn.atlas.user=xxxx-xxxx-xxxx-xxxx
+firethorn.atlas.pass=xxxx-xxxx-xxxx-xxxx
 firethorn.atlas.type=mssql
 firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
 
