@@ -20,7 +20,10 @@
 #
 #
 
-
+    #
+    # Configure the Fedora virtual machine.
+    # These will be added to the virtual machine image at some point.
+    #
 
 # -----------------------------------------
 # Install missing tools.
@@ -37,7 +40,8 @@
 #[root@edfu]
 
     yum install -y haveged
-    systemctl start haveged.service
+    systemctl enable haveged.service
+    systemctl start  haveged.service
 
 # -----------------------------------------------------
 # Install and run Docker.

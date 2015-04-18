@@ -20,9 +20,9 @@
 #
 #
 
-#
-# Configure local SSH client to connect to virtual machines on shepseskaf.
-#
+    #
+    # Configure local SSH client to connect to virtual machines on shepseskaf.
+    #
 
 # -----------------------------------------
 # Configure SSH client on desktop/laptop
@@ -51,12 +51,13 @@
         Host zawty
             HostName 192.168.122.19
 
-        Host amarna badari edfu hebenu kerma mendes nekhen thebes zawty
+        Host amarna badari desouk edfu hebenu kerma mendes nekhen thebes zawty
             User root
             ProxyCommand ssh -q shepseskaf nc %h %p
             IdentityFile ~/.ssh/xxxxxxxx
             Protocol 2
             Compression no
+            ForwardAgent yes
             PasswordAuthentication no
             ServerAliveInterval 60
             ServerAliveCountMax 5
@@ -67,6 +68,7 @@
             HostName shepseskaf.roe.ac.uk
             Protocol 2
             Compression yes
+            ForwardAgent yes
             PasswordAuthentication no
             LocalForward 9090 192.168.122.10:8080
             LocalForward 9091 192.168.122.11:8080
@@ -110,6 +112,7 @@
             User root
             Protocol 2
             Compression no
+            ForwardAgent yes
             PasswordAuthentication no
 
 

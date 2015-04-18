@@ -20,6 +20,11 @@
 #
 #
 
+    #
+    # Changes to the ischnura-kvm tools on shepseskaf.
+    # NOT PART OF THE NORMAL BUILD PROCESS
+    #
+
 # -----------------------------------------------------
 # Update our network settings to include desouk.
 #[user@shep] 

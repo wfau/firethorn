@@ -21,208 +21,72 @@
 #
 
     #
-    # Configure and run a DQP test, using code on a dev branch.
+    # Configure and run a simple test, using standard containers.
     #
 
-# -----------------------------------------------------
-# Set our target version.
-#[root@virtual]
+# -----------------------------------------
+# Create a new virtual machine
+#[user@shep]
 
-    branch=1.13.9-zrq-demo-config
-    version=1.13.9-zrq-demo-config
+    createvm
 
-# -----------------------------------------------------
-# Create our config directory.
-#[root@virtual]
-
-    if [ ! -e /var/local/config ]
-    then
-        mkdir -p /var/local/config
-        chgrp -R users /var/local/config
-        chmod -R g+rwx /var/local/config
-    fi
-
-# -----------------------------------------------------
-# Create our cache directory.
-#[root@virtual]
-
-    if [ ! -e /var/local/cache ]
-    then
-        mkdir -p /var/local/cache
-        chgrp -R users /var/local/cache
-        chmod -R g+rwx /var/local/cache
-    fi
-
-# -----------------------------------------------------
-# Create our projects directory.
-#[root@virtual]
-
-    if [ ! -e /var/local/projects ]
-    then
-        mkdir -p /var/local/projects
-        chgrp -R users /var/local/projects
-        chmod -R g+rwx /var/local/projects
-    fi
-
-# -----------------------------------------------------
-# Allow access to Docker containers.
-#[root@virtual]
-
-    chcon -t svirt_sandbox_file_t "/var/local/cache" 
-    chcon -t svirt_sandbox_file_t "/var/local/config" 
-    chcon -t svirt_sandbox_file_t "/var/local/projects" 
-
-# -----------------------------------------------------
-# Install the selinux-dockersock SELinux policy.
-# https://github.com/dpw/selinux-dockersock
-#[root@virtual]
-
-    # Test if present
-    # semodule -l | grep dockersock
-
-    if [ $(semodule -l | grep -c dockersock) -eq 0 ]
-    then
-        yum install -y git
-        yum install -y make
-        yum install -y checkpolicy
-        yum install -y policycoreutils policycoreutils-python
+        ....
+        ....
         
-        pushd /var/local/projects
+        INFO : Node name [badari]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [badari.qcow]
+        INFO : Disc size [16GiB]
 
-            if [ ! -e selinux-dockersock ]
-            then
-                git clone https://github.com/dpw/selinux-dockersock
-            fi
+# -----------------------------------------
+# Update the local SSH fingerprint.
+# TODO automate the IP address selection.
+#[user@shep]
 
-            pushd selinux-dockersock
+    # http://linux.die.net/man/1/ssh-keygen
+    # http://linux.die.net/man/1/ssh-keyscan
 
-                make dockersock.pp
+    ssh-keygen -f "${HOME:?}/.ssh/known_hosts" -R "192.168.122.11"
 
-                semodule -i dockersock.pp
+# -----------------------------------------
+# Login to the new virtual machine
+#[user@shep]
 
-            popd
-        popd
-    fi
+    ssh badari
 
-# -----------------------------------------------------
-# Run our build container.
+# -----------------------------------------
+# Install missing tools.
 #[root@virtual]
 
-    docker run \
-        -it --rm \
-        --name builder \
-        --env "branch=${branch:?}" \
-        --volume /var/local/cache:/cache \
-        --volume /var/local/config:/config \
-        --volume /var/local/projects:/projects \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1 \
-        bash
-
-# -----------------------------------------------------
-# Update our path.
-#[root@builder]
-
-    # ** this should be in the container **
-    source /etc/bashrc
-
-# -----------------------------------------------------
-# Checkout a copy of our source code.
-#[root@builder]
-
-    #
-    # Set the project path.
-    if [ ! -e "${HOME:?}/firethorn.settings" ]
-    then
-        cat > "${HOME:?}/firethorn.settings" << EOF
-FIRETHORN_CODE=/projects/firethorn
-EOF
-    fi
-
-    #
-    # Clone our repository.
-    source "${HOME:?}/firethorn.settings"
-    if [ ! -e "${FIRETHORN_CODE:?}" ]
-    then
-        pushd "$(dirname ${FIRETHORN_CODE:?})"
-
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
-
-        popd
-    fi
-
-    #
-    # Pull and update from branch.
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        hg pull
-        hg update "${branch:?}"
-        hg branch
+    yum -y install htop
+    yum -y install pwgen
     
-    popd
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum install -y haveged
+    systemctl start haveged.service
 
 # -----------------------------------------------------
-# Start our docker-proxy container.
-#[root@builder]
+# Install and run Docker.
+#[root@virtual]
 
-    docker run \
-        --detach \
-        --name "docker-proxy" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/docker-proxy:1
+    yum -y install docker-io
 
-    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
-
-    echo "${dockerip:?}"
-    curl "http://${dockerip:?}:2375/version"
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
 
 # -----------------------------------------------------
-# Build our webapp services.
-#[root@builder]
+# Configure our chain.
+#[root@virtual]
 
-    #
-    # Build our webapp services.
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn clean install
-
-    popd
-
-# -----------------------------------------------------
-# Build our webapp containers.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        pushd firethorn-ogsadai/webapp
-            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
-        popd
-        
-        pushd firethorn-webapp
-            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
-        popd
-
-    popd
-
-# -----------------------------------------------------
-# Build our tester container.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        docker build \
-            --tag firethorn/tester:$(getversion) \
-            integration/tester
-
-    popd
-
-# -----------------------------------------------------
-# Configure our docker chain.
-#[root@builder]
+    version=1.13.10
 
     metaname=bethany
     username=patricia
@@ -240,19 +104,18 @@ EOF
     metauser=$(pwgen 20 1)
     metapass=$(pwgen 20 1)
 
-    mssqlhost=ramses2
-    mssqlport=1433
-    
+    userhost=ramses2
     userdata=FirethornUserdataZRQ20150311DEV
     useruser=FirethornUserdataZRQ20150311DEVLogin
     userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
-    userhost=${mssqlhost:?}
 
-    datahost=${mssqlhost:?}
+    datahost=ramses2
+    datauser=atlasro
+    datapass=atlasropw
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
-#[root@builder]
+#[root@virtual]
 
     docker run \
         --detach \
@@ -262,7 +125,7 @@ EOF
 
 # -----------------------------------------------------
 # Run our science data ambassador.
-#[root@builder]
+#[root@virtual]
 
     docker run \
         --detach \
@@ -272,7 +135,7 @@ EOF
 
 # -----------------------------------------------------
 # Run our PostgreSQL metadata container.
-#[root@builder]
+#[root@virtual]
 
     docker run \
         --detach \
@@ -283,7 +146,7 @@ EOF
 
 # -----------------------------------------------------
 # Run our OGSA-DAI container.
-#[root@builder]
+#[root@virtual]
 
     docker run \
         --detach \
@@ -295,9 +158,10 @@ EOF
 
 # -----------------------------------------------------
 # Create our FireThorn config.
-#[root@builder]
+#[root@virtual]
 
-    cat > "/config/firethorn.properties" << EOF
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
 
 firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
@@ -314,12 +178,12 @@ firethorn.user.type=mssql
 
 EOF
 
-    chmod a+r "/config/firethorn.properties" 
-    chcon -t svirt_sandbox_file_t "/config/firethorn.properties" 
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
 
 # -----------------------------------------------------
 # Run our FireThorn container.
-#[root@builder]
+#[root@virtual]
 
     docker run \
         --detach \
@@ -329,17 +193,20 @@ EOF
         --link "${metaname:?}:${metalink:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        --volume "/var/local/config/firethorn.properties:/etc/firethorn.properties" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
         "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
 # Run our test container.
-#[root@builder]
+#[root@virtual]
 
     docker run \
-        --rm \
-        --tty \
+        --rm --tty \
         --interactive \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         "firethorn/tester:${version:?}" \
@@ -355,21 +222,17 @@ EOF
         source "bin/01-01-init-rest.sh"
 
 # -----------------------------------------------------
-# Load the ATLASDR1 resource.
+# Load the Atlas resource.
 #[root@tester]
 
-        databasename=ATLASDR1
-        databasehost=sebastien
-        databaseuser=atlasro
-        databasepass=atlasropw
-        databasedriver=net.sourceforge.jtds.jdbc.Driver
+        database=ATLASDR1
 
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
-            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
-            "${databaseuser:?}" \
-            "${databasepass:?}" \
-            "${databasedriver:?}" \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
             '*'
         atlasjdbc=${jdbcspace:?}
 
@@ -456,19 +319,15 @@ EOF
 # Load the TWOMASS resource.
 #[root@tester]
 
-        databasename=TWOMASS
-        databasehost=sebastien
-        databaseuser=palro
-        databasepass=palropw
-        databasedriver=net.sourceforge.jtds.jdbc.Driver
+        database=TWOMASS
 
         source "bin/02-02-create-jdbc-space.sh" \
             'TWOMASS JDBC conection' \
-            "jdbc:jtds:sqlserver://${databasehost:?}/${databasename:?}" \
-            "${databaseuser:?}" \
-            "${databasepass:?}" \
-            "${databasedriver:?}" \
-            "${databasename:?}"
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            "${database:?}"
         twomassjdbc=${jdbcspace:?}
 
         source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
@@ -545,6 +404,66 @@ EOF
                 twomass_psc.dec BETWEEN -40 AND -39
             "
 
+# -----------------------------------------------------
+# Unbounded tes queries
+#[root@tester]
 
+
+        #
+        # This works, and is fairly fast.
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra  as atra,
+                atlasSource.dec as atdec,
+                twomass_psc.ra  as tmra,
+                twomass_psc.dec as tmdec,
+                atlasSourceXtwomass_psc.distanceMins as dist
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                twomass_psc.ra  BETWEEN 354 AND 355
+            AND
+                twomass_psc.dec BETWEEN -40 AND -39
+            "
+
+        #
+        # This, I have yet to see complete (> 12hrs).
+        # It uses string concatenation to send lots of
+        # "WHERE xxx IN (xxx, yyy, zzz)"
+        # queries to the remote system.
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra  as atra,
+                atlasSource.dec as atdec,
+                twomass_psc.ra  as tmra,
+                twomass_psc.dec as tmdec,
+                atlasSourceXtwomass_psc.distanceMins as dist
+            FROM
+                atlasSource
+            JOIN
+                atlasSourceXtwomass_psc
+            ON
+                atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+            JOIN
+                twomass_psc
+            ON
+                twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
 
 

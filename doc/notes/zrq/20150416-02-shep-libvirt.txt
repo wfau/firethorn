@@ -21,7 +21,7 @@
 #
 
     #
-    # Using the ischnura-kvm tools to manage virtual machines on shep.
+    # Install the ischnura-kvm tools to manage virtual machines on shepseskaf.
     # https://github.com/Zarquan/ischnura-kvm
     #
 

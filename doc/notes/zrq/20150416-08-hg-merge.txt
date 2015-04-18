@@ -20,6 +20,11 @@
 #
 #
 
+    #
+    # Merge a development branch and test the resulting containers.
+    # NOT WORKING YET - issues with auth and auth
+    #
+
 # -----------------------------------------
 # Create a new virtual machine
 #[user@shep]
@@ -36,11 +41,25 @@
         INFO : Disc size [16GiB]
 
 # -----------------------------------------
+# Login to the new VM.
+#[user@shep]
+
+    ssh-keygen -f "/home/dave/.ssh/known_hosts" -R 192.168.122.12
+    ssh desouk
+
+# -----------------------------------------
 # Install missing tools.
 #[root@virtual]
 
     yum -y install htop
     yum -y install pwgen
+    yum -y install openssh-clients
+
+# -----------------------------------------
+# Configure our SSH client.
+#[root@virtual]
+
+
     
 # -----------------------------------------------------
 # Install and start the HAVEGE entropy generator.
@@ -63,21 +82,14 @@
     systemctl status docker.service
 
 # -----------------------------------------------------
-# Set our target versions.
+# Create our config directory.
 #[root@virtual]
 
-    branch=1.13.9-zrq-demo-config
-    version=1.13.10
-
-# -----------------------------------------------------
-# Create our projects directory.
-#[root@virtual]
-
-    if [ ! -e /var/local/projects ]
+    if [ ! -e /var/local/config ]
     then
-        mkdir -p /var/local/projects
-        chgrp -R users /var/local/projects
-        chmod -R g+rwx /var/local/projects
+        mkdir -p /var/local/config
+        chgrp -R users /var/local/config
+        chmod -R g+rwx /var/local/config
     fi
 
 # -----------------------------------------------------
@@ -92,11 +104,23 @@
     fi
 
 # -----------------------------------------------------
+# Create our projects directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/projects ]
+    then
+        mkdir -p /var/local/projects
+        chgrp -R users /var/local/projects
+        chmod -R g+rwx /var/local/projects
+    fi
+
+# -----------------------------------------------------
 # Allow access to Docker containers.
 #[root@virtual]
 
-    chcon -t svirt_sandbox_file_t "/var/local/projects" 
     chcon -t svirt_sandbox_file_t "/var/local/cache" 
+    chcon -t svirt_sandbox_file_t "/var/local/config" 
+    chcon -t svirt_sandbox_file_t "/var/local/projects" 
 
 # -----------------------------------------------------
 # Install the selinux-dockersock SELinux policy.
@@ -131,37 +155,22 @@
     fi
 
 # -----------------------------------------------------
-# Run our build container.
+# Set our target versions.
 #[root@virtual]
 
-    docker run \
-        -it --rm \
-        --name builder \
-        --env "branch=${branch:?}" \
-        --env "version=${version:?}" \
-        --volume /var/local/cache:/cache \
-        --volume /var/local/projects:/projects \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1 \
-        bash
-
-# -----------------------------------------------------
-# Update our path.
-#[root@builder]
-
-    # ** this should be in the container **
-    source /etc/bashrc
+    newversion=1.13.10
+    devbranch=1.13.9-zrq-demo-config
 
 # -----------------------------------------------------
 # Checkout a copy of our source code.
-#[root@builder]
+#[root@virtual]
 
     #
     # Set the project path.
     if [ ! -e "${HOME:?}/firethorn.settings" ]
     then
         cat > "${HOME:?}/firethorn.settings" << EOF
-FIRETHORN_CODE=/projects/firethorn
+FIRETHORN_CODE=/var/local/projects/firethorn
 EOF
     fi
 
@@ -172,18 +181,18 @@ EOF
     then
         pushd "$(dirname ${FIRETHORN_CODE:?})"
 
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+            hg clone 'ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code'
 
         popd
     fi
 
     #
-    # Pull and update from branch.
+    # Update from branch.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update "${branch:?}"
+        hg update "${devbranch:?}"
         hg branch
     
     popd
@@ -191,8 +200,6 @@ EOF
 # -----------------------------------------------------
 # Merge the changes into main.
 #[root@builder]
-
-    newversion=${version:?}
 
     source "${HOME:?}/firethorn.settings"
     source "${FIRETHORN_CODE:?}/bin/util.sh"
@@ -231,11 +238,34 @@ EOF
 
     popd
 
-#
-# Testing should go here
-# Merge and commit after
-#
+# -----------------------------------------------------
+# Run our build container.
+#[root@virtual]
 
+    docker run \
+        -it --rm \
+        --name builder \
+        --volume /var/local/cache:/cache \
+        --volume /var/local/projects:/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/builder:1 \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/projects/firethorn
+EOF
+    fi
 
 # -----------------------------------------------------
 # Start our docker-proxy container.
@@ -289,6 +319,8 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        source bin/util.sh
+        
         docker build \
             --tag firethorn/tester:$(getversion) \
             integration/tester
@@ -296,7 +328,7 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Exit our builder container.
+# Exit our build container.
 #[root@builder]
 
     exit
@@ -372,7 +404,7 @@ EOF
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        "firethorn/ogsadai:${version:?}"
+        "firethorn/ogsadai:${newversion:?}"
 
 # -----------------------------------------------------
 # Create our FireThorn config.
@@ -412,7 +444,7 @@ EOF
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
         --volume "${properties:?}:/etc/firethorn.properties" \
-        "firethorn/firethorn:${version:?}"
+        "firethorn/firethorn:${newversion:?}"
 
 # -----------------------------------------------------
 # Run our test container.
@@ -424,7 +456,7 @@ EOF
         --interactive \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        "firethorn/tester:${version:?}" \
+        "firethorn/tester:${newversion:?}" \
         bash
 
 # -----------------------------------------------------
@@ -634,20 +666,118 @@ EOF
     exit
 
 # -------------------------------------------------------------------------------------------
-# Push our changes to or Mercurial repo.
+# Commit our changes into the main branch.
+#[root@virtual]
 
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+
+    popd
 
 # -------------------------------------------------------------------------------------------
-# Push our containers to the Docker repo.
+# Tag our images as latest.
+#[root@virtual]
 
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+
+        docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
+        docker tag -f "firethorn/ogsadai:$(getversion)"   "firethorn/ogsadai:latest"
+        docker tag -f "firethorn/tester:$(getversion)"    "firethorn/tester:latest"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to our Docker repo.
+#[root@virtual]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+
+        docker login
+
+            Username: xxxx
+            Password: yyyy
+            Email:    zzzz
+            Login Succeeded
+
+        docker push "firethorn/firethorn:$(getversion)"
+        docker push "firethorn/ogsadai:$(getversion)"
+        docker push "firethorn/tester:$(getversion)"
+
+        docker push "firethorn/firethorn:latest"
+        docker push "firethorn/ogsadai:latest"
+        docker push "firethorn/tester:latest"
+
+    popd
 
 # -------------------------------------------------------------------------------------------
 # Push our artifacts to our Maven repo.
+#[root@virtual]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Maven repo **
+    #
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[root@virtual]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Hg repo **
+    # Use SSH to clone the Hg repo in VM, before we run the build container.
+    # SSH access means we can push changes back later
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg push
 
     popd
 

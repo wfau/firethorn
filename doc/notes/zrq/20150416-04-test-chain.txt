@@ -20,6 +20,10 @@
 #
 #
 
+    #
+    # Configure and run a simple test, using code on a dev branch.
+    #
+
 # -----------------------------------------------------
 # Configure our chain.
 #[root@virtual]
@@ -42,15 +46,12 @@
     metauser=$(pwgen 20 1)
     metapass=$(pwgen 20 1)
 
-    mssqlhost=ramses2
-    mssqlport=1433
-    
+    userhost=ramses2
     userdata=FirethornUserdataZRQ20150311DEV
     useruser=FirethornUserdataZRQ20150311DEVLogin
     userpass=FirethornUserdataZRQ20150311DEVBf8Xj3ow
-    userhost=${mssqlhost:?}
 
-    datahost=${mssqlhost:?}
+    datahost=ramses2
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
@@ -89,7 +90,6 @@
 
     docker run \
         --detach \
-        --publish 8081:8080 \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
@@ -102,18 +102,18 @@
     properties=$(mktemp)
     cat > "${properties:?}" << EOF
 
-firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+        firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
-firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
-firethorn.meta.user=${metauser:?}
-firethorn.meta.pass=${metapass:?}
-firethorn.meta.driver=org.postgresql.Driver
+        firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+        firethorn.meta.user=${metauser:?}
+        firethorn.meta.pass=${metapass:?}
+        firethorn.meta.driver=org.postgresql.Driver
 
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
-firethorn.user.user=${useruser:?}
-firethorn.user.pass=${userpass:?}
-firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
-firethorn.user.type=mssql
+        firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+        firethorn.user.user=${useruser:?}
+        firethorn.user.pass=${userpass:?}
+        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.user.type=mssql
 
 EOF
 
