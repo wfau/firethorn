@@ -915,8 +915,7 @@ public class ASTUtil
     public static void checkForUnsupportedConditionTokens(CommonTree ast)
         throws LQPException
     {
-        String[] unsupportedComparisonTokens = new String[] { 
-            ASTConstants.SET_TOKEN};
+        String[] unsupportedComparisonTokens = new String[] { };
 
         for (int i = 0; i < ast.getChildCount(); i++)
         {
@@ -1117,30 +1116,38 @@ public class ASTUtil
     private static void rewriteIN(CommonTree ast, int idx,
             CommonTree parent)
     {
+    	
         if (ast.getText().toUpperCase().equals("NOT")
                 && ast.getChild(0).getText().toUpperCase().equals("IN"))
         {
+        	
             // NOT IN
-            CommonTree inNode = (CommonTree) ast.getChild(0);
-
-            BaseTreeAdaptor adaptor = new CommonTreeAdaptor();
-            CommonTree allNode = getAllNode(getNotEqualsNode(
-                    (CommonTree) adaptor.dupTree(inNode.getChild(0)),
-                    (CommonTree) adaptor.dupTree(inNode.getChild(1))));
-
-            parent.setChild(idx, allNode);
-            ast = allNode;
+            if (ast.getChild(1).getText().toUpperCase()!="SET"){
+	
+	            CommonTree inNode = (CommonTree) ast.getChild(0);
+	
+	            BaseTreeAdaptor adaptor = new CommonTreeAdaptor();
+	            CommonTree allNode = getAllNode(getNotEqualsNode(
+	                    (CommonTree) adaptor.dupTree(inNode.getChild(0)),
+	                    (CommonTree) adaptor.dupTree(inNode.getChild(1))));
+	
+	            parent.setChild(idx, allNode);
+	            ast = allNode;
+            }
         }
         else if (ast.getText().toUpperCase().equals("IN"))
         {
-            // IN
-            BaseTreeAdaptor adaptor = new CommonTreeAdaptor();
-            CommonTree anyNode = getAnyNode(getEqualsNode(
-                (CommonTree) adaptor.dupTree(ast.getChild(0)),
-                (CommonTree) adaptor.dupTree(ast.getChild(1))));
-
-            parent.setChild(idx, anyNode);
-            ast = anyNode;
+        	 // IN
+        	if (ast.getChild(1).getText().toUpperCase()!="SET"){
+        		
+	            BaseTreeAdaptor adaptor = new CommonTreeAdaptor();
+	            CommonTree anyNode = getAnyNode(getEqualsNode(
+	                (CommonTree) adaptor.dupTree(ast.getChild(0)),
+	                (CommonTree) adaptor.dupTree(ast.getChild(1))));
+	
+	            parent.setChild(idx, anyNode);
+	            ast = anyNode;
+        	}
         }
         for (int i = 0; i < ast.getChildCount(); i++)
         {
