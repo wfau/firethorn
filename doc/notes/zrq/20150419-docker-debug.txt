@@ -1,0 +1,102 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Docker fails running unbounded Atlas/TwoMass query.
+    # doc/notes/zrq/20150416-09-test-chain.txt
+
+    # Tomcat/java process continues 
+    # Webapp responds to port 8080
+
+    # Running containers continue as orphans
+    # Restarting Docker will kill the running containers
+    # Restarting the containers works, but you loose original state
+
+# -----------------------------------------------------
+# Disc space seems ok
+#[root@edfu ~]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G  6.3G  7.6G  46% /
+        devtmpfs        488M     0  488M   0% /dev
+        tmpfs           497M     0  497M   0% /dev/shm
+        tmpfs           497M  496K  497M   1% /run
+        tmpfs           497M     0  497M   0% /sys/fs/cgroup
+        tmpfs           497M   12K  497M   1% /tmp
+        /dev/vda1       488M   87M  366M  20% /boot
+        tmpfs           100M     0  100M   0% /run/user/0
+
+# -----------------------------------------------------
+# No obvious clues in the service status.
+#[root@edfu ~]
+
+    systemctl status docker.service
+
+        ● docker.service - Docker Application Container Engine
+           Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled)
+           Active: failed (Result: signal) since Sat 2015-04-18 20:29:48 BST; 18h ago
+             Docs: http://docs.docker.com
+          Process: 21756 ExecStart=/usr/bin/docker -d $OPTIONS $DOCKER_STORAGE_OPTIONS $DOCKER_NETWORK_OPTIONS $INSECURE_REGISTRY (code=killed, signal=ABRT)
+         Main PID: 21756 (code=killed, signal=ABRT)
+
+        Apr 18 20:29:36 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/pkg/jsonlog/jsonlog.go:39 +0xef fp=0x7f96dc668f10 sp=0x7f96dc668e08
+        Apr 18 20:29:37 edfu docker[21756]: github.com/docker/docker/daemon.func·027()
+        Apr 18 20:29:37 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/daemon/logs.go:132 +0xd0 fp=0x7f96dc668fa8 sp=0x7f96dc668f10
+        Apr 18 20:29:37 edfu docker[21756]: runtime.goexit()
+        Apr 18 20:29:37 edfu docker[21756]: /usr/lib/golang/src/pkg/runtime/proc.c:1445 fp=0x7f96dc668fb0 sp=0x7f96dc668fa8
+        Apr 18 20:29:37 edfu docker[21756]: created by github.com/docker/docker/daemon.(*Daemon).ContainerLogs
+        Apr 18 20:29:37 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/daemon/logs.go:134 +0xb6e
+        Apr 18 20:29:48 edfu systemd[1]: docker.service: main process exited, code=killed, status=6/ABRT
+        Apr 18 20:29:48 edfu systemd[1]: Unit docker.service entered failed state.
+        Apr 18 20:29:48 edfu systemd[1]: docker.service failed.
+            
+# -----------------------------------------------------
+# No obvious clues in the system logs.
+#[root@edfu ~]
+
+    journalctl _SYSTEMD_UNIT=docker.service
+
+        Apr 18 20:29:36 edfu docker[21756]: /usr/lib/golang/src/pkg/runtime/proc.c:1385 +0x3b fp=0x7f96dc668b78 sp=0x7f96dc668b58
+        Apr 18 20:29:36 edfu docker[21756]: sync.runtime_Syncsemacquire(0xc208538040)
+        Apr 18 20:29:36 edfu docker[21756]: /builddir/build/BUILD/go/src/pkg/runtime/sema.goc:257 +0xc0 fp=0x7f96dc668bd0 sp=0x7f96dc668b78
+        Apr 18 20:29:36 edfu docker[21756]: sync.(*Cond).Wait(0xc208538030)
+        Apr 18 20:29:36 edfu docker[21756]: /usr/lib/golang/src/pkg/sync/cond.go:62 +0x9d fp=0x7f96dc668c00 sp=0x7f96dc668bd0
+        Apr 18 20:29:36 edfu docker[21756]: github.com/docker/docker/pkg/ioutils.(*bufReader).Read(0xc208538000, 0xc2081cf400, 0x200, 0x200, 0x0, 0x7f96dfca61b0, 0xc208000020)
+        Apr 18 20:29:36 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/pkg/ioutils/readers.go:104 +0x15a fp=0x7f96dc668c50 sp=0x7f96dc668c00
+        Apr 18 20:29:36 edfu docker[21756]: encoding/json.(*Decoder).readValue(0xc2085cba00, 0xb, 0x0, 0x0)
+        Apr 18 20:29:36 edfu docker[21756]: /usr/lib/golang/src/pkg/encoding/json/stream.go:124 +0x557 fp=0x7f96dc668d60 sp=0x7f96dc668c50
+        Apr 18 20:29:36 edfu docker[21756]: encoding/json.(*Decoder).Decode(0xc2085cba00, 0xae96a0, 0xc2085c82c0, 0x0, 0x0)
+        Apr 18 20:29:36 edfu docker[21756]: /usr/lib/golang/src/pkg/encoding/json/stream.go:44 +0x7a fp=0x7f96dc668e08 sp=0x7f96dc668d60
+        Apr 18 20:29:36 edfu docker[21756]: github.com/docker/docker/pkg/jsonlog.WriteLog(0x7f96dfcbd658, 0xc208538000, 0x7f96dfcb7118, 0xc2085c95c0, 0x0, 0x0, 0x0, 0x0)
+        Apr 18 20:29:36 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/pkg/jsonlog/jsonlog.go:39 +0xef fp=0x7f96dc668f10 sp=0x7f96dc668e08
+        Apr 18 20:29:37 edfu docker[21756]: github.com/docker/docker/daemon.func·027()
+        Apr 18 20:29:37 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/daemon/logs.go:132 +0xd0 fp=0x7f96dc668fa8 sp=0x7f96dc668f10
+        Apr 18 20:29:37 edfu docker[21756]: runtime.goexit()
+        Apr 18 20:29:37 edfu docker[21756]: /usr/lib/golang/src/pkg/runtime/proc.c:1445 fp=0x7f96dc668fb0 sp=0x7f96dc668fa8
+        Apr 18 20:29:37 edfu docker[21756]: created by github.com/docker/docker/daemon.(*Daemon).ContainerLogs
+        Apr 18 20:29:37 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/daemon/logs.go:134 +0xb6e
+
+
+
