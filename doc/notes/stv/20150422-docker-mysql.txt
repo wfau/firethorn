@@ -1,0 +1,44 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# https://github.com/andystanton/docker-mysql
+
+source "${HOME:?}/firethorn.settings"
+pushd "${FIRETHORN_CODE:?}"
+    cd docker
+    docker rm $(docker ps -a -q)
+    docker rmi $(docker images -q)
+    docker images 
+    docker ps
+
+    docker build --tag pyrosql .
+    docker run -d -t --name pyrosql-server -p 3307:3307 pyrosql
+
+
+    docker run -i -t \
+            --volume "/etc/odbcinst.ini:/etc/odbcinst.ini" \
+            --volume "/etc/odbc.ini:/etc/odbc.ini" \
+            --volume "/home/stelios/firethorn.properties:/etc/firethorn.properties" \
+            --volume "/home/stelios/firethorn/integration/005/testing/:/home/pyrothorn/" \
+           firethorn/pyrothorn bash
+           
+popd
