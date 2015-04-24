@@ -20,25 +20,211 @@
 #
 #
 
-# https://github.com/andystanton/docker-mysql
+### Pyrothorn Docker
+
+### Init parameters
+
+version=1.13.10
+datahost=ramses2
+datauser=xxx-xxx-xxx
+datapass=xxx-xxx-xxx
+dataport=1435
+datadriver=net.sourceforge.jtds.jdbc.Driver
+storedquerieshost=ramses5
+storedqueriesuser=xxx-xxx-xxx
+storedqueriespass=xxx-xxx-xxx
+storedqueriesport=1435
+testrundatabase=ATLASDR1
+testrun_ogsadai_resource=atlas
+
+metalink=albert
+userlink=edward
+datalink=sebastien
+ogsalink=timothy
+firelink=peters
+
+
+#### Go to repo directory
 
 source "${HOME:?}/firethorn.settings"
 pushd "${FIRETHORN_CODE:?}"
+
+    ### Reset images
     cd docker
     docker rm $(docker ps -a -q)
     docker rmi $(docker images -q)
     docker images 
     docker ps
+    cd docker/
 
-    docker build --tag pyrosql .
-    docker run -d -t --name pyrosql-server -p 3307:3307 pyrosql
+    ### Build Pyrothorn MySQL server container
+    ### https://github.com/andystanton/docker-mysql
+    
+    docker build --tag pyrosql pyrosql/5.7
+    docker run -d -t --name pyrosql-server -p 3306:3306 pyrosql
+	
+    ### Get IP of pyrothorn mysql server container 
+    pyrosqlhost=$(docker inspect pyrosql-server | grep IPAddress | cut -d '"' -f 4)
+    pyrosqlport=3306
+
+### Create config.py
+
+properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+	import os
+
+	#------------------------- General Configurations -----------------------#
+
+	### Unit test specific configuration ###
+	use_preset_params = False # Use the preset firethorn resource parameters at the end of this config file
+	use_cached_firethorn_env = False #Use cached firethorn environment, stored in (testing/conf/pyrothorn-stored.js)
+	firethorn_version =  "${version:?}"
+	include_neighbour_import = True # Choose whether to import all neighbour tables for a catalogue or not
+	test_is_continuation = False # Test is continued from prev run or not (If true, duplicate queries that have been run previously will not be run)
+
+	### Directory and URL Information ###
+	firethorn_host = "${firelink:?}"
+	firethorn_port = "8080"
+	full_firethorn_host = firethorn_host if firethorn_port=='' else firethorn_host + ':' + firethorn_port
+	base_location = os.getcwd()
+
+	### Email ###
+	test_email = "test@test.roe.ac.uk"
+
+	### Queries ###
+	sample_query="Select top 10 * from Filter"
+	sample_query_expected_rows=10
+	limit_query = None
+	sql_rowlimit = 1000
+	sql_timeout = 120
+	firethorn_timeout = 120
+	query_mode = "AUTO"
+
+	#------------------- Test Configurations ----------------------------------#
+
+	### SQL Database Configuration ###
+
+	test_dbserver= "${datahost:?}"
+	test_dbserver_username = "${datauser:?}" 
+	test_dbserver_password = "${datapass:?}" 
+	test_dbserver_port = "${dataport:?}"
+	test_database = "${testrundatabase:?}"
+	neighbours_query = """
+		    SELECT DISTINCT
+		        ExternalSurvey.databaseName
+		    FROM
+		        RequiredNeighbours
+		    JOIN
+		        ExternalSurvey
+		    ON
+		        RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+		    JOIN
+		        ExternalSurveyTable
+		    ON
+		        RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+		    AND
+		        RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+		    WHERE 
+		        ExternalSurvey.databaseName!='NONE'
+		    ORDER BY
+		        ExternalSurvey.databaseName
+		        """
+
+	### Reporting Database Configuration ###
+
+	reporting_dbserver= "${pyrosqlhost:?}"
+	reporting_dbserver_username = "root"
+	reporting_dbserver_password = ""
+	reporting_dbserver_port = "${pyrosqlport:?}"
+	reporting_database = "pyrothorn_testing"
+
+	### Logged Queries Configuration ###
+
+	stored_queries_dbserver= "${storedquerieshost:?}"
+	stored_queries_dbserver_username = "${storedqueriesuser:?}"
+	stored_queries_dbserver_password = "${storedqueriespass:?}"
+	stored_queries_dbserver_port = "${storedqueriesport:?}"
+	stored_queries_database = "userinterface"
+	stored_queries_query = "select * from webqueries where dbname like '${testrundatabase:?}%'"
+	logged_queries_txt_file = "testing/query_logs/atlas-queries-ogsadai.txt"
 
 
-    docker run -i -t \
-            --volume "/etc/odbcinst.ini:/etc/odbcinst.ini" \
-            --volume "/etc/odbc.ini:/etc/odbc.ini" \
-            --volume "/home/stelios/firethorn.properties:/etc/firethorn.properties" \
-            --volume "/home/stelios/firethorn/integration/005/testing/:/home/pyrothorn/" \
+	### Firethorn Live test Configuration ###
+
+	adql_copy_depth = "THIN"
+	resourcename = '${testrundatabase:?} JDBC conection' 
+	resourceuri = "jdbc:jtds:sqlserver://${datahost:?}:1435/${testrundatabase:?}"
+	adqlspacename = '${testrundatabase:?} Workspace' 
+	catalogname = '*'
+	ogsadainame = '${testrun_ogsadai_resource:?}'
+	jdbccatalogname = '${testrundatabase:?}'
+	jdbcschemaname = 'dbo'
+	jdbc_resource_user = '${datauser:?}'
+	jdbc_resource_pass = '${datapass:?}'
+	metadocfile = "testing/metadocs/${testrundatabase:?}_TablesSchema.xml"
+	metadocdirectory = "testing/metadocs/"
+	stored_env_config = 'conf/pyrothorn-stored.js'
+
+
+	### Firethorn Predefined test Configuration ###
+
+	jdbcspace = ""
+	adqlspace = ""
+	adqlschema = ""
+	query_schema = ""
+	schema_name = "${testrundatabase:?}"
+	schema_alias = "${testrundatabase:?}"
+
+
+EOF
+
+
+ ### Create odbcinst.ini
+
+odbcinst=$(mktemp)
+    cat > "${odbcinst:?}" << EOF
+	[ODBC Drivers]
+	TDS             = Installed
+
+	[TDS]
+	Description     = TDS driver (Sybase/MS SQL)
+	Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+	Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
+	FileUsage       = 1
+
+	[ODBC]
+	Trace           = No
+	TraceFile       = /tmp/sql.log
+	ForceTrace      = No
+	Pooling         = No
+
+	[MySQL]
+	Description = ODBC for MySQL
+	Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
+	FileUsage = 1
+
+EOF
+
+
+  chmod a+r "${properties:?}" 
+  chmod a+r "${odbcinst:?}" 
+
+popd
+
+  
+
+## Build and run pyrothorn container 
+
+pushd "${FIRETHORN_CODE:?}"/integration/005/testing
+
+  docker build --tag firethorn/pyrothorn pyrothorn 
+  docker run -i -t \
+        --name pyrosql-server
+	--volume "${properties:?}:/home/pyrothorn/config.py" \
+	--volume "${odbcinst:?}:/etc/odbcinst.ini" \
            firethorn/pyrothorn bash
-           
+  
+  cd /home/pyrothorn/
+  python testing/test_firethorn_logged_sql.py
+
 popd
