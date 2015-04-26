@@ -28,15 +28,22 @@ version=1.13.10
 datahost=ramses2
 datauser=xxx-xxx-xxx
 datapass=xxx-xxx-xxx
-dataport=1435
+dataport=1433
 datadriver=net.sourceforge.jtds.jdbc.Driver
 storedquerieshost=ramses5
 storedqueriesuser=xxx-xxx-xxx
 storedqueriespass=xxx-xxx-xxx
-storedqueriesport=1435
+storedqueriesport=1433
 testrundatabase=ATLASDR1
 testrun_ogsadai_resource=atlas
 
+metaname=bethany
+username=patricia
+dataname=elayne
+storedqueriesname=storedqueries
+ogsaname=jarmila
+firename=gillian
+testname=sabine
 metalink=albert
 userlink=edward
 datalink=sebastien
@@ -46,24 +53,20 @@ firelink=peter
 
 #### Go to repo directory
 
-source "${HOME:?}/firethorn.settings"
-pushd "${FIRETHORN_CODE:?}"
-
-    ### Reset images
-    cd docker
-    docker rm $(docker ps -f -a -q)
-    docker rmi $(docker images -f -q)
-    docker images 
-    docker ps
-    cd docker/
 
     ### Build Pyrothorn MySQL server container
     ### https://github.com/andystanton/docker-mysql
     
-    docker build --tag firethorn/pyrosql pyrosql/5.7
-    docker run -d -t --name pyrosql-server -p 3306:3306 pyrosql
+    docker run \
+        --detach \
+        --name "${storedqueriesname?}" \
+        --env  "target=${storedquerieshost:?}" \
+        firethorn/sql-proxy:1
+
+    docker run -d -t --name pyrosql-server -p 3306:3306 firethorn/pyrosql
 	
     ### Get IP of pyrothorn mysql server container 
+    storedquerieshost=$(docker inspect ${storedqueriesname?} | grep IPAddress | cut -d '"' -f 4)
     pyrosqlhost=$(docker inspect pyrosql-server | grep IPAddress | cut -d '"' -f 4)
     pyrosqlport=3306
 
@@ -104,7 +107,7 @@ properties=$(mktemp)
 
 	### SQL Database Configuration ###
 
-	test_dbserver= "${datahost:?}"
+	test_dbserver= "${datalink:?}"
 	test_dbserver_username = "${datauser:?}" 
 	test_dbserver_password = "${datapass:?}" 
 	test_dbserver_port = "${dataport:?}"
@@ -153,11 +156,11 @@ properties=$(mktemp)
 
 	adql_copy_depth = "THIN"
 	resourcename = '${testrundatabase:?} JDBC conection' 
-	resourceuri = "jdbc:jtds:sqlserver://${datahost:?}:1435/${testrundatabase:?}"
+	resourceuri = "jdbc:jtds:sqlserver://${datalink:?}/${testrundatabase:?}"
+        driver = '${datadriver:?}'
 	adqlspacename = '${testrundatabase:?} Workspace' 
 	catalogname = '*'
 	ogsadainame = '${testrun_ogsadai_resource:?}'
-	driver = '${datadriver:?}'
 	jdbccatalogname = '${testrundatabase:?}'
 	jdbcschemaname = 'dbo'
 	jdbc_resource_user = '${datauser:?}'
@@ -207,25 +210,26 @@ odbcinst=$(mktemp)
 EOF
 
 
-  chmod a+r "${properties:?}" 
-  chmod a+r "${odbcinst:?}" 
+chmod a+r "${properties:?}" 
+chmod a+r "${odbcinst:?}" 
 
-popd
+chcon -t svirt_sandbox_file_t "${properties:?}" 
+chcon -t svirt_sandbox_file_t "${odbcinst:?}" 
 
-  
-
-## Build and run pyrothorn container 
-
-pushd "${FIRETHORN_CODE:?}"/integration/005/testing
-
-  docker build --tag firethorn/pyrothorn pyrothorn 
-  docker run -i -t \
-        --name pyrothorns \
+docker run -i -t \
+	--name pyrothorn \
 	--volume "${properties:?}:/home/pyrothorn/config.py" \
 	--volume "${odbcinst:?}:/etc/odbcinst.ini" \
-           firethorn/pyrothorn bash
-  
-  cd /home/pyrothorn/
-  python testing/test_firethorn_logged_sql.py
+	--link "${firename:?}:${firelink:?}" \
+	--link "${storedqueriesname:?}:${storedquerieslink:?}" \
+	--link "${ogsaname:?}:${ogsalink:?}" \
+	--link "${metaname:?}:${metalink:?}" \
+	--link "${dataname:?}:${datalink:?}" \
+	--link "${username:?}:${userlink:?}" \
+	   firethorn/pyrothorn bash
+
+cd /home/pyrothorn/
+python testing/test_firethorn_logged_sql.py
+#python testing/test_firethorn_logged_txt.py
 
 popd
