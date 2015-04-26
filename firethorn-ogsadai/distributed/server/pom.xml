@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>1.13.10</version>
+        <version project='firethorn'>1.13.10-stv-dynamic-ogsa-py</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-dqp-server</artifactId>
