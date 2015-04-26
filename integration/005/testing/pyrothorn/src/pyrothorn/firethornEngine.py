@@ -20,7 +20,7 @@ class FirethornEngine(object):
     Class that provides the infrastructure to use the Firethorn project
     '''
 
-    def __init__(self, jdbcspace="", adqlspace="", adqlschema="", query_schema="", schema_name="", schema_alias="" , **kwargs):
+    def __init__(self, jdbcspace="", adqlspace="", adqlschema="", query_schema="", schema_name="", schema_alias="", driver="" , **kwargs):
         '''
         Constructor
         :param jdbcspace:
@@ -43,7 +43,7 @@ class FirethornEngine(object):
         self.query_schema = query_schema
         self.schema_name = schema_name
         self.schema_alias = schema_alias
-        
+        self.driver = driver
         
     def setUpFirethornEnvironment(self, resourcename ,resourceuri, catalogname, ogsadainame, adqlspacename, jdbccatalogname, jdbcschemaname, metadocfile, jdbc_resource_user="", jdbc_resource_pass=""):
         '''
@@ -104,19 +104,23 @@ class FirethornEngine(object):
          
 	    if jdbc_resource_user!="" and jdbc_resource_pass!="":
                 data = urllib.urlencode({config.resource_create_name_params['http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json'] : resourcename,
-                                     "urn:jdbc.copy.depth" : config.adql_copy_depth,
+ 				     "urn:jdbc.copy.depth" : config.adql_copy_depth,
                                      "jdbc.resource.create.url" : resourceuri,
                                      "jdbc.resource.create.catalog" : catalogname,
                                      "jdbc.resource.create.ogsadai" : ogsadainame,
-				     "jdbc.resource.create.user" : jdbc_resource_user,
-				     "jdbc.resource.create.pass" : jdbc_resource_pass
-				    })
+                                     "jdbc.resource.create.name" : ogsadainame,
+                                     "jdbc.resource.create.driver" : self.driver,
+                                     "jdbc.resource.create.user" : jdbc_resource_user,
+                                     "jdbc.resource.create.pass" : jdbc_resource_pass
+                                    })
+				    
 
 	    else :
                 data = urllib.urlencode({config.resource_create_name_params['http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json'] : resourcename ,
                                      "urn:jdbc.copy.depth" : config.adql_copy_depth,
                                      "jdbc.resource.create.url" : resourceuri,
                                      "jdbc.resource.create.catalog" : catalogname,
+				     "jdbc.resource.create.driver" : self.driver,
                                      "jdbc.resource.create.ogsadai" : ogsadainame,
                                     })
 

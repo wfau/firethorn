@@ -97,7 +97,7 @@ class test_firethorn(unittest.TestCase):
             logging.info("Setting up Firethorn Environment..")
             
             if (self.use_preset_params):
-                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.query_schema, config.schema_name, config.schema_alias)
+                fEng = pyrothorn.firethornEngine.FirethornEngine(config.jdbcspace, config.adqlspace, config.adqlschema, config.query_schema, config.schema_name, config.schema_alias, config.driver)
                 fEng.printClassVars()
                 queryrunID = get_a_uuid()                
             else:
@@ -110,7 +110,7 @@ class test_firethorn(unittest.TestCase):
                             with open(config.stored_env_config) as data_file:    
                                 data = json.load(data_file)
                             if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
-                                fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'] )
+                                fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'], driver= config.driver )
                                 queryrunID = data['queryrunID']
 				logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
                                 valid_config_found = True
@@ -123,7 +123,7 @@ class test_firethorn(unittest.TestCase):
                         
                     if (valid_config_found==False):  
                         queryrunID = get_a_uuid() 
-			fEng = pyrothorn.firethornEngine.FirethornEngine()
+			fEng = pyrothorn.firethornEngine.FirethornEngine(driver = config.driver)
                         fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile)
                     if (self.include_neighbours):
                         self.import_neighbours(sqlEng, fEng)
@@ -131,7 +131,7 @@ class test_firethorn(unittest.TestCase):
                     fEng.printClassVars()
                             
                 else:
-                    fEng = pyrothorn.firethornEngine.FirethornEngine( schema_name=config.schema_name, schema_alias=config.schema_alias )
+                    fEng = pyrothorn.firethornEngine.FirethornEngine( schema_name=config.schema_name, schema_alias=config.schema_alias,driver = config.driver )
 		    queryrunID = get_a_uuid() 
                     fEng.setUpFirethornEnvironment( config.resourcename , config.resourceuri, config.catalogname, config.ogsadainame, config.adqlspacename, config.jdbccatalogname, config.jdbcschemaname, config.metadocfile, config.jdbc_resource_user, config.jdbc_resource_pass)
                     fEng.printClassVars()
