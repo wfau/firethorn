@@ -41,7 +41,7 @@ metalink=albert
 userlink=edward
 datalink=sebastien
 ogsalink=timothy
-firelink=peters
+firelink=peter
 
 
 #### Go to repo directory
@@ -51,8 +51,8 @@ pushd "${FIRETHORN_CODE:?}"
 
     ### Reset images
     cd docker
-    docker rm $(docker ps -a -q)
-    docker rmi $(docker images -q)
+    docker rm $(docker ps -f -a -q)
+    docker rmi $(docker images -f -q)
     docker images 
     docker ps
     cd docker/
@@ -60,7 +60,7 @@ pushd "${FIRETHORN_CODE:?}"
     ### Build Pyrothorn MySQL server container
     ### https://github.com/andystanton/docker-mysql
     
-    docker build --tag pyrosql pyrosql/5.7
+    docker build --tag firethorn/pyrosql pyrosql/5.7
     docker run -d -t --name pyrosql-server -p 3306:3306 pyrosql
 	
     ### Get IP of pyrothorn mysql server container 
@@ -157,6 +157,7 @@ properties=$(mktemp)
 	adqlspacename = '${testrundatabase:?} Workspace' 
 	catalogname = '*'
 	ogsadainame = '${testrun_ogsadai_resource:?}'
+	driver = '${datadriver:?}'
 	jdbccatalogname = '${testrundatabase:?}'
 	jdbcschemaname = 'dbo'
 	jdbc_resource_user = '${datauser:?}'
@@ -219,7 +220,7 @@ pushd "${FIRETHORN_CODE:?}"/integration/005/testing
 
   docker build --tag firethorn/pyrothorn pyrothorn 
   docker run -i -t \
-        --name pyrosql-server
+        --name pyrothorns \
 	--volume "${properties:?}:/home/pyrothorn/config.py" \
 	--volume "${odbcinst:?}:/etc/odbcinst.ini" \
            firethorn/pyrothorn bash

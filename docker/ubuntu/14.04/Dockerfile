@@ -21,5 +21,7 @@ MAINTAINER Stelios Voutsinas <stv@roe.a.uk>
 RUN apt-get update
 RUN apt-get install -y wget
 RUN apt-get install -y unzip
+RUN apt-get install -y curl
+RUN apt-get install -y nano
 
 
