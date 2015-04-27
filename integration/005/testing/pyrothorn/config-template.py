@@ -89,6 +89,7 @@ logged_queries_txt_file = "query_logs/atlas-logged-queries-short.txt"
 adql_copy_depth = "THIN"
 resourcename = 'Atlas JDBC conection' 
 resourceuri = 'spring:RoeATLAS'
+driver="net.sourceforge.jtds.jdbc.Driver"
 adqlspacename = 'Atlas Workspace' 
 catalogname = '*'
 ogsadainame = 'atlas'
