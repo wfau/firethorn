@@ -1,0 +1,716 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Registry of registries
+#
+
+    http://rofr.ivoa.net/rofr/
+
+# -----------------------------------------------------
+# Specifications
+#
+
+    REC-VODataService-1.1-20101202
+    http://www.ivoa.net/documents/VODataService/index.html
+
+
+    REC-TAPRegExt-1.0.pdf
+    http://www.ivoa.net/documents/TAPRegExt/index.html
+
+
+
+    TAPRegExt document
+    http://www.ivoa.net/documents/TAPRegExt/index.html
+
+    An example in the text
+
+        <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-udf">
+
+            <feature>
+                <form>match(pattern TEXT, string TEXT) -> INTEGER</form>
+                <description>
+                    match returns 1 if the POSIX regular expression pattern
+                    matches anything in string, 0 otherwise.
+                </description>
+            </feature>
+
+            <feature>
+                ....
+            </feature>
+
+        </languageFeatures>
+
+
+    Guess, based on the schema
+
+        <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-adqlgeo">
+
+            <feature>
+                <form>AREA</form>
+            </feature>
+
+            <feature>
+                <form>BOX</form>
+            </feature>
+
+            <feature>
+                <form>CONTAINS</form>
+            </feature>
+
+            <feature>
+                <form>REGION</form>
+            </feature>
+
+            <feature>
+                ....
+            </feature>
+
+        </languageFeatures>
+
+
+    Comment in the XML schema (TAPRegExt:Appendix A)
+
+        A feature type is a language-dependent concept like "user defined
+        function", "geometry support", or possibly "units supported". A featureList gives all
+        features of a given type applicable for the service. Multiple featureLists are possible.
+        All feature in a given list are of the same type. This type is declared using the manda-
+        tory type attribute, the value of which will typically be an IVORN. To see values defined
+        in TAPRegExt, retrieve the ivo://ivoa.net/std/TAPRegExt resource record and look for keys
+        starting with "features-"
+
+# -----------------------------------------------------
+#
+#
+
+    TAPRegExt resource
+    ivo://ivoa.net/std/TAPRegExt
+
+    http://dc.zah.uni-heidelberg.de/wirr/q/ui/fixed
+
+        IVOID similar to 'ivoa.net'
+
+            13 entries, but not the one we are looking for
+
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+
+        SELECT ivoid FROM rr.resource WHERE ivoid LIKE 'ivo://ivoa.net%'
+
+            13 entries, but not the one we are looking for
+
+            ivo://ivoa.net
+            ivo://ivoa.net/ivoa
+            ivo://ivoa.net/rofr
+            ivo://ivoa.net/std/conesearch
+            ivo://ivoa.net/std/rm
+            ivo://ivoa.net/std/sia
+            ivo://ivoa.net/std/simpledalregext
+            ivo://ivoa.net/std/slap
+            ivo://ivoa.net/std/spectrumdm
+            ivo://ivoa.net/std/ssa
+            ivo://ivoa.net/std/standardsregext
+            ivo://ivoa.net/std/stc
+            ivo://ivoa.net/std/voresource
+
+# -----------------------------------------------------
+#
+#
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+
+        SELECT * FROM res_detail WHERE ivoid LIKE 'ivo://ivoa.net%'
+
+            ....
+
+        SELECT DISTINCT detail_xpath FROM res_detail
+
+            ....
+
+# -----------------------------------------------------
+#
+#
+
+    PR-RegTAP-1.0-20141030-2.pdf    
+    http://www.ivoa.net/documents/RegTAP/index.html
+
+        Some complex metadata – tr:languageFeature or vstd:key being
+        examples – cannot be kept in this table. If a representation of such infor-
+        mation in the relational registry is required, this standard will need to be
+        changed
+
+
+# -----------------------------------------------------
+# GAVO services
+#
+
+    HTML web form query
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/capabilities
+
+    TAP service
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities
+
+
+
+    ivo://ivoa.net/std/VOSI#capabilities
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/capabilities
+   
+    <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+    <cap:capabilities
+        xmlns:cap="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.ivoa.net/xml/VOSICapabilities/v1.0
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VOSICapabilities-v1.0.xsd
+            
+            http://www.ivoa.net/xml/VORegistry/v1.0
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VORegistry-v1.0.xsd
+            
+            http://www.ivoa.net/xml/VOResource/v1.0
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VOResource-v1.0.xsd
+            ">
+        <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/adql/query/availability</accessURL>
+            </interface>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/adql/query/capabilities</accessURL>
+            </interface>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/VOSI#tables">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/adql/query/tableMetadata</accessURL>
+            </interface>
+        </capability>
+        <capability>
+            <interface xsi:type="vr:WebBrowser">
+                <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/adql/query/form</accessURL>
+            </interface>
+        </capability>
+    </cap:capabilities>
+
+
+    ivo://ivoa.net/std/VOSI#tables
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/tableMetadata
+
+    <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+    <vtm:tableset
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+        xmlns:vtm="http://www.ivoa.net/xml/VOSITables/v1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.ivoa.net/xml/VODataService/v1.1
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd
+            
+            http://www.ivoa.net/xml/VOSITables/v1.0
+            http://vo.ari.uni-heidelberg.de/docs/schemata/VOSITables-v1.0.xsd
+            ">
+        <schema>
+            <name>dc</name>
+            <description>An endpoint for submitting ADQL queries to the data center and retrieving the result in various forms.</description>
+            <table type="output">
+                <name>output</name>
+                <column>
+                    <name>stuffer</name>
+                    <description>Just here until we figure out a good way to declare variable output fields.</description>
+                    <dataType arraysize="1" xsi:type="vs:VOTableType">float</dataType>
+                    <flag>nullable</flag>
+                </column>
+            </table>
+        </schema>
+    </vtm:tableset>
+
+
+
+    Registered Catalog Service 
+    http://registry.euro-vo.org/result.jsp?searchMethod=GetResource&identifier=ivo://org.gavo.dc/danish/red/data
+
+    Served by
+    http://registry.euro-vo.org/result.jsp?searchMethod=GetResource&identifier=ivo://org.gavo.dc/tap
+    
+        http://dc.zah.uni-heidelberg.de/tap (base)
+
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta content="text/html;charset=UTF-8" http-equiv="Content-type" />
+                <link href="/formal.css" type="text/css" rel="stylesheet" />
+                <link href="/static/css/gavo_dc.css" type="text/css" rel="stylesheet" />
+                <script src="/static/js/jquery-gavo.js" type="text/javascript"></script>
+                <script src="/static/js/formal.js" type="text/javascript"></script>
+                <script src="/static/js/gavo.js" type="text/javascript"></script>
+                <title>GAVO Data Center -- Redirect</title>
+            </head>
+            <body>
+                <img src="/static/img/logo_medium.png" style="position:absolute;right:0pt" />
+                <h1>Moved permanently (301)</h1>
+                <p>The resource you requested is available from a <a href="http://dc.zah.uni-heidelberg.de/__system__/tap/run/info">different URL</a>.</p>
+                <p>You should not see this page -- either your browser or our site is broken.  Complain.</p>
+                <hr />
+                <address>
+                    <a href="mailto:gavo@ari.uni-heidelberg.de">gavo@ari.uni-heidelberg.de</a>
+                </address>
+            </body>
+        </html>
+
+
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/availability
+
+        <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+        <avl:availability
+            xmlns:avl="http://www.ivoa.net/xml/VOSIAvailability/v1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VOSIAvailability/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/VOSIAvailability-v1.0.xsd
+            ">
+            <avl:available>true</avl:available>
+            <avl:upSince>2015-04-22T11:25:35Z</avl:upSince>
+        </avl:availability>
+
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities
+
+        <?xml-stylesheet href='/static/xsl/vosi.xsl' type='text/xsl'?>
+        <cap:capabilities
+            xmlns:cap="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+            xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.0"
+            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/VOSICapabilities/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/VOSICapabilities-v1.0.xsd
+                
+                http://www.ivoa.net/xml/TAPRegExt/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v1.0.xsd
+                
+                http://www.ivoa.net/xml/VORegistry/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/VORegistry-v1.0.xsd
+                
+                http://www.ivoa.net/xml/VOResource/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/VOResource-v1.0.xsd
+                
+                http://www.ivoa.net/xml/VODataService/v1.1
+                http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd
+                ">
+                <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+                    <interface xsi:type="vs:ParamHTTP">
+                        <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/availability</accessURL>
+                    </interface>
+                </capability>
+                <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+                    <interface xsi:type="vs:ParamHTTP">
+                        <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities</accessURL>
+                    </interface>
+                </capability>
+                <capability standardID="ivo://ivoa.net/std/VOSI#tables">
+                    <interface xsi:type="vs:ParamHTTP">
+                        <accessURL use="full">http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata</accessURL>
+                    </interface>
+                </capability>
+                <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+                    <interface role="std" xsi:type="vs:ParamHTTP">
+                        <accessURL use="base">http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap</accessURL>
+                    </interface>
+                <dataModel ivo-id="ivo://ivoa.net/std/RegTAP#1.0">Registry 1.0</dataModel>
+                <dataModel ivo-id="ivo://ivoa.net/std/RegTAP/stc">Registry STC 1.0</dataModel>
+                <dataModel ivo-id="ivo://ivoa.net/std/ObsCore/v1.0">Obscore-1.0</dataModel>
+                <language>
+                    <name>ADQL</name>
+                    <version ivo-id="ivo://ivoa.net/std/ADQL#v2.0">2.0</version>
+                    <description>ADQL 2.0</description>
+                    <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-udf">
+                        <feature>
+                            <form>gavo_match(pattern TEXT, string TEXT) -&gt; INTEGER</form>
+                            <description>
+                                gavo_match returns 1 if the POSIX regular expression pattern
+                                matches anything in string, 0 otherwise.
+                            </description>
+                        </feature>
+                        <feature>
+                            <form>ivo_string_agg(expression TEXT, delimiter TEXT) -&gt; TEXT</form>
+                            <description>
+                                An aggregate function returning all values of
+                                expression within a GROUP contcatenated with delimiter
+                            </description>
+                        </feature>
+                        <feature>
+                            <form>gavo_to_jd(d TIMESTAMP) -&gt; DOUBLE PRECISION</form>
+                            <description>
+                                The function converts a postgres timestamp to julian date.
+                                This is naive; no corrections for timezones, let alone time
+                                scales or the like are done; you can thus not expect this to be
+                                good to second-precision unless you are careful in the construction
+                                of the timestamp.
+                            </description>
+                        </feature>
+                        <feature>
+                            <form>gavo_to_mjd(d TIMESTAMP) -&gt; DOUBLE PRECISION</form>
+                            <description>
+                                The function converts a postgres timestamp to modified julian date.
+                                This is naive; no corrections for timezones, let alone time
+                                scales or the like are done; you can thus not expect this to be
+                                good to second-precision unless you are careful in the construction
+                                of the timestamp.
+                            </description>
+                        </feature>
+                        <feature>
+                            <form>ivo_hashlist_has(hashlist TEXT, item TEXT) -&gt; INTEGER</form>
+                            <description>
+                                The function takes two strings; the first is a list of words not
+                                containing the hash sign (#), concatenated by hash signs, the second is
+                                a word not containing the hash sign.  It returns 1 if, compared
+                                case-insensitively, the second argument is in the list of words coded in
+                                the first argument.  The behaviour in case the the second
+                                argument contains a hash sign is unspecified.
+                            </description>
+                        </feature>
+                            <feature>
+                                <form>ivo_nocasematch(value TEXT, pattern TEXT) -&gt; INTEGER</form>
+                                <description>
+                                    ivo_nocasematch returns 1 if pattern matches value, 0 otherwise.
+                                    pattern is defined as for the SQL LIKE operator, but the
+                                    match is performed case-insensitively.  This function in effect
+                                    provides a surrogate for the ILIKE SQL operator that is missing from
+                                    ADQL.
+                                </description>
+                            </feature>
+                        <feature>
+                            <form>ivo_hasword(haystack TEXT, needle TEXT) -&gt; INTEGER</form>
+                            <description>
+                                gavo_hasword returns 1 if needle shows up in haystack, 0 otherwise.  This
+                                is for "google-like"-searches in text-like fields.  In word, you can
+                                actually employ a fairly complex query language; see
+                                http://www.postgresql.org/docs/8.3/static/textsearch.html
+                                for details.
+                            </description>
+                        </feature>
+                    </languageFeatures>
+                    <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-adqlgeo">
+                        <feature>
+                            <form>BOX</form>
+                        </feature>
+                        <feature>
+                            <form>POINT</form>
+                        </feature>
+                        <feature>
+                            <form>CIRCLE</form>
+                        </feature>
+                        <feature>
+                            <form>POLYGON</form>
+                        </feature>
+                        <feature>
+                            <form>REGION</form>
+                        </feature>
+                        <feature>
+                            <form>CENTROID</form>
+                        </feature>
+                        <feature>
+                            <form>COORD1</form>
+                        </feature>
+                        <feature>
+                            <form>COORD2</form>
+                        </feature>
+                        <feature>
+                            <form>DISTANCE</form>
+                        </feature>
+                        <feature>
+                            <form>CONTAINS</form>
+                        </feature>
+                        <feature>
+                            <form>INTERSECTS</form>
+                        </feature>
+                        <feature>
+                            <form>AREA</form>
+                        </feature>
+                    </languageFeatures>
+                </language>
+                <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary">
+                    <mime>text/xml</mime>
+                </outputFormat>
+                <outputFormat>
+                    <mime>text/html</mime>
+                    <alias>html</alias>
+                </outputFormat>
+                <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary2">
+                    <mime>application/x-votable+xml;serialization=binary2</mime>
+                    <alias>votable/b2</alias>
+                </outputFormat>
+                <outputFormat>
+                    <mime>application/fits</mime>
+                    <alias>fits</alias>
+                </outputFormat>
+                <outputFormat>
+                    <mime>text/csv</mime>
+                </outputFormat>
+                <outputFormat>
+                    <mime>text/csv;header=present</mime>
+                    <alias>csv</alias>
+                </outputFormat>
+                <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegEXT#output-votable-td">
+                    <mime>application/x-votable+xml;serialization=tabledata</mime>
+                    <alias>votable/td</alias>
+                </outputFormat>
+                <outputFormat>
+                    <mime>application/json</mime>
+                    <alias>json</alias>
+                </outputFormat>
+                <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary">
+                    <mime>application/x-votable+xml</mime>
+                    <alias>votable</alias>
+                </outputFormat>
+                <outputFormat>
+                    <mime>text/plain</mime>
+                </outputFormat>
+                <outputFormat>
+                    <mime>text/tab-separated-values</mime>
+                    <alias>tsv</alias>
+                </outputFormat>
+                <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-https"/>
+                <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-ftp"/>
+                <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-inline"/>
+                <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-http"/>
+                <retentionPeriod>
+                    <default>172800</default>
+                </retentionPeriod>
+                <executionDuration>
+                    <default>3600</default>
+                </executionDuration>
+                <outputLimit>
+                    <default unit="row">2000</default>
+                    <hard unit="row">1000000000</hard>
+                </outputLimit>
+                <uploadLimit>
+                    <hard unit="byte">20000000</hard>
+                </uploadLimit>
+            </capability>
+        </cap:capabilities>
+
+# -----------------------------------------------------
+# GAVO TAP service
+#
+
+    Capabilities endpoint
+    http://dc.zah.uni-heidelberg.de/__system__/tap/run/capabilities
+    
+        Several references to TAPRegExt
+        <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-udf">
+        <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-adqlgeo">
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary">
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary2">
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegEXT#output-votable-td">
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-binary">
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-https"/>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-ftp"/>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-inline"/>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-http"/>
+    
+    TAPReg ADQL query for resources
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+
+        SELECT ivoid FROM rr.resource WHERE ivoid LIKE 'ivo://ivoa.net%'
+
+            13 entries, but not the one we are looking for
+
+            ivo://ivoa.net
+            ivo://ivoa.net/ivoa
+            ivo://ivoa.net/rofr
+            ivo://ivoa.net/std/conesearch
+            ivo://ivoa.net/std/rm
+            ivo://ivoa.net/std/sia
+            ivo://ivoa.net/std/simpledalregext
+            ivo://ivoa.net/std/slap
+            ivo://ivoa.net/std/spectrumdm
+            ivo://ivoa.net/std/ssa
+            ivo://ivoa.net/std/standardsregext
+            ivo://ivoa.net/std/stc
+            ivo://ivoa.net/std/voresource
+
+
+        SELECT Ivoid, Res_title, Reference_url FROM rr.resource WHERE ivoid LIKE 'ivo://ivoa.net%'
+
+            ivo://ivoa.net                      IVOA Naming Authority	                                    http://rofr.ivoa.net/rofr/
+            ivo://ivoa.net/ivoa	                International Virtual Observatory Alliance                  http://www.ivoa.net/
+            ivo://ivoa.net/rofr	                IVOA Registry of Registries	                                http://rofr.ivoa.net/rofr/
+            ivo://ivoa.net/std/conesearch       Simple Cone Search                                          http://www.ivoa.net/Documents/latest/ConeSearch.html
+            ivo://ivoa.net/std/rm               Resource Metadata for the Virtual Observatory               http://www.ivoa.net/Documents/latest/RM.html
+            ivo://ivoa.net/std/sia              Simple Image Access Protocol                                http://www.ivoa.net/Documents/SIA/
+            ivo://ivoa.net/std/simpledalregext  Describing Simple Data Access Services                      http://www.ivoa.net/Documents/SimpleDALRegExt/
+            ivo://ivoa.net/std/slap             Simple Line Access Protocol                                 http://www.ivoa.net/Documents/SIA/
+            ivo://ivoa.net/std/spectrumdm       IVOA Spectrum Data Model                                    http://www.ivoa.net/Documents/SpectrumDM/
+            ivo://ivoa.net/std/ssa              Simple Spectral Access Protocol                             http://www.ivoa.net/Documents/SSA/
+            ivo://ivoa.net/std/standardsregext  VOTable Format Definition                                   http://www.ivoa.net/Documents/VOTable/
+            ivo://ivoa.net/std/stc              Space-Time Coordinate Metadata for the Virtual Observatory  http://www.ivoa.net/Documents/latest/STC.html
+            ivo://ivoa.net/std/voresource       VOResource: an XML Encoding Schema for Resource Metadata    http://www.ivoa.net/Documents/latest/VOResource.html
+
+        This probably has the wrong identifier
+        SELECT * FROM rr.resource WHERE ivoid = 'ivo://ivoa.net/std/standardsregext'
+
+            ivo://ivoa.net/std/standardsregext  VOTable Format Definition   http://www.ivoa.net/Documents/VOTable/
+            
+
+# -----------------------------------------------------
+# Does the CADC TAP service have the same metadata ?
+#
+
+    http://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+    
+        SELECT Ivoid, Res_title, Reference_url FROM rr.resource WHERE ivoid LIKE 'ivo://cadc%' 
+
+
+            ivo://cadc.nrc.ca                               Canadian Astronomy Data Centre                          http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/
+            ivo://cadc.nrc.ca/archive/cfht                  Canada-France-Hawaii Telescope Archive                  http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cfht/
+            ivo://cadc.nrc.ca/archive/cfht/scienceui        Canada-France-Hawaii Telescope Archive Science UI           http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cfht/
+            ivo://cadc.nrc.ca/archive/gsa                   Gemini Science Archive                                  http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/gemini/
+            ivo://cadc.nrc.ca/archive/gsa/scienceui         Gemini Science Archive UI                               http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/gsa/
+            ivo://cadc.nrc.ca/archive/hst                   Hubble Space Telescope Archive at CADC                  http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/hst/
+            ivo://cadc.nrc.ca/archive/hst/scienceui         Hubble Space Telescope Archive Science UI               http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/hst/
+            ivo://cadc.nrc.ca/archive/hst/wfpc2             WFPC2 Associations Project                              http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/hst/science_wfpc2_assoc.html
+            ivo://cadc.nrc.ca/archive/hst/wfpc2/scienceui   WFPC2 Associations Project Science UI                   http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/hst/science_wfpc2_assoc.html
+            ivo://cadc.nrc.ca/archive/jcmt                  James Clerk Maxwell Telescope Archive at CADC           http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/jcmt/
+            ivo://cadc.nrc.ca/archive/jcmt/scienceui        James Clerk Maxwell Telescope Archive Science UI        http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/jcmt/
+            ivo://cadc.nrc.ca/archive/jcmt/scuba/scienceui  James Clerk Maxwell Telescope Archive Scuba UI          http://cadcwww.hia.nrc.ca/jcmt/
+            ivo://cadc.nrc.ca/cvo                           Canadian Virtual Observatory                            http://services.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/
+            ivo://cadc.nrc.ca/cvo/dynamicui                 Canadian Virtual Observatory Dynamic Exploration UI     http://services.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/
+            ivo://cadc.nrc.ca/cvo/formsui                   Canadian Virtual Observatory Simple UI                  http://services.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/
+            ivo://cadc.nrc.ca/org                           Canadian Astronomy Data Centre                          http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/
+            ivo://cadc.nrc.ca/organisation                  CADC                                                    N/A
+            ivo://cadc.nrc.ca/registry                      CADC Registry                                           http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/reg
+            ivo://cadc.nrc.ca/sia1                          CADC Image Search (SIA)                                 http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/sia/
+            ivo://cadc.nrc.ca/siap/cfht                     CADC/CFHT Image Search                                  http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/sia/
+            ivo://cadc.nrc.ca/siap/hst                      CADC/HST Image Search                                   http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/sia/
+            ivo://cadc.nrc.ca/siap/jcmt                     CADC/JCMT Image Search                                  http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/siap/
+            ivo://cadc.nrc.ca/tap                           CADC Table Query (TAP) Service                          http://www.cadc-ccda-hia-iha.nrc-cnrc.gc.ca/tap
+
+# -----------------------------------------------------
+# CADC registry is an AstroGrid registry - looks like it only contains CADC records 
+#
+
+    http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/reg/ivornLookupForm.jsp
+    
+        ivo://ivoa.net/std/TAPRegExt
+
+            <Error>No entry returned</Error>
+
+        ivo://ivoa.net/std/
+        
+            <Error>No entry returned</Error>
+
+        ivo://ivoa.net/std/*
+
+# -----------------------------------------------------
+# Yes, the CADC TAP service has the same metadata
+#
+
+    http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/reg/viewResourceEntry.jsp?IVORN=ivo%3A%2F%2Fcadc.nrc.ca%2Ftap
+
+    <capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+        <interface role="std" version="1.0" xsi:type="vs:ParamHTTP">
+            <accessURL use="full">http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/tap/</accessURL>
+        </interface>
+        <dataModel ivo-id="ivo://ivoa.net/std/ObsCore-1.0">ObsCore-1.0</dataModel>
+        <language>
+            <name>ADQL</name>
+            <version ivo-id="ivo://ivoa.net/std/ADQL#v2.0">2.0</version>
+            <description>ADQL-2.0</description>
+            <languageFeatures type="ivo://ivoa.net/std/TAPRegExt#features-adql-geo">
+                <feature>
+                    <form>POINT</form>
+                </feature>
+                <feature>
+                    <form>CIRCLE</form>
+                </feature>
+                <feature>
+                    <form>BOX</form>
+                </feature>
+                <feature>
+                    <form>POLYGON</form>
+                </feature>
+                <feature>
+                    <form>REGION</form>
+                </feature>
+                <feature>
+                    <form>CONTAINS</form>
+                </feature>
+                <feature>
+                    <form>INTERSECTS</form>
+                </feature>
+                <feature>
+                    <form>AREA</form>
+                </feature>
+                <feature>
+                    <form>CENTROID</form>
+                </feature>
+                <feature>
+                    <form>COORDSYS</form>
+                </feature>
+                <feature>
+                    <form>COORD1</form>
+                </feature>
+                <feature>
+                    <form>COORD2</form>
+                </feature>
+            </languageFeatures>
+        </language>
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-td">
+            <mime>application/x-votable+xml</mime>
+            <alias>votable</alias>
+        </outputFormat>
+        <outputFormat ivo-id="ivo://ivoa.net/std/TAPRegExt#output-votable-td">
+            <mime>text/xml</mime>
+        </outputFormat>
+        <outputFormat>
+            <mime>text/csv</mime>
+            <alias>csv</alias>
+        </outputFormat>
+        <outputFormat>
+            <mime>text/tab-separated-values</mime>
+            <alias>tsv</alias>
+        </outputFormat>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-inline"></uploadMethod>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-http"></uploadMethod>
+        <uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-https"></uploadMethod>
+        <retentionPeriod>
+            <default>604800</default>
+            <hard>604800</hard>
+        </retentionPeriod>
+        <executionDuration>
+            <default>600</default>
+            <hard>600</hard>
+        </executionDuration>
+        <outputLimit>
+            <default unit="byte">134217728</default>
+            <hard unit="byte">134217728</hard>
+        </outputLimit>
+        <uploadLimit>
+            <default unit="row">10000</default>
+            <hard unit="row">10000</hard>
+        </uploadLimit>
+    </capability>
+
+
+

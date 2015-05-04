@@ -1,0 +1,78 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2015 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Need to re-build the embedded ivoatex in each.
+#[user@desktop]
+
+    dockertex()
+        {
+        docker run -it --rm \
+            -e "useruid=$(id -u)" \
+            -v "$(pwd):/var/local/texdata" \
+            ivoa/ivoatex
+        }
+
+    pushd /var/local/projects/edinburgh/wfau
+        pushd ivoadoc
+
+            pushd TAP
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+
+            pushd ADQL
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+
+            pushd ADQL2Err1
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+        popd
+
+
+
+
+

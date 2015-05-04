@@ -99,4 +99,3 @@
         Apr 18 20:29:37 edfu docker[21756]: /builddir/build/BUILD/docker-1.5.0/_build/src/github.com/docker/docker/daemon/logs.go:134 +0xb6e
 
 
-

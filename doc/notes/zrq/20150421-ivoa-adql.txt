@@ -1,0 +1,192 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# ...
+#[user@desktop]
+
+    pushd /var/local/projects/edinburgh/wfau
+        pushd ivoadoc
+
+            pushd TAP
+
+                svn update
+                
+            popd
+
+            pushd ADQL
+
+                svn update
+                
+            popd
+
+
+            svn checkout https://volute.googlecode.com/svn/trunk/projects/dal/ADQL2Err1
+            pushd ADQL2Err1
+
+                svn update
+                
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Need to re-build the embedded ivoatex in each.
+#[user@desktop]
+
+dockertex()
+    {
+    docker run -it --rm \
+        -e "useruid=$(id -u)" \
+        -v "$(pwd):/var/local/texdata" \
+        ivoa/ivoatex
+    }
+
+
+    pushd /var/local/projects/edinburgh/wfau
+        pushd ivoadoc
+
+            pushd TAP
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+
+            pushd ADQL
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+
+            pushd ADQL2Err1
+
+                dockertex
+
+                    make ivoatex/tth_C/tth
+                    make clean
+                    make
+
+                    exit
+
+            popd
+
+# -----------------------------------------------------
+# Items in the exiting document flagged with 'ZRQ'
+# Additional errata for 2.0 ?
+
+    #
+    # Moved '|' to between the options
+1303:
+    <boolean_primary> ::=
+    -    | <left_paren> <search_condition> <right_paren>
+    +    <left_paren> <search_condition> <right_paren>
+    -    <predicate>
+    +    | <predicate>
+
+
+    #
+    # Prefix intentionally blank ?
+    # If so, then what does it mean ?
+1409:
+    <default_function_prefix> ::=
+
+    #
+    # Extra > at the end of line
+1558:
+      | POWER <left_paren>
+            <numeric_value_expression> <comma> <numeric_value_expression> >
+        <right_paren>
+
+    #
+    # Are these intentionally blank ?
+1592:
+    <nondoublequote_character> ::=
+1594:
+    <nonquote_character> ::=
+
+    #
+    # This is probably ok
+1711:
+    <set_function_specification> ::=
+        COUNT <left_paren> <asterisk> <right_paren>
+      | <general_set_function>
+
+# -----------------------------------------------------
+# Separator non-terminal
+#
+
+1709:
+    -   <separator> ::= { <comment> | <space> | <newline> }...
+
+1334:
+        <character_string_literal> ::=
+            <quote> [ <character_representation>... ] <quote>
+    -       [
+    -           {
+    -               <separator>...
+    -               <quote> [ <character_representation>... ] <quote>
+    -           }...
+    -       ]
+
+    Add
+    "Whitespace and comments can occur wherever they can occur in [std:SQL1992]."
+    - where ?
+
+# -----------------------------------------------------
+# Type system
+#
+
+
+        VOTable	ADQL
+        datatype	arraysize	xtype	type
+        boolean	1		implemenation defined
+        short	1		SMALLINT
+        int	1		INTEGER
+        long	1		BIGINT
+        float	1		REAL
+        double	1		DOUBLE
+        (numeric)	> 1		implementation defined
+        char	1		CHAR(1)
+        char	n*		VARCHAR(n)
+        char	n		CHAR(n)
+        unsignedByte	n*		VARBINARY(n)
+        unsignedByte	n		BINARY(n)
+        unsignedByte	n, *, n*	adql:BLOB	BLOB
+        char	n, *, n*	adql:CLOB	CLOB
+        char	n, *, n*	adql:TIMESTAMP	TIMESTAMP
+        char	n, *, n*	adql:POINT	POINT
+        char	n, *, n*	adql:REGION	REGION
+
+
+
