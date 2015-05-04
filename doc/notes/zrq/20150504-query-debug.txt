@@ -107,12 +107,125 @@
 
 
 
+        http://localhost:8093/firethorn/adql/schema/32885
+
+            ATLASDR1
+            base
+            http://localhost:8093/firethorn/jdbc/schema/32830
+            parent
+            http://localhost:8093/firethorn/jdbc/resource/4
+
+        http://localhost:8093/firethorn/adql/schema/1049581
+
+            ATLASDR2
+            base
+            http://localhost:8093/firethorn/jdbc/schema/1049472
+            parent
+            http://localhost:8093/firethorn/jdbc/resource/1016029
+            
+
+----------------------------------------------
+
+Check for similar on pyratest test system.
+
+    OLD
+    adqlspace=http://pyratest2:8080/firethorn/adql/resource/2359297
+    atlasschema=http://localhost:8092/firethorn/adql/schema/2392146
+    atlasprivate=http://pyratest2:8080/firethorn/adql/schema/2392146
+
+
+
+    http://localhost:8092/firethorn/adql/resource/2359297
+
+    http://localhost:8092/firethorn//adql/resource/2359479
+
+----------------------------------------------
+
+    Load new metadata
+
+    http://localhost:8093/firethorn/adql/resource/1507329
+    http://localhost:8093/firethorn/adql/resource/5
 
 
 
 
 
+    Errors loading the ATLASv2013 catalogs
+
+    grep 'Exception while scanning catalog \[.*\]\[Invalid state' tomcat/logs/catalina.out
+
+        2015-05-04 22:34:02,523 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:04,053 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:05,570 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:07,087 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:55,555 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:57,083 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:34:58,594 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:35:00,119 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:35:03,545 WARN  [http-bio-8080-exec-4] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:35:05,067 WARN  [http-bio-8080-exec-4] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:35:06,592 WARN  [http-bio-8080-exec-4] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:35:08,107 WARN  [http-bio-8080-exec-4] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:42:37,173 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:42:38,693 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:42:40,213 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:42:41,732 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:24,383 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:25,922 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:27,444 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:28,965 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:50,859 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:52,391 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:53,912 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:43:55,427 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:44:59,780 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:45:01,305 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:45:02,819 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:45:04,343 WARN  [http-bio-8080-exec-5] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:22,807 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:24,330 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:25,849 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:27,371 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:47,599 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:49,138 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:50,660 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:46:52,177 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:48:00,342 WARN  [http-bio-8080-exec-7] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:48:01,862 WARN  [http-bio-8080-exec-7] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:48:03,376 WARN  [http-bio-8080-exec-7] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:48:04,898 WARN  [http-bio-8080-exec-7] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:51:49,183 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:51:50,701 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:51:52,223 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:51:53,745 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:55:48,070 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:55:49,599 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:55:51,116 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 22:55:52,638 WARN  [http-bio-8080-exec-6] [JdbcResourceEntity] Exception while scanning catalog [1507328][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:00,732 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:02,265 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:03,779 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:05,306 WARN  [http-bio-8080-exec-1] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:43,792 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:45,313 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:46,836 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:48,356 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:52,409 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:53,929 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:55,466 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:04:57,000 WARN  [http-bio-8080-exec-9] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:05,680 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:07,203 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:08,716 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:10,230 WARN  [http-bio-8080-exec-10] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131127][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:50,752 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130304][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:52,271 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20130426][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:53,789 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131029][Invalid state, the Connection object is closed.] 
+        2015-05-04 23:06:55,309 WARN  [http-bio-8080-exec-3] [JdbcResourceEntity] Exception while scanning catalog [1507333][ATLASv20131127][Invalid state, the Connection object is closed.] 
 
 
 
 
+    http://localhost:8093/firethorn//adql/resource/1802241/
+    http://localhost:8093/firethorn/adql/query/1966080
+    
