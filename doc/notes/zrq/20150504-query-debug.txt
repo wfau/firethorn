@@ -93,11 +93,20 @@
             http://localhost:8093/firethorn/adql/schema/32885
             base
             http://localhost:8093/firethorn/jdbc/schema/32830
-
+            parent
+            http://localhost:8093/firethorn/jdbc/resource/4
+            
             WISE
             http://localhost:8093/firethorn/adql/schema/1048875
             base
             http://localhost:8093/firethorn/jdbc/schema/1048865
+            parent
+            http://localhost:8093/firethorn/jdbc/resource/1015821
+
+
+
+
+
 
 
 
