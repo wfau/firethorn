@@ -76,11 +76,11 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
         {
         @NamedQuery(
             name  = "OgsaService-select-all",
-            query = "FROM OgsaServiceEntity ORDER BY name DESC"
+            query = "FROM OgsaServiceEntity ORDER BY ident DESC"
             ),
         @NamedQuery(
             name  = "OgsaService-select-status",
-            query = "FROM OgsaServiceEntity WHERE ogstatus = :ogstatus ORDER BY name DESC"
+            query = "FROM OgsaServiceEntity WHERE ogstatus = :ogstatus ORDER BY ident DESC"
             )
         }
     )
