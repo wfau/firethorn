@@ -1,0 +1,109 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    JOIN query fails because it is treated as DISTRIBUTED
+
+        SELECT
+            TOP 10
+            S.sourceID as ID,
+            S.ra as ra,
+            S.dec as decl
+        FROM
+            atlasSource as S
+        JOIN
+            atlasSourceXwise_allskysc as X on X.masterObjID = S.sourceID
+        JOIN
+            wise_allskysc as W on X.slaveObjID = W.cntr
+            
+
+    Query is DISTRIBUTED because it uses two resources.
+
+        http://localhost:8093/firethorn/adql/query/1180758
+
+        resources": [
+            "http://localhost:8093/firethorn/jdbc/resource/1015821",
+            "http://localhost:8093/firethorn/jdbc/resource/4"
+            ],
+
+
+    Each individual query works, but they are using different resources
+
+        SELECT
+            COUNT(*)
+        FROM
+            atlasSource
+
+        http://localhost:8093/firethorn/adql/query/1180762
+
+        resources": [
+            "http://localhost:8093/firethorn/jdbc/resource/4"
+            ],
+
+
+
+        SELECT
+            COUNT(*)
+        FROM
+            wise_allskysc
+
+        http://localhost:8093/firethorn/adql/query/1180763
+
+        resources": [
+            "http://localhost:8093/firethorn/jdbc/resource/1015821"
+            ],
+
+    Both resources look good, but we should only be using one of them.
+
+        http://localhost:8093/firethorn/jdbc/resource/4/schemas/select
+        http://localhost:8093/firethorn/jdbc/resource/1015821/schemas/select
+
+    WebPy config is
+
+        adqlspace=http://coccinea:8080/firethorn/adql/resource/5
+        atlasschema=http://coccinea:8080/firethorn/adql/schema/32885
+        atlasprivate=http://coccinea:8080/firethorn/adql/schema/1049581
+
+    Converted to tunelled URLS
+
+        http://localhost:8093/firethorn/adql/resource/5
+
+        http://localhost:8093/firethorn/adql/resource/5/schemas/select
+
+            ATLASDR1
+            http://localhost:8093/firethorn/adql/schema/32885
+            base
+            http://localhost:8093/firethorn/jdbc/schema/32830
+
+            WISE
+            http://localhost:8093/firethorn/adql/schema/1048875
+            base
+            http://localhost:8093/firethorn/jdbc/schema/1048865
+
+
+
+
+
+
+
+
+
