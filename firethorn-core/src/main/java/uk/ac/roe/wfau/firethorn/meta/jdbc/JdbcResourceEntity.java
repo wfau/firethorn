@@ -70,7 +70,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
             ),
         @NamedQuery(
             name  = "JdbcResource-select-userdata",
-            query = "FROM JdbcResourceEntity WHERE (connection.url= :url) ORDER BY ident desc"
+            query = "FROM JdbcResourceEntity WHERE (connection.url= :url) ORDER BY name asc"
             )
         }
     )

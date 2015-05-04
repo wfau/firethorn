@@ -78,19 +78,19 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
         {
         @NamedQuery(
             name  = "JdbcColumn-select-table",
-            query = "FROM JdbcColumnEntity WHERE table = :parent ORDER BY ident asc"
+            query = "FROM JdbcColumnEntity WHERE table = :parent ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcColumn-select-parent",
-            query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident asc"
+            query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcColumn-select-parent.name",
-            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc"
             ),
         @NamedQuery(
             name  = "JdbcColumn-search-parent.text",
-            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc"
             )
         }
     )
