@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.13.13</version>
+        <version project='firethorn'>1.13.13-stv-nested-query-bug</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-astro</artifactId>
