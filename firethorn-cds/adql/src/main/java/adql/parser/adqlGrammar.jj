@@ -45,6 +45,7 @@ PARSER_BEGIN(ADQLParser)
 
 package adql.parser;
 
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -52,6 +53,9 @@ import java.util.Collection;
 
 import java.io.FileReader;
 import java.io.IOException;
+import adql.db.DBChecker;
+import adql.db.DBTable;
+import adql.db.SearchColumnList;
 
 import adql.db.exception.UnresolvedIdentifiersException;
 
@@ -735,13 +739,13 @@ ADQLQuery Query(): {ADQLQuery q = null;}{
 
 ADQLQuery QueryExpression(): {} {
 	{
-		try{
-			// create the query:
-			query = queryFactory.createQuery();
-			stackQuery.push(query);
-		}catch(Exception ex){
-			throw generateParseException(ex);
-		}
+
+            try {
+            	query = queryFactory.createQuery(query,true);
+        		stackQuery.push(query);
+            } catch(Exception ex){
+                throw generateParseException(ex);
+            }
 	}
 	Select()
 	From()
@@ -798,7 +802,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 			<ASTERISK>
 			{
 				try{;
-					return new SelectAllColumns( queryFactory.createTable(identifiers, null) );
+					return new SelectAllColumns( queryFactory.createTable(identifiers, null),query );
 				}catch(Exception ex) {
 					throw generateParseException(ex);
 				}
@@ -811,7 +815,7 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 	
 	{
 		try{
-			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier);
+			SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier, query);
 			if (label != null)
 				item.setCaseSensitive(label.caseSensitivity);
 			return item;
@@ -1164,7 +1168,8 @@ ADQLOperand StringFactor(): {ADQLOperand op;} {
 GeometryValue<GeometryFunction> GeometryExpression(): {ADQLColumn col = null; GeometryFunction gf = null;} {
 	(col=Column() | gf=GeometryValueFunction())
 	{
-		if (col != null){		  	col.setExpectedType('G');
+		if (col != null){
+		  	col.setExpectedType('G');
 			return new GeometryValue<GeometryFunction>(col);
 		}else
 			return new GeometryValue<GeometryFunction>(gf);
@@ -1354,7 +1359,8 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 				{
 					if (p1 != null)
 						gvp1 = new GeometryValue<PointFunction>(p1);
-					else{						col1.setExpectedType('G');
+					else{
+						col1.setExpectedType('G');
 						gvp1 = new GeometryValue<PointFunction>(col1);
 					}
 				}
@@ -1363,7 +1369,8 @@ GeometryFunction GeometryFunction(): {Token t=null; GeometryValue<GeometryFuncti
 				{
 					if (p2 != null)
 						gvp2 = new GeometryValue<PointFunction>(p2);
-					else{						col2.setExpectedType('G');
+					else{
+						col2.setExpectedType('G');
 						gvp2 = new GeometryValue<PointFunction>(col2);
 					}
 				} 

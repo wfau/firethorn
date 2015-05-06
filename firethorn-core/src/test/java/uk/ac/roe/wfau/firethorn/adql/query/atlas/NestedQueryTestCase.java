@@ -227,5 +227,49 @@ extends AtlasQueryTestBase
                 }
             );
         }
+    
+    
+    /**
+     * TODO
+     * Test query Subquery in IN clause 
+     *
+     *  Query:
+     *  SELECT * FROM Filter WHERE filterID IN ( SELECT filterID FROM Filter WHERE filterID>0 GROUP BY filterID )    
+     *       
+     */
+    @Test
+    public void test003S()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+            "SELECT * FROM Filter WHERE filterID IN ( SELECT filterID FROM Filter WHERE filterID>0 GROUP BY filterID )"
+
+            );
+        }
+    
+    /**
+     * TODO
+     * Test query Subquery in IN clause 
+     *
+     *  Query:
+     *  SELECT * FROM  ( SELECT filterID FROM Filter WHERE filterID>0 GROUP BY filterID ) as q WHERE q.filterID=7   
+     *       
+     */
+    @Test
+    public void test004S()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+            "SELECT * FROM  ( SELECT filterID FROM Filter WHERE filterID>0 GROUP BY filterID ) as q WHERE q.filterID=7"
+
+            );
+        }    
+    
+    
+    
     }
 

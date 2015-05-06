@@ -168,7 +168,8 @@ implements AdqlParser
             log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
             return super.createSelectItem(
                 operand,
-                alias
+                alias,
+                parent
                 );
             }
 
@@ -901,11 +902,11 @@ implements AdqlParser
         {
         // Check the name is valid.
         // Adds generated alias if needed.
-		//if (item.item().isMain()){
+		if (item.item().isMain()){
 			subject.add(
 				item
 				);
-    	//	}
+    		}
         }
 
     /**

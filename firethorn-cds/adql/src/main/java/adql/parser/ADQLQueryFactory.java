@@ -113,8 +113,13 @@ public class ADQLQueryFactory {
 	public ADQLQuery createQuery() throws Exception{
 		return new ADQLQuery();
 	}
-
-	public ADQLTable createTable(final IdentifierItems idItems, final IdentifierItem alias) throws Exception{
+	
+	public ADQLQuery createQuery(ADQLQuery parent, boolean isParent) throws Exception {
+		return new ADQLQuery(parent,isParent);
+	}
+	
+	
+	public ADQLTable createTable(final IdentifierItems idItems, final IdentifierItem alias) throws Exception {
 		ADQLTable t = new ADQLTable(idItems.getCatalog(), idItems.getSchema(), idItems.getTable());
 
 		// Set the table alias:
@@ -185,8 +190,8 @@ public class ADQLQueryFactory {
 		}
 	}
 
-	public SelectItem createSelectItem(ADQLOperand operand, String alias) throws Exception{
-		return new SelectItem(operand, alias);
+	public SelectItem createSelectItem(ADQLOperand operand, String alias, ADQLQuery parent) throws Exception {
+		return new SelectItem(operand, alias, parent);
 	}
 
 	public ADQLColumn createColumn(final IdentifierItems idItems) throws Exception{

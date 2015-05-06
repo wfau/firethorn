@@ -117,16 +117,6 @@
         </dependency>
 
         <!--+
-            | FireThorn OGSA-DAI client components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-
-        <!--+
             | FireThorn annotations.
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -217,7 +207,6 @@
                     <useSystemClassloader>true</useSystemClassloader>
                 </configuration>
             </plugin>        
-
         </plugins>
 
         <resources>
