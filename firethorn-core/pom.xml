@@ -207,6 +207,7 @@
                     <useSystemClassloader>true</useSystemClassloader>
                 </configuration>
             </plugin>        
+
         </plugins>
 
         <resources>
