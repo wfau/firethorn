@@ -34,10 +34,11 @@ implements Entity.IdentFactory<EntityType>
     {
 
     private static final Pattern p1 = Pattern.compile("^[0-9]+$") ;
-    private static final Pattern p2 = Pattern.compile("^\\(([0-9]+):([0-9]+)\\)$") ;
-    private static final Pattern p3 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):([0-9]+)\\)$") ;
+    private static final Pattern p2 = Pattern.compile("^\\(([0-9]+):([0-9]+)\\)$") ; 
+    private static final Pattern p3 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):([0-9]+)\\)$") ; 
     private static final Pattern p4 = Pattern.compile("^\\(([0-9]+):(\\([0-9]+:[0-9]+\\))\\)$") ;
     private static final Pattern p5 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):(\\([0-9]+:[0-9]+\\))\\)$") ;
+    private static final Pattern p6 = Pattern.compile("^\\((\\([0-9]+:\\([0-9]+:[0-9]+\\)\\)):\\(\\([0-9]+:[0-9]+\\):([0-9]+)\\)\\)$") ;
 
     @Override
     public Identifier ident(final String string)
@@ -107,14 +108,30 @@ implements Entity.IdentFactory<EntityType>
                                     )
                                 );
                             }
+                        
                         else {
-                            throw new IdentifierFormatException(
-                                string
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+                            final Matcher m6 = p6.matcher(string);
+                            if (m6.matches())
+                                {
+                                //log.debug("m6 matches");
+                                return new ProxyIdentifier(
+                                    ident(
+                                        m6.group(1)
+                                        ),
+                                    ident(
+                                        m6.group(2)
+                                        )
+                                    );
+                                } 
+                            else {
+	                            throw new IdentifierFormatException(
+	                                string
+	                                );
+	                             }
+                             }
+                         }
+                     }
+                 }
+             }
+         }
+     }
