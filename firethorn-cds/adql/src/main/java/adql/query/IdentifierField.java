@@ -92,7 +92,7 @@ public enum IdentifierField{
 	 * @return	<i>true</i> if this field is case sensitive, <i>false</i> otherwise.
 	 */
 	public final boolean isCaseSensitive(final byte caseSensitivity){
-		return ((caseSensitivity >> nbShift) & 0x01) == 1;
+		return false;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public enum IdentifierField{
 	 * @return	<i>true</i> if all identifier parts are case sensitive, <i>false</i> otherwise.
 	 */
 	public static final boolean isFullCaseSensitive(final byte caseSensitivity){
-		return caseSensitivity == 0x1F;
+		return false;
 	}
 
 	/**
