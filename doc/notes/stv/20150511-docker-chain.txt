@@ -427,11 +427,11 @@ EOF
 # Run our FireThorn container.
 #[root@virtual]
 
-# --publish 8080:8080 \
 
     docker run \
         --detach \
         --expose 8080 \
+        --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
         --link "${metaname:?}:${metalink:?}" \
