@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.13.14</version>
+        <version project='firethorn'>1.13.15</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn</artifactId>
