@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>1.13.15</version>
+        <version project='firethorn'>1.13.15-zrq-scan-loop</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity-common</artifactId>
