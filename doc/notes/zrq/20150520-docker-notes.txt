@@ -41,3 +41,39 @@
     https://github.com/appc
 
 
+
+    Docker intro - 20130530
+    http://vimeo.com/67284401
+
+    GitHub - Public keys API
+    https://developer.github.com/v3/users/keys/#list-public-keys-for-a-user    
+
+
+
+
+    CoreOS --------------------------------------- 
+
+        https://coreos.com/docs/
+
+        LibVirt/KVM --------------------------------------- 
+        https://coreos.com/docs/running-coreos/platforms/libvirt/
+
+        Amazon/EC2 --------------------------------------- 
+
+        DotCloud --------------------------------------- 
+
+        RackSpace --------------------------------------- 
+        https://coreos.com/docs/running-coreos/cloud-providers/rackspace/
+        https://coreos.com/blog/coreos-on-rackspace-onmetal-cloud-servers/
+
+        Linode --------------------------------------- 
+        https://manager.linode.com/
+        http://serverfault.com/questions/620512/how-do-i-install-coreos-on-linode
+        https://groups.google.com/forum/#!topic/coreos-user/n0o9Uf_23HE
+
+
+
+        Digital Ocean --------------------------------------- 
+        https://www.digitalocean.com/
+
+
