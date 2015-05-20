@@ -20,7 +20,6 @@
 #
 #
 
-
     Useful tricks
     https://www.youtube.com/watch?v=XCVOxht34Hs
 
@@ -29,5 +28,16 @@
 
     Grand ambassador (dynamic)
     https://github.com/cpuguy83/docker-grand-ambassador
+
+
+    Google & Docker
+    http://www.zdnet.com/article/google-wants-kubernetes-to-be-containers-neutral-ground/
+
+    Alternative formats
+    http://www.zdnet.com/article/google-red-hat-and-vmware-announce-coreos-container-support/
+
+
+    App Container
+    https://github.com/appc
 
 
