@@ -1,0 +1,204 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Queries sent to the Gaia Archive hosted at ESAC
+    # http://geadev.esac.esa.int/gacs-dev/index.html
+
+        SELECT
+            TOP 123
+            galactic_lat,
+            galactic_lon
+        FROM
+            GACS.igsl_source
+
+    #
+    # This can take a long time to execute on their server.
+    # We suspect that their indexing isn't.
+
+        SELECT
+            TOP 123
+            galactic_lat,
+            galactic_lon
+        FROM
+            GACS.igsl_source
+        ORDER BY
+            galactic_lat,
+            galactic_lon
+
+    #
+    # This can take a long time to execute on their server.
+    # We suspect that their indexing isn't.
+
+        SELECT
+            galactic_lat,
+            galactic_lon
+        FROM
+            GACS.igsl_source
+        WHERE
+            galactic_lat BETWEEN -3.7 AND -3.6
+        AND
+            galactic_lon BETWEEN 27.3 AND 27.4
+
+    #
+    # Queries sent to the ICECUBE database hosted at GAVO.
+    # http://dc.zah.uni-heidelberg.de/icecube/q/cone/form
+    # (you need to add the ICECUBE database for this to work)
+
+        -- fast (< 10 sec)
+        SELECT
+            TOP 123
+            nualpha,
+            nudelta
+        FROM
+            ICECUBE.nucand
+
+        -- fast (< 10 sec)
+        SELECT
+            nualpha,
+            nudelta
+        FROM
+            ICECUBE.nucand
+        WHERE
+            nualpha BETWEEN 263.0 AND 263.9
+        AND
+            nudelta BETWEEN 19.0 AND 19.9
+
+    #
+    # This query fails, the ORDER BY triggers a bug in our code.
+    # I've included it here to show the kind of bugs to expect.
+
+        SELECT
+            TOP 123
+            nualpha,
+            nudelta
+        FROM
+            ICECUBE.nucand
+        ORDER BY
+            nualpha,
+            nudelta
+
+    #
+    # A query sent to the Atlas database hosted at ROE
+    # http://osa.roe.ac.uk/
+    # (you need to add the ATLASDR1 database for this to work)
+
+        SELECT
+            ra,
+            dec
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            atlasSource.ra  BETWEEN 354 AND 355
+        AND
+            atlasSource.dec BETWEEN -40 AND -39
+
+    #
+    # A query sent to the TWOMASS database hosted at ROE
+    # http://osa.roe.ac.uk/
+    # (you need to add the TWOMASS database for this to work)
+
+        SELECT
+            ra,
+            dec
+        FROM
+            TWOMASS.twomass_psc
+        WHERE
+            twomass_psc.ra  BETWEEN 354 AND 355
+        AND
+            twomass_psc.dec BETWEEN -40 AND -39
+
+    #
+    # A JOIN query combining the Atlas and TWOMASS databases hosted at ROE
+    # http://osa.roe.ac.uk/
+    # (you need to add the ATLASDR1 and TWOMASS databases for this to work)
+
+        SELECT
+            atlasSource.ra,
+            atlasSource.dec
+        FROM
+            ATLASDR1.atlasSource
+        JOIN
+            ATLASDR1.atlasSourceXtwomass_psc
+        ON
+            atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+        JOIN
+            TWOMASS.twomass_psc
+        ON
+            twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+        WHERE
+            atlasSource.ra  BETWEEN 354 AND 355
+        AND
+            atlasSource.dec BETWEEN -40 AND -39
+        AND
+            twomass_psc.ra  BETWEEN 354 AND 355
+        AND
+            twomass_psc.dec BETWEEN -40 AND -39
+
+    #
+    # A query sent to the TWOMASS database hosted at ESAC
+    # http://geadev.esac.esa.int/gacs-dev/index.html
+
+        -- SLOW (> 10 min)
+        -- ra and decl are not indexed ?
+
+        SELECT
+            ra,
+            decl
+        FROM
+            GACS.twomass_psc
+        WHERE
+            twomass_psc.ra  BETWEEN 354 AND 355
+        AND
+            twomass_psc.decl BETWEEN -40 AND -39
+
+    #
+    # A JOIN query combining the Atlas database at ROE with the TWOMASS database at ESAC
+    # http://geadev.esac.esa.int/gacs-dev/index.html
+    # http://osa.roe.ac.uk/
+
+        SELECT
+            atlasSource.ra,
+            atlasSource.dec
+        FROM
+            atlasSource
+        JOIN
+            atlasSourceXtwomass_psc
+        ON
+            atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+        JOIN
+            GACS.twomass_psc
+        ON
+            twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+        WHERE
+            atlasSource.ra  BETWEEN 354 AND 355
+        AND
+            atlasSource.dec BETWEEN -40 AND -39
+        AND
+            twomass_psc.ra  BETWEEN 354 AND 355
+        AND
+            twomass_psc.dec BETWEEN -40 AND -39
+
+
+    
+
