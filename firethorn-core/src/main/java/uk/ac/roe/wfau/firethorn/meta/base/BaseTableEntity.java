@@ -30,6 +30,7 @@ import javax.persistence.InheritanceType;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -134,7 +135,7 @@ implements BaseTable<TableType, ColumnType>
      */
     @Repository
     public static abstract class EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-    extends AbstractEntityFactory<TableType>
+    extends TreeComponentEntity.EntityFactory<TableType>
     implements BaseTable.EntityFactory<SchemaType, TableType>
         {
         }
@@ -168,10 +169,10 @@ implements BaseTable<TableType, ColumnType>
      * @todo Remove the parent reference.
      *
      */
-    protected BaseTableEntity(final CopyDepth type, final BaseSchema<?,TableType> parent, final String name)
+    protected BaseTableEntity(final CopyDepth depth, final BaseSchema<?,TableType> parent, final String name)
         {
         super(
-            type,
+            depth,
             name
             );
         }

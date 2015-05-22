@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
@@ -29,6 +30,15 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 public interface BaseComponent
 extends NamedEntity
     {
+
+    /**
+     * {@link Entity.EntityFactory} interface.
+     *
+     */
+    public static interface EntityFactory<ComponentType extends NamedEntity>
+    extends Entity.EntityFactory<ComponentType>
+        {
+        }
 
     /**
      * Enum representing the status.

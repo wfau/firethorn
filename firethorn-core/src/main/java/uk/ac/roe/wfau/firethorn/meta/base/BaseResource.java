@@ -49,11 +49,11 @@ extends TreeComponent
         }
 
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<ResourceType extends BaseResource<?>>
-    extends Entity.EntityFactory<ResourceType>
+    extends TreeComponent.EntityFactory<ResourceType>
         {
         /**
          * Select all the available resources.

@@ -24,6 +24,9 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.joda.time.Period;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  *
@@ -45,7 +48,18 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
      * 
      */
     protected static final String DB_OGSAID_COL = "ogsaid";
-    
+
+    /**
+     * {@link BaseResource.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ResourceType extends BaseResource<?>>
+    extends TreeComponentEntity.EntityFactory<ResourceType>
+    implements BaseResource.EntityFactory<ResourceType>
+        {
+        }
+
     /**
      * Protected constructor.
      *

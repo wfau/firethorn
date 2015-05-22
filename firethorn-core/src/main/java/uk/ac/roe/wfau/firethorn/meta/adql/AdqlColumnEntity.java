@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -185,7 +186,7 @@ public class AdqlColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlColumn>
+    extends BaseColumnEntity.EntityFactory<AdqlTable, AdqlColumn>
     implements AdqlColumn.EntityFactory
         {
 
@@ -344,14 +345,20 @@ public class AdqlColumnEntity
 
     protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base)
         {
-        super(table, base.name());
+        super(
+            table,
+            base.name()
+            );
         this.base  = base ;
         this.table = table;
         }
 
     protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
         {
-        super(table, ((name != null) ? name : base.name()));
+        super(
+            table,
+            ((name != null) ? name : base.name())
+            );
         this.base  = base ;
         this.table = table;
         }

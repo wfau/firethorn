@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -109,10 +110,9 @@ implements AdqlSchema
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlSchema>
+    extends BaseSchemaEntity.EntityFactory<AdqlResource, AdqlSchema>
     implements AdqlSchema.EntityFactory
         {
-
         @Override
         public Class<?> etype()
             {
@@ -171,7 +171,7 @@ implements AdqlSchema
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name,
-                base
+                base                
                 );
             super.insert(
                 schema
@@ -203,7 +203,7 @@ implements AdqlSchema
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                name
+                name                
                 );
             super.insert(
                 schema
@@ -221,7 +221,7 @@ implements AdqlSchema
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                name
+                name                
                 );
             super.insert(
                 schema

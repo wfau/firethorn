@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -150,7 +151,7 @@ implements JdbcTable
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link JdbcTable.Builder} implementation.
      *
      */
     public static abstract class Builder
@@ -181,7 +182,7 @@ implements JdbcTable
    
     /**
      * {@link JdbcTable.NameFactory} implementation.
-     * @todo base64 hash of the ident ?
+     * @todo base32 hash of the ident ?
      *
      */
     @Component
@@ -578,7 +579,10 @@ implements JdbcTable
      */
     public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
         {
-        super(schema, name);
+        super(
+            schema,
+            name
+            );
         this.query  = query;
         this.schema = schema;
 

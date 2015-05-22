@@ -24,6 +24,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
+import org.joda.time.Period;
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,6 +50,17 @@ implements TreeComponent
     public static final String DB_PARENT_COL = "parent";
 
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
+
+    /**
+     * {@link TreeComponent.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ComponentType extends TreeComponent>
+    extends BaseComponentEntity.EntityFactory<ComponentType>
+    implements TreeComponent.EntityFactory<ComponentType>
+        {
+        }
 
     /**
      * Default constructor needs to be protected not private.

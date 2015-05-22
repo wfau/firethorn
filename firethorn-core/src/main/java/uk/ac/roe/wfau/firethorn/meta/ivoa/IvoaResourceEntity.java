@@ -31,6 +31,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -39,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
@@ -83,12 +85,12 @@ public class IvoaResourceEntity
     protected static final String DB_IVOAID_COL = "ivoaid";
 
     /**
-     * {@link Entity.EntityFactory} implementation.
+     * {@link IvoaResource.EntityFactory} implementation.
      *
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<IvoaResource>
+    extends BaseResourceEntity.EntityFactory<IvoaResource>
     implements IvoaResource.EntityFactory
         {
 

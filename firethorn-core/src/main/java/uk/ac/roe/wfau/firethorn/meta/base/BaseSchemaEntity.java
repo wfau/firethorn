@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -104,6 +105,17 @@ implements BaseSchema<SchemaType, TableType>
         }
 
     /**
+     * {@link BaseSchema.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
+    extends TreeComponentEntity.EntityFactory<SchemaType>
+    implements BaseSchema.EntityFactory<ResourceType, SchemaType>
+        {
+        }
+
+    /**
      * Protected constructor.
      *
      */
@@ -131,10 +143,10 @@ implements BaseSchema<SchemaType, TableType>
      * @todo Remove the parent reference. 
      *
      */
-    protected BaseSchemaEntity(final CopyDepth type, final BaseResource<SchemaType> resource, final String name)
+    protected BaseSchemaEntity(final CopyDepth depth, final BaseResource<SchemaType> resource, final String name)
         {
         super(
-            type,
+            depth,
             name
             );
         }

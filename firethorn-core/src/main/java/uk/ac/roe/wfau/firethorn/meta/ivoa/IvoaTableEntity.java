@@ -26,11 +26,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -100,7 +102,7 @@ public class IvoaTableEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaTableEntity";
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link IvoaTable.Builder} implementation.
      *
      */
     public static abstract class Builder

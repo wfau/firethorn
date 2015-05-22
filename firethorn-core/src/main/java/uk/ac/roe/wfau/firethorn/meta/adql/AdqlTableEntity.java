@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -206,7 +207,6 @@ public class AdqlTableEntity
     extends BaseTableEntity.EntityFactory<AdqlSchema, AdqlTable>
     implements AdqlTable.EntityFactory
         {
-
         @Override
         public Class<?> etype()
             {
@@ -263,10 +263,10 @@ public class AdqlTableEntity
 
         @Override
         @CreateMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+                depth,
                 schema,
                 base,
                 base.name()
@@ -296,10 +296,10 @@ public class AdqlTableEntity
 
         @Override
         @CreateMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+                depth,
                 schema,
                 base,
                 name

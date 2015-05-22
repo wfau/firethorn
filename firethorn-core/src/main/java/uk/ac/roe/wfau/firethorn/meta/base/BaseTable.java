@@ -71,11 +71,11 @@ extends TreeComponent
         }
 
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
-    extends Entity.EntityFactory<TableType>
+    extends TreeComponent.EntityFactory<TableType>
         {
         /**
          * Select all the tables.

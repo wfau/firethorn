@@ -17,10 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
  * Base class interface for a metadata component.
@@ -31,7 +27,16 @@ extends BaseComponent
     {
 
     /**
-     * The persistence level, or depth of copy, of a entity.
+     * {@link BaseComponent.EntityFactory} interface.
+     *
+     */
+    public static interface EntityFactory<ComponentType extends BaseComponent>
+    extends BaseComponent.EntityFactory<ComponentType>
+        {
+        }
+
+    /**
+     * The persistence level, or copy depth.
      *
      */
     enum CopyDepth

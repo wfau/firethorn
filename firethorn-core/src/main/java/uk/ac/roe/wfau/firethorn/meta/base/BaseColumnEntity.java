@@ -28,6 +28,9 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.joda.time.Period;
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -91,6 +94,17 @@ extends TreeComponentEntity<ColumnType>
     protected static final String DB_ADQL_UCD_VALUE_COL = "adqlucdvalue" ;
 
     /**
+     * {@link BaseColumn.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
+    extends TreeComponentEntity.EntityFactory<ColumnType>
+    implements BaseColumn.EntityFactory<TableType, ColumnType>
+        {
+        }
+    
+    /**
      * Protected constructor.
      *
      */
@@ -106,7 +120,9 @@ extends TreeComponentEntity<ColumnType>
      */
     protected BaseColumnEntity(final BaseTable<?,ColumnType> parent, final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
     @Override

@@ -34,12 +34,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -135,6 +135,10 @@ public class IvoaColumnEntity
     extends AbstractEntityBuilder<IvoaColumn, IvoaColumn.Metadata>
     implements IvoaColumn.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<IvoaColumn> source)
             {
             this.init(
@@ -211,12 +215,12 @@ public class IvoaColumnEntity
         }
     
     /**
-     * {@link Entity.EntityFactory} implementation.
+     * {@link IvoaColumn.EntityFactory} implementation.
      *
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<IvoaColumn>
+    extends BaseColumnEntity.EntityFactory<IvoaTable, IvoaColumn>
     implements IvoaColumn.EntityFactory
         {
 

@@ -32,7 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
@@ -59,7 +61,28 @@ implements BaseComponent
 
     protected static final String DB_SCAN_TIME_COL   = "scantime";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
-    
+
+    /**
+     * {@link BaseComponent.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ComponentType extends BaseComponent>
+    extends AbstractEntityFactory<ComponentType>
+    implements BaseComponent.EntityFactory<ComponentType>
+        {
+        /**
+         * The default re-scan interval.
+         * 
+         */
+        protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+        
+        protected int frog()
+            {
+            return 0;
+            }
+        }
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -78,7 +101,7 @@ implements BaseComponent
         {
         this(
             name,
-            DEFAULT_SCAN_PERIOD
+            EntityFactory.DEFAULT_SCAN_PERIOD
             );
         }
 
@@ -86,12 +109,12 @@ implements BaseComponent
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected BaseComponentEntity(final String name, final Period scanperiod)
+    private BaseComponentEntity(final String name, final Period scan)
         {
         super(
             name
             );
-        this.scanperiod = scanperiod;
+        this.scanperiod = scan;
         log.debug("BaseComponentEntity(String, Period)");
         log.debug("  Name  [{}]", name);
         }
@@ -275,8 +298,8 @@ implements BaseComponent
     /**
      * The default re-scan interval.
      * 
-     */
     protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
+     */
 
     /**
      * The lock timeout.
@@ -294,14 +317,14 @@ implements BaseComponent
         nullable = true,
         updatable = true
         )
-    private DateTime scantime ;
-    protected DateTime scantime()
+    private DateTime prevscan ;
+    protected DateTime prevscan()
         {
-        return this.scantime;
+        return this.prevscan;
         }
-    protected void scandate(final DateTime time)
+    protected void prevscan(final DateTime time)
         {
-        this.scantime = time;
+        this.prevscan = time;
         }
     
     /**
@@ -314,7 +337,7 @@ implements BaseComponent
         nullable = false,
         updatable = true
         )
-    private Period scanperiod = DEFAULT_SCAN_PERIOD ;
+    private Period scanperiod ;
     protected Period scanperiod()
         {
         return this.scanperiod;
@@ -331,8 +354,8 @@ implements BaseComponent
     protected void scantest()
         {
         log.debug("scantest for [{}][{}]", this.ident(), this.name());
-        log.debug("scandate [{}]", scantime);
-        if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
+        log.debug("scandate [{}]", prevscan);
+        if ((prevscan == null) || (prevscan.plus(scanperiod).isBeforeNow()))
             {
             log.debug("scandate is in the past");
             Object lock = lock(true);
@@ -343,7 +366,7 @@ implements BaseComponent
                     scanimpl();
                     }
                 finally {
-                    scantime = new DateTime();
+                    prevscan = new DateTime();
                     unlock();
                     }
                 }

@@ -42,24 +42,6 @@ extends TreeComponent
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
 
     /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<ColumnType extends BaseColumn<ColumnType>>
-    extends Entity.IdentFactory<ColumnType>
-        {
-        }
-     */
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<ColumnType extends BaseColumn<ColumnType>>
-    extends NamedEntity.NameFactory<ColumnType>
-        {
-        }
-     */
-
-    /**
      * {@link Entity.AliasFactory} interface.
      *
      */
@@ -87,11 +69,11 @@ extends TreeComponent
         }
     
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
-    extends Entity.EntityFactory<ColumnType>
+    extends TreeComponent.EntityFactory<ColumnType>
         {
         /**
          * Select all the columns from a table.

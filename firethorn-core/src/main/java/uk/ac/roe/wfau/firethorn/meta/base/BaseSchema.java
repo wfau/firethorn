@@ -60,11 +60,11 @@ extends TreeComponent
         }
 
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
-    extends Entity.EntityFactory<SchemaType>
+    extends TreeComponent.EntityFactory<SchemaType>
         {
         /**
          * Select all the schemas from a resource.

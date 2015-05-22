@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -48,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 
 /**
  *
@@ -117,13 +120,17 @@ public class JdbcColumnEntity
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link JdbcColumn.Builder} implementation.
      *
      */
     public static abstract class Builder
     extends AbstractEntityBuilder<JdbcColumn, JdbcColumn.Metadata>
     implements JdbcColumn.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<JdbcColumn> source)
             {
             this.init(
@@ -207,7 +214,7 @@ public class JdbcColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<JdbcColumn>
+    extends BaseColumnEntity.EntityFactory<JdbcTable, JdbcColumn>
     implements JdbcColumn.EntityFactory
         {
 
@@ -354,46 +361,15 @@ public class JdbcColumnEntity
         }
 
     /**
-     * Convert a JdbcColumn.Metadata array size into an int value.
-     * 
-    public static Integer safeint(final Integer size)
-    	{
-    	if (size != null)
-    		{
-    		return size ;
-    		}
-    	else {
-    		return new Integer (0) ;
-    		}
-    	}
-     */
-    
-    /**
-     * Protected constructor.
-     *
-    @Deprecated
-    protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
-        {
-        this(
-            table,
-            name,
-            JdbcColumn.JdbcType.resolve(
-                type
-                ),
-            new Integer(
-                size
-                )
-            );
-        }
-     */
-
-    /**
      * Protected constructor.
      *
      */
     protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.JdbcType type, final Integer size)
         {
-        super(table, name);
+        super(
+            table,
+            name
+            );
         this.table    = table;
         this.jdbctype = type ;
 

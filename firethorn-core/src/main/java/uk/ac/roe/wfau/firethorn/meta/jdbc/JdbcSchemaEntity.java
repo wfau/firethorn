@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -55,6 +56,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
@@ -146,7 +149,7 @@ public class JdbcSchemaEntity
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link JdbcSchema.Builder} implementation.
      *
      */
     public static abstract class Builder
@@ -236,7 +239,7 @@ public class JdbcSchemaEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<JdbcSchema>
+    extends BaseSchemaEntity.EntityFactory<JdbcResource, JdbcSchema>
     implements JdbcSchema.EntityFactory
         {
 
@@ -538,7 +541,10 @@ public class JdbcSchemaEntity
      */
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
-        super(resource, name);
+        super(
+            resource,
+            name
+            );
         log.debug("JdbcSchemaEntity(JdbcResource, String, String, String)");
         log.debug("   JdbcResource [{}]", resource.name());
         log.debug("   Catalog [{}]", catalog);
