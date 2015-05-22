@@ -30,12 +30,10 @@ import javax.persistence.InheritanceType;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -44,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
- *
+ * {@link BaseTable} implementation.
  *
  */
 @Slf4j

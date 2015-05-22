@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
- *
+ * Public interface for a table.
  *
  */
 public interface BaseTable<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
@@ -55,6 +55,7 @@ extends TreeComponent
 
     /**
      * A resolver to resolve links. 
+     * @todo Change the name to LinkResolver, unless this extends a base class resolver.
      *
      */
     public static interface EntityResolver

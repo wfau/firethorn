@@ -31,8 +31,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -55,7 +53,6 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
-@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD

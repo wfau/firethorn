@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 
 /**
- * Base class interface for a metadata component.
+ * Public interface for a metadata tree component.
  *
  */
 public interface TreeComponent

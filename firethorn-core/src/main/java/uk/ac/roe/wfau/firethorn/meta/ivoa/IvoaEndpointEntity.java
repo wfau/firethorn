@@ -15,7 +15,7 @@ import org.hibernate.annotations.NamedQueries;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 
 /**
- * Implementation of the Endpoint interface. 
+ * {@link IvoaResource.Endpoint} implementation.
  *
  */
 @Entity

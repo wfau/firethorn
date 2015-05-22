@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- *
+ * Public interface for an ADQL schema.
  *
  */
 public interface AdqlSchema

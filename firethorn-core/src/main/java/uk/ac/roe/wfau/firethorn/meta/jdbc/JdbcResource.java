@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
- *
+ * Public interface for a local JDBC resource.
  *
  */
 public interface JdbcResource

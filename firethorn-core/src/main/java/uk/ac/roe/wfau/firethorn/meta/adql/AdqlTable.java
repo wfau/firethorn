@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- *
+ * Public interface for an abstract ADQL table.
  *
  */
 public interface AdqlTable

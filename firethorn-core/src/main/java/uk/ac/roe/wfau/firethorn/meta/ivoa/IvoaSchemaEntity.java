@@ -31,26 +31,22 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
 /**
- *
+ * {@link IvoaSchema} implementation.
  *
  */
 @Slf4j
@@ -101,13 +97,17 @@ public class IvoaSchemaEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaSchemaEntity";
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link IvoaSchema.Builder} implementation.
      *
      */
     public static abstract class Builder
     extends AbstractEntityBuilder<IvoaSchema, IvoaSchema.Metadata>
     implements IvoaSchema.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<IvoaSchema> source)
             {
             this.init(

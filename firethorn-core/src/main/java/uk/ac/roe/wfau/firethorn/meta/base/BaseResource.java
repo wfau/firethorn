@@ -18,12 +18,11 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 
 /**
- *
+ * Public interface for a resource.
  *
  */
 public interface BaseResource<SchemaType extends BaseSchema<SchemaType,?>>

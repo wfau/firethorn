@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
  *
  *
  */
+@Deprecated
 public interface BaseValue<ValueType>
     {
     /**

@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * Base class interface for a metadata component.
+ * Public interface for a metadata component.
  *
  */
 public interface BaseComponent

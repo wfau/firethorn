@@ -24,13 +24,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import org.joda.time.Period;
-import org.springframework.stereotype.Repository;
-
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Repository;
+
 /**
- * Base class for {@link TreeComponent} entities.
+ * {@link TreeComponent} implementation.
  *
  */
 @Slf4j

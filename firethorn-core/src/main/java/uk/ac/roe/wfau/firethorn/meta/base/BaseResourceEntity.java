@@ -19,16 +19,14 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import org.joda.time.Period;
 import org.springframework.stereotype.Repository;
 
 /**
- *
+ * {@link BaseResource} implementation.
  *
  */
 @Entity

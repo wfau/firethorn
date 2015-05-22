@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
- * Base class for a metadata component.
+ * {@link BaseComponent} implementation.
  *
  *
  */
@@ -77,10 +77,6 @@ implements BaseComponent
          */
         protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
         
-        protected int frog()
-            {
-            return 0;
-            }
         }
 
     /**
@@ -294,12 +290,6 @@ implements BaseComponent
                 }
             }
         }
-
-    /**
-     * The default re-scan interval.
-     * 
-    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
-     */
 
     /**
      * The lock timeout.

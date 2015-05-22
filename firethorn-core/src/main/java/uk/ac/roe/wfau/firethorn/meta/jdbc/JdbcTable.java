@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- *
+ * Public interface for a local JDBC table.
  *
  */
 public interface JdbcTable

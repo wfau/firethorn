@@ -34,26 +34,24 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * {@link JdbcResource} implementation.
  *
  */
 @Slf4j
@@ -465,6 +463,11 @@ public class JdbcResourceEntity
 
     @Embedded
     private JdbcConnectionEntity connection;
+
+    protected ComponentFactories factories()
+        {
+        return super.factories();
+        }
 
     @Override
     public JdbcConnector connection()

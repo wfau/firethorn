@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
 /**
- *
+ * Public interface for an external IVOA schema.
  *
  */
 public interface IvoaSchema
