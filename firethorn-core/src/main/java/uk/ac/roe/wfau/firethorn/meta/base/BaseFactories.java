@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 /**
- * base class for our component factories
+ * Public interface for our base factories
  *
  */
 public interface BaseFactories

@@ -464,6 +464,10 @@ public class JdbcResourceEntity
     @Embedded
     private JdbcConnectionEntity connection;
 
+    /*
+     * Declaring this as a protected method enables {@link JdbcConnectionEntity} to access it.
+     *  
+     */
     protected ComponentFactories factories()
         {
         return super.factories();
