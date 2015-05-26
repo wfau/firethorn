@@ -26,6 +26,7 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,10 +78,29 @@ implements BaseComponent
          * 
          */
         //@Value("${firethorn.meta.scan:PT5M}")
-        protected static Period DEFAULT_SCAN_PERIOD = new Period("PT5M");
+        private Period scanperiod = new Period("PT2M");
+
+        @Override
+        public Period scanperiod()
+            {
+            return scanperiod ;
+            }
         
         }
 
+    /**
+     * Reference to our parent {@link BaseComponent.EntityFactory}.
+     * 
+    @Transient
+    protected BaseComponent.EntityFactory<ComponentType> factory;
+
+    @Override
+    public BaseComponent.EntityFactory<ComponentType> factory()
+        {
+        return this.factory;
+        }
+     */
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -344,7 +364,7 @@ implements BaseComponent
             return this.scanperiod;
             }
         else {
-            return EntityFactory.DEFAULT_SCAN_PERIOD;
+            return this.factory().scanperiod();
             }
         }
     protected void scanperiod(final Period period)

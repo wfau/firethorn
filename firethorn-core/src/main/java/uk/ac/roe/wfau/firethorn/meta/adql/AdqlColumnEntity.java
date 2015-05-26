@@ -25,6 +25,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
@@ -234,6 +235,7 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
+                    this,
                     parent,
                     base
                     )
@@ -246,6 +248,7 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
+                    this,
                     parent,
                     base,
                     name
@@ -337,27 +340,41 @@ public class AdqlColumnEntity
             }
         }
 
+    /**
+     * Reference to our parent {@link AdqlColumn.EntityFactory}.
+     * 
+     */
+    @Transient
+    protected AdqlColumn.EntityFactory factory;
+
+    @Override
+    public AdqlColumn.EntityFactory factory()
+        {
+        return this.factory;
+        }
+
     protected AdqlColumnEntity()
         {
         super();
         }
 
-    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base)
+    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base)
         {
-        super(
+        this(
+            factory,
             table,
-            base.name()
+            base,
+            null
             );
-        this.base  = base ;
-        this.table = table;
         }
 
-    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base, final String name)
         {
         super(
             table,
             ((name != null) ? name : base.name())
             );
+        this.factory = factory ;
         this.base  = base ;
         this.table = table;
         }
