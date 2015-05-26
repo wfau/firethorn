@@ -75,9 +75,9 @@ implements BaseComponent
         /**
          * The default re-scan interval.
          * 
-        @Value("${firethorn.meta.scan:PT5M}")
          */
-        protected static final Period DEFAULT_SCAN_PERIOD = null ;
+        //@Value("${firethorn.meta.scan:PT5M}")
+        protected static Period DEFAULT_SCAN_PERIOD = new Period("PT5M");
         
         }
 
@@ -368,7 +368,7 @@ implements BaseComponent
 
         if (prev == null)
             {
-            log.debug("prevscan is null");
+            log.debug("prevscan is null - scanning");
             scanlock();
             }
         else if (period == null)
@@ -377,11 +377,11 @@ implements BaseComponent
             }
         else if (prev.plus(period).isBeforeNow())
             {
-            log.debug("prevscan plus period has expired");
+            log.debug("scan period has expired - scanning");
             scanlock();
             }
         else {
-            log.debug("prevscan plus period is recent - skipping");
+            log.debug("scan period is recent - skipping");
             }
         }
     
