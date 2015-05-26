@@ -293,6 +293,10 @@ public class JdbcResourceEntity
         super(
             name
             );
+        log.debug("JdbcResourceEntity(String, String, String)");
+        log.debug("    Catalog [{}]", catalog);
+        log.debug("    Name    [{}]", name);
+        log.debug("    URL     [{}]", url);
         this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
@@ -498,7 +502,7 @@ public class JdbcResourceEntity
     public void catalog(final String catalog)
         {
         this.catalog = catalog ;
-        this.prevscan(
+        this.scandate(
             null
             );
         }

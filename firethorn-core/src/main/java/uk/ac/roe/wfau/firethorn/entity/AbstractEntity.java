@@ -31,6 +31,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -53,6 +55,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
+@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD
@@ -73,7 +76,7 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT011304";
+    protected static final String DB_TABLE_PREFIX = "FT011315";
 
     /**
      * Hibernate column mapping.
@@ -152,6 +155,9 @@ implements Entity
     protected AbstractEntity(final boolean init)
         {
         super();
+        //log.debug("AbstractEntity(boolean)");
+        //log.debug("  init [{}]", init);
+        
         if (init)
             {
             this.uidlo = random.nextLong();
@@ -160,6 +166,13 @@ implements Entity
             this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
+        else {
+            throw new IllegalStateException(
+                "AbstractEntity constructor called with invalid param [false]"
+                );
+            }
+
+        log.debug("  created  [{}]", created);
 
         /*
         *

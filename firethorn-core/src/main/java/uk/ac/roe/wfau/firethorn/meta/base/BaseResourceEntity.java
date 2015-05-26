@@ -23,12 +23,15 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Repository;
 
 /**
  * {@link BaseResource} implementation.
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -65,6 +68,7 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
     protected BaseResourceEntity()
         {
         super();
+        log.debug("BaseResourceEntity()");
         }
 
     /**
@@ -76,6 +80,8 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
         super(
             name
             );
+        log.debug("BaseResourceEntity(String)");
+        log.debug("    Name    [{}]", name);
         }
 
     @Override
