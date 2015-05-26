@@ -69,7 +69,7 @@ implements TreeComponent
     protected TreeComponentEntity()
         {
         super();
-        log.debug("TreeComponentEntity()");
+        //log.debug("TreeComponentEntity()");
         }
 
     /**
@@ -94,9 +94,9 @@ implements TreeComponent
             name
             );
         this.depth = depth;
-        log.debug("TreeComponentEntity(CopyDepth, String)");
-        log.debug("  Depth [{}]", depth);
-        log.debug("  Name  [{}]", name);
+        //log.debug("TreeComponentEntity(CopyDepth, String)");
+        //log.debug("  Depth [{}]", depth);
+        //log.debug("  Name  [{}]", name);
         }
 
     @Column(

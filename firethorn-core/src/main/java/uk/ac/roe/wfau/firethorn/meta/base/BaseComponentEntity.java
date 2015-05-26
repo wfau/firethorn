@@ -100,8 +100,8 @@ implements BaseComponent
         super(
             name
             );
-        log.debug("BaseComponentEntity(String)");
-        log.debug("  Name  [{}]", name);
+        //log.debug("BaseComponentEntity(String)");
+        //log.debug("  Name  [{}]", name);
         }
 
     /**
@@ -363,9 +363,7 @@ implements BaseComponent
         DateTime prev   = scandate()   ; 
         Period   period = scanperiod() ;
 
-        log.debug("prevscan   [{}]", this.scandate);
         log.debug("prevscan   [{}]", prev);
-        log.debug("scanperiod [{}]", this.scanperiod);
         log.debug("scanperiod [{}]", period);
 
         if (prev == null)

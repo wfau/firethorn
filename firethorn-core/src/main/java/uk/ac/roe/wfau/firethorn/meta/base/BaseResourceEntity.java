@@ -68,7 +68,7 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
     protected BaseResourceEntity()
         {
         super();
-        log.debug("BaseResourceEntity()");
+        //log.debug("BaseResourceEntity()");
         }
 
     /**
@@ -80,8 +80,8 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
         super(
             name
             );
-        log.debug("BaseResourceEntity(String)");
-        log.debug("    Name    [{}]", name);
+        //log.debug("BaseResourceEntity(String)");
+        //log.debug("    Name    [{}]", name);
         }
 
     @Override

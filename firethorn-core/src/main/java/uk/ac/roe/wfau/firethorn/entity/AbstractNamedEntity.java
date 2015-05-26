@@ -87,8 +87,8 @@ implements Entity, NamedEntity
     throws NameFormatException
         {
     	super(true);
-    	log.debug("AbstractNamedEntity(String)");
-        log.debug("  Name  [{}]", name);
+    	//log.debug("AbstractNamedEntity(String)");
+        //log.debug("  Name  [{}]", name);
     	this.name(
             name
             );
