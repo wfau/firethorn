@@ -17,24 +17,32 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.io.Serializable;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.EmptyInterceptor;
+import org.hibernate.Interceptor;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -55,6 +63,9 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 @Entity
 @Access(
     AccessType.FIELD
+    )
+@EntityListeners(
+    JdbcColumnEntity.EntityListener.class
     )
 @Table(
     name = JdbcColumnEntity.DB_TABLE_NAME,
@@ -114,6 +125,60 @@ public class JdbcColumnEntity
      */
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
+    /**
+     * For the JPA EntityListener annotations to work,
+     * Hibernate needs to be configured with an EntityManager
+     * rather than a SessionManager.
+     * 
+     * http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/
+     * http://www.studytrails.com/frameworks/spring/spring-hibernate-jpa.jsp
+     * https://stackoverflow.com/questions/25260527/obtaining-entitymanager-in-spring-hibernate-configuration
+     * 
+     */
+    @Slf4j
+    public static class EntityListener
+        {
+        /**
+         * Public constructor.
+         *
+         *
+         */
+        public EntityListener()
+            {
+            log.debug("JdbcColumnEntity.EntityListener()");
+            }
+        
+        /**
+         * On load ...
+         *
+         */
+        @PostLoad
+        public void load(final JdbcColumnEntity column)
+            {
+            log.debug("load(JdbcColumnEntity)");
+            log.debug(" ident [{}]", column.ident());
+            log.debug(" name  [{}]", column.name());
+            //log.debug(" auto  [{}]", entities);
+            }
+
+        /**
+         * On save ...
+         *
+         */
+        @PrePersist
+        public void save(final JdbcColumnEntity column)
+            {
+            log.debug("save(JdbcColumnEntity)");
+            log.debug(" ident [{}]", column.ident());
+            log.debug(" name  [{}]", column.name());
+            //log.debug(" auto  [{}]", entities);
+            }
+        
+        //@Autowired
+        //private JdbcColumn.EntityFactory entities;
+
+        }
+    
     /**
      * {@link JdbcColumn.Builder} implementation.
      *

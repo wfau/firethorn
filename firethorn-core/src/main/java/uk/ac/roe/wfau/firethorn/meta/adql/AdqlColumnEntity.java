@@ -20,10 +20,12 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -126,7 +128,7 @@ public class AdqlColumnEntity
      * 
      */
     protected static final String ALIAS_PREFIX = "ADQL_COLUMN_";
-    
+
     /**
      * {@link AdqlColumn.AliasFactory} implementation.
      *

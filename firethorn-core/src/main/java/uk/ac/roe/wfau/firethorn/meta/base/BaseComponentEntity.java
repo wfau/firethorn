@@ -91,6 +91,7 @@ implements BaseComponent
     /**
      * Reference to our parent {@link BaseComponent.EntityFactory}.
      * 
+     */
     @Transient
     protected BaseComponent.EntityFactory<ComponentType> factory;
 
@@ -99,7 +100,6 @@ implements BaseComponent
         {
         return this.factory;
         }
-     */
     
     /**
      * Default constructor needs to be protected not private.
@@ -364,7 +364,8 @@ implements BaseComponent
             return this.scanperiod;
             }
         else {
-            return this.factory().scanperiod();
+            return null ;
+            //return this.factory().scanperiod();
             }
         }
     protected void scanperiod(final Period period)

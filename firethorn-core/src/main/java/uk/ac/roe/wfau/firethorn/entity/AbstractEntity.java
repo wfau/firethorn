@@ -101,11 +101,28 @@ implements Entity
     @Transient
     protected ComponentFactories factories ;
 
+    protected void factories(final ComponentFactories factories)
+        {
+        this.factories = factories ; 
+        }
+    
     /**
      * Access to our ComponentFactories singleton instance.
      * Has to use dynamic initialisation.
      * http://stackoverflow.com/questions/9104221/hibernate-buildsessionfactory-exception
      * TODO Improve this
+     * 
+     * TODO This might help
+     * http://guylabs.ch/2014/02/22/autowiring-pring-beans-in-hibernate-jpa-entity-listeners/
+     * TODO Looks similar
+     * http://stackoverflow.com/a/4144102
+     * 
+     * TODO Another way
+     * http://stackoverflow.com/a/9011451
+     * 
+     * TODO Looks complicated
+     * http://www.javacodegeeks.com/2013/10/spring-injected-beans-in-jpa-entitylisteners.html
+     * https://code.google.com/p/invariant-properties-blog/source/browse/spring-entity-listener/src/main/java/com/invariantproperties/sandbox/springentitylistener/annotation/SpringEntityListeners.java
      *
      */
     protected ComponentFactories factories()
