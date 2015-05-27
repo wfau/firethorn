@@ -73,16 +73,17 @@ implements BaseComponent
     extends AbstractEntityFactory<ComponentType>
     implements BaseComponent.EntityFactory<ComponentType>
         {
+        
         /**
          * The default re-scan interval.
          * 
          */
-        // Can't initialise Period from String. 
-        //@Value("${firethorn.meta.scan:PT5M}")
-        //private Period scanperiod = new Period("PT2H");
+        @Value("${firethorn.meta.scan:PT5M}")
+        private String DEFAULT_SCAN_STRING ;
 
-        private static final Period DEFAULT_SCAN_PERIOD = new Period("P1D");
-        //private static Period DEFAULT_SCAN_PERIOD = null ;
+        private Period DEFAULT_SCAN_PERIOD = new Period(
+            DEFAULT_SCAN_STRING
+            );
 
         @Override
         public Period scanperiod()
@@ -92,22 +93,22 @@ implements BaseComponent
 
         // Log the system start time.
         // If prev scan was before start time, then scan.
-        private static final DateTime SYSTEM_START_TIME = new DateTime();
+        private final DateTime SYSTEM_START_TIME = new DateTime();
         
         }
 
     /**
      * Reference to our parent {@link BaseComponent.EntityFactory}.
      * 
-     */
     @Transient
     protected BaseComponent.EntityFactory<ComponentType> factory;
 
     @Override
     public BaseComponent.EntityFactory<ComponentType> factory()
         {
-        return this.factory;
+        return null;
         }
+     */
     
     /**
      * Default constructor needs to be protected not private.
@@ -347,12 +348,20 @@ implements BaseComponent
     private Period scanperiod ;
     protected Period scanperiod()
         {
+        log.debug("scanperiod()");
         if (this.scanperiod != null)
             {
             return this.scanperiod;
             }
         else {
-            return EntityFactory.DEFAULT_SCAN_PERIOD ;
+            EntityFactory<?> factory = (EntityFactory<?>) factory();
+            if (factory != null)
+                {
+                return factory.scanperiod();
+                }
+            else {
+                return null ;
+                }
             // Needs to be able to access the factory.
             //return this.factory().scanperiod();
             }

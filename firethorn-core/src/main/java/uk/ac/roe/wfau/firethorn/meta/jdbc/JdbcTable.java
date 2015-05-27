@@ -211,6 +211,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     @Override
+    public JdbcTable.EntityFactory factory();
+
+
+    @Override
     public JdbcResource resource();
 
     @Override

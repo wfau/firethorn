@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import java.io.Serializable;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -38,11 +36,8 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.EmptyInterceptor;
-import org.hibernate.Interceptor;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -394,6 +389,7 @@ public class JdbcColumnEntity
             }
         }
 
+    
     /**
      * Protected constructor.
      *

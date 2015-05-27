@@ -134,6 +134,13 @@ implements Entity
     	return this.factories;
     	}
 
+    // Placeholder to allow compile.
+    @Override
+    public Entity.EntityFactory<?> factory()
+        {
+        return null;
+        }
+    
     /**
      * Helper method to check for empty or blank strings.
      *

@@ -27,10 +27,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
 /**
  * Hibernate {@link Interceptor} implementation.
@@ -75,7 +72,5 @@ public class HibernateInterceptor
     
     @Autowired
     private ComponentFactories factories ;
-    //= ComponentFactoriesImpl.instance();
-    //private JdbcColumn.EntityFactory factory;
 
     }

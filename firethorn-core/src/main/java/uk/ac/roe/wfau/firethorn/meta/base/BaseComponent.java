@@ -50,10 +50,10 @@ extends NamedEntity
         }
 
     /**
-     * Access to the parent {@link BaseComponent.EntityFactory}.
+     * Access to our parent {@link BaseComponent.EntityFactory}.
      *
-     */
     public BaseComponent.EntityFactory<?> factory();
+     */
     
     /**
      * Enum representing the status.

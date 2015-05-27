@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
+import uk.ac.roe.wfau.firethorn.spring.SpringAutowireHelper;
 
 /**
  * {@link Jdbctable} implementation.
@@ -499,8 +501,70 @@ implements JdbcTable
                             )
                 );
             }
+
+        /**
+         * Reference to our {@link JdbcTable.EntityFactory}.
+         * 
+         */
+        private static EntityFactory instance;
+
+        /**
+         * Reference to our {@link JdbcTable.EntityFactory}.
+         * 
+         */
+        protected static EntityFactory instance()
+            {
+            return EntityFactory.instance;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityFactory()
+            {
+            if (EntityFactory.instance == null)
+                {
+                EntityFactory.instance = this ;
+                }
+            else {
+                log.error("Setting instance twice");
+                }
+            }
         }
 
+    /**
+     * Autowired reference to our {@link JdbcTable.EntityFactory}.
+     * 
+    @Autowired
+    @Transient
+    protected JdbcTable.EntityFactory factory;
+
+    @Override
+    public JdbcTable.EntityFactory factory()
+        {
+        log.debug("factory()");
+        log.debug("  factory [{}]", factory);
+        if (this.factory == null)
+            {
+            SpringAutowireHelper.autowire(
+                this,
+                this.factory
+                );
+            }
+        log.debug("  factory [{}]", factory);
+        return factory;
+        }
+     */
+
+    @Override
+    public JdbcTable.EntityFactory factory()
+        {
+        log.debug("factory()");
+        log.debug("  factory [{}]", EntityFactory.instance());
+        return EntityFactory.instance(); 
+        }
+    
     /**
      * Protected constructor.
      *
