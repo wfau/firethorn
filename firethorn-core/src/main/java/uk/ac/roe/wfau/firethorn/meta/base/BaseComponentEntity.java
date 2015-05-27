@@ -77,14 +77,22 @@ implements BaseComponent
          * The default re-scan interval.
          * 
          */
+        // Can't initialise Period from String. 
         //@Value("${firethorn.meta.scan:PT5M}")
-        private Period scanperiod = new Period("PT2M");
+        //private Period scanperiod = new Period("PT2H");
+
+        private static final Period DEFAULT_SCAN_PERIOD = new Period("P1D");
+        //private static Period DEFAULT_SCAN_PERIOD = null ;
 
         @Override
         public Period scanperiod()
             {
-            return scanperiod ;
+            return DEFAULT_SCAN_PERIOD ;
             }
+
+        // Log the system start time.
+        // If prev scan was before start time, then scan.
+        private static final DateTime SYSTEM_START_TIME = new DateTime();
         
         }
 
@@ -123,26 +131,6 @@ implements BaseComponent
         //log.debug("BaseComponentEntity(String)");
         //log.debug("  Name  [{}]", name);
         }
-
-    /**
-     * Protected constructor, owner defaults to the current actor.
-     *
-    private BaseComponentEntity(final String name, final Period scan)
-        {
-        super(
-            name
-            );
-
-// Deprecate this constructor.
-// Set the scanperiod to null
-// Use this.scanperiod or factory().scanperiod()
-// factory value is set from config file.
-        
-        this.scanperiod = scan;
-        log.debug("BaseComponentEntity(String, Period)");
-        log.debug("  Name  [{}]", name);
-        }
-     */
     
     /**
      * The component status.
@@ -364,7 +352,8 @@ implements BaseComponent
             return this.scanperiod;
             }
         else {
-            return null ;
+            return EntityFactory.DEFAULT_SCAN_PERIOD ;
+            // Needs to be able to access the factory.
             //return this.factory().scanperiod();
             }
         }
