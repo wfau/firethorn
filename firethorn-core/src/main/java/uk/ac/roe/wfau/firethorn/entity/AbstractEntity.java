@@ -173,7 +173,7 @@ implements Entity
 
     /**
      * Protected constructor, sets the owner and create date.
-     * @param init A flag to distinguish this from the default constructor.
+     * @param init Flag to distinguish this from the default constructor.
      *
      */
     protected AbstractEntity(final boolean init)
@@ -181,7 +181,6 @@ implements Entity
         super();
         //log.debug("AbstractEntity(boolean)");
         //log.debug("  init [{}]", init);
-        
         if (init)
             {
             this.uidlo = random.nextLong();
@@ -195,7 +194,6 @@ implements Entity
                 "AbstractEntity constructor called with invalid param [false]"
                 );
             }
-
         log.debug("  created  [{}]", created);
 
         /*

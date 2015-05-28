@@ -37,6 +37,45 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public interface JdbcTable
 extends BaseTable<JdbcTable, JdbcColumn>
     {
+
+    /**
+     * Factories interface.
+     * 
+     */
+    public static interface Factories
+        {
+        /**
+         * Our {@link JdbcTable.IdentFactory}.
+         *
+         */
+        public JdbcTable.IdentFactory idents();
+
+        /**
+         * Our {@link JdbcTable.NameFactory}.
+         *
+         */
+        public JdbcTable.NameFactory names();
+
+        /**
+         * Our {@link JdbcTable.AliasFactory}.
+         *
+         */
+        public JdbcTable.AliasFactory aliases();
+
+        /**
+         * Our {@link JdbcTable.LinkFactory}.
+         *
+         */
+        public JdbcTable.LinkFactory links();
+
+        /**
+         * Our {@link JdbcTable.EntityFactory}.
+         *
+         */
+        public JdbcTable.EntityFactory entities();
+
+        }
+    
     /**
      * {@link EntityBuilder} interface.
      * 
@@ -212,7 +251,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     @Override
     public JdbcTable.EntityFactory factory();
-
 
     @Override
     public JdbcResource resource();

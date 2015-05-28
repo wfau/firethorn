@@ -68,6 +68,7 @@ implements BaseComponent
      * {@link BaseComponent.EntityFactory} implementation.
      *
      */
+    @Slf4j
     @Repository
     public static abstract class EntityFactory<ComponentType extends BaseComponent>
     extends AbstractEntityFactory<ComponentType>
@@ -75,26 +76,36 @@ implements BaseComponent
         {
         
         /**
-         * The default re-scan interval.
+         * The default re-scan interval, as string.
+         * Initialised from the configuration property.
          * 
          */
         @Value("${firethorn.meta.scan:PT5M}")
-        private String DEFAULT_SCAN_STRING ;
+        private String scanstring ;
 
-        private Period DEFAULT_SCAN_PERIOD = new Period(
-            DEFAULT_SCAN_STRING
-            );
+        /**
+         * The default re-scan interval, as a time period.
+         * 
+         */
+        private Period scanperiod ;
 
         @Override
         public Period scanperiod()
             {
-            return DEFAULT_SCAN_PERIOD ;
+            if (this.scanperiod == null)
+                {
+                if (this.scanstring != null)
+                    {
+                    this.scanperiod = new Period(
+                        this.scanstring
+                        );
+                    }
+                }
+            log.debug("scanperiod()");
+            log.debug("  scanstring [{}]", scanstring);
+            log.debug("  scanperiod [{}]", scanperiod);
+            return scanperiod ;
             }
-
-        // Log the system start time.
-        // If prev scan was before start time, then scan.
-        private final DateTime SYSTEM_START_TIME = new DateTime();
-        
         }
 
     /**
@@ -129,8 +140,6 @@ implements BaseComponent
         super(
             name
             );
-        //log.debug("BaseComponentEntity(String)");
-        //log.debug("  Name  [{}]", name);
         }
     
     /**
@@ -348,13 +357,12 @@ implements BaseComponent
     private Period scanperiod ;
     protected Period scanperiod()
         {
-        log.debug("scanperiod()");
         if (this.scanperiod != null)
             {
             return this.scanperiod;
             }
         else {
-            EntityFactory<?> factory = (EntityFactory<?>) factory();
+            BaseComponent.EntityFactory<?> factory = (BaseComponent.EntityFactory<?>) this.factory();
             if (factory != null)
                 {
                 return factory.scanperiod();
@@ -362,8 +370,6 @@ implements BaseComponent
             else {
                 return null ;
                 }
-            // Needs to be able to access the factory.
-            //return this.factory().scanperiod();
             }
         }
     protected void scanperiod(final Period period)
@@ -372,7 +378,8 @@ implements BaseComponent
         }
     
     /**
-     * Check the scan criteria and scan.
+     * Check the date of the last scan.
+     * If the last scan was before the scan period, then initiate a new scan. 
      *
      */
     protected void scantest()
@@ -387,7 +394,7 @@ implements BaseComponent
 
         if (prev == null)
             {
-            log.debug("prevscan is null - scanning");
+            log.debug("prev scan is null - scanning");
             scanlock();
             }
         else if (period == null)
@@ -396,11 +403,11 @@ implements BaseComponent
             }
         else if (prev.plus(period).isBeforeNow())
             {
-            log.debug("scan period has expired - scanning");
+            log.debug("scan period expired - scanning");
             scanlock();
             }
         else {
-            log.debug("scan period is recent - skipping");
+            log.debug("prev scan is recent - skipping");
             }
         }
     

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -34,7 +35,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
-import uk.ac.roe.wfau.firethorn.spring.SpringAutowireHelper;
 
 /**
  * {@link Jdbctable} implementation.
@@ -150,6 +149,101 @@ implements JdbcTable
      */
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
 
+    /**
+     * {@link JdbcTable.Factories} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class Factories
+    implements JdbcTable.Factories
+        {
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static Factories instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static Factories instance()
+            {
+            return JdbcTableEntity.Factories.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected Factories()
+            {
+            log.debug("Factories()");
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcTableEntity.Factories.instance == null)
+                {
+                JdbcTableEntity.Factories.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting JdbcTableEntity.Factories.instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private JdbcTable.IdentFactory idents;
+        @Override
+        public JdbcTable.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private JdbcTable.NameFactory names;
+        @Override
+        public JdbcTable.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private JdbcTable.AliasFactory aliases;
+        @Override
+        public JdbcTable.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
+
+        @Autowired
+        private JdbcTable.LinkFactory links;
+        @Override
+        public JdbcTable.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private JdbcTable.EntityFactory entities;
+        @Override
+        public JdbcTable.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+    
     /**
      * {@link JdbcTable.Builder} implementation.
      *
@@ -504,6 +598,7 @@ implements JdbcTable
 
         /**
          * Reference to our {@link JdbcTable.EntityFactory}.
+         * Making this an Autowired value fails to initialise.
          * 
          */
         private static EntityFactory instance;
@@ -528,7 +623,10 @@ implements JdbcTable
                 EntityFactory.instance = this ;
                 }
             else {
-                log.error("Setting instance twice");
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting JdbcTable.EntityFactory entity more than once"
+                    );
                 }
             }
         }
@@ -561,8 +659,8 @@ implements JdbcTable
     public JdbcTable.EntityFactory factory()
         {
         log.debug("factory()");
-        log.debug("  factory [{}]", EntityFactory.instance());
-        return EntityFactory.instance(); 
+        log.debug("  factory [{}]", Factories.instance());
+        return Factories.instance().entities(); 
         }
     
     /**

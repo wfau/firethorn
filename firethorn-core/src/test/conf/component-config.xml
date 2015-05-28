@@ -69,5 +69,15 @@
         +-->
     <bean id="FireThornSpringAutowireHelper" class="uk.ac.roe.wfau.firethorn.spring.SpringAutowireHelper"/>
 
+    <!--bean id="JdbcTable.Factories" class="uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity.Factories">
+    
+        <property name="names">
+            <bean id="JdbcTable.NameFactory" class="uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity.NameFactory"/>
+        </property>
+
+    </bean-->
+
+
+
 </beans>
 

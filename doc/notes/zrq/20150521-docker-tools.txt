@@ -150,7 +150,6 @@ EOF
 #[user@desktop]
 
     metadataurl=jdbc:jtds:sqlserver://172.17.0.28:1433/FirethornMetadataZRQ20150526DEV
-    metadatadrv=net.sourceforge.jtds.jdbc.Driver
     metadatauser=FirethornMetadataZRQ20150526DEVLogin
     metadatapass=FirethornMetadataZRQ20150526DEVconevAm7
 
@@ -159,7 +158,6 @@ EOF
 #[user@desktop]
 
     metadataurl=jdbc:postgresql://172.17.0.29:5432/postgres
-    metadatadrv=org.postgresql.Driver
     metadatauser=${metauser:?}
     metadatapass=${metapass:?}
 
@@ -179,10 +177,6 @@ EOF
 
     sed -i '
         s|^firethorn.meta.pass=.*$|firethorn.meta.pass='${metadatapass:?}'|
-        ' "${HOME:?}/firethorn.properties"
-
-    sed -i '
-        s|^firethorn.meta.driver=.*$|firethorn.meta.driver='${metadatadrv:?}'|
         ' "${HOME:?}/firethorn.properties"
 
     sed -i '
