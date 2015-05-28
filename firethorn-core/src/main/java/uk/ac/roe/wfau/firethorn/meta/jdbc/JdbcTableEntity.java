@@ -598,26 +598,28 @@ implements JdbcTable
 
         /**
          * Reference to our {@link JdbcTable.EntityFactory}.
-         * Making this an Autowired value fails to initialise.
+         * BUG - Making this Autowired fails to initialise.
          * 
-         */
         private static EntityFactory instance;
+         */
 
         /**
          * Reference to our {@link JdbcTable.EntityFactory}.
          * 
-         */
         protected static EntityFactory instance()
             {
             return EntityFactory.instance;
             }
+         */
 
         /**
-         * Protected constructor.
+         * Protected initialiser.
+         * BUG - The instance doesn't have the Transaction wrappers. 
          * 
-         */
-        protected EntityFactory()
+        @PostConstruct
+        protected void init()
             {
+            log.debug("init()");
             if (EntityFactory.instance == null)
                 {
                 EntityFactory.instance = this ;
@@ -629,15 +631,22 @@ implements JdbcTable
                     );
                 }
             }
+         */
         }
 
     /**
      * Autowired reference to our {@link JdbcTable.EntityFactory}.
+     * Needs SpringAutowireHelper to initialise it.
      * 
     @Autowired
     @Transient
     protected JdbcTable.EntityFactory factory;
+     */
 
+    /**
+     * Autowired reference to our {@link JdbcTable.EntityFactory}.
+     * Uses SpringAutowireHelper to initialise our factory reference.
+     * 
     @Override
     public JdbcTable.EntityFactory factory()
         {
@@ -658,9 +667,7 @@ implements JdbcTable
     @Override
     public JdbcTable.EntityFactory factory()
         {
-        log.debug("factory()");
-        log.debug("  factory [{}]", Factories.instance());
-        return Factories.instance().entities(); 
+        return JdbcTableEntity.Factories.instance().entities(); 
         }
     
     /**

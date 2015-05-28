@@ -53,3 +53,11 @@
 
     popd
 
+# -------------------------------------------------------------------------------------------
+# Merge and test.
+#[user@desktop]
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
