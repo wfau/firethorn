@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -49,7 +50,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -64,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
- *
+ * {@link Jdbctable} implementation.
  *
  */
 @Slf4j
@@ -150,7 +150,102 @@ implements JdbcTable
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link JdbcTable.Factories} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class Factories
+    implements JdbcTable.Factories
+        {
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static Factories instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static Factories instance()
+            {
+            return JdbcTableEntity.Factories.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected Factories()
+            {
+            log.debug("Factories()");
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcTableEntity.Factories.instance == null)
+                {
+                JdbcTableEntity.Factories.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting JdbcTableEntity.Factories.instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private JdbcTable.IdentFactory idents;
+        @Override
+        public JdbcTable.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private JdbcTable.NameFactory names;
+        @Override
+        public JdbcTable.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private JdbcTable.AliasFactory aliases;
+        @Override
+        public JdbcTable.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
+
+        @Autowired
+        private JdbcTable.LinkFactory links;
+        @Override
+        public JdbcTable.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private JdbcTable.EntityFactory entities;
+        @Override
+        public JdbcTable.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+    
+    /**
+     * {@link JdbcTable.Builder} implementation.
      *
      */
     public static abstract class Builder
@@ -181,7 +276,7 @@ implements JdbcTable
    
     /**
      * {@link JdbcTable.NameFactory} implementation.
-     * @todo base64 hash of the ident ?
+     * @todo base32 hash of the ident ?
      *
      */
     @Component
@@ -500,8 +595,81 @@ implements JdbcTable
                             )
                 );
             }
+
+        /**
+         * Reference to our {@link JdbcTable.EntityFactory}.
+         * BUG - Making this Autowired fails to initialise.
+         * 
+        private static EntityFactory instance;
+         */
+
+        /**
+         * Reference to our {@link JdbcTable.EntityFactory}.
+         * 
+        protected static EntityFactory instance()
+            {
+            return EntityFactory.instance;
+            }
+         */
+
+        /**
+         * Protected initialiser.
+         * BUG - The instance doesn't have the Transaction wrappers. 
+         * 
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (EntityFactory.instance == null)
+                {
+                EntityFactory.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting JdbcTable.EntityFactory entity more than once"
+                    );
+                }
+            }
+         */
         }
 
+    /**
+     * Autowired reference to our {@link JdbcTable.EntityFactory}.
+     * Needs SpringAutowireHelper to initialise it.
+     * 
+    @Autowired
+    @Transient
+    protected JdbcTable.EntityFactory factory;
+     */
+
+    /**
+     * Autowired reference to our {@link JdbcTable.EntityFactory}.
+     * Uses SpringAutowireHelper to initialise our factory reference.
+     * 
+    @Override
+    public JdbcTable.EntityFactory factory()
+        {
+        log.debug("factory()");
+        log.debug("  factory [{}]", factory);
+        if (this.factory == null)
+            {
+            SpringAutowireHelper.autowire(
+                this,
+                this.factory
+                );
+            }
+        log.debug("  factory [{}]", factory);
+        return factory;
+        }
+     */
+
+    @Override
+    public JdbcTable.EntityFactory factory()
+        {
+        return JdbcTableEntity.Factories.instance().entities(); 
+        }
+    
     /**
      * Protected constructor.
      *
@@ -578,7 +746,10 @@ implements JdbcTable
      */
     public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
         {
-        super(schema, name);
+        super(
+            schema,
+            name
+            );
         this.query  = query;
         this.schema = schema;
 

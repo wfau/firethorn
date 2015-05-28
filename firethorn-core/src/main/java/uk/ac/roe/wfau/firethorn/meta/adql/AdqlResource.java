@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 
 
 /**
- *
+ * Public interface for an abstract ADQL resource.
  *
  */
 public interface AdqlResource

@@ -50,7 +50,19 @@ implements AdqlColumn
         }
 
     /**
-     * TODO Move to proxy base class
+     * TODO Move to proxy base class.
+     * 
+     */
+    @Transient
+    protected AdqlColumn.EntityFactory factory;
+    public AdqlColumn.EntityFactory factory()
+        {
+        return this.factory;
+        }
+
+    /**
+     * TODO Move to proxy base class.
+     * 
      */
     @Transient
     protected ComponentFactories factories ;

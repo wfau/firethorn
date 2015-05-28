@@ -51,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
- *
+ * {@link AdqlTable} implementation.
  *
  */
 @Slf4j
@@ -206,7 +206,6 @@ public class AdqlTableEntity
     extends BaseTableEntity.EntityFactory<AdqlSchema, AdqlTable>
     implements AdqlTable.EntityFactory
         {
-
         @Override
         public Class<?> etype()
             {
@@ -263,10 +262,10 @@ public class AdqlTableEntity
 
         @Override
         @CreateMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+                depth,
                 schema,
                 base,
                 base.name()
@@ -296,10 +295,10 @@ public class AdqlTableEntity
 
         @Override
         @CreateMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+                depth,
                 schema,
                 base,
                 name

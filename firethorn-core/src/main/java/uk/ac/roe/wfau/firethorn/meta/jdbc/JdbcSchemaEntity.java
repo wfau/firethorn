@@ -44,9 +44,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -60,7 +58,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
- *
+ * {@link JdbcSchema} implementation.
  *
  */
 @Slf4j
@@ -146,7 +144,7 @@ public class JdbcSchemaEntity
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link JdbcSchema.Builder} implementation.
      *
      */
     public static abstract class Builder
@@ -236,7 +234,7 @@ public class JdbcSchemaEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<JdbcSchema>
+    extends BaseSchemaEntity.EntityFactory<JdbcResource, JdbcSchema>
     implements JdbcSchema.EntityFactory
         {
 
@@ -538,7 +536,10 @@ public class JdbcSchemaEntity
      */
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
-        super(resource, name);
+        super(
+            resource,
+            name
+            );
         log.debug("JdbcSchemaEntity(JdbcResource, String, String, String)");
         log.debug("   JdbcResource [{}]", resource.name());
         log.debug("   Catalog [{}]", catalog);

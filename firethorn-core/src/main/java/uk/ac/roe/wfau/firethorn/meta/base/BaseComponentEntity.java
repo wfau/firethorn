@@ -26,19 +26,23 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
- * Base class for a metadata component.
+ * {@link BaseComponent} implementation.
  *
  *
  */
@@ -57,8 +61,65 @@ implements BaseComponent
      */
     public static final String DB_STATUS_COL = "status";
 
-    protected static final String DB_SCAN_TIME_COL   = "scantime";
+    protected static final String DB_SCAN_DATE_COL   = "scandate";
     protected static final String DB_SCAN_PERIOD_COL = "scanperiod";
+
+    /**
+     * {@link BaseComponent.EntityFactory} implementation.
+     *
+     */
+    @Slf4j
+    @Repository
+    public static abstract class EntityFactory<ComponentType extends BaseComponent>
+    extends AbstractEntityFactory<ComponentType>
+    implements BaseComponent.EntityFactory<ComponentType>
+        {
+        
+        /**
+         * The default re-scan interval, as string.
+         * Initialised from a configuration property.
+         * 
+         */
+        @Value("${firethorn.meta.scan:PT24H}")
+        private String scanstring ;
+
+        /**
+         * The default re-scan interval, as a time period.
+         * 
+         */
+        private Period scanperiod ;
+
+        @Override
+        public Period scanperiod()
+            {
+            if (this.scanperiod == null)
+                {
+                if (this.scanstring != null)
+                    {
+                    this.scanperiod = new Period(
+                        this.scanstring
+                        );
+                    }
+                }
+            log.debug("scanperiod()");
+            log.debug("  scanstring [{}]", scanstring);
+            log.debug("  scanperiod [{}]", scanperiod);
+            return scanperiod ;
+            }
+        }
+
+    /**
+     * Reference to our parent {@link BaseComponent.EntityFactory}.
+     * 
+    @Transient
+    protected BaseComponent.EntityFactory<ComponentType> factory;
+
+    @Override
+    public BaseComponent.EntityFactory<ComponentType> factory()
+        {
+        return null;
+        }
+     */
     
     /**
      * Default constructor needs to be protected not private.
@@ -76,24 +137,9 @@ implements BaseComponent
      */
     protected BaseComponentEntity(final String name)
         {
-        this(
-            name,
-            DEFAULT_SCAN_PERIOD
-            );
-        }
-
-    /**
-     * Protected constructor, owner defaults to the current actor.
-     *
-     */
-    protected BaseComponentEntity(final String name, final Period scanperiod)
-        {
         super(
             name
             );
-        this.scanperiod = scanperiod;
-        log.debug("BaseComponentEntity(String, Period)");
-        log.debug("  Name  [{}]", name);
         }
     
     /**
@@ -273,12 +319,6 @@ implements BaseComponent
         }
 
     /**
-     * The default re-scan interval.
-     * 
-     */
-    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 10, 0, 0);
-
-    /**
      * The lock timeout.
      * 
      */
@@ -289,19 +329,19 @@ implements BaseComponent
      * 
      */
     @Column(
-        name = DB_SCAN_TIME_COL,
+        name = DB_SCAN_DATE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private DateTime scantime ;
-    protected DateTime scantime()
+    private DateTime scandate ;
+    protected DateTime scandate()
         {
-        return this.scantime;
+        return this.scandate;
         }
-    protected void scandate(final DateTime time)
+    protected void scandate(final DateTime date)
         {
-        this.scantime = time;
+        this.scandate = date;
         }
     
     /**
@@ -311,13 +351,26 @@ implements BaseComponent
     @Column(
         name = DB_SCAN_PERIOD_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = true
         )
-    private Period scanperiod = DEFAULT_SCAN_PERIOD ;
+    private Period scanperiod ;
     protected Period scanperiod()
         {
-        return this.scanperiod;
+        if (this.scanperiod != null)
+            {
+            return this.scanperiod;
+            }
+        else {
+            BaseComponent.EntityFactory<?> factory = (BaseComponent.EntityFactory<?>) this.factory();
+            if (factory != null)
+                {
+                return factory.scanperiod();
+                }
+            else {
+                return null ;
+                }
+            }
         }
     protected void scanperiod(final Period period)
         {
@@ -325,53 +378,80 @@ implements BaseComponent
         }
     
     /**
-     * Check the scan criteria and scan.
+     * Check the date of the last scan.
+     * If the last scan was before the scan period, then initiate a new scan. 
      *
      */
     protected void scantest()
         {
         log.debug("scantest for [{}][{}]", this.ident(), this.name());
-        log.debug("scandate [{}]", scantime);
-        if ((scantime == null) || (scantime.plus(scanperiod).isBeforeNow()))
+
+        DateTime prev   = scandate()   ; 
+        Period   period = scanperiod() ;
+
+        log.debug("prevscan   [{}]", prev);
+        log.debug("scanperiod [{}]", period);
+
+        if (prev == null)
             {
-            log.debug("scandate is in the past");
-            Object lock = lock(true);
-            if (lock == null)
-                {
-                try {
-                    log.debug("Running scan [{}][{}]", this.ident(), this.name());
-                    scanimpl();
-                    }
-                finally {
-                    scantime = new DateTime();
-                    unlock();
-                    }
+            log.debug("prev scan is null - scanning");
+            scanlock();
+            }
+        else if (period == null)
+            {
+            log.debug("scan period is null - skipping");
+            }
+        else if (prev.plus(period).isBeforeNow())
+            {
+            log.debug("scan period expired - scanning");
+            scanlock();
+            }
+        else {
+            log.debug("prev scan is recent - skipping");
+            }
+        }
+    
+    /**
+     * Check for a lock and start a scan.
+     *
+     */
+    protected void scanlock()
+        {
+        log.debug("scanlock for [{}][{}]", this.ident(), this.name());
+
+        Object lock = lock(true);
+        if (lock == null)
+            {
+            try {
+                log.debug("Running scan [{}][{}]", this.ident(), this.name());
+                scanimpl();
                 }
-            else {
-                log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
-                while (lock != null)
-                    {
-                    try {
-                        log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
-                        synchronized (lock)
-                            {
-                            lock.wait(LOCK_TIMEOUT);
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
-                        }
-                    lock = lock(false);
-                    }
-                log.debug("No more locks [{}][{}]", this.ident(), this.name());
+            finally {
+                scandate = new DateTime();
+                unlock();
                 }
             }
         else {
-            log.debug("scandate is recent [{}][{}]", this.ident(), this.name());
+            log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
+            while (lock != null)
+                {
+                try {
+                    log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                    synchronized (lock)
+                        {
+                        lock.wait(LOCK_TIMEOUT);
+                        }
+                    }
+                catch (Exception ouch)
+                    {
+                    log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
+                    }
+                lock = lock(false);
+                }
+            log.debug("No more locks [{}][{}]", this.ident(), this.name());
             }
         }
-
+    
     /**
      * Metadata scan implementation.
      *

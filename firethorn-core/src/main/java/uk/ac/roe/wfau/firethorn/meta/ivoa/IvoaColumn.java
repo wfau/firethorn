@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
- *
+ * Public interface for an external IVOA column.
  *
  */
 public interface IvoaColumn

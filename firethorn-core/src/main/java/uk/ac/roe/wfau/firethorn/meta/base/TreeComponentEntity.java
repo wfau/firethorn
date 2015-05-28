@@ -26,8 +26,10 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Repository;
+
 /**
- * Base class for {@link TreeComponent} entities.
+ * {@link TreeComponent} implementation.
  *
  */
 @Slf4j
@@ -49,6 +51,17 @@ implements TreeComponent
     protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
     /**
+     * {@link TreeComponent.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ComponentType extends TreeComponent>
+    extends BaseComponentEntity.EntityFactory<ComponentType>
+    implements TreeComponent.EntityFactory<ComponentType>
+        {
+        }
+
+    /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
@@ -56,6 +69,7 @@ implements TreeComponent
     protected TreeComponentEntity()
         {
         super();
+        //log.debug("TreeComponentEntity()");
         }
 
     /**
@@ -80,9 +94,9 @@ implements TreeComponent
             name
             );
         this.depth = depth;
-        log.debug("TreeComponentEntity(CopyDepth, String)");
-        log.debug("  Name  [{}]", name);
-        log.debug("  Depth [{}]", depth);
+        //log.debug("TreeComponentEntity(CopyDepth, String)");
+        //log.debug("  Depth [{}]", depth);
+        //log.debug("  Name  [{}]", name);
         }
 
     @Column(

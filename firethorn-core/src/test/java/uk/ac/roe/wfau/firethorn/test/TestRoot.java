@@ -206,6 +206,16 @@ public abstract class TestRoot
          *
          */
         public String property(final String key);
+
+        /**
+         * Read a test configuration property.
+         * @param key The property key.
+         * @param value The default value.
+         * @return The property value.
+         *
+         */
+        public String property(final String key, final String value);
+
         }
     
     /**
@@ -259,10 +269,19 @@ public abstract class TestRoot
         return new TestConfig()
             {
             @Override
-            public String property(String key)
+            public String property(final String key)
                 {
                 return props.getProperty(
                     key
+                    );
+                }
+
+            @Override
+            public String property(final String key, final String value)
+                {
+                return props.getProperty(
+                    key,
+                    value
                     );
                 }
             };

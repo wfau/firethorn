@@ -399,8 +399,7 @@ implements OgsaService
     throws NameFormatException
         {
         super(
-            name,
-            DEFAULT_SCAN_PERIOD
+            name
             );
         this.ogstatus = OgStatus.ACTIVE;
         this.endpoint = endpoint; 

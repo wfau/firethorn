@@ -30,10 +30,12 @@ import javax.persistence.InheritanceType;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Repository;
+
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
- *
+ * {@link BaseColumn} implementation.
  *
  */
 @Slf4j
@@ -91,6 +93,17 @@ extends TreeComponentEntity<ColumnType>
     protected static final String DB_ADQL_UCD_VALUE_COL = "adqlucdvalue" ;
 
     /**
+     * {@link BaseColumn.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
+    extends TreeComponentEntity.EntityFactory<ColumnType>
+    implements BaseColumn.EntityFactory<TableType, ColumnType>
+        {
+        }
+    
+    /**
      * Protected constructor.
      *
      */
@@ -106,7 +119,9 @@ extends TreeComponentEntity<ColumnType>
      */
     protected BaseColumnEntity(final BaseTable<?,ColumnType> parent, final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
     @Override

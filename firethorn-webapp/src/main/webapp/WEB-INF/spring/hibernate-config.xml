@@ -32,9 +32,23 @@
     >
 
     <!--+
+        | Hibernate Interceptor.
+        | http://riteshadval.blogspot.co.uk/2010/08/spring-using-hibernate-interceptor.html
+        | https://sites.google.com/a/pintailconsultingllc.com/java/Home/hibernate-interceptor-for-new-entities
+        +-->
+    <bean id="FireThornHibernateInterceptor" class="uk.ac.roe.wfau.firethorn.hibernate.HibernateInterceptor"/>
+
+    <!--+
         | Hibernate SessionFactory.
         +-->
     <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+        <!--+
+            | Hibernate Interceptor.
+            | http://riteshadval.blogspot.co.uk/2010/08/spring-using-hibernate-interceptor.html
+            | https://sites.google.com/a/pintailconsultingllc.com/java/Home/hibernate-interceptor-for-new-entities
+            +-->
+        <property name="entityInterceptor" ref="FireThornHibernateInterceptor"/>
 
         <!--+
             | Database connection.

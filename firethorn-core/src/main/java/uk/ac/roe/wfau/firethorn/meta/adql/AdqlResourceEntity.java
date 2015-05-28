@@ -29,7 +29,6 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -39,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- *
+ * {@link AdqlResource} implementation.
  *
  */
 @Slf4j
@@ -69,15 +68,14 @@ implements AdqlResource
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlResourceEntity";
 
     /**
-     * {@link AdqlResource.EntityFactory}} implementation.
+     * {@link AdqlResource.EntityFactory} implementation.
      *
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlResource>
+    extends BaseResourceEntity.EntityFactory<AdqlResource>
     implements AdqlResource.EntityFactory
         {
-
         @Override
         public Class<?> etype()
             {
@@ -138,7 +136,9 @@ implements AdqlResource
 
     protected AdqlResourceEntity(final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
     @Override

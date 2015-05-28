@@ -20,11 +20,14 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -47,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
 /**
+ * {@link AdqlColumn} implementation.
  *
  *
  */
@@ -125,7 +128,7 @@ public class AdqlColumnEntity
      * 
      */
     protected static final String ALIAS_PREFIX = "ADQL_COLUMN_";
-    
+
     /**
      * {@link AdqlColumn.AliasFactory} implementation.
      *
@@ -185,7 +188,7 @@ public class AdqlColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlColumn>
+    extends BaseColumnEntity.EntityFactory<AdqlTable, AdqlColumn>
     implements AdqlColumn.EntityFactory
         {
 
@@ -234,6 +237,7 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
+                    this,
                     parent,
                     base
                     )
@@ -246,6 +250,7 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
+                    this,
                     parent,
                     base,
                     name
@@ -337,21 +342,41 @@ public class AdqlColumnEntity
             }
         }
 
+    /**
+     * Reference to our parent {@link AdqlColumn.EntityFactory}.
+     * 
+     */
+    @Transient
+    protected AdqlColumn.EntityFactory factory;
+
+    @Override
+    public AdqlColumn.EntityFactory factory()
+        {
+        return this.factory;
+        }
+
     protected AdqlColumnEntity()
         {
         super();
         }
 
-    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base)
+    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base)
         {
-        super(table, base.name());
-        this.base  = base ;
-        this.table = table;
+        this(
+            factory,
+            table,
+            base,
+            null
+            );
         }
 
-    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base, final String name)
         {
-        super(table, ((name != null) ? name : base.name()));
+        super(
+            table,
+            ((name != null) ? name : base.name())
+            );
+        this.factory = factory ;
         this.base  = base ;
         this.table = table;
         }

@@ -22,12 +22,15 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -40,8 +43,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -50,13 +51,16 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
 /**
- *
+ * {@link JdbcColumn} implementation.
  *
  */
 @Slf4j
 @Entity
 @Access(
     AccessType.FIELD
+    )
+@EntityListeners(
+    JdbcColumnEntity.EntityListener.class
     )
 @Table(
     name = JdbcColumnEntity.DB_TABLE_NAME,
@@ -117,13 +121,71 @@ public class JdbcColumnEntity
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
     /**
-     * {@link EntityBuilder} implementation.
+     * For the JPA EntityListener annotations to work,
+     * Hibernate needs to be configured with an EntityManager
+     * rather than a SessionManager.
+     * 
+     * http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/
+     * http://www.studytrails.com/frameworks/spring/spring-hibernate-jpa.jsp
+     * https://stackoverflow.com/questions/25260527/obtaining-entitymanager-in-spring-hibernate-configuration
+     * 
+     */
+    @Slf4j
+    public static class EntityListener
+        {
+        /**
+         * Public constructor.
+         *
+         *
+         */
+        public EntityListener()
+            {
+            log.debug("JdbcColumnEntity.EntityListener()");
+            }
+        
+        /**
+         * On load ...
+         *
+         */
+        @PostLoad
+        public void load(final JdbcColumnEntity column)
+            {
+            log.debug("load(JdbcColumnEntity)");
+            log.debug(" ident [{}]", column.ident());
+            log.debug(" name  [{}]", column.name());
+            //log.debug(" auto  [{}]", entities);
+            }
+
+        /**
+         * On save ...
+         *
+         */
+        @PrePersist
+        public void save(final JdbcColumnEntity column)
+            {
+            log.debug("save(JdbcColumnEntity)");
+            log.debug(" ident [{}]", column.ident());
+            log.debug(" name  [{}]", column.name());
+            //log.debug(" auto  [{}]", entities);
+            }
+        
+        //@Autowired
+        //private JdbcColumn.EntityFactory entities;
+
+        }
+    
+    /**
+     * {@link JdbcColumn.Builder} implementation.
      *
      */
     public static abstract class Builder
     extends AbstractEntityBuilder<JdbcColumn, JdbcColumn.Metadata>
     implements JdbcColumn.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<JdbcColumn> source)
             {
             this.init(
@@ -207,7 +269,7 @@ public class JdbcColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<JdbcColumn>
+    extends BaseColumnEntity.EntityFactory<JdbcTable, JdbcColumn>
     implements JdbcColumn.EntityFactory
         {
 
@@ -327,6 +389,7 @@ public class JdbcColumnEntity
             }
         }
 
+    
     /**
      * Protected constructor.
      *
@@ -354,46 +417,15 @@ public class JdbcColumnEntity
         }
 
     /**
-     * Convert a JdbcColumn.Metadata array size into an int value.
-     * 
-    public static Integer safeint(final Integer size)
-    	{
-    	if (size != null)
-    		{
-    		return size ;
-    		}
-    	else {
-    		return new Integer (0) ;
-    		}
-    	}
-     */
-    
-    /**
-     * Protected constructor.
-     *
-    @Deprecated
-    protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
-        {
-        this(
-            table,
-            name,
-            JdbcColumn.JdbcType.resolve(
-                type
-                ),
-            new Integer(
-                size
-                )
-            );
-        }
-     */
-
-    /**
      * Protected constructor.
      *
      */
     protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.JdbcType type, final Integer size)
         {
-        super(table, name);
+        super(
+            table,
+            name
+            );
         this.table    = table;
         this.jdbctype = type ;
 

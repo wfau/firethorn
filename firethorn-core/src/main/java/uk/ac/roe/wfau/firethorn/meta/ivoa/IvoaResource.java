@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 
 /**
- *
+ * Public interface for an external IVOA resource.
  *
  */
 public interface IvoaResource

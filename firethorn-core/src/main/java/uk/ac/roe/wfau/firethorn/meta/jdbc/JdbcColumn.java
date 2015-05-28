@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
 /**
- *
+ * Public interface for a local JDBC column.
  *
  */
 public interface JdbcColumn
