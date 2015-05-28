@@ -46,7 +46,7 @@
         hg status
 
         #
-        # Merge and commit local changes
+        # Commit local changes
         # Push/pull the latest changes
 
         #
