@@ -1,0 +1,210 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Configure our tools.
+#[user@desktop]
+
+    cat > /tmp/container.properties << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+
+    userhost=ramses2
+    userdata=xxxx-xxxx-xxxx
+    useruser=xxxx-xxxx-xxxx
+    userpass=xxxx-xxxx-xxxx
+
+    datahost=ramses2
+    datauser=xxxx-xxxx-xxxx
+    datapass=xxxx-xxxx-xxxx
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=xxxx-xxxx-xxxx
+    tunnelhost=xxxx-xxxx-xxxx
+
+EOF
+
+    source /tmp/container.properties
+
+# -----------------------------------------------------
+# Run our userdata ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Run our science data ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Run our PostgreSQL metadata container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Get the container IP addresses.
+#[user@desktop]
+
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${metaname:?}"
+    172.17.0.29
+
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${dataname:?}"
+    172.17.0.28
+    
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${username:?}"
+    172.17.0.27
+
+# -----------------------------------------------------
+# Using SSH tunnel for user data.
+#[user@desktop]
+
+    userdataurl=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataZRQ20150526DEV
+
+# -----------------------------------------------------
+# Using SSH tunnel for Atlas data.
+#[user@desktop]
+
+    datadataurl=jdbc:jtds:sqlserver://localhost:1432/ATLASDR1
+
+# -----------------------------------------------------
+# Using SSH tunnel for meta data.
+#[user@desktop]
+
+    metadataurl=jdbc:jtds:sqlserver://localhost:1432/FirethornMetadataZRQ20150526DEV
+    metadatadrv=net.sourceforge.jtds.jdbc.Driver
+    metadatauser=FirethornMetadataZRQ20150526DEVLogin
+    metadatapass=FirethornMetadataZRQ20150526DEVconevAm7
+
+# -----------------------------------------------------
+# Using SSH proxy for user data.
+#[user@desktop]
+    
+    userdataurl=jdbc:jtds:sqlserver://172.17.0.28:1433/FirethornUserdataZRQ20150526DEV
+
+# -----------------------------------------------------
+# Using SSH proxy for Atlas data.
+#[user@desktop]
+
+    datadataurl=jdbc:jtds:sqlserver://172.17.0.28:1433/ATLASDR1
+
+# -----------------------------------------------------
+# Using SSH proxy for meta data.
+#[user@desktop]
+
+    metadataurl=jdbc:jtds:sqlserver://172.17.0.28:1433/FirethornMetadataZRQ20150526DEV
+    metadatauser=FirethornMetadataZRQ20150526DEVLogin
+    metadatapass=FirethornMetadataZRQ20150526DEVconevAm7
+
+# -----------------------------------------------------
+# Using postgresql for meta data.
+#[user@desktop]
+
+    metadataurl=jdbc:postgresql://172.17.0.29:5432/postgres
+    metadatauser=${metauser:?}
+    metadatapass=${metapass:?}
+
+# -----------------------------------------------------
+# Update our test properties and run a test.
+#[user@desktop]
+
+    communityuri=$(pwgen 20 1)
+
+    sed -i '
+        s|^firethorn.meta.url=.*$|firethorn.meta.url='${metadataurl:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    sed -i '
+        s|^firethorn.meta.user=.*$|firethorn.meta.user='${metadatauser:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    sed -i '
+        s|^firethorn.meta.pass=.*$|firethorn.meta.pass='${metadatapass:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    sed -i '
+        s|^firethorn.user.url=.*$|firethorn.user.url='${userdataurl:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    sed -i '
+        s|^firethorn.atlas.url=.*$|firethorn.atlas.url='${datadataurl:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    sed -i '
+        s|^junit.community.uri=.*$|junit.community.uri='${communityuri:?}'|
+        ' "${HOME:?}/firethorn.properties"
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+
+            rm target/junit-test.properties
+            #mvn -D skipTests=false -D test=CaseSensitiveTestCase test
+            mvn -D skipTests=false -D test=UpperCaseSensitiveTestCase test
+
+
+        popd
+    popd
+    
+
+
+
+

@@ -19,15 +19,19 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Repository;
+
 /**
- *
+ * {@link BaseResource} implementation.
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -45,7 +49,18 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
      * 
      */
     protected static final String DB_OGSAID_COL = "ogsaid";
-    
+
+    /**
+     * {@link BaseResource.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static abstract class EntityFactory<ResourceType extends BaseResource<?>>
+    extends TreeComponentEntity.EntityFactory<ResourceType>
+    implements BaseResource.EntityFactory<ResourceType>
+        {
+        }
+
     /**
      * Protected constructor.
      *
@@ -53,6 +68,7 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
     protected BaseResourceEntity()
         {
         super();
+        //log.debug("BaseResourceEntity()");
         }
 
     /**
@@ -64,6 +80,8 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
         super(
             name
             );
+        //log.debug("BaseResourceEntity(String)");
+        //log.debug("    Name    [{}]", name);
         }
 
     @Override

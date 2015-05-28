@@ -112,14 +112,27 @@ extends TestRoot
         Authentication primary = operation.auth().primary();
         if (primary == null)
             {
+            
             primary = operation.auth().create(
                 factories().communities().create(
-                    TEST_COMMUNITY_URI,
-                    TEST_COMMUNITY_NAME
-                    ).members().create(
-                        TEST_IDENTITY_NAME
+                    config().property(
+                        "junit.community.uri",
+                        TEST_COMMUNITY_URI
                         ),
-                TEST_AUTH_METHOD
+                    config().property(
+                        "junit.community.name",
+                        TEST_COMMUNITY_NAME
+                        )
+                    ).members().create(
+                        config().property(
+                            "junit.identity.name",
+                            TEST_IDENTITY_NAME
+                            )
+                        ),
+                config().property(
+                    "junit.auth.method",
+                    TEST_AUTH_METHOD
+                    )                        
                 );
             }
 

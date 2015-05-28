@@ -39,7 +39,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -49,13 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
 /**
- *
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
+ * {@link IvoaColumn} implementation.
  *
  */
 @Slf4j
@@ -135,6 +128,10 @@ public class IvoaColumnEntity
     extends AbstractEntityBuilder<IvoaColumn, IvoaColumn.Metadata>
     implements IvoaColumn.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<IvoaColumn> source)
             {
             this.init(
@@ -211,12 +208,12 @@ public class IvoaColumnEntity
         }
     
     /**
-     * {@link Entity.EntityFactory} implementation.
+     * {@link IvoaColumn.EntityFactory} implementation.
      *
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<IvoaColumn>
+    extends BaseColumnEntity.EntityFactory<IvoaTable, IvoaColumn>
     implements IvoaColumn.EntityFactory
         {
 

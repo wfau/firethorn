@@ -76,7 +76,7 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT011304";
+    protected static final String DB_TABLE_PREFIX = "FT011315";
 
     /**
      * Hibernate column mapping.
@@ -101,11 +101,28 @@ implements Entity
     @Transient
     protected ComponentFactories factories ;
 
+    protected void factories(final ComponentFactories factories)
+        {
+        this.factories = factories ; 
+        }
+    
     /**
      * Access to our ComponentFactories singleton instance.
      * Has to use dynamic initialisation.
      * http://stackoverflow.com/questions/9104221/hibernate-buildsessionfactory-exception
      * TODO Improve this
+     * 
+     * TODO This might help
+     * http://guylabs.ch/2014/02/22/autowiring-pring-beans-in-hibernate-jpa-entity-listeners/
+     * TODO Looks similar
+     * http://stackoverflow.com/a/4144102
+     * 
+     * TODO Another way
+     * http://stackoverflow.com/a/9011451
+     * 
+     * TODO Looks complicated
+     * http://www.javacodegeeks.com/2013/10/spring-injected-beans-in-jpa-entitylisteners.html
+     * https://code.google.com/p/invariant-properties-blog/source/browse/spring-entity-listener/src/main/java/com/invariantproperties/sandbox/springentitylistener/annotation/SpringEntityListeners.java
      *
      */
     protected ComponentFactories factories()
@@ -117,6 +134,13 @@ implements Entity
     	return this.factories;
     	}
 
+    // Placeholder to allow compile.
+    @Override
+    public Entity.EntityFactory<?> factory()
+        {
+        return null;
+        }
+    
     /**
      * Helper method to check for empty or blank strings.
      *
@@ -149,12 +173,14 @@ implements Entity
 
     /**
      * Protected constructor, sets the owner and create date.
-     * @param init A flag to distinguish this from the default constructor.
+     * @param init Flag to distinguish this from the default constructor.
      *
      */
     protected AbstractEntity(final boolean init)
         {
         super();
+        //log.debug("AbstractEntity(boolean)");
+        //log.debug("  init [{}]", init);
         if (init)
             {
             this.uidlo = random.nextLong();
@@ -163,6 +189,12 @@ implements Entity
             this.owner = factories().contexts().current().identity();
             this.created = new DateTime();
             }
+        else {
+            throw new IllegalStateException(
+                "AbstractEntity constructor called with invalid param [false]"
+                );
+            }
+        log.debug("  created  [{}]", created);
 
         /*
         *

@@ -37,7 +37,6 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -50,7 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- *
+ * {@link AdqlSchema} implementation.
  *
  */
 @Slf4j
@@ -109,10 +108,9 @@ implements AdqlSchema
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlSchema>
+    extends BaseSchemaEntity.EntityFactory<AdqlResource, AdqlSchema>
     implements AdqlSchema.EntityFactory
         {
-
         @Override
         public Class<?> etype()
             {
@@ -171,7 +169,7 @@ implements AdqlSchema
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name,
-                base
+                base                
                 );
             super.insert(
                 schema
@@ -203,7 +201,7 @@ implements AdqlSchema
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                name
+                name                
                 );
             super.insert(
                 schema
@@ -221,7 +219,7 @@ implements AdqlSchema
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                name
+                name                
                 );
             super.insert(
                 schema

@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -27,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 
 /**
- *
+ * Public interface for schema.
  *
  */
 public interface BaseSchema<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
@@ -60,11 +59,11 @@ extends TreeComponent
         }
 
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
-    extends Entity.EntityFactory<SchemaType>
+    extends TreeComponent.EntityFactory<SchemaType>
         {
         /**
          * Select all the schemas from a resource.

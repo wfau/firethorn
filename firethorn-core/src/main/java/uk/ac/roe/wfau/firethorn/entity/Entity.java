@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 
 /**
  * Common interface for a persistent Entity.
@@ -161,6 +162,12 @@ public interface Entity
         public LinkFactory<EntityType> links();
 
         }
+
+    /**
+     * Our parent {@link Entity.EntityFactory}.
+     *
+     */
+    public Entity.EntityFactory<?> factory();
 
     /**
      * The Entity Identifier.

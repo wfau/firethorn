@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 /**
- * Our JDBC component factories
+ * Public interface for our base factories
  *
  */
 public interface BaseFactories

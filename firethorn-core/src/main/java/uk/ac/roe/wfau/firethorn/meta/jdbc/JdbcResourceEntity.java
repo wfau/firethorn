@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -49,9 +48,10 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * {@link JdbcResource} implementation.
  *
  */
 @Slf4j
@@ -91,19 +91,13 @@ public class JdbcResourceEntity
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
-     * Hibernate column mapping, {@value}.
-     *
-    protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
-     */
-
-    /**
-     * Resource factory implementation.
+     * {@link JdbcResource.EntityFactory} implementation.
      *
      */
     @Component
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<JdbcResource>
+    extends BaseResourceEntity.EntityFactory<JdbcResource>
     implements JdbcResource.EntityFactory
         {
 
@@ -296,7 +290,13 @@ public class JdbcResourceEntity
      */
     protected JdbcResourceEntity(final String catalog, final String name, final  String url)
         {
-        super(name);
+        super(
+            name
+            );
+        log.debug("JdbcResourceEntity(String, String, String)");
+        log.debug("    Catalog [{}]", catalog);
+        log.debug("    Name    [{}]", name);
+        log.debug("    URL     [{}]", url);
         this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
@@ -310,7 +310,9 @@ public class JdbcResourceEntity
      */
     protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass)
 	    {
-	    super(name);
+	    super(
+	        name
+	        );
         this.catalog = catalog ;
 	    this.connection = new JdbcConnectionEntity(
 	        this,
@@ -326,7 +328,9 @@ public class JdbcResourceEntity
      */
     protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
         {
-        super(name);
+        super(
+            name
+            );
         this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
@@ -463,6 +467,15 @@ public class JdbcResourceEntity
 
     @Embedded
     private JdbcConnectionEntity connection;
+
+    /*
+     * Declaring this as a protected method enables {@link JdbcConnectionEntity} to access it.
+     *  
+     */
+    protected ComponentFactories factories()
+        {
+        return super.factories();
+        }
 
     @Override
     public JdbcConnector connection()

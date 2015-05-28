@@ -38,7 +38,6 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
-import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -49,7 +48,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
- *
+ * {@link IvoaTable} implementation.
  *
  */
 @Slf4j
@@ -100,13 +99,17 @@ public class IvoaTableEntity
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaTableEntity";
 
     /**
-     * {@link EntityBuilder} implementation.
+     * {@link IvoaTable.Builder} implementation.
      *
      */
     public static abstract class Builder
     extends AbstractEntityBuilder<IvoaTable, IvoaTable.Metadata>
     implements IvoaTable.Builder
         {
+        /**
+         * Public constructor.
+         *
+         */
         public Builder(final Iterable<IvoaTable> source)
             {
             this.init(

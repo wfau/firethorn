@@ -29,6 +29,7 @@ import javax.persistence.Embeddable;
     AccessType.FIELD
     )
 @Embeddable
+@Deprecated
 public abstract class BaseValueEntity<ValueType>
     implements BaseValue<ValueType>
     {

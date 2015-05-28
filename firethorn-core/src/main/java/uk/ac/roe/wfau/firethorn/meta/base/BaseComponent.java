@@ -17,19 +17,44 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import org.joda.time.Period;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity.EntityFactory;
 
 /**
- * Base class interface for a metadata component.
+ * Public interface for a metadata component.
  *
  */
 public interface BaseComponent
 extends NamedEntity
     {
 
+    /**
+     * {@link Entity.EntityFactory} interface.
+     *
+     */
+    public static interface EntityFactory<ComponentType extends NamedEntity>
+    extends Entity.EntityFactory<ComponentType>
+        {
+        
+        /**
+         * The default Entity scan period. 
+         *
+         */
+        public Period scanperiod();
+
+        }
+
+    /**
+     * Access to our parent {@link BaseComponent.EntityFactory}.
+     *
+    public BaseComponent.EntityFactory<?> factory();
+     */
+    
     /**
      * Enum representing the status.
      *

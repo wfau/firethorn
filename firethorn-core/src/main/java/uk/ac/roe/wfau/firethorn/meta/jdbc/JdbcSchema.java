@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
 /**
- *
+ * Public interface for a local JDBC schema.
  *
  */
 public interface JdbcSchema
@@ -67,24 +67,6 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     public static interface NameFactory
     extends NamedEntity.NameFactory<JdbcSchema>
         {
-        /**
-         * Create a new date-based name.
-         *
-        public String datename();
-         */
-
-        /**
-         * Create a new date-based name.
-         *
-        public String datename(final Identity identity);
-         */
-
-        /**
-         * Create a new date-based name.
-         *
-        public String datename(final String prefix, final Identity identity);
-         */
-
         /**
          * Create a fully qualified schema name from separate catalog and schema names.
          *

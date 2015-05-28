@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.spring;
+package uk.ac.roe.wfau.firethorn.hibernate;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;

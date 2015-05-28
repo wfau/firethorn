@@ -24,6 +24,8 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Type;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
@@ -38,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
+@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD
@@ -84,7 +87,9 @@ implements Entity, NamedEntity
     throws NameFormatException
         {
     	super(true);
-        this.name(
+    	//log.debug("AbstractNamedEntity(String)");
+        //log.debug("  Name  [{}]", name);
+    	this.name(
             name
             );
         }

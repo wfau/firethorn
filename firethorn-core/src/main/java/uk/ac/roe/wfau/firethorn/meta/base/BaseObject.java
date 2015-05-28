@@ -17,13 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
 /**
  *
  *
  */
+@Deprecated
 public class BaseObject
     {
     protected BaseObject()
@@ -34,9 +33,9 @@ public class BaseObject
     /**
      * Access to our ComponentFactories singleton instance.
      *
-     */
     public ComponentFactories factories()
         {
         return ComponentFactoriesImpl.instance();
         }
+     */
     }

@@ -35,18 +35,29 @@
 # Code change
 #[user@laptop]
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    @Repository
-    public static abstract class EntityFactory<EntityType extends Entity>
-    extends AbstractEntityFactory<EntityType>
-        {
-        }
+        eclipse
 
+    popd
 
-    public static abstract class EntityFactory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-    extends AbstractEntityFactory<TableType>
-    implements BaseTable.EntityFactory<SchemaType, TableType>
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
 
-    public static interface EntityFactory<EntityType extends Entity>
-    extends Entity.EntityFactory<EntityType>
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Merge and test.
+#[user@desktop]
+
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20150528-01-hg-merge.txt" &
 

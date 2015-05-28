@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
- * Public interface for a table column.
+ * Public interface for a column.
  *
  */
 public interface BaseColumn<ColumnType extends BaseColumn<ColumnType>>
@@ -30,34 +30,16 @@ extends TreeComponent
     {
 
     /**
-     * The size for a non-array field.
+     * The special value for size to indicate a non-array field, {@value}.
      *
      */
     public static final Integer NON_ARRAY_SIZE = new Integer(0);
 
     /**
-     * The size for a variable size field.
+     * The special value for size to indicate a variable size array, {@value}.
      *
      */
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
-
-    /**
-     * {@link Entity.IdentFactory} interface.
-     *
-    public static interface IdentFactory<ColumnType extends BaseColumn<ColumnType>>
-    extends Entity.IdentFactory<ColumnType>
-        {
-        }
-     */
-
-    /**
-     * {@link Entity.NameFactory} interface.
-     *
-    public static interface NameFactory<ColumnType extends BaseColumn<ColumnType>>
-    extends NamedEntity.NameFactory<ColumnType>
-        {
-        }
-     */
 
     /**
      * {@link Entity.AliasFactory} interface.
@@ -87,11 +69,11 @@ extends TreeComponent
         }
     
     /**
-     * {@link Entity.EntityFactory} interface.
+     * {@link TreeComponent.EntityFactory} interface.
      *
      */
     public static interface EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
-    extends Entity.EntityFactory<ColumnType>
+    extends TreeComponent.EntityFactory<ColumnType>
         {
         /**
          * Select all the columns from a table.

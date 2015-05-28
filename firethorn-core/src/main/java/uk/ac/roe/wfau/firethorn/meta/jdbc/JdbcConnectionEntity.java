@@ -50,14 +50,14 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseObject;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PGSQLMetadataScanner;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- * JDBC resource connection details.
- * @todo Messed up and not thread safe at all.
- * Miss-match, JDBC connections are helod in a ThreadLocal, but the count of open/close is per entity, not per thread.
+ * {@link JdbcConnector} implementation.
+ * @todo This is not thread safe at all.
+ * Miss-match, JDBC connections are held in a ThreadLocal, but the count of open/close is per entity, not per thread.
  *
  */
 @Slf4j
@@ -66,7 +66,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
     AccessType.FIELD
     )
 public class JdbcConnectionEntity
-    extends BaseObject
     implements JdbcConnector
     {
     /**
@@ -186,7 +185,16 @@ public class JdbcConnectionEntity
         this.driver = driver;
         this.parent = parent;
         }
-
+    
+    /**
+     * Access to our ComponentFactories singleton instance.
+     *
+     */
+    protected ComponentFactories factories()
+        {
+        return parent.factories();
+        }
+    
     @Parent
     protected JdbcResourceEntity parent;
     protected JdbcResourceEntity getParent()

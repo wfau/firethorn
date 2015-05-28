@@ -109,8 +109,7 @@ implements OgsaBaseResource
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
        super(
-           DEFAULT_NAME,
-           DEFAULT_SCAN_PERIOD
+           DEFAULT_NAME
            );
        this.ogstatus  = OgStatus.CREATED ;
        this.ogservice = service ;

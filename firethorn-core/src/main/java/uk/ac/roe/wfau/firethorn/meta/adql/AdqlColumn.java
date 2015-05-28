@@ -17,20 +17,17 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
- *
+ * Public interface for an abstract ADQL column.
  *
  */
 public interface AdqlColumn
