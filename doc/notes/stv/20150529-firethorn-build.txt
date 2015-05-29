@@ -1,0 +1,254 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Clean build of FireThorn
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Run our FireThorn service
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+# -----------------------------------------------------
+# Run our OGSA-DAI service  ....
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-ogsadai/webapp'
+
+            mvn clean compile war:war
+
+            source src/test/bin/jdbc-functions.sh
+            pushd "target/firethorn-ogsadai-webapp-$(getversion)/WEB-INF/etc/dai"
+
+                jdbcconfig atlas         firethorn.atlas
+                jdbcconfig userdata      firethorn.user
+
+            popd
+            
+            export MAVEN_OPTS=-Xmx128m
+            mvn tomcat7:run | tee /tmp/ogsadai-tomcat.log
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=${identity:-$(pwgen 16 1)}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        databasekey='firethorn.atlas'
+        databasecfg="${HOME:?}/firethorn.properties"
+
+        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
+        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
+        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
+        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
+        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
+        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
+
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "${databaseurl:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*' \
+            'nilbert'
+
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasSource.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasTwomass.xml"
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TwomassPsc.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+twomasspublic=${adqlschema:?}
+EOF
+
+        cat "${HOME:?}/firethorn.spaces"
+
+    popd
+
+
+
+
+Output :
+
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$   source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasSource.xml"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9127    0  9044  100    83  32857    301 --:--:-- --:--:-- --:--:-- 33007
+malformed JSON string, neither array, object, number, string or atom, at character offset 0 (before "<!DOCTYPE html><html...") at /usr/share/perl5/JSON.pm line 171, <> chunk 1.
+bash: jdbcschemaident: parameter null or not set
+
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$         cat >> "${HOME:?}/firethorn.spaces" << EOF
+> atlaspublic=${adqlschema:?}
+> EOF
+bash: adqlschema: parameter null or not set
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$ 
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$         source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasTwomass.xml"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9127    0  9044  100    83  25590    234 --:--:-- --:--:-- --:--:-- 25620
+malformed JSON string, neither array, object, number, string or atom, at character offset 0 (before "<!DOCTYPE html><html...") at /usr/share/perl5/JSON.pm line 171, <> chunk 1.
+bash: jdbcschemaident: parameter null or not set
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$         source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'TWOMASS' 'dbo' "${FIRETHORN_META:?}/TWOMASS_TwomassPsc.xml"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9126    0  9044  100    82  96158    871 --:--:-- --:--:-- --:--:-- 97247
+malformed JSON string, neither array, object, number, string or atom, at character offset 0 (before "<!DOCTYPE html><html...") at /usr/share/perl5/JSON.pm line 171, <> chunk 1.
+bash: jdbcschemaident: parameter null or not set
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$         cat >> "${HOME:?}/firethorn.spaces" << EOF
+> twomasspublic=${adqlschema:?}
+> EOF
+bash: adqlschema: parameter null or not set
+stelios@stelios:/tmp/tmp.I2nM6OxGqG$ 
+
+
+# Curl newly created jdbc resource:
+curl http://localhost:8080/firethorn/jdbc/resource/32792/schemas/select
+
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.RuntimeException: java.lang.ClassNotFoundException: net.sourceforge.jtds.jdbc.Driver
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:978)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:857)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:618)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:842)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+</pre><p><b>root cause</b></p><pre>java.lang.RuntimeException: java.lang.ClassNotFoundException: net.sourceforge.jtds.jdbc.Driver
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.connect(JdbcConnectionEntity.java:381)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.access$200(JdbcConnectionEntity.java:68)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.initialValue(JdbcConnectionEntity.java:543)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.initialValue(JdbcConnectionEntity.java:522)
+	java.lang.ThreadLocal.setInitialValue(ThreadLocal.java:180)
+	java.lang.ThreadLocal.get(ThreadLocal.java:170)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.get(JdbcConnectionEntity.java:527)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.get(JdbcConnectionEntity.java:522)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.open(JdbcConnectionEntity.java:596)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.metadata(JdbcConnectionEntity.java:647)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.type(JdbcConnectionEntity.java:822)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.scanner(JdbcConnectionEntity.java:845)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity.scanimpl(JdbcResourceEntity.java:538)
+	uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity.scantest(BaseComponentEntity.java:343)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity.schemas(JdbcResourceEntity.java:344)
+	uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceSchemaController.select(JdbcResourceSchemaController.java:134)
+	sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	java.lang.reflect.Method.invoke(Method.java:497)
+	org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:221)
+	org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:137)
+	org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:110)
+	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandleMethod(RequestMappingHandlerAdapter.java:776)
+	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:705)
+	org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:959)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:893)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:966)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:857)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:618)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:842)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+</pre><p><b>root cause</b></p><pre>java.lang.ClassNotFoundException: net.sourceforge.jtds.jdbc.Driver
+	org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1293)
+	org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1145)
+	java.lang.Class.forName0(Native Method)
+	java.lang.Class.forName(Class.java:264)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.connect(JdbcConnectionEntity.java:373)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.access$200(JdbcConnectionEntity.java:68)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.initialValue(JdbcConnectionEntity.java:543)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.initialValue(JdbcConnectionEntity.java:522)
+	java.lang.ThreadLocal.setInitialValue(ThreadLocal.java:180)
+	java.lang.ThreadLocal.get(ThreadLocal.java:170)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.get(JdbcConnectionEntity.java:527)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity$1.get(JdbcConnectionEntity.java:522)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.open(JdbcConnectionEntity.java:596)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.metadata(JdbcConnectionEntity.java:647)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.type(JdbcConnectionEntity.java:822)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.scanner(JdbcConnectionEntity.java:845)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity.scanimpl(JdbcResourceEntity.java:538)
+	uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity.scantest(BaseComponentEntity.java:343)
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity.schemas(JdbcResourceEntity.java:344)
+	uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceSchemaController.select(JdbcResourceSchemaController.java:134)
+	sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	java.lang.reflect.Method.invoke(Method.java:497)
+	org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:221)
+	org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:137)
+	org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:110)
+	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandleMethod(RequestMappingHandlerAdapter.java:776)
+	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:705)
+	org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:959)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:893)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:966)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:857)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:618)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:842)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+
+
