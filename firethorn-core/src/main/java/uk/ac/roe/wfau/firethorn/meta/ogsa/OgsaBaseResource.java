@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
@@ -27,6 +28,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 public interface OgsaBaseResource
     extends BaseComponent
     {
+
+    /**
+     * {@link OgsaBaseResource.EntityFactory} interface.
+     *
+     */
+    public static interface EntityFactory<ComponentType extends OgsaBaseResource>
+    extends BaseComponent.EntityFactory<ComponentType>
+        {
+        }
 
     /**
      * The parent {@link OgsaService}.

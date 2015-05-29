@@ -74,17 +74,9 @@ implements BaseComponent
     extends AbstractEntityFactory<ComponentType>
     implements BaseComponent.EntityFactory<ComponentType>
         {
-        
-        /**
-         * The default re-scan interval, as string.
-         * Initialised from a configuration property.
-         * 
-         */
-        @Value("${firethorn.meta.scan:PT24H}")
-        private String scanstring ;
 
         /**
-         * The default re-scan interval, as a time period.
+         * The default re-scan period.
          * 
          */
         private Period scanperiod ;
@@ -92,19 +84,42 @@ implements BaseComponent
         @Override
         public Period scanperiod()
             {
-            if (this.scanperiod == null)
-                {
-                if (this.scanstring != null)
-                    {
-                    this.scanperiod = new Period(
-                        this.scanstring
-                        );
-                    }
-                }
             log.debug("scanperiod()");
-            log.debug("  scanstring [{}]", scanstring);
             log.debug("  scanperiod [{}]", scanperiod);
             return scanperiod ;
+            }
+
+        /**
+         * The default re-scan period.
+         * 
+         */
+        public void scanperiod(final Period value)
+            {
+            log.debug("scanperiod(Period)");
+            log.debug("  value      [{}]", value);
+            log.debug("  scanperiod [{}]", scanperiod);
+            this.scanperiod = value;
+            }
+
+        /**
+         * The default re-scan period, initialised from a configuration property.
+         * 
+         */
+        @Value("${firethorn.meta.scan:PT25H}")
+        public void scanperiod(final String value)
+            {
+            log.debug("scanperiod(String)");
+            log.debug("  value      [{}]", value);
+            log.debug("  scanperiod [{}]", scanperiod);
+            if (value != null)
+                {
+                this.scanperiod = new Period(
+                    value
+                    );
+                }
+            else {
+                this.scanperiod = null ;
+                }
             }
         }
 
@@ -376,16 +391,16 @@ implements BaseComponent
         {
         this.scanperiod = period;
         }
-    
+
     /**
-     * Check the date of the last scan.
-     * If the last scan was before the scan period, then initiate a new scan. 
+     * Check to see if we should run a scan.
      *
      */
-    protected void scantest()
+    protected boolean scantest()
         {
         log.debug("scantest for [{}][{}]", this.ident(), this.name());
 
+        boolean result = false ;
         DateTime prev   = scandate()   ; 
         Period   period = scanperiod() ;
 
@@ -395,7 +410,7 @@ implements BaseComponent
         if (prev == null)
             {
             log.debug("prev scan is null - scanning");
-            scanlock();
+            result = true ;
             }
         else if (period == null)
             {
@@ -404,56 +419,59 @@ implements BaseComponent
         else if (prev.plus(period).isBeforeNow())
             {
             log.debug("scan period expired - scanning");
-            scanlock();
+            result = true ;
             }
         else {
             log.debug("prev scan is recent - skipping");
             }
+        return result ;
         }
     
     /**
-     * Check for a lock and start a scan.
+     * Run a scan.
      *
      */
-    protected void scanlock()
+    protected void scan()
         {
-        log.debug("scanlock for [{}][{}]", this.ident(), this.name());
-
-        Object lock = lock(true);
-        if (lock == null)
+        log.debug("scan for [{}][{}]", this.ident(), this.name());
+        if (scantest())
             {
-            try {
-                log.debug("Running scan [{}][{}]", this.ident(), this.name());
-                scanimpl();
-                }
-            finally {
-                scandate = new DateTime();
-                unlock();
-                }
-            }
-        else {
-            log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
-            while (lock != null)
+            Object lock = lock(true);
+            if (lock == null)
                 {
                 try {
-                    log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
-                    synchronized (lock)
-                        {
-                        lock.wait(LOCK_TIMEOUT);
-                        }
+                    log.debug("Running scan [{}][{}]", this.ident(), this.name());
+                    scanimpl();
                     }
-                catch (Exception ouch)
-                    {
-                    log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
+                finally {
+                    scandate = new DateTime();
+                    unlock();
                     }
-                lock = lock(false);
                 }
-            log.debug("No more locks [{}][{}]", this.ident(), this.name());
+            else {
+                log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                while (lock != null)
+                    {
+                    try {
+                        log.debug("Waiting on lock [{}][{}][{}]", this.ident(), this.name(), lock);
+                        synchronized (lock)
+                            {
+                            lock.wait(LOCK_TIMEOUT);
+                            }
+                        }
+                    catch (Exception ouch)
+                        {
+                        log.debug("Interrupted [{}][{}][{}][{}]", this.ident(), this.name(), lock, ouch.getMessage());
+                        }
+                    lock = lock(false);
+                    }
+                log.debug("No more locks [{}][{}]", this.ident(), this.name());
+                }
             }
         }
     
     /**
-     * Metadata scan implementation.
+     * Scan implementation.
      *
      */
     protected abstract void scanimpl();
