@@ -35,13 +35,16 @@ import javax.persistence.ManyToOne;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
@@ -61,17 +64,33 @@ public abstract class OgsaBaseResourceEntity<ResourceType extends OgsaBaseResour
 extends BaseComponentEntity<ResourceType>
 implements OgsaBaseResource
     {
+    /**
+     * {@link OgsaBaseResource.EntityFactory} implementation.
+     *
+     */
+    @Slf4j
+    @Repository
+    public static abstract class EntityFactory<ComponentType extends OgsaBaseResource>
+    extends BaseComponentEntity.EntityFactory<ComponentType>
+    implements OgsaBaseResource.EntityFactory<ComponentType>
+        {
+        @Override
+        @Value("${firethorn.ogsa.resource.scan:PT11M}")
+        public void scanperiod(final String value)
+            {
+            log.debug("scanperiod(String)");
+            log.debug("  value      [{}]", value);
+            super.scanperiod(
+                value
+                );
+            }
+        }
+    
 	/**
 	 * Default component name.
 	 * 
 	 */
 	protected static final String DEFAULT_NAME = "OGSA-DAI resource" ;
-
-    /**
-     * The default re-scan interval.
-     * 
-     */
-    protected static final Period DEFAULT_SCAN_PERIOD = new Period(0, 1, 0, 0);
 
     /**
      * Hibernate column mapping, {@value}.
@@ -270,6 +289,35 @@ implements OgsaBaseResource
            {
            log.error("Problem occured sending service request [{}][{}]", this.ident(), ouch.getMessage());
            return HttpStatus.BAD_REQUEST;
+           }
+       }
+
+   /**
+    * System start time.
+    * 
+    */
+   protected static final DateTime START_TIME = new DateTime(); 
+   
+   /**
+    * Check to see if we should run a scan.
+    * OGSA resources always scan first time after a restart.
+    *
+    */
+   protected boolean scantest()
+       {
+       log.debug("scantest for [{}][{}]", this.ident(), this.name());
+
+       DateTime prev = scandate(); 
+       log.debug("prevscan   [{}]", prev);
+       log.debug("start time [{}]", START_TIME );
+
+       if (START_TIME.isAfter(prev))
+           {
+           log.debug("prev scan is before startup - scanning");
+           return true ;
+           }
+       else {
+           return super.scantest();
            }
        }
     }

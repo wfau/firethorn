@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import java.net.MalformedURLException;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +42,8 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
@@ -101,16 +105,109 @@ implements OgsaJdbcResource
     protected static final String DB_RESOURCE_RESOURCE_COL = "resource";
 
     /**
+     * {@link OgsaJdbcResource.Factories} implementation.
+     * 
+     */
+    @Slf4j
+    @Repository
+    public static class Factories
+    implements OgsaJdbcResource.Factories
+        {
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static Factories instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static Factories instance()
+            {
+            log.debug("instance()");
+            return OgsaJdbcResourceEntity.Factories.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected Factories()
+            {
+            log.debug("Factories()");
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaJdbcResourceEntity.Factories.instance == null)
+                {
+                OgsaJdbcResourceEntity.Factories.instance = this ;
+                }
+            else {
+                log.error("Setting Factories.instance more than once");
+                throw new IllegalStateException(
+                    "Setting Factories.instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaJdbcResource.IdentFactory idents;
+        @Override
+        public OgsaJdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.LinkFactory links;
+        @Override
+        public OgsaJdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.EntityFactory entities;
+        @Override
+        public OgsaJdbcResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+    
+    /**
      * {@link OgsaJdbcResource.EntityFactory} implementation.
      *
      */
-    @Component
+    @Slf4j
     @Repository
-    public static class OgsaJdbcResourceEntityFactory
-    extends AbstractEntityFactory<OgsaJdbcResource>
+    public static class EntityFactory
+    extends OgsaBaseResourceEntity.EntityFactory<OgsaJdbcResource>
     implements OgsaJdbcResource.EntityFactory
         {
-
+/*
+ *
+        @Override
+        @Value("${firethorn.ogsa.jdbc.resource.scan:PT1M}")
+        public void scanperiod(final String value)
+            {
+            log.debug("scanperiod(String)");
+            log.debug("  value      [{}]", value);
+            super.scanperiod(
+                value
+                );
+            }
+ *
+ */
         @Override
         public Class<?> etype()
             {
@@ -258,6 +355,13 @@ implements OgsaJdbcResource
                 }
             }
         }
+
+    @Override
+    public OgsaJdbcResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OgsaJdbcResourceEntity.Factories.instance().entities() ; 
+        }
     
     /**
      * Protected constructor. 
@@ -321,7 +425,7 @@ implements OgsaJdbcResource
             else {
                 // Recursion danger ..
                 // Need to ensure scan() does not call ogsaid()  
-                this.scantest();
+                this.scan();
                 }
             }
         return this.ogsaid;

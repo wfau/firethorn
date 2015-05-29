@@ -171,6 +171,7 @@ implements JdbcTable
          */
         public static Factories instance()
             {
+            log.debug("instance()");
             return JdbcTableEntity.Factories.instance ;
             }
 
@@ -196,9 +197,9 @@ implements JdbcTable
                 JdbcTableEntity.Factories.instance = this ;
                 }
             else {
-                log.error("Setting instance more than once");
+                log.error("Setting Factories.instance more than once");
                 throw new IllegalStateException(
-                    "Setting JdbcTableEntity.Factories.instance more than once"
+                    "Setting Factories.instance more than once"
                     );
                 }
             }
@@ -667,6 +668,7 @@ implements JdbcTable
     @Override
     public JdbcTable.EntityFactory factory()
         {
+        log.debug("factory()");
         return JdbcTableEntity.Factories.instance().entities(); 
         }
     
@@ -796,7 +798,7 @@ implements JdbcTable
     public JdbcTable.Columns columns()
         {
         log.debug("columns() for [{}][{}]", ident(), namebuilder());
-        scantest();
+        scan();
         return new JdbcTable.Columns()
             {
             @Override

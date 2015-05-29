@@ -615,7 +615,7 @@ public class JdbcSchemaEntity
     public JdbcSchema.Tables tables()
         {
         log.debug("tables() for [{}][{}][{}]", ident(), catalog(), schema());
-        scantest();
+        scan();
         return new JdbcSchema.Tables()
             {
             @Override

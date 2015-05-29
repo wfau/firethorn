@@ -345,7 +345,7 @@ public class JdbcResourceEntity
     public JdbcResource.Schemas schemas()
         {
         log.debug("schemas() for [{}][{}]", ident(), namebuilder());
-        scantest();
+        scan();
         return new JdbcResource.Schemas()
             {
 

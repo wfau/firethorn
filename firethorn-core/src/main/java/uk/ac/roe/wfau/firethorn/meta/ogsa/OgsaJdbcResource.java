@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -28,6 +29,39 @@ public interface OgsaJdbcResource
     extends OgsaBaseResource
     {
     /**
+     * Factories interface.
+     * 
+     */
+    public static interface Factories
+        {
+
+        /**
+         * Our {@link OgsaJdbcResource.IdentFactory}.
+         *
+         */
+        public OgsaJdbcResource.IdentFactory idents();
+
+        /**
+         * Our {@link OgsaJdbcResource.NameFactory}.
+         *
+        public OgsaJdbcResource.NameFactory names();
+         */
+
+        /**
+         * Our {@link OgsaJdbcResource.LinkFactory}.
+         *
+         */
+        public OgsaJdbcResource.LinkFactory links();
+
+        /**
+         * Our {@link OgsaJdbcResource.EntityFactory}.
+         *
+         */
+        public OgsaJdbcResource.EntityFactory entities();
+        
+        }
+        
+    /**
      * {@link Entity.IdentFactory} interface.
      *
      */
@@ -35,7 +69,16 @@ public interface OgsaJdbcResource
     extends Entity.IdentFactory<OgsaJdbcResource>
         {
         }
-    
+
+    /**
+     * {@link NamedEntity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<OgsaJdbcResource>
+        {
+        }
+
     /**
      * {@link Entity.LinkFactory} interface.
      *
@@ -50,7 +93,7 @@ public interface OgsaJdbcResource
      *
      */
     public static interface EntityFactory
-    extends Entity.EntityFactory<OgsaJdbcResource>
+    extends OgsaBaseResource.EntityFactory<OgsaJdbcResource>
         {
         /**
          * Select all the {@link OgsaJdbcResource}(s).

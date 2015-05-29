@@ -1,0 +1,317 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    FireThorn skips the scan test. 
+
+
+    2015-05-29 06:35:15,274 DEBUG [http-nio-8080-exec-4] [OgsaJdbcResourceEntity] primary(JdbcResource) [9928704] 
+    2015-05-29 06:35:15,275 DEBUG [http-nio-8080-exec-4] [OgsaServiceEntity] primary() 
+    2015-05-29 06:35:15,300 DEBUG [http-nio-8080-exec-4] [OgsaJdbcResourceEntity] primary(OgsaService , JdbcResource) [10190848][9928704] 
+    2015-05-29 06:35:15,399 DEBUG [http-nio-8080-exec-4] [AdqlQueryTimings] AdqlQueryStats() 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@5d33224d] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [OgsaJdbcResourceEntity] Found primary OgsaJdbcResource [10223617] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [OgsaJdbcResourceEntity] ogsaid [ACTIVE][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [BaseComponentEntity] scantest for [10223617][OGSA-DAI resource] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [BaseComponentEntity] prevscan   [2015-05-28T14:24:37.033-04:00] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [BaseComponentEntity] scanperiod [null] 
+    2015-05-29 06:35:15,471 DEBUG [http-nio-8080-exec-4] [BaseComponentEntity] scan period is null - skipping 
+
+
+    The query fails because the resource is unknown.
+
+
+	at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:127)
+	... 6 more
+Caused by: uk.org.ogsadai.resource.ResourceUnknownException: The resource ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7 is unknown.
+	at uk.org.ogsadai.persistence.file.resource.SimpleFileResourceStateDAO.getResourceState(SimpleFileResourceStateDAO.java:495)
+	at uk.org.ogsadai.persistence.file.resource.SimpleFileResourceStateDAO.getResourceState(SimpleFileResourceStateDAO.java:597)
+	at uk.org.ogsadai.resource.SimpleResourceManager.getResource(SimpleResourceManager.java:159)
+	at uk.org.ogsadai.resource.SimpleResourceManager.getPublicResource(SimpleResourceManager.java:189)
+	at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:122)
+	... 10 more
+
+# -----------------------------------------------------
+
+    It is the target (user data) resource that is unknown.
+
+
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-26cb68f6-eed6-43a1-a031-e340c6284bc9
+    target resource = ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7
+    inputs:
+        ActivityInputStream[name=jdbc.insert.input.tuples,pipeName=ogsadai-baca7c14-19da-47c1-a59a-465846073004]
+        Literal: jdbc.insert.table.name : FirethornUserdataZRQ20150526DEV.dbo.JDBC_TABLE_20150529_081838169
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-605a3eae-373e-40b4-847e-62777d45df4f,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-26cb68f6-eed6-43a1-a031-e340c6284bc9
+
+    ....
+
+    2015-05-29 08:18:52,494 ERROR drer.SimpleEventfulRequest [pool-2-thread-6,errorExceptionAndChildren:401] #1432901932494:320# A user problem has occurred during request processing.
+    2015-05-29 08:18:52,495 ERROR drer.SimpleEventfulRequest [pool-2-thread-6,errorExceptionAndChildren:401] #1432901932494:320# A user problem has occured during activity processing.
+    2015-05-29 08:18:52,496 ERROR drer.SimpleEventfulRequest [pool-2-thread-6,errorExceptionAndChildren:401] #1432901932494:320# The resource ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7 is unknown.
+
+    ....
+
+
+
+    2015-05-29 08:18:23,384 DEBUG [http-nio-8080-exec-9] [CommunityEntity] space(boolean) [true] 
+    2015-05-29 08:18:23,409 DEBUG [http-nio-8080-exec-9] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 08:18:23,409 DEBUG [http-nio-8080-exec-9] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@606db44b] 
+    2015-05-29 08:18:23,409 DEBUG [http-nio-8080-exec-9] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity] 
+    2015-05-29 08:18:23,409 DEBUG [http-nio-8080-exec-9] [JdbcResourceEntity] schemas() for [9928704][Userdata resource] 
+    2015-05-29 08:18:23,410 DEBUG [http-nio-8080-exec-9] [BaseComponentEntity] scantest for [9928704][Userdata resource] 
+
+    ....
+
+
+    2015-05-29 08:18:51,208 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] primary(JdbcResource) [9928704] 
+    2015-05-29 08:18:51,208 DEBUG [http-nio-8080-exec-1] [OgsaServiceEntity] primary() 
+    2015-05-29 08:18:51,238 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] primary(OgsaService , JdbcResource) [10190848][9928704] 
+    2015-05-29 08:18:51,373 DEBUG [http-nio-8080-exec-1] [AdqlQueryTimings] AdqlQueryStats() 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@606db44b] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Found primary OgsaJdbcResource [10223617] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] ogsaid [ACTIVE][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 08:18:51,509 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scantest for [10223617][OGSA-DAI resource] 
+    2015-05-29 08:18:51,509 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] prevscan   [2015-05-28T14:24:37.033-04:00] 
+    2015-05-29 08:18:51,510 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanperiod [null] 
+    2015-05-29 08:18:51,510 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scan period is null - skipping 
+    2015-05-29 08:18:51,511 DEBUG [http-nio-8080-exec-1] [AdqlQueryEntity] ++ Query target [ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+
+    ....
+
+    2015-05-29 09:00:18,986 INFO  [http-nio-8080-exec-1] [AdqlQueryTimings] TIMING - adqldone() 
+    2015-05-29 09:00:18,986 DEBUG [http-nio-8080-exec-1] [JobEntity] status(Status) [11403264][READY][READY] 
+    2015-05-29 09:00:19,028 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [11272192] 
+    2015-05-29 09:00:19,063 DEBUG [http-nio-8080-exec-1] [OgsaServiceEntity] primary() 
+    2015-05-29 09:00:19,173 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:19,173 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:19,173 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaServiceEntity] 
+    2015-05-29 09:00:19,173 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService , JdbcResource) [10190848][11272192] 
+    2015-05-29 09:00:19,235 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] No primary OgsaJdbcResource, creating a new one 
+    2015-05-29 09:00:19,235 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] create(OgsaService , JdbcResource) [10190848][11272192] 
+    2015-05-29 09:00:19,235 DEBUG [http-nio-8080-exec-1] [AbstractEntity]   created  [2015-05-29T09:00:19.235-04:00] 
+    2015-05-29 09:00:19,235 DEBUG [http-nio-8080-exec-1] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] ident[null]]] 
+    2015-05-29 09:00:19,352 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] ogsaid [CREATED][null] 
+    2015-05-29 09:00:19,389 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Creating OGSA-DAI JDBC resource 
+    2015-05-29 09:00:19,390 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Executing JdbcCreateResourceWorkflow 
+    2015-05-29 09:00:22,689 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Status  [COMPLETED] 
+    2015-05-29 09:00:22,689 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Created [ogsadai-ffb7911c-aff3-4188-8ed3-4aa9ff2d33a8] 
+    2015-05-29 09:00:22,690 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] ogsaid(status, ogsaid) [ACTIVE][ogsadai-ffb7911c-aff3-4188-8ed3-4aa9ff2d33a8] 
+    2015-05-29 09:00:22,726 DEBUG [http-nio-8080-exec-1] [AdqlQueryEntity] ++ Query source [ogsadai-ffb7911c-aff3-4188-8ed3-4aa9ff2d33a8] 
+    2015-05-29 09:00:22,780 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:22,781 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:22,781 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] 
+    2015-05-29 09:00:22,807 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:22,807 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:22,807 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity] 
+    2015-05-29 09:00:22,834 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:22,834 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:22,834 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity] 
+    2015-05-29 09:00:22,835 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [9928704] 
+    2015-05-29 09:00:22,835 DEBUG [http-nio-8080-exec-1] [OgsaServiceEntity] primary() 
+    2015-05-29 09:00:22,863 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService , JdbcResource) [10190848][9928704] 
+    2015-05-29 09:00:22,989 DEBUG [http-nio-8080-exec-1] [AdqlQueryTimings] AdqlQueryStats() 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [10223617] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] ogsaid [ACTIVE][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scantest for [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] factory() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$Factories] instance() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity$EntityFactory] scanperiod() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity$EntityFactory]   scanperiod [PT1M] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] prevscan   [2015-05-28T14:24:37.033-04:00] 
+    2015-05-29 09:00:23,117 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanperiod [PT1M] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scan period expired - scanning 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanlock for [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Checking for existing lock [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] No existing lock found [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Adding new lock [10223617][OGSA-DAI resource][2015-05-29T09:00:23.118-04:00] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Running scan [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Scanning OgsaBaseResource [OGSA-DAI resource][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,139 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Service request [10223617][http://timothy:8080/ogsadai/services/dataResources/ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,174 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Service response [10223617][Not Found] 
+    2015-05-29 09:00:23,176 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Creating OGSA-DAI JDBC resource 
+    2015-05-29 09:00:23,177 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Executing JdbcCreateResourceWorkflow 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Status  [COMPLETED] 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Created [ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] ogsaid(status, ogsaid) [ACTIVE][ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Releasing locks [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Found existing lock [10223617][OGSA-DAI resource][2015-05-29T09:00:23.118-04:00] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Removing .... 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Notifying .... 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [AdqlQueryEntity] ++ Query target [ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+
+
+
+
+
+
+
+    2015-05-29 08:18:51,238 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] primary(OgsaService , JdbcResource) [10190848][9928704] 
+    2015-05-29 08:18:51,373 DEBUG [http-nio-8080-exec-1] [AdqlQueryTimings] AdqlQueryStats() 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@606db44b] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Found primary OgsaJdbcResource [10223617] 
+    2015-05-29 08:18:51,508 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] ogsaid [ACTIVE][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 08:18:51,509 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scantest for [10223617][OGSA-DAI resource] 
+    2015-05-29 08:18:51,509 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] prevscan   [2015-05-28T14:24:37.033-04:00] 
+    2015-05-29 08:18:51,510 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanperiod [null] 
+    2015-05-29 08:18:51,510 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scan period is null - skipping 
+    2015-05-29 08:18:51,511 DEBUG [http-nio-8080-exec-1] [AdqlQueryEntity] ++ Query target [ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    
+
+
+
+
+
+
+    2015-05-29 09:00:22,863 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService , JdbcResource) [10190848][9928704] 
+    2015-05-29 09:00:22,989 DEBUG [http-nio-8080-exec-1] [AdqlQueryTimings] AdqlQueryStats() 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor] onLoad(....) 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1f017d99] 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity] 
+    2015-05-29 09:00:23,115 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [10223617] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] ogsaid [ACTIVE][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scantest for [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] factory() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity$Factories] instance() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity$EntityFactory] scanperiod() 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity$EntityFactory]   scanperiod [PT1M] 
+    2015-05-29 09:00:23,116 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] prevscan   [2015-05-28T14:24:37.033-04:00] 
+    2015-05-29 09:00:23,117 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanperiod [PT1M] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scan period expired - scanning 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] scanlock for [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Checking for existing lock [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] No existing lock found [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Adding new lock [10223617][OGSA-DAI resource][2015-05-29T09:00:23.118-04:00] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Running scan [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,118 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Scanning OgsaBaseResource [OGSA-DAI resource][ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,139 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Service request [10223617][http://timothy:8080/ogsadai/services/dataResources/ogsadai-f769c2d9-39ec-4296-b8fa-af0a309b89b7] 
+    2015-05-29 09:00:23,174 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] Service response [10223617][Not Found] 
+    2015-05-29 09:00:23,176 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Creating OGSA-DAI JDBC resource 
+    2015-05-29 09:00:23,177 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Executing JdbcCreateResourceWorkflow 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Status  [COMPLETED] 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaJdbcResourceEntity] Created [ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+    2015-05-29 09:00:23,608 DEBUG [http-nio-8080-exec-1] [OgsaBaseResourceEntity] ogsaid(status, ogsaid) [ACTIVE][ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Releasing locks [10223617][OGSA-DAI resource] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Found existing lock [10223617][OGSA-DAI resource][2015-05-29T09:00:23.118-04:00] 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Removing .... 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [BaseComponentEntity] Notifying .... 
+    2015-05-29 09:00:23,609 DEBUG [http-nio-8080-exec-1] [AdqlQueryEntity] ++ Query target [ogsadai-203e9b26-87e5-4b24-9c61-9d46252d75df] 
+
+
+
+
+
+2015-05-29 11:45:19,970 DEBUG [http-nio-8080-exec-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2015-05-29 11:45:19,970 DEBUG [http-nio-8080-exec-5] [BaseComponentEntity$EntityFactory]   scanperiod [PT11M] 
+2015-05-29 11:45:19,970 DEBUG [http-nio-8080-exec-5] [BaseComponentEntity] prevscan   [2015-05-29T11:34:21.377-04:00] 
+2015-05-29 11:45:19,970 DEBUG [http-nio-8080-exec-5] [BaseComponentEntity] scanperiod [PT11M] 
+2015-05-29 11:45:19,970 DEBUG [http-nio-8080-exec-5] [BaseComponentEntity] prev scan is recent - skipping 
+
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    sleep 1
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our core library.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+            mvn clean install
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-webapp
+
+            mvn clean install
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Get the dev version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+    
+        devversion=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Stop our FireThorn container.
+#[user@desktop]
+
+    docker rm $(docker stop "${firename:?}")
+
+# -----------------------------------------------------
+# Start a new FireThorn container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${devversion:?}"
+
+
