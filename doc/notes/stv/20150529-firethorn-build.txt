@@ -20,6 +20,16 @@
 #
 #
 
+# Update to 1.13.15
+   source "${HOME:?}/firethorn.settings"
+   pushd "${FIRETHORN_CODE:?}"
+ 
+        #
+        # Pull the latest changes
+        hg pull
+        hg update -C default
+  popd
+
 
 # -----------------------------------------------------
 # Clean build of FireThorn
