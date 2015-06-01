@@ -33,12 +33,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
 import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -126,10 +129,16 @@ public class AdqlTapSyncController extends AbstractController {
 				
 				try {
 					
+					
+					
+					//AdqlQueryEntity.ParamFactory pmFactory = new AdqlQueryEntity.ParamFactory();
 					//Create initial query element
-					AdqlQuery query = schema.queries().create(null, 
-					                QUERY
-					                );
+					AdqlQuery query = schema.queries().create(
+				                factories().adql().queries().params().create(
+				                    ),
+				                    QUERY
+				                );
+			   
 				
 					if (query!=null){
 					
