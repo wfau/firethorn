@@ -88,7 +88,7 @@ public class AdqlTapTablesController extends AbstractController {
         @ModelAttribute(TARGET_ENTITY)
         AdqlResource resource
         ){
-			
+
 		return VOSI_XML_VIEW ;
 		   
 			

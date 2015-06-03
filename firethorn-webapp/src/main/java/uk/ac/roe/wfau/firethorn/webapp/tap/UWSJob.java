@@ -213,7 +213,7 @@ public class UWSJob {
 	
 	public String getResults() {
 		String id = query.ident().toString();
-		String url = CommonParams.FIRETHORN_QUERY_BASE + query.ident().toString() + "/votable";
+		String url = myFactory.getBaseurl() + query.ident().toString() + "/votable";
 		return url;
 	}
 	
@@ -257,7 +257,7 @@ public class UWSJob {
 	
 	public String getFullQueryURL() {
 		String id = this.query.ident().toString();
-		String url = CommonParams.FIRETHORN_QUERY_BASE + query.ident().toString();
+		String url = myFactory.getBaseurl() + query.ident().toString();
 		return url;
 	}
 	

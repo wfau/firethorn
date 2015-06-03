@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +28,60 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
 public
 class UWSJobFactory extends AbstractComponent{
 
-   
+    /**
+     * Public constructor.
+     *
+     */
+    public UWSJobFactory()
+        {
+        super();
+        }
+
+    @Value("${firethorn.webapp.endpoint:null}")
+    private String baseurl;
+    
+    /**
+     * Public constructor.
+     *
+     */
+    public UWSJobFactory(String baseurl)
+        {
+        super();
+    	this.baseurl = baseurl;
+        }
+    
+    /**
+     * Get baseurl 
+     * @return baseurl
+     */
+    public String getBaseurl() {
+    	return baseurl;
+    }
+    
+    /**
+     * Set baseurl 
+     * @return 
+     */
+    public void setBaseurl(String baseurl){
+    	this.baseurl = baseurl;
+    }
+    
+    /**
+     * Create new UWSJob
+     * @param resource
+     * @return UWSJob
+     * @throws Exception
+     */
     public UWSJob create(AdqlResource resource) throws Exception {
        return new UWSJob(this, resource);
       }
- 
+    
+    /**
+     * Create new UWSJob
+     * @param resource, query
+     * @return UWSJob
+     * @throws Exception
+     */
     public UWSJob create(AdqlResource resource, AdqlQuery query) throws Exception {
        return new UWSJob(this, resource, query);
       }

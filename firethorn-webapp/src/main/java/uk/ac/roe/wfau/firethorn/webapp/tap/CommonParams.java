@@ -23,12 +23,8 @@ public class CommonParams  {
      *
      */
     public static final String TEXT_XML_MIME = "text/xml" ;
-	   
-	public static final String FIRETHORN_BASE = "http://localhost:8080/firethorn/";
+	   	
 	
-	public static final String FIRETHORN_TAP_BASE = FIRETHORN_BASE + "tap/";
-
-	public static final String FIRETHORN_QUERY_BASE = FIRETHORN_BASE + "adql/query/";
 
 
 

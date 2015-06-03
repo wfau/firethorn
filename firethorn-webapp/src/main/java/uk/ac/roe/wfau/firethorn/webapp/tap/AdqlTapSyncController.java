@@ -131,7 +131,6 @@ public class AdqlTapSyncController extends AbstractController {
 					
 					
 					
-					//AdqlQueryEntity.ParamFactory pmFactory = new AdqlQueryEntity.ParamFactory();
 					//Create initial query element
 					AdqlQuery query = schema.queries().create(
 				                factories().adql().queries().params().create(
