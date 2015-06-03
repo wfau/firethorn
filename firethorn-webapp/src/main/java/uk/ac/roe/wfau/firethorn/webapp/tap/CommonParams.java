@@ -23,8 +23,19 @@ public class CommonParams  {
      *
      */
     public static final String TEXT_XML_MIME = "text/xml" ;
-	   	
 	
+   	
+	/**
+	 * Capabilities jsp template path
+	 */
+    public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
+
+    
+    
+	/**
+	 * Capabilities jsp template path
+	 */
+    public static final String CAPABILITIES_XML_VIEW = "adql/capabilities-xml" ;
 
 
 

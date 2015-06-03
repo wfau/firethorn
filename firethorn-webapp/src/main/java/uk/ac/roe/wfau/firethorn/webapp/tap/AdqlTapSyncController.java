@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import javax.persistence.EnumType;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
 import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -89,7 +94,6 @@ public class AdqlTapSyncController extends AbstractController {
         }
 
     
-    
     /**
      * Web service method
      * Create an Async query job
@@ -103,6 +107,7 @@ public class AdqlTapSyncController extends AbstractController {
         @RequestParam(value="QUERY", required = false) String QUERY,
         @RequestParam(value="LANG", required = false) String LANG,
         @RequestParam(value="REQUEST", required = false) String REQUEST    
+        
         ) throws  IdentifierNotFoundException, IOException {
 			
 
@@ -120,48 +125,54 @@ public class AdqlTapSyncController extends AbstractController {
 			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
 			
 			if (check){
-				// Look for default query schema, if none found create one
-				try{
-					schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-				}  catch (final NameNotFoundException ouch) {
-					schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-				}
+				if (REQUEST==TapJobParams.REQUEST_GET_CAPABILITIES){
+						writer.append(CommonParams.CAPABILITIES_XML_VIEW);
+				} else if (REQUEST==TapJobParams.REQUEST_DO_QUERY){ 
 				
-				try {
-					
-					
-					
-					//Create initial query element
-					AdqlQuery query = schema.queries().create(
-				                factories().adql().queries().params().create(
-				                    ),
-				                    QUERY
-				                );
-			   
-				
-					if (query!=null){
-					
-						// Prepare and execute query 
-						Status jobstatus = query.prepare();
-						if (jobstatus == Status.READY){
-							jobstatus = query.execute();
-						}
-						
-						// Write results t VOTable using AdqlQueryVOTableController					
-						AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
-						adqvotable.generateVotable(writer,query);
-						
-	
+					// Look for default query schema, if none found create one
+					try{
+						schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
+					}  catch (final NameNotFoundException ouch) {
+						schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
 					}
-				
-	
-				} catch (final Exception ouch) {
-					log.error("Exception caught [{}]", ouch);
-					ouch.printStackTrace();
-	
-		        }
-				
-
+					
+					try {
+						
+						
+						
+						//Create initial query element
+						AdqlQuery query = schema.queries().create(
+					                factories().adql().queries().params().create(
+					                    ),
+					                    QUERY
+					                );
+				   
+					
+						if (query!=null){
+						
+							// Prepare and execute query 
+							Status jobstatus = query.prepare();
+							if (jobstatus == Status.READY){
+								jobstatus = query.execute();
+							}
+							
+							// Write results t VOTable using AdqlQueryVOTableController					
+							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
+							adqvotable.generateVotable(writer,query);
+							
+		
+						}
+					
+		
+					} catch (final Exception ouch) {
+						log.error("Exception caught [{}]", ouch);
+						ouch.printStackTrace();
+		
+			        }
+					
+				} else {
+					//? Return Error
+				}
 			}
         }
 
@@ -176,7 +187,7 @@ public class AdqlTapSyncController extends AbstractController {
 				TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
 				valid = false;
 				return valid;
-			} else if (!REQUEST.equalsIgnoreCase("doQuery")){
+			} else if (!REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY) && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
 				error_message = "Invalid REQUEST: " + REQUEST;
 				TapError.writeErrorToVotable(error_message, writer);
 				valid = false;

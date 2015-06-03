@@ -17,27 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import adql.query.ADQLQuery;
-
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -46,11 +34,6 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @RequestMapping("/tap/{ident}/")
 public class AdqlTapTablesController extends AbstractController {
    
-	/**
-	 * Path for VOSI metadata
-	 */
-    public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
-	
 	
     public static final String TARGET_ENTITY = "urn:adql.resource.entity" ;
 
@@ -79,20 +62,17 @@ public class AdqlTapTablesController extends AbstractController {
     
     
     /**
-     * Web service method
-     * Create an Async query job
-     * 
+     * Get the tables of a resource
+     * @param resource
+     * @return tables vosi xml 
      */
 	@RequestMapping(value="tables", method = RequestMethod.GET)
 	public String tables(
         @ModelAttribute(TARGET_ENTITY)
         AdqlResource resource
         ){
-
-		return VOSI_XML_VIEW ;
-		   
-			
-        }
+			return CommonParams.VOSI_XML_VIEW ;
+		 }
 
 
 
