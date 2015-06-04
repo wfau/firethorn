@@ -248,10 +248,10 @@ extends Entity
     public DateTime started();
 
     /**
-     * The date/time the Job was finished.
+     * The date/time the Job was completed.
      *
      */
-    public DateTime finished();
+    public DateTime completed();
 
     /**
      * Validate the Job parameters.

@@ -185,10 +185,6 @@ implements AdqlQuery, AdqlParserQuery
     public static class ParamFactory
     implements AdqlQuery.ParamFactory
         {
-        /*
-         * Spring expression language property placeholders.
-         * https://stackoverflow.com/questions/2041558/how-does-spring-3-expression-language-interact-with-property-placeholders
-         */
         @Value("${firethorn.adql.level:LEGACY}")
         private Level level ;
 
@@ -262,7 +258,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * Our local service implementations.
+     * Our local services.
      *
      */
     @Component
@@ -325,7 +321,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * Factory implementation.
+     * {@link AdqlQuery.EntityFactory} implementation.
      *
      */
     @Repository
@@ -950,11 +946,11 @@ implements AdqlQuery, AdqlParserQuery
                 // TODO - The parsers should be part of the resource/schema.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
-                    this.schema
+                    this.schema.resource()
                     );
                 final AdqlParser distrib = this.factories().adql().parsers().create(
                     Mode.DISTRIBUTED,
-                    this.schema
+                    this.schema.resource()
                     );
 
                 log.debug("Query mode [{}]", this.mode);

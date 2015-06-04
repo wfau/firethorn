@@ -259,10 +259,10 @@ public class TestJobController
         @Override
         public String getFinished()
             {
-            if (entity().finished() != null)
+            if (entity().completed() != null)
                 {
                 return dateformat(
-                    entity().finished()
+                    entity().completed()
                     );
                 }
             else {

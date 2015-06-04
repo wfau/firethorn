@@ -180,6 +180,7 @@ implements Job
          * Our service implementation.
          *
          */
+        @Deprecated
         private Job.Executor executor;
 
         /**
@@ -188,6 +189,7 @@ implements Job
          * @autowired fails to resolve the recursive reference.
          *
          */
+        @Deprecated
         protected synchronized Job.Executor executor()
             {
             if (this.executor == null)
@@ -205,14 +207,13 @@ implements Job
         private Job.Resolver resolver;
 
         /**
-         * Our local service implementation.
+         * Our {@link Job.Resolver} service.
          *
          */
         protected Job.Resolver resolver()
             {
             return this.resolver ;
             }
-
 
         @Override
         @SelectAtomicMethod
@@ -572,7 +573,7 @@ implements Job
             if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
                 {
                 this.status   = Status.COMPLETED;
-                this.finished = new DateTime();
+                this.completed = new DateTime();
                 }
             else {
                 log.debug("Unexpected status value [{}]", next);
@@ -585,7 +586,7 @@ implements Job
             if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
                 {
                 this.status   = Status.CANCELLED;
-                this.finished = new DateTime();
+                this.completed = new DateTime();
                 }
             else {
                 log.debug("Unexpected status value [{}]", next);
@@ -598,7 +599,7 @@ implements Job
             if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
                 {
                 this.status   = Status.FAILED;
-                this.finished = new DateTime();
+                this.completed = new DateTime();
                 }
             else {
                 log.debug("Unexpected status value [{}]", next);
@@ -663,11 +664,11 @@ implements Job
         nullable = true,
         updatable = true
         )
-    private DateTime finished ;
+    private DateTime completed ;
     @Override
-    public DateTime finished()
+    public DateTime completed()
         {
-        return this.finished ;
+        return this.completed ;
         }
 
     /**
