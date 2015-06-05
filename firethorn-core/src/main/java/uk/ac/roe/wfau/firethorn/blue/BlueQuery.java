@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.net.URI;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
@@ -34,6 +36,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public interface BlueQuery
 extends BlueTask<BlueQuery>
     {
+    /**
+     * The type URI for this type.
+     * @todo Use PURLs.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json"
+        );
+    
     /**
      * Services interface.
      * 

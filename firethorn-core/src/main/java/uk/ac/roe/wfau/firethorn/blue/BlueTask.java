@@ -118,6 +118,8 @@ extends NamedEntity
 
     /**
      * An event notification handle.
+     * Hopefully abstract enough to enable us to use something like Hazelcast if we needed to.
+     * http://hazelcast.com/use-cases/application-scaling/
      *
      */
     public static interface Handle
