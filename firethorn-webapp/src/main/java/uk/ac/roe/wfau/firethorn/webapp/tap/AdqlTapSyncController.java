@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.AdqlTapCapabilitiesController.CapabilitiesGenerator;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
 
    
 @Slf4j
@@ -57,6 +59,9 @@ public class AdqlTapSyncController extends AbstractController {
 	 */
 	static final Status STARTJOB = Status.RUNNING;
 
+	@Autowired
+	private CapabilitiesGenerator capgenerator;
+	
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub
@@ -107,16 +112,13 @@ public class AdqlTapSyncController extends AbstractController {
         
 			PrintWriter writer = response.getWriter();
 			AdqlSchema schema;
-		    log.debug("Checking params..");
 			// Check input parameters and return VOTable with appropriate message if any errors found
 			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
 			
 			if (check){
 
 				if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
-
-				    log.debug("Generating Capabilites..");
-					CapabilitiesGenerator.generateCapabilities(writer);
+					capgenerator.generateCapabilities(writer,resource);
 				} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)){ 
 				
 					// Look for default query schema, if none found create one
@@ -147,7 +149,6 @@ public class AdqlTapSyncController extends AbstractController {
 							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
 							adqvotable.generateVotable(writer,query);
 
-						    log.debug("Generating Votable..");
 						}
 					
 		
@@ -158,11 +159,9 @@ public class AdqlTapSyncController extends AbstractController {
 					
 				} else {
 
-				    log.debug("Invalid Request..");
 					//? Return Error
 				}
 			}
-			log.debug("Check returned False..");
 			//? Return Error
         }
 	
