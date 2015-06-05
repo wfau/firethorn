@@ -225,8 +225,11 @@ implements BlueQuery
             }
         }
     
-    @Override
-    public BlueQuery.Services services()
+    /**
+     * Our {@link BlueQueryEntity.Services} instance.
+     * 
+     */
+    protected static BlueQuery.Services services()
         {
         return BlueQueryEntity.Services.instance;
         }
@@ -296,7 +299,7 @@ implements BlueQuery
         }
 
     @Override
-    public BlueQuery.EntityFactory factory()
+    protected BlueQuery.EntityFactory factory()
         {
         return services().entities();
         }
@@ -318,7 +321,7 @@ implements BlueQuery
         this(
             resource,
             input,
-            null
+            "BlueQuery"
             );
         }
 

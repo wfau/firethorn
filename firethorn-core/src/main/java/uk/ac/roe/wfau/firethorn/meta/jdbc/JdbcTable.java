@@ -42,7 +42,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * Factories interface.
      * 
      */
-    public static interface Factories
+    public static interface Services
         {
         /**
          * Our {@link JdbcTable.IdentFactory}.
@@ -248,9 +248,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable.LinkFactory links();
         
         }
-
-    @Override
-    public JdbcTable.EntityFactory factory();
 
     @Override
     public JdbcResource resource();

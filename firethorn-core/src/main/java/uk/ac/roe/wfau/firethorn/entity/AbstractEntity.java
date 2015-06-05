@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -134,9 +135,11 @@ implements Entity
     	return this.factories;
     	}
 
-    // Placeholder to allow compile.
-    @Override
-    public Entity.EntityFactory<?> factory()
+    /**
+     * Our parent {@link Entity.EntityFactory}.
+     * 
+     */
+    protected Entity.EntityFactory<?> factory()
         {
         return null;
         }

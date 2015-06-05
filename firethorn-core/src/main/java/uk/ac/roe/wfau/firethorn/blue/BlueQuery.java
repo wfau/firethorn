@@ -45,8 +45,8 @@ extends BlueTask<BlueQuery>
         public BlueQuery.EntityFactory entities();
         }
 
-    @Override
-    public BlueQuery.Services services();
+    //@Override
+    //public static BlueQuery.Services services();
 
     /**
      * EntityFactory interface.
@@ -69,8 +69,8 @@ extends BlueTask<BlueQuery>
 
         }
 
-    @Override
-    public BlueQuery.EntityFactory factory();
+    //@Override
+    //public BlueQuery.EntityFactory factory();
 
     /**
      * The target {@link AdqlResource} to query.

@@ -65,8 +65,8 @@ extends NamedEntity
     /**
      * Reference to our {@link Services} instance.
      * 
-     */
     public BlueTask.Services<TaskType> services();
+     */
 
     /**
      * EntityFactory interface.

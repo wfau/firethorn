@@ -164,12 +164,6 @@ public interface Entity
         }
 
     /**
-     * Our parent {@link Entity.EntityFactory}.
-     *
-     */
-    public Entity.EntityFactory<?> factory();
-
-    /**
      * The Entity Identifier.
      *
      */

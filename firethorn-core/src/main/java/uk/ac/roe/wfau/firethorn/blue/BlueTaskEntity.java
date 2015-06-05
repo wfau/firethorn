@@ -103,7 +103,6 @@ implements BlueTask<TaskType>
     public abstract static class Services<TaskType extends BlueTask<?>>
         implements BlueTask.Services<TaskType>
         {
-
         }
 
     /**
@@ -116,7 +115,6 @@ implements BlueTask<TaskType>
         implements BlueTask.EntityFactory<TaskType>
         {
         }
-
 
     /**
      * Protected constructor.
@@ -133,7 +131,9 @@ implements BlueTask<TaskType>
      */
     protected BlueTaskEntity(final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
     @Basic(

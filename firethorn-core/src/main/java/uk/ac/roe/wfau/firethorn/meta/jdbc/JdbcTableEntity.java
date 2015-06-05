@@ -48,6 +48,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -150,38 +152,38 @@ implements JdbcTable
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
 
     /**
-     * {@link JdbcTable.Factories} implementation.
+     * {@link JdbcTable.Services} implementation.
      * 
      */
     @Slf4j
     @Component
-    public static class Factories
-    implements JdbcTable.Factories
+    public static class Services
+    implements JdbcTable.Services
         {
 
         /**
          * Our singleton instance.
          * 
          */
-        private static Factories instance ; 
+        private static Services instance ; 
 
         /**
          * Our singleton instance.
          * 
          */
-        public static Factories instance()
+        public static Services instance()
             {
             log.debug("instance()");
-            return JdbcTableEntity.Factories.instance ;
+            return JdbcTableEntity.Services.instance ;
             }
 
         /**
          * Protected constructor.
          * 
          */
-        protected Factories()
+        protected Services()
             {
-            log.debug("Factories()");
+            log.debug("Services()");
             }
         
         /**
@@ -192,9 +194,9 @@ implements JdbcTable
         protected void init()
             {
             log.debug("init()");
-            if (JdbcTableEntity.Factories.instance == null)
+            if (JdbcTableEntity.Services.instance == null)
                 {
-                JdbcTableEntity.Factories.instance = this ;
+                JdbcTableEntity.Services.instance = this ;
                 }
             else {
                 log.error("Setting Factories.instance more than once");
@@ -665,11 +667,21 @@ implements JdbcTable
         }
      */
 
+    /**
+     * Our {@link JdbcTableEntity.Services} instance.
+     * 
+     */
+    protected static JdbcTable.Services services()
+        {
+        log.debug("services()");
+        return JdbcTableEntity.Services.instance;
+        }
+    
     @Override
-    public JdbcTable.EntityFactory factory()
+    protected JdbcTable.EntityFactory factory()
         {
         log.debug("factory()");
-        return JdbcTableEntity.Factories.instance().entities(); 
+        return services().entities(); 
         }
     
     /**
