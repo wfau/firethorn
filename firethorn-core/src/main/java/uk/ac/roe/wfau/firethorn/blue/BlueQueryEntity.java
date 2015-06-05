@@ -54,6 +54,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -143,18 +144,17 @@ implements BlueQuery
     @Slf4j
     @Component
     public static class Services
+    extends BlueTaskEntity.Services<BlueQuery>
     implements BlueQuery.Services
         {
         /**
          * Our singleton instance.
-         * Can this be in the base class ?
          * 
          */
         private static Services instance ; 
 
         /**
          * Our singleton instance.
-         * Can this be in the base class ?
          * 
          */
         public static Services instance()
@@ -225,11 +225,8 @@ implements BlueQuery
             }
         }
     
-    /**
-     * Our {@link BlueQueryEntity.Services} instance.
-     * 
-     */
-    protected static BlueQuery.Services services()
+    @Override
+    protected BlueQueryEntity.Services services()
         {
         return BlueQueryEntity.Services.instance;
         }
@@ -375,8 +372,14 @@ implements BlueQuery
     @Override
     public void input(final String input)
         {
-        this.input = input;
-        //prepare();
+        if ((this.one() == StatusOne.EDITING) || (this.one() == StatusOne.READY))
+            {
+            this.input = input;
+            prepare();
+            }
+        else {
+            log.warn("Attempt to change read only query");
+            }
         }
 
     @Type(
@@ -719,5 +722,76 @@ implements BlueQuery
                 // TODO Auto-generated method stub
                 }
             };
+        }
+
+    @Override
+    protected void prepare()
+        {
+        log.debug("prepare()");
+
+        if ((this.one() == StatusOne.EDITING) || (this.one() == StatusOne.READY))
+            {
+            // Check for empty query.
+            if ((this.input() == null) || (this.input().trim().length() == 0))
+                {
+                this.one(
+                    StatusOne.EDITING
+                    );
+                }
+            // Check for valid query.
+
+            }
+        
+        else {
+            log.error("Call to prepare() with invalid state [{}]", this.one().name());
+            throw new IllegalStateException(
+                "Call to prepare() with invalid state [" + this.one().name() + "]"
+                );
+            }
+        }
+
+    @Override
+    protected void execute()
+        {
+        log.debug("execute()");
+
+        if (this.one() != StatusOne.READY)
+            {
+            log.error("Call to execute() with invalid state [{}]", this.one().name());
+            throw new IllegalStateException(
+                "Call to execute() with invalid state [" + this.one().name() + "]"
+                );
+            }
+
+        // Create our results table.
+        // Call OGSA-DAI to execute.
+        try {
+            Thread.sleep(1);
+            }
+        catch (Exception ouch)
+            {
+            }
+        }
+
+    protected static class Handle
+    extends BlueTaskEntity.Handle
+    implements BlueQuery.Handle
+        {
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected Handle(final BlueQuery query)
+            {
+            super(query);
+            }
+        }
+
+    @Override
+    protected Handle newhandle()
+        {
+        return new Handle(
+            this
+            );
         }
     }

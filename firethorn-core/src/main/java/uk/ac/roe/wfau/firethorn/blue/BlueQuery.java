@@ -210,5 +210,13 @@ extends BlueTask<BlueQuery>
      *
      */
     public Resources resources();
-    
+
+    /**
+     * Event notification handle.
+     *
+     */
+    public static interface Handle
+    extends BlueTask.Handle
+        {
+        }
     }

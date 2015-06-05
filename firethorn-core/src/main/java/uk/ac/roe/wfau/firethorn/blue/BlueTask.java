@@ -89,14 +89,25 @@ extends NamedEntity
      */
     public enum StatusOne
         {
-        EDITING,
-        READY,
-        PENDING,
-        RUNNING,
-        COMPLETED,
-        CANCELLED,
-        FAILED,
-        UNKNOWN
+        EDITING(true),
+        READY(true),
+        PENDING(true),
+        RUNNING(true),
+        COMPLETED(false),
+        CANCELLED(false),
+        FAILED(false),
+        ERROR(false);
+        
+        private StatusOne(boolean active)
+            {
+            this.active = active;
+            }
+
+        private boolean active ;
+        public boolean active()
+            {
+            return this.active;
+            }
         };
 
     /**
@@ -106,12 +117,6 @@ extends NamedEntity
     public StatusOne one();
 
     /**
-     * The primary task status.
-     *
-     */
-    public StatusOne one(final StatusOne one);
-
-    /**
      * An event notification handle.
      *
      */
@@ -119,10 +124,10 @@ extends NamedEntity
         {
 
         /**
-         * The task {@link Identifier}.
+         * The task identifier.
          *
          */
-        public Identifier ident();
+        public String ident();
 
         /**
          * Get the {@link Handle} {@link StatusOne}.
@@ -134,19 +139,7 @@ extends NamedEntity
          * Set the {@link Handle} {@link StatusOne}.
          *
          */
-        public StatusOne one(final StatusOne one);
-
-        /**
-         * Register this {@link Handler}.
-         *
-         */
-        public void register();
-
-        /**
-         * Release this {@link Handler}.
-         *
-         */
-        public void release();
+        public void one(final StatusOne one);
 
         /**
          * Event listener interface.
@@ -155,24 +148,23 @@ extends NamedEntity
         public static interface Listener
             {
             /**
-             * Handle the first event.
+             * Check an event.
              * @return true to continue waiting.
              *
              */
-            public boolean start(Handle handle);
-
-            /**
-             * Handle a subsequent event.
-             * @return true to continue waiting.
-             *
-             */
-            public boolean event(Handle handle);
+            public boolean check(Handle handle);
 
             /**
              * The elapsed time since this Listener started. 
              *
              */
             public long time();
+
+            /**
+             * The number of times this Listener has checked. 
+             *
+             */
+            public long count();
 
             }
 
@@ -210,6 +202,12 @@ extends NamedEntity
             } 
         }
 
+    /**
+     * Our {@link BlueTask.Handle}.
+     *
+     */
+    public Handle handle();
+    
     /**
      * The date/time the {@link BlueTask} was queued.
      *
