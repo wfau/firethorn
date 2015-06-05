@@ -67,7 +67,7 @@ public class BlueQueryBean
      * @param entity The {@link BlueQuery} to wrap.
      *
      */
-    protected BlueQueryBean(final BlueQuery entity)
+    public BlueQueryBean(final BlueQuery entity)
         {
         super(
             BlueQuery.TYPE_URI,

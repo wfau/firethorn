@@ -19,9 +19,12 @@ package uk.ac.roe.wfau.firethorn.blue;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -60,6 +63,45 @@ extends BlueTask<BlueQuery>
     //public static BlueQuery.Services services();
 
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<BlueQuery>
+        {
+        }
+
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<BlueQuery>
+        {
+        /**
+         * The URI path for a {@link BlueQuery} service, [{@value}].
+         *
+         */
+        public static final String SERVICE_PATH = "/blue/query" ;
+
+        /**
+         * The URI path for a {@link BlueQuery} entity, [{@value}].
+         *
+         */
+        public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
+        }
+    
+    /**
+     * {@link Identifier} factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<BlueQuery>
+        {
+        }
+    
+    /**
      * EntityFactory interface.
      * 
      */
@@ -67,17 +109,23 @@ extends BlueTask<BlueQuery>
     extends BlueTask.EntityFactory<BlueQuery>
         {
         /**
-         * Create an empty query.
+         * Create a new {@link BlueQuery}.
          *
          */
         public BlueQuery create(final AdqlResource resource);
 
         /**
-         * Create a query with an ADQL string.
+         * Create a new {@link BlueQuery} with an ADQL string.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final String adql);
+        public BlueQuery create(final AdqlResource resource, final String input);
 
+        /**
+         * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
+         *
+         */
+        public Iterable<BlueQuery> select(final AdqlResource resource);
+        
         }
 
     //@Override

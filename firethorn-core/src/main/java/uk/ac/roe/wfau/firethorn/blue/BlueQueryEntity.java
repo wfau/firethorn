@@ -45,9 +45,11 @@ import javax.persistence.Transient;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
@@ -79,6 +81,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
    )
 @NamedQueries(
        {
+       @NamedQuery(
+           name  = "BlueQuery-select",
+           query = "FROM BlueQueryEntity ORDER BY ident asc"
+           ),
+       @NamedQuery(
+           name  = "BlueQuery-select-resource",
+           query = "FROM BlueQueryEntity WHERE resource = :resource ORDER BY ident asc"
+           ),
        }
    )
 public class BlueQueryEntity
@@ -193,31 +203,31 @@ implements BlueQuery
             }
         
         @Autowired
-        private IdentFactory<BlueQuery> idents;
+        private BlueQuery.IdentFactory idents;
         @Override
-        public IdentFactory<BlueQuery> idents()
+        public BlueQuery.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private NameFactory<BlueQuery> names;
+        private BlueQuery.NameFactory names;
         @Override
-        public NameFactory<BlueQuery> names()
+        public BlueQuery.NameFactory names()
             {
             return this.names;
             }
 
         @Autowired
-        private LinkFactory<BlueQuery> links;
+        private BlueQuery.LinkFactory links;
         @Override
-        public LinkFactory<BlueQuery> links()
+        public BlueQuery.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private BlueQueryEntity.EntityFactory entities;
+        private BlueQuery.EntityFactory entities;
         @Override
         public BlueQuery.EntityFactory entities()
             {
@@ -235,6 +245,7 @@ implements BlueQuery
      * {@link BlueQuery.EntityFactory} implementation.
      * 
      */
+    @Repository
     public static class EntityFactory
     extends BlueTaskEntity.EntityFactory<BlueQuery>
     implements BlueQuery.EntityFactory
@@ -270,21 +281,24 @@ implements BlueQuery
         @Override
         public Iterable<BlueQuery> select()
             {
-            return null;
+            return super.list(
+                super.query(
+                    "BlueQuery-select"
+                    )
+                );
             }
 
-        // Deprecated
         @Override
-        public IdentFactory<BlueQuery> idents()
+        public Iterable<BlueQuery> select(final AdqlResource resource)
             {
-            return null;
-            }
-
-        // Deprecated
-        @Override
-        public LinkFactory<BlueQuery> links()
-            {
-            return null;
+            return super.list(
+                super.query(
+                    "BlueQuery-select-resource"
+                    ).setEntity(
+                        "resource",
+                        resource
+                        )
+                );
             }
 
         @Autowired
@@ -292,6 +306,20 @@ implements BlueQuery
         public BlueQuery.Services services()
             {
             return this.services;
+            }
+
+        // Deprecated
+        @Override
+        public BlueQuery.IdentFactory idents()
+            {
+            return null;
+            }
+
+        // Deprecated
+        @Override
+        public BlueQuery.LinkFactory links()
+            {
+            return null;
             }
         }
 

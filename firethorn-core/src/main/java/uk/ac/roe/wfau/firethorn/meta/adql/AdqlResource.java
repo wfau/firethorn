@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -64,6 +65,12 @@ extends BaseResource<AdqlSchema>
     public static interface EntityFactory
     extends BaseResource.EntityFactory<AdqlResource>
         {
+        /**
+         * Create a new {@link AdqlResource}.
+         *
+         */
+        public AdqlResource create();
+
         /**
          * Create a new {@link AdqlResource}.
          *
@@ -162,5 +169,31 @@ extends BaseResource<AdqlSchema>
 
     @Override
     public AdqlResource.Metadata meta();
+
+    /**
+     * The {@link BlueQuery}s associated with this {@link AdqlResource}.
+     * 
+     */
+    public interface Blues
+        {
+        /**
+         * Select all the {@link BlueQuery}s.
+         * 
+         */
+        public Iterable<BlueQuery> select();
+
+        /**
+         * Create a new {@link BlueQuery}.
+         * 
+         */
+        public BlueQuery create(final String input);
+        
+        }
+
+    /**
+     * The {@link BlueQuery}s associated with this {@link AdqlResource}.
+     * 
+     */
+    public Blues blues();
     
     }

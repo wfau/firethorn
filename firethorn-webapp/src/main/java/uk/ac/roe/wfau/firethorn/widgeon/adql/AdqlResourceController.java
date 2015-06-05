@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQueryBean;
+import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -53,6 +57,22 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         return path(
             AdqlResourceLinkFactory.RESOURCE_PATH
             );
+        }
+
+    /**
+     * Our{@link BlueQuery.NameFactory} implementation.
+     *
+     */
+    @Component
+    public static class NameFactory
+    extends DateNameFactory<AdqlResource>
+    implements AdqlResource.NameFactory
+        {
+        @Override
+        public String name()
+            {
+            return datename();
+            }
         }
 
     /**

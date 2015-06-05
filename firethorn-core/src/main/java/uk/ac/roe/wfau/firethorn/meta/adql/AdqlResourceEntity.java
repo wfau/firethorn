@@ -29,6 +29,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -104,6 +105,17 @@ implements AdqlResource
                 );
             }
 
+        @Override
+        @CreateMethod
+        public AdqlResource  create()
+            {
+            return super.insert(
+                new AdqlResourceEntity(
+                    names().name()
+                    )
+                );
+            }
+
         @Autowired
         protected AdqlSchema.EntityFactory schemas;
         @Override
@@ -126,6 +138,13 @@ implements AdqlResource
         public AdqlResource.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Autowired
+        protected AdqlResource.NameFactory names;
+        public AdqlResource.NameFactory names()
+            {
+            return this.names;
             }
         }
 
@@ -292,5 +311,29 @@ implements AdqlResource
         throw new UnsupportedOperationException(
             "AdqlResource does not support OgsaBaseResources"
             );
+        }
+
+    @Override
+    public Blues blues()
+        {
+        return new Blues()
+            {
+            @Override
+            public Iterable<BlueQuery> select()
+                {
+                return factories.blues().entities().select(
+                    AdqlResourceEntity.this
+                    );
+                }
+
+            @Override
+            public BlueQuery create(final String input)
+                {
+                return factories.blues().entities().create(
+                    AdqlResourceEntity.this,
+                    input
+                    );
+                }
+            };
         }
     }

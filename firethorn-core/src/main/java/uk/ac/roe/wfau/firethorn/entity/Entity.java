@@ -75,6 +75,24 @@ public interface Entity
     public interface LinkFactory<EntityType extends Entity>
         {
         /**
+         * The name for an identifier field.
+         * 
+         */
+        public static final String IDENT_FIELD = "ident" ;
+
+        /**
+         * The token to match an identifier field.
+         * 
+         */
+        public static final String IDENT_TOKEN = "{ident}" ;
+
+        /**
+         * The regular expression pattern to match an identifier field.
+         * 
+         */
+        public static final String IDENT_REGEX = "\\{ident\\}" ;
+        
+        /**
          * Create an link (as a string).
          *
          */

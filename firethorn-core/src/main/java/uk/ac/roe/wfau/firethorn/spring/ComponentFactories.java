@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -131,6 +132,12 @@ public interface ComponentFactories
      */
     public AdqlQuery.Services queries();
 
+    /**
+     * Our Query factories.
+     *
+     */
+    public BlueQuery.Services blues();
+    
     /**
      * Access to the current Context factory.
      *
