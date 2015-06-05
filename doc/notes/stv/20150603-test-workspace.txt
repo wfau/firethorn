@@ -90,7 +90,7 @@ EOF
 	
 
 	curl -X GET -G \
-	'http://localhost:8080/firethorn/tap/32771/sync' \
+	'http://localhost:8080/firethorn/tap/${resourceid:?}/sync' \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?}

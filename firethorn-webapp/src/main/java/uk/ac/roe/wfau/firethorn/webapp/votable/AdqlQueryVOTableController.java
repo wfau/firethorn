@@ -55,7 +55,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
  * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>.
  * <br/>Controller path : [{@value AdqlQueryLinkFactory#VOTABLE_PATH}].
  * @see <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>
- * @deprecated Use the table controllers to access the result tables themselves.
+ * 
  *
  */
 @Slf4j
@@ -333,235 +333,240 @@ public class AdqlQueryVOTableController
                 }
 
                 writer.append("<TABLE ID='table.");
-                writer.append(table.ident().toString());
-                writer.append("'");
-                if (table.name() != null)
-                    {
-                    writer.append(" name='");
-                    writer.append(table.name());
-                    writer.append("'");
-                    }
-                writer.append(">");
-                writer.append("<LINK");
-                writer.append(" content-type='");
-                writer.append(JSON_MIME);
-                writer.append("'");
-                writer.append(" content-role='metadata'");
-                writer.append(" href='");
-                writer.append(table.link());
-                writer.append("'");
-                writer.append("/>");
-                if (table.text() != null)
-                    {
-                    writer.append("<DESCRIPTION>");
-                    writer.append("<![CDATA[");
-                    writer.append(table.text());
-                    writer.append("]]>");
-                    writer.append("</DESCRIPTION>");
-                    }
-
-                final List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
-
-                for (final AdqlColumn column : table.columns().select())
-                    {
-                    cols.add(column);
-
-                    writer.append("<FIELD ID='column.");
-                    writer.append(column.ident().toString());
-                    writer.append("'");
-                    if (column.name() != null)
-                        {
-                        writer.append(" name='");
-                        writer.append(column.name());
-                        writer.append("'");
-                        }
-
-                    if (column.meta().adql().type() != null)
-                        {
-                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
-                            {
-                            writer.append(" datatype='char'");
-                            writer.append(" arraysize='*'");
-                            }
-                        if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
-                            {
-                            writer.append(" datatype='char'");
-                            writer.append(" arraysize='*'");
-                            }
-                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
-                            {
-                            writer.append(" datatype='char'");
-                            writer.append(" arraysize='*'");
-                            }
-                        else {
-                            writer.append(" datatype='");
-                            writer.append(column.meta().adql().type().votype());
-                            writer.append("'");
-
-                            if (column.meta().adql().arraysize() != null)
-                                {
-                                if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
-                                    {
-                                    }
-                                else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
-                                    {
-                                    writer.append(" arraysize='*'");
-                                    }
-                                else {
-                                    writer.append(" arraysize='");
-                                    writer.append(column.meta().adql().arraysize().toString());
-                                    writer.append("'");
-                                    }
-                                }
-                            }
-
-                        if (column.meta().adql() != null)
-                            {
-                            writer.append(" xtype='");
-                            writer.append(column.meta().adql().type().xtype());
-                            writer.append("'");
-                            }
-                        }
-
-                    if (column.meta().adql().units() != null)
-                        {
-                        writer.append(" unit='");
-                        writer.append(column.meta().adql().units());
-                        writer.append("'");
-                        }
-
-                    if (column.meta().adql().ucd() != null)
-                        {
-                        writer.append(" ucd='");
-                        writer.append(column.meta().adql().ucd());
-                        writer.append("'");
-                        }
-
-                    if (column.meta().adql().utype() != null)
-                        {
-                        writer.append(" utype='");
-                        writer.append(column.meta().adql().utype());
-                        writer.append("'");
-                        }
-
-                    writer.append(">");
-
-                    writer.append("<LINK");
-                    writer.append(" content-type='" + JSON_MIME + "'");
-                    writer.append(" content-role='metadata'");
-                    writer.append(" href='" + column.link() + "'");
-                    writer.append("/>");
-
-                    if (column.text() != null)
-                        {
-                        writer.append("<DESCRIPTION>");
-                        writer.append("<![CDATA[");
-                        writer.append(column.text());
-                        writer.append("]]>");
-                        writer.append("</DESCRIPTION>");
-                        }
-
-                    writer.append("</FIELD>");
-                    }
-
-                    writer.append("<DATA>");
-                    writer.append("<TABLEDATA>");
-                    log.error("In Votable [{}]", query.link());
-                    final JdbcProductType type  = jdbc.resource().connection().type();
-                    final Connection connection = jdbc.resource().connection().open();
-                    int isolation = Connection.TRANSACTION_NONE;
-                    try {
-                        isolation = connection.getTransactionIsolation();
-                        connection.setTransactionIsolation(
-                            Connection.TRANSACTION_READ_UNCOMMITTED
-                            );
-                        //
-                        // http://stackoverflow.com/questions/858836/does-a-resultset-load-all-data-into-memory-or-only-when-requested
-                        final Statement statement = connection.createStatement(
-                            ResultSet.TYPE_FORWARD_ONLY,
-                            ResultSet.CONCUR_READ_ONLY
-                            );
-                        statement.setFetchSize(
-                            100
-                            );
-                        final ResultSet results = statement.executeQuery(
-                            select(
-                                table,
-                                type
-                                )
-                            );
-
-                        final ResultSetMetaData colmeta = results.getMetaData();
-                        final int colcount = colmeta.getColumnCount();
-
-                        final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
-                        for (int colnum = 0 ; colnum < colcount ; colnum++)
-                            {
-                            final AdqlColumn adql = cols.get(colnum);
-                            switch(adql.meta().adql().type())
-                                {
-                                case CHAR :
-                                case UNICODE:
-                                    handlers.add(
-                                        new StringFieldHandler(
-                                            results,
-                                            colmeta,
-                                            colnum
-                                            )
-                                        );
-                                    break ;
-
-                                default :
-                                    handlers.add(
-                                        new ObjectFieldHandler(
-                                            results,
-                                            colmeta,
-                                            colnum
-                                            )
-                                        );
-                                    break ;
-                                }
-                            }
-
-                        while (results.next())
-                            {
-                            writer.append("<TR>");
-                            for (final FieldHandler handler : handlers)
-                                {
-                                handler.write(
-                                    writer
-                                    );
-                                }
-                            writer.append("</TR>");
-                            }
-                        }
-
-                    catch (final SQLException ouch)
-                        {
-                        log.error("Exception reading SQL results [{}]", ouch.getMessage());
-                        }
-                    catch (final Exception ouch)
-                        {
-                        log.error("Exception writing VOTable output [{}]", ouch.getMessage());
-                        }
-                    finally {
-                        if (connection != null)
-                            {
-                            try {
-                                connection.close();
-                                connection.setTransactionIsolation(
-                                    isolation
-                                    );
-                                }
-                            catch (final SQLException ouch)
-                                {
-                                log.error("Exception closing SQL connection [{}]", ouch.getMessage());
-                                }
-                            }
-                        }
-
-                    writer.append("</TABLEDATA>");
-                    writer.append("</DATA>");
+                if (table!=null){
+	                writer.append(table.ident().toString());
+	                writer.append("'");
+	                if (table.name() != null)
+	                    {
+	                    writer.append(" name='");
+	                    writer.append(table.name());
+	                    writer.append("'");
+	                    }
+	                writer.append(">");
+	                writer.append("<LINK");
+	                writer.append(" content-type='");
+	                writer.append(JSON_MIME);
+	                writer.append("'");
+	                writer.append(" content-role='metadata'");
+	                writer.append(" href='");
+	                writer.append(table.link());
+	                writer.append("'");
+	                writer.append("/>");
+	                if (table.text() != null)
+	                    {
+	                    writer.append("<DESCRIPTION>");
+	                    writer.append("<![CDATA[");
+	                    writer.append(table.text());
+	                    writer.append("]]>");
+	                    writer.append("</DESCRIPTION>");
+	                    }
+	
+	                final List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
+	
+	                for (final AdqlColumn column : table.columns().select())
+	                    {
+	                    cols.add(column);
+	
+	                    writer.append("<FIELD ID='column.");
+	                    writer.append(column.ident().toString());
+	                    writer.append("'");
+	                    if (column.name() != null)
+	                        {
+	                        writer.append(" name='");
+	                        writer.append(column.name());
+	                        writer.append("'");
+	                        }
+	
+	                    if (column.meta().adql().type() != null)
+	                        {
+	                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
+	                            {
+	                            writer.append(" datatype='char'");
+	                            writer.append(" arraysize='*'");
+	                            }
+	                        if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
+	                            {
+	                            writer.append(" datatype='char'");
+	                            writer.append(" arraysize='*'");
+	                            }
+	                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
+	                            {
+	                            writer.append(" datatype='char'");
+	                            writer.append(" arraysize='*'");
+	                            }
+	                        else {
+	                            writer.append(" datatype='");
+	                            writer.append(column.meta().adql().type().votype());
+	                            writer.append("'");
+	
+	                            if (column.meta().adql().arraysize() != null)
+	                                {
+	                                if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
+	                                    {
+	                                    }
+	                                else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
+	                                    {
+	                                    writer.append(" arraysize='*'");
+	                                    }
+	                                else {
+	                                    writer.append(" arraysize='");
+	                                    writer.append(column.meta().adql().arraysize().toString());
+	                                    writer.append("'");
+	                                    }
+	                                }
+	                            }
+	
+	                        if (column.meta().adql() != null)
+	                            {
+	                            writer.append(" xtype='");
+	                            writer.append(column.meta().adql().type().xtype());
+	                            writer.append("'");
+	                            }
+	                        }
+	
+	                    if (column.meta().adql().units() != null)
+	                        {
+	                        writer.append(" unit='");
+	                        writer.append(column.meta().adql().units());
+	                        writer.append("'");
+	                        }
+	
+	                    if (column.meta().adql().ucd() != null)
+	                        {
+	                        writer.append(" ucd='");
+	                        writer.append(column.meta().adql().ucd());
+	                        writer.append("'");
+	                        }
+	
+	                    if (column.meta().adql().utype() != null)
+	                        {
+	                        writer.append(" utype='");
+	                        writer.append(column.meta().adql().utype());
+	                        writer.append("'");
+	                        }
+	
+	                    writer.append(">");
+	
+	                    writer.append("<LINK");
+	                    writer.append(" content-type='" + JSON_MIME + "'");
+	                    writer.append(" content-role='metadata'");
+	                    writer.append(" href='" + column.link() + "'");
+	                    writer.append("/>");
+	
+	                    if (column.text() != null)
+	                        {
+	                        writer.append("<DESCRIPTION>");
+	                        writer.append("<![CDATA[");
+	                        writer.append(column.text());
+	                        writer.append("]]>");
+	                        writer.append("</DESCRIPTION>");
+	                        }
+	
+	                    writer.append("</FIELD>");
+	                    }
+	               
+	                    writer.append("<DATA>");
+	                    writer.append("<TABLEDATA>");
+	                    log.error("In Votable [{}]", query.link());
+	                    final JdbcProductType type  = jdbc.resource().connection().type();
+	                    final Connection connection = jdbc.resource().connection().open();
+	                    int isolation = Connection.TRANSACTION_NONE;
+	                    try {
+	                        isolation = connection.getTransactionIsolation();
+	                        connection.setTransactionIsolation(
+	                            Connection.TRANSACTION_READ_UNCOMMITTED
+	                            );
+	                        //
+	                        // http://stackoverflow.com/questions/858836/does-a-resultset-load-all-data-into-memory-or-only-when-requested
+	                        final Statement statement = connection.createStatement(
+	                            ResultSet.TYPE_FORWARD_ONLY,
+	                            ResultSet.CONCUR_READ_ONLY
+	                            );
+	                        statement.setFetchSize(
+	                            100
+	                            );
+	                        final ResultSet results = statement.executeQuery(
+	                            select(
+	                                table,
+	                                type
+	                                )
+	                            );
+	
+	                        final ResultSetMetaData colmeta = results.getMetaData();
+	                        final int colcount = colmeta.getColumnCount();
+	
+	                        final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
+	                        for (int colnum = 0 ; colnum < colcount ; colnum++)
+	                            {
+	                            final AdqlColumn adql = cols.get(colnum);
+	                            switch(adql.meta().adql().type())
+	                                {
+	                                case CHAR :
+	                                case UNICODE:
+	                                    handlers.add(
+	                                        new StringFieldHandler(
+	                                            results,
+	                                            colmeta,
+	                                            colnum
+	                                            )
+	                                        );
+	                                    break ;
+	
+	                                default :
+	                                    handlers.add(
+	                                        new ObjectFieldHandler(
+	                                            results,
+	                                            colmeta,
+	                                            colnum
+	                                            )
+	                                        );
+	                                    break ;
+	                                }
+	                            }
+	
+	                        while (results.next())
+	                            {
+	                            writer.append("<TR>");
+	                            for (final FieldHandler handler : handlers)
+	                                {
+	                                handler.write(
+	                                    writer
+	                                    );
+	                                }
+	                            writer.append("</TR>");
+	                            }
+	                        }
+	
+	                    catch (final SQLException ouch)
+	                        {
+	                        log.error("Exception reading SQL results [{}]", ouch.getMessage());
+	                        }
+	                    catch (final Exception ouch)
+	                        {
+	                        log.error("Exception writing VOTable output [{}]", ouch.getMessage());
+	                        }
+	                    finally {
+	                        if (connection != null)
+	                            {
+	                            try {
+	                                connection.close();
+	                                connection.setTransactionIsolation(
+	                                    isolation
+	                                    );
+	                                }
+	                            catch (final SQLException ouch)
+	                                {
+	                                log.error("Exception closing SQL connection [{}]", ouch.getMessage());
+	                                }
+	                            }
+	                        }
+	
+	                    writer.append("</TABLEDATA>");
+	                    writer.append("</DATA>");
+                } else {
+                	writer.append("'>");
+                	
+                }
                 writer.append("</TABLE>");
             writer.append("</RESOURCE>");
         writer.append("</vot:VOTABLE>");

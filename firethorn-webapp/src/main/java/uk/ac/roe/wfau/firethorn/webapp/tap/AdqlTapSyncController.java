@@ -19,46 +19,33 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import javax.persistence.EnumType;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
-import adql.query.ADQLQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
-
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
+import uk.ac.roe.wfau.firethorn.webapp.tap.AdqlTapCapabilitiesController.CapabilitiesGenerator;
 
+   
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
 public class AdqlTapSyncController extends AbstractController {
-	
 	
 	/**
 	 * Timeout for query job in miliseconds
@@ -92,8 +79,8 @@ public class AdqlTapSyncController extends AbstractController {
                 )
             );
         }
+ 
 
-    
     /**
      * Web service method
      * Create an Async query job
@@ -120,25 +107,26 @@ public class AdqlTapSyncController extends AbstractController {
         
 			PrintWriter writer = response.getWriter();
 			AdqlSchema schema;
-		
+		    log.debug("Checking params..");
 			// Check input parameters and return VOTable with appropriate message if any errors found
 			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
 			
 			if (check){
-				if (REQUEST==TapJobParams.REQUEST_GET_CAPABILITIES){
-						writer.append(CommonParams.CAPABILITIES_XML_VIEW);
-				} else if (REQUEST==TapJobParams.REQUEST_DO_QUERY){ 
+
+				if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
+
+				    log.debug("Generating Capabilites..");
+					CapabilitiesGenerator.generateCapabilities(writer);
+				} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)){ 
 				
 					// Look for default query schema, if none found create one
-					try{
+					try {
 						schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-					}  catch (final NameNotFoundException ouch) {
+					} catch (final NameNotFoundException ouch) {
 						schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
 					}
 					
 					try {
-						
-						
 						
 						//Create initial query element
 						AdqlQuery query = schema.queries().create(
@@ -146,7 +134,6 @@ public class AdqlTapSyncController extends AbstractController {
 					                    ),
 					                    QUERY
 					                );
-				   
 					
 						if (query!=null){
 						
@@ -159,24 +146,26 @@ public class AdqlTapSyncController extends AbstractController {
 							// Write results t VOTable using AdqlQueryVOTableController					
 							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
 							adqvotable.generateVotable(writer,query);
-							
-		
+
+						    log.debug("Generating Votable..");
 						}
 					
 		
 					} catch (final Exception ouch) {
 						log.error("Exception caught [{}]", ouch);
 						ouch.printStackTrace();
-		
 			        }
 					
 				} else {
+
+				    log.debug("Invalid Request..");
 					//? Return Error
 				}
 			}
+			log.debug("Check returned False..");
+			//? Return Error
         }
-
-
+	
 		private boolean checkParams(PrintWriter writer, String REQUEST,String LANG,String QUERY){
 
 			String error_message;
@@ -195,17 +184,19 @@ public class AdqlTapSyncController extends AbstractController {
 			}
 			
 			
-			if (LANG==null){
+			if (LANG==null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
 				TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
 				valid = false;
 				return valid;
-			}  else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
-				error_message = "Invalid LANGUAGE: " + LANG;
-				TapError.writeErrorToVotable(error_message, writer);
-				valid = false;
+			}  else if (LANG!=null){
+				if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
+					error_message = "Invalid LANGUAGE: " + LANG;
+					TapError.writeErrorToVotable(error_message, writer);
+					valid = false;
+				}
 			} 
 			
-			if (QUERY==null){
+			if (QUERY==null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
 				TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
 				valid = false;
 				return valid;

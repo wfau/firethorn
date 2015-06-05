@@ -212,7 +212,6 @@ public class AdqlTapAsyncController extends AbstractController {
     	  @PathVariable String jobid,
   		  @ModelAttribute("urn:adql.resource.entity")
   	        AdqlResource resource) throws  IdentifierNotFoundException, Exception  {
-        log.debug("baseurl******()" + uwsfactory.getBaseurl());
 
     	AdqlQuery queryentity = getqueryentity(jobid);
         return "quote";
