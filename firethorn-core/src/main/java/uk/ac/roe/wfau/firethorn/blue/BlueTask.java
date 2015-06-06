@@ -22,6 +22,9 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateNestedMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 
 /**
  * Generic job.
@@ -68,6 +71,26 @@ extends NamedEntity
     public BlueTask.Services<TaskType> services();
      */
 
+    
+    /**
+     * TaskRunner interface.
+     * 
+     */
+    public static interface TaskRunner
+        {
+        /**
+         * Run a {@link Runnable} in an update transaction.
+         *
+         */
+        public void update(final Runnable task);
+
+        /**
+         * Run a {@link Runnable} in a nested transaction.
+         *
+         */
+        public void nested(final Runnable task);
+        }
+    
     /**
      * EntityFactory interface.
      * 
@@ -80,6 +103,13 @@ extends NamedEntity
          *
          */
         public Iterable<TaskType> select();
+
+        /**
+         * Update the {@link StatusOne} of a {@link BlueTask}.
+         * 
+         */
+        public TaskType update(final Identifier ident, final StatusOne next)
+        throws IdentifierNotFoundException;
 
         }
 
@@ -115,6 +145,12 @@ extends NamedEntity
      *
      */
     public StatusOne one();
+
+    /**
+     * User level state transitions. 
+     * 
+     */
+    public void update(final StatusOne next);
 
     /**
      * An event notification handle.

@@ -763,18 +763,27 @@ implements BlueQuery
     protected void prepare()
         {
         log.debug("prepare()");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", one().name());
 
         if ((this.one() == StatusOne.EDITING) || (this.one() == StatusOne.READY))
             {
+            log.debug("Status is good");
             // Check for empty query.
             if ((this.input() == null) || (this.input().trim().length() == 0))
                 {
-                this.one(
+                log.debug("Query is empty");
+                this.change(
                     StatusOne.EDITING
                     );
                 }
             // Check for valid query.
-
+            else {
+                log.debug("Query is good");
+                this.change(
+                    StatusOne.READY
+                    );
+                }
             }
         
         else {
@@ -789,6 +798,8 @@ implements BlueQuery
     protected void execute()
         {
         log.debug("execute()");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", one().name());
 
         if (this.one() != StatusOne.READY)
             {
@@ -797,14 +808,27 @@ implements BlueQuery
                 "Call to execute() with invalid state [" + this.one().name() + "]"
                 );
             }
-
         // Create our results table.
         // Call OGSA-DAI to execute.
         try {
-            Thread.sleep(1);
+            log.debug("Sleeping ....");
+            Thread.sleep(1000);
+
+            log.debug("Pending ....");
+            change(StatusOne.PENDING);
+
+            log.debug("Sleeping ....");
+            Thread.sleep(1000);
+
+            log.debug("Running ....");
+            change(StatusOne.RUNNING);
+
+            log.debug("Sleeping ....");
+            Thread.sleep(1000);
             }
         catch (Exception ouch)
             {
+            log.debug("Interrupted....");
             }
         }
 

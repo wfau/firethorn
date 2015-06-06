@@ -375,12 +375,16 @@ EOF
 # Try some tests.
 #[root@tester]
 
+    #
+    # List all our queries.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         "${endpointurl:?}/blue/query/select" \
         | bin/pp
 
+    #
+    # Create a workspace.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -392,12 +396,16 @@ EOF
         cat workspace.json | self | node
         )
 
+    #
+    # List the workspace queries.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         "${endpointurl:?}/${workspace}/blue/select" \
         | bin/pp
 
+    #
+    # Create a query.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -408,4 +416,32 @@ EOF
     bluequery=$(
         cat bluequery.json | self | node
         )
+
+    #
+    # List the workspace queries.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/${workspace}/blue/select" \
+        | bin/pp
+
+    #
+    # List our query.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/${bluequery}" \
+        | bin/pp
+
+    #
+    # Run our query.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "blue.query.status=RUNNING" \
+        "${endpointurl:?}/${bluequery}" \
+        | bin/pp | tee bluequery.json
+    
+
+
 

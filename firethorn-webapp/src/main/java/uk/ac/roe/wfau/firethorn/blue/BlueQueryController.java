@@ -25,8 +25,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -55,6 +57,12 @@ public class BlueQueryController
      *
      */
     public static final String INPUT_PARAM_NAME = "blue.query.input" ;
+
+    /**
+     * Request param name for the {@link BlueTask} status, [{@value}].
+     *
+     */
+    public static final String STATUS_PARAM_NAME = "blue.query.status" ;
 
     /**
      * Our{@link BlueQuery.IdentFactory} implementation.
@@ -199,6 +207,36 @@ public class BlueQueryController
         log.debug("select()");
         return bean(
             services.entities().select()
+            );
+        }
+    
+    /**
+     * {@link RequestMethod#GET} request to update a {@link BlueQuery}.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @param state The {@link BlueTask} {@link StatusOne} status, [{@value }].
+     * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
+     * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    public BlueQueryBean update00(
+        @PathVariable("ident")
+        final String ident,
+        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        final StatusOne status
+        ) throws IdentifierNotFoundException {
+        log.debug("update(String, StatusOne) [{}]", ident, status.name());
+
+        return bean(
+            services.entities().update(
+                services.idents().ident(
+                    ident
+                    ),
+                status
+                )
             );
         }
     }

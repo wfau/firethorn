@@ -40,10 +40,13 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateNestedMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 
 /**
  *
@@ -143,6 +146,17 @@ implements BlueTask<TaskType>
         extends AbstractEntityFactory<TaskType>
         implements BlueTask.EntityFactory<TaskType>
         {
+
+        @Override
+        @UpdateAtomicMethod
+        public TaskType update(final Identifier ident, final StatusOne next)
+        throws IdentifierNotFoundException
+            {
+            final TaskType task = select(ident);
+            task.update(next);
+            return task ;
+            }
+
         }
 
     /**
@@ -157,10 +171,19 @@ implements BlueTask<TaskType>
      * 
      */
     @Component
-    protected static class TaskRunner
+    public static class TaskRunner
+    implements BlueTask.TaskRunner
         {
+        @Override
+        @UpdateAtomicMethod
+        public void update(final Runnable task)
+            {
+            task.run();
+            }
+
+        @Override
         @UpdateNestedMethod
-        protected void run(final Runnable task)
+        public void nested(final Runnable task)
             {
             task.run();
             }
@@ -238,6 +261,7 @@ implements BlueTask<TaskType>
         super(
             name
             );
+        this.one = StatusOne.EDITING;
         }
 
     @Basic(
@@ -300,125 +324,6 @@ implements BlueTask<TaskType>
         }
 
     /**
-     * Update our primary status.
-     * 
-     */
-    protected synchronized void one(final StatusOne next)
-        {
-        final StatusOne prev = this.one;
-        log.debug("status(StatusOne)");
-        log.debug("  ident [{}]", ident().toString());
-        log.debug("  state [{}][{}]", prev.name(), next.name());
-
-        if (prev == next)
-            {
-            log.debug("No-op status change [{}]", next);
-            }
-
-        else if (prev == StatusOne.EDITING)
-            {
-            switch (next)
-                {
-                case READY :
-                    update(next);
-                    break ;
-
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    update(next);
-                    break ;
-
-                default :
-                    invalid(prev, next);
-                }
-            }
-        
-        else if (prev == StatusOne.READY)
-            {
-            switch (next)
-                {
-                case EDITING:
-                    update(next);
-                    break ;
-
-                case PENDING:
-                    update(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    update(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == StatusOne.PENDING)
-            {
-            switch (next)
-                {
-                case RUNNING:
-                    update(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    update(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == StatusOne.RUNNING)
-            {
-            switch (next)
-                {
-                case COMPLETED:
-                    update(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    update(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else {
-            invalid(prev, next);
-            }
-        }
-
-    private void update(final StatusOne next)
-        {
-        log.debug("update(StatusOne)");
-        log.debug("  state [{}][{}]", this.one.name(), next.name());
-        this.one = next ;
-        this.handle().one(next);
-        }
-
-    private void invalid(final StatusOne prev, final StatusOne next)
-        {
-        this.one = StatusOne.ERROR;
-        // Do we notify our listners ?
-        log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new IllegalStateException(
-            "Invalid status change [" + prev.name() + "][" + next.name() + "]"
-            );
-        }
-
-    /**
      * Prepare our task.
      * 
      */
@@ -429,58 +334,6 @@ implements BlueTask<TaskType>
      * 
      */
     protected abstract void execute();
-    
-    /**
-     * Run our task.
-     * 
-     */
-    public void run()
-        {
-        log.debug("run()");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", one().name());
-        if ((this.one == StatusOne.EDITING) || (this.one == StatusOne.READY))
-            {
-            // Prepare our task.
-            log.debug("Before prepare()");
-            runner().run(
-                new Runnable(){
-                    @Override
-                    public void run()
-                        {
-                        log.debug("Calling prepare() inside Runnable()");
-                        prepare();
-                        }
-                    }
-                );            
-            log.debug("After prepare()");
-            log.debug("  state [{}]", one().name());
-            //
-            // If the task is ready.
-            if (this.one == StatusOne.READY)
-                {
-                log.debug("Before execute()");
-                runner().run(
-                    new Runnable(){
-                        @Override
-                        public void run()
-                            {
-                            log.debug("Calling execute() inside Runnable()");
-                            prepare();
-                            }
-                        }
-                    );            
-                log.debug("After execute()");
-                log.debug("  state [{}]", one().name());
-                }
-            else {
-                log.debug("Not READY, skipping execute()");
-                }
-            }
-        else {
-            log.warn("Attempt to run a read only query");
-            }
-        }
 
     protected static class Handle
     implements BlueTask.Handle
@@ -716,25 +569,356 @@ implements BlueTask<TaskType>
         {
         log.debug("handle()");
         log.debug("  ident [{}]", ident());
-        // Only if we are active, else return null.
-        synchronized (handles)
+        //
+        // If created but not saved, ident is null.
+        if (ident() != null)
             {
-            final String key = ident().toString();
-            final Handle found = handles.get(key);
-            if (found != null)
+            // Check if we are active, else return null.
+            synchronized (handles)
                 {
-                log.debug("Found existing Handle [{}]", key);
-                return found;
-                }
-            else {
-                log.debug("Creating new Handle [{}]", key);
-                final Handle created = newhandle();
-                handles.put(
-                    created.ident,
-                    created
-                    );
-                return created;
+                final String key = ident().toString();
+                final Handle found = handles.get(key);
+                if (found != null)
+                    {
+                    log.debug("Found existing Handle [{}]", key);
+                    return found;
+                    }
+                else {
+                    log.debug("Creating new Handle [{}]", key);
+                    final Handle created = newhandle();
+                    handles.put(
+                        created.ident,
+                        created
+                        );
+                    return created;
+                    }
                 }
             }
+        else {
+            return null ;
+            }
         }
+
+    /**
+     * Internal state machine transitions.
+     * 
+     */
+    protected synchronized void change(final StatusOne next)
+        {
+        final StatusOne prev = this.one;
+        log.debug("change(StatusOne)");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}][{}]", prev.name(), next.name());
+
+        if (prev == next)
+            {
+            log.debug("No-op status change [{}]", next);
+            }
+
+        else if (prev == StatusOne.EDITING)
+            {
+            switch (next)
+                {
+                case READY :
+                    valid(next);
+                    break ;
+
+                case CANCELLED:
+                case FAILED:
+                case ERROR:
+                    valid(next);
+                    break ;
+
+                default :
+                    invalid(prev, next);
+                }
+            }
+        
+        else if (prev == StatusOne.READY)
+            {
+            switch (next)
+                {
+                case EDITING:
+                    valid(next);
+                    break ;
+
+                case PENDING:
+                    valid(next);
+                    break ;
+    
+                case CANCELLED:
+                case FAILED:
+                case ERROR:
+                    valid(next);
+                    break ;
+    
+                default :
+                    invalid(prev, next);
+                }
+            }
+
+        else if (prev == StatusOne.PENDING)
+            {
+            switch (next)
+                {
+                case RUNNING:
+                    valid(next);
+                    break ;
+    
+                case CANCELLED:
+                case FAILED:
+                case ERROR:
+                    valid(next);
+                    break ;
+    
+                default :
+                    invalid(prev, next);
+                }
+            }
+
+        else if (prev == StatusOne.RUNNING)
+            {
+            switch (next)
+                {
+                case COMPLETED:
+                    valid(next);
+                    break ;
+    
+                case CANCELLED:
+                case FAILED:
+                case ERROR:
+                    valid(next);
+                    break ;
+    
+                default :
+                    invalid(prev, next);
+                }
+            }
+
+        else {
+            invalid(prev, next);
+            }
+        }
+
+    /**
+     * Accept a valid status change.
+     * 
+     */
+    private void valid(final StatusOne next)
+        {
+        log.debug("valid(StatusOne)");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}][{}]", one().name(), next.name());
+        this.one = next ;
+        final Handle handle = this.handle();
+        if (handle != null)
+            {
+            handle.one(next);
+            }
+        }
+
+    /**
+     * Reject an invalid status change.
+     * 
+     */
+    private void invalid(final StatusOne prev, final StatusOne next)
+        {
+        this.one = StatusOne.ERROR;
+        // Do we notify our listners ?
+        log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
+        throw new IllegalStateException(
+            "Invalid status change [" + prev.name() + "][" + next.name() + "]"
+            );
+        }
+
+    @Override
+    public void update(final StatusOne next)
+        {
+        final StatusOne prev = this.one;
+        log.debug("update(StatusOne)");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}][{}]", prev.name(), next.name());
+
+        if (prev == next)
+            {
+            log.debug("No-op status change [{}]", next);
+            }
+
+        else if (prev == StatusOne.EDITING)
+            {
+            switch (next)
+                {
+                case READY :
+                    prepare();
+                    break ;
+
+                case RUNNING:
+                    running();
+                    break ;
+
+                case CANCELLED:
+                    cancel();
+                    break ;
+
+                default :
+                    reject(prev, next);
+                }
+            }
+        
+        else if (prev == StatusOne.READY)
+            {
+            switch (next)
+                {
+                case RUNNING:
+                    running();
+                    break ;
+    
+                case CANCELLED:
+                    cancel();
+                    break ;
+    
+                default :
+                    reject(prev, next);
+                }
+            }
+
+        else if (prev == StatusOne.PENDING)
+            {
+            switch (next)
+                {
+                case CANCELLED:
+                    cancel();
+                    break ;
+    
+                default :
+                    reject(prev, next);
+                }
+            }
+
+        else if (prev == StatusOne.RUNNING)
+            {
+            switch (next)
+                {
+                case CANCELLED:
+                    cancel();
+                    break ;
+    
+                default :
+                    reject(prev, next);
+                }
+            }
+
+        else {
+            reject(prev, next);
+            }
+        }
+
+    /**
+     * Reject an invalid status change.
+     * 
+     */
+    private void reject(final StatusOne prev, final StatusOne next)
+        {
+        log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
+        // Do nothing.
+        }
+
+    /**
+     * Prepare our task.
+     * 
+     */
+    protected void ready()
+        {
+        log.debug("ready()");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", one().name());
+        log.debug("Before prepare()");
+        runner().update(
+            new Runnable(){
+                @Override
+                public void run()
+                    {
+                    log.debug("Calling prepare inside Runnable()");
+                    prepare();
+                    }
+                }
+            );            
+        log.debug("After prepare()");
+        log.debug("  state [{}]", one().name());
+        }
+
+    /**
+     * Run our task.
+     * 
+     */
+    protected void running()
+        {
+        log.debug("running()");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", one().name());
+
+        // Prepare our task.
+        log.debug("Before prepare()");
+        runner().nested(
+            new Runnable(){
+                @Override
+                public void run()
+                    {
+                    log.debug("Calling prepare() inside Runnable()");
+                    prepare();
+                    }
+                }
+            );            
+        log.debug("After prepare()");
+        log.debug("  state [{}]", one().name());
+        //
+        // If the task is ready.
+        if (this.one == StatusOne.READY)
+            {
+            log.debug("Before execute()");
+            runner().nested(
+                new Runnable(){
+                    @Override
+                    public void run()
+                        {
+                        log.debug("Calling execute() inside Runnable()");
+                        execute();
+                        }
+                    }
+                );            
+            log.debug("After execute()");
+            log.debug("  state [{}]", one().name());
+            }
+        else {
+            log.debug("Not READY, skipping execute()");
+            }
+        }
+
+    /**
+     * Cancel our task.
+     * 
+     */
+    protected void cancel()
+        {
+        log.debug("cancel()");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", one().name());
+
+        log.debug("Before cancel()");
+        runner().update(
+            new Runnable(){
+                @Override
+                public void run()
+                    {
+                    log.debug("Changing status inside Runnable()");
+                    change(
+                        StatusOne.CANCELLED
+                        );
+                    }
+                }
+            );            
+        log.debug("After cancel()");
+        log.debug("  state [{}]", one().name());
+        }
+
     }
