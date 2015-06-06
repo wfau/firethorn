@@ -44,7 +44,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCE_BLUES_PATH)
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_BLUE_PATH)
 public class AdqlResourceBlueQueryController
 extends AbstractEntityController<BlueQuery, BlueQueryBean>
     {
@@ -52,7 +52,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
     public Path path()
         {
         return path(
-            AdqlResourceLinkFactory.RESOURCE_BLUES_PATH
+            AdqlResourceLinkFactory.RESOURCE_BLUE_PATH
             );
         }
 

@@ -57,6 +57,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -257,6 +259,7 @@ implements BlueQuery
             }
 
         @Override
+        @CreateMethod
         public BlueQuery create(final AdqlResource resource)
             {
             return this.insert(
@@ -268,6 +271,7 @@ implements BlueQuery
             }
 
         @Override
+        @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input)
             {
             return this.insert(
@@ -279,6 +283,7 @@ implements BlueQuery
             }
 
         @Override
+        @SelectMethod
         public Iterable<BlueQuery> select()
             {
             return super.list(
@@ -289,6 +294,7 @@ implements BlueQuery
             }
 
         @Override
+        @SelectMethod
         public Iterable<BlueQuery> select(final AdqlResource resource)
             {
             return super.list(
@@ -359,10 +365,17 @@ implements BlueQuery
         super(
             name
             );
+        this.mode = Mode.AUTO;
         this.resource = resource;
         this.input(
             input
             );
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(this);
         }
 
     @ManyToOne(
@@ -615,12 +628,6 @@ implements BlueQuery
             };
         }
     
-    @Override
-    public String link()
-        {
-        return null;
-        }
-
     /**
      * Wrap this query as a {@link AdqlParserQuery}.
      * 

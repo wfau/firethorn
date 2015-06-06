@@ -395,9 +395,17 @@ EOF
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/${workspace}/blues/select" \
-        | bin/pp | tee workspace.json
+        "${endpointurl:?}/${workspace}/blue/select" \
+        | bin/pp
 
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "blue.query.input=SELECT version()" \
+        "${endpointurl:?}/${workspace}/blue/create" \
+        | bin/pp | tee bluequery.json
 
-
+    bluequery=$(
+        cat bluequery.json | self | node
+        )
 

@@ -321,15 +321,14 @@ implements AdqlResource
             @Override
             public Iterable<BlueQuery> select()
                 {
-                return factories.blues().entities().select(
+                return factories().blues().entities().select(
                     AdqlResourceEntity.this
                     );
                 }
-
             @Override
             public BlueQuery create(final String input)
                 {
-                return factories.blues().entities().create(
+                return factories().blues().entities().create(
                     AdqlResourceEntity.this,
                     input
                     );

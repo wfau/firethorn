@@ -235,8 +235,7 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    public BlueQuery.Services blues;
-
+    protected BlueQuery.Services blues;
     @Override
     public BlueQuery.Services blues()
         {

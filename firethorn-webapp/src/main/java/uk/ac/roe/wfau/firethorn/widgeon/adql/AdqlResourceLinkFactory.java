@@ -68,7 +68,7 @@ implements AdqlResource.LinkFactory
      * The URI path for the {@link AdqlResource} blue queries, [{@value}].
      *
      */
-    public static final String RESOURCE_BLUES_PATH = RESOURCE_PATH + "/blues" ;
+    public static final String RESOURCE_BLUE_PATH = RESOURCE_PATH + "/blue" ;
 
     /**
      * The URI path for the {@link AdqlResource} metadoc, [{@value}].

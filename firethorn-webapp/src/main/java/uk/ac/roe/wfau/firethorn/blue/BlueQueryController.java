@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -95,6 +96,15 @@ public class BlueQueryController
             {
             super(
                 SERVICE_PATH
+                );
+            }
+
+        @Override
+        public String link(final BlueQuery entity)
+            {
+            return link(
+                ENTITY_PATH,
+                entity
                 );
             }
 
