@@ -56,9 +56,13 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -282,6 +286,40 @@ implements BlueQuery
                 );
             }
 
+        
+        @Override
+        @CreateMethod
+        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne next, long limit)
+            {
+            log.debug("create(AdqlResource, String, StatusOne, long ");
+            log.debug("  state [{}]", next);
+            log.debug("  limit [{}]", limit);
+
+            log.debug("Creating task");
+            final BlueQuery query = (BlueQuery) services().runner().create(
+                new BlueTask.TaskRunner.Creator()
+                    {
+                    @Override
+                    public BlueQuery create()
+                        {
+                        final BlueQuery task = services().entities().create(
+                            resource,
+                            input
+                            );
+                        return task;
+                        }
+                    }
+                );
+            
+            log.debug("Updating task");
+            return update(
+                query,
+                next,
+                limit
+                );
+            }
+
+        
         @Override
         @SelectMethod
         public Iterable<BlueQuery> select()

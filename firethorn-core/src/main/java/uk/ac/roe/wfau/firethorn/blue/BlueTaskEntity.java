@@ -50,6 +50,7 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
@@ -129,13 +130,13 @@ implements BlueTask<TaskType>
          * 
          */
         @Autowired
-        private BlueTaskEntity.TaskRunner runner;  
+        private BlueTaskEntity.TaskRunner<TaskType> runner;  
 
         /**
          * Our {@link BlueTaskEntity.TaskRunner} service.
          * 
          */
-        public  BlueTaskEntity.TaskRunner runner()
+        public  BlueTaskEntity.TaskRunner<TaskType> runner()
             {
             return this.runner;
             }
@@ -163,7 +164,7 @@ implements BlueTask<TaskType>
         private HibernateThings hibernate ;
 
         @Override
-        @UpdateAtomicMethod
+        @SelectAtomicMethod
         public TaskType update(final Identifier ident, final StatusOne next)
         throws IdentifierNotFoundException
             {
@@ -175,27 +176,42 @@ implements BlueTask<TaskType>
             }
         
         @Override
-        @UpdateAtomicMethod
+        @SelectAtomicMethod
         public TaskType update(final Identifier ident, final StatusOne next, long limit)
         throws IdentifierNotFoundException
             {
-            log.debug("update(Identifier, StatusOne, long ");
+            log.debug("update(Identifier, StatusOne, long)");
             log.debug("  ident [{}]", ident);
             log.debug("  state [{}]", next);
             log.debug("  limit [{}]", limit);
+            return update(
+                select(ident),
+                next,
+                limit
+                );
+            }
 
-            log.debug("Loading task");
-            final TaskType task = select(ident);
+        public TaskType update(final TaskType task, final StatusOne next, long limit)
+            {
+            log.debug("update(TaskType, StatusOne, long)");
+            log.debug("  ident [{}]", task.ident());
+            log.debug("  state [{}]", next);
+            log.debug("  limit [{}]", limit);
+            //
+            // Update the task.
             log.debug("Updating task");
             task.update(next);
-
+            //
+            // Get the task handle.
+            log.debug("Getting handle()");
+            final BlueTask.Handle handle = task.handle();
+            log.debug("  ident [{}]", handle.ident());
+            log.debug("  state [{}]", handle.one().name());
             //
             // IF the task is active.
-            if ((task.one().active()) && (limit > 0))
+            if ((handle.one().active()) && (limit > 0))
                 {
                 log.debug("Task is active and limit is > 0");
-                log.debug("Getting handle()");
-                final BlueTask.Handle handle = task.handle();
     
                 log.debug("Before listen()");
                 log.debug("  ident [{}]", task.ident());
@@ -209,7 +225,7 @@ implements BlueTask<TaskType>
                 log.debug("  state [{}]", task.one().name());
 
                 //
-                // Update our copy from the DB.
+                // Update our entity from the DB.
                 log.debug("Before refresh()");
                 log.debug("  ident [{}]", task.ident());
                 log.debug("  state [{}]", task.one().name());
@@ -243,28 +259,134 @@ implements BlueTask<TaskType>
      */
     @Slf4j
     @Component
-    public static class TaskRunner
-    implements BlueTask.TaskRunner
+    public static class TaskRunner<TaskType extends BlueTask<?>>
+    implements BlueTask.TaskRunner<TaskType>
         {
+
+        @Autowired
+        private Services<TaskType> services ;
+        
+        /**
+         * {@link BaseUpdator} base class.
+         * 
+         */
+        public abstract static class BaseUpdator
+        implements Updator 
+            {
+            /**
+             * Our task identifier.
+             * 
+             */
+            private Identifier ident ;
+            /**
+             * Protected constructor.
+             *
+             */
+            protected BaseUpdator(final BlueTask<?> task)
+                {
+                this.ident = task.ident();
+                }
+            @Override
+            public Identifier ident()
+                {
+                return this.ident;
+                }
+            }
+
+        @Override
+        @UpdateAtomicMethod
+        public StatusOne update(final Updator updator)
+            {
+            log.debug("update(Updator)");
+            log.debug("  ident [{}]", updator.ident());
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+
+            log.debug("Before execute()");
+            final Future<StatusOne> future = services.runner().execute(
+                updator
+                );
+            log.debug("After execute()");
+            
+            try {
+            log.debug("Before future()");
+                final StatusOne result = future.get();
+                log.debug("After future()");
+                log.debug("  result [{}]", result);
+                return result ;
+                }
+            catch (Exception ouch)
+                {
+                log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+                return StatusOne.ERROR;
+                }
+            }
+
         @Async
         @Override
         @UpdateAtomicMethod
-        public Future<StatusOne> execute(final Executable executable)
+        public Future<StatusOne> execute(final Updator updator)
             {
-            log.debug("execute()");
-            log.debug("  ident [{}]", executable.ident());
+            log.debug("execute(Updator)");
+            log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             try {
                 return new AsyncResult<StatusOne>(
-                    executable.execute()
+                    updator.execute()
                     );
                 }
             catch (final Exception ouch)
                 {
-                log.error("Failed to execute task [{}][{}]", executable.ident(), ouch.getMessage());
+                log.error("Failed to execute task [{}][{}]", updator.ident(), ouch.getMessage());
                 return new AsyncResult<StatusOne>(
                     StatusOne.ERROR
                     );
+                }
+            }
+
+        @Override
+        @UpdateAtomicMethod
+        public TaskType create(final Creator<TaskType> creator)
+            {
+            log.debug("create(Creator)");
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+
+            log.debug("Before execute()");
+            final Future<TaskType> future = services.runner().execute(
+                creator
+                );
+            log.debug("After execute()");
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+            
+            try {
+            log.debug("Before future()");
+                final TaskType result = future.get();
+                log.debug("After future()");
+                log.debug("  result [{}]", result);
+                return result ;
+                }
+            catch (Exception ouch)
+                {
+                log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+                return null;
+                }
+            }
+
+        @Async
+        @Override
+        @UpdateAtomicMethod
+        public Future<TaskType> execute(final Creator<TaskType> creator)
+            {
+            log.debug("execute(Creator)");
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+            try {
+                return new AsyncResult<TaskType>(
+                    creator.create()
+                    );
+                }
+            catch (final Exception ouch)
+                {
+                log.error("Failed to execute task [{}]", ouch.getMessage());
+                return null ;
                 }
             }
         }
@@ -434,17 +556,6 @@ implements BlueTask<TaskType>
             }
         
         @Override
-        public void listen()
-            {
-            log.debug("listen()");
-            listen(
-                new AnyEventListener(
-                    this
-                    )
-                );
-            }
-
-        @Override
         public void listen(long limit)
             {
             log.debug("listen(long)");
@@ -468,34 +579,20 @@ implements BlueTask<TaskType>
                 );
             }
 
+        /**
+         * The maximum Thread wait.
+         *  
+         */
         private static final long MAX_WAIT = 5000 ;
         
-        @Override
-        @Deprecated
-        public synchronized void listen(final Listener listener)
-            {
-            log.debug("listen(Listener)");
-            while (listener.check(this))
-                {
-                try {
-                    log.debug("wait start");
-                    this.wait(MAX_WAIT);
-                    log.debug("wait done");
-                    }
-                catch (Exception ouch)
-                    {
-                    log.debug("Exception during wait [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-                    }
-                }
-            }
-
         @Override
         public synchronized void listen(final Listener listener, long limit)
             {
             log.debug("listen(Listener, long)");
             log.debug("  limit [{}]", limit);
-
-            // TODO - Push the diff and wait() into listener.
+            
+            // TODO - Push the limit and wait() into Listener
+            // TODO - Push the diff and wait() into Listener.
             long start = System.currentTimeMillis();
             long diff  = limit ;
             while ((listener.check(this)) && (diff > 0))
@@ -908,31 +1005,23 @@ implements BlueTask<TaskType>
         log.debug("ready()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
-
-        log.debug("Before execute()");
-        final Future<StatusOne> future = services().runner().execute(
-            new BlueTask.TaskRunner.Executable()
+        services().runner().update(
+            new TaskRunner.BaseUpdator(this)
                 {
-                final Identifier ident = BlueTaskEntity.this.ident();
-                @Override
-                public Identifier ident()
-                    {
-                    return this.ident ;
-                    }
                 @Override
                 public StatusOne execute()
                     {
                     try {
                         log.debug("Loading task");
                         BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
-                            this.ident()
+                            ident()
                             );
                         log.debug("Before prepare()");
                         log.debug("  state [{}]", task.one().name());
                         task.prepare();
                         log.debug("After prepare()");
                         log.debug("  state [{}]", task.one().name());
-
+        
                         return task.one();
                         }
                     catch (IdentifierNotFoundException ouch)
@@ -942,17 +1031,8 @@ implements BlueTask<TaskType>
                     }
                 }
             );
-
-        try {
-            final StatusOne result = future.get();
-            log.debug("After execute()");
-            log.debug("  state  [{}]", one().name());
-            log.debug("  result [{}]", result);
-            }
-        catch (Exception ouch)
-            {
-            log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            }
+        log.debug("After ready()");
+        log.debug("  state [{}]", one().name());
         }
 
     /**
@@ -965,27 +1045,16 @@ implements BlueTask<TaskType>
         log.debug("running()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
-
-        log.debug("Before execute()");
-        final Future<StatusOne> future = services().runner().execute(
-            new BlueTask.TaskRunner.Executable()
+        services().runner().update(
+            new TaskRunner.BaseUpdator(this)
                 {
-                final Identifier ident = BlueTaskEntity.this.ident();
-                @Override
-                public Identifier ident()
-                    {
-                    return this.ident ;
-                    }
-
                 @Override
                 public StatusOne execute()
                     {
-                    log.debug("execute()");
-                    log.debug("  ident [{}]", ident);
                     try {
                         log.debug("Loading task");
                         BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
-                            this.ident()
+                            ident()
                             );
                         log.debug("Before prepare()");
                         log.debug("  state [{}]", task.one().name());
@@ -1015,17 +1084,8 @@ implements BlueTask<TaskType>
                     }
                 }
             );
-        
-        try {
-            final StatusOne result = future.get();
-            log.debug("After execute()");
-            log.debug("  state  [{}]", one().name());
-            log.debug("  result [{}]", result);
-            }
-        catch (Exception ouch)
-            {
-            log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-            }
+        log.debug("After running()");
+        log.debug("  state [{}]", one().name());
         }
 
     /**
@@ -1035,27 +1095,19 @@ implements BlueTask<TaskType>
      */
     protected void finish(final StatusOne next)
         {
-        log.debug("cancel()");
+        log.debug("finish()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", one().name(), next.name());
-
-        log.debug("Before execute()");
-        final Future<StatusOne> future = services().runner().execute(
-            new BlueTask.TaskRunner.Executable()
+        services().runner().update(
+            new TaskRunner.BaseUpdator(this)
                 {
-                final Identifier ident = BlueTaskEntity.this.ident();
-                @Override
-                public Identifier ident()
-                    {
-                    return this.ident ;
-                    }
                 @Override
                 public StatusOne execute()
                     {
                     try {
                         log.debug("Loading task");
                         BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
-                            this.ident()
+                            ident()
                             );
                         log.debug("Before change()");
                         log.debug("  state [{}]", task.one().name());
@@ -1074,19 +1126,50 @@ implements BlueTask<TaskType>
                     }
                 }
             );
+        log.debug("After finish()");
+        log.debug("  state [{}]", one().name());
+        }
 
+    /**
+     * {@link BaseExecutable} base class.
+     * 
+    public abstract class TaskExecutable
+    implements TaskRunner.BaseExecutable 
+        {
+        final Identifier ident = BlueTaskEntity.this.ident();
+        @Override
+        public Identifier ident()
+            {
+            return this.ident ;
+            }
+        }
+     */
+
+    /**
+     * Run a {@link BaseExecutable} in a {@link Future}.
+     * @toto Move this to a factory method.
+     * 
+    protected void future(final TaskRunner.Executable executable)
+        {
+        log.debug("future()");
+        log.debug("  ident [{}]", executable.ident());
+
+        log.debug("Before execute()");
+        final Future<StatusOne> future = services().runner().execute(
+            executable
+            );
+        log.debug("After execute()");
+        
         try {
+        log.debug("Before future()");
             final StatusOne result = future.get();
-            log.debug("After execute()");
-            log.debug("  state  [{}]", one().name());
+            log.debug("After future()");
             log.debug("  result [{}]", result);
             }
         catch (Exception ouch)
             {
             log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             }
-        
-        log.debug("After cancel()");
-        log.debug("  state [{}]", one().name());
         }
+     */
     }

@@ -21,6 +21,8 @@ import java.util.concurrent.Future;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner.Updator;
+import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.TaskRunner.BaseUpdator;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -78,19 +80,18 @@ extends NamedEntity
      * 
     public BlueTask.Services<TaskType> services();
      */
-
     
     /**
      * TaskRunner interface.
      * 
      */
-    public static interface TaskRunner
+    public static interface TaskRunner<TaskType extends BlueTask<?>>
         {
         /**
-         * Public interface for an executable step.
+         * Public interface for an update step.
          *
          */
-        public interface Executable
+        public interface Updator
             {
             /**
              * The task {@link Identifier}.
@@ -104,12 +105,43 @@ extends NamedEntity
              */
             public StatusOne execute();
             }
+
+        /**
+         * Execute an {@link Updator} in a new {@link Thread}.
+         * 
+         */
+        public StatusOne update(final Updator updator);
+
+        /**
+         * Execute an {@link Updator} in a {@link Future}.
+         * 
+         */
+        public Future<StatusOne> execute(final Updator updator);
         
         /**
-         * Execute an {@link Executable} is a new Thread.
+         * Public interface for a create step.
          *
          */
-        public Future<StatusOne> execute(final Executable executable);
+        public interface Creator<TaskType extends BlueTask<?>>
+            {
+            /**
+             * Execute the step.
+             *
+             */
+            public TaskType create();
+            }
+
+        /**
+         * Execute an {@link Creator} in a new {@link Thread}.
+         * 
+         */
+        public TaskType create(final Creator<TaskType> creator);
+
+        /**
+         * Execute an {@link Updator} in a {@link Future}.
+         * 
+         */
+        public Future<TaskType> execute(final Creator<TaskType> creator);
 
         }
 
@@ -237,16 +269,9 @@ extends NamedEntity
             }
 
         /**
-         * Listen for any event, no time limit.
-         *
-         */
-        public void listen();
-
-        /**
          * Listen for any event, with a time limit.
          *
          */
-        @Deprecated
         public void listen(long limit);
 
         /**
@@ -256,13 +281,7 @@ extends NamedEntity
         public void listen(final StatusOne prev, long limit);
 
         /**
-         * Listen for events, with no time limit.
-         *
-         */
-        public void listen(final Listener listener);
-
-        /**
-         * Listen for events, with a time limit.
+         * Listen with a {@link Listener} and time limit.
          *
          */
         public void listen(final Listener listener, long limit);

@@ -123,6 +123,12 @@ extends BlueTask<BlueQuery>
         public BlueQuery create(final AdqlResource resource, final String input);
 
         /**
+         * Create a new {@link BlueQuery} with an ADQL string, state and wait.
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne state, long limit);
+
+        /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
          *
          */
