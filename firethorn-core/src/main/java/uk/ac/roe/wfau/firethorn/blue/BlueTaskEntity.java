@@ -44,9 +44,11 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateNestedMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
 
 /**
  *
@@ -141,19 +143,106 @@ implements BlueTask<TaskType>
      * {@link BlueTask.EntityFactory} implementation.
      * 
      */
+    @Slf4j
     @Component
     public abstract static class EntityFactory<TaskType extends BlueTask<?>>
         extends AbstractEntityFactory<TaskType>
         implements BlueTask.EntityFactory<TaskType>
         {
 
+        @Autowired
+        private BlueTaskEntity.TaskRunner runner;  
+
+        @Autowired
+        private HibernateThings hibernate ;
+
         @Override
-        @UpdateAtomicMethod
+        @SelectMethod
         public TaskType update(final Identifier ident, final StatusOne next)
         throws IdentifierNotFoundException
             {
+            return update(
+                ident,
+                next,
+                0L
+                );
+            }
+        
+        @Override
+        @SelectMethod
+        public TaskType update(final Identifier ident, final StatusOne next, long limit)
+        throws IdentifierNotFoundException
+            {
+            log.debug("update(Identifier, StatusOne, long ");
+            log.debug("  ident [{}]", ident);
+            log.debug("  state [{}]", next);
+            log.debug("  limit [{}]", limit);
+
+            //
+            // Load the task.
+            log.debug("loading task");
             final TaskType task = select(ident);
-            task.update(next);
+
+            //
+            // Run the update in a nested transaction.
+            log.debug("Before nested()");
+            log.debug("  ident [{}]", task.ident());
+            log.debug("  state [{}]", task.one().name());
+            runner.nested(
+                new Runnable()
+                    {
+                    @Override
+                    public void run()
+                        {
+                        log.debug("Before update()");
+                        log.debug("  ident [{}]", task.ident());
+                        log.debug("  state [{}]", task.one().name());
+                        task.update(next);
+                        log.debug("After update()");
+                        log.debug("  ident [{}]", task.ident());
+                        log.debug("  state [{}]", task.one().name());
+                        }
+                    }
+                );
+            log.debug("After nested()");
+            log.debug("  ident [{}]", task.ident());
+            log.debug("  state [{}]", task.one().name());
+
+            //
+            // IF the task is active.
+            if ((task.one().active()) && (limit > 0))
+                {
+                log.debug("Task is active and limit is > 0");
+                log.debug("Getting handle()");
+                final BlueTask.Handle handle = task.handle();
+    
+                log.debug("Before listen()");
+                log.debug("  ident [{}]", task.ident());
+                log.debug("  state [{}]", task.one().name());
+                handle.listen(
+                    next,
+                    limit
+                    );
+                log.debug("After listen()");
+                log.debug("  ident [{}]", task.ident());
+                log.debug("  state [{}]", task.one().name());
+                //
+                // Update the task.
+                log.debug("Before refresh()");
+                log.debug("  ident [{}]", task.ident());
+                log.debug("  state [{}]", task.one().name());
+                hibernate.refresh(
+                    task
+                    );
+                log.debug("After refresh()");
+                log.debug("  ident [{}]", task.ident());
+                log.debug("  state [{}]", task.one().name());
+                }
+            else {
+                log.debug("Skipping wait");
+                }
+            //
+            // Return the task.
             return task ;
             }
 
@@ -170,6 +259,7 @@ implements BlueTask<TaskType>
      * A nested transaction task runner service.
      * 
      */
+    @Slf4j
     @Component
     public static class TaskRunner
     implements BlueTask.TaskRunner
@@ -414,15 +504,27 @@ implements BlueTask<TaskType>
             {
             log.debug("listen(long)");
             listen(
-                limit,
                 new AnyEventListener(
                     this
-                    )
+                    ),
+                limit
                 );
             }
 
         @Override
-        public synchronized void listen(Listener listener)
+        public void listen(final StatusOne prev, long limit)
+            {
+            log.debug("listen(StatusOne, long)");
+            listen(
+                new StatusEventListener(
+                    prev
+                    ),
+                limit
+                );
+            }
+
+        @Override
+        public synchronized void listen(final Listener listener)
             {
             log.debug("listen(Listener)");
             while (listener.check(this))
@@ -440,9 +542,9 @@ implements BlueTask<TaskType>
             }
 
         @Override
-        public void listen(long limit, Listener listener)
+        public void listen(final Listener listener, long limit)
             {
-            log.debug("listen(Listener)");
+            log.debug("listen(Listener, long)");
             while (listener.check(this))
                 {
                 try {
@@ -460,11 +562,9 @@ implements BlueTask<TaskType>
         protected static abstract class BaseListener
         implements Listener
             {
-            protected BaseListener(Handle handle)
+            protected BaseListener()
                 {
-                this.prev = handle.one;
                 }
-            protected StatusOne prev; 
 
             protected long count = 0 ;
             @Override
@@ -487,9 +587,7 @@ implements BlueTask<TaskType>
             {
             protected AnyEventListener(Handle handle)
                 {
-                super(
-                    handle
-                    );
+                super();
                 }
 
             @Override
@@ -506,12 +604,19 @@ implements BlueTask<TaskType>
         extends BaseListener
         implements Listener
             {
-            protected StatusEventListener(Handle handle)
+            protected StatusEventListener(final Handle handle)
                 {
-                super(
-                    handle
+                this(
+                    handle.one()
                     );
                 }
+
+            protected StatusEventListener(final StatusOne prev)
+                {
+                super();
+                this.prev = prev;
+                }
+            protected StatusOne prev; 
 
             @Override
             public boolean check(BlueTask.Handle handle)
@@ -756,8 +861,10 @@ implements BlueTask<TaskType>
                     running();
                     break ;
 
+                case COMPLETED:
                 case CANCELLED:
-                    cancel();
+                case FAILED:
+                    cancel(next);
                     break ;
 
                 default :
@@ -772,11 +879,13 @@ implements BlueTask<TaskType>
                 case RUNNING:
                     running();
                     break ;
-    
+
+                case COMPLETED:
                 case CANCELLED:
-                    cancel();
+                case FAILED:
+                    cancel(next);
                     break ;
-    
+
                 default :
                     reject(prev, next);
                 }
@@ -786,8 +895,10 @@ implements BlueTask<TaskType>
             {
             switch (next)
                 {
+                case COMPLETED:
                 case CANCELLED:
-                    cancel();
+                case FAILED:
+                    cancel(next);
                     break ;
     
                 default :
@@ -799,8 +910,10 @@ implements BlueTask<TaskType>
             {
             switch (next)
                 {
+                case COMPLETED:
                 case CANCELLED:
-                    cancel();
+                case FAILED:
+                    cancel(next);
                     break ;
     
                 default :
@@ -898,11 +1011,11 @@ implements BlueTask<TaskType>
      * Cancel our task.
      * 
      */
-    protected void cancel()
+    protected void cancel(final StatusOne next)
         {
         log.debug("cancel()");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", one().name());
+        log.debug("  state [{}][{}]", one().name(), next.name());
 
         log.debug("Before cancel()");
         runner().update(
@@ -912,7 +1025,7 @@ implements BlueTask<TaskType>
                     {
                     log.debug("Changing status inside Runnable()");
                     change(
-                        StatusOne.CANCELLED
+                        next
                         );
                     }
                 }

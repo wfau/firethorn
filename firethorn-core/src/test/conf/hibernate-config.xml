@@ -106,6 +106,7 @@
         +-->
     <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
+        <property name="nestedTransactionAllowed" value="true"/>
     </bean>
 
     <!--+

@@ -111,6 +111,13 @@ extends NamedEntity
         public TaskType update(final Identifier ident, final StatusOne next)
         throws IdentifierNotFoundException;
 
+        /**
+         * Update the {@link StatusOne} of a {@link BlueTask}.
+         * 
+         */
+        public TaskType update(final Identifier ident, final StatusOne next, long timeout)
+        throws IdentifierNotFoundException;
+
         }
 
     /**
@@ -213,10 +220,16 @@ extends NamedEntity
         public void listen();
 
         /**
-         * Listen for any event, for a specific time limit.
+         * Listen for any event, with a time limit.
          *
          */
         public void listen(long limit);
+
+        /**
+         * Listen for a status change, with a time limit.
+         *
+         */
+        public void listen(final StatusOne prev, long limit);
 
         /**
          * Listen for events, with no time limit.
@@ -225,10 +238,10 @@ extends NamedEntity
         public void listen(final Listener listener);
 
         /**
-         * Listen for events, for a specific time limit.
+         * Listen for events, with a time limit.
          *
          */
-        public void listen(long limit, final Listener listener);
+        public void listen(final Listener listener, long limit);
 
         /**
          * Handle resolver.

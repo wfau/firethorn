@@ -65,6 +65,12 @@ public class BlueQueryController
     public static final String STATUS_PARAM_NAME = "blue.query.status" ;
 
     /**
+     * Request param name for the wait, [{@value}].
+     *
+     */
+    public static final String WAIT_PARAM_NAME = "blue.query.wait" ;
+
+    /**
      * Our{@link BlueQuery.IdentFactory} implementation.
      *
      */
@@ -211,7 +217,7 @@ public class BlueQueryController
         }
     
     /**
-     * {@link RequestMethod#GET} request to update a {@link BlueQuery}.
+     * {@link RequestMethod#POST} request to update a {@link BlueQuery}.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
@@ -235,7 +241,8 @@ public class BlueQueryController
                 services.idents().ident(
                     ident
                     ),
-                status
+                status,
+                30000L
                 )
             );
         }
