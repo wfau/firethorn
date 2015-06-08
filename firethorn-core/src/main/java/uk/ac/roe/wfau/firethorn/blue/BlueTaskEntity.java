@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.blue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
@@ -38,7 +40,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -46,9 +52,12 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateNestedMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
  *
@@ -111,8 +120,8 @@ implements BlueTask<TaskType>
      * {@link BlueTask.Services} implementation.
      * 
      */
-    @Component
-    public abstract static class Services<TaskType extends BlueTask<?>>
+    @Service
+    public static abstract class Services<TaskType extends BlueTask<?>>
         implements BlueTask.Services<TaskType>
         {
         /**
@@ -126,7 +135,7 @@ implements BlueTask<TaskType>
          * Our {@link BlueTaskEntity.TaskRunner} service.
          * 
          */
-        protected BlueTaskEntity.TaskRunner runner()
+        public  BlueTaskEntity.TaskRunner runner()
             {
             return this.runner;
             }
@@ -144,20 +153,17 @@ implements BlueTask<TaskType>
      * 
      */
     @Slf4j
-    @Component
+    @Repository
     public abstract static class EntityFactory<TaskType extends BlueTask<?>>
         extends AbstractEntityFactory<TaskType>
         implements BlueTask.EntityFactory<TaskType>
         {
-
-        @Autowired
-        private BlueTaskEntity.TaskRunner runner;  
-
+        
         @Autowired
         private HibernateThings hibernate ;
 
         @Override
-        @SelectMethod
+        @UpdateAtomicMethod
         public TaskType update(final Identifier ident, final StatusOne next)
         throws IdentifierNotFoundException
             {
@@ -169,7 +175,7 @@ implements BlueTask<TaskType>
             }
         
         @Override
-        @SelectMethod
+        @UpdateAtomicMethod
         public TaskType update(final Identifier ident, final StatusOne next, long limit)
         throws IdentifierNotFoundException
             {
@@ -178,35 +184,10 @@ implements BlueTask<TaskType>
             log.debug("  state [{}]", next);
             log.debug("  limit [{}]", limit);
 
-            //
-            // Load the task.
-            log.debug("loading task");
+            log.debug("Loading task");
             final TaskType task = select(ident);
-
-            //
-            // Run the update in a nested transaction.
-            log.debug("Before nested()");
-            log.debug("  ident [{}]", task.ident());
-            log.debug("  state [{}]", task.one().name());
-            runner.nested(
-                new Runnable()
-                    {
-                    @Override
-                    public void run()
-                        {
-                        log.debug("Before update()");
-                        log.debug("  ident [{}]", task.ident());
-                        log.debug("  state [{}]", task.one().name());
-                        task.update(next);
-                        log.debug("After update()");
-                        log.debug("  ident [{}]", task.ident());
-                        log.debug("  state [{}]", task.one().name());
-                        }
-                    }
-                );
-            log.debug("After nested()");
-            log.debug("  ident [{}]", task.ident());
-            log.debug("  state [{}]", task.one().name());
+            log.debug("Updating task");
+            task.update(next);
 
             //
             // IF the task is active.
@@ -226,8 +207,9 @@ implements BlueTask<TaskType>
                 log.debug("After listen()");
                 log.debug("  ident [{}]", task.ident());
                 log.debug("  state [{}]", task.one().name());
+
                 //
-                // Update the task.
+                // Update our copy from the DB.
                 log.debug("Before refresh()");
                 log.debug("  ident [{}]", task.ident());
                 log.debug("  state [{}]", task.one().name());
@@ -245,7 +227,7 @@ implements BlueTask<TaskType>
             // Return the task.
             return task ;
             }
-
+        
         }
 
     /**
@@ -253,7 +235,7 @@ implements BlueTask<TaskType>
      *
      */
     @Override
-    protected abstract BlueTask.EntityFactory<TaskType > factory();
+    protected abstract BlueTask.EntityFactory<TaskType> factory();
 
     /**
      * A nested transaction task runner service.
@@ -264,61 +246,24 @@ implements BlueTask<TaskType>
     public static class TaskRunner
     implements BlueTask.TaskRunner
         {
+        @Async
         @Override
         @UpdateAtomicMethod
-        public void update(final Runnable task)
+        public Future<StatusOne> execute(final Executable executable)
             {
-            task.run();
-            }
-
-        @Override
-        @UpdateNestedMethod
-        public void nested(final Runnable task)
-            {
-            task.run();
-            }
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static TaskRunner instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static TaskRunner instance()
-            {
-            log.debug("instance()");
-            return instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected TaskRunner()
-            {
-            log.debug("TaskRunner()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (BlueTaskEntity.TaskRunner.instance == null)
-                {
-                BlueTaskEntity.TaskRunner.instance = this ;
+            log.debug("execute()");
+            log.debug("  ident [{}]", executable.ident());
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+            try {
+                return new AsyncResult<StatusOne>(
+                    executable.execute()
+                    );
                 }
-            else {
-                log.error("Setting TaskRunner.instance more than once");
-                throw new IllegalStateException(
-                    "Setting TaskRunner.instance more than once"
+            catch (final Exception ouch)
+                {
+                log.error("Failed to execute task [{}][{}]", executable.ident(), ouch.getMessage());
+                return new AsyncResult<StatusOne>(
+                    StatusOne.ERROR
                     );
                 }
             }
@@ -328,9 +273,9 @@ implements BlueTask<TaskType>
      * Our {@link BlueTaskEntity.TaskRunner} instance.
      * 
      */
-    protected static BlueTaskEntity.TaskRunner runner()
+    protected BlueTaskEntity.TaskRunner runner()
         {
-        return BlueTaskEntity.TaskRunner.instance;
+        return services().runner();
         }
 
     /**
@@ -477,7 +422,7 @@ implements BlueTask<TaskType>
             {
             log.debug("event()");
             log.debug("notify start");
-            notifyAll();
+            this.notifyAll();
             log.debug("notify done");
             if (this.one.active() == false)
                 {
@@ -523,7 +468,10 @@ implements BlueTask<TaskType>
                 );
             }
 
+        private static final long MAX_WAIT = 5000 ;
+        
         @Override
+        @Deprecated
         public synchronized void listen(final Listener listener)
             {
             log.debug("listen(Listener)");
@@ -531,7 +479,7 @@ implements BlueTask<TaskType>
                 {
                 try {
                     log.debug("wait start");
-                    wait();                    
+                    this.wait(MAX_WAIT);
                     log.debug("wait done");
                     }
                 catch (Exception ouch)
@@ -542,20 +490,26 @@ implements BlueTask<TaskType>
             }
 
         @Override
-        public void listen(final Listener listener, long limit)
+        public synchronized void listen(final Listener listener, long limit)
             {
             log.debug("listen(Listener, long)");
-            while (listener.check(this))
+            log.debug("  limit [{}]", limit);
+
+            // TODO - Push the diff and wait() into listener.
+            long start = System.currentTimeMillis();
+            long diff  = limit ;
+            while ((listener.check(this)) && (diff > 0))
                 {
                 try {
-                    log.debug("wait start");
-                    wait(limit);                    
+                    log.debug("wait start [{}]", diff);
+                    this.wait((diff < MAX_WAIT) ? diff : MAX_WAIT);                    
                     log.debug("wait done");
                     }
                 catch (Exception ouch)
                     {
                     log.debug("Exception during wait [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                     }
+                diff = limit - (System.currentTimeMillis() - start) ;
                 }
             }
 
@@ -725,13 +679,13 @@ implements BlueTask<TaskType>
             switch (next)
                 {
                 case READY :
-                    valid(next);
+                    accept(next);
                     break ;
 
                 case CANCELLED:
                 case FAILED:
                 case ERROR:
-                    valid(next);
+                    accept(next);
                     break ;
 
                 default :
@@ -744,17 +698,17 @@ implements BlueTask<TaskType>
             switch (next)
                 {
                 case EDITING:
-                    valid(next);
+                    accept(next);
                     break ;
 
                 case PENDING:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 case CANCELLED:
                 case FAILED:
                 case ERROR:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 default :
@@ -767,13 +721,13 @@ implements BlueTask<TaskType>
             switch (next)
                 {
                 case RUNNING:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 case CANCELLED:
                 case FAILED:
                 case ERROR:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 default :
@@ -786,13 +740,13 @@ implements BlueTask<TaskType>
             switch (next)
                 {
                 case COMPLETED:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 case CANCELLED:
                 case FAILED:
                 case ERROR:
-                    valid(next);
+                    accept(next);
                     break ;
     
                 default :
@@ -809,17 +763,19 @@ implements BlueTask<TaskType>
      * Accept a valid status change.
      * 
      */
-    private void valid(final StatusOne next)
+    private void accept(final StatusOne next)
         {
         log.debug("valid(StatusOne)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", one().name(), next.name());
         this.one = next ;
+/*
         final Handle handle = this.handle();
         if (handle != null)
             {
             handle.one(next);
             }
+ */
         }
 
     /**
@@ -864,7 +820,7 @@ implements BlueTask<TaskType>
                 case COMPLETED:
                 case CANCELLED:
                 case FAILED:
-                    cancel(next);
+                    finish(next);
                     break ;
 
                 default :
@@ -883,7 +839,7 @@ implements BlueTask<TaskType>
                 case COMPLETED:
                 case CANCELLED:
                 case FAILED:
-                    cancel(next);
+                    finish(next);
                     break ;
 
                 default :
@@ -898,7 +854,7 @@ implements BlueTask<TaskType>
                 case COMPLETED:
                 case CANCELLED:
                 case FAILED:
-                    cancel(next);
+                    finish(next);
                     break ;
     
                 default :
@@ -913,7 +869,7 @@ implements BlueTask<TaskType>
                 case COMPLETED:
                 case CANCELLED:
                 case FAILED:
-                    cancel(next);
+                    finish(next);
                     break ;
     
                 default :
@@ -923,6 +879,12 @@ implements BlueTask<TaskType>
 
         else {
             reject(prev, next);
+            }
+        
+        final Handle handle = this.handle();
+        if (handle != null)
+            {
+            handle.one(next);
             }
         }
 
@@ -938,6 +900,7 @@ implements BlueTask<TaskType>
 
     /**
      * Prepare our task.
+     * @toto Move this to a factory method.
      * 
      */
     protected void ready()
@@ -945,23 +908,56 @@ implements BlueTask<TaskType>
         log.debug("ready()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
-        log.debug("Before prepare()");
-        runner().update(
-            new Runnable(){
+
+        log.debug("Before execute()");
+        final Future<StatusOne> future = services().runner().execute(
+            new BlueTask.TaskRunner.Executable()
+                {
+                final Identifier ident = BlueTaskEntity.this.ident();
                 @Override
-                public void run()
+                public Identifier ident()
                     {
-                    log.debug("Calling prepare inside Runnable()");
-                    prepare();
+                    return this.ident ;
+                    }
+                @Override
+                public StatusOne execute()
+                    {
+                    try {
+                        log.debug("Loading task");
+                        BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
+                            this.ident()
+                            );
+                        log.debug("Before prepare()");
+                        log.debug("  state [{}]", task.one().name());
+                        task.prepare();
+                        log.debug("After prepare()");
+                        log.debug("  state [{}]", task.one().name());
+
+                        return task.one();
+                        }
+                    catch (IdentifierNotFoundException ouch)
+                        {
+                        return StatusOne.ERROR;
+                        }
                     }
                 }
-            );            
-        log.debug("After prepare()");
-        log.debug("  state [{}]", one().name());
+            );
+
+        try {
+            final StatusOne result = future.get();
+            log.debug("After execute()");
+            log.debug("  state  [{}]", one().name());
+            log.debug("  result [{}]", result);
+            }
+        catch (Exception ouch)
+            {
+            log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            }
         }
 
     /**
      * Run our task.
+     * @toto Move this to a factory method.
      * 
      */
     protected void running()
@@ -970,68 +966,127 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
 
-        // Prepare our task.
-        log.debug("Before prepare()");
-        runner().nested(
-            new Runnable(){
+        log.debug("Before execute()");
+        final Future<StatusOne> future = services().runner().execute(
+            new BlueTask.TaskRunner.Executable()
+                {
+                final Identifier ident = BlueTaskEntity.this.ident();
                 @Override
-                public void run()
+                public Identifier ident()
                     {
-                    log.debug("Calling prepare() inside Runnable()");
-                    prepare();
+                    return this.ident ;
                     }
-                }
-            );            
-        log.debug("After prepare()");
-        log.debug("  state [{}]", one().name());
-        //
-        // If the task is ready.
-        if (this.one == StatusOne.READY)
-            {
-            log.debug("Before execute()");
-            runner().nested(
-                new Runnable(){
-                    @Override
-                    public void run()
+
+                @Override
+                public StatusOne execute()
+                    {
+                    log.debug("execute()");
+                    log.debug("  ident [{}]", ident);
+                    try {
+                        log.debug("Loading task");
+                        BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
+                            this.ident()
+                            );
+                        log.debug("Before prepare()");
+                        log.debug("  state [{}]", task.one().name());
+                        task.prepare();
+                        log.debug("After prepare()");
+                        log.debug("  state [{}]", task.one().name());
+    
+                        //
+                        // If the task is ready.
+                        if (task.one() == StatusOne.READY)
+                            {
+                            log.debug("Before execute()");
+                            log.debug("  state [{}]", task.one().name());
+                            task.execute();
+                            log.debug("After execute()");
+                            log.debug("  state [{}]", task.one().name());
+                            }
+                        else {
+                            log.debug("Not READY, skipping execute()");
+                            }
+                        return task.one();
+                        }
+                    catch (IdentifierNotFoundException ouch)
                         {
-                        log.debug("Calling execute() inside Runnable()");
-                        execute();
+                        return StatusOne.ERROR;
                         }
                     }
-                );            
+                }
+            );
+        
+        try {
+            final StatusOne result = future.get();
             log.debug("After execute()");
-            log.debug("  state [{}]", one().name());
+            log.debug("  state  [{}]", one().name());
+            log.debug("  result [{}]", result);
             }
-        else {
-            log.debug("Not READY, skipping execute()");
+        catch (Exception ouch)
+            {
+            log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             }
         }
 
     /**
-     * Cancel our task.
+     * Finish our task.
+     * @toto Move this to a factory method.
      * 
      */
-    protected void cancel(final StatusOne next)
+    protected void finish(final StatusOne next)
         {
         log.debug("cancel()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", one().name(), next.name());
 
-        log.debug("Before cancel()");
-        runner().update(
-            new Runnable(){
+        log.debug("Before execute()");
+        final Future<StatusOne> future = services().runner().execute(
+            new BlueTask.TaskRunner.Executable()
+                {
+                final Identifier ident = BlueTaskEntity.this.ident();
                 @Override
-                public void run()
+                public Identifier ident()
                     {
-                    log.debug("Changing status inside Runnable()");
-                    change(
-                        next
-                        );
+                    return this.ident ;
+                    }
+                @Override
+                public StatusOne execute()
+                    {
+                    try {
+                        log.debug("Loading task");
+                        BlueTaskEntity<TaskType> task = (BlueTaskEntity<TaskType>) services().entities().select(
+                            this.ident()
+                            );
+                        log.debug("Before change()");
+                        log.debug("  state [{}]", task.one().name());
+                        task.change(
+                            next
+                            );
+                        log.debug("After change()");
+                        log.debug("  state [{}]", task.one().name());
+
+                        return task.one();
+                        }
+                    catch (IdentifierNotFoundException ouch)
+                        {
+                        return StatusOne.ERROR;
+                        }
                     }
                 }
-            );            
+            );
+
+        try {
+            final StatusOne result = future.get();
+            log.debug("After execute()");
+            log.debug("  state  [{}]", one().name());
+            log.debug("  result [{}]", result);
+            }
+        catch (Exception ouch)
+            {
+            log.error("Interrupted waiting for Future [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            }
+        
         log.debug("After cancel()");
         log.debug("  state [{}]", one().name());
         }
-
     }

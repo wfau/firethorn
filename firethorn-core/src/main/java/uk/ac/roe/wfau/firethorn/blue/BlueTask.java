@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.util.concurrent.Future;
+
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -39,7 +41,6 @@ extends NamedEntity
      */
     public static interface Services<TaskType extends BlueTask<?>>
         {
-
         /**
          * IdentFactory instance.
          * 
@@ -63,6 +64,13 @@ extends NamedEntity
          * 
          */
         public EntityFactory<TaskType> entities();
+        
+        /**
+         * Our {@link TaskRunner} service.
+         * 
+         */
+        public TaskRunner runner(); 
+
         }
 
     /**
@@ -79,18 +87,33 @@ extends NamedEntity
     public static interface TaskRunner
         {
         /**
-         * Run a {@link Runnable} in an update transaction.
+         * Public interface for an executable step.
          *
          */
-        public void update(final Runnable task);
+        public interface Executable
+            {
+            /**
+             * The task {@link Identifier}.
+             *
+             */
+            public Identifier ident();
 
+            /**
+             * Execute the step.
+             *
+             */
+            public StatusOne execute();
+            }
+        
         /**
-         * Run a {@link Runnable} in a nested transaction.
+         * Execute an {@link Executable} is a new Thread.
          *
          */
-        public void nested(final Runnable task);
+        public Future<StatusOne> execute(final Executable executable);
+
         }
-    
+
+
     /**
      * EntityFactory interface.
      * 
@@ -117,7 +140,7 @@ extends NamedEntity
          */
         public TaskType update(final Identifier ident, final StatusOne next, long timeout)
         throws IdentifierNotFoundException;
-
+        
         }
 
     /**
@@ -223,6 +246,7 @@ extends NamedEntity
          * Listen for any event, with a time limit.
          *
          */
+        @Deprecated
         public void listen(long limit);
 
         /**

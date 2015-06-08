@@ -305,6 +305,9 @@ EOF
 
 
 
+
+
+
 # -----------------------------------------------------
 # Stop our firethorn container.
 #[user@desktop]
@@ -345,6 +348,8 @@ EOF
         --volume /etc/localtime:/etc/localtime:ro \
         --volume "${properties:?}:/etc/firethorn.properties" \
         "firethorn/firethorn:${version:?}"
+
+
 
 # -----------------------------------------------------
 # Start our test container.
@@ -401,14 +406,6 @@ EOF
         )
 
     #
-    # List the workspace queries.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/${workspace}/blue/select" \
-        | bin/pp
-
-    #
     # Create a query.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
@@ -422,20 +419,22 @@ EOF
         )
 
     #
-    # List the workspace queries.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/${workspace}/blue/select" \
-        | bin/pp
-
-    #
     # List our query.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         "${endpointurl:?}/${bluequery}" \
         | bin/pp
+
+
+
+
+
+
+
+
+
+
 
     #
     # Run our query.
@@ -446,67 +445,4 @@ EOF
         "${endpointurl:?}/${bluequery}" \
         | bin/pp | tee bluequery.json
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -----------------------------------------------------
-# Start our test container.
-#[user@desktop]
-
-    source /tmp/chain.properties
-    docker run \
-        --rm \
-        --tty \
-        --interactive \
-        --env "datadata=${datadata:?}" \
-        --env "datalink=${datalink:?}" \
-        --env "datauser=${datauser:?}" \
-        --env "datapass=${datapass:?}" \
-        --env "datadriver=${datadriver:?}" \
-        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
-        --link "${firename:?}:${firelink:?}" \
-        --volume /etc/localtime:/etc/localtime:ro \
-        "firethorn/tester:${version:?}" \
-        bash
-
-# -----------------------------------------------------
-# Configure our identity.
-#[root@tester]
-
-    identity=${identity:-$(date '+%H:%M:%S')}
-    community=${community:-$(date '+%A %-d %B %Y')}
-
-    source "bin/01-01-init-rest.sh"
-
-# -----------------------------------------------------
-# Try some tests.
-#[root@tester]
-
-
-    bluequery=blue/query/2916352
-
-    #
-    # Complete our query.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data   "blue.query.status=COMPLETED" \
-        "${endpointurl:?}/${bluequery}" \
-        | bin/pp | tee bluequery.json
-
 
