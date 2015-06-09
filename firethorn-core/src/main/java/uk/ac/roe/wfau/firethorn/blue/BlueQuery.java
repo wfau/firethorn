@@ -111,6 +111,44 @@ extends BlueTask<BlueQuery>
     extends BlueTask.EntityFactory<BlueQuery>
         {
         /**
+         * TAP service parameters.
+         * 
+         */
+        public interface TapParam
+            {
+            /**
+             * The ADQL query.
+             * 
+             */
+            public String input();
+            
+            /**
+             * The next {@link StatusOne} to move to, e.g {@value StatusOne#RUNNING} to run the query.
+             * 
+             */
+            public StatusOne one();
+            
+            /**
+             * The maximum number of rows to return.
+             * 
+             */
+            public Long maxrows();
+
+            /**
+             * The maximum execution time.
+             * 
+             */
+            public Long maxtime();
+
+            /**
+             * The maximum time to wait for a result.
+             * 
+             */
+            public Long maxwait();
+            
+            }
+        
+        /**
          * Create a new {@link BlueQuery}.
          * http://redmine.roe.ac.uk/issues/311
          *
