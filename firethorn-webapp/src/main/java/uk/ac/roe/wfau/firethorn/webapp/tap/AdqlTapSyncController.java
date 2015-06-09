@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,18 +89,18 @@ public class AdqlTapSyncController extends AbstractController {
 
     /**
      * Web service method
-     * Create an Async query job
+     * Create a Synchronous query job
      * 
      */
-	@RequestMapping(value="sync", method = RequestMethod.GET, produces=CommonParams.TEXT_XML_MIME)
+	@RequestMapping(value="sync",  method = { RequestMethod.POST, RequestMethod.GET }, produces=CommonParams.TEXT_XML_MIME)
 	public void createSyncJob(
         @ModelAttribute("urn:adql.resource.entity")
         AdqlResource resource,
         final HttpServletResponse response,
         @RequestParam(value="QUERY", required = false) String QUERY,
         @RequestParam(value="LANG", required = false) String LANG,
-        @RequestParam(value="REQUEST", required = false) String REQUEST    
-        
+        @RequestParam(value="REQUEST", required = false) String REQUEST,    
+        BindingResult result
         ) throws  IdentifierNotFoundException, IOException {
 			
 
