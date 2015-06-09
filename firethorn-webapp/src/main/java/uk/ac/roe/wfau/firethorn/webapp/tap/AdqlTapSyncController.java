@@ -147,7 +147,7 @@ public class AdqlTapSyncController extends AbstractController {
 							
 							// Write results t VOTable using AdqlQueryVOTableController					
 							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
-							adqvotable.generateVotable(writer,query);
+							adqvotable.generateTAPVotable(writer,query);
 
 						}
 					
@@ -157,12 +157,9 @@ public class AdqlTapSyncController extends AbstractController {
 						ouch.printStackTrace();
 			        }
 					
-				} else {
-
-					//? Return Error
-				}
+				} 
 			}
-			//? Return Error
+			
         }
 	
 		private boolean checkParams(PrintWriter writer, String REQUEST,String LANG,String QUERY){
