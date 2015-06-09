@@ -111,7 +111,7 @@ extends BlueTask<BlueQuery>
     extends BlueTask.EntityFactory<BlueQuery>
         {
         /**
-         * TAP service parameters.
+         * TAP request parameters.
          * 
          */
         public interface TapParam
