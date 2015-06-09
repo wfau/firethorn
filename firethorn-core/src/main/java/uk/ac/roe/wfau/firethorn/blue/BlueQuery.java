@@ -126,7 +126,7 @@ extends BlueTask<BlueQuery>
              * The next {@link StatusOne} to move to, e.g {@value StatusOne#RUNNING} to run the query.
              * 
              */
-            public StatusOne one();
+            public StatusOne status();
             
             /**
              * The maximum number of rows to return.
