@@ -358,7 +358,7 @@ implements BlueTask<TaskType>
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             
             try {
-            log.debug("Before future()");
+                log.debug("Before future()");
                 final TaskType result = future.get();
                 log.debug("After future()");
                 log.debug("  result [{}]", result);
