@@ -286,12 +286,25 @@ implements BlueQuery
                 );
             }
 
-        
+        @Override
+        @CreateMethod
+        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne next)
+            {
+            log.debug("create(AdqlResource, String, StatusOne");
+            log.debug("  state [{}]", next);
+            return create(
+                resource,
+                input,
+                next,
+                0L
+                );
+            }
+
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final StatusOne next, long limit)
             {
-            log.debug("create(AdqlResource, String, StatusOne, long ");
+            log.debug("create(AdqlResource, String, StatusOne, long");
             log.debug("  state [{}]", next);
             log.debug("  limit [{}]", limit);
 

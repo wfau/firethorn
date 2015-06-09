@@ -112,6 +112,7 @@ extends BlueTask<BlueQuery>
         {
         /**
          * Create a new {@link BlueQuery}.
+         * http://redmine.roe.ac.uk/issues/311
          *
          */
         public BlueQuery create(final AdqlResource resource);
@@ -121,6 +122,12 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input);
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string and state.
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne state);
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string, state and wait.

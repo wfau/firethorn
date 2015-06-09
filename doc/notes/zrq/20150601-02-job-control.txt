@@ -1,0 +1,312 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+
+
+
+
+    public interface GreenTask
+        {
+
+        public enum StatusOne
+            {
+            EDITING,
+            READY,
+            PENDING,
+            RUNNING,
+            COMPLETED,
+            CANCELLED,
+            FAILED,
+            UNKNOWN
+            };
+
+        public StatusOne one();
+
+        public StatusOne one(StatusOne one);
+
+        // Notification handle.
+        public interface Handle
+            {
+
+            // Get the entity ident
+            public Ident ident();
+
+            // Get the handle status
+            public StatusOne one();
+
+            // Set the handle status
+            public StatusOne one(StatusOne one);
+
+            // Register
+            public void register();
+
+            // Release
+            public void release();
+
+            // Handler event listener.
+            public interface Listener
+                {
+                // Return true to wait
+                public boolean start(Handle handle);
+
+                // Return true to wait
+                public boolean event(Handle handle);
+
+                // Elapsed time.
+                public long time();
+
+                }
+
+            // Wait for notification.
+            public void listen()
+            public void listen(long limit)
+            public void listen(Listener listener)
+            public void listen(long limit, Listener listener)
+
+            }
+
+        // Handler resolver.
+        public static interface Resolver
+            {
+            public Handler select(Ident)
+            } 
+
+        }
+
+    public interface GreenQuery
+    extends GreenTask
+        {
+
+        public enum StatusTwo
+            {
+            
+            };
+        public StatusTwo two();
+
+        public String adql();
+        public void adql(String adql);
+
+        // Task factory
+        public interface Factory
+            {
+            public GreenQuery create();
+
+            public GreenQuery create(String adql);
+
+            public GreenQuery create(String adql, ....);
+            
+            }
+
+        // Task factory
+        public Factory factory();
+        
+        }
+
+----------------------------------------------------------------------------
+Create an empty query
+
+    GreenQuery query = factory.create()
+
+    query.one() => EDITING
+
+    query.run() => EDITING
+
+----------------------------------------------------------------------------
+Create a query with invalid ADQL.
+
+
+    GreenQuery query = factory.create(adql)
+
+    query.one() => EDITING
+
+    query.run() => EDITING
+
+----------------------------------------------------------------------------
+Create a query with valid ADQL.
+
+    GreenQuery query = factory.create(adql)
+
+    query.one() => READY
+
+    query.run() => PENDING/RUNNING/...
+
+----------------------------------------------------------------------------
+Update a query with valid ADQL.
+
+    GreenQuery query = factory.select(ident)
+
+    query.one() => EDITING
+
+    query.adql(adql)
+
+    query.one() => READY
+
+    query.run() => PENDING/RUNNING/...
+
+----------------------------------------------------------------------------
+Wait for a handle to update, any event, no timeout.
+
+    Handle handle = query.handle();
+
+    handle.listen(
+        new AnyEventListener()
+        );
+
+    handle.listen(
+        new Listener()
+            {
+            public boolean start(Handle handle)
+                {
+                retiurn false ;
+                } 
+            public boolean event(Handle handle);
+                {
+                return true ;
+                }
+            }
+        );
+
+----------------------------------------------------------------------------
+Wait for a primay status change, 10ms wait.
+
+    int wait = 10 ;
+    
+    query.handle().listen(
+        wait,
+        new StatusEventListener(
+            query
+            )
+        );
+
+    query.handle().listen(
+        wait,
+        new Listener()
+            {
+            private final StatusOne prev = handle.one(); 
+
+            public boolean start(Handle handle)
+                {
+                return event(
+                    handle
+                    );
+                } 
+
+            public boolean event(Handle handle);
+                {
+                if (handle.one() != prev)
+                    {
+                    return true;
+                    }
+                else {
+                    return false ;
+                    }
+                }
+            }
+        );
+
+----------------------------------------------------------------------------
+Status update from external service.
+
+    GreenQuery query = queries().select(
+        ident
+        );
+
+    query.one(
+        COMPLETED
+        );
+
+    // Listeners get notified ..
+    
+----------------------------------------------------------------------------
+Status update from external service.
+
+    Handle handle = queries().handles().select(
+        ident
+        );
+
+    handle.one(
+        COMPLETED
+        );
+
+    // Listeners get notified ..
+
+----------------------------------------------------------------------------
+Status update from scheduled update.
+
+    GreenQuery query = queries().select(
+        ident
+        );
+
+    // Call ogsadai for status.
+    ....
+
+    query.one(
+        COMPLETED
+        );
+
+    // Listeners get notified ..
+
+----------------------------------------------------------------------------
+Setting status to READY
+
+    // Validate the adql
+
+----------------------------------------------------------------------------
+Setting status to RUNNING
+
+    // Validate the adql
+
+    // Create the table
+    
+    // Call ogsadai to start the job
+
+    // Flush the data to the DB.
+
+    // Schedule an update check for later
+    // Do we need this ? .. only if we wait with no timeout and never get an event.
+    // So always add a timeout.
+    // If the wait has been too long, we can re-load the query ?
+
+
+
+
+
+
+
+    /**
+     * Job factory interface.
+     *
+     */
+    public static interface EntityFactory<JobType extends Job>
+    extends Entity.EntityFactory<JobType>
+        {
+        /**
+         * Select all the available jobs.
+         *
+         */
+        public Iterable<JobType> select();
+
+        }
+
