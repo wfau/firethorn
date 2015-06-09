@@ -114,8 +114,24 @@ extends BlueTask<BlueQuery>
          * TAP request parameters.
          * 
          */
-        public interface TapParam
+        public interface TapRequest
             {
+            /**
+             * The ADQL request type.
+             * 
+             */
+            public enum Type
+                {
+                SYNC,
+                ASYNC;
+                }
+
+            /**
+             * The ADQL request type.
+             * 
+             */
+            public Type type();
+
             /**
              * The ADQL query.
              * 
@@ -153,7 +169,7 @@ extends BlueTask<BlueQuery>
          * http://redmine.roe.ac.uk/issues/311
          *
          */
-        public BlueQuery create(final AdqlResource resource, final TapParam param);
+        public BlueQuery create(final AdqlResource resource, final TapRequest request);
 
         /**
          * Create a new {@link BlueQuery}.
