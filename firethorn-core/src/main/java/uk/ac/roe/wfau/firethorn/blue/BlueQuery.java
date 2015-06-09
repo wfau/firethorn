@@ -147,7 +147,14 @@ extends BlueTask<BlueQuery>
             public Long maxwait();
             
             }
-        
+
+        /**
+         * Create a new {@link BlueQuery}.
+         * http://redmine.roe.ac.uk/issues/311
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final TapParam param);
+
         /**
          * Create a new {@link BlueQuery}.
          * http://redmine.roe.ac.uk/issues/311
