@@ -322,7 +322,14 @@ public class AdqlQueryVOTableController
             writer.append(query.link());
             writer.append("'");
             writer.append("/>");
-            writer.append("<INFO name='QUERY_STATUS' value='" + (query.status()==Status.COMPLETED ? "OK" : "ERROR" ) + "'></INFO>");
+            if (query.status()==Status.COMPLETED)
+            {
+                writer.append("<INFO name='QUERY_STATUS' value='OK'>");
+            } else  {
+                writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
+                writer.append(query.syntax().friendly());
+            }
+            writer.append("</INFO>");
             if (query.input() != null)
             {
 	        	writer.append("<INFO name='QUERY' value='" + query.input() + "' />");
