@@ -93,7 +93,7 @@ public class AdqlTapSchemaController extends AbstractController {
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException {
 		
-		JDBCParams params = new JDBCParams("jdbc:postgresql://localhost:5432", "", "", "org.postgresql.Driver");
+		JDBCParams params = new JDBCParams("jdbc:postgresql://localhost:5432", "user", "pass", "org.postgresql.Driver");
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params,servletContext);
 		generator.createStructure("WEB-INF/data/tap_schema.sql");
 		generator.insertMetadata(resource);

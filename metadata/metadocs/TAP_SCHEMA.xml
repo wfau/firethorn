@@ -200,7 +200,7 @@
       <Name>keys</Name>
       <Description><![CDATA[Foreign Keys]]></Description>
       <Column ID="keys.key_id">
-         <Name>std</Name>
+         <Name>key_id</Name>
          <Datatype>varchar</Datatype>
          <Description><![CDATA[unique key identifier]]></Description>
          <Units> </Units>
@@ -245,7 +245,7 @@
       <Name>key_columns</Name>
       <Description><![CDATA[Foreign Key Columns ]]></Description>
       <Column ID="key_columns.key_id">
-         <Name>std</Name>
+         <Name>key_id</Name>
          <Datatype>varchar</Datatype>
          <Description><![CDATA[key identifier from the TAP_SCHEMA.keys]]></Description>
          <Units> </Units>
