@@ -39,8 +39,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 	private ServletContext servletContext;
 	
-	private static String structureSqlFile = "WEB-INF/data/mysql_tapschema.sql";
-
 	public TapSchemaGeneratorImpl() {
 		super();
 	}
@@ -68,22 +66,12 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	public void setBaseurl(String baseurl) {
 		this.baseurl = baseurl;
 	}
-
-	/**
-	 * Return the sql file to initialise TAP_SCHEMA structure
-	 * 
-	 * @return structureSqlFile
-	 */
-	public String getStructureSqlFile() {
-		return structureSqlFile;
-	}
-
 	
 	/**
 	 * Create the initial TAP_SCHEMA structure & data 
 	 * 
 	 */
-	public void createStructure() {
+	public void createStructure(String fromScript) {
 		java.sql.Connection con = null;
 
 		try {
@@ -95,7 +83,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			ScriptRunner runner = new ScriptRunner(con, false, false);
 
 			runner.runScript(new BufferedReader(new FileReader(this.servletContext
-					.getRealPath("WEB-INF/data/mysql_tapschema.sql"))));
+					.getRealPath(fromScript))));
 
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
@@ -135,7 +123,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 				String schemaName = schema.name();
 				String schemaDescription = schema.text();
 
-				String sql = "INSERT INTO `TAP_SCHEMA`.`schemas` VALUES ('"
+				String sql = "INSERT INTO \"TAP_SCHEMA\".\"schemas\" VALUES ('"
 						+ schemaName + "', '" + schemaDescription
 						+ "', NULL, NULL);";
 				stmt.executeUpdate(sql);
@@ -145,13 +133,13 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					String tableName = table.name();
 					String tableDescription = table.text();
 
-					sql = "INSERT INTO `TAP_SCHEMA`.`tables` VALUES ('"
+					sql = "INSERT INTO \"TAP_SCHEMA\".\"tables\" VALUES ('"
 							+ schemaName + "', '" + tableName + "', 'table', '"
 							+ tableDescription + "', NULL, NULL);";
 					stmt.executeUpdate(sql);
 
 					for (AdqlColumn column : table.columns().select()) {
-						sql = "INSERT INTO `TAP_SCHEMA`.`columns` VALUES (";
+						sql = "INSERT INTO \"TAP_SCHEMA\".\"columns\" VALUES (";
 						String columnName = column.name();
 						String columnDescription = column.text();
 						sql += "'" + tableName + "',";
@@ -235,5 +223,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		}
 
 	}
+
 
 }

@@ -15,7 +15,7 @@ public interface TapSchemaGenerator{
 	 * Create the initial TAP_SCHEMA structure & data 
 	 * 
 	 */
-	public void createStructure();
+	public void createStructure(String fromScript);
 	
 	/**
 	 * Insert resource metadata into the TAP_SCHEMA schema
