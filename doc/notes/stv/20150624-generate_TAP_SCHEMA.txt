@@ -35,10 +35,20 @@ docker run -p 5432:5432 \
 postgres
 
 
-tap_schema_url=jdbc:postgresql://localhost:5432/${tap_schema_user:?}
 tap_schema_user=${metauser:?}
 tap_schema_pass=${metapass:?}
+tap_schema_url=jdbc:postgresql://localhost:5432/${tap_schema_user:?}
 tap_schema_driver=org.postgresql.Driver
+
+
+
+tap_schema_url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataSTV011317DEV
+tap_schema_user=stelios
+tap_schema_pass=steliosPW!
+tap_schema_driver=net.sourceforge.jtds.jdbc.Driver
+
+
+
 
 # -----------------------------------------------------
 # Import the ATLAS table metadata.
@@ -90,32 +100,12 @@ atlaspublic=${adqlschema:?}
 EOF
 
       
-# -----------------------------------------------------
-# Import the TAP_SCHEMA metadata.
-
-	source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
-            'TAP_SCHEMA conection' \
-            "${tap_schema_url:?}" \
-            "${tap_schema_user:?}" \
-            "${tap_schema_pass:?}" \
-            "${tap_schema_driver:?}" \
-            '*' \
-            'nilbert'
-
-
-        cat >  "${HOME:?}/firethorn.spaces" << EOF
-tapschemajdbc=${jdbcspace:?}
-EOF
-
-        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_user:?}" 'TAP_SCHEMA' "${FIRETHORN_META:?}/TAP_SCHEMA.xml"
-        cat >> "${HOME:?}/firethorn.spaces" << EOF
-tapschema=${adqlschema:?}
-EOF
 
 
         cat "${HOME:?}/firethorn.spaces"
 
-	resourceid=XXXX-XXXX-XXXX
+	resourceid=$(basename ${adqlspace}) 
+
 
 	# -----------------------------------------------------
 	# Testing TAP
@@ -136,6 +126,30 @@ EOF
 
 
 	curl http://localhost:8080/firethorn/tap/${resourceid:?}/generateTapSchema
+
+
+# -----------------------------------------------------
+# Import the TAP_SCHEMA metadata.
+
+	source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
+            'TAP_SCHEMA conection' \
+            "${tap_schema_url:?}" \
+            "${tap_schema_user:?}" \
+            "${tap_schema_pass:?}" \
+            "${tap_schema_driver:?}" \
+            '*' \
+            'nilbert'
+
+
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+tapschemajdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_user:?}" 'tap_schema' "${FIRETHORN_META:?}/TAP_SCHEMA.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+tapschema=${adqlschema:?}
+EOF
+
 
     popd
 
