@@ -90,10 +90,11 @@ public class AdqlQueryVOTableController
         public void write(final PrintWriter writer)
         throws SQLException
             {
+        	String out = this.fetch();
             writer.write("<TD>");
-            writer.write(
-                this.fetch()
-                );
+            if (out!=null){
+	            writer.write(out);
+            }
             writer.write("</TD>");
             }
         }
