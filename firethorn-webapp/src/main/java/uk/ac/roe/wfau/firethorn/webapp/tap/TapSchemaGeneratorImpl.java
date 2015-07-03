@@ -15,13 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  * Generate TAP_SCHEMA of a resource
@@ -29,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
  * @author stelios
  * 
  */
-
+@Slf4j
 public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 	@Value("${firethorn.webapp.endpoint:null}")
@@ -38,7 +40,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	/**
 	 * Adql resource for which to create the TAP_SCHEMA
 	 */
-	
 	private AdqlResource resource;
 	
 	/**
@@ -60,7 +61,28 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	 * tap schema JDBC name
 	 */
 	private String tapSchemaJDBCName;
+	
+	/**
+	 * TAP_SCHEMA resource JDBC name
+	 */
+	private String tapSchemaResourceJDBCName;
 
+    /**
+     *  ComponentFactories instance.
+     *
+     */
+  
+    private ComponentFactories factories;
+
+    /**
+     * Our system services.
+     *
+     */
+    public ComponentFactories factories()
+        {
+        return this.factories;
+        }
+    
 	/**
 	 * Empty Constructor
 	 */
@@ -71,13 +93,16 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	/**
 	 * Constructor
 	 */
-	public TapSchemaGeneratorImpl(JDBCParams params,ServletContext servletContext, AdqlResource resource, String tapSchemaScript) {
+	public TapSchemaGeneratorImpl(JDBCParams params,ServletContext servletContext,ComponentFactories factories, AdqlResource resource, String tapSchemaScript) {
 		super();
 		this.params = params;
 		this.servletContext = servletContext;
 		this.resource = resource;
 		this.tapSchemaScript = tapSchemaScript;
-		setTapSchemaJDBCName("TAP_SCHEMA_" + this.resource.ident().toString());
+		this.factories = factories;
+		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.resource.ident().toString();
+		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.resource.ident().toString();
+
 	}
 
 	/**
@@ -113,6 +138,15 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	public void setTapSchemaJDBCName(String tapSchemaJDBCName) {
 		this.tapSchemaJDBCName = tapSchemaJDBCName;
 	}
+	
+	public String getTapSchemaResourceJDBCName() {
+		return tapSchemaJDBCName;
+	}
+
+	public void setTapSchemaResourceJDBCName(String tapSchemaResourceJDBCName) {
+		this.tapSchemaResourceJDBCName = tapSchemaResourceJDBCName;
+	}
+	
 	
 	/**
 	 * Run the 'sql' update SQL command
@@ -312,11 +346,23 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	
 	/**
 	 * Create the TAP_SCHEMA 
+	 * 
 	 */
 	public void createTapSchema() {
 		this.createStructure();
 		this.insertMetadata();
+		AdqlResource resource = this.resource;
 		
+		JdbcResource tap_schema_resource = this.factories.jdbc().resources().create(params.getCatalogue(), this.tapSchemaResourceJDBCName, params.getConnectionURL(), params.getUsername(), params.getPassword(),params.getDriver());
+		JdbcSchema tap_schema;
+		try {
+			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);
+			resource.schemas().create("TAP_SCHEMA", tap_schema);
+		} catch (NameNotFoundException e) {
+			System.out.println("**************"  + tap_schema_resource.ident().toString());
+
+			System.out.println("**************"  + e);
+		}
 	}
 
 

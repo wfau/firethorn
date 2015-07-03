@@ -6,7 +6,7 @@ public class JDBCParams {
 	private String password;
 	private String connectionURL;
 	private String driver;
-
+	private String catalogue;
 
 	public JDBCParams(String connectionURL, String username, String password, String driver) {
 		super();
@@ -14,6 +14,15 @@ public class JDBCParams {
 		this.password = password;
 		this.connectionURL = connectionURL;
 		this.driver = driver;
+	}
+
+	public JDBCParams(String connectionURL, String username, String password, String driver, String catalogue) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.connectionURL = connectionURL;
+		this.driver = driver;
+		this.catalogue = catalogue;
 	}
 	
 	public String getUsername() {
@@ -47,4 +56,13 @@ public class JDBCParams {
 	public void setDriver(String driver) {
 		this.driver = driver;
 	}
+	
+	public String getCatalogue() {
+		return catalogue;
+	}
+
+	public void setCatalogue(String catalogue) {
+		this.catalogue = catalogue;
+	}
+
 }

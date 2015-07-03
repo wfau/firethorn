@@ -17,33 +17,18 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import javax.servlet.ServletContext;
@@ -93,8 +78,8 @@ public class AdqlTapSchemaController extends AbstractController {
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException {
 		
-		JDBCParams params = new JDBCParams("jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataSTV011317TEST", "", "", "net.sourceforge.jtds.jdbc.Driver");
-		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params,servletContext, resource, "WEB-INF/data/sqlserver_tap_schema.sql");
+		JDBCParams params = new JDBCParams("jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataSTV011317TEST", "", "", "net.sourceforge.jtds.jdbc.Driver","FirethornUserdataSTV011317TEST");
+		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.createTapSchema();
 		
 	}

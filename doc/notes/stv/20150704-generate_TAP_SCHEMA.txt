@@ -1,0 +1,120 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+#
+
+tap_schema_url=jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataSTV011317TEST
+tap_schema_user=
+tap_schema_pass=
+tap_schema_driver=net.sourceforge.jtds.jdbc.Driver
+tap_schema_db=FirethornUserdataSTV011317TEST
+
+
+# -----------------------------------------------------
+# Import the ATLAS table metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+    FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
+
+    pushd $(mktemp --directory)
+
+        identity=${identity:-$(pwgen 16 1)}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        databasekey='firethorn.atlas'
+        databasecfg="${HOME:?}/firethorn.properties"
+
+        databaseurl="$(sed  -n 's|^'${databasekey?}'.url=\(.*\)|\1|p'  ${databasecfg?})"
+        databasetype="$(sed -n 's|^'${databasekey?}'.type=\(.*\)|\1|p' ${databasecfg?})"
+        databasename="$(sed -n 's|^'${databasekey?}'.name=\(.*\)|\1|p' ${databasecfg?})"
+        databaseuser="$(sed -n 's|^'${databasekey?}'.user=\(.*\)|\1|p' ${databasecfg?})"
+        databasepass="$(sed -n 's|^'${databasekey?}'.pass=\(.*\)|\1|p' ${databasecfg?})"
+        databasedriver="$(sed -n 's|^'${databasekey?}'.driver=\(.*\)|\1|p' ${databasecfg?})"
+
+        source "${FIRETHORN_TEST:?}/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "${databaseurl:?}" \
+            "${databaseuser:?}" \
+            "${databasepass:?}" \
+            "${databasedriver:?}" \
+            '*' \
+            'nilbert'
+
+
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+atlasjdbc=${jdbcspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlasadql=${adqlspace:?}
+EOF
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'ATLASDR1' 'dbo' "${FIRETHORN_META:?}/ATLASDR1_AtlasSource.xml"
+        cat >> "${HOME:?}/firethorn.spaces" << EOF
+atlaspublic=${adqlschema:?}
+EOF
+
+      
+
+
+	cat "${HOME:?}/firethorn.spaces"
+
+	resourceid=$(basename ${adqlspace}) 
+
+
+	curl http://localhost:8080/firethorn/tap/${resourceid:?}/generateTapSchema
+
+
+
+query001=$(mktemp)
+cat > "${query001:?}" << EOF
+    SELECT
+      * from TAP_SCHEMA.tables
+EOF
+
+
+# -----------------------------------------------------
+# Run the test queries.
+#[user@desktop]
+
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
+
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${adqlspace:?}"  "TAP_SCHEMA" "TAP_SCHEMA" 
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+        source "${FIRETHORN_TEST:?}/05-04-execute-query.sh" 'DIRECT' "${query001:?}"
+      
+
+    popd
+
+
