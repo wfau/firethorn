@@ -11,16 +11,13 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
  * 
  */
 public interface TapSchemaGenerator{
-	/**
-	 * Create the initial TAP_SCHEMA structure & data 
-	 * 
-	 */
-	public void createStructure(String fromScript);
 	
 	/**
-	 * Insert resource metadata into the TAP_SCHEMA schema
-	 * @param resource
+	 * Create the TAP_SCHEMA for a given resource
+	 * 
 	 */
-	public void insertMetadata(AdqlResource resource); 
+	 void createTapSchema();
+	
+	
  
 }

@@ -1,4 +1,3 @@
-CREATE SCHEMA "TAP_SCHEMA";
 
 CREATE TABLE "TAP_SCHEMA"."schemas" ("schema_name" VARCHAR(1000), "description" VARCHAR(1000), "utype" VARCHAR(1000), "dbname" VARCHAR(1000), PRIMARY KEY("schema_name"));
 CREATE TABLE "TAP_SCHEMA"."tables" ("schema_name" VARCHAR(1000), "table_name" VARCHAR(1000), "table_type" VARCHAR(1000), "description" VARCHAR(1000), "utype" VARCHAR(1000), "dbname" VARCHAR(1000), PRIMARY KEY("table_name"));

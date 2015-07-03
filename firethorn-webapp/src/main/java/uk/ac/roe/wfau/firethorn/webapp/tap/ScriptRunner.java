@@ -65,14 +65,14 @@ public class ScriptRunner {
     * @param reader
     *            - the source of the script
     */
-   public void runScript(Reader reader) throws IOException, SQLException {
+   public void runScript(Reader reader, String replaceName) throws IOException, SQLException {
        try {
            boolean originalAutoCommit = connection.getAutoCommit();
            try {
                if (originalAutoCommit != this.autoCommit) {
                    connection.setAutoCommit(this.autoCommit);
                }
-               runScript(connection, reader);
+               runScript(connection, reader, replaceName);
            } finally {
                connection.setAutoCommit(originalAutoCommit);
            }
@@ -98,7 +98,7 @@ public class ScriptRunner {
     * @throws IOException
     *             if there is an error reading from the Reader
     */
-   private void runScript(Connection conn, Reader reader) throws IOException,
+   private void runScript(Connection conn, Reader reader, String replaceName) throws IOException,
            SQLException {
        StringBuffer command = null;
        try {
@@ -108,6 +108,7 @@ public class ScriptRunner {
                if (command == null) {
                    command = new StringBuffer();
                }
+               line = line.replace("\"TAP_SCHEMA\"", "\"" + replaceName + "\"");
                String trimmedLine = line.trim();
                if (trimmedLine.startsWith("--")) {
                    println(trimmedLine);
@@ -125,7 +126,6 @@ public class ScriptRunner {
                            .lastIndexOf(getDelimiter())));
                    command.append(" ");
                    Statement statement = conn.createStatement();
-
                    println(command);
 
                    boolean hasResults = false;

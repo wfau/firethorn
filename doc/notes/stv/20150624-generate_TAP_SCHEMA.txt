@@ -144,7 +144,9 @@ EOF
 tapschemajdbc=${jdbcspace:?}
 EOF
 
-        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_db:?}" 'tap_schema' "${FIRETHORN_META:?}/TAP_SCHEMA.xml"
+	#resourceid=1900545
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_db:?}" "TAP_SCHEMA_"${resourceid:?} "${FIRETHORN_META:?}/TAP_SCHEMA.xml"
       
 
 
@@ -173,7 +175,7 @@ EOF
 
         source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test workspace'
 
-        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${adqlspace:?}" "TAP_SCHEMA" "TAP_SCHEMA"
+        source "${FIRETHORN_TEST:?}/04-03-import-query-schema.sh" "${adqlspace:?}" "TAP_SCHEMA"  "TAP_SCHEMA_"${resourceid:?} 
 
         source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
