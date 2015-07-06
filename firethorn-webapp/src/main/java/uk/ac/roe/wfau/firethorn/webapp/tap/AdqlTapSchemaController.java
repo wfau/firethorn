@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -42,6 +44,38 @@ public class AdqlTapSchemaController extends AbstractController {
 
 	@Autowired
 	private ServletContext servletContext;
+	
+    /**
+     * Property for updating the connection URL.
+     *
+     */
+    public static final String CONN_URL = "url" ;
+
+    /**
+     * Property for updating the connection user name.
+     *
+     */
+    public static final String CONN_USER = "user" ;
+
+    /**
+     * Property for updating the connection password.
+     *
+     */
+    public static final String CONN_PASS = "pass" ;
+    
+
+    /**
+     * Property for updating the connection driver.
+     *
+     */
+    public static final String CONN_DRIVER = "driver" ;
+    
+    /**
+     * Property for updating the connection catalog.
+     *
+     */
+    public static final String CONN_CATALOG = "catalog" ;
+    
 
 	@Override
 	public Path path() {
@@ -71,14 +105,23 @@ public class AdqlTapSchemaController extends AbstractController {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	@RequestMapping(value = "generateTapSchema", method = { RequestMethod.GET })
+	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			@RequestParam(value=CONN_URL, required=true)
+	        final String url,
+	        @RequestParam(value=CONN_USER,required=true)
+	        final String user,
+	        @RequestParam(value=CONN_PASS,required=true)
+	        final String pass,
+	        @RequestParam(value=CONN_DRIVER, required=true)
+			final String driver,
+		    @RequestParam(value=CONN_CATALOG, required=true)
+	        final String catalog,
 			final HttpServletResponse response)
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException {
-		
-		JDBCParams params = new JDBCParams("jdbc:jtds:sqlserver://localhost:1432/FirethornUserdataSTV011317TEST", "", "", "net.sourceforge.jtds.jdbc.Driver","FirethornUserdataSTV011317TEST");
+		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.createTapSchema();
 		

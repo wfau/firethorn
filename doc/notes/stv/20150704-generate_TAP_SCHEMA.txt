@@ -85,8 +85,7 @@ EOF
 	resourceid=$(basename ${adqlspace}) 
 
 
-	curl http://localhost:8080/firethorn/tap/${resourceid:?}/generateTapSchema
-
+	curl --data "url=${tap_schema_url:?}&user=${tap_schema_user:?}&pass=${tap_schema_pass:?}&driver=${tap_schema_driver:?}&catalog=${tap_schema_db:?}" http://localhost:8080/firethorn/tap/${resourceid:?}/generateTapSchema
 
 
 query001=$(mktemp)
