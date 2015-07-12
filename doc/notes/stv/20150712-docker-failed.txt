@@ -184,3 +184,72 @@ tmpfs          1001M   32K 1001M   1% /tmp
 tmpfs           201M     0  201M   0% /run/user/0
 
 
+
+[root@hebenu ~]# docker start pyrothorn
+Error response from daemon: Cannot start container pyrothorn: iptables failed: iptables --wait -t filter -A DOCKER -i docker0 -o docker0 -p tcp -s 172.17.0.25 -d 172.17.0.18 --dport 8080 -j ACCEPT:  (fork/exec /usr/sbin/iptables: cannot allocate memory)
+FATA[0000] Error: failed to start one or more containers
+
+
+[root@hebenu ~]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           2001        1636          84           0         280         192
+Swap:           511         402         109
+
+[root@hebenu ~]# docker stats gillian jarmila pyrothorn patricia elayne maria mikaela
+CONTAINER           CPU %               MEM USAGE/LIMIT       MEM %               NET I/O
+elayne              0.00%               3.73 MiB/1.955 GiB    0.19%               17.37 GiB/17.36 GiB
+gillian             0.05%               429.6 MiB/1.955 GiB   21.46%              1.488 GiB/980 MiB
+jarmila             0.07%               418.5 MiB/1.955 GiB   20.91%              353.9 MiB/160.9 MiB
+maria               0.00%               952 KiB/1.955 GiB     0.05%               1.827 MiB/1.769 MiB
+mikaela             0.08%               209 MiB/1.955 GiB     10.44%              6.379 MiB/3.181 MiB
+patricia            0.00%               5.246 MiB/1.955 GiB   0.26%               2.005 GiB/2.012 GiB
+pyrothorn           0.00%               0 B/0 B               0.00%               0 B/0 B
+
+
+
+
+# http://askubuntu.com/questions/253466/why-am-i-frequently-getting-this-cannot-allocate-memory-error
+
+# Some process is leaking memory. To get an idea of which process this might be, run
+# ps --sort -rss -eo rss,pid,command | head
+
+
+[root@hebenu ~]# ps --sort -rss -eo rss,pid,command | head
+  RSS   PID COMMAND
+436136 19649 /usr/bin/java -Djava.util.logging.config.file=/var/local/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/var/local/tomcat/endorsed -classpath /var/local/tomcat/bin/bootstrap.jar:/var/local/tomcat/bin/tomcat-juli.jar -Dcatalina.base=/var/local/tomcat -Dcatalina.home=/var/local/tomcat -Djava.io.tmpdir=/var/local/tomcat/temp org.apache.catalina.startup.Bootstrap start
+401332 19531 /usr/bin/java -Djava.util.logging.config.file=/var/local/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/var/local/tomcat/endorsed -classpath /var/local/tomcat/bin/bootstrap.jar:/var/local/tomcat/bin/tomcat-juli.jar -Dcatalina.base=/var/local/tomcat -Dcatalina.home=/var/local/tomcat -Djava.io.tmpdir=/var/local/tomcat/temp org.apache.catalina.startup.Bootstrap start
+198992 19881 mysqld --datadir=/var/lib/mysql --user=mysql
+198604 16599 /usr/bin/docker -d --selinux-enabled
+14764   323 /usr/lib/systemd/systemd-journald
+ 8704 15432 sshd: root@pts/0
+ 7700     1 /usr/lib/systemd/systemd --switched-root --system --deserialize 20
+ 5832   426 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+ 5540 15439 -bash
+
+
+
+
+https://github.com/docker/docker/issues/2495
+
+ubuntu@ip-10-245-18-178:~$ cat /proc/sys/vm/overcommit_memory
+0
+ubuntu@ip-10-245-18-178:~$ cat /proc/sys/vm/overcommit_ratio
+50
+
+@jpetazzo
+jpetazzo commented on 1 Nov 2013
+
+Okay, that's the reason why.
+Even though the R process isn't using that memory, it has kind of "reserved" it, and the system makes the following reasoning: "hey, if I start new processes, and suddenly the R process starts actually using the memory, I'll have to throw someone out!". It's exactly like surbooking.
+
+This is explained in kernel docs (look for the documentation related to the overcommit_memory parameter).
+
+You can address the issue by setting overcommit_memory to 1, or increating overcommit_ratio; but then, the kernel might start killing processes.
+
+You can also allocate swap space; in that case, processes won't be killed, but if the memory usage grows too much, the system might become unresponsive.
+
+Btw, this is not specific to Docker; it's the case on any system with processes allocating (but not using) large amounts of memory (compared to the available physical memory+swap space).
+
+
+(Set overcommit_memory to 1 and pyrothorn started fine)
+
