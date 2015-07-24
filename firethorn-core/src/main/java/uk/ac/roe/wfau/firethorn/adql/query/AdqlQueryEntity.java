@@ -53,6 +53,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -82,6 +83,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.PipelineClient;
@@ -1219,6 +1221,9 @@ implements AdqlQuery, AdqlParserQuery
  * 
  *  Or ... create all the resources on demand, nothing stored.
  *  
+ * 
+ */                  
+
                     //
                     // Need these in execute() Thread.
                     // Created them in prepare() Thread.
@@ -1235,21 +1240,16 @@ implements AdqlQuery, AdqlParserQuery
                     BaseResource<?>  aaa = jdbctable.resource();
                     OgsaBaseResource bbb = aaa.ogsa().primary() ;
                     ogtargetid = bbb.ogsaid() ;
-                    log.debug("-- Query target [{}]", ogtargetid);
+                    HttpStatus httpstatus = ((OgsaJdbcResourceEntity) bbb).ping();
+                    log.debug("-- Query target [{}][{}]", ogtargetid, httpstatus);
                     
                     log.debug("++++++++ Checking target JdbcTable ++++++++");
                     final String ogtablename = jdbctable.namebuilder().toString() ;
                     log.debug("-- Output table [{}]", ogtablename);
                     log.debug("-- Output table [{}]", jdbctable.resource().name());
- * 
- */                  
+
                     log.debug("-- Query source [{}]", this.source);
                     log.debug("-- Query target [{}]", this.target);
-                    
-                    log.debug("++++++++ Checking target JdbcTable ++++++++");
-                    final String ogtablename = jdbctable.namebuilder().toString() ;
-                    log.debug("-- Output table [{}]", ogtablename);
-                    log.debug("-- Output table [{}]", jdbctable.resource().name());
                     
                     final PipelineResult frog = pipeline.execute(
                         new PipelineParam()

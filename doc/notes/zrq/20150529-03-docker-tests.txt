@@ -41,7 +41,6 @@
         --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        --volume /etc/localtime:/etc/localtime:ro \
         "firethorn/tester:${version:?}" \
         bash
 

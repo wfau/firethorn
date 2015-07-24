@@ -261,7 +261,7 @@ implements OgsaBaseResource
     *  Check our OGSA-DAI resource.
     *
     */
-   protected HttpStatus ping()
+   public HttpStatus ping()
        {
        try {
            ClientHttpRequest request = factory.createRequest(
