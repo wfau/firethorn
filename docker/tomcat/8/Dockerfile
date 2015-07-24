@@ -72,28 +72,35 @@ RUN rm -rf ${TOMCAT_ROOT}/webapps/manager
 RUN rm -rf ${TOMCAT_ROOT}/webapps/host-manager
 
 #
+# Change ownership of our working directories.
+# ** This needs to be done externally if they are mounted as host volumes.
+RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
+RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
+RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
+
+#RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/logs
+#RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/work
+#RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/temp
+
+#
 # Allow read access to the config files.
 RUN chmod a+r ${TOMCAT_ROOT}/conf/*
-
-#
-# Define our working directories as volumes.
-# BUG -- ENV variable not resolved
-VOLUME /var/local/tomcat/logs
-VOLUME /var/local/tomcat/work
-VOLUME /var/local/tomcat/temp
-
-#
-# Allow write access to our working directories.
-# This needs to be re-done if they are mounted as host volumes.
-RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
-RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
-RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
 
 #
 # Create our config directory.
 RUN mkdir ${TOMCAT_ROOT}/conf/Catalina
 RUN mkdir ${TOMCAT_ROOT}/conf/Catalina/localhost
 RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/conf/Catalina/localhost
+
+#
+# Define our working directories as volumes.
+# BUG -- ENV variable not resolved
+# BUG -- VOLUME needs to be done AFTER any chown and chmod
+# http://container-solutions.com/understanding-volumes-docker/#permissions-and-ownership
+VOLUME /var/local/tomcat/logs
+VOLUME /var/local/tomcat/work
+VOLUME /var/local/tomcat/temp
+
 
 #
 # Run Tomcat
