@@ -375,8 +375,6 @@ EOF
     jconsole -J-DsocksProxyHost=localhost -J-DsocksProxyPort="${jxmproxyport}" \
         service:jmx:rmi:///jndi/rmi://${jmxremotehost:?}:${jmxremoteport:?}/jmxrmi
     
-    service:jmx:rmi:///jndi/rmi://192.168.122.13:8085/jmxrmi
-
 
 
 
