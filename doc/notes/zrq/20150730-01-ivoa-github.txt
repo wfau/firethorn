@@ -1,0 +1,95 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+--------------------
+
+I am agnostic, I can see advantages / disadvantages to both git and svn.
+
+I'll write this up as a wiki page with a proposed migration plan for GitHub based on the space used for each project / sub-project.
+
+The final call as to whether we use git or svn is up to the community to decide.
+
+If we migrate the whole thing as one blob, then the automatic tools should work. I have migrated a *small* project from Google to GitHub using the automatic migration tool and it worked with no problems.
+
+If we migrate as separate projects then we will have to do it manually. Not a huge job, probably just a day of export from one and import into the other, keeping notes and making sure we don't drop anything along the way.
+
+If we migrate as separate projects then we do loose the commit history. Is this a problem ?
+
+----------
+
+Headline figures based on disc usage
+
+    volute-complete     825M    -- checkout of everything in the repository
+
+    volute-noextern     764M    -- checkout of everything, without resolving the extern references
+
+    volute-export       391M    -- simple export without the history
+
+Basically if we skip the history and take a snapshot of where we are now, then we only have 400M to transfer.
+
+Of that 400M, the top 9 projects are :
+
+    220M    theory
+    126M    dm
+     26M    registry
+      6M    grid
+      3M    vocabularies
+      3M    samp
+      2M    votable
+      2M    ivoapub
+      1M    utypes
+
+All of the other projects are less than 1M.
+
+----------
+
+The large files extension will be of limited value to us.
+
+GitHub has a maximum file size limit of 100M per file.
+
+We have no files larger than 100M bytes.
+
+We have no files larger than 50M bytes.
+
+We have four files larger than 10M bytes, all of them in the theory project.
+
+    projects/theory/snap/simtap/PDR143/PDR143-2.vo-urp
+    projects/theory/snap/simtap/PDR143/html/PDR143-2.html
+    projects/theory/snap/simtap/PDR143/tap/PDR143-2_tap_tableset.xml
+    projects/theory/snap/simtap/PDR143/tap/PDR143-2_votable.xml
+
+We have a few files larger than 5M bytes, most of them in the theory project.
+
+    projects/dm/vo-dml/libs/eclipselink.jar
+    projects/theory/snap/simtap/PDR143/PDR143-2.vo-urp
+    projects/theory/snap/simtap/PDR143/html/PDR143-2.html
+    projects/theory/snap/simtap/PDR143/tap/PDR143-2_tap_tableset.xml
+    projects/theory/snap/simtap/PDR143/tap/postgres/PDR143-2_create_tap_schema.sql
+    projects/theory/snap/simtap/PDR143/tap/mssqlserver/PDR143-2_create_tap_schema.sql
+    projects/theory/snap/simtap/PDR143/tap/PDR143-2_votable.xml
+    projects/theory/snap/simtap/PDR143/tap/PDR143-2_vodataservice.xml
+    projects/theory/snapdm/input/other/sourceDM/IVOACatalogueDataModel.pdf
+
+We have 70 files larger than 1M bytes.
+
+Everything else is smaller than 1M byte.
+
