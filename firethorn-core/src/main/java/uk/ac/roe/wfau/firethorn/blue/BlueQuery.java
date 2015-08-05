@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -58,14 +59,27 @@ extends BlueTask<BlueQuery>
     extends BlueTask.Services<BlueQuery>
         {
         @Override
+        public BlueQuery.IdentFactory idents();
+
+        @Override
+        public BlueQuery.NameFactory names();
+
+        @Override
+        public BlueQuery.LinkFactory links();
+
+        @Override
         public BlueQuery.EntityFactory entities();
+
+        @Override
+        public BlueQuery.TaskRunner runner(); 
+
         }
 
     //@Override
     //public static BlueQuery.Services services();
 
     /**
-     * Name factory interface.
+     * {@link NamedEntity.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -139,10 +153,10 @@ extends BlueTask<BlueQuery>
             public String input();
             
             /**
-             * The next {@link StatusOne} to move to, e.g {@value StatusOne#RUNNING} to run the query.
+             * The next {@link TaskState} to move to, e.g {@value TaskState#RUNNING} to run the query.
              * 
              */
-            public StatusOne status();
+            public TaskState status();
             
             /**
              * The maximum number of rows to return.
@@ -188,13 +202,13 @@ extends BlueTask<BlueQuery>
          * Create a new {@link BlueQuery} with an ADQL string and state.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne state);
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next);
 
         /**
-         * Create a new {@link BlueQuery} with an ADQL string, state and wait.
+         * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne state, long limit);
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait);
 
         /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
@@ -207,6 +221,23 @@ extends BlueTask<BlueQuery>
     //@Override
     //public BlueQuery.EntityFactory factory();
 
+    /**
+     * {@link BlueTask.TaskRunner} interface.
+     *
+     */
+    public static interface TaskRunner
+    extends BlueTask.TaskRunner<BlueQuery>
+        {
+        public static interface Creator
+        extends BlueTask.TaskRunner.Creator<BlueQuery>
+            {}
+
+        public static interface Updator
+        extends BlueTask.TaskRunner.Updator
+            {}
+
+        }
+    
     /**
      * The target {@link AdqlResource} to query.
      *

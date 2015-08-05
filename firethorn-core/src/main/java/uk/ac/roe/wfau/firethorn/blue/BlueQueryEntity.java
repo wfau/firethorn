@@ -56,13 +56,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
-import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -239,6 +234,13 @@ implements BlueQuery
             {
             return this.entities;
             }
+
+        @Autowired
+        private BlueQuery.TaskRunner runner;  
+        public  BlueQuery.TaskRunner runner()
+            {
+            return this.runner;
+            }
         }
     
     @Override
@@ -260,6 +262,18 @@ implements BlueQuery
         public Class<?> etype()
             {
             return BlueQueryEntity.class;
+            }
+
+        @Override
+        @CreateMethod
+        public BlueQuery create(AdqlResource resource, TapRequest request)
+            {
+            return create(
+                resource,
+                request.input(),
+                request.status(),
+                request.maxwait()
+                );
             }
 
         @Override
@@ -288,7 +302,7 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne next)
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
             {
             log.debug("create(AdqlResource, String, StatusOne");
             log.debug("  state [{}]", next);
@@ -302,33 +316,34 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final StatusOne next, long limit)
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait)
             {
             log.debug("create(AdqlResource, String, StatusOne, long");
             log.debug("  state [{}]", next);
-            log.debug("  limit [{}]", limit);
+            log.debug("  limit [{}]", maxwait);
 
-            log.debug("Creating task");
-            final BlueQuery query = (BlueQuery) services().runner().create(
-                new BlueTask.TaskRunner.Creator()
+            log.debug("Creating query task");
+            final BlueQuery query = services().runner().thread(
+                new BlueQuery.TaskRunner.Creator()
                     {
                     @Override
                     public BlueQuery create()
                         {
-                        final BlueQuery task = services().entities().create(
+                        log.debug("create(");
+                        log.debug("Creating query task");
+                        final BlueQuery query = services().entities().create(
                             resource,
                             input
                             );
-                        return task;
+                        return query;
                         }
                     }
                 );
-            
-            log.debug("Updating task");
+            log.debug("Updating query task");
             return update(
                 query,
                 next,
-                limit
+                maxwait
                 );
             }
 
@@ -464,7 +479,7 @@ implements BlueQuery
     @Override
     public void input(final String input)
         {
-        if ((this.one() == StatusOne.EDITING) || (this.one() == StatusOne.READY))
+        if ((this.one() == TaskState.EDITING) || (this.one() == TaskState.READY))
             {
             this.input = input;
             prepare();
@@ -817,7 +832,7 @@ implements BlueQuery
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
 
-        if ((this.one() == StatusOne.EDITING) || (this.one() == StatusOne.READY))
+        if ((this.one() == TaskState.EDITING) || (this.one() == TaskState.READY))
             {
             log.debug("Status is good");
             // Check for empty query.
@@ -825,14 +840,14 @@ implements BlueQuery
                 {
                 log.debug("Query is empty");
                 this.change(
-                    StatusOne.EDITING
+                    TaskState.EDITING
                     );
                 }
             // Check for valid query.
             else {
                 log.debug("Query is good");
                 this.change(
-                    StatusOne.READY
+                    TaskState.READY
                     );
                 }
             }
@@ -852,7 +867,7 @@ implements BlueQuery
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", one().name());
 
-        if (this.one() != StatusOne.READY)
+        if (this.one() != TaskState.READY)
             {
             log.error("Call to execute() with invalid state [{}]", this.one().name());
             throw new IllegalStateException(
@@ -866,13 +881,13 @@ implements BlueQuery
             Thread.sleep(1000);
 
             log.debug("Pending ....");
-            change(StatusOne.PENDING);
+            change(TaskState.PENDING);
 
             log.debug("Sleeping ....");
             Thread.sleep(1000);
 
             log.debug("Running ....");
-            change(StatusOne.RUNNING);
+            change(TaskState.RUNNING);
 
             log.debug("Sleeping ....");
             Thread.sleep(1000);

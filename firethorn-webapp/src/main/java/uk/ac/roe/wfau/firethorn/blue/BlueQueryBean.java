@@ -107,10 +107,10 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@link BlueQuery} {@link BlueTask.StatusOne} status.
+     * The {@link BlueQuery} {@link BlueTask.TaskState} status.
      *
      */
-    public BlueTask.StatusOne getStatus()
+    public BlueTask.TaskState getStatus()
         {
         return entity().one();
         }

@@ -37,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 public interface BlueTask<TaskType extends BlueTask<?>>
 extends NamedEntity
     {
+
     /**
      * Services interface.
      * 
@@ -44,34 +45,34 @@ extends NamedEntity
     public static interface Services<TaskType extends BlueTask<?>>
         {
         /**
-         * IdentFactory instance.
+         * Our {@link IdentFactory} instance.
          * 
          */
         public IdentFactory<TaskType> idents();
 
         /**
-         * NameFactory instance.
+         * Our {@link NameFactory} instance.
          * 
          */
         public NameFactory<TaskType> names();
 
         /**
-         * LinkFactory instance.
+         * Our {@link LinkFactory} instance.
          * 
          */
         public LinkFactory<TaskType> links();
         
         /**
-         * EntityFactory instance.
+         * Our {@link EntityFactory} instance.
          * 
          */
         public EntityFactory<TaskType> entities();
         
         /**
-         * Our {@link TaskRunner} service.
+         * Our {@link TaskRunner} instance.
          * 
          */
-        public TaskRunner runner(); 
+        public TaskRunner<TaskType> runner(); 
 
         }
 
@@ -103,20 +104,20 @@ extends NamedEntity
              * Execute the step.
              *
              */
-            public StatusOne execute();
+            public TaskState execute();
             }
 
         /**
          * Execute an {@link Updator} in a new {@link Thread}.
          * 
          */
-        public StatusOne update(final Updator updator);
+        public TaskState thread(final Updator updator);
 
         /**
          * Execute an {@link Updator} in a {@link Future}.
          * 
          */
-        public Future<StatusOne> execute(final Updator updator);
+        public Future<TaskState> future(final Updator updator);
         
         /**
          * Public interface for a create step.
@@ -133,15 +134,22 @@ extends NamedEntity
 
         /**
          * Execute an {@link Creator} in a new {@link Thread}.
+         * <br/> 
+         * Running the {@link Creator} in a new {@link Thread} means that it is run in
+         * a new Hibernate {@link Session}, which gets committed to the database when
+         * the {@link Creator} completes its operation.
+         * <br/> 
+         * Implementations of this method MUST load the {@link TaskType} entity into
+         * the current Hibernate {@link Session} before they return.
          * 
          */
-        public TaskType create(final Creator<TaskType> creator);
+        public TaskType thread(final Creator<TaskType> creator);
 
         /**
-         * Execute an {@link Updator} in a {@link Future}.
+         * Execute an {@link Creator} in a {@link Future}.
          * 
          */
-        public Future<TaskType> execute(final Creator<TaskType> creator);
+        public Future<TaskType> future(final Creator<TaskType> creator);
 
         }
 
@@ -160,17 +168,17 @@ extends NamedEntity
         public Iterable<TaskType> select();
 
         /**
-         * Update the {@link StatusOne} of a {@link BlueTask}.
+         * Update the {@link TaskState} of a {@link BlueTask}.
          * 
          */
-        public TaskType update(final Identifier ident, final StatusOne next)
+        public TaskType update(final Identifier ident, final TaskState next)
         throws IdentifierNotFoundException;
 
         /**
-         * Update the {@link StatusOne} of a {@link BlueTask}.
+         * Update the {@link TaskState} of a {@link BlueTask}.
          * 
          */
-        public TaskType update(final Identifier ident, final StatusOne next, long timeout)
+        public TaskType update(final Identifier ident, final TaskState next, long maxwait)
         throws IdentifierNotFoundException;
         
         }
@@ -179,7 +187,7 @@ extends NamedEntity
      * The primary task status.
      *
      */
-    public enum StatusOne
+    public enum TaskState
         {
         EDITING(true),
         READY(true),
@@ -190,7 +198,7 @@ extends NamedEntity
         FAILED(false),
         ERROR(false);
         
-        private StatusOne(boolean active)
+        private TaskState(boolean active)
             {
             this.active = active;
             }
@@ -206,13 +214,13 @@ extends NamedEntity
      * The primary task status.
      *
      */
-    public StatusOne one();
+    public TaskState one();
 
     /**
      * User level state transitions. 
      * 
      */
-    public void update(final StatusOne next);
+    public void update(final TaskState next);
 
     /**
      * An event notification handle.
@@ -230,16 +238,16 @@ extends NamedEntity
         public String ident();
 
         /**
-         * Get the {@link Handle} {@link StatusOne}.
+         * Get the {@link Handle} {@link TaskState}.
          *
          */
-        public StatusOne one();
+        public TaskState one();
 
         /**
-         * Set the {@link Handle} {@link StatusOne}.
+         * Set the {@link Handle} {@link TaskState}.
          *
          */
-        public void one(final StatusOne one);
+        public void one(final TaskState one);
 
         /**
          * Event listener interface.
@@ -278,7 +286,7 @@ extends NamedEntity
          * Listen for a status change, with a time limit.
          *
          */
-        public void listen(final StatusOne prev, long limit);
+        public void listen(final TaskState prev, long limit);
 
         /**
          * Listen with a {@link Listener} and time limit.

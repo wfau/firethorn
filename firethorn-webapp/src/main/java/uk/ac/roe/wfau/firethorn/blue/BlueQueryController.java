@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.StatusOne;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -221,7 +221,7 @@ public class BlueQueryController
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @param state The {@link BlueTask} {@link StatusOne} status, [{@value }].
+     * @param state The {@link BlueTask} {@link TaskState} status, [{@value }].
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * 
@@ -232,7 +232,7 @@ public class BlueQueryController
         @PathVariable("ident")
         final String ident,
         @RequestParam(value=STATUS_PARAM_NAME, required=true)
-        final StatusOne status
+        final TaskState status
         ) throws IdentifierNotFoundException {
         log.debug("update(String, StatusOne) [{}]", ident, status.name());
 
