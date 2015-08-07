@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -248,6 +249,17 @@ implements BlueQuery
         {
         return BlueQueryEntity.Services.instance;
         }
+
+    /**
+     * {@link BlueQuery.TaskRunner} implementation.
+     * 
+     */
+    @Component
+    public static class TaskRunner
+    extends BlueTaskEntity.TaskRunner<BlueQuery>
+    implements BlueQuery.TaskRunner
+    	{
+    	}
     
     /**
      * {@link BlueQuery.EntityFactory} implementation.

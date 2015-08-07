@@ -21,72 +21,28 @@
 #
 
 # -----------------------------------------------------
-# Create a new development branch.
-#[user@desktop]
-
-    devname=zrq-job-control
-    
-    # Copy paste instructions
-    source "${HOME:?}/firethorn.settings"
-    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
-
-# -----------------------------------------------------
-# Get the branch version.
-#[user@desktop]
-
-    version=${devbranch:?}
-
-# -----------------------------------------------------
-# Build our webapp services.
+# Swap to our dev branch.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
+        hg update 1.13.17-zrq-job-control
 
+        mvn clean install eclipse:eclipse
+        
     popd
 
-
-
-
-
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
-# Get the branch version.
+# Build our webapps.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source bin/util.sh
-        version=$(getversion)
-
+        mvn clean install
+        
     popd
-    
-# -----------------------------------------------------
-# Build our webapp services.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-
-    popd
-
-# -----------------------------------------------------
-# Shutdown and remove existing containers.
-#[user@desktop]
-
-    docker rm -f $(docker ps -aq)
 
 # -----------------------------------------------------
 # Start our docker-proxy container.
@@ -101,12 +57,12 @@
 
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
 
-    echo "${dockerip:?}"
     sleep 1
+    echo "${dockerip:?}"
     curl "http://${dockerip:?}:2375/version"
 
 # -----------------------------------------------------
-# Build our webapp containers.
+# Build our service containers.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -138,6 +94,20 @@
     popd
 
 # -----------------------------------------------------
+# Get the build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        version=$(getversion)
+        echo "Version [${version:?}]"
+
+    popd
+
+# -----------------------------------------------------
 # Create our secret function.
 #[user@desktop]
 
@@ -149,6 +119,8 @@
         local key=${1:?}
         ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
         }
+
+    secret ping
 
 # -----------------------------------------------------
 # Configure our docker chain.
@@ -195,8 +167,19 @@
 
 EOF
 
-    cat    /tmp/chain.properties
     source /tmp/chain.properties
+
+# -----------------------------------------------------
+# Shutdown and remove any existing containers.
+#[user@desktop]
+
+#   docker rm -f "${firename}"
+#   docker rm -f "${ogsaname}"
+#   docker rm -f "${metaname}"
+#   docker rm -f "${username}"
+#   docker rm -f "${dataname}"
+
+    docker rm $(docker stop $(docker ps -aq))
 
 # -----------------------------------------------------
 # Start our userdata ambassador.
@@ -296,60 +279,12 @@ EOF
         "firethorn/firethorn:${version:?}"
 
 # -----------------------------------------------------
-# Check the logs ..
+# Tail the firethorn logs (in a separate terminal).
 #[user@desktop]
 
     source /tmp/chain.properties
+
     docker logs -f --tail 100 "${firename:?}"
-
-
-
-
-
-
-
-# -----------------------------------------------------
-# Stop our firethorn container.
-#[user@desktop]
-
-    docker rm $(docker stop ${firename:?})
-
-# -----------------------------------------------------
-# re-build our firethorn container.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        pushd firethorn-core
-            mvn clean install
-        popd
-        
-        pushd firethorn-webapp
-            mvn clean install
-            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
-        popd
-
-    popd
-
-# -----------------------------------------------------
-# Re-start our FireThorn container.
-#[user@desktop]
-
-    source /tmp/chain.properties
-    docker run \
-        --detach \
-        --publish 8080:8080 \
-        --name "${firename:?}" \
-        --link "${ogsaname:?}:${ogsalink:?}" \
-        --link "${metaname:?}:${metalink:?}" \
-        --link "${dataname:?}:${datalink:?}" \
-        --link "${username:?}:${userlink:?}" \
-        --volume /etc/localtime:/etc/localtime:ro \
-        --volume "${properties:?}:/etc/firethorn.properties" \
-        "firethorn/firethorn:${version:?}"
-
-
 
 # -----------------------------------------------------
 # Start our test container.
@@ -381,7 +316,7 @@ EOF
     source "bin/01-01-init-rest.sh"
 
 # -----------------------------------------------------
-# Create and run a query.
+# Try some tests.
 #[root@tester]
 
     #
@@ -434,55 +369,6 @@ EOF
         --data   "blue.query.status=RUNNING" \
         "${endpointurl:?}/${bluequery}" \
         | bin/pp | tee bluequery.json
+    
 
-
-# RUN and WAIT
-
-# RUN then WAIT
-
-
-
-# -----------------------------------------------------
-# Start our test container.
-#[user@desktop]
-
-    source /tmp/chain.properties
-    docker run \
-         --rm \
-         --tty \
-         --interactive \
-         --env "datadata=${datadata:?}" \
-         --env "datalink=${datalink:?}" \
-         --env "datauser=${datauser:?}" \
-         --env "datapass=${datapass:?}" \
-         --env "datadriver=${datadriver:?}" \
-         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
-         --link "${firename:?}:${firelink:?}" \
-         --volume /etc/localtime:/etc/localtime:ro \
-         "firethorn/tester:${version:?}" \
-         bash
- 
-# -----------------------------------------------------
-# Configure our identity.
-#[root@tester]
- 
-    identity=${identity:-$(date '+%H:%M:%S')}
-    community=${community:-$(date '+%A %-d %B %Y')}
-
-    source "bin/01-01-init-rest.sh"
- 
-# -----------------------------------------------------
-# Complete our query.
-#[root@tester]
- 
-    bluequery=blue/query/360448
-
-    #
-    # Complete our query.
-    curl \
-         --header "firethorn.auth.identity:${identity:?}" \
-         --header "firethorn.auth.community:${community:?}" \
-         --data   "blue.query.status=COMPLETED" \
-         "${endpointurl:?}/${bluequery}" \
-         | bin/pp | tee bluequery.json
 
