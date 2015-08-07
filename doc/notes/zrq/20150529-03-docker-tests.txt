@@ -203,6 +203,7 @@
                 twomass_psc.dec BETWEEN -40 AND -39
             "
 
+        # fails :-(
         source "bin/05-03-execute-query.sh" \
             "AUTO" \
             "
@@ -262,35 +263,6 @@
                         twomass_psc.dec BETWEEN -40 AND -39
 
                     "
-
-                source "bin/05-03-execute-query.sh" \
-                    "AUTO" \
-                    "
-                    SELECT
-                        atlasSource.ra  as atra,
-                        atlasSource.dec as atdec,
-                        twomass_psc.ra  as tmra,
-                        twomass_psc.dec as tmdec,
-                        atlasSourceXtwomass_psc.distanceMins as dist
-                    FROM
-                        atlas.atlasSource
-                    JOIN
-                        atlasSourceXtwomass_psc
-                    ON
-                        atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
-                    JOIN
-                        twomass.twomass_psc
-                    ON
-                        twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
-                    WHERE
-                        atlasSource.ra  BETWEEN 354 AND 355
-                    AND
-                        atlasSource.dec BETWEEN -40 AND -39
-                    AND
-                        twomass_psc.ra  BETWEEN 354 AND 355
-                    AND
-                        twomass_psc.dec BETWEEN -40 AND -39
-                    "
             done
 
 # -------------------------------------------------------------------------------------------
@@ -298,4 +270,17 @@
 #[root@tester]
 
         exit
+
+
+
+
+    6:30    4064
+    6:35    4100
+    6:50    4156
+
+
+
+    14:30   2480
+    
+
 
