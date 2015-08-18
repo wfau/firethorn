@@ -112,7 +112,7 @@ public class BlueQueryBean
      */
     public BlueTask.TaskState getStatus()
         {
-        return entity().one();
+        return entity().state();
         }
 
     /**

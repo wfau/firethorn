@@ -19,20 +19,15 @@ package uk.ac.roe.wfau.firethorn.blue;
 
 import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -74,9 +69,6 @@ extends BlueTask<BlueQuery>
         public BlueQuery.TaskRunner runner(); 
 
         }
-
-    //@Override
-    //public static BlueQuery.Services services();
 
     /**
      * {@link NamedEntity.NameFactory} interface.
@@ -217,9 +209,6 @@ extends BlueTask<BlueQuery>
         public Iterable<BlueQuery> select(final AdqlResource resource);
 
         }
-
-    //@Override
-    //public BlueQuery.EntityFactory factory();
 
     /**
      * {@link BlueTask.TaskRunner} interface.

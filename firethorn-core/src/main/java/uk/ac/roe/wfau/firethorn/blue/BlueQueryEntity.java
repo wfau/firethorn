@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -413,6 +412,12 @@ implements BlueQuery
         return services().entities();
         }
 
+	@Override
+	protected BlueQuery.TaskRunner runner()
+		{
+        return services().runner();
+		}
+    
     /**
      * Protected constructor.
      * 
@@ -491,7 +496,7 @@ implements BlueQuery
     @Override
     public void input(final String input)
         {
-        if ((this.one() == TaskState.EDITING) || (this.one() == TaskState.READY))
+        if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
             {
             this.input = input;
             prepare();
@@ -842,9 +847,9 @@ implements BlueQuery
         {
         log.debug("prepare()");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", one().name());
+        log.debug("  state [{}]", state().name());
 
-        if ((this.one() == TaskState.EDITING) || (this.one() == TaskState.READY))
+        if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
             {
             log.debug("Status is good");
             // Check for empty query.
@@ -865,9 +870,9 @@ implements BlueQuery
             }
         
         else {
-            log.error("Call to prepare() with invalid state [{}]", this.one().name());
+            log.error("Call to prepare() with invalid state [{}]", this.state().name());
             throw new IllegalStateException(
-                "Call to prepare() with invalid state [" + this.one().name() + "]"
+                "Call to prepare() with invalid state [" + this.state().name() + "]"
                 );
             }
         }
@@ -877,13 +882,13 @@ implements BlueQuery
         {
         log.debug("execute()");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", one().name());
+        log.debug("  state [{}]", state().name());
 
-        if (this.one() != TaskState.READY)
+        if (this.state() != TaskState.READY)
             {
-            log.error("Call to execute() with invalid state [{}]", this.one().name());
+            log.error("Call to execute() with invalid state [{}]", this.state().name());
             throw new IllegalStateException(
-                "Call to execute() with invalid state [" + this.one().name() + "]"
+                "Call to execute() with invalid state [" + this.state().name() + "]"
                 );
             }
         // Create our results table.

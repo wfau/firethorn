@@ -21,17 +21,13 @@ import java.util.concurrent.Future;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner.Updator;
-import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.TaskRunner.BaseUpdator;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateNestedMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 
 /**
- * Generic job.
+ * Generic task interface.
  *
  */
 public interface BlueTask<TaskType extends BlueTask<?>>
@@ -77,25 +73,19 @@ extends NamedEntity
         }
 
     /**
-     * Reference to our {@link Services} instance.
-     * 
-    public BlueTask.Services<TaskType> services();
-     */
-    
-    /**
      * TaskRunner interface.
      * 
      */
     public static interface TaskRunner<TaskType extends BlueTask<?>>
         {
         /**
-         * Public interface for an update step.
+         * Public interface for a {@link BlueTask} update.
          *
          */
         public interface Updator
             {
             /**
-             * The task {@link Identifier}.
+             * The {@link BlueTask} {@link Identifier}.
              *
              */
             public Identifier ident();
@@ -108,19 +98,19 @@ extends NamedEntity
             }
 
         /**
-         * Execute an {@link Updator} in a new {@link Thread}.
+         * Execute an {@link TaskRunner.Updator} in a new {@link Thread}.
          * 
          */
         public TaskState thread(final Updator updator);
 
         /**
-         * Execute an {@link Updator} in a {@link Future}.
+         * Execute an {@link TaskRunner.Updator} in a {@link Future}.
          * 
          */
         public Future<TaskState> future(final Updator updator);
         
         /**
-         * Public interface for a create step.
+         * Public interface for a {@link BlueTask} creation.
          *
          */
         public interface Creator<TaskType extends BlueTask<?>>
@@ -130,23 +120,24 @@ extends NamedEntity
              *
              */
             public TaskType create();
+            
             }
 
         /**
-         * Execute an {@link Creator} in a new {@link Thread}.
+         * Execute an {@link TaskRunner.Creator} in a new {@link Thread}.
          * <br/> 
-         * Running the {@link Creator} in a new {@link Thread} means that it is run in
+         * Running the {@link TaskRunner.Creator} in a new {@link Thread} means that it is run in
          * a new Hibernate {@link Session}, which gets committed to the database when
-         * the {@link Creator} completes its operation.
+         * the {@link TaskRunner.Creator} completes its operation.
          * <br/> 
-         * Implementations of this method MUST load the {@link TaskType} entity into
+         * Implementations of this method MUST load the {@link BlueTask} entity into
          * the current Hibernate {@link Session} before they return.
          * 
          */
         public TaskType thread(final Creator<TaskType> creator);
 
         /**
-         * Execute an {@link Creator} in a {@link Future}.
+         * Execute an {@link TaskRunner.Creator} in a {@link Future}.
          * 
          */
         public Future<TaskType> future(final Creator<TaskType> creator);
@@ -178,7 +169,7 @@ extends NamedEntity
          * Update the {@link TaskState} of a {@link BlueTask}.
          * 
          */
-        public TaskType update(final Identifier ident, final TaskState next, long maxwait)
+        public TaskType update(final Identifier ident, final TaskState next, long wait)
         throws IdentifierNotFoundException;
         
         }
@@ -211,13 +202,13 @@ extends NamedEntity
         };
 
     /**
-     * The primary task status.
+     * The task {@link TaskState}.
      *
      */
-    public TaskState one();
+    public TaskState state();
 
     /**
-     * User level state transitions. 
+     * User level state transition. 
      * 
      */
     public void update(final TaskState next);
@@ -241,13 +232,13 @@ extends NamedEntity
          * Get the {@link Handle} {@link TaskState}.
          *
          */
-        public TaskState one();
+        public TaskState state();
 
         /**
          * Set the {@link Handle} {@link TaskState}.
          *
          */
-        public void one(final TaskState one);
+        public void state(final TaskState state);
 
         /**
          * Event listener interface.
@@ -309,6 +300,12 @@ extends NamedEntity
      *
      */
     public Handle handle();
+
+    /**
+     * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * 
+     */
+    public TaskType current();
     
     /**
      * The date/time the {@link BlueTask} was queued.
@@ -327,5 +324,5 @@ extends NamedEntity
      *
      */
     public DateTime completed();
-
+    
     }
