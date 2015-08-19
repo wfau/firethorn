@@ -20,11 +20,16 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -52,7 +57,39 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 @Component
 public class TestFactories
     {
+    public static class MockNameFactory<EntityType extends NamedEntity>
+    extends AbstractNameFactory<EntityType>
+        {
+		@Override
+		public String name()
+			{
+			return "mock-name";
+			}
+		@Override
+		public String name(String name)
+			{
+			return name;
+			}
+        }
 
+    public static class MockLinkFactory<EntityType extends Entity>
+    extends AbstractLinkFactory<EntityType>
+        {
+        public MockLinkFactory(final String path)
+            {
+            super(path);
+            }
+
+        @Override
+        public EntityType resolve(String link)
+            throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+        }
+    
+    
     @Component
     public static class JobFactories
         {
@@ -67,7 +104,7 @@ public class TestFactories
                 }
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<Job>
+            extends MockLinkFactory<Job>
             implements Job.LinkFactory
                 {
                 public LinkFactory()
@@ -75,13 +112,6 @@ public class TestFactories
                     super(
                         "/job/base"
                         );
-                    }
-                @Override
-                public Job resolve(String link)
-                throws IdentifierFormatException,IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -97,7 +127,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<TestJob>
+            extends MockLinkFactory<TestJob>
             implements TestJob.LinkFactory
                 {
                 public LinkFactory()
@@ -105,14 +135,6 @@ public class TestFactories
                     super(
                         "/job/test"
                         );
-                    }
-
-                @Override
-                public TestJob resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -133,7 +155,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<Identity>
+            extends MockLinkFactory<Identity>
             implements Identity.LinkFactory
                 {
                 public LinkFactory()
@@ -141,14 +163,6 @@ public class TestFactories
                     super(
                         "/auth/identity"
                         );
-                    }
-
-                @Override
-                public Identity resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -165,7 +179,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<Community>
+            extends MockLinkFactory<Community>
             implements Community.LinkFactory
                 {
                 public LinkFactory()
@@ -173,14 +187,6 @@ public class TestFactories
                     super(
                         "/auth/community"
                         );
-                    }
-
-                @Override
-                public Community resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -197,7 +203,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<Operation>
+            extends MockLinkFactory<Operation>
             implements Operation.LinkFactory
                 {
                 public LinkFactory()
@@ -205,14 +211,6 @@ public class TestFactories
                     super(
                         "/operation"
                         );
-                    }
-
-                @Override
-                public Operation resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -229,7 +227,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<Authentication>
+            extends MockLinkFactory<Authentication>
             implements Authentication.LinkFactory
                 {
                 public LinkFactory()
@@ -238,17 +236,8 @@ public class TestFactories
                         "/authentication"
                         );
                     }
-
-                @Override
-                public Authentication resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
-                    }
                 }
             }
-
         }
 
     @Component
@@ -266,7 +255,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<ConfigProperty>
+            extends MockLinkFactory<ConfigProperty>
             implements ConfigProperty.LinkFactory
                 {
                 public LinkFactory()
@@ -274,14 +263,6 @@ public class TestFactories
                     super(
                         "/config/property"
                         );
-                    }
-
-                @Override
-                public ConfigProperty resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -317,7 +298,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<AdqlQuery>
+            extends MockLinkFactory<AdqlQuery>
             implements AdqlQuery.LinkFactory
                 {
                 public LinkFactory()
@@ -325,14 +306,6 @@ public class TestFactories
                     super(
                         "/adql/query"
                         );
-                    }
-
-                @Override
-                public AdqlQuery resolve(String link)
-                    throws IdentifierFormatException,  IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -349,7 +322,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<AdqlColumn>
+            extends MockLinkFactory<AdqlColumn>
             implements AdqlColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -357,14 +330,6 @@ public class TestFactories
                     super(
                         "/adql/column"
                         );
-                    }
-
-                @Override
-                public AdqlColumn resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -381,7 +346,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<AdqlTable>
+            extends MockLinkFactory<AdqlTable>
             implements AdqlTable.LinkFactory
                 {
                 public LinkFactory()
@@ -389,14 +354,6 @@ public class TestFactories
                     super(
                         "/adql/table"
                         );
-                    }
-
-                @Override
-                public AdqlTable resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -413,7 +370,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<AdqlSchema>
+            extends MockLinkFactory<AdqlSchema>
             implements AdqlSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -421,14 +378,6 @@ public class TestFactories
                     super(
                         "/adql/schema"
                         );
-                    }
-
-                @Override
-                public AdqlSchema resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -444,8 +393,15 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<AdqlResource>
+            implements AdqlResource.NameFactory
+                {
+                }
+
+            @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<AdqlResource>
+            extends MockLinkFactory<AdqlResource>
             implements AdqlResource.LinkFactory
                 {
                 public LinkFactory()
@@ -453,14 +409,6 @@ public class TestFactories
                     super(
                         "/adql/resource"
                         );
-                    }
-
-                @Override
-                public AdqlResource resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -482,7 +430,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<JdbcColumn>
+            extends MockLinkFactory<JdbcColumn>
             implements JdbcColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -490,14 +438,6 @@ public class TestFactories
                     super(
                         "/jdbc/column"
                         );
-                    }
-
-                @Override
-                public JdbcColumn resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -514,7 +454,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<JdbcTable>
+            extends MockLinkFactory<JdbcTable>
             implements JdbcTable.LinkFactory
                 {
                 public LinkFactory()
@@ -522,14 +462,6 @@ public class TestFactories
                     super(
                         "/jdbc/table"
                         );
-                    }
-
-                @Override
-                public JdbcTable resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -546,7 +478,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<JdbcSchema>
+            extends MockLinkFactory<JdbcSchema>
             implements JdbcSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -554,14 +486,6 @@ public class TestFactories
                     super(
                         "/jdbc/schema"
                         );
-                    }
-
-                @Override
-                public JdbcSchema resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -578,7 +502,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<JdbcResource>
+            extends MockLinkFactory<JdbcResource>
             implements JdbcResource.LinkFactory
                 {
                 public LinkFactory()
@@ -586,14 +510,6 @@ public class TestFactories
                     super(
                         "/jdbc/resource"
                         );
-                    }
-
-                @Override
-                public JdbcResource resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -615,7 +531,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<IvoaColumn>
+            extends MockLinkFactory<IvoaColumn>
             implements IvoaColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -623,14 +539,6 @@ public class TestFactories
                     super(
                         "/ivoa/column"
                         );
-                    }
-
-                @Override
-                public IvoaColumn resolve(String link)
-                    throws IdentifierFormatException,IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -647,7 +555,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<IvoaTable>
+            extends MockLinkFactory<IvoaTable>
             implements IvoaTable.LinkFactory
                 {
                 public LinkFactory()
@@ -655,14 +563,6 @@ public class TestFactories
                     super(
                         "/ivoa/table"
                         );
-                    }
-
-                @Override
-                public IvoaTable resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -679,7 +579,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<IvoaSchema>
+            extends MockLinkFactory<IvoaSchema>
             implements IvoaSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -687,14 +587,6 @@ public class TestFactories
                     super(
                         "/ivoa/schema"
                         );
-                    }
-
-                @Override
-                public IvoaSchema resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -711,7 +603,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<IvoaResource>
+            extends MockLinkFactory<IvoaResource>
             implements IvoaResource.LinkFactory
                 {
                 public LinkFactory()
@@ -719,14 +611,6 @@ public class TestFactories
                     super(
                         "/ivoa/resource"
                         );
-                    }
-
-                @Override
-                public IvoaResource resolve(String link)
-                    throws IdentifierFormatException, IdentifierNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             }
@@ -747,7 +631,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends AbstractLinkFactory<OgsaService>
+            extends MockLinkFactory<OgsaService>
             implements OgsaService.LinkFactory
                 {
                 public LinkFactory()
@@ -755,14 +639,6 @@ public class TestFactories
                     super(
                         "/ogsa/service"
                         );
-                    }
-
-                @Override
-                public OgsaService resolve(String link)
-                throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
                     }
                 }
             @Component
@@ -793,7 +669,7 @@ public class TestFactories
                     }
                 @Component
                 public static class LinkFactory
-                extends AbstractLinkFactory<OgsaJdbcResource>
+                extends MockLinkFactory<OgsaJdbcResource>
                 implements OgsaJdbcResource.LinkFactory
                     {
                     public LinkFactory()
@@ -801,15 +677,6 @@ public class TestFactories
                         super(
                             "/ogsa/jdbc"
                             );
-                        }
-
-                    @Override
-                    public OgsaJdbcResource resolve(String link)
-                        throws IdentifierFormatException,
-                        IdentifierNotFoundException, EntityNotFoundException
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
                         }
                     }
                 }
@@ -826,7 +693,7 @@ public class TestFactories
 
                 @Component
                 public static class LinkFactory
-                extends AbstractLinkFactory<OgsaIvoaResource>
+                extends MockLinkFactory<OgsaIvoaResource>
                 implements OgsaIvoaResource.LinkFactory
                     {
                     public LinkFactory()
@@ -835,16 +702,40 @@ public class TestFactories
                             "/ogsa/ivoa"
                             );
                         }
-
-                    @Override
-                    public OgsaIvoaResource resolve(String link)
-                        throws IdentifierFormatException,
-                        IdentifierNotFoundException, EntityNotFoundException
-                        {
-                        // TODO Auto-generated method stub
-                        return null;
-                        }
                     }
+                }
+            }
+        }
+    
+    @Component
+    public static class BlueFactories
+        {
+        @Component
+        public static class QueryFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory<BlueQuery>
+            implements BlueQuery.IdentFactory
+                {
+                }
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<BlueQuery>
+            implements BlueQuery.NameFactory
+                {
+                }
+            @Component
+            public static class LinkFactory
+            extends MockLinkFactory<BlueQuery>
+            implements BlueQuery.LinkFactory
+                {
+                public LinkFactory()
+                	{
+                	super(
+            			"/blue/query"
+            			);
+                	}
                 }
             }
         }

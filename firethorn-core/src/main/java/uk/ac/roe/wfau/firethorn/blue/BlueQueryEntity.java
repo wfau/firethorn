@@ -291,11 +291,11 @@ implements BlueQuery
         @CreateMethod
         public BlueQuery create(final AdqlResource resource)
             {
-            return this.insert(
-                new BlueQueryEntity(
-                    resource,
-                    null
-                    )
+            return create(
+                resource,
+                null,
+                null,
+                0L
                 );
             }
 
@@ -303,11 +303,11 @@ implements BlueQuery
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input)
             {
-            return this.insert(
-                new BlueQueryEntity(
-                    resource,
-                    input
-                    )
+            return create(
+                resource,
+                input,
+                null,
+                0L
                 );
             }
 
@@ -327,11 +327,11 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait)
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long timeout)
             {
-            log.debug("create(AdqlResource, String, StatusOne, long");
+            log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
-            log.debug("  limit [{}]", maxwait);
+            log.debug("  wait  [{}]", timeout);
 
             final BlueQuery query = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
@@ -341,20 +341,24 @@ implements BlueQuery
                         {
                         log.debug("create(");
                         log.debug("Creating query task");
-                        final BlueQuery query = services().entities().create(
-                            resource,
-                            input
-                            );
-                        return query;
+                        return insert(
+                    		new BlueQueryEntity(
+                				resource,
+                				input,
+                				services().names().name()
+                				)
+                    		);
                         }
                     }
                 );
 
-            query.advance(
-        		next,
-        		maxwait
-        		);
-
+            if (next != null)
+	            {
+	            query.advance(
+	        		next,
+	        		timeout
+	        		);
+	            }
             return query;
             }
 
@@ -862,6 +866,7 @@ implements BlueQuery
                 }
             // Check for valid query.
             else {
+            	// TODO parse the query ..
                 log.debug("Query is good");
                 this.transition(
                     TaskState.READY

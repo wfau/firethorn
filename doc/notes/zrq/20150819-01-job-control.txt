@@ -224,30 +224,57 @@ EOF
         "firethorn/ogsadai:${version:?}"
 
 # -----------------------------------------------------
+# Get the container addresses.
+#[user@desktop]
+
+    metaip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${metaname:?})
+    ogsaip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${ogsaname:?})
+    userip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${username:?})
+    dataip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${dataname:?})
+
+# -----------------------------------------------------
 # Create our FireThorn config.
 #[user@desktop]
 
     properties=$(mktemp)
     cat > "${properties:?}" << EOF
 
-firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+firethorn.ogsadai.endpoint=http://${ogsaip:?}:8080/ogsadai/services
 
 firethorn.meta.type=${metatype:?}
-firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.url=jdbc:postgresql://${metaip:?}/${metadata:?}
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=${metadriver:?}
 
 firethorn.user.type=${usertype:?}
-firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userip:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=${userdriver:?}
+
+firethorn.data.type=${datatype:?}
+firethorn.data.url=jdbc:jtds:sqlserver://${dataip:?}/${datadata:?}
+firethorn.data.user=${datauser:?}
+firethorn.data.pass=${datapass:?}
+firethorn.data.driver=${datadriver:?}
 
 EOF
 
     chmod a+r "${properties:?}" 
     chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Link our FireThorn config.
+#[user@desktop]
+
+    rm "${HOME:?}/firethorn.properties"
+    ln -s "${properties:?}" "${HOME:?}/firethorn.properties"
+
+# -----------------------------------------------------
+# Run some tests in Eclipse ....
+#[user@desktop]
+
 
 
 

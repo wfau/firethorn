@@ -25,6 +25,7 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.ThreadConversionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 
 /**
@@ -314,7 +315,8 @@ extends NamedEntity
      * Get the {@link Entity} instance linked to the current {@link Thread}.
      * 
      */
-    public TaskType current();
+    public TaskType current()
+	throws ThreadConversionException;
     
     /**
      * The date/time the {@link BlueTask} was queued.

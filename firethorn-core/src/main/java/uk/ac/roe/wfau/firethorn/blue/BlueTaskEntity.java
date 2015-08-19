@@ -52,6 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.ThreadConversionException;
 
 /**
  * {@link BlueTask} implementation. 
@@ -257,7 +258,7 @@ implements BlueTask<TaskType>
                 log.debug("After future()");
                 log.debug("  initial [{}]", initial);
                 // Convert the entity to the current thread/session
-                final TaskType result = (TaskType) initial.current();
+            	final TaskType result = (TaskType) initial.current();
                 log.debug("After select()");
                 log.debug("  result [{}]", result);
                 return result ;
@@ -274,6 +275,11 @@ implements BlueTask<TaskType>
                 log.error("Interrupted waiting for Creator [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                 return null;
         	    }
+            catch (ThreadConversionException ouch)
+	    	    {
+	            log.error("ThreadConversionException [{}]");
+	            return null;
+	    	    }
             }
 
         @Async
@@ -332,6 +338,7 @@ implements BlueTask<TaskType>
      */
     @Override
     public TaskType current()
+    throws ThreadConversionException
     	{
         log.debug("Selecting current task [{}]", ident());
         try {
@@ -342,7 +349,10 @@ implements BlueTask<TaskType>
         catch (final IdentifierNotFoundException ouch)
         	{
         	log.error("IdentifierNotFound selecting current instance [{}]", ident());
-        	return null ;
+        	throw new ThreadConversionException(
+    			ident(),
+    			ouch
+    			);
         	}
         }
     
@@ -862,7 +872,7 @@ implements BlueTask<TaskType>
      */
     private void accept(final TaskState next)
         {
-        log.debug("valid(StatusOne)");
+        log.debug("accept(TaskState)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());
         this.state = next ;
@@ -1088,13 +1098,20 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState execute()
                     {
-                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
-                    log.debug("Before prepare()");
-                    log.debug("  state [{}]", task.state().name());
-                    task.prepare();
-                    log.debug("After prepare()");
-                    log.debug("  state [{}]", task.state().name());
-                    return task.state();
+                	try {
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    log.debug("Before prepare()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    task.prepare();
+	                    log.debug("After prepare()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    return task.state();
+                    	}
+                    catch (ThreadConversionException ouch)
+	    	    	    {
+	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
                     }
                 }
             );
@@ -1117,27 +1134,34 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState execute()
                     {
-                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
-                    log.debug("Before prepare()");
-                    log.debug("  state [{}]", task.state().name());
-                    task.prepare();
-                    log.debug("After prepare()");
-                    log.debug("  state [{}]", task.state().name());
-                    //
-                    // If the task is ready.
-                    if (task.state() == TaskState.READY)
-                        {
-                        log.debug("Before execute()");
-                        log.debug("  state [{}]", task.state().name());
-                        task.execute();
-                        log.debug("After execute()");
-                        log.debug("  state [{}]", task.state().name());
-                        }
-                    else {
-//TODO better error handling 
-                    	log.debug("Not READY, skipping execute()");
-                        }
-                    return task.state();
+                	try {
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    log.debug("Before prepare()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    task.prepare();
+	                    log.debug("After prepare()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    //
+	                    // If the task is ready.
+	                    if (task.state() == TaskState.READY)
+	                        {
+	                        log.debug("Before execute()");
+	                        log.debug("  state [{}]", task.state().name());
+	                        task.execute();
+	                        log.debug("After execute()");
+	                        log.debug("  state [{}]", task.state().name());
+	                        }
+	                    else {
+	//TODO better error handling 
+	                    	log.debug("Not READY, skipping execute()");
+	                        }
+	                    return task.state();
+	                    }
+                    catch (ThreadConversionException ouch)
+	    	    	    {
+	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
                     }
                 }
             );
@@ -1160,15 +1184,22 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState execute()
                     {
-                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
-                    log.debug("Before change()");
-                    log.debug("  state [{}]", task.state().name());
-                    task.transition(
-                        next
-                        );
-                    log.debug("After change()");
-                    log.debug("  state [{}]", task.state().name());
-                    return task.state();
+                	try {
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    log.debug("Before change()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    task.transition(
+	                        next
+	                        );
+	                    log.debug("After change()");
+	                    log.debug("  state [{}]", task.state().name());
+	                    return task.state();
+	                    }
+                    catch (ThreadConversionException ouch)
+	    	    	    {
+	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
                     }
                 }
             );
