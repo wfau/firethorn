@@ -352,6 +352,75 @@ cat  "${databasefile:?}"
         popd
     exit
 
+
+
+
+deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        pushd "tomcat/webapps/ogsa-dai//WEB-INF/etc/dai"
+
+cat > resources/gaia-tap << EOF
+id=gaia-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://geadev.esac.esa.int/tap-dev/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+     popd
+    exit
+
+# -----------------------------------------------------
+# Manually load the IVOA vosi data.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${testuser:?}@${testhost:?}"
+
+        #
+        # Run the tests in Maven.
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update default
+
+            pushd firethorn-core
+
+                mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+            popd
+        popd
+    exit
+    
+# -----------------------------------------------------
+# IvoaResourceLoader results.
+#
+
+
+Resource [gaia-tap][851969]
+Schema [public][884741] 
+
+Resource [gavo-tap][851970]
+Schema [icecube][884764]
+
 # -----------------------------------------------------
 # Import the table metadata.
 #[user@desktop]
@@ -363,21 +432,16 @@ cat  "${databasefile:?}"
     source "${deploylist:?}"
     ssh "${testuser:?}@${testhost:?}"
 
- 	### Could no find ${testhost:?} (pyrus)
-	### Works after resetting the VM
-	### 
+
+	source "${HOME:?}/firethorn.settings"
+	FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+	FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
 
 
-        source "${HOME:?}/firethorn.settings"
-        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
-        FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/metadocs
-
-#
-# Temp fix - use metadata code on a specific branch
-pushd "${FIRETHORN_CODE:?}"
-    hg pull
-    hg update -C default
-popd
+	pushd "${FIRETHORN_CODE:?}"
+	    hg pull
+	    hg update -C default
+	popd
 
       
     source "${HOME:?}/firethorn.settings"
@@ -430,15 +494,49 @@ EOF
 twomasspublic=${adqlschema:?}
 EOF
 
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'VHSDR1' 'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'SDSSDR9' 'dbo' "${FIRETHORN_META:?}/SDSSDR9_TablesSchema.xml"
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'VIKINGDR3' 'dbo' "${FIRETHORN_META:?}/VIKINGDR3_TablesSchema.xml"
+
+        source "${FIRETHORN_TEST:?}/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" 'WISE' 'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
+
+        ivoaname=GACS
+        ivoaschema=/ivoa/schema/884741
+
+	curl  \
+	--header "firethorn.auth.identity:${identity:?}" \
+	--header "firethorn.auth.community:${community:?}" \
+	--data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	--data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	--data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	"${endpointurl:?}${adqlspace:?}/schemas/import" \
+	| ./pp | tee query-schema.json
+
+	ivoaname=ICECUBE
+	ivoaschema=/ivoa/schema/884764
+
+	curl  \
+	--header "firethorn.auth.identity:${identity:?}" \
+	--header "firethorn.auth.community:${community:?}" \
+	--data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	--data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	--data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	"${endpointurl:?}${adqlspace:?}/schemas/import" \
+	| ./pp | tee query-schema.json
+
 
         ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
         cat "${HOME:?}/firethorn.spaces"
 
-	#atlasadql=/adql/resource/32772
-	#atlaspublic=/adql/schema/163929
-	#twomasspublic=/adql/schema/163930
+
+	gaiapublic=/adql/schema/164775
+	
 
     exit
+
+
 
 # -------------------------------------------------------------------------------------------
 # Configure Python service.
@@ -454,21 +552,12 @@ EOF
 
         vi /var/www/osa/firethorn.ini
 
-        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32770
-        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/163889
-        ~   atlasprivate=http://coccinea:8080/firethorn/adql/schema/163890
+        ~   adqlspace=http://coccinea:8080/firethorn/adql/resource/32804
+        ~   atlasschema=http://coccinea:8080/firethorn/adql/schema/164775
+        ~   atlasprivate=http://coccinea:8080/firethorn/adql/schema/164775
         ~   firethorn_base=http://coccinea:8080/firethorn
 
     exit
-
-# -------------------------------------------------------------------------------------------
-# SSH tunnel to access Tomcat.
-#[user@desktop]
-
-    deploytype=live
-    deploylist="${HOME:?}/${deploytype:?}.machines"
-    deployprop="${HOME:?}/${deploytype:?}.properties"
-
 
 # -----------------------------------------------------
 # Run test queries.
@@ -545,4 +634,5 @@ EOF
 
         popd
     exit
+
 
