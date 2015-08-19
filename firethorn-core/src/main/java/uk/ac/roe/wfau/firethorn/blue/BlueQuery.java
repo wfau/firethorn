@@ -148,7 +148,7 @@ extends BlueTask<BlueQuery>
              * The next {@link TaskState} to move to, e.g {@value TaskState#RUNNING} to run the query.
              * 
              */
-            public TaskState status();
+            public TaskState next();
             
             /**
              * The maximum number of rows to return.
@@ -175,14 +175,14 @@ extends BlueTask<BlueQuery>
          * http://redmine.roe.ac.uk/issues/311
          *
          */
-        public BlueQuery create(final AdqlResource resource, final TapRequest request);
+        public BlueQuery create(final AdqlResource resource);
 
         /**
          * Create a new {@link BlueQuery}.
          * http://redmine.roe.ac.uk/issues/311
          *
          */
-        public BlueQuery create(final AdqlResource resource);
+        public BlueQuery create(final AdqlResource resource, final TapRequest request);
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string.

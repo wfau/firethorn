@@ -217,7 +217,7 @@ public class BlueQueryController
         }
     
     /**
-     * {@link RequestMethod#POST} request to update a {@link BlueQuery}.
+     * {@link RequestMethod#POST} request to advance the {@TaskState} of a {@link BlueQuery}.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
@@ -228,7 +228,7 @@ public class BlueQueryController
      */
     @ResponseBody
     @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
-    public BlueQueryBean update00(
+    public BlueQueryBean advance(
         @PathVariable("ident")
         final String ident,
         @RequestParam(value=STATUS_PARAM_NAME, required=true)
@@ -237,7 +237,7 @@ public class BlueQueryController
         log.debug("update(String, StatusOne) [{}]", ident, status.name());
 
         return bean(
-            services.entities().update(
+            services.entities().advance(
                 services.idents().ident(
                     ident
                     ),

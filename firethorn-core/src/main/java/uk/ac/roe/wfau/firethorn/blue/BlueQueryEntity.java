@@ -282,7 +282,7 @@ implements BlueQuery
             return create(
                 resource,
                 request.input(),
-                request.status(),
+                request.next(),
                 request.maxwait()
                 );
             }
@@ -333,7 +333,6 @@ implements BlueQuery
             log.debug("  state [{}]", next);
             log.debug("  limit [{}]", maxwait);
 
-            log.debug("Creating query task");
             final BlueQuery query = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
                     {
@@ -350,12 +349,13 @@ implements BlueQuery
                         }
                     }
                 );
-            log.debug("Updating query task");
-            return update(
-                query,
-                next,
-                maxwait
-                );
+
+            query.advance(
+        		next,
+        		maxwait
+        		);
+
+            return query;
             }
 
         
@@ -856,14 +856,14 @@ implements BlueQuery
             if ((this.input() == null) || (this.input().trim().length() == 0))
                 {
                 log.debug("Query is empty");
-                this.change(
+                this.transition(
                     TaskState.EDITING
                     );
                 }
             // Check for valid query.
             else {
                 log.debug("Query is good");
-                this.change(
+                this.transition(
                     TaskState.READY
                     );
                 }
@@ -898,13 +898,13 @@ implements BlueQuery
             Thread.sleep(1000);
 
             log.debug("Pending ....");
-            change(TaskState.PENDING);
+            transition(TaskState.QUEUED);
 
             log.debug("Sleeping ....");
             Thread.sleep(1000);
 
             log.debug("Running ....");
-            change(TaskState.RUNNING);
+            transition(TaskState.RUNNING);
 
             log.debug("Sleeping ....");
             Thread.sleep(1000);

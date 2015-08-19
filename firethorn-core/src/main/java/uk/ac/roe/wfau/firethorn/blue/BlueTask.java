@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -159,17 +160,17 @@ extends NamedEntity
         public Iterable<TaskType> select();
 
         /**
-         * Update the {@link TaskState} of a {@link BlueTask}.
+         * Advance the {@link TaskState} of a {@link BlueTask}.
          * 
          */
-        public TaskType update(final Identifier ident, final TaskState next)
+        public TaskType advance(final Identifier ident, final TaskState next)
         throws IdentifierNotFoundException;
 
         /**
-         * Update the {@link TaskState} of a {@link BlueTask}.
+         * Advance the {@link TaskState} of a {@link BlueTask}.
          * 
          */
-        public TaskType update(final Identifier ident, final TaskState next, long wait)
+        public TaskType advance(final Identifier ident, final TaskState next, long wait)
         throws IdentifierNotFoundException;
         
         }
@@ -179,10 +180,11 @@ extends NamedEntity
      *
      */
     public enum TaskState
+    implements Comparable<TaskState>
         {
         EDITING(true),
         READY(true),
-        PENDING(true),
+        QUEUED(true),
         RUNNING(true),
         COMPLETED(false),
         CANCELLED(false),
@@ -195,10 +197,48 @@ extends NamedEntity
             }
 
         private boolean active ;
+        /**
+         * Check if this is an active {@link TaskState}. 
+         * @return true if this is an active {@link TaskState}.
+         * 
+         */
         public boolean active()
             {
             return this.active;
             }
+
+        /**
+         * Get the next {@link TaskState} in the sequence. 
+         * @return The next {@link TaskState} in the sequence.
+         * 
+         */
+        public TaskState next()
+        	{
+        	return next(this);
+        	}
+
+        /**
+         * Get the next {@link TaskState} in the sequence. 
+         * @param prev The current {@link TaskState}.
+         * @return The next {@link TaskState} in the sequence.
+         * 
+         */
+        public static TaskState next(final TaskState prev)
+    		{
+        	switch(prev)
+        		{
+        		case EDITING:
+        			return READY;
+        		case READY:
+        			return QUEUED;
+        		case QUEUED:
+        			return RUNNING;
+        		case RUNNING:
+        			return COMPLETED;
+    			default:
+    				return prev;
+        		}
+    		}
         };
 
     /**
@@ -208,10 +248,10 @@ extends NamedEntity
     public TaskState state();
 
     /**
-     * User level state transition. 
+     * Advance to the next {@link TaskState}. 
      * 
      */
-    public void update(final TaskState next);
+    public void advance(final TaskState next, long timeout);
 
     /**
      * An event notification handle.
@@ -235,10 +275,10 @@ extends NamedEntity
         public TaskState state();
 
         /**
-         * Set the {@link Handle} {@link TaskState}.
+         * Update our {@link Handle} with a {@link TaskState} event.
          *
          */
-        public void state(final TaskState state);
+        public void event(final TaskState state);
 
         /**
          * Event listener interface.
@@ -247,43 +287,12 @@ extends NamedEntity
         public static interface Listener
             {
             /**
-             * Check an event.
-             * @return true to continue waiting.
+             * Wait for an event from a {@link Handle}. 
              *
              */
-            public boolean check(Handle handle);
-
-            /**
-             * The elapsed time since this Listener started. 
-             *
-             */
-            public long time();
-
-            /**
-             * The number of times this Listener has checked. 
-             *
-             */
-            public long count();
+            public void waitfor(final Handle handle);
 
             }
-
-        /**
-         * Listen for any event, with a time limit.
-         *
-         */
-        public void listen(long limit);
-
-        /**
-         * Listen for a status change, with a time limit.
-         *
-         */
-        public void listen(final TaskState prev, long limit);
-
-        /**
-         * Listen with a {@link Listener} and time limit.
-         *
-         */
-        public void listen(final Listener listener, long limit);
 
         /**
          * Handle resolver.
