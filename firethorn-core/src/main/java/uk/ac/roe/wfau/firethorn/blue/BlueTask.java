@@ -252,6 +252,12 @@ extends NamedEntity
      * Advance to the next {@link TaskState}. 
      * 
      */
+    public void advance(final TaskState next);
+
+    /**
+     * Advance to the next {@link TaskState}. 
+     * 
+     */
     public void advance(final TaskState next, long timeout);
 
     /**

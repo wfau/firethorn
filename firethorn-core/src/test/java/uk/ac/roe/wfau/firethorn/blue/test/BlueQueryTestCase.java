@@ -21,60 +21,24 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 
 /**
  *
  *
  */
-@Slf4j
 public class BlueQueryTestCase
     extends BlueQueryTestBase
     {
 	protected static final String SIMPLE_QUERY = "SELECT TOP 10 ra, dec FROM atlasSource" ;
-	
-	/**
-     * Simple test query ...
-     *
-     */
-    //@Test
-    public void simple()
-    throws QueryProcessingException
-        {
-        validate(
-            Level.STRICT,
-            State.PARSE_ERROR,
-
-            " SELECT" +
-            "    iPetroMag," +
-            "    rmiExt" +
-            " FROM" +
-            "    atlasSource" +
-            " WHERE" +
-            "    mergedClass=1" +
-            " AND" +
-            "    iPetroMag>-9.99995e+8" +
-            " AND" +
-            "    rmiExt>-9.99995e+8" +
-            " AND" +
-            "    (rppErrBits | ippErrBits) < 65536"
-            );
-        }
 
     @Test
-    public void test001()
+    public void testNoQuery()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace()
-			);
-    	debug(
-			query
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -83,15 +47,12 @@ public class BlueQueryTestCase
         }
 
     @Test
-    public void test002()
+    public void testSimpleQuery()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY
-			);
-    	debug(
-			query
 			);
     	assertEquals(
 			TaskState.READY,
@@ -99,52 +60,18 @@ public class BlueQueryTestCase
 			);
         }
 
-    //@Test
-    // Known to fail - query isn't parsed.
-    public void test003()
+    @Test
+    public void testBadQuery()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			"not valid SQL"
-			);
-    	debug(
-			query
+			"not SQL"
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
         }
-
-    @Test
-    public void test004()
-    throws Exception
-        {
-    	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			SIMPLE_QUERY
-			);
-    	query.advance(
-			TaskState.CANCELLED,
-			0
-			);
-    	
-    	debug(
-			query
-			);
-    	assertEquals(
-			TaskState.CANCELLED,
-			query.state()
-			);
-        }
     
-    
-    public void debug(final BlueQuery query)
-    	{
-    	log.debug("debug(BlueQuery)");
-    	log.debug("  ident [{}]", query.ident());
-    	log.debug("  state [{}]", query.state());
-
-    	}
     }

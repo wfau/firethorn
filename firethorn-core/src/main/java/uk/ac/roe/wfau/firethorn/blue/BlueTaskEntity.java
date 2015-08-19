@@ -168,6 +168,7 @@ implements BlueTask<TaskType>
 
     /**
      * Our {@link BlueTask.EntityFactory} instance.
+     * 
      *
      */
     @Override
@@ -355,7 +356,16 @@ implements BlueTask<TaskType>
     			);
         	}
         }
-    
+
+    // TODO Move this to base class
+    protected void refresh()
+    	{
+        log.debug("Refreshing entity [{}]", ident());
+        factories().hibernate().refresh(
+    		this
+    		);    	
+    	}
+
     /**
      * Protected constructor.
      * 
@@ -599,7 +609,14 @@ implements BlueTask<TaskType>
             log.debug("done()");
             log.debug("  elapsed [{}]", elapsed());
             log.debug("  timeout [{}]", timeout());
-    		return elapsed() >= timeout() ;
+            if (elapsed() >= timeout())
+            	{
+            	log.debug("done (elapsed >= timeout)");
+            	return true ;
+            	}
+            else {
+            	return false ;
+            	}
             }
         }
 
@@ -621,6 +638,7 @@ implements BlueTask<TaskType>
             // Skip the first test.
         	if (count != 0)
         		{
+            	log.debug("done (count != 0)");
         		return true ;
         		}
             // Check the timeout.
@@ -661,17 +679,24 @@ implements BlueTask<TaskType>
             {
             log.debug("done()");
             log.debug("  prev  [{}]", prev);
-            log.debug("  next  [{}]", next);
             log.debug("  state [{}]", handle.state());
-
+            log.debug("  next  [{}]", next);
+            // If the current state is not active
+            if (handle.state().active() == false)
+        		{
+            	log.debug("done - handle state is not active");
+        		return true ;
+            	}
             // If the state has changed.
             if ((prev != null) && (handle.state() != prev))
         		{
+            	log.debug("done - prev state has changed");
         		return true ;
             	}
             // If the next state has been reached. 
             if ((next != null) && (handle.state().ordinal() >= next.ordinal()))
         		{
+            	log.debug("done - next state reached");
         		return true ;
             	}
             // Check the timeout.
@@ -893,6 +918,15 @@ implements BlueTask<TaskType>
         }
 
     @Override
+    public void advance(final TaskState next)
+        {
+    	advance(
+			next,
+			0L
+			);
+        }
+
+    @Override
     public void advance(final TaskState next, long timeout)
         {
         final TaskState prev = this.state();
@@ -1047,9 +1081,9 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", this.ident());
             log.debug("  ident [{}]", handle.ident());
             log.debug("  prev  [{}]", prev);
-            log.debug("  next  [{}]", next);
             log.debug("  state [{}]", this.state());
             log.debug("  state [{}]", handle.state());
+            log.debug("  next  [{}]", next);
             // Wait until the next state is achieved.
             Handle.Listener listener = new StatusEventListener(
     			prev,
@@ -1063,9 +1097,9 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", this.ident());
             log.debug("  ident [{}]", handle.ident());
             log.debug("  prev  [{}]", prev);
-            log.debug("  next  [{}]", next);
             log.debug("  state [{}]", this.state());
             log.debug("  state [{}]", handle.state());
+            log.debug("  next  [{}]", next);
 
             //
             // Update our entity from the DB.
@@ -1115,6 +1149,12 @@ implements BlueTask<TaskType>
                     }
                 }
             );
+        log.debug("Finished thread()");
+        log.debug("  state [{}]", state().name());
+
+        log.debug("Refreshing state");
+        this.refresh();
+
         log.debug("Finished ready()");
         log.debug("  state [{}]", state().name());
     	}
@@ -1165,6 +1205,12 @@ implements BlueTask<TaskType>
                     }
                 }
             );
+        log.debug("Finished thread()");
+        log.debug("  state [{}]", state().name());
+
+        log.debug("Refreshing state");
+        this.refresh();
+        
         log.debug("Finished running()");
         log.debug("  state [{}]", state().name());
         }
@@ -1203,6 +1249,13 @@ implements BlueTask<TaskType>
                     }
                 }
             );
+        log.debug("Finished thread()");
+        log.debug("  state [{}]", state().name());
+// TODO we want to merge existing changes 
+// TODO we don't want to loose any other changes.
+        log.debug("Refreshing state");
+        this.refresh();
+        
         log.debug("Finished finish()");
         log.debug("  state [{}]", state().name());
         }

@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
@@ -37,6 +38,8 @@ extends AbstractQueryTestBase
     {
 
     protected static final String ATLAS_VERSION = "ATLASDR1" ;
+
+	protected static final String ATLAS_QUERY = "SELECT TOP 10 ra, dec FROM atlasSource" ;
 
     /**
      * Load our resources.
@@ -74,4 +77,11 @@ extends AbstractQueryTestBase
         testSchema(adqlspace, jdbcspace, "TWOMASS",     "TWOMASS",     "dbo");
 
         }
+
+    public void debug(final BlueQuery query)
+		{
+		log.debug("debug(BlueQuery)");
+		log.debug("  ident [{}]", query.ident());
+		log.debug("  state [{}]", query.state());
+		}
     }
