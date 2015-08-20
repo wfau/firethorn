@@ -54,19 +54,22 @@ newversion=1.13.17
 # (uses the test VM to run sqsh)
 #[user@desktop]
 
-    deploytype=test
-    deploylist="${HOME:?}/${deploytype:?}.machines"
-    deployprop="${HOME:?}/${deploytype:?}.properties"
-
-    source "${deploylist:?}"
+  source "${deploylist:?}"
     ssh "${sqluser:?}@${sqlhost:?}"
 
         #
         # Set the new database name.
-        dbversion=SHEP011317LIVE
+        dbuser=STV
+        dbtype=TEST
+        dbdate=$(date +%Y%m%d)
 
-        metadataname="FirethornMetadata${dbversion:?}"
-        userdataname="FirethornUserdata${dbversion:?}"
+        metadataname="${dbtype:?}FirethornMetadata${dbuser:?}${dbdate:?}"
+        userdataname="${dbtype:?}FirethornUserdata${dbuser:?}${dbdate:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=test
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
 
         #
         # Function to fill in the template values.
@@ -81,21 +84,20 @@ newversion=1.13.17
                 ' "${1:?}"
             }
 
-        source "${HOME:?}/sqlserver.properties"
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"    
 
             hg pull
-            hg update
+            hg update default
             
             pushd 'firethorn-sqlserver/src/sql'
 
                 #
                 # Set the template values
-                databasehost="${devhost:?}"
+                databasehost="${sqshhost:?}"
                 databaseport="1433"
                 databasename="${metadataname:?}"
-                databasepath="${devpath:?}"
+                databasepath="${sqshpath:?}"
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -111,22 +113,22 @@ EOF
 
                 #
                 # Delete our old metadata database.
-                sqlsed 'delete-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'delete-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'delete-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
                 #
                 # Create our new metadata database.
-                sqlsed 'create-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'create-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'create-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
                 #
                 # Set the template values
-                databasehost="${devhost:?}"
+                databasehost="${sqshhost:?}"
                 databaseport="1433"
                 databasename="${userdataname:?}"
-                databasepath="${devpath:?}"
+                databasepath="${sqshpath:?}"
                 databaseuser="${databasename:?}User"
                 databaselogin="${databasename:?}Login"
                 databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -141,16 +143,16 @@ EOF
 
                 #
                 # Delete our old userdata database.
-                sqlsed 'delete-user.sql'     | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'delete-login.sql'    | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'delete-database.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
                 #
                 # Create our new userdata database (including empty table).
-                sqlsed 'create-database.sql'   | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'create-login.sql'      | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'create-user.sql'       | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
-                sqlsed 'create-emptytable.sql' | sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
 
 echo "Config [${databasefile:?}]"
 cat  "${databasefile:?}"
@@ -158,7 +160,6 @@ cat  "${databasefile:?}"
             popd
         popd
     exit
-
 # -----------------------------------------------------------------------------------
 # Update our deployment properties
 #[user@desktop]
