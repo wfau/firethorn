@@ -599,7 +599,7 @@ import os
 use_preset_params = False # Use the preset firethorn resource parameters at the end of this config file
 use_cached_firethorn_env = False #Use cached firethorn environment, stored in (testing/conf/pyrothorn-stored.js)
 firethorn_version =  "${version:?}" 
-include_neighbour_import = True # Choose whether to import all neighbour tables for a catalogue or not
+include_neighbour_import = False # Choose whether to import all neighbour tables for a catalogue or not
 test_is_continuation = False # Test is continued from prev run or not (If true, duplicate queries that have been run previously will not be run)
 
 ### Directory and URL Information ###
@@ -665,7 +665,7 @@ stored_queries_dbserver_username = "${storedqueriesuser:?}"
 stored_queries_dbserver_password = "${storedqueriespass:?}" 
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
 stored_queries_database = "userinterface" 
-stored_queries_query = "select * from webqueries where dbname like '${testrundatabase:?}%'" 
+stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
 logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
 
 ### Firethorn Live test Configuration ###
@@ -759,10 +759,10 @@ class OgsaChecker(object):
                 print "Error! Resource not found: 404"
             else:
                 print "Error! Resource not found:" + e
-            return
+            quit()
         except urllib2.URLError as e:
             print "Error! Resource not found: " + e
-            return
+            quit()
         else:
             # 200
             body = resp.read()
@@ -788,7 +788,7 @@ Ctrl + x / Y  / Enter
 
 # Run test as background task (Closing terminal will not cancel run)
 
-nohup python -u check_ogsa_resources.py   ogsadai-183cc85b-0962-4677-9800-755bfe0e78ec > log_ogsa_check.txt 2>&1 </dev/null &
+nohup python -u check_ogsa_resources.py   ogsadai-38567c54-58df-4da3-861f-9bbe1b5d05d5 > log_ogsa_check.txt 2>&1 </dev/null &
 
 
 

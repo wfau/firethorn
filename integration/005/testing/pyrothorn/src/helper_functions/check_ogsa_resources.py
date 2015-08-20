@@ -31,10 +31,10 @@ class OgsaChecker(object):
                 print "Error! Resource not found: 404"
             else:
                 print "Error! Resource not found:" + e
-            return
+	    quit()
         except urllib2.URLError as e:
             print "Error! Resource not found: " + e
-            return
+            quit()
         else:
             # 200
             body = resp.read()
