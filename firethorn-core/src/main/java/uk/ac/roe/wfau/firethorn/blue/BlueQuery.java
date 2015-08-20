@@ -19,9 +19,14 @@ package uk.ac.roe.wfau.firethorn.blue;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.ModifiableLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Timings;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -255,6 +260,15 @@ extends BlueTask<BlueQuery>
      * Our ADQL syntax status.
      *
      */
+    public interface Syntax
+    extends AdqlQuery.Syntax
+    	{
+    	}
+
+    /**
+     * Our ADQL syntax status.
+     *
+     */
     public Syntax syntax();
     
     /**
@@ -372,11 +386,47 @@ extends BlueTask<BlueQuery>
         public BaseResource<?> primary();
         
         }
+    
     /**
      * The {@link BaseResource}s used by this query.
      *
      */
     public Resources resources();
+    
+    /**
+     * The query limits.
+     * 
+     */
+    public Limits limits();
+
+    /**
+     * Set the query limits using a combination of the current values and the values from another Limits object.
+     * @param limits The Limits object to combine.
+     * @see combine(Limits)
+     * 
+     */
+    public void limits(final Limits limits);
+
+    /**
+     * Set the query limits.
+     * @param rows  The rows value.
+     * @param cells The cells value.
+     * @param time  The time value.
+     * 
+     */
+    public void limits(final Long rows, final Long cells, final Long time);
+    
+    /**
+     * The query delays.
+     * 
+     */
+    public Delays delays();
+
+    /**
+     * The query timing statistics.
+     * 
+     */
+    public Timings timings();
 
     /**
      * Event notification handle.

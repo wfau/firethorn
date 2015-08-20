@@ -30,6 +30,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -51,12 +52,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.ModifiableLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -114,25 +122,25 @@ implements BlueQuery
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_MODE_COL   = "mode";
+    protected static final String DB_OGSA_MODE_COL   = "ogsamode";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_COL   = "adqlquery";
+    protected static final String DB_ADQL_INPUT_COL  = "adqlinput";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_OSQL_COL   = "osqlquery";
+    protected static final String DB_ADQL_QUERY_COL   = "adqlquery";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_INPUT_COL  = "adqlinput";
+    protected static final String DB_OSQL_QUERY_COL   = "osqlquery";
 
     /**
      * Hibernate column mapping.
@@ -144,13 +152,17 @@ implements BlueQuery
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_TABLE_COL  = "adqltable";
+    protected static final String DB_ADQL_TABLE_COL    = "adqltable";
+    protected static final String DB_ADQL_SCHEMA_COL   = "adqlschema";
+    protected static final String DB_ADQL_RESOURCE_COL = "adqlresource";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_RESOURCE_COL = "adqlresource";
+    protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
+    protected static final String DB_SYNTAX_LEVEL_COL   = "syntaxlevel";
+    protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
     
     /**
      * {@link BlueQuery.Services} implementation.
@@ -495,7 +507,7 @@ implements BlueQuery
         type="org.hibernate.type.TextType"
         )
     @Column(
-        name = DB_INPUT_COL,
+        name = DB_ADQL_INPUT_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -523,7 +535,7 @@ implements BlueQuery
         type="org.hibernate.type.TextType"
         )
     @Column(
-        name = DB_ADQL_COL,
+        name = DB_ADQL_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -539,7 +551,7 @@ implements BlueQuery
         type="org.hibernate.type.TextType"
         )
     @Column(
-        name = DB_OSQL_COL,
+        name = DB_OSQL_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -556,7 +568,7 @@ implements BlueQuery
      *
      */
     @Column(
-         name = DB_MODE_COL,
+         name = DB_OGSA_MODE_COL,
          unique = false,
          nullable = false,
          updatable = true
@@ -735,15 +747,12 @@ implements BlueQuery
             @Override
             public String input()
                 {
-                return BlueQueryEntity.this.input();
-                }
-
-            @Override
-            public String cleaned()
-                {
+                //
+                // Get the original input.
+                final String original = BlueQueryEntity.this.input();
                 //
                 // Trim leading/trailing spaces.
-                String result = input().trim();
+                String result = original.trim();
                 //
                 // Skip /* comments */
                 final Pattern p1 = Pattern.compile(
@@ -757,7 +766,9 @@ implements BlueQuery
                     }
 
                 // Legacy SQLServer syntax
-                if (this.level == Level.LEGACY)
+                // TODO This should be part of the primary AqdlResource.
+                // TODO Platform specific pre-processing attached to the AdqlResource.
+                if (this.syntax().level() == Level.LEGACY)
                     {
                     //
                     // Replace double '..'
@@ -771,7 +782,6 @@ implements BlueQuery
                         result = m2.replaceAll(".");
                         warning("SQLServer '..' syntax is not required");
                         }
-
                     //
                     // Replace 'AS distance'.
                     final Pattern p3 = Pattern.compile(
@@ -785,7 +795,6 @@ implements BlueQuery
                         warning("DISTANCE is an ADQL reserved word");
                         }
                     }
-                
                 return result;
                 }
 
@@ -865,30 +874,179 @@ implements BlueQuery
             @Override
             public Syntax syntax()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return BlueQueryEntity.this.syntax();
                 }
 
             @Override
-            public void syntax(State status)
+            public void syntax(State syntax)
                 {
-                // TODO Auto-generated method stub
+				BlueQueryEntity.this.syntax = syntax;
                 }
 
             @Override
-            public void syntax(State status, String message)
+            public void syntax(State syntax, String message)
                 {
-                // TODO Auto-generated method stub
+				BlueQueryEntity.this.syntax  = syntax;
+				BlueQueryEntity.this.message = message ;
                 }
             };
         }
 
+    @Column(
+        name = DB_SYNTAX_STATE_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Syntax.State syntax = Syntax.State.UNKNOWN ;
+
+    @Column(
+        name = DB_SYNTAX_LEVEL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Syntax.Level level ;
+
+    @Transient
+    private final List<String> warnings = new ArrayList<String>();
+    public void warning(final String warning)
+        {
+        warnings.add(
+            warning
+            );
+        }
+
+    @Type(
+        type="org.hibernate.type.TextType"
+        )
+    @Column(
+        name = DB_SYNTAX_MESSAGE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String message;
+    
     @Override
     public Syntax syntax()
     	{
-    	
+		return new Syntax()
+			{
+			@Override
+			public Level level()
+				{
+				return BlueQueryEntity.this.level;
+				}
+
+			@Override
+			public void level(Level level)
+				{
+				BlueQueryEntity.this.level = level;
+				}
+
+			@Override
+			public State state()
+				{
+				return BlueQueryEntity.this.syntax;
+				}
+
+			@Override
+			public String message()
+				{
+				return BlueQueryEntity.this.message;
+				}
+
+			@Override
+			public String friendly()
+				{
+				return BlueQueryEntity.this.message;
+				}
+
+			@Override
+			public Iterable<String> warnings()
+				{
+				return BlueQueryEntity.this.warnings;
+				}
+			};
     	}
+
+    @Embedded
+    private AdqlQueryLimits limits;
     
+    @Override
+    public Limits limits()
+        {
+        /*
+         * Need to check for null.
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.limits == null)
+            {
+            this.limits = new AdqlQueryLimits();
+            }
+        return this.limits ;
+        }
+
+    @Override
+    public void limits(final Limits limits)
+        {
+        this.limits = new AdqlQueryLimits(
+            limits
+            );
+        }
+
+    public void limits(final Long rows, final Long cells, final Long time)
+        {
+        this.limits = new AdqlQueryLimits(
+            rows,
+            cells,
+            time
+            );
+        }
+
+    @Embedded
+    private AdqlQueryDelays delays;
+    
+    @Override
+    public Delays delays()
+        {
+        /*
+         * Need to check for null.
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.delays == null)
+            {
+            this.delays = new AdqlQueryDelays();
+            }
+        return this.delays ;
+        }
+
+    @Embedded
+    private AdqlQueryTimings stats;
+    
+    @Override
+    public AdqlQueryTimings timings()
+        {
+        /*
+         * Need to check for null.
+         * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
+         * http://stackoverflow.com/a/1324391
+         */
+        if (this.stats== null)
+            {
+            this.stats= new AdqlQueryTimings();
+            }
+        return this.stats;
+        }
     
     @Override
     protected void prepare()
@@ -917,11 +1075,11 @@ implements BlueQuery
                 // TODO - The parsers should be part of the resource/schema.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
-                    this.schema.resource()
+                    this.resource()
                     );
                 final AdqlParser distrib = this.factories().adql().parsers().create(
                     Mode.DISTRIBUTED,
-                    this.schema.resource()
+                    this.resource()
                     );
 
                 log.debug("Query mode [{}]", this.mode);
@@ -930,7 +1088,7 @@ implements BlueQuery
                     {
                     log.debug("Processing as [DIRECT] query");
                     direct.process(
-                        this
+                        this.parsable()
                         );
                     //
                     // Use our primary resource.
@@ -941,7 +1099,7 @@ implements BlueQuery
                     {
                     log.debug("Processing as [DISTRIBUTED] query");
                     distrib.process(
-                        this
+                        this.parsable()
                         );
                     //
                     // Use our DQP resource.
@@ -951,7 +1109,7 @@ implements BlueQuery
                 else {
                     log.debug("Processing as [DIRECT] query");
                     direct.process(
-                        this
+                        this.parsable()
                         );
                     if (this.resources.size() == 1)
                         {
@@ -965,7 +1123,7 @@ implements BlueQuery
                         // Process as a distributed query.
                         log.debug("Processing as [DISTRIBUTED] query");
                         distrib.process(
-                            this
+                            this.parsable()
                             );
                         this.mode = Mode.DISTRIBUTED;
                         //
@@ -980,14 +1138,14 @@ implements BlueQuery
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
                     {
-                    return status(
-                        Status.READY
-                        );
+                    transition(
+                		TaskState.READY
+                		);
                     }
                 else {
-                    return status(
-                        Status.EDITING
-                        );
+                    transition(
+                		TaskState.EDITING
+                		);
                     }
             	}
             }

@@ -29,7 +29,7 @@ public interface AdqlParserQuery
     {
 
     /**
-     * Get the original input text.
+     * Get the cleaned input text.
      *
      */
     public String input();
@@ -37,8 +37,8 @@ public interface AdqlParserQuery
     /**
      * Get the cleaned text.
      *
-     */
     public String cleaned();
+     */
 
     /**
      * Reset the query state.
@@ -106,6 +106,7 @@ public interface AdqlParserQuery
      * Get the ADQL parser syntax.
      *
      */
+    @Deprecated
     public AdqlQuery.Syntax syntax();
 
     /**

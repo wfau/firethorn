@@ -1511,7 +1511,6 @@ implements AdqlQuery, AdqlParserQuery
 
     @Embedded
     private AdqlQueryLimits limits;
-
     
     @Override
     public ModifiableLimits limits()

@@ -451,23 +451,6 @@ implements AdqlParser
 
     protected ADQLParser parser ;
 
-    protected String fudge(final AdqlParserQuery subject)
-        {
-        //
-        // Trim leading/trailing spaces.
-        final String s1 = subject.input().trim();
-        //
-        // Skip /* comments */
-        final Pattern p1 = Pattern.compile(
-            "/\\*.*?\\*/",
-            Pattern.DOTALL
-            );
-        final Matcher m1 = p1.matcher(s1);
-        final String  s2 = m1.replaceAll("");
-
-        return s2 ;
-        }
-
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -475,7 +458,7 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.cleaned()
+                subject.input()
                 );
             //
             // Reset the query state.

@@ -39,10 +39,10 @@ public class AdqlQueryDelays
 implements AdqlQuery.Delays
     {
     /**
-     * Protected constructor.
+     * Public constructor.
      * 
      */
-    protected AdqlQueryDelays()
+    public AdqlQueryDelays()
         {
         log.debug("AdqlQueryDelays()");
         }
