@@ -31,14 +31,14 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
  *
  *
  */
-public class EditingQueryTestCase
+public class InvalidQueryTestCase
     extends BlueQueryTestBase
     {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 
 	@Test
-    public void testEditEditing()
+    public void testEditing()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -59,7 +59,7 @@ public class EditingQueryTestCase
         }
     
     @Test
-    public void testReadyEditing()
+    public void testReady()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -80,7 +80,7 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testQueueEditing()
+    public void testQueued()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -99,7 +99,8 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testCompleteEditing()
+    // TODO Should this FAIL ?
+    public void testRunning()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -114,13 +115,35 @@ public class EditingQueryTestCase
 			TaskState.COMPLETED
 			);
     	assertEquals(
-			TaskState.FAILED,
+			TaskState.EDITING,
+			query.state()
+			);
+        }
+
+    @Test
+    // TODO Should this FAIL ?
+    public void testCompleted()
+    throws Exception
+        {
+    	final BlueQuery query = factories().blues().entities().create(
+			testspace(),
+			INVALID_QUERY
+			);
+    	assertEquals(
+			TaskState.EDITING,
+			query.state()
+			);
+    	query.advance(
+			TaskState.COMPLETED
+			);
+    	assertEquals(
+			TaskState.EDITING,
 			query.state()
 			);
         }
     
     @Test
-    public void testCancelEditing()
+    public void testCancelled()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -142,7 +165,7 @@ public class EditingQueryTestCase
         }
     
     @Test
-    public void testFailEditing()
+    public void testFailed()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -161,7 +184,7 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testErrorEditing()
+    public void testError()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(

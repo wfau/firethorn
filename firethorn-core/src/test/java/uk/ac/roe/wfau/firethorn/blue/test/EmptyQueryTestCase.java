@@ -38,7 +38,7 @@ public class EmptyQueryTestCase
 	public ExpectedException exception = ExpectedException.none();
 
 	@Test
-    public void testEditEmpty()
+    public void testEditing()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -58,7 +58,7 @@ public class EmptyQueryTestCase
         }
     
     @Test
-    public void testReadyEmpty()
+    public void testReady()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -78,7 +78,7 @@ public class EmptyQueryTestCase
         }
 
     @Test
-    public void testQueueEmpty()
+    public void testQueued()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -96,7 +96,29 @@ public class EmptyQueryTestCase
         }
 
     @Test
-    public void testCompleteEmpty()
+    // TODO Should this FAIL ?
+    public void testRunning()
+    throws Exception
+        {
+    	final BlueQuery query = factories().blues().entities().create(
+			testspace()
+			);
+    	assertEquals(
+			TaskState.EDITING,
+			query.state()
+			);
+    	query.advance(
+			TaskState.RUNNING
+			);
+    	assertEquals(
+			TaskState.EDITING,
+			query.state()
+			);
+        }
+
+    @Test
+    // TODO Should this FAIL ?
+    public void testCompleted()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -110,13 +132,13 @@ public class EmptyQueryTestCase
 			TaskState.COMPLETED
 			);
     	assertEquals(
-			TaskState.FAILED,
+			TaskState.EDITING,
 			query.state()
 			);
         }
     
     @Test
-    public void testCancelEmpty()
+    public void testCancelled()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -137,7 +159,7 @@ public class EmptyQueryTestCase
         }
     
     @Test
-    public void testFailEmpty()
+    public void testFailed()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -155,7 +177,7 @@ public class EmptyQueryTestCase
         }
 
     @Test
-    public void testErrorEmpty()
+    public void testError()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(

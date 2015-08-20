@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Docker container to create new databases.
+    #
+
+
+# -----------------------------------------------------
+# Exploring stuff ..
+#[user@desktop]
+
+    #
+    # Check OS version on current platform.
+    ssh pyratest3
+
+        cat /etc/debian_version 
+        7.1
+
+
+    #
+    # Can't a pre-built sqsh rpm package for Fedora.
+    
+    #
+    # The sqsh project publish rpm packages for RHEL5 and 6.
+    # http://sourceforge.net/projects/sqsh/files/
+    
+    #
+    # Instructions for building on Fedora 13.
+    # http://www.bambams.ca/2010/07/sqshell-building-and-installing-sqsh-in.html
+
+
+# -----------------------------------------------------
+# Use ssh tunnel for SQLServer access.
+#[user@desktop]
+
+    cat > /tmp/chain.properties << EOF
+
+    adminname=nastja
+    adminlink=nerijus
+    adminhost=$(secret 'sqlserver.admin.host')
+    adminuser=$(secret 'sqlserver.admin.user')
+    adminpass=$(secret 'sqlserver.admin.pass')
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Use ssh tunnel for SQLServer access.
+#[user@desktop]
+
+    source /tmp/chain.properties
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${adminname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${adminhost:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Try the RHEL6 rpm in CentOS.
+#[user@desktop]
+
+    source /tmp/chain.properties
+
+    docker run \
+        --rm -it \
+        --link "${adminname:?}:${adminlink:?}" \
+        --volume /tmp/chain.properties:/sqsh.properties \
+        centos:6 bash
+
+        yum clean all
+        
+        yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+
+        yum -y install http://garr.dl.sourceforge.net/project/sqsh/sqsh/sqsh-2.5/sqsh-2.5-1.el6.x86_64.x86_64.rpm
+
+        source /sqsh.properties
+
+        sqsh -S "${adminlink:?}" -U "${adminuser:?}" -P "${adminpass:?}"
+
+# -----------------------------------------------------
+# Create a Docker file with our SQLServer scripts.
+#[user@desktop]
+
+
+

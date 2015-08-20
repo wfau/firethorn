@@ -31,14 +31,14 @@ import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
  *
  *
  */
-public class ReadyQueryTestCase
+public class SimpleQueryTestCase
     extends BlueQueryTestBase
     {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
     @Test
-    public void testEditReady()
+    public void testEditing()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -57,7 +57,7 @@ public class ReadyQueryTestCase
         }
     
     @Test
-    public void testReadyReady()
+    public void testReady()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -78,7 +78,7 @@ public class ReadyQueryTestCase
         }
 
     @Test
-    public void testQueueReady()
+    public void testQueued()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -97,7 +97,7 @@ public class ReadyQueryTestCase
         }
 
     @Test
-    public void testCompleteReady()
+    public void testCompleted()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -117,7 +117,7 @@ public class ReadyQueryTestCase
         }
 
     @Test
-    public void testCancelReady()
+    public void testCancelled()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -139,7 +139,7 @@ public class ReadyQueryTestCase
         }
 
     @Test
-    public void testFailReady()
+    public void testFailed()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -158,7 +158,7 @@ public class ReadyQueryTestCase
         }
 
     @Test
-    public void testErrorReady()
+    public void testError()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
