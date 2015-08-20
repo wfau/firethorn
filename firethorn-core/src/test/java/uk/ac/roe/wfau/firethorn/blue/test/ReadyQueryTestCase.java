@@ -19,11 +19,13 @@ package uk.ac.roe.wfau.firethorn.blue.test;
 
 import static org.junit.Assert.*;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
 
 /**
  *
@@ -32,23 +34,26 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 public class ReadyQueryTestCase
     extends BlueQueryTestBase
     {
-
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
     @Test
     public void testEditReady()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
+    	exception.expect(InvalidTaskStateException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.EDITING
 			);
-    	fail("Invalid state request");
         }
     
     @Test
@@ -57,7 +62,7 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
@@ -78,16 +83,17 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
+    	exception.expect(InvalidTaskStateException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.QUEUED
 			);
-    	fail("Invalid state request");
         }
 
     @Test
@@ -96,7 +102,7 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
@@ -116,7 +122,7 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
@@ -138,16 +144,17 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
+    	exception.expect(InvalidTaskStateException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.FAILED
 			);
-    	fail("Invalid state request");
         }
 
     @Test
@@ -156,15 +163,16 @@ public class ReadyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			ATLAS_QUERY
+			SIMPLE_QUERY
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
+    	exception.expect(InvalidTaskStateException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.ERROR
 			);
-    	fail("Invalid state request");
         }
     }

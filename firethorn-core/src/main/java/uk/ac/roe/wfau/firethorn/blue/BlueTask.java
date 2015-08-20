@@ -25,8 +25,8 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.exception.ThreadConversionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
  * Generic task interface.
@@ -165,14 +165,14 @@ extends NamedEntity
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState next)
-        throws IdentifierNotFoundException;
+        throws IdentifierNotFoundException, InvalidTaskStateException;
 
         /**
          * Advance the {@link TaskState} of a {@link BlueTask}.
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState next, long wait)
-        throws IdentifierNotFoundException;
+        throws IdentifierNotFoundException, InvalidTaskStateException;
         
         }
 
@@ -252,13 +252,15 @@ extends NamedEntity
      * Advance to the next {@link TaskState}. 
      * 
      */
-    public void advance(final TaskState next);
+    public void advance(final TaskState next)
+    throws InvalidTaskStateException;
 
     /**
      * Advance to the next {@link TaskState}. 
      * 
      */
-    public void advance(final TaskState next, long timeout);
+    public void advance(final TaskState next, long timeout)
+    throws InvalidTaskStateException;
 
     /**
      * An event notification handle.
@@ -322,7 +324,7 @@ extends NamedEntity
      * 
      */
     public TaskType current()
-	throws ThreadConversionException;
+	throws HibernateConvertException;
     
     /**
      * The date/time the {@link BlueTask} was queued.

@@ -17,33 +17,32 @@
  */
 package uk.ac.roe.wfau.firethorn.blue.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
 
 /**
  *
  *
  */
-public class EditingQueryTestCase
+public class EmptyQueryTestCase
     extends BlueQueryTestBase
     {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 
 	@Test
-    public void testEditEditing()
+    public void testEditEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -59,12 +58,11 @@ public class EditingQueryTestCase
         }
     
     @Test
-    public void testReadyEditing()
+    public void testReadyEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -80,12 +78,11 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testQueueEditing()
+    public void testQueueEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -99,12 +96,11 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testCompleteEditing()
+    public void testCompleteEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -120,12 +116,11 @@ public class EditingQueryTestCase
         }
     
     @Test
-    public void testCancelEditing()
+    public void testCancelEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -142,12 +137,11 @@ public class EditingQueryTestCase
         }
     
     @Test
-    public void testFailEditing()
+    public void testFailEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -161,12 +155,11 @@ public class EditingQueryTestCase
         }
 
     @Test
-    public void testErrorEditing()
+    public void testErrorEmpty()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace(),
-			INVALID_QUERY
+			testspace()
 			);
     	assertEquals(
 			TaskState.EDITING,

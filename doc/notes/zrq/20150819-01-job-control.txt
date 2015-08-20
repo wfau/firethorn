@@ -272,7 +272,7 @@ EOF
     ln -s "${properties:?}" "${HOME:?}/firethorn.properties"
 
 # -----------------------------------------------------
-# Run some tests in Eclipse ....
+# Run our tests in Eclipse ....
 #[user@desktop]
 
 

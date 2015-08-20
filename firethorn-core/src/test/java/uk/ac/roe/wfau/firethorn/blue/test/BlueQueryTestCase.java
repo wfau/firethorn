@@ -31,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 public class BlueQueryTestCase
     extends BlueQueryTestBase
     {
-	protected static final String SIMPLE_QUERY = "SELECT TOP 10 ra, dec FROM atlasSource" ;
 
     @Test
     public void testNoQuery()
@@ -47,7 +46,7 @@ public class BlueQueryTestCase
         }
 
     @Test
-    public void testSimpleQuery()
+    public void testValidQuery()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
@@ -61,12 +60,12 @@ public class BlueQueryTestCase
         }
 
     @Test
-    public void testBadQuery()
+    public void testInvalidQuery()
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			"not SQL"
+			INVALID_QUERY
 			);
     	assertEquals(
 			TaskState.EDITING,

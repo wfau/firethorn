@@ -55,9 +55,11 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -113,22 +115,24 @@ implements BlueQuery
      *
      */
     protected static final String DB_MODE_COL   = "mode";
-    /**
-     * Hibernate column mapping.
-     *
-     */
-    protected static final String DB_ADQL_COL   = "adql";
-    /**
-     * Hibernate column mapping.
-     *
-     */
-    protected static final String DB_OSQL_COL   = "osql";
 
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_INPUT_COL  = "input";
+    protected static final String DB_ADQL_COL   = "adqlquery";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_OSQL_COL   = "osqlquery";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_INPUT_COL  = "adqlinput";
 
     /**
      * Hibernate column mapping.
@@ -277,19 +281,8 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(AdqlResource resource, TapRequest request)
-            {
-            return create(
-                resource,
-                request.input(),
-                request.next(),
-                request.maxwait()
-                );
-            }
-
-        @Override
-        @CreateMethod
         public BlueQuery create(final AdqlResource resource)
+        throws InvalidTaskStateException
             {
             return create(
                 resource,
@@ -302,6 +295,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input)
+        throws InvalidTaskStateException
             {
             return create(
                 resource,
@@ -314,6 +308,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
+        throws InvalidTaskStateException
             {
             log.debug("create(AdqlResource, String, StatusOne");
             log.debug("  state [{}]", next);
@@ -327,7 +322,21 @@ implements BlueQuery
 
         @Override
         @CreateMethod
+        public BlueQuery create(AdqlResource resource, TapRequest request)
+        throws InvalidTaskStateException
+            {
+            return create(
+                resource,
+                request.input(),
+                request.next(),
+                request.maxwait()
+                );
+            }
+
+        @Override
+        @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long timeout)
+        throws InvalidTaskStateException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
@@ -716,7 +725,7 @@ implements BlueQuery
         }
     
     /**
-     * Wrap this query as a {@link AdqlParserQuery}.
+     * Wrap this {@link BlueQuery} as an {@link AdqlParserQuery}.
      * 
      */
     protected AdqlParserQuery parsable()
@@ -747,7 +756,35 @@ implements BlueQuery
                     result = m1.replaceAll("");
                     }
 
-                // LEGACY mode parsing ..
+                // Legacy SQLServer syntax
+                if (this.level == Level.LEGACY)
+                    {
+                    //
+                    // Replace double '..'
+                    final Pattern p2 = Pattern.compile(
+                        "\\.\\.",
+                        Pattern.DOTALL
+                        );
+                    final Matcher m2 = p2.matcher(result);
+                    if (m2.find())
+                        {
+                        result = m2.replaceAll(".");
+                        warning("SQLServer '..' syntax is not required");
+                        }
+
+                    //
+                    // Replace 'AS distance'.
+                    final Pattern p3 = Pattern.compile(
+                        "[Aa][Ss] +[Dd][Ii][Ss][Tt][Aa][Nn][Cc][Ee]",
+                        Pattern.DOTALL
+                        );
+                    final Matcher m3 = p3.matcher(result);
+                    if (m3.find())
+                        {
+                        result = m3.replaceAll("AS dist");
+                        warning("DISTANCE is an ADQL reserved word");
+                        }
+                    }
                 
                 return result;
                 }
@@ -847,6 +884,13 @@ implements BlueQuery
         }
 
     @Override
+    public Syntax syntax()
+    	{
+    	
+    	}
+    
+    
+    @Override
     protected void prepare()
         {
         log.debug("prepare()");
@@ -855,7 +899,6 @@ implements BlueQuery
 
         if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
             {
-            log.debug("Status is good");
             // Check for empty query.
             if ((this.input() == null) || (this.input().trim().length() == 0))
                 {
@@ -866,12 +909,87 @@ implements BlueQuery
                 }
             // Check for valid query.
             else {
-            	// TODO parse the query ..
-                log.debug("Query is good");
-                this.transition(
-                    TaskState.READY
+                //
+                // Log the start time.
+                this.timings().adqlstart();
+                
+                //
+                // TODO - The parsers should be part of the resource/schema.
+                final AdqlParser direct = this.factories().adql().parsers().create(
+                    Mode.DIRECT,
+                    this.schema.resource()
                     );
-                }
+                final AdqlParser distrib = this.factories().adql().parsers().create(
+                    Mode.DISTRIBUTED,
+                    this.schema.resource()
+                    );
+
+                log.debug("Query mode [{}]", this.mode);
+
+                if (this.mode == Mode.DIRECT)
+                    {
+                    log.debug("Processing as [DIRECT] query");
+                    direct.process(
+                        this
+                        );
+                    //
+                    // Use our primary resource.
+                    //this.mode   = Mode.DIRECT;
+                    //this.source = primary().ogsa().primary().ogsaid();
+                    }
+                else if (this.mode == Mode.DISTRIBUTED)
+                    {
+                    log.debug("Processing as [DISTRIBUTED] query");
+                    distrib.process(
+                        this
+                        );
+                    //
+                    // Use our DQP resource.
+                    //this.mode   = Mode.DISTRIBUTED;
+                    //this.source = this.dqp;
+                    }
+                else {
+                    log.debug("Processing as [DIRECT] query");
+                    direct.process(
+                        this
+                        );
+                    if (this.resources.size() == 1)
+                        {
+                        this.mode = Mode.DIRECT;
+                        //
+                        // Use our primary resource.
+                        //this.source = primary().ogsa().primary().ogsaid();
+                        }
+                    else {
+                        //
+                        // Process as a distributed query.
+                        log.debug("Processing as [DISTRIBUTED] query");
+                        distrib.process(
+                            this
+                            );
+                        this.mode = Mode.DISTRIBUTED;
+                        //
+                        // Use our DQP resource.
+                        //this.source = this.dqp;
+                        }
+                    }
+                //
+                // Log the end time.
+                this.timings().adqldone();
+                //
+                // Update the status.
+                if (syntax().state() == Syntax.State.VALID)
+                    {
+                    return status(
+                        Status.READY
+                        );
+                    }
+                else {
+                    return status(
+                        Status.EDITING
+                        );
+                    }
+            	}
             }
         
         else {

@@ -52,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.ThreadConversionException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
  * {@link BlueTask} implementation. 
@@ -137,7 +137,7 @@ implements BlueTask<TaskType>
         @Override
         @SelectAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState next)
-        throws IdentifierNotFoundException
+        throws IdentifierNotFoundException, InvalidTaskStateException
             {
             return advance(
                 ident,
@@ -149,7 +149,7 @@ implements BlueTask<TaskType>
         @Override
         @SelectAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState next, long timeout)
-        throws IdentifierNotFoundException
+        throws IdentifierNotFoundException, InvalidTaskStateException
             {
             log.debug("advance(Identifier, TaskState, long)");
             log.debug("  ident [{}]", ident);
@@ -276,7 +276,7 @@ implements BlueTask<TaskType>
                 log.error("Interrupted waiting for Creator [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                 return null;
         	    }
-            catch (ThreadConversionException ouch)
+            catch (HibernateConvertException ouch)
 	    	    {
 	            log.error("ThreadConversionException [{}]");
 	            return null;
@@ -339,7 +339,7 @@ implements BlueTask<TaskType>
      */
     @Override
     public TaskType current()
-    throws ThreadConversionException
+    throws HibernateConvertException
     	{
         log.debug("Selecting current task [{}]", ident());
         try {
@@ -350,7 +350,7 @@ implements BlueTask<TaskType>
         catch (final IdentifierNotFoundException ouch)
         	{
         	log.error("IdentifierNotFound selecting current instance [{}]", ident());
-        	throw new ThreadConversionException(
+        	throw new HibernateConvertException(
     			ident(),
     			ouch
     			);
@@ -919,6 +919,7 @@ implements BlueTask<TaskType>
 
     @Override
     public void advance(final TaskState next)
+    throws InvalidTaskStateException
         {
     	advance(
 			next,
@@ -928,6 +929,7 @@ implements BlueTask<TaskType>
 
     @Override
     public void advance(final TaskState next, long timeout)
+    throws InvalidTaskStateException
         {
         final TaskState prev = this.state();
         log.debug("advance(TaskState, long)");
@@ -1141,7 +1143,7 @@ implements BlueTask<TaskType>
 	                    log.debug("  state [{}]", task.state().name());
 	                    return task.state();
                     	}
-                    catch (ThreadConversionException ouch)
+                    catch (HibernateConvertException ouch)
 	    	    	    {
 	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
@@ -1197,7 +1199,7 @@ implements BlueTask<TaskType>
 	                        }
 	                    return task.state();
 	                    }
-                    catch (ThreadConversionException ouch)
+                    catch (HibernateConvertException ouch)
 	    	    	    {
 	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
@@ -1241,7 +1243,7 @@ implements BlueTask<TaskType>
 	                    log.debug("  state [{}]", task.state().name());
 	                    return task.state();
 	                    }
-                    catch (ThreadConversionException ouch)
+                    catch (HibernateConvertException ouch)
 	    	    	    {
 	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
@@ -1265,9 +1267,14 @@ implements BlueTask<TaskType>
      * 
      */
     private void reject(final TaskState prev, final TaskState next)
+    throws InvalidTaskStateException
         {
         log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        // Do nothing.
+        throw new InvalidTaskStateException(
+    		this,
+    		prev,
+    		next
+    		);
         }
 
     }

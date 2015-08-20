@@ -36,10 +36,23 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public abstract class BlueQueryTestBase
 extends AbstractQueryTestBase
     {
-
+    /**
+     * Target catalog name.
+     *
+     */
     protected static final String ATLAS_VERSION = "ATLASDR1" ;
 
-	protected static final String ATLAS_QUERY = "SELECT TOP 10 ra, dec FROM atlasSource" ;
+    /**
+     * Simple test query.
+     *
+     */
+	protected static final String SIMPLE_QUERY = "SELECT TOP 10 ra, dec FROM atlasSource" ;
+
+    /**
+     * Invalid test query.
+     *
+     */
+	protected static final String INVALID_QUERY = "SELECT FROM WHERE" ;
 
     /**
      * Load our resources.

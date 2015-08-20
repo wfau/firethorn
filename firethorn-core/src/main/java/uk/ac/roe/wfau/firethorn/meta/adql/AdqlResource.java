@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -186,7 +187,8 @@ extends BaseResource<AdqlSchema>
          * Create a new {@link BlueQuery}.
          * 
          */
-        public BlueQuery create(final String input);
+        public BlueQuery create(final String input)
+        throws InvalidTaskStateException;
         
         }
 

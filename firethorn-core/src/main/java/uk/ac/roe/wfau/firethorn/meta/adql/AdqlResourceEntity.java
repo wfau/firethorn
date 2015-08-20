@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery.EntityFactory.TapRequest;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -327,6 +329,7 @@ implements AdqlResource
                 }
             @Override
             public BlueQuery create(final String input)
+            throws InvalidTaskStateException
                 {
                 return factories().blues().entities().create(
                     AdqlResourceEntity.this,

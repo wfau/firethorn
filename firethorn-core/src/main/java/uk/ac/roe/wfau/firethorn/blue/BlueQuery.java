@@ -21,6 +21,7 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -175,33 +176,38 @@ extends BlueTask<BlueQuery>
          * http://redmine.roe.ac.uk/issues/311
          *
          */
-        public BlueQuery create(final AdqlResource resource);
+        public BlueQuery create(final AdqlResource resource)
+        throws InvalidTaskStateException;
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string.
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final String input)
+        throws InvalidTaskStateException;
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string and state.
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
+        throws InvalidTaskStateException;
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
+         *
+         */
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait)
+        throws InvalidTaskStateException;
 
         /**
          * Create a new {@link BlueQuery}.
          * http://redmine.roe.ac.uk/issues/311
          *
          */
-        public BlueQuery create(final AdqlResource resource, final TapRequest request);
-
-        /**
-         * Create a new {@link BlueQuery} with an ADQL string.
-         *
-         */
-        public BlueQuery create(final AdqlResource resource, final String input);
-
-        /**
-         * Create a new {@link BlueQuery} with an ADQL string and state.
-         *
-         */
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next);
-
-        /**
-         * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
-         *
-         */
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait);
-
+        public BlueQuery create(final AdqlResource resource, final TapRequest request)
+        throws InvalidTaskStateException;
+        
         /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
          *
@@ -234,17 +240,23 @@ extends BlueTask<BlueQuery>
     public AdqlResource resource();
     
     /**
-     * Our original input query.
+     * Get our input query.
      *
      */
     public String input();
 
     /**
-     * Our original input query.
+     * Set our input query.
      *
      */
-    public void input(final String inout);
+    public void input(final String input);
 
+    /**
+     * Our ADQL syntax status.
+     *
+     */
+    public Syntax syntax();
+    
     /**
      * Our ADQL query.
      *

@@ -467,7 +467,7 @@ extends NamedEntity, Job
     public String cleaned();
 
     /**
-     * Query syntax validation status.
+     * ADQL syntax status.
      *
      */
     public interface Syntax
@@ -493,19 +493,19 @@ extends NamedEntity, Job
             }
 
         /**
-         * Get the syntax validation status.
+         * Get the syntax level.
          *
          */
         public Level level();
 
         /**
-         * Set the syntax validation status.
+         * Set the syntax level.
          *
          */
         public void level(final Level level);
 
         /**
-         * The validation status.
+         * The validation state.
          *
          */
         public enum State
@@ -536,19 +536,19 @@ extends NamedEntity, Job
             }
 
         /**
-         * The validation status.
+         * The validation sate.
          *
          */
         public State state();
 
         /**
-         * The original parser error message.
+         * The ADQL parser error message.
          *
          */
         public String message();
 
         /**
-         * A user friendly version of the erro message.
+         * A user friendly error message.
          *
          */
         public String friendly();
@@ -562,7 +562,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Get the syntax validation status.
+     * The ADQL syntax status.
      *
      */
     public Syntax syntax();
