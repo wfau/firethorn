@@ -26,7 +26,12 @@
 # (uses the test VM to run sqsh)
 #[user@desktop]
 
-  source "${deploylist:?}"
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+
+    source "${deploylist:?}"
     ssh "${sqluser:?}@${sqlhost:?}"
 
         #

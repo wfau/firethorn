@@ -38,7 +38,6 @@ class OgsaChecker(object):
         else:
             # 200
             body = resp.read()
-            print "Ok! Resource exists"
 	return
 
     def start_ogsa_check(self):
