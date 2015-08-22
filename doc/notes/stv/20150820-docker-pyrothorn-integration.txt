@@ -410,7 +410,7 @@ EOF
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=TESTBFirethornUserdataSTV20150821
+    userdata=
     useruser=
     userpass=
     userhost=${mssqlhost:?}
@@ -422,7 +422,7 @@ EOF
     datahost=${mssqlhost:?}
     dataport=${mssqlport:?} 
 
-    metadata=TESTBFirethornUserdataSTV20150821
+    metadata=
     metauser=
     metapass=
     metahost=${mssqlhost:?}
@@ -584,7 +584,6 @@ EOF
 
 
 
-
 	docker run \
 	--detach \
 	--name "${storedqueriesname?}" \
@@ -729,7 +728,6 @@ nohup python -u src/helper_functions/check_ogsa_resources.py ogsadai-f5ade412-be
 
 # Run test as background task (Closing terminal will not cancel run)
 nohup python testing/test_firethorn_logged_txt.py > logfile.txt 2>&1 </dev/null &
-
 
 
 exit
