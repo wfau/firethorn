@@ -410,19 +410,19 @@ EOF
     mssqlhost=ramses2
     mssqlport=1433
     
-    userdata=TESTFirethornUserdataSTV20150820
+    userdata=TESTBFirethornUserdataSTV20150821
     useruser=
     userpass=
     userhost=${mssqlhost:?}
     userport=${mssqlport:?}
 
     datadata=ATLASDR1
-    datauser=
-    datapass=
+    datauser=atlasro
+    datapass=atlasropw
     datahost=${mssqlhost:?}
     dataport=${mssqlport:?} 
 
-    metadata=TESTFirethornMetadataSTV20150820
+    metadata=TESTBFirethornUserdataSTV20150821
     metauser=
     metapass=
     metahost=${mssqlhost:?}
@@ -722,8 +722,10 @@ docker run -i -t \
 cd /home/pyrothorn/
 
 # Run test
-#python testing/test_firethorn_logged_sql.py 
-#python testing/test_firethorn_logged_txt.py
+python testing/test_firethorn_logged_txt.py
+
+Ctr + c
+nohup python -u src/helper_functions/check_ogsa_resources.py ogsadai-f5ade412-beaa-4a58-a041-ccce546c3419 > ogsa-log.txt 2>&1 </dev/null &
 
 # Run test as background task (Closing terminal will not cancel run)
 nohup python testing/test_firethorn_logged_txt.py > logfile.txt 2>&1 </dev/null &
@@ -732,68 +734,12 @@ nohup python testing/test_firethorn_logged_txt.py > logfile.txt 2>&1 </dev/null 
 
 ## Bash into jarmila and get an ogsadai resource id 
 cd /src/helper_functions
-nano check_ogsa_resources.py
-
-"""
-Check the status of an ogsadai resource
-"""
-
-import sys
-import time
-import urllib2
-
-class OgsaChecker(object):
-
-    ogsapath = "http://timothy:8080/ogsadai/services/dataResources/"
-
-    def __init__(self, ogsaresource=""):
-        self.ogsaresource = self.ogsapath + ogsaresource
-
-    def execute_check(self, wait_seconds=10):
-        self.get_status_code()
-        time.sleep(wait_seconds)
-	return 
-
-    def get_status_code(self):
-        req = urllib2.Request(self.ogsaresource)
-
-        try:
-            resp = urllib2.urlopen(req)
-        except urllib2.HTTPError as e:
-            if e.code == 404:
-                print "Error! Resource not found: 404"
-            else:
-                print "Error! Resource not found:" + e
-            quit()
-        except urllib2.URLError as e:
-            print "Error! Resource not found: " + e
-            quit()
-        else:
-            # 200
-            body = resp.read()
-	
-	return
-    def start_ogsa_check(self):
-        while True:
-            self.execute_check()
 
 
-if __name__ == '__main__':
-    print "Starting ogsa resource check.."
-    if len(sys.argv)<2:
-        print "Please provide an ogsadai resource as a parameter!"
-    else:
-        ogsaresource = str(sys.argv[1])
-        ogschk = OgsaChecker(ogsaresource)
-        ogschk.start_ogsa_check()
-
-
-
-Ctrl + x / Y  / Enter
 
 # Run test as background task (Closing terminal will not cancel run)
 
-nohup python -u check_ogsa_resources.py   ogsadai-38567c54-58df-4da3-861f-9bbe1b5d05d5 > log_ogsa_check.txt 2>&1 </dev/null &
+
 
 
 
