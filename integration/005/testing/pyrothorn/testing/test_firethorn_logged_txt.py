@@ -256,7 +256,7 @@ class test_firethorn(unittest.TestCase):
                            if (type(e).__name__=="Timeout"):
                                 test_skipped = 1
                                 logging.info("Timeout reached..Skipping test")
-                            logging.info("Error caught while running firethorn query..")
+                           logging.info("Error caught while running firethorn query..")
 
 
 
