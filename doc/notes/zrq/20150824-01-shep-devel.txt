@@ -454,6 +454,11 @@ EOF
     chmod a+r "${properties:?}" 
     chcon -t svirt_sandbox_file_t "${properties:?}" 
 
+
+
+
+STOP HERE
+
 # -----------------------------------------------------
 # Create our Tomcat setenv script.
 #[root@virtual]
@@ -509,44 +514,5 @@ EOF
     source "${HOME:?}/chain.properties"
 
     docker logs -f --tail 100 "${firename:?}"
-
-# -----------------------------------------------------
-# Create a ssh socks tunnel for JConsole.
-# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
-# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
-#[user@laptop]
-
-    cat > /tmp/jmx.properties << EOF
-
-    jmxremoteport=8085
-    jmxremotehost=192.168.122.13
-
-    jxmproxyhost=shep
-    jxmproxyport=9090
-
-EOF
-
-    source /tmp/jmx.properties
-
-    ssh -v -v -D "${jxmproxyport}" "${jxmproxyhost}"
-
-# -----------------------------------------------------
-# Run JConsole connected to the tunneled ports.
-# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
-# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
-#[user@laptop]
-
-    source /tmp/jmx.properties
-
-    jconsole -J-DsocksProxyHost=localhost -J-DsocksProxyPort="${jxmproxyport}" \
-        service:jmx:rmi:///jndi/rmi://${jmxremotehost:?}:${jmxremoteport:?}/jmxrmi
-    
-
-# -----------------------------------------------------
-# Run our tests.
-#[root@virtual]
-
-    20150529-03-docker-tests.txt
-
 
 
