@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryController;
+import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -113,6 +115,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * @param ident The parent {@link AdqlResource} identifier in the request path.
      * @param input The {@link BlueQuery} input, [{@value BlueQueryController#INPUT_PARAM_NAME}].
      * @return A new {@link BlueQuery} wrapped in an {@link BlueQueryBean}.
+     * @throws InvalidStateTransitionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -122,7 +126,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         final String ident,
         @RequestParam(value=BlueQueryController.INPUT_PARAM_NAME, required=true)
         final String input
-        ) throws IdentifierNotFoundException {
+        ) throws
+            IdentifierNotFoundException,
+            IdentifierFormatException,
+            InvalidStateTransitionException
+            {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);
         log.debug("  input [{}]", input);

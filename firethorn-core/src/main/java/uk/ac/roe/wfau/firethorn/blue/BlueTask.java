@@ -165,14 +165,14 @@ extends NamedEntity
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState next)
-        throws IdentifierNotFoundException, InvalidTaskStateException;
+        throws IdentifierNotFoundException, InvalidStateTransitionException;
 
         /**
          * Advance the {@link TaskState} of a {@link BlueTask}.
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidTaskStateException;
+        throws IdentifierNotFoundException, InvalidStateTransitionException;
         
         }
 
@@ -253,14 +253,14 @@ extends NamedEntity
      * 
      */
     public void advance(final TaskState next)
-    throws InvalidTaskStateException;
+    throws InvalidStateTransitionException;
 
     /**
      * Advance to the next {@link TaskState}. 
      * 
      */
     public void advance(final TaskState next, long timeout)
-    throws InvalidTaskStateException;
+    throws InvalidStateTransitionException;
 
     /**
      * An event notification handle.

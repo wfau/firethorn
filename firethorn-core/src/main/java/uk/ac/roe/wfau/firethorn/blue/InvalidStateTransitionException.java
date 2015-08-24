@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
  *
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class InvalidTaskStateException
+public class InvalidStateTransitionException
 extends FirethornCheckedException
     {
     /**
@@ -60,7 +60,7 @@ extends FirethornCheckedException
      * Public constructor, with default message.
      *
      */
-    public InvalidTaskStateException(final BlueTask<?> task, final TaskState prev, final TaskState next)
+    public InvalidStateTransitionException(final BlueTask<?> task, final TaskState prev, final TaskState next)
         {
         this(
             task,
@@ -76,7 +76,7 @@ extends FirethornCheckedException
      * Public constructor, with specific message.
      *
      */
-    public InvalidTaskStateException(final BlueTask<?> task, final String message)
+    public InvalidStateTransitionException(final BlueTask<?> task, final String message)
         {
         super(message);
         this.ident = task.ident();

@@ -182,28 +182,28 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource)
-        throws InvalidTaskStateException;
+        throws InvalidStateTransitionException;
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string.
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input)
-        throws InvalidTaskStateException;
+        throws InvalidStateTransitionException;
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string and state.
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
-        throws InvalidTaskStateException;
+        throws InvalidStateTransitionException;
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait)
-        throws InvalidTaskStateException;
+        throws InvalidStateTransitionException;
 
         /**
          * Create a new {@link BlueQuery}.
@@ -211,7 +211,7 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource, final TapRequest request)
-        throws InvalidTaskStateException;
+        throws InvalidStateTransitionException;
         
         /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.

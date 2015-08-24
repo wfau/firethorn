@@ -137,7 +137,7 @@ implements BlueTask<TaskType>
         @Override
         @SelectAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState next)
-        throws IdentifierNotFoundException, InvalidTaskStateException
+        throws IdentifierNotFoundException, InvalidStateTransitionException
             {
             return advance(
                 ident,
@@ -149,7 +149,7 @@ implements BlueTask<TaskType>
         @Override
         @SelectAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState next, long timeout)
-        throws IdentifierNotFoundException, InvalidTaskStateException
+        throws IdentifierNotFoundException, InvalidStateTransitionException
             {
             log.debug("advance(Identifier, TaskState, long)");
             log.debug("  ident [{}]", ident);
@@ -919,7 +919,7 @@ implements BlueTask<TaskType>
 
     @Override
     public void advance(final TaskState next)
-    throws InvalidTaskStateException
+    throws InvalidStateTransitionException
         {
     	advance(
 			next,
@@ -929,7 +929,7 @@ implements BlueTask<TaskType>
 
     @Override
     public void advance(final TaskState next, long timeout)
-    throws InvalidTaskStateException
+    throws InvalidStateTransitionException
         {
         final TaskState prev = this.state();
         log.debug("advance(TaskState, long)");
@@ -1267,10 +1267,10 @@ implements BlueTask<TaskType>
      * 
      */
     private void reject(final TaskState prev, final TaskState next)
-    throws InvalidTaskStateException
+    throws InvalidStateTransitionException
         {
         log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new InvalidTaskStateException(
+        throw new InvalidStateTransitionException(
     		this,
     		prev,
     		next

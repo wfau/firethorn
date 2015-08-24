@@ -224,6 +224,8 @@ public class BlueQueryController
      * @param state The {@link BlueTask} {@link TaskState} status, [{@value }].
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * @throws InvalidStateTransitionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -233,7 +235,11 @@ public class BlueQueryController
         final String ident,
         @RequestParam(value=STATUS_PARAM_NAME, required=true)
         final TaskState status
-        ) throws IdentifierNotFoundException {
+        ) throws
+            IdentifierNotFoundException,
+            IdentifierFormatException,
+            InvalidStateTransitionException
+            {
         log.debug("update(String, StatusOne) [{}]", ident, status.name());
 
         return bean(

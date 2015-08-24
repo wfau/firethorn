@@ -294,7 +294,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource)
-        throws InvalidTaskStateException
+        throws InvalidStateTransitionException
             {
             return create(
                 resource,
@@ -307,7 +307,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input)
-        throws InvalidTaskStateException
+        throws InvalidStateTransitionException
             {
             return create(
                 resource,
@@ -320,7 +320,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
-        throws InvalidTaskStateException
+        throws InvalidStateTransitionException
             {
             log.debug("create(AdqlResource, String, StatusOne");
             log.debug("  state [{}]", next);
@@ -335,7 +335,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(AdqlResource resource, TapRequest request)
-        throws InvalidTaskStateException
+        throws InvalidStateTransitionException
             {
             return create(
                 resource,
@@ -348,7 +348,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long timeout)
-        throws InvalidTaskStateException
+        throws InvalidStateTransitionException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);

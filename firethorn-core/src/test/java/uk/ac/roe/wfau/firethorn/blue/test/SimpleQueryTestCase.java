@@ -25,7 +25,7 @@ import org.junit.rules.ExpectedException;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.blue.InvalidTaskStateException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 
 /**
  *
@@ -49,7 +49,7 @@ public class SimpleQueryTestCase
 			TaskState.READY,
 			query.state()
 			);
-    	exception.expect(InvalidTaskStateException.class);
+    	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.EDITING
@@ -89,7 +89,7 @@ public class SimpleQueryTestCase
 			TaskState.READY,
 			query.state()
 			);
-    	exception.expect(InvalidTaskStateException.class);
+    	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.QUEUED
@@ -150,7 +150,7 @@ public class SimpleQueryTestCase
 			TaskState.READY,
 			query.state()
 			);
-    	exception.expect(InvalidTaskStateException.class);
+    	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.FAILED
@@ -169,7 +169,7 @@ public class SimpleQueryTestCase
 			TaskState.READY,
 			query.state()
 			);
-    	exception.expect(InvalidTaskStateException.class);
+    	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
 			TaskState.ERROR
