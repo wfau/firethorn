@@ -669,6 +669,7 @@ implements JdbcTable
 
     /**
      * Our {@link JdbcTableEntity.Services} instance.
+     * TODO Need to do this for the rest of the metadata tree.
      * 
      */
     protected static JdbcTable.Services services()
@@ -677,6 +678,11 @@ implements JdbcTable
         return JdbcTableEntity.Services.instance;
         }
     
+    /**
+     * Our {@link JdbcTableEntity.EntityFactory} instance.
+     * TODO Need to do this for the rest of the metadata tree.
+     * 
+     */
     @Override
     protected JdbcTable.EntityFactory factory()
         {

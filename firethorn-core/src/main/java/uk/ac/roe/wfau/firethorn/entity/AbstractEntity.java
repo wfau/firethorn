@@ -125,6 +125,11 @@ implements Entity
      * http://www.javacodegeeks.com/2013/10/spring-injected-beans-in-jpa-entitylisteners.html
      * https://code.google.com/p/invariant-properties-blog/source/browse/spring-entity-listener/src/main/java/com/invariantproperties/sandbox/springentitylistener/annotation/SpringEntityListeners.java
      *
+     * We could set this in HibernateInterceptor.
+     * 
+     * Best option is use a Services interface per Entity class/
+     * See JdbcTable.Services
+     * 
      */
     protected ComponentFactories factories()
     	{
@@ -137,6 +142,8 @@ implements Entity
 
     /**
      * Our parent {@link Entity.EntityFactory}.
+     * TODO This _should_ be abstract, but isn't yet.
+    protected abstract Entity.EntityFactory<?> factory();
      * 
      */
     protected Entity.EntityFactory<?> factory()

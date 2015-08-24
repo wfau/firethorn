@@ -39,7 +39,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
     {
 
     /**
-     * Factories interface.
+     * Services interface.
+     * TODO Need to do this for the rest of the metadata tree.
      * 
      */
     public static interface Services
