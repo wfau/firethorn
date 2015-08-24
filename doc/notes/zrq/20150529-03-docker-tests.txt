@@ -25,6 +25,7 @@
 #[user@desktop]
 
     source /tmp/chain.properties
+    source "${HOME:?}/chain.properties"
 
 # -----------------------------------------------------
 # Start our test container.
