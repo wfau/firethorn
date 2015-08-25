@@ -736,6 +736,11 @@ public class TestFactories
             			"/blue/query"
             			);
                 	}
+                @Override
+                public String callback(BlueQuery query)
+                    {
+                    return "callback:" + query.ident();
+                    }
                 }
             }
         }

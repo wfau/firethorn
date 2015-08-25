@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -113,6 +115,15 @@ public class BlueQueryBean
     public BlueTask.TaskState getStatus()
         {
         return entity().state();
+        }
+
+    /**
+     * The {@link BlueQuery} callback URL.
+     * 
+     */
+    public String getCallback()
+        {
+        return entity().callback();
         }
 
     /**
@@ -253,7 +264,12 @@ public class BlueQueryBean
          *
          */
         public String getJdbc();
-
+        
+        /**
+         * The result row count.
+         * 
+         */
+        public Long rowcount();
         }
 
     /**
@@ -285,6 +301,11 @@ public class BlueQueryBean
                 else {
                     return null ;
                     }
+                }
+            @Override
+            public Long rowcount()
+                {
+                return entity().results().rowcount();
                 }
             };
         }

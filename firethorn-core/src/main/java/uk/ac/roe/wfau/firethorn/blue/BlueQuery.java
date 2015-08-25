@@ -109,6 +109,12 @@ extends BlueTask<BlueQuery>
          */
         public static final String CALLBACK_PATH = SERVICE_PATH + "/callback/" + IDENT_TOKEN ;
 
+        /**
+         * Create a callback link (as a string).
+         *
+         */
+        public String callback(final BlueQuery query);
+
         }
     
     /**
@@ -279,6 +285,12 @@ extends BlueTask<BlueQuery>
      */
     public void callback(final BlueQuery.Callback message)
     throws InvalidStateTransitionException;
+
+    /**
+     * The {@link Callback} URL (as a string).
+     *
+     */
+    public String callback();
     
     /**
      * The target {@link AdqlResource} to query.

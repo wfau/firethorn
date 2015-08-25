@@ -126,16 +126,26 @@ public class BlueQueryController
             }
 
         @Override
-        public String link(final BlueQuery entity)
+        public String link(final BlueQuery query)
             {
             return link(
                 ENTITY_PATH,
-                entity
+                query
+                );
+            }
+
+        @Override
+        public String callback(final BlueQuery query)
+            {
+            return link(
+                CALLBACK_PATH,
+                query
                 );
             }
 
         @Autowired
         private BlueQuery.Services services ;
+
         @Override
         public BlueQuery resolve(final String link)
             throws IdentifierFormatException, IdentifierNotFoundException,

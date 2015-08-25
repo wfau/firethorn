@@ -510,6 +510,12 @@ implements BlueQuery
         return services().links().link(this);
         }
 
+    @Override
+    public String callback()
+        {
+        return services().links().callback(this);
+        }
+    
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlResourceEntity.class
