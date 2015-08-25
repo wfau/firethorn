@@ -240,7 +240,7 @@ EOF
     curl "http://${dockerip:?}:2375/version"
 
 # -----------------------------------------------------
-# Build our webapp services.
+# Build our source code.
 #[root@builder]
 
     #
