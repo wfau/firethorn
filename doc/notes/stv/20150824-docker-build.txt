@@ -507,6 +507,7 @@ EOF
     
     storedqueriesport=1433
     storedquerieshost=$(secret 'pyrothorn.storedqueries.host')
+    storedqueriesdata=$(secret 'pyrothorn.storedqueries.data')
     storedqueriesuser=$(secret 'pyrothorn.storedqueries.user')
     storedqueriespass=$(secret 'pyrothorn.storedqueries.pass')
     
@@ -761,7 +762,7 @@ stored_queries_dbserver= "${storedquerieslink:?}"
 stored_queries_dbserver_username = "${storedqueriesuser:?}" 
 stored_queries_dbserver_password = "${storedqueriespass:?}" 
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
-stored_queries_database = "userinterface" 
+stored_queries_database = "${storedqueriesdata:?}" 
 stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
 logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
 
