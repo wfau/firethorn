@@ -103,6 +103,12 @@ extends BlueTask<BlueQuery>
          */
         public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
+        /**
+         * The URI path for a {@link BlueQuery} callback, [{@value}].
+         *
+         */
+        public static final String CALLBACK_PATH = SERVICE_PATH + "/callback/" + IDENT_TOKEN ;
+
         }
     
     /**

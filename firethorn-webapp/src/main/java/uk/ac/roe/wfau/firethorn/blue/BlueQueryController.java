@@ -53,6 +53,12 @@ public class BlueQueryController
     extends AbstractEntityController<BlueQuery, BlueQueryBean>
     {
     /**
+     * Request param name for the {@link BlueQuery} identifier, [{@value}].
+     *
+     */
+    public static final String IDENT_PARAM_NAME = BlueQuery.LinkFactory.IDENT_FIELD ;
+
+    /**
      * Request param name for the {@link BlueQuery} input, [{@value}].
      *
      */
@@ -63,6 +69,12 @@ public class BlueQueryController
      *
      */
     public static final String STATUS_PARAM_NAME = "blue.query.status" ;
+
+    /**
+     * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
+     *
+     */
+    public static final String ROWCOUNT_PARAM_NAME = "blue.query.rowcount" ;
 
     /**
      * Request param name for the wait, [{@value}].
@@ -173,33 +185,8 @@ public class BlueQueryController
         }
 
     /**
-     * {@link RequestMethod#GET} request to select a {@link BlueQuery}.
-     * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
-     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
-     * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
-     * 
-     */
-    @ResponseBody
-    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
-    public BlueQueryBean select(
-        @PathVariable("ident")
-        final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("select(String) [{}]", ident);
-        return bean(
-            services.entities().select(
-                services.idents().ident(
-                    ident
-                    )
-                )
-            );
-        }
-
-    /**
-     * {@link RequestMethod#GET} request to select a {@link BlueQuery}.
-     * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
+     * {@link RequestMethod#GET} request to select all the {@link BlueQuery}s.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
@@ -217,39 +204,153 @@ public class BlueQueryController
         }
     
     /**
-     * {@link RequestMethod#POST} request to advance the {@TaskState} of a {@link BlueQuery}.
+     * {@link RequestMethod#GET} request to select a {@link BlueQuery}.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @param state The {@link BlueTask} {@link TaskState} status, [{@value }].
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
+     * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
+    public BlueQueryBean select(
+        @PathVariable(value=IDENT_PARAM_NAME)
+        final String ident
+        ) throws IdentifierNotFoundException {
+        log.debug("select(String) [{}]", ident);
+        return bean(
+            services.entities().select(
+                services.idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * {@link RequestMethod#GET} request to wait for a {@link BlueQuery}.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
+     * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
+    public BlueQueryBean wait(
+        @PathVariable(value=IDENT_PARAM_NAME)
+        final String ident,
+        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        final TaskState next,
+        @RequestParam(value=WAIT_PARAM_NAME, required=false)
+        final Long wait
+        ) throws IdentifierNotFoundException {
+        log.debug("wait(String, TaskStatus, Long)");
+        log.debug("  ident [{}]", ident);
+        log.debug("  next  [{}]", next);
+        log.debug("  wait  [{}]", wait);
+
+        
+        
+        return bean(
+            services.entities().select(
+                services.idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * {@link RequestMethod#POST} request to update the {@TaskState} of a {@link BlueQuery}.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @param next The next {@link BlueTask} {@link TaskState} status, [{@value }].
+     * @param wait The wait timeout, zero for synchronous no wait, null for maximum wait.
+     * @return The updated {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
-    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME, WAIT_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
     public BlueQueryBean advance(
-        @PathVariable("ident")
+        @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
         @RequestParam(value=STATUS_PARAM_NAME, required=true)
-        final TaskState status
+        final TaskState next,
+        @RequestParam(value=WAIT_PARAM_NAME, required=false)
+        final Long wait
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
             InvalidStateTransitionException
-            {
-        log.debug("update(String, StatusOne) [{}]", ident, status.name());
-
+        {
+        log.debug("advance(String, TaskStatus, Long)");
+        log.debug("  ident [{}]", ident);
+        log.debug("  next  [{}]", next);
+        log.debug("  wait  [{}]", wait);
         return bean(
             services.entities().advance(
                 services.idents().ident(
                     ident
                     ),
-                status,
-                30000L
+                next,
+                wait
                 )
+            );
+        }
+
+    /**
+     * {@link RequestMethod#POST} request to send a {@link BlueQuery.Callback} message.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
+     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @param next The next {@link BlueTask} {@link TaskState} status, [{@value }].
+     * @param count The {@link BlueQuery.Callback} rowcount, [{@value }].
+     * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * @throws InvalidStateTransitionException 
+     * @throws IdentifierFormatException 
+     * 
+     */
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME, ROWCOUNT_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    public void callback(
+        @PathVariable(value=IDENT_PARAM_NAME)
+        final String ident,
+        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        final TaskState next,
+        @RequestParam(value=ROWCOUNT_PARAM_NAME, required=false)
+        final Long rowcount
+        ) throws
+            IdentifierNotFoundException,
+            IdentifierFormatException,
+            InvalidStateTransitionException
+        {
+        log.debug("callback(String, TaskStatus, Long)");
+        log.debug("  ident [{}]", ident);
+        log.debug("  next  [{}]", next);
+        log.debug("  wait  [{}]", rowcount);
+        services.entities().callback(
+            services.idents().ident(
+                ident
+                ),
+            new BlueQuery.Callback()
+                {
+                @Override
+                public Long rowcount()
+                    {
+                    return rowcount;
+                    }
+                
+                @Override
+                public TaskState next()
+                    {
+                    return next;
+                    }
+                }
             );
         }
     }
