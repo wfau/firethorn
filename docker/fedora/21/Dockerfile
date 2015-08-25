@@ -15,12 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:21
+FROM fedora:21.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
+# Declare the system cache as a volume.
+VOLUME /var/cache/
+
+#
 # Update (almost) everything (excluding filesystem).
-# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
+# https://bugzilla.redhat.com/show_bug.cgi?id=1171928
 RUN yum -y -x filesystem update
 
 #

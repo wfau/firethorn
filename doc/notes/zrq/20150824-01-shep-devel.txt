@@ -46,7 +46,7 @@
 # http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
 #[root@edfu]
 
-    yum install -y haveged
+    yum -y install haveged
     systemctl start haveged.service
 
 # -----------------------------------------------------
@@ -119,7 +119,8 @@
 #[root@virtual]
 
     branch=1.13.17-zrq-job-control
-
+    version=${branch:?}
+    
 # -----------------------------------------------------
 # Run our build container.
 #[root@virtual]
@@ -185,39 +186,39 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         docker build \
-            --tag firethorn/fedora:21 \
+            --tag firethorn/fedora:21.1 \
             docker/fedora/21
 
         docker build \
-            --tag firethorn/java:8 \
+            --tag firethorn/java:8.1 \
             docker/java/8
 
         docker build \
-            --tag firethorn/tomcat:8 \
+            --tag firethorn/tomcat:8.1 \
             docker/tomcat/8
 
         docker build \
-            --tag firethorn/postgres:9 \
+            --tag firethorn/postgres:9.1 \
             docker/postgres/9
 
         docker build \
-            --tag firethorn/builder:1 \
+            --tag firethorn/builder:1.1 \
             docker/builder
 
         docker build \
-            --tag firethorn/docker-proxy:1 \
+            --tag firethorn/docker-proxy:1.1 \
             docker/docker-proxy
 
         docker build \
-            --tag firethorn/sql-proxy:1 \
+            --tag firethorn/sql-proxy:1.1 \
             docker/sql-proxy
 
         docker build \
-            --tag firethorn/sql-tunnel:1 \
+            --tag firethorn/sql-tunnel:1.1 \
             docker/sql-tunnel
 
         docker build \
-            --tag firethorn/ssh-client:1 \
+            --tag firethorn/ssh-client:1.1 \
             docker/ssh-client
 
     popd

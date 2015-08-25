@@ -38,9 +38,11 @@ pushd /toolkits
         tar -xvzf "${tarfile:?}"
         ln -s "${current:?}" current
 
-        mkdir /cache/maven
-        chgrp users /cache/maven
-        chmod g+rws /cache/maven
+        # This doesn't work because /var/cache/ is a volume,
+        # which gets recreated at runtime. 
+        mkdir /var/cache/maven
+        chgrp users /var/cache/maven
+        chmod g+rws /var/cache/maven
 
         #
         # Set the repository path.
@@ -59,7 +61,7 @@ cat > /root/.m2/settings.xml<< 'EOF'
         http://maven.apache.org/SETTINGS/1.0.0
         http://maven.apache.org/xsd/settings-1.0.0.xsd
         ">
-    <localRepository>/cache/maven</localRepository>
+    <localRepository>/var/cache/maven</localRepository>
 </settings>
 EOF
 
