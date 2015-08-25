@@ -33,7 +33,7 @@ RUN yum -y install deltarpm
 #
 # Update (almost) everything (excluding filesystem).
 # https://bugzilla.redhat.com/show_bug.cgi?id=1171928
-RUN yum -y -x filesystem update
+#RUN yum -y -x filesystem update
 
 #
 # Add common tools.
