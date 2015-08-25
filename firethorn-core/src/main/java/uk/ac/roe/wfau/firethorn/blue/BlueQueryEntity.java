@@ -57,16 +57,16 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.ModifiableLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -163,6 +163,12 @@ implements BlueQuery
     protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
     protected static final String DB_SYNTAX_LEVEL_COL   = "syntaxlevel";
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_RESULT_ROW_COUNT = "resultrowcount";
     
     /**
      * {@link BlueQuery.Services} implementation.
@@ -383,6 +389,24 @@ implements BlueQuery
             return query;
             }
 
+        @Override
+        @UpdateMethod
+        public BlueQuery callback(final Identifier ident, final BlueQuery.Callback message)
+        throws IdentifierNotFoundException, InvalidStateTransitionException
+            {
+            log.debug("callback(Identifier, CallbackEvent");
+            log.debug("  ident [{}]", ident);
+            log.debug("  next  [{}]", message.next());
+            log.debug("  count [{}]", message.rowcount());
+            final BlueQuery query = select(
+                ident
+                );
+            query.callback(
+                message
+                );
+            return query;
+            }
+        
         
         @Override
         @SelectMethod
@@ -614,6 +638,18 @@ implements BlueQuery
         updatable = true
         )
     private AdqlTable adqltable;
+
+    /**
+     * The number of rows in the results.
+     *
+     */
+    @Column(
+         name = DB_RESULT_ROW_COUNT,
+         unique = false,
+         nullable = true,
+         updatable = true
+         )
+     private Long rowcount ;
     
     @Override
     public Results results()
@@ -630,6 +666,12 @@ implements BlueQuery
             public AdqlTable adql()
                 {
                 return BlueQueryEntity.this.adqltable;
+                }
+
+            @Override
+            public Long rowcount()
+                {
+                return BlueQueryEntity.this.rowcount;
                 }
             };
         }
@@ -1216,5 +1258,30 @@ implements BlueQuery
         return new Handle(
             this
             );
+        }
+
+    @Override
+    public void callback(final BlueQuery.Callback message)
+    throws InvalidStateTransitionException
+        {
+        log.debug("callback(Callback");
+        log.debug("  next  [{}]", message.next());
+        //
+        // Update our row count.
+        if (message.rowcount() != null)
+            {
+            this.rowcount = message.rowcount();
+            }
+        //
+        // Update our state.
+        if (message.next() != null)
+            {
+            transition(
+                message.next()
+                );
+            }
+        //
+        // Update our Handle and notify any Listeners.
+        this.event();
         }
     }
