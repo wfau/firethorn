@@ -126,7 +126,7 @@
 #[root@virtual]
 
     docker run \
-        -it \
+        -it --rm \
         --name builder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
