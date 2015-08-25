@@ -133,7 +133,7 @@
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1.1 \
+        firethorn/builder:1 \
         bash
 
 # -----------------------------------------------------
@@ -231,7 +231,7 @@ EOF
         --detach \
         --name "docker-proxy" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/docker-proxy:1
+        firethorn/docker-proxy:1.1
 
     sleep 5
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
