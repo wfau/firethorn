@@ -212,7 +212,7 @@ class test_firethorn(unittest.TestCase):
                         sql_duration = 0
                         firethorn_duration = 0
                         test_passed = -1
-                        test_skipped = -1
+                        test_skipped = False
                         sql_start_time = time.time()
                         query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
                         sql_row_length = -1
@@ -234,7 +234,7 @@ class test_firethorn(unittest.TestCase):
 
 	                except Exception as e:
                             if (type(e).__name__=="Timeout"):
-                                test_skipped = 1
+                                test_skipped = True
                             logging.info("Error caught while running sql query")
 
                         
@@ -254,7 +254,7 @@ class test_firethorn(unittest.TestCase):
                         
                         except Exception as e:
                            if (type(e).__name__=="Timeout"):
-                                test_skipped = 1
+                                test_skipped = True
                                 logging.info("Timeout reached..Skipping test")
                            logging.info("Error caught while running firethorn query..")
 
@@ -267,7 +267,7 @@ class test_firethorn(unittest.TestCase):
 		        else:
 			    logging.info("Query Failed..")
 
-                        if (not test_passed and not test_skipped):
+                        if (not test_passed and (not test_skipped)):
 			    self.total_failed = self.total_failed + 1
 
                         logging.info("")
