@@ -32,6 +32,9 @@ else
     then
         source setup/setup-pyro.sh
         source tests/test03-hist-catalogue.sh
+    elif [ "$testname"="04" ];
+    then
+        source tests/test04-query-loop.sh
     else 
         source setup/setup-pyro.sh
         source tests/$testname

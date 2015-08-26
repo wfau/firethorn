@@ -113,19 +113,22 @@ EOF
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
+chmod a+r "/root/tests/test02-nohup.sh" 
+chcon -t svirt_sandbox_file_t "/root/tests/test02-nohup.sh" 
 
 mkdir -p /var/logs/${pyroname:?}
 
 docker run -i -t \
     --name ${pyroname:?} \
+    --detach \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
+    --volume /root/tests/test02-nohup.sh:/scripts/test02-nohup.sh \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
     --link "${storedqueriesname:?}:${storedquerieslink:?}" \
     --link "${ogsaname:?}:${ogsalink:?}" \
     --link "${dataname:?}:${datalink:?}" \
     --link "${username:?}:${userlink:?}" \
-       firethorn/pyrothorn /bin/bash  -c "cd /home/pyrothorn/;python testing/test_firethorn_logged_sql.py"
-
+       firethorn/pyrothorn bash -c  '/scripts/test02-nohup.sh'
 
 
