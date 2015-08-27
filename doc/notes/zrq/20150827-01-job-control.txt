@@ -267,7 +267,7 @@ EOF
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/blue/query/491528" \
+        "${endpointurl:?}/blue/query/622592" \
         | bin/pp
 
     #
@@ -276,7 +276,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.next.status=RUNNING" \
-        "${endpointurl:?}/blue/query/491528" \
+        "${endpointurl:?}/blue/query/622592" \
         | bin/pp
 
     #
@@ -285,7 +285,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.next.status=COMPLETED" \
-        "${endpointurl:?}/blue/query/callback/491528" \
+        "${endpointurl:?}/blue/query/callback/622592" \
         | bin/pp
 
 
