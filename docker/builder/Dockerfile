@@ -20,17 +20,17 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our projects directory.
-RUN mkdir /projects
-RUN chgrp users /projects
-RUN chmod g+rwx /projects
-VOLUME /projects
+RUN mkdir /var/local/projects
+RUN chgrp users /var/local/projects
+RUN chmod g+rwx /var/local/projects
+VOLUME /var/local/projects
 
 #
 # Create our cache directory.
-RUN mkdir /cache
-RUN chgrp users /cache
-RUN chmod g+rwx /cache
-VOLUME /cache
+#RUN mkdir /cache
+#RUN chgrp users /cache
+#RUN chmod g+rwx /cache
+#VOLUME /cache
 
 #
 # Install system tools.
