@@ -107,7 +107,7 @@ extends BlueTask<BlueQuery>
          * The URI path for a {@link BlueQuery} callback, [{@value}].
          *
          */
-        public static final String CALLBACK_PATH = SERVICE_PATH + "/callback/" + IDENT_TOKEN ;
+        public static final String CALLBACK_PATH = "callback/" + IDENT_TOKEN ;
 
         /**
          * Create a callback link (as a string).

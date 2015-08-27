@@ -344,7 +344,7 @@ public class BlueQueryController
      * @throws IdentifierFormatException 
      * 
      */
-    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public void callback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
