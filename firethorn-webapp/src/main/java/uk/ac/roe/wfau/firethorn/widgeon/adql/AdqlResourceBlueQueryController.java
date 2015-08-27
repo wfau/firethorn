@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -117,6 +118,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * @return A new {@link BlueQuery} wrapped in an {@link BlueQueryBean}.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
+     * @throws HibernateConvertException 
      * 
      */
     @ResponseBody
@@ -129,7 +131,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
-            InvalidStateTransitionException
+            InvalidStateTransitionException,
+            HibernateConvertException
             {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);

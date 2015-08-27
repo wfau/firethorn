@@ -20,6 +20,161 @@
 #
 #
 
+
+# -----------------------------------------------------
+# Set our target branch.
+#[root@virtual]
+
+    branch=1.13.17-zrq-job-control
+    version=${branch:?}
+    
+# -----------------------------------------------------
+# Run our build container.
+#[root@virtual]
+
+    docker run \
+        -it --rm \
+        --name builder \
+        --env "branch=${branch:?}" \
+        --env "version=${version:?}" \
+        --volume /var/cache:/var/cache \
+        --volume /var/local/projects:/var/local/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/builder:1.1 \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Set our project path.
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/projects/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Update our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    then
+        #
+        # Clone our repository.
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+
+        popd
+    else
+        #
+        # Pull and update from branch.
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update "${branch:?}"
+            hg branch
+        
+        popd
+    fi
+
+# -----------------------------------------------------
+# Build our source code.
+#[root@builder]
+
+    #
+    # Build our webapp services.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Exit our builder.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Stop and remove our firethorn container.
+#[root@builder]
+
+    docker rm -f "${firename}"
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    firetemp="/var/temp/${firename:?}"
+    firelogs="/var/logs/${firename:?}"
+
+    directory "${firetemp:?}"
+    directory "${firelogs:?}"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --publish 8085:8085 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${firetemp:?}:/temp" \
+        --volume "${firelogs:?}:/var/local/tomcat/logs" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        --volume "${setenv:?}:/var/local/tomcat/bin/setenv.sh" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Tail the firethorn logs (in a separate terminal).
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker logs -f --tail 100 "${firename:?}"
+
+
+
+
+
+
+
+
+
+
     #
     # Check the system info.
 
