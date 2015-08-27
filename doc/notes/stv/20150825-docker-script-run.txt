@@ -168,7 +168,7 @@ cat  "${databasefile:?}"
    source "${HOME:?}/firethorn.settings"
    pushd "${FIRETHORN_CODE:?}"
 
-       scp -r integration/005/scripts/ root@hebenu:/root/
+       scp -r integration/005/scripts/* root@hebenu:/root/
 
    popd
 
@@ -193,8 +193,6 @@ cat  "${databasefile:?}"
         }
 
     secret 'firethorn.user.host'
-
-    cd scripts
    
     source run.sh 04 1.13.17-stv-bug-testing
  

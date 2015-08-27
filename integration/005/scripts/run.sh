@@ -20,19 +20,19 @@ then
 else 
     source setup/setup.sh
     source setup/create-chain.sh
-    if [ "$testname"="01" ];
+    if [ $testname -eq 01 ];
     then 
 	source setup/setup-pyro.sh
         source tests/test01-integration.sh
-    elif [ "$testname"="02" ];
+    elif [ $testname -eq 02 ];
     then
 	source setup/setup-pyro.sh
         source tests/test02-atlasfull.sh
-    elif [ "$testname"="03" ];
+    elif [ $testname -eq 03 ];
     then
         source setup/setup-pyro.sh
         source tests/test03-hist-catalogue.sh
-    elif [ "$testname"="04" ];
+    elif [ $testname -eq 04 ];
     then
         source tests/test04-query-loop.sh
     else 

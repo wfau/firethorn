@@ -1,13 +1,10 @@
     source /tmp/chain.properties
 
-    docker rm -f $(docker ps -a -q)
-
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
 #[root@virtual]
 
-    source /tmp/chain.properties
 
     docker run \
         --detach \
@@ -19,7 +16,6 @@
 # Run our science data ambassador.
 #[root@virtual]
 
-    source /tmp/chain.properties
 
     docker run \
         --detach \
