@@ -302,12 +302,13 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateTransitionException
+        throws InvalidStateTransitionException, HibernateConvertException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
+            log.debug("Creating BlueQuery");
             final BlueQuery query = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
                     {
@@ -327,15 +328,20 @@ implements BlueQuery
                     }
                 );
 
+            log.debug("Converting BlueQuery");
+            final BlueQuery result = query.current();
+            
             if (next != null)
 	            {
-	            query.advance(
+	            log.debug("Advancing BlueQuery");
+	            result.advance(
 	        		null,
 	        		next,
 	        		wait
 	        		);
 	            }
-            return query;
+            log.debug("Returning BlueQuery");
+            return result;
             }
 
         @Override

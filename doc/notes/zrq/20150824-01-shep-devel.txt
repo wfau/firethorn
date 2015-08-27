@@ -73,20 +73,20 @@
 # -----------------------------------------------------
 # Create our cache directory.
 #[root@virtual]
-
-    if [ ! -e /var/local/cache ]
-    then
-        mkdir -p /var/local/cache
-        chgrp -R users /var/local/cache
-        chmod -R g+rwx /var/local/cache
-    fi
-
+#
+#    if [ ! -e /var/local/cache ]
+#    then
+#        mkdir -p /var/local/cache
+#        chgrp -R users /var/local/cache
+#        chmod -R g+rwx /var/local/cache
+#    fi
+#
 # -----------------------------------------------------
 # Allow access to Docker containers.
 #[root@virtual]
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
-    chcon -t svirt_sandbox_file_t "/var/local/cache" 
+    chcon -t svirt_sandbox_file_t "/var/cache" 
 
 # -----------------------------------------------------
 # Install the selinux-dockersock SELinux policy.
@@ -144,7 +144,7 @@
     source /etc/bashrc
 
 # -----------------------------------------------------
-# Checkout a copy of our source code.
+# Set our project path.
 #[root@builder]
 
     #
@@ -155,6 +155,10 @@
 FIRETHORN_CODE=/var/local/projects/firethorn
 EOF
     fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
 
     source "${HOME:?}/firethorn.settings"
     if [ ! -e "${FIRETHORN_CODE:?}" ]

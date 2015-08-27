@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -189,10 +190,10 @@ extends BaseResource<AdqlSchema>
          * 
          */
         public BlueQuery create(final String input)
-        throws InvalidStateTransitionException;
+        throws InvalidStateTransitionException, HibernateConvertException;
 
         public BlueQuery create(final String input, final TaskState next, final Long wait)
-        throws InvalidStateTransitionException;
+        throws InvalidStateTransitionException, HibernateConvertException;
 
         }
 

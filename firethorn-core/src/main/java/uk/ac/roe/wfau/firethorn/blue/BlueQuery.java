@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -107,7 +108,7 @@ extends BlueTask<BlueQuery>
          * The URI path for a {@link BlueQuery} callback, [{@value}].
          *
          */
-        public static final String CALLBACK_PATH = "callback/" + IDENT_TOKEN ;
+        public static final String CALLBACK_PATH = "/callback/" + IDENT_TOKEN ;
 
         /**
          * Create a callback link (as a string).
@@ -161,7 +162,7 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateTransitionException;
+        throws InvalidStateTransitionException, HibernateConvertException;
 
         /**
          * Update a new {@link BlueQuery} with an ADQL string and state.

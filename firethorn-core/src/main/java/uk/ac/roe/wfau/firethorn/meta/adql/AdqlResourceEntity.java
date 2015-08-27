@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -329,7 +330,7 @@ implements AdqlResource
                 }
             @Override
             public BlueQuery create(final String input)
-            throws InvalidStateTransitionException
+            throws InvalidStateTransitionException, HibernateConvertException
                 {
                 return factories().blues().entities().create(
                     AdqlResourceEntity.this,
@@ -340,7 +341,7 @@ implements AdqlResource
                 }
             @Override
             public BlueQuery create(String input, TaskState next, Long wait)
-                throws InvalidStateTransitionException
+                throws InvalidStateTransitionException, HibernateConvertException
                 {
                 return factories().blues().entities().create(
                     AdqlResourceEntity.this,

@@ -120,11 +120,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={BlueQueryController.INPUT_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<BlueQueryBean> create(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
-        @RequestParam(value=BlueQueryController.INPUT_PARAM_NAME, required=true)
+        @RequestParam(value=BlueQueryController.INPUT_PARAM_NAME, required=false)
         final String input
         ) throws
             IdentifierNotFoundException,

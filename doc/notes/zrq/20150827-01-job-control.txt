@@ -1,0 +1,72 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Check the system info.
+
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/system/info" \
+        | bin/pp | tee system-info.json
+
+
+    #
+    # List our ADQL resources.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/adql/resource/select" \
+        | bin/pp | tee adql-list.json
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/adql/resource/32772" \
+        | bin/pp | tee adql-resource.json
+
+    #
+    # Create an empty BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "frog:green" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.input=" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "blue.query.input=SELECT count(*) FROM Filter" \
+        "${endpointurl:?}/blue/query/create" \
+        | bin/pp | tee blue-query.json
+
+
