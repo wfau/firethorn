@@ -27,10 +27,10 @@ VOLUME /projects
 
 #
 # Create our cache directory.
-#RUN mkdir /cache
-#RUN chgrp users /cache
-#RUN chmod g+rwx /cache
-#VOLUME /cache
+RUN mkdir /cache
+RUN chgrp users /cache
+RUN chmod g+rwx /cache
+VOLUME /cache
 
 #
 # Install system tools.

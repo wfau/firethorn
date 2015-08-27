@@ -22,7 +22,7 @@
 
 # -----------------------------------------------------
 # Start our test container.
-#[user@desktop]
+#[root@virtual]
 
     source "${HOME:?}/chain.properties"
 
