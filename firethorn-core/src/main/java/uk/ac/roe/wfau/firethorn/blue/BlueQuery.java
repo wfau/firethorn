@@ -133,96 +133,56 @@ extends BlueTask<BlueQuery>
     public static interface EntityFactory
     extends BlueTask.EntityFactory<BlueQuery>
         {
-        /**
-         * TAP request parameters.
-         * 
-         */
-        public interface TapRequest
-            {
-            /**
-             * The ADQL request type.
-             * 
-             */
-            public enum Type
-                {
-                SYNC,
-                ASYNC;
-                }
-
-            /**
-             * The ADQL request type.
-             * 
-             */
-            public Type type();
-
-            /**
-             * The ADQL query.
-             * 
-             */
-            public String input();
-            
-            /**
-             * The next {@link TaskState} to move to, e.g {@value TaskState#RUNNING} to run the query.
-             * 
-             */
-            public TaskState next();
-            
-            /**
-             * The maximum number of rows to return.
-             * 
-             */
-            public Long maxrows();
-
-            /**
-             * The maximum execution time.
-             * 
-             */
-            public Long maxtime();
-
-            /**
-             * The maximum time to wait for a result.
-             * 
-             */
-            public Long maxwait();
-            
-            }
 
         /**
          * Create a new {@link BlueQuery}.
          * http://redmine.roe.ac.uk/issues/311
          *
-         */
         public BlueQuery create(final AdqlResource resource)
         throws InvalidStateTransitionException;
+         */
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string.
          *
-         */
         public BlueQuery create(final AdqlResource resource, final String input)
         throws InvalidStateTransitionException;
+         */
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string and state.
          *
-         */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
         throws InvalidStateTransitionException;
+         */
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long maxwait)
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
         throws InvalidStateTransitionException;
 
         /**
-         * Create a new {@link BlueQuery}.
-         * http://redmine.roe.ac.uk/issues/311
+         * Update a new {@link BlueQuery} with an ADQL string and state.
+         *
+        public BlueQuery update(final Identifier ident, final String input, final TaskState next)
+        throws InvalidStateTransitionException;
+         */
+
+        /**
+         * Update a new {@link BlueQuery} with an ADQL string, state and wait limit.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final TapRequest request)
-        throws InvalidStateTransitionException;
+        public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, Long wait)
+        throws IdentifierNotFoundException, InvalidStateTransitionException;
+
+        /**
+         * Select a {@link BlueQuery} with a state and wait limit.
+         *
+         */
+        public BlueQuery select(final Identifier ident, final TaskState prev, final TaskState next, Long wait)
+        throws IdentifierNotFoundException;
         
         /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
@@ -307,8 +267,16 @@ extends BlueTask<BlueQuery>
     /**
      * Set our input query.
      *
+    public void input(final String input)
+    throws InvalidStateTransitionException;
      */
-    public void input(final String input);
+
+    /**
+     * Update our query input.
+     * 
+     */
+    public void update(final String input)
+    throws InvalidStateTransitionException;
 
     /**
      * Our ADQL syntax status.

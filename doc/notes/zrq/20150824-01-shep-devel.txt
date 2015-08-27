@@ -133,7 +133,7 @@
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1 \
+        firethorn/builder:1.1 \
         bash
 
 # -----------------------------------------------------
@@ -360,7 +360,7 @@ EOF
         --detach \
         --name "${username:?}" \
         --env  "target=${userhost:?}" \
-        firethorn/sql-proxy:1
+        firethorn/sql-proxy:1.1
 
 # -----------------------------------------------------
 # Run our science data ambassador.
@@ -372,7 +372,7 @@ EOF
         --detach \
         --name "${dataname:?}" \
         --env  "target=${datahost:?}" \
-        firethorn/sql-proxy:1
+        firethorn/sql-proxy:1.1
 
 # -----------------------------------------------------
 # Start our PostgreSQL metadata container.

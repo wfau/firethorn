@@ -30,8 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery.EntityFactory.TapRequest;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -333,7 +333,20 @@ implements AdqlResource
                 {
                 return factories().blues().entities().create(
                     AdqlResourceEntity.this,
-                    input
+                    input,
+                    null,
+                    null
+                    );
+                }
+            @Override
+            public BlueQuery create(String input, TaskState next, Long wait)
+                throws InvalidStateTransitionException
+                {
+                return factories().blues().entities().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    next,
+                    wait
                     );
                 }
             };

@@ -30,12 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -65,10 +63,16 @@ public class BlueQueryController
     public static final String INPUT_PARAM_NAME = "blue.query.input" ;
 
     /**
-     * Request param name for the {@link BlueTask} status, [{@value}].
+     * Request param name for the previous {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String STATUS_PARAM_NAME = "blue.query.status" ;
+    public static final String PREV_STATUS_PARAM_NAME = "blue.query.prev.status" ;
+
+    /**
+     * Request param name for the next {@link BlueTask.TaskState}, [{@value}].
+     *
+     */
+    public static final String NEXT_STATUS_PARAM_NAME = "blue.query.next.status" ;
 
     /**
      * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
@@ -221,7 +225,6 @@ public class BlueQueryController
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * 
-     */
     @ResponseBody
     @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
     public BlueQueryBean select(
@@ -237,38 +240,44 @@ public class BlueQueryController
                 )
             );
         }
+     */
 
     /**
-     * {@link RequestMethod#GET} request to wait for a {@link BlueQuery}.
+     * {@link RequestMethod#GET} request to select a {@link BlueQuery}.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * 
+     * 
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * 
      */
     @ResponseBody
     @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
-    public BlueQueryBean wait(
+    public BlueQueryBean select(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
-        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        @RequestParam(value=PREV_STATUS_PARAM_NAME, required=false)
+        final TaskState prev,
+        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
         final TaskState next,
         @RequestParam(value=WAIT_PARAM_NAME, required=false)
         final Long wait
         ) throws IdentifierNotFoundException {
-        log.debug("wait(String, TaskStatus, Long)");
+        log.debug("select(String, TaskStatus, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
+        log.debug("  prev  [{}]", next);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
-
-        
-        
         return bean(
             services.entities().select(
                 services.idents().ident(
                     ident
-                    )
+                    ),
+                prev,
+                next,
+                wait
                 )
             );
         }
@@ -278,8 +287,10 @@ public class BlueQueryController
      * <br/>Request path : [{@value BlueQuery.LinkFactory#ENTITY_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+
      * @param next The next {@link BlueTask} {@link TaskState} status, [{@value }].
      * @param wait The wait timeout, zero for synchronous no wait, null for maximum wait.
+
      * @return The updated {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * @throws InvalidStateTransitionException 
@@ -287,11 +298,15 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME, WAIT_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
-    public BlueQueryBean advance(
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
+    public BlueQueryBean update(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
-        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        @RequestParam(value=INPUT_PARAM_NAME, required=false)
+        final String input,
+        @RequestParam(value=PREV_STATUS_PARAM_NAME, required=false)
+        final TaskState prev,
+        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
         final TaskState next,
         @RequestParam(value=WAIT_PARAM_NAME, required=false)
         final Long wait
@@ -302,13 +317,16 @@ public class BlueQueryController
         {
         log.debug("advance(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
+        log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
         return bean(
-            services.entities().advance(
+            services.entities().update(
                 services.idents().ident(
                     ident
                     ),
+                input,
+                prev,
                 next,
                 wait
                 )
@@ -326,11 +344,11 @@ public class BlueQueryController
      * @throws IdentifierFormatException 
      * 
      */
-    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, params={STATUS_PARAM_NAME, ROWCOUNT_PARAM_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
     public void callback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
-        @RequestParam(value=STATUS_PARAM_NAME, required=true)
+        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
         final TaskState next,
         @RequestParam(value=ROWCOUNT_PARAM_NAME, required=false)
         final Long rowcount
@@ -354,7 +372,6 @@ public class BlueQueryController
                     {
                     return rowcount;
                     }
-                
                 @Override
                 public TaskState next()
                     {

@@ -42,14 +42,19 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+			testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.EDITING
+    	    null,
+			TaskState.EDITING,
+			null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -62,14 +67,19 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.READY
+            null,
+			TaskState.READY,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -82,7 +92,10 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -91,7 +104,9 @@ public class EmptyQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.QUEUED
+			null,
+			TaskState.QUEUED,
+			null
 			);
         }
 
@@ -101,14 +116,19 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.RUNNING
+			null,
+			TaskState.RUNNING,
+			null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -122,14 +142,19 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.COMPLETED
+            null,
+			TaskState.COMPLETED,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -142,15 +167,19 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
+            null,
 			TaskState.CANCELLED,
-			0
+			null
 			);
     	assertEquals(
 			TaskState.CANCELLED,
@@ -163,7 +192,10 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -172,7 +204,9 @@ public class EmptyQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.FAILED
+			null,
+			TaskState.FAILED,
+			null
 			);
         }
 
@@ -181,7 +215,10 @@ public class EmptyQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+            testspace(),
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -190,7 +227,9 @@ public class EmptyQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.ERROR
+            null,
+			TaskState.ERROR,
+            null
 			);
         }
     }

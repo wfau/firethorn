@@ -1,0 +1,100 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+
+# -----------------------------------------------------
+# Run our ATLASDR1 queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+

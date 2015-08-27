@@ -37,7 +37,10 @@ public class BlueQueryTestCase
     throws Exception
         {
     	final BlueQuery query = factories().blues().entities().create(
-			testspace()
+			testspace(),
+            null,
+            null,
+			null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -51,7 +54,9 @@ public class BlueQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -65,12 +70,13 @@ public class BlueQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
         }
-    
     }

@@ -43,7 +43,9 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -52,7 +54,9 @@ public class SimpleQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.EDITING
+            null,
+			TaskState.EDITING,
+            null
 			);
         }
     
@@ -62,14 +66,18 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
     	query.advance(
-			TaskState.READY
+            null,
+			TaskState.READY,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -83,7 +91,9 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -92,7 +102,9 @@ public class SimpleQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.QUEUED
+            null,
+			TaskState.QUEUED,
+            null
 			);
         }
 
@@ -102,14 +114,18 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
     	query.advance(
-			TaskState.COMPLETED
+            null,
+			TaskState.COMPLETED,
+            null
 			);
 		assertTrue(
 			query.state().ordinal() >= TaskState.QUEUED.ordinal() 	
@@ -122,15 +138,18 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
 			query.state()
 			);
     	query.advance(
+            null,
 			TaskState.CANCELLED,
-			0
+            null
 			);
     	assertEquals(
 			TaskState.CANCELLED,
@@ -144,7 +163,9 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -153,7 +174,9 @@ public class SimpleQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.FAILED
+            null,
+			TaskState.FAILED,
+            null
 			);
         }
 
@@ -163,7 +186,9 @@ public class SimpleQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			SIMPLE_QUERY
+			SIMPLE_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.READY,
@@ -172,7 +197,9 @@ public class SimpleQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.ERROR
+            null,
+			TaskState.ERROR,
+            null
 			);
         }
     }

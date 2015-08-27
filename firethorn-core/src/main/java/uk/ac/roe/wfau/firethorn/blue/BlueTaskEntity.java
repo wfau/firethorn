@@ -135,32 +135,22 @@ implements BlueTask<TaskType>
         {
 
         @Override
-        @SelectAtomicMethod
-        public TaskType advance(final Identifier ident, final TaskState next)
+        @UpdateAtomicMethod
+        public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
         throws IdentifierNotFoundException, InvalidStateTransitionException
             {
-            return advance(
-                ident,
-                next,
-                0L
-                );
-            }
-        
-        @Override
-        @SelectAtomicMethod
-        public TaskType advance(final Identifier ident, final TaskState next, long timeout)
-        throws IdentifierNotFoundException, InvalidStateTransitionException
-            {
-            log.debug("advance(Identifier, TaskState, long)");
+            log.debug("advance(Identifier, TaskState, TaskState, long)");
             log.debug("  ident [{}]", ident);
+            log.debug("  prev  [{}]", prev);
             log.debug("  next  [{}]", next);
-            log.debug("  wait  [{}]", timeout);
+            log.debug("  wait  [{}]", wait);
             TaskType task = select(
         		ident
             	);
             task.advance(
+        		prev,
         		next,
-        		timeout
+        		wait
         		); 
             return task ;
             }
@@ -530,15 +520,16 @@ implements BlueTask<TaskType>
     implements BlueTask.Handle.Listener
         {
         /**
-         * The maximum Thread wait.
+         * The default timeout.
+         * TODO Make this configurable.
          *  
          */
-        private static final long MAX_WAIT = 5000 ;
+        private static final long DEFAULT_TIMEOUT = 5000 ;
 
     	public BaseEventListener()
             {
         	this(
-        		MAX_WAIT
+        		DEFAULT_TIMEOUT
         		);
             }
 
@@ -917,32 +908,54 @@ implements BlueTask<TaskType>
             );
         }
 
+    /*
+     *
     @Override
     public void advance(final TaskState next)
     throws InvalidStateTransitionException
         {
     	advance(
+			null,
 			next,
 			0L
 			);
         }
+     *
+     */
 
+    /*
+     * 
     @Override
-    public void advance(final TaskState next, long timeout)
+    public void advance(final TaskState next, long wait)
     throws InvalidStateTransitionException
         {
-        final TaskState prev = this.state();
-        log.debug("advance(TaskState, long)");
+        advance(
+            null,
+            next,
+            wait
+            );
+        }
+     *
+     */
+    
+    @Override
+    public void advance(final TaskState prev, final TaskState next, final Long wait)
+    throws InvalidStateTransitionException
+        {
+        log.debug("advance(TaskState, TaskState, long)");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}][{}]", prev.name(), next.name());
-        log.debug("  timeout [{}]", timeout);
+        log.debug("  prev  [{}]", prev);
+        log.debug("  curr  [{}]", this.state());
+        log.debug("  next  [{}]", next);
+        log.debug("  wait  [{}]", wait);
 
-        if (prev == next)
+        final TaskState current = this.state(); 
+        if (current == next)
             {
-            log.debug("No-op status change [{}]", next);
+            log.debug("No-op status change [{}][{}]", current, next);
             }
 
-        else if (prev == TaskState.EDITING)
+        else if (current == TaskState.EDITING)
             {
             switch (next)
                 {
@@ -965,7 +978,7 @@ implements BlueTask<TaskType>
                 }
             }
         
-        else if (prev == TaskState.READY)
+        else if (current == TaskState.READY)
             {
             switch (next)
                 {
@@ -983,7 +996,7 @@ implements BlueTask<TaskType>
                 }
             }
 
-        else if (prev == TaskState.QUEUED)
+        else if (current == TaskState.QUEUED)
             {
             switch (next)
                 {
@@ -999,7 +1012,7 @@ implements BlueTask<TaskType>
                 }
             }
 
-        else if (prev == TaskState.RUNNING)
+        else if (current == TaskState.RUNNING)
             {
             switch (next)
                 {
@@ -1016,14 +1029,14 @@ implements BlueTask<TaskType>
             }
 
         else {
-            reject(prev, next);
+            reject(current, next);
             }
         //
         // Wait for the state change to happen.
         this.waitfor(
-    		null,
+    		prev,
     		next,
-    		timeout
+    		wait
     		);
         //
         // Update our Handle and notify any Listeners.
@@ -1058,18 +1071,22 @@ implements BlueTask<TaskType>
             }
     	}
 
-    // Probably becomes part of the API
-    protected void waitfor(final TaskState prev, final TaskState next, long timeout)
+    @Override
+    public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     	{
         log.debug("waitfor(TaskState, long)");
         log.debug("  ident [{}]", ident());
         log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);
-        log.debug("  timeout [{}]", timeout);
+        log.debug("  wait  [{}]", wait);
 
-		if (timeout <= 0)
+        if (wait == null)
+            {
+            log.debug("Wait is null - no wait");
+            }
+        else if (wait <= 0)
 			{
-			log.debug("Timeout is zero - no wait");
+			log.debug("Wait is zero - no wait");
 			}
 		else {
             //
@@ -1079,7 +1096,7 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", handle.ident());
             log.debug("  state [{}]", handle.state());
 
-            log.debug("Before waitfor()");
+            log.debug("Before listener.waitfor()");
             log.debug("  ident [{}]", this.ident());
             log.debug("  ident [{}]", handle.ident());
             log.debug("  prev  [{}]", prev);
@@ -1090,12 +1107,12 @@ implements BlueTask<TaskType>
             Handle.Listener listener = new StatusEventListener(
     			prev,
     			next,
-    			timeout
+    			wait
                 );
             listener.waitfor(
         		handle
         		);
-            log.debug("After waitfor()");
+            log.debug("After listener.waitfor()");
             log.debug("  ident [{}]", this.ident());
             log.debug("  ident [{}]", handle.ident());
             log.debug("  prev  [{}]", prev);

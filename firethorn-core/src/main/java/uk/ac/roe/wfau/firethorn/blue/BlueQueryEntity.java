@@ -45,6 +45,7 @@ import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.Session;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
@@ -68,6 +69,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -299,66 +301,12 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource resource)
-        throws InvalidStateTransitionException
-            {
-            return create(
-                resource,
-                null,
-                null,
-                0L
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input)
-        throws InvalidStateTransitionException
-            {
-            return create(
-                resource,
-                input,
-                null,
-                0L
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
-        throws InvalidStateTransitionException
-            {
-            log.debug("create(AdqlResource, String, StatusOne");
-            log.debug("  state [{}]", next);
-            return create(
-                resource,
-                input,
-                next,
-                0L
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public BlueQuery create(AdqlResource resource, TapRequest request)
-        throws InvalidStateTransitionException
-            {
-            return create(
-                resource,
-                request.input(),
-                request.next(),
-                request.maxwait()
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, long timeout)
+        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
         throws InvalidStateTransitionException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
-            log.debug("  wait  [{}]", timeout);
+            log.debug("  wait  [{}]", wait);
 
             final BlueQuery query = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
@@ -382,13 +330,79 @@ implements BlueQuery
             if (next != null)
 	            {
 	            query.advance(
+	        		null,
 	        		next,
-	        		timeout
+	        		wait
 	        		);
 	            }
             return query;
             }
 
+        @Override
+        @SelectMethod
+        public BlueQuery select(final Identifier ident, final TaskState prev, final TaskState next, final Long wait)
+        throws IdentifierNotFoundException
+            {
+            log.debug("select(Identifier , TaskStatus, TaskStatus, Long)");
+            log.debug("  ident [{}]", ident);
+            log.debug("  prev  [{}]", next);
+            log.debug("  next  [{}]", next);
+            log.debug("  wait  [{}]", wait);
+
+            final BlueQuery query = services.entities().select(
+                ident
+                );
+            if ((prev != null) || (next != null) || (wait != null))
+                {
+                query.waitfor(
+                    prev,
+                    next,
+                    wait
+                    );
+                }
+            return query ;
+            }
+
+        @Override
+        @UpdateMethod
+        public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, final Long wait)
+        throws IdentifierNotFoundException, InvalidStateTransitionException
+            {
+            log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
+            log.debug("  ident [{}]", ident);
+            log.debug("  prev  [{}]", prev);
+            log.debug("  next  [{}]", next);
+            log.debug("  wait  [{}]", wait);
+
+            final BlueQuery query = select(
+                ident
+                );
+// Should this be in a separate Thread
+            if (input != null)
+                {
+                query.update(
+                    input
+                    );
+                }
+            if (next != null)
+                {
+                query.advance(
+                    prev,
+                    next,
+                    wait
+                    );
+                }
+            else if ((prev != null) || (wait != null))
+                {
+                query.waitfor(
+                    prev,
+                    next,
+                    wait
+                    );
+                }
+            return query;
+            }
+        
         @Override
         @UpdateMethod
         public BlueQuery callback(final Identifier ident, final BlueQuery.Callback message)
@@ -499,7 +513,7 @@ implements BlueQuery
             );
         this.mode = Mode.AUTO;
         this.resource = resource;
-        this.input(
+        this.prepare(
             input
             );
         }
@@ -548,19 +562,7 @@ implements BlueQuery
         {
         return this.input;
         }
-    @Override
-    public void input(final String input)
-        {
-        if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
-            {
-            this.input = input;
-            prepare();
-            }
-        else {
-            log.warn("Attempt to change read only query");
-            }
-        }
-
+    
     @Type(
         type="org.hibernate.type.TextType"
         )
@@ -1096,6 +1098,70 @@ implements BlueQuery
         return this.stats;
         }
     
+    /**
+     * Update our query input.
+     * Calling {@link #prepare()} in a new {@link Thread} performs the operation in a separate Hibernate {@link Session}.
+     * 
+     */
+    @Override
+    public void update(final String input)
+    throws InvalidStateTransitionException
+        {
+        log.debug("Starting update(String)");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", state().name());
+
+        if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
+            {
+            services().runner().thread(
+                new Updator<BlueQueryEntity>(this)
+                    {
+                    @Override
+                    public TaskState execute()
+                        {
+                        try {
+                            BlueQueryEntity query = (BlueQueryEntity) current();
+                            log.debug("Before input(String)");
+                            log.debug("  state [{}]", query.state().name());
+                            query.prepare(
+                                input
+                                );
+                            log.debug("After input(String)");
+                            log.debug("  state [{}]", query.state().name());
+                            return query.state();
+                            }
+                        catch (HibernateConvertException ouch)
+                            {
+                            log.error("ThreadConversionException [{}]", BlueQueryEntity.this.ident());
+                            return TaskState.ERROR;
+                            }
+                        }
+                    }
+                );
+            log.debug("Finished thread()");
+            log.debug("  state [{}]", state().name());
+    
+            log.debug("Refreshing state");
+            this.refresh();
+    
+            log.debug("Finished update(String)");
+            log.debug("  state [{}]", state().name());
+            }
+        else {
+            throw new InvalidStateTransitionException(
+                this, 
+                "Update ADQL on a read only query"
+                );
+            }
+        }
+    
+    protected void prepare(final String input)
+        {
+        log.debug("prepare(String)");
+        this.input = input;
+        prepare();
+        }
+    
     @Override
     protected void prepare()
         {
@@ -1103,106 +1169,96 @@ implements BlueQuery
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
 
-        if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
+        // Check for empty query.
+        if ((this.input() == null) || (this.input().trim().length() == 0))
             {
-            // Check for empty query.
-            if ((this.input() == null) || (this.input().trim().length() == 0))
+            log.debug("Query is empty");
+            this.transition(
+                TaskState.EDITING
+                );
+            }
+        // Check for valid query.
+        else {
+            //
+            // Log the start time.
+            this.timings().adqlstart();
+            
+            //
+            // TODO - The parsers should be part of the resource/schema.
+            final AdqlParser direct = this.factories().adql().parsers().create(
+                Mode.DIRECT,
+                this.resource()
+                );
+            final AdqlParser distrib = this.factories().adql().parsers().create(
+                Mode.DISTRIBUTED,
+                this.resource()
+                );
+
+            log.debug("Query mode [{}]", this.mode);
+
+            if (this.mode == Mode.DIRECT)
                 {
-                log.debug("Query is empty");
-                this.transition(
-                    TaskState.EDITING
+                log.debug("Processing as [DIRECT] query");
+                direct.process(
+                    this.parsable()
                     );
+                //
+                // Use our primary resource.
+                //this.mode   = Mode.DIRECT;
+                //this.source = primary().ogsa().primary().ogsaid();
                 }
-            // Check for valid query.
+            else if (this.mode == Mode.DISTRIBUTED)
+                {
+                log.debug("Processing as [DISTRIBUTED] query");
+                distrib.process(
+                    this.parsable()
+                    );
+                //
+                // Use our DQP resource.
+                //this.mode   = Mode.DISTRIBUTED;
+                //this.source = this.dqp;
+                }
             else {
-                //
-                // Log the start time.
-                this.timings().adqlstart();
-                
-                //
-                // TODO - The parsers should be part of the resource/schema.
-                final AdqlParser direct = this.factories().adql().parsers().create(
-                    Mode.DIRECT,
-                    this.resource()
+                log.debug("Processing as [DIRECT] query");
+                direct.process(
+                    this.parsable()
                     );
-                final AdqlParser distrib = this.factories().adql().parsers().create(
-                    Mode.DISTRIBUTED,
-                    this.resource()
-                    );
-
-                log.debug("Query mode [{}]", this.mode);
-
-                if (this.mode == Mode.DIRECT)
+                if (this.resources.size() == 1)
                     {
-                    log.debug("Processing as [DIRECT] query");
-                    direct.process(
-                        this.parsable()
-                        );
+                    this.mode = Mode.DIRECT;
                     //
                     // Use our primary resource.
-                    //this.mode   = Mode.DIRECT;
                     //this.source = primary().ogsa().primary().ogsaid();
                     }
-                else if (this.mode == Mode.DISTRIBUTED)
-                    {
+                else {
+                    //
+                    // Process as a distributed query.
                     log.debug("Processing as [DISTRIBUTED] query");
                     distrib.process(
                         this.parsable()
                         );
+                    this.mode = Mode.DISTRIBUTED;
                     //
                     // Use our DQP resource.
-                    //this.mode   = Mode.DISTRIBUTED;
                     //this.source = this.dqp;
                     }
-                else {
-                    log.debug("Processing as [DIRECT] query");
-                    direct.process(
-                        this.parsable()
-                        );
-                    if (this.resources.size() == 1)
-                        {
-                        this.mode = Mode.DIRECT;
-                        //
-                        // Use our primary resource.
-                        //this.source = primary().ogsa().primary().ogsaid();
-                        }
-                    else {
-                        //
-                        // Process as a distributed query.
-                        log.debug("Processing as [DISTRIBUTED] query");
-                        distrib.process(
-                            this.parsable()
-                            );
-                        this.mode = Mode.DISTRIBUTED;
-                        //
-                        // Use our DQP resource.
-                        //this.source = this.dqp;
-                        }
-                    }
-                //
-                // Log the end time.
-                this.timings().adqldone();
-                //
-                // Update the status.
-                if (syntax().state() == Syntax.State.VALID)
-                    {
-                    transition(
-                		TaskState.READY
-                		);
-                    }
-                else {
-                    transition(
-                		TaskState.EDITING
-                		);
-                    }
-            	}
-            }
-        
-        else {
-            log.error("Call to prepare() with invalid state [{}]", this.state().name());
-            throw new IllegalStateException(
-                "Call to prepare() with invalid state [" + this.state().name() + "]"
-                );
+                }
+            //
+            // Log the end time.
+            this.timings().adqldone();
+            //
+            // Update the status.
+            if (syntax().state() == Syntax.State.VALID)
+                {
+                transition(
+            		TaskState.READY
+            		);
+                }
+            else {
+                transition(
+            		TaskState.EDITING
+            		);
+                }
             }
         }
 
@@ -1290,4 +1346,7 @@ implements BlueQuery
         // Update our Handle and notify any Listeners.
         this.event();
         }
+
+    
+    
     }

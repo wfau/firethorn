@@ -43,14 +43,18 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+			null,
+			null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.EDITING
+            null,
+			TaskState.EDITING,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -64,14 +68,18 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.READY
+            null,
+			TaskState.READY,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -85,7 +93,9 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -94,7 +104,9 @@ public class InvalidQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.QUEUED
+            null,
+			TaskState.QUEUED,
+            null
 			);
         }
 
@@ -105,14 +117,18 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.COMPLETED
+            null,
+			TaskState.COMPLETED,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -127,14 +143,18 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
-			TaskState.COMPLETED
+            null,
+			TaskState.COMPLETED,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -148,15 +168,18 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
 			query.state()
 			);
     	query.advance(
+            null,
 			TaskState.CANCELLED,
-			0
+            null
 			);
     	assertEquals(
 			TaskState.CANCELLED,
@@ -170,7 +193,9 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -179,7 +204,9 @@ public class InvalidQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.FAILED
+            null,
+			TaskState.FAILED,
+            null
 			);
         }
 
@@ -189,7 +216,9 @@ public class InvalidQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
-			INVALID_QUERY
+			INVALID_QUERY,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -198,7 +227,9 @@ public class InvalidQueryTestCase
     	exception.expect(InvalidStateTransitionException.class);
     	exception.expectMessage("Invalid state transition");
     	query.advance(
-			TaskState.ERROR
+            null,
+			TaskState.ERROR,
+            null
 			);
         }
     }

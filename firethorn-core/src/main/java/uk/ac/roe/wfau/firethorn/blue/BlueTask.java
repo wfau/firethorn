@@ -19,9 +19,10 @@ package uk.ac.roe.wfau.firethorn.blue;
 
 import java.util.concurrent.Future;
 
+import org.hibernate.Session;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTaskEntity.Handle;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -162,16 +163,13 @@ extends NamedEntity
 
         /**
          * Advance the {@link TaskState} of a {@link BlueTask}.
+         * @param ident The {@link BlueTask} {@link Identifier}. 
+         * @param prev The current/previous {@link TaskState}. 
+         * @param next The next {@link TaskState} to move to. 
+         * @param wait The blocking time in milliseconds. 
          * 
          */
-        public TaskType advance(final Identifier ident, final TaskState next)
-        throws IdentifierNotFoundException, InvalidStateTransitionException;
-
-        /**
-         * Advance the {@link TaskState} of a {@link BlueTask}.
-         * 
-         */
-        public TaskType advance(final Identifier ident, final TaskState next, long wait)
+        public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
         throws IdentifierNotFoundException, InvalidStateTransitionException;
        
         }
@@ -183,8 +181,8 @@ extends NamedEntity
     public enum TaskState
     implements Comparable<TaskState>
         {
-        EDITING(true),
-        READY(true),
+        EDITING(false),
+        READY(false),
         QUEUED(true),
         RUNNING(true),
         COMPLETED(false),
@@ -251,18 +249,41 @@ extends NamedEntity
     /**
      * Advance to the next {@link TaskState},
      * called in response to a user action. 
+     * @param prev The next {@link TaskState} to move to. 
      * 
-     */
     public void advance(final TaskState next)
     throws InvalidStateTransitionException;
+     */
 
     /**
      * Advance to the next {@link TaskState},
      * called in response to a user action.
+     * @param next The next {@link TaskState} to move to. 
+     * @param wait The blocking time in milliseconds. 
+     * 
+    public void advance(final TaskState next, long wait)
+    throws InvalidStateTransitionException;
+     */
+
+    /**
+     * Advance to the next {@link TaskState},
+     * called in response to a user action.
+     * @param prev The current/previous {@link TaskState}. 
+     * @param next The next {@link TaskState} to move to. 
+     * @param wait The blocking time in milliseconds. 
      * 
      */
-    public void advance(final TaskState next, long timeout)
+    public void advance(final TaskState prev, final TaskState next, final Long wait)
     throws InvalidStateTransitionException;
+
+    /**
+     * Wait for a state {@link TaskState} change.
+     * @param prev The current/previous {@link TaskState}. 
+     * @param prev The next {@link TaskState} to move to. 
+     * @param wait The blocking time in milliseconds. 
+     * 
+     */
+    public void waitfor(final TaskState prev, final TaskState next, final Long wait);
 
     /**
      * An event notification handle.
