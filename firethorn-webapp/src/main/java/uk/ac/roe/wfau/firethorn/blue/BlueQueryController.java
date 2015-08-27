@@ -344,8 +344,9 @@ public class BlueQueryController
      * @throws IdentifierFormatException 
      * 
      */
+    @ResponseBody
     @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, produces=JSON_MIME)
-    public void callback(
+    public BlueQueryBean callback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
         @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
@@ -361,23 +362,25 @@ public class BlueQueryController
         log.debug("  ident [{}]", ident);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", rowcount);
-        services.entities().callback(
-            services.idents().ident(
-                ident
-                ),
-            new BlueQuery.Callback()
-                {
-                @Override
-                public Long rowcount()
+        return bean(
+            services.entities().callback(
+                services.idents().ident(
+                    ident
+                    ),
+                new BlueQuery.Callback()
                     {
-                    return rowcount;
+                    @Override
+                    public Long rowcount()
+                        {
+                        return rowcount;
+                        }
+                    @Override
+                    public TaskState next()
+                        {
+                        return next;
+                        }
                     }
-                @Override
-                public TaskState next()
-                    {
-                    return next;
-                    }
-                }
+                )
             );
         }
     }

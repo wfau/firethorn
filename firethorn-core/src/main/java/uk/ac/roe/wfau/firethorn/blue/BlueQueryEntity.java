@@ -1243,6 +1243,8 @@ implements BlueQuery
                     distrib.process(
                         this.parsable()
                         );
+                    // TODO Need a second variable to indicate the chosen mode. 
+                    // Leave the mode as AOTO in case the user re-submits.
                     this.mode = Mode.DISTRIBUTED;
                     //
                     // Use our DQP resource.

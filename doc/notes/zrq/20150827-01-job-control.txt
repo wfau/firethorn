@@ -20,7 +20,6 @@
 #
 #
 
-
 # -----------------------------------------------------
 # Set our target branch.
 #[root@virtual]
@@ -51,6 +50,15 @@
     source /etc/bashrc
 
 # -----------------------------------------------------
+# Get the docker-proxy address.
+#[root@builder]
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
 # Set our project path.
 #[root@builder]
 
@@ -68,33 +76,18 @@ EOF
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
-    if [ ! -e "${FIRETHORN_CODE:?}" ]
-    then
-        #
-        # Clone our repository.
-        pushd "$(dirname ${FIRETHORN_CODE:?})"
+    pushd "${FIRETHORN_CODE:?}"
 
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
-
-        popd
-    else
-        #
-        # Pull and update from branch.
-        pushd "${FIRETHORN_CODE:?}"
-
-            hg pull
-            hg update "${branch:?}"
-            hg branch
-        
-        popd
-    fi
+        hg pull
+        hg update "${branch:?}"
+        hg branch
+    
+    popd
 
 # -----------------------------------------------------
 # Build our source code.
 #[root@builder]
 
-    #
-    # Build our webapp services.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -166,25 +159,46 @@ EOF
 
     docker logs -f --tail 100 "${firename:?}"
 
+# -----------------------------------------------------
+# Start our test container.
+#[root@virtual]
 
+    source "${HOME:?}/chain.properties"
 
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
 
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
 
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
 
+        source "bin/01-01-init-rest.sh"
 
-
-
+# -----------------------------------------------------
+# Explore the blue API.
+#[root@tester]
 
     #
     # Check the system info.
-
-
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         "${endpointurl:?}/system/info" \
         | bin/pp | tee system-info.json
-
 
     #
     # List our ADQL resources.
@@ -200,15 +214,29 @@ EOF
         "${endpointurl:?}/adql/resource/32772" \
         | bin/pp | tee adql-resource.json
 
-    #
-    # Create an empty BlueQuery.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        --data "frog:green" \
+        "${endpointurl:?}/adql/resource/32772/schemas/select" \
+        | bin/pp
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/adql/schema/163926/tables/select" \
+        | bin/pp
+
+    #
+    # Create BlueQuery with a null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "frog=green" \
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
 
+    #
+    # Create BlueQuery with an empty input.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -216,12 +244,61 @@ EOF
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
 
-
+    #
+    # Create BlueQuery with an invalid input.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        --data   "blue.query.input=SELECT count(*) FROM Filter" \
-        "${endpointurl:?}/blue/query/create" \
+        --data "blue.query.input=NOT ADQL" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
+
+    #
+    # Create BlueQuery with a valid input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    #
+    # Select the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/491528" \
+        | bin/pp
+
+    #
+    # Run the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=RUNNING" \
+        "${endpointurl:?}/blue/query/491528" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/491528" \
+        | bin/pp
+
+
+
+
+    # Can't create with status .. yet
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        --data "blue.query.next=RUNNING" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
 
 
