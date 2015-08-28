@@ -66,6 +66,10 @@ self()
     bin/pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
     }
 
+ident()
+    {
+    sed -n 's|.*\/\([^/]*\)|\1|p'
+    }
 
 #
 # Function to get the REST node from an http URL.

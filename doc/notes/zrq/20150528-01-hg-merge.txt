@@ -72,7 +72,7 @@
 # Shutdown and remove any existing containers.
 #[user@desktop]
 
-    docker rm -f $(docker ps -aq)
+    docker rm -v -f $(docker ps -aq)
 
 # -----------------------------------------------------
 # Start our docker-proxy container.

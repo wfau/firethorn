@@ -31,6 +31,8 @@
 # Run our build container.
 #[root@virtual]
 
+    source "${HOME:?}/chain.properties"
+
     docker run \
         -it --rm \
         --name builder \
@@ -122,7 +124,7 @@ EOF
 # Stop and remove our firethorn container.
 #[root@builder]
 
-    docker rm -f "${firename}"
+    docker rm -v -f "${firename}"
 
 # -----------------------------------------------------
 # Start our FireThorn container.
@@ -262,12 +264,24 @@ EOF
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
 
+    queryself=$(
+        cat blue-query.json | self
+        )
+
+    querynode=$(
+        cat blue-query.json | self | node
+        )
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
     #
     # Select the BlueQuery.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/blue/query/622592" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
         | bin/pp
 
     #
@@ -276,7 +290,15 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.next.status=RUNNING" \
-        "${endpointurl:?}/blue/query/622592" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Select the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
         | bin/pp
 
     #
@@ -285,20 +307,72 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.next.status=COMPLETED" \
-        "${endpointurl:?}/blue/query/callback/622592" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Select the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
         | bin/pp
 
 
 
 
-    # Can't create with status .. yet
+
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryself=$(
+        cat blue-query.json | self
+        )
+
+    querynode=$(
+        cat blue-query.json | self | node
+        )
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL.
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        --data "blue.query.next=RUNNING" \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Run the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=RUNNING" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+
+
 
 
 
