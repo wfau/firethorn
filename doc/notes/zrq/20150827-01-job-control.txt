@@ -535,8 +535,17 @@ queryident=622605
 
 
     #
+    # Select the BlueQuery.
+queryident=1179648
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
     # Complete the BlueQuery.
-queryident=1048582
+queryident=1179648
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -544,12 +553,4 @@ queryident=1048582
         "${endpointurl:?}/blue/query/callback/${queryident:?}" \
         | bin/pp
 
-    #
-    # Select the BlueQuery.
-queryident=1048581
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
 
