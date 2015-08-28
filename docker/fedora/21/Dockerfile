@@ -40,6 +40,7 @@ RUN yum -y install deltarpm
 RUN yum -y install sed
 RUN yum -y install tar
 RUN yum -y install wget
+RUN yum -y install nano
 RUN yum -y install gzip
 RUN yum -y install pwgen
 
