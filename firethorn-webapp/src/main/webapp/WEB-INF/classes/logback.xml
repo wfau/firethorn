@@ -25,15 +25,30 @@
 	    | http://logback.qos.ch/manual/appenders.html
 	    | http://logback.qos.ch/manual/layouts.html
 	    +-->
-	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>/var/logs/firethorn.log</file>
+            <append>false</append>
+            <encoder>
+                <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="debug" />
+
+        <root level="info">
+            <appender-ref ref="FILE" />
+        </root>
+
+	<!--<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<target>System.out</target>
         <encoder>
             <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
             <!-- %exception{short} -->
-            <!-- %caller{2} -->
+            <!-- %caller{2} 
         </encoder>
 	</appender>
-	
+	-->
 	<!--+
 	    | Firethorn logging.
 	    +-->
@@ -173,7 +188,7 @@
 	    +-->
 	<root level="DEBUG">
 		<!--priority value="${root-level:-INFO}" /-->
-		<appender-ref ref="console" />
+		<appender-ref ref="file" />
 	</root>
 	
 </configuration>
