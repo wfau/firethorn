@@ -127,10 +127,61 @@ EOF
     docker rm -v -f "${firename}"
 
 # -----------------------------------------------------
+# Create our FireThorn config.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    properties=${HOME:?}/firethorn.properties
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Create our Tomcat setenv script.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    setenv=$(mktemp)
+    cat > "${setenv:?}" << 'EOF'
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=8085"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=8085"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.local.only=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=192.168.122.13"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.activation.port=8086"
+EOF
+
+    chmod a+r "${setenv:?}" 
+    chcon -t svirt_sandbox_file_t "${setenv:?}" 
+
+# -----------------------------------------------------
 # Start our FireThorn container.
 #[root@virtual]
 
     source "${HOME:?}/chain.properties"
+
+    properties=${HOME:?}/firethorn.properties
 
     firetemp="/var/temp/${firename:?}"
     firelogs="/var/logs/${firename:?}"

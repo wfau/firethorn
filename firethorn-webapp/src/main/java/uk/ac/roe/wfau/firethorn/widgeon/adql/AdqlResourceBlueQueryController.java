@@ -31,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
@@ -127,7 +128,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
         @RequestParam(value=BlueQueryController.INPUT_PARAM_NAME, required=false)
-        final String input
+        final String input,
+        @RequestParam(value=BlueQueryController.NEXT_STATUS_PARAM_NAME, required=false)
+        final TaskState next,
+        @RequestParam(value=BlueQueryController.WAIT_PARAM_NAME, required=false)
+        final Long wait
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -137,13 +142,17 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);
         log.debug("  input [{}]", input);
+        log.debug("  next  [{}]", next);
+        log.debug("  wait  [{}]", wait);
         return created(
             factories().adql().resources().select(
                 factories().adql().resources().idents().ident(
                     ident
                     )
                 ).blues().create(
-                    input
+                    input,
+                    next,
+                    wait
                     )
             );
         }
