@@ -315,7 +315,7 @@ public class BlueQueryController
             IdentifierFormatException,
             InvalidStateTransitionException
         {
-        log.debug("advance(String, TaskStatus, Long)");
+        log.debug("update(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
         log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);

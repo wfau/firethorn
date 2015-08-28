@@ -202,6 +202,8 @@ EOF
         "${endpointurl:?}/system/info" \
         | bin/pp | tee system-info.json
 
+#------------------------------------------------------------------
+
     #
     # List our ADQL resources.
     curl \
@@ -228,6 +230,8 @@ EOF
         "${endpointurl:?}/adql/schema/163926/tables/select" \
         | bin/pp
 
+#------------------------------------------------------------------
+
     #
     # Create BlueQuery with a null input.
     curl \
@@ -236,6 +240,8 @@ EOF
         --data "frog=green" \
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
+
+#------------------------------------------------------------------
 
     #
     # Create BlueQuery with an empty input.
@@ -246,6 +252,8 @@ EOF
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
 
+#------------------------------------------------------------------
+
     #
     # Create BlueQuery with an invalid input.
     curl \
@@ -254,6 +262,8 @@ EOF
         --data "blue.query.input=NOT ADQL" \
         "${endpointurl:?}/adql/resource/32772/blue/create" \
         | bin/pp | tee blue-query.json
+
+#------------------------------------------------------------------
 
     #
     # Create BlueQuery with a valid input.
@@ -318,10 +328,7 @@ EOF
         "${endpointurl:?}/blue/query/${queryident:?}" \
         | bin/pp
 
-
-
-
-
+#------------------------------------------------------------------
 
     #
     # Create BlueQuery with null input.
@@ -371,8 +378,95 @@ EOF
         "${endpointurl:?}/blue/query/callback/${queryident:?}" \
         | bin/pp
 
+#------------------------------------------------------------------
 
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
 
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL and set status to RUNNING.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=RUNNING" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL and set status to COMPLETED.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    echo "queryident=${queryident:?}"
+
+    #
+    # Set the query ADQL and set status to COMPLETED, and wait 60 sec.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.wait=60000" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+
+queryident=622605
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
 
 
 

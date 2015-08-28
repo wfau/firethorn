@@ -559,7 +559,7 @@ implements BlueTask<TaskType>
                         try {
                             log.debug("wait start [{}]", remaining());
 	                		this.count++;
-                            this.wait(
+                            handle.wait(
                         		remaining()
                         		);
                             log.debug("wait done");
