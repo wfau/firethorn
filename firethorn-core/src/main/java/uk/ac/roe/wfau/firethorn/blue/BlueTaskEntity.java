@@ -942,7 +942,7 @@ implements BlueTask<TaskType>
     public void advance(final TaskState prev, final TaskState next, final Long wait)
     throws InvalidStateTransitionException
         {
-        log.debug("advance(TaskState, TaskState, long)");
+        log.debug("advance(TaskState, TaskState, Long)");
         log.debug("  ident [{}]", ident());
         log.debug("  prev  [{}]", prev);
         log.debug("  curr  [{}]", this.state());
@@ -1032,17 +1032,24 @@ implements BlueTask<TaskType>
             reject(current, next);
             }
         //
-        // Wait for the state change to happen.
+        // Wait for the next state change.
         this.waitfor(
     		prev,
     		next,
     		wait
     		);
         //
+        // Update this instance with the result of the wait.
+        this.refresh();
+        //
         // Update our Handle and notify any Listeners.
-    	this.event(
+/*
+ * Should this be before or after the wait ?
+ * Should this be part of ready(), running() and finish() ?
+        this.event(
     		this.state
             );
+ */            
         }
 
     /**
@@ -1074,7 +1081,7 @@ implements BlueTask<TaskType>
     @Override
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     	{
-        log.debug("waitfor(TaskState, long)");
+        log.debug("waitfor(TaskState, Long)");
         log.debug("  ident [{}]", ident());
         log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);
@@ -1125,9 +1132,7 @@ implements BlueTask<TaskType>
             log.debug("Before refresh()");
             log.debug("  ident [{}]", this.ident());
             log.debug("  state [{}]", this.state());
-            factories().hibernate().refresh(
-        		this
-                );
+            refresh();
             log.debug("After refresh()");
             log.debug("  ident [{}]", this.ident());
             log.debug("  state [{}]", this.state());

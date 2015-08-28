@@ -340,6 +340,15 @@ implements BlueQuery
 	        		wait
 	        		);
 	            }
+
+            //log.debug("Before refresh()");
+            //log.debug("  ident [{}]", result.ident());
+            //log.debug("  state [{}]", result.state());
+            //result.refresh();
+            //log.debug("After refresh()");
+            //log.debug("  ident [{}]", result.ident());
+            //log.debug("  state [{}]", result.state());
+
             log.debug("Returning BlueQuery");
             return result;
             }

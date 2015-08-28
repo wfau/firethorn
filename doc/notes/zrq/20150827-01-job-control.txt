@@ -521,3 +521,36 @@ queryident=622605
 
 
 
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with vaild ADQL, status to COMPLETED, and wait 60 sec.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.wait=20000" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+
+    #
+    # Complete the BlueQuery.
+queryident=917506
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Select the BlueQuery.
+queryident=917506
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
