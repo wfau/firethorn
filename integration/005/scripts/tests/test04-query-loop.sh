@@ -17,5 +17,5 @@ chcon -t svirt_sandbox_file_t "/root/tests/test04-nohup.sh"
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         "firethorn/tester:${version:?}" \
-        bash  -c '/scripts/test04-nohup.sh 2>&1 | tee output.log'
+        bash  -c 'source /scripts/test04-nohup.sh 2>&1 | tee output.log'
 
