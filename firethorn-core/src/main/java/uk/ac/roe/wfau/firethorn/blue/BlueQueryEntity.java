@@ -1345,6 +1345,9 @@ implements BlueQuery
         {
         log.debug("callback(Callback");
         log.debug("  next  [{}]", message.next());
+
+/*
+ *      
         //
         // Update our row count.
         if (message.rowcount() != null)
@@ -1359,9 +1362,58 @@ implements BlueQuery
                 message.next()
                 );
             }
-        //
-        // Update our Handle and notify any Listeners.
+ *           
+ */
+
+        log.debug("Starting callback()");
+        log.debug("  ident [{}]", this.ident());
+        log.debug("  state [{}]", this.state());
+        services().runner().thread(
+            new Updator<BlueTaskEntity<?>>(this)
+                {
+                @Override
+                public TaskState execute()
+                    {
+                    try {
+                        //
+                        // Get an instace for this Thread.
+                        BlueQueryEntity query = (BlueQueryEntity) current();
+                        //
+                        // Update the row count.
+                        if (message.rowcount() != null)
+                            {
+                            query.rowcount = message.rowcount();
+                            }
+                        //
+                        // Update the state.
+                        if (message.next() != null)
+                            {
+                            query.transition(
+                                message.next()
+                                );
+                            }
+                        return query.state();
+                        }
+                    catch (HibernateConvertException ouch)
+                        {
+                        log.error("ThreadConversionException [{}]", BlueQueryEntity.this.ident());
+                        return TaskState.ERROR;
+                        }
+                    }
+                }
+            );
+        log.debug("Finished thread()");
+        log.debug("  state [{}]", state());
+
+        log.debug("Refreshing state");
+        this.refresh();
+
+        log.debug("Notifying listeners");
         this.event();
+
+        log.debug("Finished callback()");
+        log.debug("  state [{}]", state());
+        
         }
 
     

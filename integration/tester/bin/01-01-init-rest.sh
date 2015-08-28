@@ -60,22 +60,24 @@ define()
     }
 
 #
-# Function to get the htp ident from a JSON response.
+# Function to get the self URL from a JSON response.
 self()
     {
     bin/pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
     }
 
-ident()
-    {
-    sed -n 's|.*\/\([^/]*\)|\1|p'
-    }
-
 #
-# Function to get the REST node from an http URL.
+# Function to get the node path from an http URL.
 node()
     {
     sed -n 's|\(https\{0,1\}\)://\([^/:]*\):\{0,1\}\([^/]*\)/\([^/]*\)/\(.*\)|/\5|p'
+    }
+
+#
+# Function to get the node ident from a JSON response.
+ident()
+    {
+    sed -n 's|.*\/\([^/]*\)|\1|p'
     }
 
 #

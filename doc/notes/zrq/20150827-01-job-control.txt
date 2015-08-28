@@ -509,7 +509,6 @@ EOF
 
     #
     # Complete the BlueQuery.
-
 queryident=622605
 
     curl \
@@ -528,7 +527,7 @@ queryident=622605
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.wait=20000" \
+        --data "blue.query.wait=120000" \
         --data "blue.query.next.status=COMPLETED" \
         --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
         "${endpointurl:?}/adql/resource/32772/blue/create" \
@@ -537,7 +536,7 @@ queryident=622605
 
     #
     # Complete the BlueQuery.
-queryident=917506
+queryident=1048582
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -547,7 +546,7 @@ queryident=917506
 
     #
     # Select the BlueQuery.
-queryident=917506
+queryident=1048581
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
