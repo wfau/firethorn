@@ -26,7 +26,7 @@
 	    | http://logback.qos.ch/manual/layouts.html
 	    +-->
         <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-            <file>/var/logs/firethorn.log</file>
+            <file>/var/logs/gillian/firethorn.log</file>
             <append>false</append>
             <encoder>
                 <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
@@ -40,15 +40,7 @@
             <appender-ref ref="FILE" />
         </root>
 
-	<!--<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-		<target>System.out</target>
-        <encoder>
-            <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
-            <!-- %exception{short} -->
-            <!-- %caller{2} 
-        </encoder>
-	</appender>
-	-->
+	
 	<!--+
 	    | Firethorn logging.
 	    +-->
