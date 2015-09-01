@@ -170,7 +170,7 @@ extends NamedEntity
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateTransitionException;
+        throws IdentifierNotFoundException, InvalidStateRequestException;
        
         }
 
@@ -274,7 +274,7 @@ extends NamedEntity
      * 
      */
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateTransitionException;
+    throws InvalidStateRequestException;
 
     /**
      * Wait for a state {@link TaskState} change.

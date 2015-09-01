@@ -25,11 +25,11 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 
 /**
- * Exception thrown in response to an invalid {@link TaskState} transition.
+ * Exception thrown in response to an invalid {@link TaskState} request.
  *
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class InvalidStateTransitionException
+public class InvalidStateRequestException
 extends FirethornCheckedException
     {
     /**
@@ -60,7 +60,7 @@ extends FirethornCheckedException
      * Public constructor, with default message.
      *
      */
-    public InvalidStateTransitionException(final BlueTask<?> task, final TaskState prev, final TaskState next)
+    public InvalidStateRequestException(final BlueTask<?> task, final TaskState prev, final TaskState next)
         {
         this(
             task,
@@ -76,7 +76,7 @@ extends FirethornCheckedException
      * Public constructor, with specific message.
      *
      */
-    public InvalidStateTransitionException(final BlueTask<?> task, final String message)
+    public InvalidStateRequestException(final BlueTask<?> task, final String message)
         {
         super(message);
         this.ident = task.ident();

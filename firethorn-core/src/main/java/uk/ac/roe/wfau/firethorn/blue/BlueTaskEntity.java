@@ -46,6 +46,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -137,7 +138,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateTransitionException
+        throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("advance(Identifier, TaskState, TaskState, long)");
             log.debug("  ident [{}]", ident);
@@ -902,9 +903,10 @@ implements BlueTask<TaskType>
         {
         this.state = TaskState.ERROR;
         // TODO Do we notify our listners ?
-        log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new IllegalStateException(
-            "Invalid status change [" + prev.name() + "][" + next.name() + "]"
+        throw new InvalidStateRequestException(
+            this,
+            prev,
+            next
             );
         }
 
@@ -940,7 +942,7 @@ implements BlueTask<TaskType>
     
     @Override
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateTransitionException
+    throws InvalidStateRequestException
         {
         log.debug("advance(TaskState, TaskState, Long)");
         log.debug("  ident [{}]", ident());
@@ -1215,10 +1217,15 @@ implements BlueTask<TaskType>
 	                        log.debug("After execute()");
 	                        log.debug("  state [{}]", task.state().name());
 	                        }
+	                    //
+	                    // If the task is not ready.
 	                    else {
 	//TODO better error handling 
-	                    	log.debug("Not READY, skipping execute()");
-	                        }
+	                    	log.debug("Task is not READY, transition to ERROR");
+	                        task.transition(
+                                TaskState.ERROR
+                                );
+	                    	}
 	                    return task.state();
 	                    }
                     catch (HibernateConvertException ouch)
@@ -1289,10 +1296,10 @@ implements BlueTask<TaskType>
      * 
      */
     private void reject(final TaskState prev, final TaskState next)
-    throws InvalidStateTransitionException
+    throws InvalidStateRequestException
         {
         log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new InvalidStateTransitionException(
+        throw new InvalidStateRequestException(
     		this,
     		prev,
     		next

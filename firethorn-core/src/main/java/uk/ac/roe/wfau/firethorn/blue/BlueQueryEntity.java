@@ -302,7 +302,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateTransitionException, HibernateConvertException
+        throws InvalidStateRequestException, HibernateConvertException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
@@ -381,7 +381,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, final Long wait)
-        throws IdentifierNotFoundException, InvalidStateTransitionException
+        throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
             log.debug("  ident [{}]", ident);
@@ -421,7 +421,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery callback(final Identifier ident, final BlueQuery.Callback message)
-        throws IdentifierNotFoundException, InvalidStateTransitionException
+        throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("callback(Identifier, CallbackEvent");
             log.debug("  ident [{}]", ident);
@@ -1120,7 +1120,7 @@ implements BlueQuery
      */
     @Override
     public void update(final String input)
-    throws InvalidStateTransitionException
+    throws InvalidStateRequestException
         {
         log.debug("Starting update(String)");
         log.debug("  ident [{}]", ident());
@@ -1163,7 +1163,7 @@ implements BlueQuery
             log.debug("  state [{}]", state().name());
             }
         else {
-            throw new InvalidStateTransitionException(
+            throw new InvalidStateRequestException(
                 this, 
                 "Update ADQL on a read only query"
                 );
@@ -1341,7 +1341,7 @@ implements BlueQuery
 
     @Override
     public void callback(final BlueQuery.Callback message)
-    throws InvalidStateTransitionException
+    throws InvalidStateRequestException
         {
         log.debug("callback(Callback");
         log.debug("  next  [{}]", message.next());

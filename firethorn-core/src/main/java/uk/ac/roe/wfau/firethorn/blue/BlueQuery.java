@@ -162,7 +162,7 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateTransitionException, HibernateConvertException;
+        throws InvalidStateRequestException, HibernateConvertException;
 
         /**
          * Update a new {@link BlueQuery} with an ADQL string and state.
@@ -176,7 +176,7 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, Long wait)
-        throws IdentifierNotFoundException, InvalidStateTransitionException;
+        throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
          * Select a {@link BlueQuery} with a state and wait limit.
@@ -196,7 +196,7 @@ extends BlueTask<BlueQuery>
          * 
          */
         public BlueQuery callback(final Identifier ident, final Callback message)
-        throws IdentifierNotFoundException, InvalidStateTransitionException;
+        throws IdentifierNotFoundException, InvalidStateRequestException;
 
         }
 
@@ -245,7 +245,7 @@ extends BlueTask<BlueQuery>
      * 
      */
     public void callback(final BlueQuery.Callback message)
-    throws InvalidStateTransitionException;
+    throws InvalidStateRequestException;
 
     /**
      * The {@link Callback} URL (as a string).
@@ -277,7 +277,7 @@ extends BlueTask<BlueQuery>
      * 
      */
     public void update(final String input)
-    throws InvalidStateTransitionException;
+    throws InvalidStateRequestException;
 
     /**
      * Our ADQL syntax status.
