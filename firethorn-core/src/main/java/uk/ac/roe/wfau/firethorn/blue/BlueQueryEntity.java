@@ -43,8 +43,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Session;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -53,6 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
@@ -302,7 +301,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateRequestException, HibernateConvertException
+        throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
             log.debug("  state [{}]", next);
@@ -314,6 +313,7 @@ implements BlueQuery
                     {
                     @Override
                     public BlueQuery create()
+                    throws InvalidStateTransitionException
                         {
                         log.debug("create(");
                         log.debug("Creating query task");
@@ -509,6 +509,7 @@ implements BlueQuery
      * 
      */
     protected BlueQueryEntity(final AdqlResource resource, final String input)
+    throws InvalidStateTransitionException
         {
         this(
             resource,
@@ -522,15 +523,16 @@ implements BlueQuery
      * 
      */
     protected BlueQueryEntity(final AdqlResource resource, final String input, final String name)
+    throws InvalidStateTransitionException
         {
         super(
             name
             );
         this.mode = Mode.AUTO;
         this.resource = resource;
-        this.prepare(
-            input
-            );
+		this.prepare(
+		    input
+		    );
         }
 
     @Override
@@ -1145,9 +1147,14 @@ implements BlueQuery
                             log.debug("  state [{}]", query.state().name());
                             return query.state();
                             }
+                    	catch (final InvalidStateTransitionException ouch)
+        	    	    	{
+    	    	            log.error("InvalidStateTransitionException [{}]", BlueQueryEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
                         catch (HibernateConvertException ouch)
                             {
-                            log.error("ThreadConversionException [{}]", BlueQueryEntity.this.ident());
+                            log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
                             return TaskState.ERROR;
                             }
                         }
@@ -1171,6 +1178,7 @@ implements BlueQuery
         }
     
     protected void prepare(final String input)
+    throws InvalidStateTransitionException
         {
         log.debug("prepare(String)");
         this.input = input;
@@ -1179,7 +1187,8 @@ implements BlueQuery
     
     @Override
     protected void prepare()
-        {
+    throws InvalidStateTransitionException
+    	{
         log.debug("prepare()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
@@ -1281,6 +1290,7 @@ implements BlueQuery
 
     @Override
     protected void execute()
+    throws InvalidStateTransitionException
         {
         log.debug("execute()");
         log.debug("  ident [{}]", ident());
@@ -1345,27 +1355,6 @@ implements BlueQuery
         {
         log.debug("callback(Callback");
         log.debug("  next  [{}]", message.next());
-
-/*
- *      
-        //
-        // Update our row count.
-        if (message.rowcount() != null)
-            {
-            this.rowcount = message.rowcount();
-            }
-        //
-        // Update our state.
-        if (message.next() != null)
-            {
-            transition(
-                message.next()
-                );
-            }
- *           
- */
-
-        log.debug("Starting callback()");
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());
         services().runner().thread(
@@ -1394,9 +1383,14 @@ implements BlueQuery
                             }
                         return query.state();
                         }
+                    catch (InvalidStateTransitionException ouch)
+                    	{
+	    	            log.error("InvalidStateTransitionException [{}]", BlueQueryEntity.this.ident());
+                		return TaskState.ERROR;
+                    	}
                     catch (HibernateConvertException ouch)
                         {
-                        log.error("ThreadConversionException [{}]", BlueQueryEntity.this.ident());
+                        log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
                         return TaskState.ERROR;
                         }
                     }
@@ -1415,7 +1409,4 @@ implements BlueQuery
         log.debug("  state [{}]", state());
         
         }
-
-    
-    
     }

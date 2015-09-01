@@ -233,6 +233,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskType thread(final Creator<TaskType> creator)
+        throws InvalidStateTransitionException
             {
             log.debug("create(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
@@ -256,20 +257,26 @@ implements BlueTask<TaskType>
                 return result ;
                 }
 // TODO Much better error handling
-            catch (ExecutionException ouch)
+            catch (final ExecutionException ouch)
                 {
                 final Throwable cause = ouch.getCause();
                 log.error("ExecutionException executing Creator [{}][{}]", cause.getClass().getName(), cause.getMessage());
-                return null;
+				if (cause instanceof InvalidStateTransitionException)
+					{
+					throw (InvalidStateTransitionException) cause ;
+					}
+				else {
+					return null;
+					}
                 }
-            catch (InterruptedException ouch)
+            catch (final InterruptedException ouch)
         	    {
                 log.error("Interrupted waiting for Creator [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                 return null;
         	    }
-            catch (HibernateConvertException ouch)
+            catch (final HibernateConvertException ouch)
 	    	    {
-	            log.error("ThreadConversionException [{}]");
+	            log.error("HibernateConvertException [{}]");
 	            return null;
 	    	    }
             }
@@ -281,10 +288,34 @@ implements BlueTask<TaskType>
             {
             log.debug("execute(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-            return new AsyncResult<TaskType>(
-                creator.create()
-                );
-// TODO Much better error handling
+            // TODO Much better error handling
+            try {
+				return new AsyncResult<TaskType>(
+				    creator.create()
+				    );
+				}
+            catch (final InvalidStateTransitionException ouch)
+            	{
+                // TODO Much better error handling
+                // TODO Needs Spring 4.2
+            	return null ;
+            	}
+            /*
+             * 
+            // Needs Spring 4.2
+            try {
+            	return AsyncResult.forValue(
+                    creator.create()
+        			);
+            	}
+            catch(final Throwable ouch)
+            	{
+            	return AsyncResult.forExecutionException(
+                        ouch
+            			);
+            	}
+ * 
+ */
             }
         }
 
@@ -441,13 +472,15 @@ implements BlueTask<TaskType>
      * Prepare our task.
      * 
      */
-    protected abstract void prepare();
+    protected abstract void prepare()
+    throws InvalidStateTransitionException;
 
     /**
      * Execute our task.
      * 
      */
-    protected abstract void execute();
+    protected abstract void execute()
+    throws InvalidStateTransitionException;
 
     /**
      * {@link BlueTask.Handle} implementation.
@@ -787,6 +820,7 @@ implements BlueTask<TaskType>
      * 
      */
     protected void transition(final TaskState next)
+    throws InvalidStateTransitionException
         {
         final TaskState prev = this.state;
         log.debug("transition(TaskState)");
@@ -900,10 +934,11 @@ implements BlueTask<TaskType>
      * 
      */
     private void invalid(final TaskState prev, final TaskState next)
+    throws InvalidStateTransitionException
         {
         this.state = TaskState.ERROR;
         // TODO Do we notify our listners ?
-        throw new InvalidStateRequestException(
+        throw new InvalidStateTransitionException(
             this,
             prev,
             next
@@ -1167,9 +1202,14 @@ implements BlueTask<TaskType>
 	                    log.debug("  state [{}]", task.state().name());
 	                    return task.state();
                     	}
+                	catch (final InvalidStateTransitionException ouch)
+    	    	    	{
+	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
                     catch (HibernateConvertException ouch)
 	    	    	    {
-	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
 	    	    	    }
                     }
@@ -1228,9 +1268,14 @@ implements BlueTask<TaskType>
 	                    	}
 	                    return task.state();
 	                    }
-                    catch (HibernateConvertException ouch)
+                	catch (final InvalidStateTransitionException ouch)
+    	    	    	{
+	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
+                    catch (final HibernateConvertException ouch)
 	    	    	    {
-	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
 	    	    	    }
                     }
@@ -1272,9 +1317,14 @@ implements BlueTask<TaskType>
 	                    log.debug("  state [{}]", task.state().name());
 	                    return task.state();
 	                    }
+                	catch (final InvalidStateTransitionException ouch)
+    	    	    	{
+	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                		return TaskState.ERROR;
+	    	    	    }
                     catch (HibernateConvertException ouch)
 	    	    	    {
-	    	            log.error("ThreadConversionException [{}]", BlueTaskEntity.this.ident());
+	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
                 		return TaskState.ERROR;
 	    	    	    }
                     }

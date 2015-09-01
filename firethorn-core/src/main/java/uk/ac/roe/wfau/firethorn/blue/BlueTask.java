@@ -27,6 +27,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
@@ -122,8 +123,9 @@ extends NamedEntity
              * Execute the step.
              *
              */
-            public TaskType create();
-            
+            public TaskType create()
+            throws InvalidStateTransitionException;
+
             }
 
         /**
@@ -137,7 +139,8 @@ extends NamedEntity
          * the current Hibernate {@link Session} before they return.
          * 
          */
-        public TaskType thread(final Creator<TaskType> creator);
+        public TaskType thread(final Creator<TaskType> creator)
+        throws InvalidStateTransitionException;
 
         /**
          * Execute an {@link TaskRunner.Creator} in a {@link Future}.

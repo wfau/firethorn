@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateRequestException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
@@ -190,10 +192,10 @@ extends BaseResource<AdqlSchema>
          * 
          */
         public BlueQuery create(final String input)
-        throws InvalidStateRequestException, HibernateConvertException;
+        throws InvalidRequestException, InternalServerErrorException;
 
         public BlueQuery create(final String input, final TaskState next, final Long wait)
-        throws InvalidStateRequestException, HibernateConvertException;
+        throws InvalidRequestException, InternalServerErrorException;
 
         }
 

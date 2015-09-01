@@ -17,20 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.blue ;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 
 /**
- * Exception thrown in response to an invalid {@link TaskState} request.
+ * Exception thrown in response to a request that causes an invalid {@link TaskState} transition.
  *
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class InvalidStateRequestException
-extends FirethornCheckedException
+extends InvalidRequestException
     {
     /**
      * Serialzable version UID.

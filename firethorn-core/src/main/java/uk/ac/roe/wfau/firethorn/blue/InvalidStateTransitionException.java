@@ -17,26 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.blue ;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 
 /**
  * Exception thrown in response to an invalid {@link TaskState} transition.
  *
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class InvalidStateTransitionException
-extends FirethornCheckedException
+extends InternalServerErrorException
     {
     /**
      * Serialzable version UID.
      *
      */
-	private static final long serialVersionUID = 5046974592933830046L;
+	private static final long serialVersionUID = -5613172705474739931L;
 
 	/**
      * Default message for simple constructor.

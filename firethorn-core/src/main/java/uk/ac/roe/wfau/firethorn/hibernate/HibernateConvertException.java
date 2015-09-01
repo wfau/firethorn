@@ -17,19 +17,17 @@
  */
 package uk.ac.roe.wfau.firethorn.hibernate ;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 
 /**
  * Exception thrown to indicate a problem occurred when trying to convert an {@link Entity} to the current {@link Thread}.  
  *
  */
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+//@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class HibernateConvertException
-extends EntityNotFoundException
+extends InternalServerErrorException
     {
     /**
      * Serialzable version UID.

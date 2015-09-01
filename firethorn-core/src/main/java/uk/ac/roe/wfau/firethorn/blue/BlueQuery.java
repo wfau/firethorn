@@ -140,21 +140,21 @@ extends BlueTask<BlueQuery>
          * http://redmine.roe.ac.uk/issues/311
          *
         public BlueQuery create(final AdqlResource resource)
-        throws InvalidStateTransitionException;
+        throws InvalidRequestException, InternalServerErrorException;
          */
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string.
          *
         public BlueQuery create(final AdqlResource resource, final String input)
-        throws InvalidStateTransitionException;
+        throws InvalidRequestException, InternalServerErrorException;
          */
 
         /**
          * Create a new {@link BlueQuery} with an ADQL string and state.
          *
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
-        throws InvalidStateTransitionException;
+        throws InvalidRequestException, InternalServerErrorException;
          */
 
         /**
@@ -162,7 +162,7 @@ extends BlueTask<BlueQuery>
          *
          */
         public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
-        throws InvalidStateRequestException, HibernateConvertException;
+        throws InvalidRequestException, InternalServerErrorException;
 
         /**
          * Update a new {@link BlueQuery} with an ADQL string and state.
