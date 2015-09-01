@@ -69,6 +69,7 @@
     docker run \
         --detach \
         --publish 8081:8080 \
+        --memory 512M \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
