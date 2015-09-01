@@ -1082,7 +1082,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         log.debug("prepare(boolean)");
         log.debug(" ident [{}]", ident());
-
         //
         // Validate the query.
         Status result = prepare();
@@ -1094,29 +1093,6 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Is this where we create the table ?
             //
-
-/*
- *
-            //
-            // Load these here (in transaction/session)
-            // Use them in later execute Thread.
-            String ogsourceid ;
-            String ogtargetid ; 
-            
-            // Get the OGSA-DAI ident from our primary resource.
-            log.debug("++++++++ Checking source OgsaBaseResource ++++++++");
-            BaseResource<?> base = primary();
-            OgsaBaseResource ogsa = base.ogsa().primary();
-            ogsourceid = ogsa.ogsaid();
-            log.debug("++ Query source [{}]", ogsourceid );
-
-            log.debug("++++++++ Checking target OgsaJdbcResource ++++++++");
-            BaseResource<?> aaa = jdbctable.resource();
-            OgsaBaseResource bbb = aaa.ogsa().primary() ;
-            ogtargetid = bbb.ogsaid() ;
-            log.debug("++ Query target [{}]", ogtargetid);
- *
- */
 
             if (this.mode == Mode.DIRECT)
                 {
@@ -1153,7 +1129,6 @@ implements AdqlQuery, AdqlParserQuery
                     );
                 }
             }
-        
         return result ;
         }
     
