@@ -74,6 +74,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -1558,31 +1559,25 @@ implements BlueQuery
 			{
 			log.error("ADQL table is not null");				
 			}
-            
         
         final Identity identity = this.owner();
         log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-        final JdbcSchema space = identity.space(
-            true
-            );
-        log.debug(" Identity space [{}][{}]", space.ident(), space.name());
+        final JdbcSchema jdbcspace = identity.spaces().jdbc().current();
+        log.debug(" JDBC space [{}][{}]", jdbcspace.ident(), jdbcspace.name());
 
-//TODO
-// Much better error handling - null pointer if create() fails.
-            
-            
-//TODO
-//Why does the query need to know where the JdbcTable is ?
-        this.jdbctable = space.tables().create(
+        final AdqlSchema adqlspace = identity.spaces().adql().current();
+        log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
+
+        //TODO
+        this.jdbctable = jdbcspace.tables().create(
             this
             );
 
         //TODO
-// Should this be FULL or THIN ?
-// Can the ADQL table be created without the JdbcTable underneath ?             
-        this.adqltable = this.schema().tables().create(
-            this
+        this.adqltable = adqlspace.tables().create(
+    		jdbctable,
+    		this
             );
         //
         // Log the end time.

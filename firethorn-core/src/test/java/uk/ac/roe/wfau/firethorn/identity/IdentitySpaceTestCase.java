@@ -83,7 +83,7 @@ public class IdentitySpaceTestCase
             member
             );
         assertNotNull(
-            member.space(
+            member.jdbcschema(
                 true
                 )
             );

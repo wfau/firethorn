@@ -1424,9 +1424,7 @@ implements AdqlQuery, AdqlParserQuery
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-            JdbcSchema space = identity.space(
-                true
-                );
+            JdbcSchema space = identity.spaces().jdbc().current();
             log.debug(" Identity space [{}][{}]", space.ident(), space.name());
 
 //TODO

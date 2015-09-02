@@ -37,7 +37,6 @@ extends AbstractComponent
 implements Context.Factory
     {
     
-    
     @Override
     public Context current()
         {
@@ -71,6 +70,9 @@ implements Context.Factory
                 return null ;
                 }
 
+            
+/*
+ * 
             @Override
             public DataSpace space()
                 {
@@ -80,7 +82,7 @@ implements Context.Factory
                     @Override
                     public JdbcSchema jdbc()
                         {
-                        return identity().space();
+                        return identity().spaces().jdbc().current();
                         }
                     //TODO .... fix this
                     @Override
@@ -90,6 +92,9 @@ implements Context.Factory
                         }
                     };
                 }
+ *             
+ */
+
             };
         }
     }

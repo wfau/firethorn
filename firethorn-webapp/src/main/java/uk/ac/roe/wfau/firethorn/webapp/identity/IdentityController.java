@@ -130,19 +130,21 @@ extends AbstractController
         /**
          * Get a URL for the {@link Identity} space.
          * @return A URL for the {@link Identity} space, or null if it does not have space allocated.
-         * @see Identity#space()
+         * @see Identity#jdbcschema()
          *
-         */
-        public String getSpace()
+        public String getSpaces()
             {
-            if (entity().space() != null)
+
+            
+            if (entity().jdbcschema() != null)
                 {
-                return entity().space().link();
+                return entity().jdbcschema().link();
                 }
             else {
                 return null ;
                 }
             }
+         */
         }
 
     /**

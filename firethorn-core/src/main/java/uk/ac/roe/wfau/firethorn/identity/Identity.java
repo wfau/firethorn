@@ -20,6 +20,7 @@ import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
@@ -76,16 +77,84 @@ extends Entity, NamedEntity
     public Community community();
 
     /**
-     *  The storage space for this Identity.
+     *  The JDBC storage space for this Identity.
      *
+    public JdbcSchema jdbcschema();
      */
-    public JdbcSchema space();
 
     /**
-     *  The storage space for this Identity.
+     *  The ADQL storage space for this Identity.
      *
+    public AdqlSchema adqlschema();
      */
-    public JdbcSchema space(final boolean create);
+
+    /**
+     * The ADQL spaces for this {@link Identity}.
+     * 
+     */
+    public static interface AdqlSpaces
+    	{
+        /**
+         * The {@link AdqlSchema} spaces for this {@link Identity}.
+         * 
+         */
+        public Iterable<AdqlSchema> select();
+
+        /**
+         * The current {@link AdqlSchema} space for this {@link Identity}.
+         * The results returned may depend on the current user interface session. 
+         * 
+         */
+        public AdqlSchema current();
+    	
+    	}
+
+    /**
+     * The Jdbc spaces for this {@link Identity}.
+     * 
+     */
+    public static interface JdbcSpaces
+    	{
+        /**
+         * The {@link JdbcSchema} spaces for this {@link Identity}.
+         * 
+         */
+        public Iterable<JdbcSchema> select();
+
+        /**
+         * The current {@link JdbcSchema} space for this {@link Identity}.
+         * The results returned may depend on the current user interface session. 
+         * 
+         */
+        public JdbcSchema current();
+    	
+    	}
+    
+    /**
+     * The storage spaces for this {@link Identity}.
+     * 
+     */
+    public static interface Spaces
+    	{
+        /**
+         * The ADQL spaces for this {@link Identity}.
+         * 
+         */
+        public AdqlSpaces adql();
+
+        /**
+         * The JDBC spaces for this {@link Identity}.
+         * 
+         */
+        public JdbcSpaces jdbc();
+
+    	}
+
+    /**
+     * The storage spaces for this {@link Identity}.
+     * 
+     */
+    public Spaces spaces();
 
     }
 

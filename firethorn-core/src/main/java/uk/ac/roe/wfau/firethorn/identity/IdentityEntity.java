@@ -40,8 +40,13 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * Hibernate based entity implementation.
@@ -88,7 +93,10 @@ implements Identity
      *
      */
     protected static final String DB_COMMUNITY_COL = "community" ;
-    protected static final String DB_CURRENT_SCHEMA_COL = "currentschema" ;
+    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema" ;
+
+    protected static final String DB_ADQL_SCHEMA_COL = "adqlschema" ;
+    protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
 
     /**
      * Factory implementation.
@@ -226,25 +234,64 @@ implements Identity
 
     @ManyToOne(
         fetch = FetchType.LAZY,
+        targetEntity = AdqlResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_RESOURCE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlResource adqlresource ;
+    
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_SCHEMA_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlSchema adqlschema ;
+
+    protected AdqlSchema adqlschema()
+        {
+        log.debug("adqlschema()");
+        if (this.adqlschema == null)
+        	{
+        	if (this.adqlresource == null)
+        		{
+// TODO better name generator.
+        		this.adqlresource = factories().adql().resources().create(
+        			"user space"
+        			);        	
+        		}
+// TODO better name generator.
+        	this.adqlschema = adqlresource.schemas().create(
+    			"temp"
+    			);
+        	}
+        return this.adqlschema;
+        }
+
+    @ManyToOne(
+        fetch = FetchType.LAZY,
         targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
-        name = DB_CURRENT_SCHEMA_COL,
+        name = DB_JDBC_SCHEMA_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
     private JdbcSchema jdbcschema ;
-    @Override
-    public JdbcSchema space()
+
+    protected JdbcSchema jdbcschema()
         {
-        return this.jdbcschema;
-        }
-    @Override
-    public JdbcSchema space(final boolean create)
-        {
-        log.debug("space(boolean) [{}]", create);
-        if ((create) && (this.jdbcschema == null))
+        log.debug("jdbcschema()");
+        if (this.jdbcschema == null)
             {
             if (community() != null)
                 {
@@ -270,5 +317,51 @@ implements Identity
             }
         return this.jdbcschema;
         }
+
+	@Override
+	public Spaces spaces()
+		{
+		return new Spaces()
+			{
+			@Override
+			public AdqlSpaces adql()
+				{
+				return new AdqlSpaces()
+					{
+					@Override
+					public Iterable<AdqlSchema> select()
+						{
+						// TODO .. 
+						return new EmptyIterable<AdqlSchema>();
+						}
+					@Override
+					public AdqlSchema current()
+						{
+						return adqlschema();
+						}
+					};
+				}
+
+			@Override
+			public JdbcSpaces jdbc()
+				{
+				return new JdbcSpaces()
+					{
+					@Override
+					public Iterable<JdbcSchema> select()
+						{
+						// TODO .. 
+						return new EmptyIterable<JdbcSchema>();
+						}
+
+					@Override
+					public JdbcSchema current()
+						{
+						return jdbcschema();
+						}
+					};
+				}
+			};
+		}
     }
 

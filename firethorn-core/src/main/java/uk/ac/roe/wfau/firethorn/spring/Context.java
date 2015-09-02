@@ -33,8 +33,8 @@ public interface Context
     /**
      * The data storage space.
      * 
-     */
     public DataSpace space();
+     */
     
     /**
      * Factory interface.
