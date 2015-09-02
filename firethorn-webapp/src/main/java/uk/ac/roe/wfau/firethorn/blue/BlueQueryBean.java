@@ -83,9 +83,9 @@ public class BlueQueryBean
      */
     public String getWorkspace()
         {
-        if (entity().resource() != null)
+        if (entity().target() != null)
             {
-            return entity().resource().link();
+            return entity().target().link();
             }
         return null ;
         }

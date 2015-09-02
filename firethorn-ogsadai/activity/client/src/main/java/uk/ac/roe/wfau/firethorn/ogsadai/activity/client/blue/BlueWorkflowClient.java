@@ -111,7 +111,7 @@ implements BlueWorkflow
 		catch (final MalformedURLException ouch)
 			{
             log.debug("MalformedURLException [{}]", ouch);
-            return new SimpleWorkflowResult(
+            return new LocalResult(
                 ouch
                 );
 			}

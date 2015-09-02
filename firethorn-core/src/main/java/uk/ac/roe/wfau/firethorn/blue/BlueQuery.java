@@ -161,7 +161,7 @@ extends BlueTask<BlueQuery>
          * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
          *
          */
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
@@ -254,10 +254,10 @@ extends BlueTask<BlueQuery>
     public String callback();
     
     /**
-     * The target {@link AdqlResource} to query.
+     * The source {@link AdqlResource} to query.
      *
      */
-    public AdqlResource resource();
+    public AdqlResource source();
     
     /**
      * Get our input query.
@@ -266,14 +266,7 @@ extends BlueTask<BlueQuery>
     public String input();
 
     /**
-     * Set our input query.
-     *
-    public void input(final String input)
-    throws InvalidStateTransitionException;
-     */
-
-    /**
-     * Update our query input.
+     * Update our input query.
      * 
      */
     public void update(final String input)

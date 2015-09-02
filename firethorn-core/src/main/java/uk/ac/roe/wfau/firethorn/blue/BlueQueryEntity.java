@@ -70,6 +70,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -77,6 +78,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
@@ -306,7 +308,7 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, TaskState, long");
@@ -325,7 +327,7 @@ implements BlueQuery
                         log.debug("Creating query task");
                         return insert(
                     		new BlueQueryEntity(
-                				resource,
+                				source,
                 				input,
                 				services().names().name()
                 				)
@@ -514,11 +516,11 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final AdqlResource resource, final String input)
+    protected BlueQueryEntity(final AdqlResource source, final String input)
     throws InvalidStateTransitionException
         {
         this(
-            resource,
+            source,
             input,
             "BlueQuery"
             );
@@ -528,14 +530,14 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final AdqlResource resource, final String input, final String name)
+    protected BlueQueryEntity(final AdqlResource source, final String input, final String name)
     throws InvalidStateTransitionException
         {
         super(
             name
             );
         this.mode = Mode.AUTO;
-        this.resource = resource;
+        this.source = source;
 		this.prepare(
 		    input
 		    );
@@ -563,11 +565,11 @@ implements BlueQuery
         nullable = false,
         updatable = false
         )
-    private AdqlResource resource;
+    private AdqlResource source;
     @Override
-    public AdqlResource resource()
+    public AdqlResource source()
         {
-        return this.resource;
+        return this.source;
         }
     
     @Type(
@@ -1218,11 +1220,11 @@ implements BlueQuery
             // TODO - The parsers should be part of the resource/schema.
             final AdqlParser direct = this.factories().adql().parsers().create(
                 Mode.DIRECT,
-                this.resource()
+                this.source()
                 );
             final AdqlParser distrib = this.factories().adql().parsers().create(
                 Mode.DISTRIBUTED,
-                this.resource()
+                this.source()
                 );
 
             log.debug("Query mode [{}]", this.mode);
@@ -1318,66 +1320,128 @@ implements BlueQuery
             }
 
         //
-        // Create our JDBC resource.
+        // Create our target JDBC resource.
 
         
         //
         // Select our target OGSA-DAI service.  
-        final OgsaService service = resource().ogsa().primary().service();
+        final OgsaService service = source().ogsa().primary().service();
         
         //
         // Execute our workflow.
-        BlueWorkflow workflow = new BlueWorkflowClient(
+        final BlueWorkflow workflow = new BlueWorkflowClient(
 			service.endpoint(),
 			service.exec().primary().ogsaid()
     		);
 
-        workflow.execute(
+        final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
 				{
 				@Override
 				public String source()
 					{
-					// TODO Auto-generated method stub
-					return null;
-					}
-					
-				@Override
-				public RownumClient.Param rows()
-					{
-					// TODO Auto-generated method stub
-					return null;
+					// Assume valid resource list for a DIRECT query.
+					// TODO fails on a DISTRIBUTED query.
+					return resources().primary().ogsa().primary().ogsaid();
 					}
 					
 				@Override
 				public String query()
 					{
-					// TODO Auto-generated method stub
-					return null;
+					return BlueQueryEntity.this.osql();
+					}
+
+				@Override
+				public InsertParam insert()
+					{
+					return new InsertParam()
+						{
+						@Override
+						public String resource()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public String table()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Integer first()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Integer block()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}};
+					}
+
+				@Override
+				public LimitsParam limits()
+					{
+					return new LimitsParam()
+						{
+						@Override
+						public Long rows()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Long cells()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Long time()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+						};
 					}
 					
 				@Override
-				public LimitsClient.Param limits()
+				public DelaysParam delays()
 					{
-					// TODO Auto-generated method stub
-					return null;
-					}
-					
-				@Override
-				public JdbcInsertDataClient.Param insert()
-					{
-					// TODO Auto-generated method stub
-					return null;
-					}
-					
-				@Override
-				public Param delays()
-					{
-					// TODO Auto-generated method stub
-					return null;
+					return new DelaysParam()
+						{
+						@Override
+						public Integer first()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Integer last()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+
+						@Override
+						public Integer every()
+							{
+							// TODO Auto-generated method stub
+							return null;
+							}
+						};
 					}
 				}
-			); 
+    		); 
         
         //
         // Check the return status.
@@ -1467,4 +1531,62 @@ implements BlueQuery
         log.debug("  state [{}]", state());
         
         }
+
+    
+    /**
+     * Build our result tables.
+     * 
+     */
+    protected void build()
+    	{
+        log.debug("build(");
+        //
+        // Log the start time.
+        this.timings().jdbcstart();
+
+        //
+        // Check the conditions.
+        if (this.state() != TaskState.READY)
+            {
+			log.error("TaskState is not READY");				
+            }
+		if (this.jdbctable != null)
+			{
+			log.error("JDBC table is not null");				
+			}
+		if (this.adqltable != null)
+			{
+			log.error("ADQL table is not null");				
+			}
+            
+        
+        final Identity identity = this.owner();
+        log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
+
+        final JdbcSchema space = identity.space(
+            true
+            );
+        log.debug(" Identity space [{}][{}]", space.ident(), space.name());
+
+//TODO
+// Much better error handling - null pointer if create() fails.
+            
+            
+//TODO
+//Why does the query need to know where the JdbcTable is ?
+        this.jdbctable = space.tables().create(
+            this
+            );
+
+        //TODO
+// Should this be FULL or THIN ?
+// Can the ADQL table be created without the JdbcTable underneath ?             
+        this.adqltable = this.schema().tables().create(
+            this
+            );
+        //
+        // Log the end time.
+        this.timings().jdbcdone();
+	
+    	}
     }
