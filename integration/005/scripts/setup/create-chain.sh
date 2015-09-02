@@ -74,7 +74,7 @@
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
         --volume "${ogsatemp:?}:/temp" \
-        --volume "${ogsalogs:?}:/var/tomcat/logs" \
+        --volume "${ogsalogs:?}:/var/local/tomcat/logs" \
         firethorn/ogsadai
 
 # -----------------------------------------------------
