@@ -47,14 +47,48 @@ public interface BlueWorkflow
     	 * 
     	 */
     	public String query();
-
-        public RownumClient.Param rows();
         
-        public JdbcInsertDataClient.Param insert();
-        
-        public DelaysClient.Param  delays();
+    	/**
+    	 * The insert activity parameters.
+    	 * 
+    	 */
+    	public static interface InsertParam
+    	extends JdbcInsertDataClient.Param 
+    		{}
 
-        public LimitsClient.Param limits();
+    	/**
+    	 * The insert activity parameters.
+    	 * 
+    	 */
+        public InsertParam insert();
+        
+    	/**
+    	 * The delays activity parameters.
+    	 * 
+    	 */
+    	public static interface DelaysParam
+    	extends DelaysClient.Param 
+    		{}
+
+    	/**
+    	 * The delays activity parameters.
+    	 * 
+    	 */
+        public DelaysParam delays();
+        
+    	/**
+    	 * The limits activity parameters.
+    	 * 
+    	 */
+    	public static interface LimitsParam
+    	extends LimitsClient.Param 
+    		{}
+
+    	/**
+    	 * The limits activity parameters.
+    	 * 
+    	 */
+        public LimitsParam limits();
     	
     	}
 

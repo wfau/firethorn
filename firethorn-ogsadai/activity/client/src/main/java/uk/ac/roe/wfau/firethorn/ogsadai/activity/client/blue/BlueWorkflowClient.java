@@ -96,7 +96,7 @@ implements BlueWorkflow
      * @return The PipelineResult.
      *
      */
-    public WorkflowResult execute(final Param param)
+    public Result execute(final Param param)
         {
         //
         // Our ogsadai server client.
@@ -202,7 +202,7 @@ implements BlueWorkflow
                 pipeline,
                 RequestExecutionType.ASYNCHRONOUS
                 );
-            return new SimpleWorkflowResult(
+            return new LocalResult(
                 request
                 );
             }
@@ -211,10 +211,24 @@ implements BlueWorkflow
         catch (final Exception ouch)
             {
             log.debug("Exception during request processing [{}]", ouch);
-            return new SimpleWorkflowResult(
+            return new LocalResult(
                 ouch
                 );
             }
         }
+    
+    protected static class LocalResult
+    extends SimpleWorkflowResult
+    implements Result
+    	{
+		public LocalResult(final RequestResource request)
+			{
+			super(request);
+			}
+		public LocalResult(final Throwable cause)
+			{
+			super(cause);
+			}
+		}
     }
 

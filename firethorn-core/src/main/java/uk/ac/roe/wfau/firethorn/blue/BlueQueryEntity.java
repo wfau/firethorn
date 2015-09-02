@@ -1376,7 +1376,7 @@ implements BlueQuery
 					// TODO Auto-generated method stub
 					return null;
 					}
-				};
+				}
 			); 
         
         //
