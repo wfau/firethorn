@@ -1230,10 +1230,9 @@ implements BlueTask<TaskType>
 	                    //
 	                    // If the task is not ready.
 	                    else {
-	//TODO better error handling 
-	                    	log.debug("Task is not READY, transition to ERROR");
+	                    	log.debug("Task is not READY, execute FAILED");
 	                        task.transition(
-                                TaskState.ERROR
+                                TaskState.FAILED
                                 );
 	                    	}
 	                    return task.state();

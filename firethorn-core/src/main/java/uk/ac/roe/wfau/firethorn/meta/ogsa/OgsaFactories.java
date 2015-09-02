@@ -58,6 +58,13 @@ public interface OgsaFactories
          * 
          */
         public OgsaIvoaResource.EntityFactory ivoa();
+
+        /**
+         * Our {@link OgsaExecResource} factory.
+         * 
+         */
+        public OgsaExecResource.EntityFactory exec();
+
         }
 
     /**

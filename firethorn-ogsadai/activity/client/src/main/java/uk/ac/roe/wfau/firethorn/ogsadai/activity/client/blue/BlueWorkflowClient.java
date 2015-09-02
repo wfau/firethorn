@@ -18,6 +18,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,7 @@ implements BlueWorkflow
      * Our OGSA-DAI service endpoint.
      * 
      */
-    private final URL endpoint ;
+    private final String endpoint ;
     
     /**
      * Our OGSA-DAI DataRequestExecutionResource identifier.
@@ -67,7 +68,7 @@ implements BlueWorkflow
      *
      */
     @Deprecated
-    public BlueWorkflowClient(final URL endpoint)
+    public BlueWorkflowClient(final String endpoint)
         {
     	this(
 			endpoint,
@@ -82,7 +83,7 @@ implements BlueWorkflow
      * @param endpoint The OGSA-DAI DataRequestExecutionResource identifier.
      *
      */
-    public BlueWorkflowClient(final URL endpoint, final String drerid)
+    public BlueWorkflowClient(final String endpoint, final String drerid)
         {
         this.drerid = drerid;
         this.endpoint = endpoint ;
@@ -98,11 +99,22 @@ implements BlueWorkflow
     public WorkflowResult execute(final Param param)
         {
         //
-        // Our ogsadai client.
+        // Our ogsadai server client.
         final Server server = new JerseyServer();
-        server.setDefaultBaseServicesURL(
-            this.endpoint
-            );
+        try {
+			server.setDefaultBaseServicesURL(
+			    new URL(
+					this.endpoint
+					)
+			    );
+			}
+		catch (final MalformedURLException ouch)
+			{
+            log.debug("MalformedURLException [{}]", ouch);
+            return new SimpleWorkflowResult(
+                ouch
+                );
+			}
         //
         // Lookup our DRER.
         final DataRequestExecutionResource drer = server.getDataRequestExecutionResource(

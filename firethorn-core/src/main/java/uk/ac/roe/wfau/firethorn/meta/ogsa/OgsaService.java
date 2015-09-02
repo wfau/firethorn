@@ -284,4 +284,37 @@ extends BaseComponent
      */
     public OgsaJdbcResources jdbc();
 
+    /**
+     * Access to the {@link OgsaExecutionResource}(s) provided by this {@link OgsaService}.
+     *
+     */
+    interface OgsaExecResources
+        {
+
+        /**
+         * Create a new {@link OgsaExecResources}
+         *
+         */
+        public OgsaExecResource create();
+
+        /**
+         * List all the {@link OgsaExecResource}(s) for this {@link OgsaService}.
+         *
+         */
+        public Iterable<OgsaExecResource> select();
+
+        /**
+         * Get the primary {@link OgsaExecResource} for this {@link OgsaService}.
+         *
+         */
+        public OgsaExecResource primary();
+        
+        }
+
+    /**
+     * Access to the {@link OgsaExecResource}(s) provided by this {@link OgsaService}.
+     *
+     */
+    public OgsaExecResources exec();
+    
     }

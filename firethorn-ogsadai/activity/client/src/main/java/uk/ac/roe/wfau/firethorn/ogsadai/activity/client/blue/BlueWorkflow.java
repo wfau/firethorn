@@ -37,7 +37,7 @@ public interface BlueWorkflow
     public interface Param
     	{
     	/**
-    	 * The data source identifier.
+    	 * The source resource identifier.
     	 * 
     	 */
     	public String source();
@@ -57,6 +57,15 @@ public interface BlueWorkflow
         public LimitsClient.Param limits();
     	
     	}
+
+    /**
+     * Workflow result.
+     * 
+     */
+    public interface Result
+    extends WorkflowResult
+    	{
+    	}
     
     /**
      * Execute the workflow. 
@@ -65,7 +74,7 @@ public interface BlueWorkflow
      * @return The {@link WorkflowResult} result.
      *
      */
-    public WorkflowResult execute(final Param param);
+    public Result execute(final Param param);
 
     }
 

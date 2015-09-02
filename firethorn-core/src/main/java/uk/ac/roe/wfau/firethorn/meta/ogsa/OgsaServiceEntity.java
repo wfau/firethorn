@@ -650,4 +650,35 @@ implements OgsaService
                 break ;
             }
         }
+
+	@Override
+	public OgsaExecResources exec()
+		{
+		return new OgsaExecResources()
+			{
+			@Override
+			public OgsaExecResource create()
+				{
+                return factories().ogsa().factories().exec().create(
+                    OgsaServiceEntity.this
+                    );
+				}
+
+			@Override
+			public Iterable<OgsaExecResource> select()
+				{
+                return factories().ogsa().factories().exec().select(
+                    OgsaServiceEntity.this
+                    );
+				}
+
+			@Override
+			public OgsaExecResource primary()
+				{
+                return factories().ogsa().factories().exec().primary(
+                    OgsaServiceEntity.this
+                    );
+				}
+			};
+		}
     }

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,6 +79,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
+import uk.org.ogsadai.client.toolkit.Workflow;
 
 /**
  *
@@ -1310,28 +1316,73 @@ implements BlueQuery
                 "Call to execute() with invalid state [" + this.state().name() + "]"
                 );
             }
-        // Create our results table.
-        // Call OGSA-DAI to execute.
-        try {
-            log.debug("Sleeping ....");
-            Thread.sleep(1000);
 
-            log.debug("Pending ....");
-            transition(TaskState.QUEUED);
+        //
+        // Create our JDBC resource.
 
-            log.debug("Sleeping ....");
-            Thread.sleep(1000);
+        
+        //
+        // Select our target OGSA-DAI service.  
+        final OgsaService service = resource().ogsa().primary().service();
+        
+        //
+        // Execute our workflow.
+        BlueWorkflow workflow = new BlueWorkflowClient(
+			service.endpoint(),
+			service.exec().primary().ogsaid()
+    		);
 
-            log.debug("Running ....");
-            transition(TaskState.RUNNING);
-
-            log.debug("Sleeping ....");
-            Thread.sleep(1000);
-            }
-        catch (Exception ouch)
-            {
-            log.debug("Interrupted....");
-            }
+        workflow.execute(
+			new BlueWorkflow.Param()
+				{
+				@Override
+				public String source()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+					
+				@Override
+				public RownumClient.Param rows()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+					
+				@Override
+				public String query()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+					
+				@Override
+				public LimitsClient.Param limits()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+					
+				@Override
+				public JdbcInsertDataClient.Param insert()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+					
+				@Override
+				public Param delays()
+					{
+					// TODO Auto-generated method stub
+					return null;
+					}
+				};
+			); 
+        
+        //
+        // Check the return status.
+        
+        
         }
 
     protected static class Handle
@@ -1372,7 +1423,7 @@ implements BlueQuery
                     {
                     try {
                         //
-                        // Get an instace for this Thread.
+                        // Get the current instance for this Thread.
                         BlueQueryEntity query = (BlueQueryEntity) current();
                         //
                         // Update the row count.

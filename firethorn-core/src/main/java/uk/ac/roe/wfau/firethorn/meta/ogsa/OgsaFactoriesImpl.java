@@ -58,6 +58,9 @@ implements OgsaFactories
     @Autowired
     private OgsaIvoaResource.EntityFactory ivoa;
 
+    @Autowired
+    private OgsaExecResource.EntityFactory exec;
+
     @Override
     public Factories factories()
         {
@@ -72,6 +75,11 @@ implements OgsaFactories
             public OgsaIvoaResource.EntityFactory ivoa()
                 {
                 return ivoa;
+                }
+            @Override
+            public OgsaExecResource.EntityFactory exec()
+                {
+                return exec;
                 }
             };
         }
