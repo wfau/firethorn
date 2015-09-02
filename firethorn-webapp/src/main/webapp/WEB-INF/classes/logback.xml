@@ -26,7 +26,7 @@
 	    | http://logback.qos.ch/manual/layouts.html
 	    +-->
         <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-            <file>/var/logs/gillian/firethorn.log</file>
+            <file>/var/local/tomcat/log/firethorn.log</file>
             <append>false</append>
             <encoder>
                 <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>

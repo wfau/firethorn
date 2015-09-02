@@ -144,8 +144,8 @@ ssh hebenu
 
 docker rm -f $(docker ps -a -q)
 
-version=1.13.17
-branch=default
+version=1.13.17-stv-bug-testing
+branch=1.13.17-stv-bug-testing
 
 
 
@@ -488,13 +488,23 @@ EOF
     chmod a+r "/var/logs/${ogsaname:?}"
     chcon -t svirt_sandbox_file_t "/var/logs/${ogsaname:?}" 
 
+    # Tomcat uid and gid
+    chown 995:994 "/var/logs/${ogsaname:?}/ogsadai.log"
+    chmod u=rwxs  "/var/logs/${ogsaname:?}/ogsadai.log"
+    chmod g=rwxs  "/var/logs/${ogsaname:?}/ogsadai.log"
+
+    chmod a+r "/var/logs/ogsadai.log"
+    chcon -t svirt_sandbox_file_t "/var/logs/ogsadai.log" 
+
+
     docker run \
         --detach \
         --publish 8081:8080 \
+        --memory 512M \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        --volume "/var/logs/${ogsaname:?}:/var/tomcat/logs" \
+        --volume "/var/logs/${ogsaname:?}:/var/local/tomcat/logs" \
         "firethorn/ogsadai:${version:?}"
    
 
@@ -566,6 +576,13 @@ EOF
     chmod a+r "/var/logs/${firename:?}"
     chcon -t svirt_sandbox_file_t "/var/logs/${firename:?}"
 
+    # Tomcat uid and gid
+    chown 995:994 "/var/logs/${firename:?}/firethorn.log"
+    chmod u=rwxs  "/var/logs/${firename:?}/firethorn.log"
+    chmod g=rwxs  "/var/logs/${firename:?}/firethorn.log"
+
+    chmod a+r "/var/logs/${firename:?}/firethorn.log"
+    chcon -t svirt_sandbox_file_t "/var/logs/${firename:?}/firethorn.log" 
 
     docker run \
         --detach \
