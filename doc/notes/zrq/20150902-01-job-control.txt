@@ -21,31 +21,3 @@
 #
 
 
-    firethorn-core
-    uk.ac.roe.wfau.firethorn.adql.query
-    AdqlQueryEntity
-
-        prepare(true)
-        
-            this.source = this.primary().ogsa().primary().ogsaid();
-            or
-            this.source = this.dqp;
-
-            this.target = jdbctable.resource().ogsa().primary().ogsaid() ;
-        
-        execute()
-
-            new PipelineClient
-
-            pipeline.execute(
-                new PipelineParam()
-                    { ... }
-                )
-
-    firethorn-ogsadai-activity-client
-    uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data
-    PipelineClient
-
-
-
-

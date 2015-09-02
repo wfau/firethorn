@@ -17,20 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.entity.exception ;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 
 /**
  * Base class for input format exceptions.
+ * TODO Make this a checked, InvalidRequestException.
  *
  */
+@SuppressWarnings("serial")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public abstract class InputFormatException
+//extends InvalidRequestException
 extends FirethornUncheckedException
-    {
-    /**
-     * Default version UID.
-     *
-     */
-    private static final long serialVersionUID = -1L;
+	{
 
     /**
      * Protected constructor, with input and message.

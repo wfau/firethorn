@@ -159,7 +159,7 @@ extends JdbcResourceTestBase
                     return new JdbcCreateTableClient.Param()
                         {
                         @Override
-                        public String ogsaid()
+                        public String resource()
                             {
                             return userdata.result().toString();
                             }
@@ -176,7 +176,7 @@ extends JdbcResourceTestBase
                     return new JdbcInsertDataClient.Param()
                         {
                         @Override
-                        public String ogsaid()
+                        public String resource()
                             {
                             return userdata.result().toString();
                             }

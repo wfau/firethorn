@@ -52,7 +52,7 @@ implements ResourceActivity
          * @return The target resource ID.
          *
          */
-        public String ogsaid();
+        public String resource();
 
         /**
          * The table name.
@@ -96,7 +96,7 @@ implements ResourceActivity
             );
         this.setResourceID(
             new ResourceID(
-                param.ogsaid()
+                param.resource()
                 )
             );
 

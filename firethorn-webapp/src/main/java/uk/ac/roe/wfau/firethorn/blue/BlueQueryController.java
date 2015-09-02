@@ -313,7 +313,8 @@ public class BlueQueryController
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
-            InvalidStateTransitionException
+            InvalidRequestException,
+            InternalServerErrorException
         {
         log.debug("update(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
@@ -356,7 +357,8 @@ public class BlueQueryController
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
-            InvalidStateTransitionException
+            InvalidRequestException,
+            InternalServerErrorException
         {
         log.debug("callback(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);

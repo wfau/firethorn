@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryController;
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -136,8 +138,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
-            InvalidStateTransitionException,
-            HibernateConvertException
+            InvalidRequestException,
+            InternalServerErrorException
             {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);

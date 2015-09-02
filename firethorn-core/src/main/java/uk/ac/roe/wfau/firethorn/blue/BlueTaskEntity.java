@@ -944,36 +944,6 @@ implements BlueTask<TaskType>
             next
             );
         }
-
-    /*
-     *
-    @Override
-    public void advance(final TaskState next)
-    throws InvalidStateTransitionException
-        {
-    	advance(
-			null,
-			next,
-			0L
-			);
-        }
-     *
-     */
-
-    /*
-     * 
-    @Override
-    public void advance(final TaskState next, long wait)
-    throws InvalidStateTransitionException
-        {
-        advance(
-            null,
-            next,
-            wait
-            );
-        }
-     *
-     */
     
     @Override
     public void advance(final TaskState prev, final TaskState next, final Long wait)

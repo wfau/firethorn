@@ -111,7 +111,6 @@ public class EmptyQueryTestCase
         }
 
     @Test
-    // TODO Should this FAIL ?
     public void testRunning()
     throws Exception
         {
@@ -125,19 +124,16 @@ public class EmptyQueryTestCase
 			TaskState.EDITING,
 			query.state()
 			);
+    	exception.expect(InvalidStateRequestException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
 			null,
 			TaskState.RUNNING,
 			null
 			);
-    	assertEquals(
-			TaskState.EDITING,
-			query.state()
-			);
         }
 
     @Test
-    // TODO Should this FAIL ?
     public void testCompleted()
     throws Exception
         {
@@ -151,14 +147,12 @@ public class EmptyQueryTestCase
 			TaskState.EDITING,
 			query.state()
 			);
+    	exception.expect(InvalidStateRequestException.class);
+    	exception.expectMessage("Invalid state transition");
     	query.advance(
             null,
 			TaskState.COMPLETED,
             null
-			);
-    	assertEquals(
-			TaskState.EDITING,
-			query.state()
 			);
         }
     

@@ -614,6 +614,7 @@ implements BlueQuery
 
     /**
      * The query mode (AUTO|DIRECT|DISTRIBUTED).
+     * Should we have input mode and query mode ?
      *
      */
     @Column(
@@ -1249,7 +1250,11 @@ implements BlueQuery
                     );
                 if (this.resources.size() == 1)
                     {
-                    this.mode = Mode.DIRECT;
+                	// Should we have input mode and query mode ?
+                    if (syntax().state() == Syntax.State.VALID)
+                    	{
+                    	this.mode = Mode.DIRECT;
+                    	}
                     //
                     // Use our primary resource.
                     //this.source = primary().ogsa().primary().ogsaid();
@@ -1261,9 +1266,11 @@ implements BlueQuery
                     distrib.process(
                         this.parsable()
                         );
-                    // TODO Need a second variable to indicate the chosen mode. 
-                    // Leave the mode as AOTO in case the user re-submits.
-                    this.mode = Mode.DISTRIBUTED;
+                	// Should we have input mode and query mode ?
+                    if (syntax().state() == Syntax.State.VALID)
+	                	{
+	                	this.mode = Mode.DISTRIBUTED;
+	                	}
                     //
                     // Use our DQP resource.
                     //this.source = this.dqp;

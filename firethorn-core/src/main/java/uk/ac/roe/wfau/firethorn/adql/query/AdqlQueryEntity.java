@@ -1240,7 +1240,7 @@ implements AdqlQuery, AdqlParserQuery
                                 {
                                 return new JdbcInsertDataClient.Param()
                                     {
-                                    public String ogsaid()
+                                    public String resource()
                                         {
                                         return AdqlQueryEntity.this.target;
                                         }
