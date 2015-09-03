@@ -646,6 +646,14 @@ public class JdbcSchemaEntity
                 }
 
             @Override
+            public JdbcTable create()
+                {
+                return factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this
+                    );
+                }
+
+            @Override
             @Deprecated
             public JdbcTable create(final String name)
                 {

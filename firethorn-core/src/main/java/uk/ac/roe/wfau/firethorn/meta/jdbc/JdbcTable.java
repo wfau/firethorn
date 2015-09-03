@@ -143,35 +143,31 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
-     * Physical JDBC factory interface.
-     * @todo Move this up to resource ?
+     * Physical JDBC driver interface.
      *
      */
     public static interface JdbcDriver
         {
         /**
-         * Create a 'physical' JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource.
+         * Create a JDBC table.
          *
          */
         public void create(final JdbcTable table);
 
         /**
-         * Delete (DELETE) a JDBC data.
-         * *This should only be reachable via a transactional method on our parent resource.
+         * Delete (DELETE) the contents of JDBC data.
          *
          */
         public void delete(final JdbcTable table);
 
         /**
          * Delete (DROP) a JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource.
          *
          */
         public void drop(final JdbcTable table);
 
         }
-
+    
     /**
      * {@link BaseTable.EntityFactory} interface.
      *
@@ -268,6 +264,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
      */
     public interface Columns extends BaseTable.Columns<JdbcColumn>
         {
+        /**
+         * Create a new {@link JdbcColumn}.
+         * Used by JdbcColumn.Builder
+         *
+         */
+        public JdbcColumn create();
 
         /**
          * Create a new {@link JdbcColumn}.

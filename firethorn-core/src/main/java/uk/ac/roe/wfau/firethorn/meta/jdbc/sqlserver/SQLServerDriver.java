@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -35,8 +36,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  */
 @Slf4j
 @Component
-public class JdbcTableDriver
-    implements JdbcTable.JdbcDriver
+public class SQLServerDriver
+implements JdbcTable.JdbcDriver, JdbcColumn.JdbcDriver 
     {
 
     /**
@@ -123,10 +124,32 @@ public class JdbcTableDriver
             }
         }
 
+    /**
+     * SQL statement to CREATE a table.
+     *
+     */
+    protected static final String CREATE_TABLE_STATEMENT = "CREATE TABLE {name}" ;
+    
     @Override
     @CreateMethod
     public void create(final JdbcTable table)
         {
         log.debug("Create JdbcTable [{}]", table.name());
         }
+
+	@Override
+	public void create(JdbcColumn column)
+		{
+		// TODO Auto-generated method stub
+		
+		}
+
+	@Override
+	public void drop(JdbcColumn column)
+		{
+		// TODO Auto-generated method stub
+		
+		}
+
+    
     }

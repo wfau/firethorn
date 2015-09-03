@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcDriver;
 
 /**
  * Public interface for a local JDBC schema.
@@ -36,6 +37,26 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface JdbcSchema
 extends BaseSchema<JdbcSchema, JdbcTable>
     {
+    /**
+     * Physical JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+        {
+        /**
+         * Create a JDBC schema.
+         *
+         */
+        public void create(final JdbcSchema schema);
+
+        /**
+         * Delete (DROP) a JDBC schema.
+         *
+         */
+        public void drop(final JdbcSchema schema);
+        
+        }
+
     /**
      * {@link EntityBuilder} interface.
      * 
@@ -186,7 +207,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     public interface Tables extends BaseSchema.Tables<JdbcTable>
         {
         /**
-         *  Create a new {@link JdbcTable}.
+         *  Create a new {@link JdbcTable} with a generated name.
          *
          */
         public JdbcTable create();

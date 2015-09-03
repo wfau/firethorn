@@ -379,6 +379,13 @@ implements JdbcTable
 
         @Override
         @CreateMethod
+        public JdbcTable create(final JdbcSchema schema)
+            {
+            return null ;
+            }
+        
+        @Override
+        @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final JdbcTable.Metadata meta)
             {
             return this.insert(

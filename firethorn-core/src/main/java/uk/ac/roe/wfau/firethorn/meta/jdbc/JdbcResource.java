@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema.JdbcDriver;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 
 /**
@@ -32,6 +33,15 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 public interface JdbcResource
 extends BaseResource<JdbcSchema>
     {
+    /**
+     * Physical JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+        {
+        
+        }
+
     /**
      * {@link BaseResource.IdentFactory} interface.
      *
@@ -241,7 +251,7 @@ extends BaseResource<JdbcSchema>
     }
 
     /**
-     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
      * 
      */
     public OgsaJdbcResources ogsa();

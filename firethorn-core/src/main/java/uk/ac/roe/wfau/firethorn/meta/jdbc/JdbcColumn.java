@@ -27,6 +27,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.JdbcDriver;
 
 /**
  * Public interface for a local JDBC column.
@@ -35,6 +36,26 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
+    /**
+     * Physical JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+        {
+        /**
+         * Create a JDBC column.
+         *
+         */
+        public void create(final JdbcColumn column);
+
+        /**
+         * Delete (DROP) a JDBC column.
+         *
+         */
+        public void drop(final JdbcColumn column);
+        
+        }
+
     /**
      * {@link EntityBuilder} interface.
      * 

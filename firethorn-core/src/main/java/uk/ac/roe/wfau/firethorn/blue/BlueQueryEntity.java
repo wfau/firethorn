@@ -79,6 +79,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
@@ -1568,16 +1569,31 @@ implements BlueQuery
         final AdqlSchema adqlspace = identity.spaces().adql().current();
         log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
 
-        //TODO
-        this.jdbctable = jdbcspace.tables().create(
-            this
+        this.jdbctable = jdbcspace.tables().create();
+        this.adqltable = adqlspace.tables().create(
+    		jdbctable
             );
 
-        //TODO
-        this.adqltable = adqlspace.tables().create(
-    		jdbctable,
-    		this
-            );
+        
+        for(SelectField field : this.fields)
+        	{
+        	// Extra details depends on the field type - calculated, local Jdbc, remote Ivoa etc ..
+
+        	final JdbcColumn jdbccol =jdbctable.columns().create(
+    			field.type(),
+    			field.arraysize()
+    			);
+
+        	final AdqlColumn adqlcol = adqltable.columns().create(
+    			jdbccol,
+    			field.name(),
+    			field.type(),
+    			field.arraysize()
+    			);
+        	
+        	}
+        jdbctable.build();
+
         //
         // Log the end time.
         this.timings().jdbcdone();
