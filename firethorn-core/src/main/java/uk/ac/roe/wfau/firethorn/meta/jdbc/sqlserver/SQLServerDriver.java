@@ -61,13 +61,14 @@ implements JdbcResource.JdbcDriver
         {
         log.debug("Create JdbcTable [{}]", table.name());
 
-        final StringBuilder builder = new StringBuilder();
-        builder.append("CREATE TABLE ");
+        final StringBuilder builder = new StringBuilder(
+    		"CREATE TABLE "
+    		);
 		fullname(
 			builder,
 			table
 			);
-        builder.append("(");
+        builder.append(" (");
 
         boolean comma = false ;
         for(JdbcColumn column : table.columns().select())
@@ -90,8 +91,106 @@ implements JdbcResource.JdbcDriver
     			);
         	}
 
-        builder.append(")");
+        builder.append(" )");
         }
+    
+    @Override
+    @DeleteMethod
+    public void drop(final JdbcTable table)
+        {
+        log.debug("Drop JdbcTable [{}]", table.name());
+        final StringBuilder statement = new StringBuilder(
+    		"DROP TABLE "
+    		); 
+		fullname(statement,
+			table
+			);
+        final JdbcConnector connection = table.resource().connection();
+        try {
+            log.debug("SQL statement [{}]", statement);
+            final int result = connection.open().createStatement().executeUpdate(
+                statement.toString()
+                );
+            log.debug("SQL result [{}]", result);
+            }
+        catch (final SQLException ouch)
+            {
+            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
+            log.warn("SQL statement [{}]", statement.toString());
+            }
+        finally {
+            connection.close();
+            }
+        }
+    
+    @Override
+    @UpdateMethod
+    public void delete(final JdbcTable table)
+        {
+        log.debug("Delete JdbcTable [{}]", table.name());
+        final StringBuilder statement = new StringBuilder(
+    		"DELETE FROM "
+    		); 
+		fullname(statement,
+			table
+			);
+        final JdbcConnector connection = table.resource().connection();
+        try {
+            log.debug("SQL statement [{}]", statement);
+            final int result = connection.open().createStatement().executeUpdate(
+                statement.toString()
+                );
+            log.debug("SQL result [{}]", result);
+            }
+        catch (final SQLException ouch)
+            {
+            log.warn("SQLException while attempting to delete table data [{}]", ouch.getMessage());
+            log.warn("SQL statement [{}]", statement);
+            }
+        finally {
+            connection.close();
+            }
+        }
+
+    @UpdateMethod
+    public void truncate(final JdbcTable table)
+        {
+        log.debug("Truncate JdbcTable [{}]", table.name());
+        final StringBuilder statement = new StringBuilder(
+    		"TRUNCATE "
+    		); 
+		fullname(statement,
+			table
+			);
+        final JdbcConnector connection = table.resource().connection();
+        try {
+            log.debug("SQL statement [{}]", statement);
+            final int result = connection.open().createStatement().executeUpdate(
+                statement.toString()
+                );
+            log.debug("SQL result [{}]", result);
+            }
+        catch (final SQLException ouch)
+            {
+            log.warn("SQLException while attempting to truncate table data [{}]", ouch.getMessage());
+            log.warn("SQL statement [{}]", statement);
+            }
+        finally {
+            connection.close();
+            }
+        }
+
+	@Override
+	public void create(JdbcColumn column)
+		{
+		throw new NotImplementedException();		
+		}
+
+	@Override
+	public void drop(JdbcColumn column)
+		{
+		throw new NotImplementedException();		
+		}
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     	{
@@ -186,96 +285,4 @@ implements JdbcResource.JdbcDriver
 			);
     	builder.append("]");
     	}
-    
-    @Override
-    @DeleteMethod
-    public void drop(final JdbcTable table)
-        {
-        log.debug("Drop JdbcTable [{}]", table.name());
-        final StringBuilder statement = new StringBuilder("DROP TABLE "); 
-		fullname(statement,
-			table
-			);
-        final JdbcConnector connection = table.resource().connection();
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement.toString());
-            }
-        finally {
-            connection.close();
-            }
-        }
-    
-    @Override
-    @UpdateMethod
-    public void delete(final JdbcTable table)
-        {
-        log.debug("Delete JdbcTable [{}]", table.name());
-        final StringBuilder statement = new StringBuilder("DELETE FROM "); 
-		fullname(statement,
-			table
-			);
-        final JdbcConnector connection = table.resource().connection();
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to delete table data [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
-        }
-
-    @UpdateMethod
-    public void truncate(final JdbcTable table)
-        {
-        log.debug("Truncate JdbcTable [{}]", table.name());
-        final StringBuilder statement = new StringBuilder("TRUNCATE "); 
-		fullname(statement,
-			table
-			);
-        final JdbcConnector connection = table.resource().connection();
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to truncate table data [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
-        }
-
-	@Override
-	public void create(JdbcColumn column)
-		{
-		throw new NotImplementedException();		
-		}
-
-	@Override
-	public void drop(JdbcColumn column)
-		{
-		throw new NotImplementedException();		
-		}
     }

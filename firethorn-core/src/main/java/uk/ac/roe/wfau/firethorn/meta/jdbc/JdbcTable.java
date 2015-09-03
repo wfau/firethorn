@@ -413,12 +413,5 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * 
      */
     public void update(final JdbcTable.Metadata meta);
-    
-    /**
-     * Build the physical table.
-     * TODO Make this part of create ? 
-     * 
-     */
-    public void build();
 
     }

@@ -1445,14 +1445,4 @@ implements JdbcTable
         {
         // TODO Auto-generated method stub
         }
-
-	@Override
-	public void build()
-		{
-		//
-		// REaaallllly simple - no checks, just create.
-		this.resource().driver().create(
-			this
-			);
-		}
     }

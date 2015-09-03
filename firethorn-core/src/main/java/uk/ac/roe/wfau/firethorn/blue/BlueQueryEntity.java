@@ -1324,8 +1324,14 @@ implements BlueQuery
             }
 
         //
-        // Create our target JDBC resource.
+        // Mark our task as active.
+        transition(
+    		TaskState.QUEUED
+    		);
 
+        //
+        // Build our target resources.
+        build();
         
         //
         // Select our target OGSA-DAI service.  
@@ -1363,15 +1369,13 @@ implements BlueQuery
 						@Override
 						public String resource()
 							{
-							// TODO Auto-generated method stub
-							return null;
+							return BlueQueryEntity.this.jdbctable.resource().ogsa().primary().ogsaid();
 							}
 
 						@Override
 						public String table()
 							{
-							// TODO Auto-generated method stub
-							return null;
+							return BlueQueryEntity.this.jdbctable.fullname();
 							}
 
 						@Override
@@ -1386,7 +1390,8 @@ implements BlueQuery
 							{
 							// TODO Auto-generated method stub
 							return null;
-							}};
+							}
+						};
 					}
 
 				@Override
@@ -1449,8 +1454,45 @@ implements BlueQuery
         
         //
         // Check the return status.
-        
-        
+        log.debug("Workflow result [{}]", result.status());
+        switch(result.status())
+			{
+			case RUNNING :
+		        transition(
+		    		TaskState.RUNNING
+		    		);
+	        	break ;
+
+			case COMPLETED :
+		        transition(
+		    		TaskState.COMPLETED
+		    		);
+	        	break ;
+
+			case CANCELLED :
+		        transition(
+		    		TaskState.CANCELLED
+		    		);
+	        	break ;
+
+			case FAILED:
+		        transition(
+		    		TaskState.FAILED
+		    		);
+	        	break ;
+			
+			case UNKNOWN:
+		        transition(
+		    		TaskState.ERROR
+		    		);
+	        	break ;
+			default:
+	        	log.error("Unknown workflow status[{}]", result.status());
+		        transition(
+		    		TaskState.ERROR
+		    		);
+	        	break ;
+			}
         }
 
     protected static class Handle
@@ -1640,7 +1682,7 @@ implements BlueQuery
 					@Override
 					public String name()
 						{
-						return field.name();
+						return null;
 						}
 
 					@Override
@@ -1675,11 +1717,16 @@ implements BlueQuery
         	final AdqlColumn adqlcol = adqltable.columns().create(
     			jdbccol
     			);
-        	
         	}
 
-        jdbctable.build();
-
+        //
+        // Should this be part of the table ?
+        log.debug("Creating JDBC table");
+        jdbctable.resource().driver().create(
+    		jdbctable
+    		);
+        log.debug("JDBC table created");
+        
         //
         // Log the end time.
         this.timings().jdbcdone();

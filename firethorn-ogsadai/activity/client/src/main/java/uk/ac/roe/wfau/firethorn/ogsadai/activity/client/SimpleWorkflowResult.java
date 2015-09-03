@@ -31,8 +31,16 @@ implements WorkflowResult
             final RequestExecutionStatus result = request.getRequestExecutionStatus();
             if (result == null)
                 {
-                this.status = WorkflowResult.Status.UNKNOWN;
+                this.status = WorkflowResult.Status.FAILED;
                 this.message = "Null RequestExecutionStatus";
+                }
+            else if (result.equals(RequestExecutionStatus.PROCESSING))
+                {
+                this.status = WorkflowResult.Status.RUNNING;
+                }
+            else if (result.equals(RequestExecutionStatus.PROCESSING_WITH_ERROR))
+                {
+                this.status = WorkflowResult.Status.RUNNING;
                 }
             else if (result.equals(RequestExecutionStatus.COMPLETED))
                 {
