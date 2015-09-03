@@ -1449,7 +1449,10 @@ implements JdbcTable
 	@Override
 	public void build()
 		{
-		// TODO Auto-generated method stub
-		
+		//
+		// REaaallllly simple - no checks, just create.
+		this.resource().driver().create(
+			this
+			);
 		}
     }

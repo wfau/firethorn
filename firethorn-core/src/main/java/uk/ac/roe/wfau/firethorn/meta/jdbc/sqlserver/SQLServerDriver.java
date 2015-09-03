@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -51,7 +52,6 @@ implements JdbcResource.JdbcDriver
 	public void create(JdbcSchema schema)
 		{
 		// TODO Auto-generated method stub
-		
 		}
 
     /**
@@ -65,22 +65,143 @@ implements JdbcResource.JdbcDriver
 	public void drop(JdbcSchema schema)
 		{
 		// TODO Auto-generated method stub
-		
 		}
-	
-    /**
-     * SQL statement to CREATE a table.
-     *
-     */
-    protected static final String CREATE_TABLE_STATEMENT = "CREATE TABLE {name}" ;
-    
+   
     @Override
     @CreateMethod
     public void create(final JdbcTable table)
         {
         log.debug("Create JdbcTable [{}]", table.name());
+
+        final StringBuilder builder = new StringBuilder();
+        builder.append("CREATE TABLE ");
+		fullname(
+			builder,
+			table
+			);
+        builder.append("(");
+
+        boolean comma = false ;
+        for(JdbcColumn column : table.columns().select())
+        	{
+        	if (comma)
+        		{
+                builder.append(",");
+        		}
+        	else {
+            	comma = true ;
+        		}
+        	sqlname(
+    			builder,
+    			column
+    			);
+            builder.append(" ");
+            sqltype(
+				builder,
+				column.meta().jdbc()
+    			);
+        	}
+
+        builder.append(")");
         }
 
+    protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
+    	{
+    	switch(meta.jdbctype())
+	        {
+	        case DATE :
+	        case TIME :
+	        case TIMESTAMP :
+	            builder.append(
+	                "DATETIME"
+	                );
+	            break ;
+	        default :
+	            builder.append(
+	                meta.jdbctype().name()
+	                );
+	            break ;
+	        }
+
+    	// TODO This should check for char() rather than array()
+    	if (meta.jdbctype().isarray())
+    	    {
+    	    if (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
+    	        {
+    	        builder.append("(*)");
+    	        }
+    	    else {
+    	        builder.append("(");
+    	        builder.append(
+    	            meta.arraysize()
+    	            );
+    	        builder.append(")");
+    	        }
+    	    }
+    	}
+
+    
+    
+    
+    protected void fullname(final StringBuilder builder, final JdbcSchema schema)
+    	{
+		sqlname(
+			builder,
+			schema.catalog()
+			);  
+    	builder.append(".");
+		sqlname(
+			builder,
+			schema.schema()
+			);
+    	}
+
+    protected void fullname(final StringBuilder builder, final JdbcTable table)
+    	{
+		fullname(
+			builder,
+			table.schema()
+			);  
+    	builder.append(".");
+		sqlname(
+			builder,
+			table
+			);
+    	}
+    
+    protected void sqlname(final StringBuilder builder, final JdbcSchema schema)
+    	{
+    	sqlname(
+			builder,
+			schema.name()
+			);
+    	}
+
+    protected void sqlname(final StringBuilder builder, final JdbcTable table)
+    	{
+    	sqlname(
+			builder,
+			table.name()
+			);
+    	}
+
+    protected void sqlname(final StringBuilder builder, final JdbcColumn column)
+    	{
+    	sqlname(
+			builder,
+			column.name()
+			);
+    	}
+
+    protected void sqlname(final StringBuilder builder, final String name)
+    	{
+    	builder.append("[");
+    	builder.append(
+			name.replace("]", "]]")
+			);
+    	builder.append("]");
+    	}
+    
     /**
      * SQL statement to DROP a table.
      *
