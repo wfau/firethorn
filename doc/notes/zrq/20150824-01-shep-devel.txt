@@ -136,7 +136,7 @@
         --name builder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
-        --volume /var/local/cache:/var/cache \
+        --volume /var/local/cache:/var/local/cache \
         --volume /var/local/projects:/var/local/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         firethorn/builder:1 \
@@ -246,8 +246,8 @@ EOF
         firethorn/docker-proxy:1.1
 
     sleep 5
-    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
 
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
     echo "${dockerip:?}"
     curl "http://${dockerip:?}:2375/version"
 

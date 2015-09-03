@@ -40,15 +40,15 @@ pushd /toolkits
 
         # This doesn't work because /var/cache/ is a volume,
         # which gets recreated at runtime. 
-        mkdir /var/cache/maven
-        chgrp users /var/cache/maven
-        chmod g+rws /var/cache/maven
+        mkdir /var/local/cache/maven
+        chgrp users /var/local/cache/maven
+        chmod g+rws /var/local/cache/maven
 
         #
         # Set the repository path.
         # This doesn't work .. need to uncomment the element.
         sed -n '
-            s|<localRepository>.*</localRepository>|<localRepository>/cache/maven</localRepository>|
+            s|<localRepository>.*</localRepository>|<localRepository>/var/local/cache/maven</localRepository>|
             ' "${current:?}/conf/settings.xml"
 
 #
@@ -61,7 +61,7 @@ cat > /root/.m2/settings.xml<< 'EOF'
         http://maven.apache.org/SETTINGS/1.0.0
         http://maven.apache.org/xsd/settings-1.0.0.xsd
         ">
-    <localRepository>/var/cache/maven</localRepository>
+    <localRepository>/var/local/cache/maven</localRepository>
 </settings>
 EOF
 
