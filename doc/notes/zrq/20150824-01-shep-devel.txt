@@ -37,6 +37,7 @@
 #[root@virtual]
 
     yum -y install htop
+    yum -y install nano
     yum -y install pwgen
     
 # -----------------------------------------------------
@@ -53,7 +54,10 @@
 # Install and run Docker.
 #[root@virtual]
 
-    yum -y install docker-io
+    #yum -y install docker-io
+    #20150903-01-docker-fedora.txt
+
+    yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
 
     systemctl enable docker.service
     systemctl start  docker.service
@@ -73,19 +77,20 @@
 # -----------------------------------------------------
 # Create our cache directory.
 #[root@virtual]
-#
-#    if [ ! -e /var/local/cache ]
-#    then
-#        mkdir -p /var/local/cache
-#        chgrp -R users /var/local/cache
-#        chmod -R g+rwx /var/local/cache
-#    fi
-#
+
+    if [ ! -e /var/local/cache ]
+    then
+        mkdir -p /var/local/cache
+        chgrp -R users /var/local/cache
+        chmod -R g+rwx /var/local/cache
+    fi
+
 # -----------------------------------------------------
 # Allow access to Docker containers.
 #[root@virtual]
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
+    chcon -t svirt_sandbox_file_t "/var/local/cache" 
     chcon -t svirt_sandbox_file_t "/var/cache" 
 
 # -----------------------------------------------------
@@ -123,6 +128,7 @@
     
 # -----------------------------------------------------
 # Run our build container.
+# Using builder-1 to create builder-1.1
 #[root@virtual]
 
     docker run \
@@ -130,10 +136,10 @@
         --name builder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
-        --volume /var/cache:/var/cache \
+        --volume /var/local/cache:/var/cache \
         --volume /var/local/projects:/var/local/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/builder:1.1 \
+        firethorn/builder:1 \
         bash
 
 # -----------------------------------------------------
@@ -169,6 +175,9 @@ EOF
 
             hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
 
+            pushd firethorn
+                hg update "${branch:?}"
+            popd
         popd
     else
         #
@@ -177,7 +186,6 @@ EOF
 
             hg pull
             hg update "${branch:?}"
-            hg branch
         
         popd
     fi

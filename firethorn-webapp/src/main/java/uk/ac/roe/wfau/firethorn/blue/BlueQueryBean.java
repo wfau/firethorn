@@ -80,7 +80,6 @@ public class BlueQueryBean
     /**
      * The {@link BlueQuery} workspace.
      *
-     */
     public String getWorkspace()
         {
         if (entity().target() != null)
@@ -89,6 +88,7 @@ public class BlueQueryBean
             }
         return null ;
         }
+     */
 
     /**
      * The {@link BlueQuery} input.
