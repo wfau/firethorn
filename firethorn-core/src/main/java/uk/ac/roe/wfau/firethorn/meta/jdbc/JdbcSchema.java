@@ -186,6 +186,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     public interface Tables extends BaseSchema.Tables<JdbcTable>
         {
         /**
+         *  Create a new {@link JdbcTable}.
+         *
+         */
+        public JdbcTable create();
+
+        /**
          *  Create a new {@link JdbcTable table}.
          *
          */

@@ -180,6 +180,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
     extends BaseTable.EntityFactory<JdbcSchema, JdbcTable>
         {
         /**
+         * Create a new {@link JdbcTable} with a generated name.
+         *
+         */
+        public JdbcTable create(final JdbcSchema parent);
+
+        /**
          * Create a new {@link JdbcTable}.
          *
          */

@@ -1532,7 +1532,6 @@ implements BlueQuery
         log.debug("  state [{}]", state());
         
         }
-
     
     /**
      * Build our result tables.
