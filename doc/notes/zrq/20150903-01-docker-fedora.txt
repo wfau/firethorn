@@ -1,0 +1,156 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Fedora released new version of Docker.
+    Updating our test VM to the new version and docker fails to start.
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@shep]
+
+    createvm
+    
+        INFO : Node name [desouk]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [desouk.qcow]
+        INFO : Disc size [16GiB]
+
+
+# -----------------------------------------------------
+# Install latest Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+        ....
+        ....
+        Installed:
+          docker-io.x86_64 0:1.7.1-3.git33de319.fc21                                                                                                                                                                                                 
+
+# -----------------------------------------------------
+# Start Docker.
+#[root@virtual]
+
+    systemctl start  docker.service
+
+        Job for docker.service failed. See "systemctl status docker.service" and "journalctl -xe" for details.
+
+# -----------------------------------------------------
+# Check logs for details.
+#[root@virtual]
+
+    journalctl
+
+        ....
+        ....
+        Sep 03 17:01:34 desouk docker-storage-setup[22415]: Volume group "vda3" not found
+        Sep 03 17:01:34 desouk docker-storage-setup[22415]: Skipping volume group vda3
+        Sep 03 17:01:34 desouk docker-storage-setup[22415]: No volume groups found
+        Sep 03 17:01:34 desouk docker-storage-setup[22415]: No volume groups found
+        Sep 03 17:01:34 desouk docker-storage-setup[22415]: /usr/bin/docker-storage-setup: line 144: / 1000 + 1 : syntax error: operand expected (error token is "/ 1000 + 1 ")
+        Sep 03 17:01:34 desouk systemd[1]: docker-storage-setup.service: main process exited, code=exited, status=1/FAILURE
+        Sep 03 17:01:34 desouk systemd[1]: Failed to start Docker Storage Setup.
+        Sep 03 17:01:34 desouk systemd[1]: Unit docker-storage-setup.service entered failed state.
+        Sep 03 17:01:34 desouk systemd[1]: docker-storage-setup.service failed.
+        Sep 03 17:01:34 desouk docker[22441]: time="2015-09-03T17:01:34.772079697+01:00" level=info msg="Listening for HTTP on unix (/var/run/docker.sock)"
+        Sep 03 17:01:34 desouk docker[22441]: time="2015-09-03T17:01:34.804768731+01:00" level=error msg="WARNING: No --storage-opt dm.thinpooldev specified, using loopback; this configuration is strongly discouraged for production use"
+        Sep 03 17:01:35 desouk docker[22441]: time="2015-09-03T17:01:35.334827713+01:00" level=info msg="[graphdriver] using prior storage driver \"devicemapper\""
+        Sep 03 17:01:35 desouk docker[22441]: time="2015-09-03T17:01:35.340192927+01:00" level=warning msg="Running modprobe bridge nf_nat br_netfilter failed with message: , error: exit status 1"
+        Sep 03 17:03:04 desouk systemd[1]: docker.service start operation timed out. Terminating.
+        Sep 03 17:03:04 desouk systemd[1]: docker.service: main process exited, code=exited, status=2/INVALIDARGUMENT
+        Sep 03 17:03:04 desouk systemd[1]: Failed to start Docker Application Container Engine.
+        Sep 03 17:03:04 desouk systemd[1]: Unit docker.service entered failed state.
+        Sep 03 17:03:04 desouk systemd[1]: docker.service failed.
+        ....
+        ....
+
+# -----------------------------------------------------
+#
+
+    #
+    # Bodhi details of the new version are here
+    # https://bodhi.fedoraproject.org/updates/docker-io-1.7.1-3.git33de319.fc21
+
+    #
+    # List of all the versions are here
+    # https://bodhi.fedoraproject.org/updates/?packages=docker-io    
+
+    #
+    # Bodhi details of the previous version are here
+    # https://bodhi.fedoraproject.org/updates/docker-io-1.6.2-3.gitc3ca5bb.fc21
+
+    #
+    # Koji details for the previous version are here
+    # http://koji.fedoraproject.org/koji/buildinfo?buildID=642703
+
+    #
+    # RPM package  for the previous version is here
+    # https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+
+# -----------------------------------------------------
+# Install previous version of Docker.
+#[root@virtual]
+
+    yum remove docker-io
+
+        ....
+        ....
+        Removed:
+          docker-io.x86_64 0:1.7.1-3.git33de319.fc21        
+
+
+    yum install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+
+        ....
+        ....
+        Installed:
+          docker-io.x86_64 0:1.6.2-3.gitc3ca5bb.fc21                                                                                                                                                                                                 
+    
+# -----------------------------------------------------
+# Start Docker.
+#[root@virtual]
+
+    systemctl start  docker.service
+    systemctl status docker.service
+
+        * docker.service - Docker Application Container Engine
+           Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled)
+           Active: active (running) since Thu 2015-09-03 17:40:57 BST; 4s ago
+             Docs: http://docs.docker.com
+         Main PID: 22758 (docker)
+           CGroup: /system.slice/docker.service
+                   └─22758 /usr/bin/docker -d --selinux-enabled
+
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="+job serveapi(unix:///var/run/docker.sock)"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="Listening for HTTP on unix (/var/run/docker.sock)"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="+job init_networkdriver()"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="-job init_networkdriver() = OK (0)"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="Loading containers: start."
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="Loading containers: done."
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="docker daemon: 1.6.2.fc21 c3ca5bb/1.6.2; execdriver: native-0.2; graphdriver: devicemapper"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="+job acceptconnections()"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="-job acceptconnections() = OK (0)"
+        Sep 03 17:40:57 desouk docker[22758]: time="2015-09-03T17:40:57+01:00" level=info msg="Daemon has completed initialization"
+
+
