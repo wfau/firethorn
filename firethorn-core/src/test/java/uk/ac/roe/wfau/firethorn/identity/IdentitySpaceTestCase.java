@@ -82,10 +82,5 @@ public class IdentitySpaceTestCase
         assertNotNull(
             member
             );
-        assertNotNull(
-            member.jdbcschema(
-                true
-                )
-            );
         }
     }
