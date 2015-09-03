@@ -75,7 +75,7 @@
         --link "${username:?}:${userlink:?}" \
         --volume "${ogsatemp:?}:/temp" \
         --volume "${ogsalogs:?}:/var/local/tomcat/logs" \
-        firethorn/ogsadai
+        firethorn/ogsadai:${version:?}
 
 # -----------------------------------------------------
 # Create our FireThorn config.
@@ -153,7 +153,7 @@ EOF
         --volume "${firelogs:?}:/var/local/tomcat/logs" \
         --volume "${properties:?}:/etc/firethorn.properties" \
         --volume "${setenv:?}:/var/local/tomcat/bin/setenv.sh" \
-        "firethorn/firethorn"
+        "firethorn/firethorn:${version:?}"
 
 
 
