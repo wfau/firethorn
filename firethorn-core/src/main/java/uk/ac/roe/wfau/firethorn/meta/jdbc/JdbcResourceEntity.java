@@ -745,4 +745,11 @@ public class JdbcResourceEntity
                 }
             };
         }
+
+	@Override
+	public JdbcDriver driver()
+		{
+		// TODO Auto-generated method stub
+		return null ;
+		}
     }

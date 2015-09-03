@@ -852,7 +852,7 @@ implements JdbcTable
                     name
                     );
                 }
-            
+
             @Override
             public JdbcColumn create(final JdbcColumn.Metadata meta)
                 {
@@ -861,7 +861,7 @@ implements JdbcTable
                     meta
                     );
                 }
-            
+
             @Override
             public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size)
                 {
@@ -1445,4 +1445,11 @@ implements JdbcTable
         {
         // TODO Auto-generated method stub
         }
+
+	@Override
+	public void build()
+		{
+		// TODO Auto-generated method stub
+		
+		}
     }

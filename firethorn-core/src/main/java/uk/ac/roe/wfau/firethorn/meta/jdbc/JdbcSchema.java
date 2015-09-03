@@ -42,9 +42,10 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      *
      */
     public static interface JdbcDriver
+    extends JdbcTable.JdbcDriver
         {
         /**
-         * Create a JDBC schema.
+         * Create (CREATE) a JDBC schema.
          *
          */
         public void create(final JdbcSchema schema);

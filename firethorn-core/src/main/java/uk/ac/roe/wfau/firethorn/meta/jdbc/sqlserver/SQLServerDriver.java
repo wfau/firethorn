@@ -28,6 +28,8 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -37,20 +39,47 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 @Slf4j
 @Component
 public class SQLServerDriver
-implements JdbcTable.JdbcDriver, JdbcColumn.JdbcDriver 
+implements JdbcResource.JdbcDriver 
     {
-
     /**
-     * SQL statement to TRUNCATE all data in a table.
+     * SQL statement to CREATE a schema.
      *
      */
-    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {name}" ;
+    protected static final String CREATE_SCHEMA_STATEMENT = "CREATE SCHEMA {name}" ;
+
+	@Override
+	public void create(JdbcSchema schema)
+		{
+		// TODO Auto-generated method stub
+		
+		}
 
     /**
-     * SQL statement to DELETE all data from a table.
+     * SQL statement to DROP a schema.
      *
      */
-    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {name}" ;
+    protected static final String DROP_SCHEMA_STATEMENT = "DROP SCHEMA {name}" ;
+
+
+	@Override
+	public void drop(JdbcSchema schema)
+		{
+		// TODO Auto-generated method stub
+		
+		}
+	
+    /**
+     * SQL statement to CREATE a table.
+     *
+     */
+    protected static final String CREATE_TABLE_STATEMENT = "CREATE TABLE {name}" ;
+    
+    @Override
+    @CreateMethod
+    public void create(final JdbcTable table)
+        {
+        log.debug("Create JdbcTable [{}]", table.name());
+        }
 
     /**
      * SQL statement to DROP a table.
@@ -58,17 +87,38 @@ implements JdbcTable.JdbcDriver, JdbcColumn.JdbcDriver
      */
     protected static final String DROP_TABLE_STATEMENT = "DROP TABLE {name}" ;
 
+    @Override
+    @DeleteMethod
+    public void drop(final JdbcTable table)
+        {
+        log.debug("Drop JdbcTable [{}]", table.name());
+        final JdbcConnector connection = table.resource().connection();
+        final String statement = DROP_TABLE_STATEMENT.replace(
+            "{name}",
+            table.namebuilder().toString()
+            );
+        try {
+            log.debug("Executing SQL [{}]", statement);
+            final int result = connection.open().createStatement().executeUpdate(
+                statement
+                );
+            log.debug("result [{}]", result);
+            }
+        catch (final SQLException ouch)
+            {
+            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
+            log.warn("SQL statement [{}]", statement);
+            }
+        finally {
+            connection.close();
+            }
+        }
+    
     /**
-     * SQL statement to CREATE a schema.
+     * SQL statement to DELETE all data from a table.
      *
      */
-    protected static final String CREATE_SCHEMA_STATEMENT = "CREATE SCHEMA {name}" ;
-
-    /**
-     * SQL statement to DROP a schema.
-     *
-     */
-    protected static final String DROP_SCHEMA_STATEMENT = "DROP SCHEMA {name}" ;
+    protected static final String DELETE_DATA_STATEMENT = "DELETE FROM {name}" ;
 
     @Override
     @UpdateMethod
@@ -97,46 +147,18 @@ implements JdbcTable.JdbcDriver, JdbcColumn.JdbcDriver
             }
         }
 
-    @Override
-    @DeleteMethod
-    public void drop(final JdbcTable table)
-        {
-        log.debug("Drop JdbcTable [{}]", table.name());
-        final JdbcConnector connection = table.resource().connection();
-        final String statement = DROP_TABLE_STATEMENT.replace(
-            "{name}",
-            table.namebuilder().toString()
-            );
-        try {
-            log.debug("Executing SQL [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement
-                );
-            log.debug("result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
-        }
-
     /**
-     * SQL statement to CREATE a table.
+     * SQL statement to TRUNCATE all data in a table.
      *
      */
-    protected static final String CREATE_TABLE_STATEMENT = "CREATE TABLE {name}" ;
-    
-    @Override
-    @CreateMethod
-    public void create(final JdbcTable table)
-        {
-        log.debug("Create JdbcTable [{}]", table.name());
-        }
+    protected static final String TRUNCATE_DATA_STATEMENT = "TRUNCATE {name}" ;
 
+    /**
+     * SQL statement to CREATE a column.
+     *
+     */
+    protected static final String CREATE_COLUMN_STATEMENT = "----" ;
+    
 	@Override
 	public void create(JdbcColumn column)
 		{
@@ -144,12 +166,17 @@ implements JdbcTable.JdbcDriver, JdbcColumn.JdbcDriver
 		
 		}
 
+    /**
+     * SQL statement to DROP a column.
+     *
+     */
+    protected static final String DROP_COLUMN_STATEMENT = "----" ;
+
 	@Override
 	public void drop(JdbcColumn column)
 		{
 		// TODO Auto-generated method stub
 		
 		}
-
     
     }

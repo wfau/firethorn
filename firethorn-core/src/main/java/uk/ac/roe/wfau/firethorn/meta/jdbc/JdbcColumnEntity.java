@@ -203,7 +203,10 @@ public class JdbcColumnEntity
         protected void update(final JdbcColumn column, final JdbcColumn.Metadata meta)
             {
             column.update(
-                meta
+                meta.jdbc()
+                );
+            column.update(
+                meta.adql()
                 );
             }
         }
@@ -304,7 +307,7 @@ public class JdbcColumnEntity
                     )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
@@ -412,7 +415,7 @@ public class JdbcColumnEntity
             meta.jdbc().arraysize()
             );
         this.update(
-            meta
+            meta.adql()
             );
         }
 
@@ -572,9 +575,9 @@ public class JdbcColumnEntity
         // TODO Auto-generated method stub
         }
     
-    protected JdbcColumn.Metadata.Jdbc jdbcmeta()
+    protected JdbcColumn.Modifier.Jdbc jdbcmeta()
         {
-        return new JdbcColumn.Metadata.Jdbc()
+        return new JdbcColumn.Modifier.Jdbc()
             {
             @Override
             public String name()
@@ -591,6 +594,8 @@ public class JdbcColumnEntity
                 {
                 return JdbcColumnEntity.this.jdbctype();
                 }
+/*
+ * 
             @Override
             public CreateSql create()
                 {
@@ -663,13 +668,15 @@ public class JdbcColumnEntity
                         }
                     };
                 }
+ *
+ */
             };
         }
 
     @Override
-    public JdbcColumn.Metadata meta()
+    public JdbcColumn.Modifier meta()
         {
-        return new JdbcColumn.Metadata()
+        return new JdbcColumn.Modifier()
             {
             @Override
             public String name()
@@ -678,13 +685,13 @@ public class JdbcColumnEntity
                 }
 
             @Override
-            public AdqlColumn.Metadata.Adql adql()
+            public AdqlColumn.Modifier.Adql adql()
                 {
                 return adqlmeta();
                 }
 
             @Override
-            public JdbcColumn.Metadata .Jdbc jdbc()
+            public JdbcColumn.Modifier.Jdbc jdbc()
                 {
                 return jdbcmeta();
                 }
@@ -692,17 +699,8 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public void update(final JdbcColumn.Metadata update)
-        {
-        if (update.adql() != null)
-            {
-            if (update.adql().text() != null)
-                {
-                this.text(update.adql().text());
-                }
-            //
-            //TODO Check the type and size - warn/fail if they have changed ?
-            //
-            }
-        }
+    public void update(final JdbcColumn.Metadata.Jdbc meta)
+    	{
+    	// TODO What do we do if these values change ?    	
+    	}
     }

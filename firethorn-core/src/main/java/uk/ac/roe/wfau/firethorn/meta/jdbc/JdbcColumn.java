@@ -43,13 +43,13 @@ extends BaseColumn<JdbcColumn>
     public static interface JdbcDriver
         {
         /**
-         * Create a JDBC column.
+         * Create (CREATE) a JDBC column.
          *
          */
         public void create(final JdbcColumn column);
 
         /**
-         * Delete (DROP) a JDBC column.
+         * Delete (DROP) this {@link JdbcColumn}.
          *
          */
         public void drop(final JdbcColumn column);
@@ -537,14 +537,14 @@ extends BaseColumn<JdbcColumn>
         }
     
     /**
-     * The column metadata.
+     * The {@link JdbcColumn} metadata interface.
      *
      */
     public interface Metadata
     extends AdqlColumn.Metadata
         {
         /**
-         * The JDBC metadata.
+         * The JDBC metadata interface.
          *
          */
         public interface Jdbc
@@ -567,40 +567,11 @@ extends BaseColumn<JdbcColumn>
              */
             public Integer arraysize();
 
-            
-            
-            /**
-             * The column size.
-             *
-            @Deprecated
-            public Integer size();
-             */
-
-            /**
-             * Set the column size.
-             *
-            @Deprecated
-            public void size(final Integer size);
-             */
-
-            /**
-             * Get the JDBC type.
-             *
-            @Deprecated
-            public OldJdbcType type();
-             */
-
-            /**
-             * Set the JDBC type.
-             *
-            @Deprecated
-            public void type(final OldJdbcType type);
-             */
-
             /**
              * The corresponding SQL 'CREATE COLUMN' fields.
              *
              */
+            @Deprecated
             public interface CreateSql
                 {
                 public String name();
@@ -610,8 +581,9 @@ extends BaseColumn<JdbcColumn>
             /**
              * The corresponding SQL 'CREATE COLUMN' fields.
              *
-             */
+            @Deprecated
             public CreateSql create();
+             */
 
             }
         /**
@@ -621,14 +593,38 @@ extends BaseColumn<JdbcColumn>
         public Jdbc jdbc();
 
         }
+    
+    /**
+     * The {@link JdbcColumn} modifier interface.
+     *
+     */
+    public interface Modifier
+    extends AdqlColumn.Modifier
+        {
+        /**
+         * The JDBC modifier interface.
+         *
+         */
+        public interface Jdbc
+        extends JdbcColumn.Metadata.Jdbc
+            {
+            }
 
+        /**
+         * The JDBC modifier.
+         *
+         */
+        public Jdbc jdbc();
+        
+        }
+    
     @Override
-    public JdbcColumn.Metadata meta();
+    public JdbcColumn.Modifier meta();
 
     /**
-     * Update the column properties.
+     * Update the {@link JdbcColumn} properties.
      * 
      */
-    public void update(final JdbcColumn.Metadata meta);
-
+    public void update(final JdbcColumn.Metadata.Jdbc meta);
+    
     }

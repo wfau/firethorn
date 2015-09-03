@@ -72,6 +72,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.AdqlType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -80,6 +81,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
@@ -1574,24 +1576,108 @@ implements BlueQuery
     		jdbctable
             );
 
-        
-        for(SelectField field : this.fields)
-        	{
-        	// Extra details depends on the field type - calculated, local Jdbc, remote Ivoa etc ..
+    	// TODO Add the row number index column.
 
+        for(final SelectField field : this.fields)
+        	{
+        	// TODO Adql details depend on the field type - calculated, local Jdbc, remote Ivoa etc ..
         	final JdbcColumn jdbccol =jdbctable.columns().create(
-    			field.type(),
-    			field.arraysize()
+    			new JdbcColumn.Metadata()
+    				{
+					@Override
+					public Adql adql()
+						{
+						return new Adql()
+							{
+							@Override
+							public String name()
+								{
+								return field.name();
+								}
+
+							@Override
+							public String text()
+								{
+								// TODO Auto-generated method stub
+								return null;
+								}
+
+							@Override
+							public Integer arraysize()
+								{
+								return field.arraysize();
+								}
+
+							@Override
+							public AdqlType type()
+								{
+								return field.type();
+								}
+
+							@Override
+							public String units()
+								{
+								// TODO Auto-generated method stub
+								return null;
+								}
+
+							@Override
+							public String utype()
+								{
+								// TODO Auto-generated method stub
+								return null;
+								}
+
+							@Override
+							public String ucd()
+								{
+								// TODO Auto-generated method stub
+								return null;
+								}
+							};
+						}
+
+					@Override
+					public String name()
+						{
+						return field.name();
+						}
+
+					@Override
+					public Jdbc jdbc()
+						{
+						return new Jdbc()
+							{
+							@Override
+							public String name()
+								{
+								return null;
+								}
+
+							@Override
+							public JdbcType jdbctype()
+								{
+								return field.type().jdbctype();
+								}
+
+							@Override
+							public Integer arraysize()
+								{
+								return field.arraysize();
+								}
+							};
+						}
+    				}
     			);
 
+        	// TODO Create with ADQL metadata.
+        	// TODO Column create() and update() should only add fields that are different to the base.
         	final AdqlColumn adqlcol = adqltable.columns().create(
-    			jdbccol,
-    			field.name(),
-    			field.type(),
-    			field.arraysize()
+    			jdbccol
     			);
         	
         	}
+
         jdbctable.build();
 
         //

@@ -152,7 +152,7 @@ extends TreeComponent
     public String fullname();
 
     /**
-     * The {@link BaseColumn} metadata.
+     * The {@link BaseColumn} metadata interface.
      *
      */
     public interface Metadata
@@ -161,14 +161,21 @@ extends TreeComponent
          * The column name.
          * 
          */
+        @Deprecated
         public String name();
 
         }
 
     /**
-     * The {@link BaseColumn} metadata.
+     * The {@link AdqlColumn} metadata.
      *
      */
-    public AdqlColumn.Metadata meta();
+    public AdqlColumn.Modifier meta();
 
+    /**
+     * Update the {@link AdqlColumn} properties.
+     * 
+     */
+    public void update(final AdqlColumn.Metadata.Adql meta);
+    
     }

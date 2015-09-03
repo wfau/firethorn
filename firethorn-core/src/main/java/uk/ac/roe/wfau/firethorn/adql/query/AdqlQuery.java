@@ -676,6 +676,7 @@ extends NamedEntity, Job
          */
         public abstract AdqlColumn.AdqlType type();
 
+        
         }
 
     /**

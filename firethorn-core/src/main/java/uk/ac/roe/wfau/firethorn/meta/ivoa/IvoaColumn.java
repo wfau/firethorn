@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  * Public interface for an external IVOA column.
@@ -128,14 +129,14 @@ extends BaseColumn<IvoaColumn>
     public IvoaResource resource();
 
     /**
-     * The column metadata.
+     * The {@link IvoaColumn} metadata interface.
      *
      */
     public interface Metadata
     extends AdqlColumn.Metadata
         {
         /**
-         * The IVOA metadata.
+         * The IVOA metadata interface.
          * 
          */
         public interface Ivoa
@@ -197,18 +198,42 @@ extends BaseColumn<IvoaColumn>
         public Ivoa ivoa();
         }
 
+    /**
+     * The {@link IvoaColumn} modifier interface.
+     *
+     */
+    public interface Modifier
+    extends AdqlColumn.Modifier
+        {
+        /**
+         * The IVOA modifier interface.
+         *
+         */
+        public interface Ivoa
+        extends IvoaColumn.Metadata.Ivoa
+            {
+            }
+
+        /**
+         * The IVOA modifier.
+         *
+         */
+        public Ivoa ivoa();
+        
+        }
+    
     @Override
-    public IvoaColumn.Metadata meta();
+    public IvoaColumn.Modifier meta();
 
     /**
-     * Update the column properties.
+     * Update the {@link IvoaColumn} properties.
      * 
-     */
     public void update(final IvoaColumn.Metadata meta);
+     */
     
     /**
-     * Update the column properties.
+     * Update the {@link IvoaColumn} properties.
      * 
      */
-    public void update(final IvoaColumn.Metadata.Ivoa ivoa);
+    public void update(final IvoaColumn.Metadata.Ivoa meta);
     }

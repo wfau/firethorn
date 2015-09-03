@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  * {@link BaseColumn} implementation.
@@ -314,9 +315,9 @@ extends TreeComponentEntity<ColumnType>
      * Generate the {@link AdqlColumn.Metadata.Adql adql} metadata.
      *
      */
-    protected AdqlColumn.Metadata.Adql adqlmeta()
+    protected AdqlColumn.Modifier.Adql adqlmeta()
         {
-        return new AdqlColumn.Metadata.Adql()
+        return new AdqlColumn.Modifier.Adql()
             {
             @Override
             public Integer arraysize()
@@ -409,9 +410,9 @@ extends TreeComponentEntity<ColumnType>
         }
 
     @Override
-    public AdqlColumn.Metadata meta()
+    public AdqlColumn.Modifier meta()
         {
-        return new AdqlColumn.Metadata()
+        return new AdqlColumn.Modifier()
             {
             @Override
             public String name()
@@ -419,10 +420,24 @@ extends TreeComponentEntity<ColumnType>
                 return BaseColumnEntity.this.name();
                 }
             @Override
-            public AdqlColumn.Metadata.Adql adql()
+            public AdqlColumn.Modifier.Adql adql()
                 {
                 return adqlmeta();
                 }
             };
         }
+
+    @Override
+    public void update(final AdqlColumn.Metadata.Adql meta)
+    	{
+        if (meta.text() != null)
+            {
+            this.text(
+        		meta.text()
+        		);
+            }
+        //
+        //TODO Check the type and size - warn/fail if they have changed ?
+        //
+    	}
     }

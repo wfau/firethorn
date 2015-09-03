@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
 
 /**
  * Public interface for a local JDBC table.
@@ -37,6 +38,32 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public interface JdbcTable
 extends BaseTable<JdbcTable, JdbcColumn>
     {
+    /**
+     * Physical JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+    extends JdbcColumn.JdbcDriver
+        {
+        /**
+         * Create (CREATE) a JDBC table.
+         *
+         */
+        public void create(final JdbcTable table);
+
+        /**
+         * Delete (DELETE) the contents of JDBC data.
+         *
+         */
+        public void delete(final JdbcTable table);
+
+        /**
+         * Delete (DROP) a JDBC table.
+         *
+         */
+        public void drop(final JdbcTable table);
+
+        }
 
     /**
      * Services interface.
@@ -141,32 +168,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public void delete(final JdbcTable table);
 
         }
-
-    /**
-     * Physical JDBC driver interface.
-     *
-     */
-    public static interface JdbcDriver
-        {
-        /**
-         * Create a JDBC table.
-         *
-         */
-        public void create(final JdbcTable table);
-
-        /**
-         * Delete (DELETE) the contents of JDBC data.
-         *
-         */
-        public void delete(final JdbcTable table);
-
-        /**
-         * Delete (DROP) a JDBC table.
-         *
-         */
-        public void drop(final JdbcTable table);
-
-        }
     
     /**
      * {@link BaseTable.EntityFactory} interface.
@@ -264,13 +265,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
      */
     public interface Columns extends BaseTable.Columns<JdbcColumn>
         {
-        /**
-         * Create a new {@link JdbcColumn}.
-         * Used by JdbcColumn.Builder
-         *
-         */
-        public JdbcColumn create();
-
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcColumn.Builder
@@ -420,4 +414,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
      */
     public void update(final JdbcTable.Metadata meta);
     
+    /**
+     * Build the physical table.
+     * TODO Make this part of create ? 
+     * 
+     */
+    public void build();
+
     }

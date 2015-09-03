@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
@@ -289,7 +290,7 @@ implements AdqlColumn
         }
 
     @Override
-    public AdqlColumn.Metadata meta()
+    public AdqlColumn.Modifier meta()
         {
         return base().meta();
         }
@@ -319,4 +320,12 @@ implements AdqlColumn
         // A combination of protection from base and parent ? 
         return null ;
         }
+
+	@Override
+	public void update(Adql meta)
+		{
+        throw new UnsupportedOperationException(
+            "Can't change a read only copy"
+            );
+		}
     }
