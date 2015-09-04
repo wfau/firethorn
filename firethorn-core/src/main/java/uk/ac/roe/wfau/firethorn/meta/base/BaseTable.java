@@ -97,22 +97,22 @@ extends TreeComponent
         public TableType select(final SchemaType parent, final String name)
         throws NameNotFoundException;
 
-        /**
-         * Our local {@link BaseTable.AliasFactory} implementation.
-         * @todo Move to services.
-         *
-         */
-        public AliasFactory<TableType> aliases();
-
-        /**
-         * Our local {@link BaseTable.NameFactory} implementation.
-         * @todo Move to services.
-         *
-         */
-        public NamedEntity.NameFactory<TableType> names();
-
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices<TableType extends BaseTable<?,?>>
+    extends NamedEntity.EntityServices<TableType>
+        {
+        /**
+         * {@link BaseColumn.AliasFactory} instance.
+         *
+         */
+        public BaseTable.AliasFactory<TableType> aliases();
+        }
+    
     /**
      * The next {@link BaseTable} this table is derived from.
      *

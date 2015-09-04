@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -30,8 +31,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +38,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
@@ -173,30 +174,6 @@ public class JdbcResourceEntity
                 );
             }
 
-        @Autowired
-        protected JdbcSchema.EntityFactory schemas;
-        @Override
-        public JdbcSchema.EntityFactory schemas()
-            {
-            return this.schemas;
-            }
-
-        @Autowired
-        protected JdbcResource.IdentFactory idents ;
-        @Override
-        public JdbcResource.IdentFactory idents()
-            {
-            return this.idents ;
-            }
-
-        @Autowired
-        protected JdbcResource.LinkFactory links;
-        @Override
-        public JdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-
         /**
          * The default 'userdata' JDBC URL.
          *
@@ -275,6 +252,121 @@ public class JdbcResourceEntity
             }
         }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements JdbcResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static JdbcResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return JdbcResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcResourceEntity.EntityServices.instance == null)
+                {
+                JdbcResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private JdbcResource.IdentFactory idents;
+        @Override
+        public JdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private JdbcResource.LinkFactory links;
+        @Override
+        public JdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private JdbcResource.NameFactory names;
+        @Override
+        public JdbcResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private JdbcResource.EntityFactory entities;
+        @Override
+        public JdbcResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        protected JdbcSchema.EntityFactory schemas;
+        @Override
+        public JdbcSchema.EntityFactory schemas()
+            {
+            return this.schemas;
+            }
+        }
+
+    @Override
+    protected JdbcResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return JdbcResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected JdbcResource.EntityServices services()
+        {
+        log.debug("services()");
+        return JdbcResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Protected constructor. 
      *
@@ -504,14 +596,6 @@ public class JdbcResourceEntity
         this.catalog = catalog ;
         this.scandate(
             null
-            );
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().resources().links().link(
-            this
             );
         }
 
@@ -749,7 +833,6 @@ public class JdbcResourceEntity
 	@Override
 	public JdbcDriver driver()
 		{
-		// TODO Auto-generated method stub
-		return null ;
+		throw new NotImplementedException();
 		}
     }

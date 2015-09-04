@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,8 +33,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -46,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.util.GenericIterable;
  * {@link IvoaResource} implementation.
  *
  */
+@Slf4j
 @Entity
 @Access(
     AccessType.FIELD
@@ -131,17 +135,62 @@ public class IvoaResourceEntity
                     )
                 );
             }
+        }
 
-        @Autowired
-        protected IvoaSchema.EntityFactory schemas;
-        @Override
-        public IvoaSchema.EntityFactory schemas()
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements IvoaResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static IvoaResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.schemas;
+            return IvoaResourceEntity.EntityServices.instance ;
             }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (IvoaResourceEntity.EntityServices.instance == null)
+                {
+                IvoaResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected IvoaResource.IdentFactory idents;
+        private IvoaResource.IdentFactory idents;
         @Override
         public IvoaResource.IdentFactory idents()
             {
@@ -149,14 +198,60 @@ public class IvoaResourceEntity
             }
 
         @Autowired
-        protected IvoaResource.LinkFactory links;
+        private IvoaResource.LinkFactory links;
         @Override
         public IvoaResource.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private IvoaResource.NameFactory names;
+        @Override
+        public IvoaResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private IvoaResource.EntityFactory entities;
+        @Override
+        public IvoaResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+		private IvoaSchema.EntityFactory schemas;
+		@Override
+		public IvoaSchema.EntityFactory schemas()
+			{
+			return this.schemas;
+			}
         }
 
+    @Override
+    protected IvoaResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return IvoaResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected IvoaResource.EntityServices services()
+        {
+        log.debug("services()");
+        return IvoaResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Protected constructor.
      *
@@ -246,14 +341,6 @@ public class IvoaResourceEntity
                     };
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ivoa().resources().links().link(
-            this
-            );
         }
 
     @Override

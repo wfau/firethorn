@@ -28,46 +28,9 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 public interface TestJob
 extends Job, NamedEntity
     {
-    /**
-     * Our local factory implementations.
-     *
-     */
-    public static interface Services
-        {
-        /**
-         * Our LinkFactory.
-         *
-         */
-        public LinkFactory links();
-
-        /**
-         * Our IdentFactory.
-         *
-         */
-        public IdentFactory idents();
-
-        /**
-         * Our TestJob Factory.
-         *
-         */
-        public Factory factory();
-
-        /**
-         * Our TestJob executor.
-         *
-         */
-        public Job.Executor executor();
-
-        }
 
     /**
-     * Our local service implementations.
-     *
-     */
-    public Services services();
-
-    /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -76,7 +39,7 @@ extends Job, NamedEntity
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -85,10 +48,10 @@ extends Job, NamedEntity
         }
 
     /**
-     * Job factory interface.
+     * {@link Entity.EntityFactory} interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends Job.EntityFactory<TestJob>
         {
         /**
@@ -99,6 +62,20 @@ extends Job, NamedEntity
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<TestJob>
+        {
+        /**
+         * Our {@link Job.Executor}.
+         *
+         */
+        public Job.Executor executor();
+        }
+    
     /**
      * The test duration in seconds.
      *
@@ -122,11 +99,5 @@ extends Job, NamedEntity
      *
      */
     public void limit(final Integer limit);
-
-    /**
-     * Something to configure.
-     *
-     */
-    public TestJob.Factory factory();
 
     }

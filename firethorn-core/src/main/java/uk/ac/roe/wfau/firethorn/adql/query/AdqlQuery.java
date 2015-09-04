@@ -365,20 +365,6 @@ extends NamedEntity, Job
          *
          */
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
-
-        /**
-         * Our OGSA-DAI param factory.
-         * @todo Move this to Services interface
-         *
-         */
-        public ParamFactory params();
-
-        /**
-         * Our query limits factory.
-         * @todo Move this to Services interface
-         *
-         */
-        public Limits.Factory limits();
         
         }
 
@@ -401,6 +387,12 @@ extends NamedEntity, Job
          */
         public ParamFactory params();
 
+        /**
+         * Our query limits factory.
+         *
+         */
+        public Limits.Factory limits();
+        
         }
     
     /**

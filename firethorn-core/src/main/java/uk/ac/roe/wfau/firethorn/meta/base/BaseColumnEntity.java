@@ -28,12 +28,10 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  * {@link BaseColumn} implementation.

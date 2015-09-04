@@ -174,24 +174,6 @@ implements Community
                     )
                 );
             }
-
-        @Autowired
-        protected Community.IdentFactory idents;
-        @Override
-        @Deprecated
-        public Community.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        protected Community.LinkFactory links;
-        @Override
-        @Deprecated
-        public Community.LinkFactory links()
-            {
-            return this.links;
-            }
         }
     
     /**
@@ -300,7 +282,15 @@ implements Community
         log.debug("services()");
         return CommunityEntity.EntityServices.instance() ; 
         }
-    
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -364,14 +354,6 @@ implements Community
                     );
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().communities().links().link(
-            this
-            );
         }
 
     @ManyToOne(

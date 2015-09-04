@@ -107,20 +107,6 @@ implements Authentication
             }
 
         @Override
-        @Deprecated
-        public Authentication.LinkFactory links()
-            {
-            throw new NotImplementedException();
-            }
-
-        @Override
-        @Deprecated
-        public Authentication.IdentFactory idents()
-            {
-            throw new NotImplementedException();
-            }
-
-        @Override
         public Authentication current()
             {
             throw new NotImplementedException();

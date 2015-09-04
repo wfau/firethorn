@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -27,13 +28,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
@@ -288,32 +289,124 @@ implements AdqlSchema
                     )
                 );
             }
+        }
 
-        @Autowired
-        protected AdqlTable.EntityFactory tables;
-        @Override
-        public AdqlTable.EntityFactory tables()
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements AdqlSchema.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static AdqlSchemaEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.tables;
+            return AdqlSchemaEntity.EntityServices.instance ;
             }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlSchemaEntity.EntityServices.instance == null)
+                {
+                AdqlSchemaEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected AdqlSchema.IdentFactory idents ;
+        private AdqlSchema.IdentFactory idents;
         @Override
         public AdqlSchema.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
             }
 
         @Autowired
-        protected AdqlSchema.LinkFactory links;
+        private AdqlSchema.LinkFactory links;
         @Override
         public AdqlSchema.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private AdqlSchema.NameFactory names;
+        @Override
+        public AdqlSchema.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private AdqlSchema.EntityFactory entities;
+        @Override
+        public AdqlSchema.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        private AdqlTable.EntityFactory tables;
+		@Override
+		public AdqlTable.EntityFactory tables()
+			{
+			return this.tables;
+			}
         }
 
+    @Override
+    protected AdqlSchema.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return AdqlSchemaEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected AdqlSchema.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlSchemaEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
+    
     /**
      * Protected constructor.
      *
@@ -677,14 +770,6 @@ implements AdqlSchema
                     }
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().adql().schemas().links().link(
-            this
-            );
         }
 
     @Override

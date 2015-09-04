@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity.EntityFactory;
 
 /**
  * Public interface for a metadata component.

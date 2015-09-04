@@ -29,7 +29,6 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
 
 /**
  * Public interface for a local JDBC table.
@@ -65,45 +64,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
         }
 
-    /**
-     * Services interface.
-     * TODO Need to do this for the rest of the metadata tree.
-     * 
-     */
-    public static interface Services
-        {
-        /**
-         * Our {@link JdbcTable.IdentFactory}.
-         *
-         */
-        public JdbcTable.IdentFactory idents();
-
-        /**
-         * Our {@link JdbcTable.NameFactory}.
-         *
-         */
-        public JdbcTable.NameFactory names();
-
-        /**
-         * Our {@link JdbcTable.AliasFactory}.
-         *
-         */
-        public JdbcTable.AliasFactory aliases();
-
-        /**
-         * Our {@link JdbcTable.LinkFactory}.
-         *
-         */
-        public JdbcTable.LinkFactory links();
-
-        /**
-         * Our {@link JdbcTable.EntityFactory}.
-         *
-         */
-        public JdbcTable.EntityFactory entities();
-
-        }
-    
     /**
      * {@link EntityBuilder} interface.
      * 
@@ -210,49 +170,48 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
 
         /**
-         * Our {@link JdbcColumn.EntityFactory} factory.
-         *
-         */
-        public JdbcColumn.EntityFactory columns();
-
-        /**
-         * OldBuilder implementation.
-         *
-        @Deprecated
-        public JdbcTable.OldBuilder builder();
-         */
-
-        /**
-         * Our physical JDBC factory.
-         *
-         */
-        public JdbcTable.JdbcDriver driver();
-
-        /**
          * Get the next set of tables for garbage collection ..
          * @Move this to the data space interface.
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
-        
-        //TODO - move to services
-        @Override
-        public JdbcTable.IdentFactory idents();
 
-        //TODO - move to services
-        @Override
-        public JdbcTable.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public JdbcTable.AliasFactory aliases();
-
-        //TODO - move to services
-        @Override
-        public JdbcTable.LinkFactory links();
+        /**
+         * Our physical JDBC factory.
+         *
+        public JdbcTable.JdbcDriver driver();
+         */
         
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<JdbcTable>
+        {
+        /**
+         * Our {@link JdbcTable.AliasFactory} instance.
+         *
+         */
+        public JdbcTable.AliasFactory aliases();
+
+        /**
+         * Our {@link JdbcColumn.EntityFactory} instance.
+         *
+         */
+        public JdbcColumn.EntityFactory columns();
+
+        /**
+         * The physical JDBC factory implementation.
+         * @todo This should depend on the local database dialect.
+         *
+        public JdbcTable.JdbcDriver driver()
+         */
+        
+        }
+    
     @Override
     public JdbcResource resource();
 

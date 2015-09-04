@@ -17,20 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -38,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -237,7 +234,6 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
-                    this,
                     parent,
                     base
                     )
@@ -250,7 +246,6 @@ public class AdqlColumnEntity
             {
             return this.insert(
                 new AdqlColumnEntity(
-                    this,
                     parent,
                     base,
                     name
@@ -316,9 +311,62 @@ public class AdqlColumnEntity
                     )
                 );
             }
+        }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements AdqlColumn.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static AdqlColumnEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return AdqlColumnEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlColumnEntity.EntityServices.instance == null)
+                {
+                AdqlColumnEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected AdqlColumn.IdentFactory idents;
+        private AdqlColumn.IdentFactory idents;
         @Override
         public AdqlColumn.IdentFactory idents()
             {
@@ -326,7 +374,7 @@ public class AdqlColumnEntity
             }
 
         @Autowired
-        protected AdqlColumn.LinkFactory links;
+        private AdqlColumn.LinkFactory links;
         @Override
         public AdqlColumn.LinkFactory links()
             {
@@ -334,49 +382,80 @@ public class AdqlColumnEntity
             }
 
         @Autowired
-        protected AdqlColumn.AliasFactory aliases;
+        private AdqlColumn.NameFactory names;
+        @Override
+        public AdqlColumn.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private AdqlColumn.AliasFactory aliases;
         @Override
         public AdqlColumn.AliasFactory aliases()
             {
             return this.aliases;
             }
-        }
 
-    /**
-     * Reference to our parent {@link AdqlColumn.EntityFactory}.
-     * 
-     */
-    @Transient
-    protected AdqlColumn.EntityFactory factory;
+        @Autowired
+        private AdqlColumn.EntityFactory entities;
+        @Override
+        public AdqlColumn.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
 
     @Override
-    public AdqlColumn.EntityFactory factory()
+    protected AdqlColumn.EntityFactory factory()
         {
-        return this.factory;
+        log.debug("factory()");
+        return AdqlColumnEntity.EntityServices.instance().entities() ; 
         }
 
+    @Override
+    protected AdqlColumn.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlColumnEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return services().aliases().alias(
+            this
+            );
+        }
+    
     protected AdqlColumnEntity()
         {
         super();
         }
 
-    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base)
+    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base)
         {
         this(
-            factory,
             table,
             base,
             null
             );
         }
 
-    protected AdqlColumnEntity(final AdqlColumn.EntityFactory factory, final AdqlTable table, final BaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
         {
         super(
             table,
             ((name != null) ? name : base.name())
             );
-        this.factory = factory ;
         this.base  = base ;
         this.table = table;
         }
@@ -440,22 +519,6 @@ public class AdqlColumnEntity
     public BaseColumn<?> root()
         {
         return base().root();
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().adql().columns().aliases().alias(
-            this
-            );
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().adql().columns().links().link(
-            this
-            );
         }
 
     @Override

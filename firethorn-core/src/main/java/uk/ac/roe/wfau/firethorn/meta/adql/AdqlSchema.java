@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -107,27 +108,22 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          */
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base);
 
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlSchema>
+        {
         /**
-         * Our local {@link AdqlTable.EntityFactory} implementation.
-         * @todo - move to services
+         * Our {@link AdqlTable.EntityFactory} instance.
          *
          */
         public AdqlTable.EntityFactory tables();
-
-        //TODO - move to services
-        @Override
-        public AdqlSchema.IdentFactory idents();
-
-        //TODO - move to services
-        //@Override
-        //public AdqlSchema.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public AdqlSchema.LinkFactory links();
-        
         }
-
+    
     @Override
     public AdqlResource resource();
 

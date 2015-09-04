@@ -87,26 +87,24 @@ extends BaseColumn<AdqlColumn>
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
-
-        
-        //TODO - move to services
-        @Override
-        public AdqlColumn.IdentFactory idents();
-
-        //TODO - move to services
-        //@Override
-        //public AdqlColumn.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public AdqlColumn.AliasFactory aliases();
-        
-        //TODO - move to services
-        @Override
-        public AdqlColumn.LinkFactory links();
         
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlColumn>
+        {
+        /**
+         * {@link AdqlColumn.AliasFactory} instance.
+         *
+         */
+        public AdqlColumn.AliasFactory aliases();
+
+        }
+    
     @Override
     public AdqlTable table();
     @Override

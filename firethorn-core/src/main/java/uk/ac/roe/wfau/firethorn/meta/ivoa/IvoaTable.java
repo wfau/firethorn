@@ -95,31 +95,28 @@ extends BaseTable<IvoaTable, IvoaColumn>
          */
         public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta);
         
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<IvoaTable>
+        {
         /**
-         * Our local {@link IvoaColumn.EntityFactory} implementation.
-         * @todo - move to services
+         * Our {@link IvoaTable.AliasFactory} instance.
+         *
+         */
+        public IvoaTable.AliasFactory aliases();
+
+        /**
+         * Our {@link IvoaColumn.EntityFactory} instance.
          *
          */
         public IvoaColumn.EntityFactory columns();
-
-        //TODO - move to services
-        @Override
-        public IvoaTable.IdentFactory idents();
-
-        //TODO - move to services
-        @Override
-        public IvoaTable.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public IvoaTable.AliasFactory aliases();
-
-        //TODO - move to services
-        @Override
-        public IvoaTable.LinkFactory links();
-        
         }
-
+    
     @Override
     public IvoaResource resource();
 

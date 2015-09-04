@@ -17,28 +17,26 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
-import uk.ac.roe.wfau.firethorn.blue.InvalidStateRequestException;
-import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -117,21 +115,70 @@ implements AdqlResource
             {
             return super.insert(
                 new AdqlResourceEntity(
-                    names().name()
+                    names.name()
                     )
                 );
             }
 
         @Autowired
-        protected AdqlSchema.EntityFactory schemas;
-        @Override
-        public AdqlSchema.EntityFactory schemas()
+        private AdqlResource.NameFactory names;
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements AdqlResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static AdqlResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.schemas;
+            return AdqlResourceEntity.EntityServices.instance ;
             }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlResourceEntity.EntityServices.instance == null)
+                {
+                AdqlResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected AdqlResource.IdentFactory idents;
+        private AdqlResource.IdentFactory idents;
         @Override
         public AdqlResource.IdentFactory idents()
             {
@@ -139,7 +186,7 @@ implements AdqlResource
             }
 
         @Autowired
-        protected AdqlResource.LinkFactory links;
+        private AdqlResource.LinkFactory links;
         @Override
         public AdqlResource.LinkFactory links()
             {
@@ -147,13 +194,60 @@ implements AdqlResource
             }
 
         @Autowired
-        protected AdqlResource.NameFactory names;
+        private AdqlResource.NameFactory names;
+        @Override
         public AdqlResource.NameFactory names()
             {
             return this.names;
             }
+
+        @Autowired
+        private AdqlResource.EntityFactory entities;
+        @Override
+        public AdqlResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        private BlueQuery.EntityFactory blues;
+        @Override
+        public BlueQuery.EntityFactory blues()
+            {
+            return this.blues;
+            }
+
+        @Autowired
+		private AdqlSchema.EntityFactory schemas;
+		@Override
+		public AdqlSchema.EntityFactory schemas()
+			{
+			return this.schemas;
+			}
         }
 
+    @Override
+    protected AdqlResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return AdqlResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected AdqlResource.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     protected AdqlResourceEntity()
         {
         super();
@@ -285,14 +379,6 @@ implements AdqlResource
         }
 
     @Override
-    public String link()
-        {
-        return factories().adql().resources().links().link(
-            this
-            );
-        }
-
-    @Override
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
@@ -327,7 +413,7 @@ implements AdqlResource
             @Override
             public Iterable<BlueQuery> select()
                 {
-                return factories().blues().entities().select(
+                return services().blues().select(
                     AdqlResourceEntity.this
                     );
                 }
@@ -335,7 +421,7 @@ implements AdqlResource
             public BlueQuery create(final String input)
             throws InvalidRequestException, InternalServerErrorException
                 {
-                return factories().blues().entities().create(
+                return services().blues().create(
                     AdqlResourceEntity.this,
                     input,
                     null,
@@ -346,7 +432,7 @@ implements AdqlResource
             public BlueQuery create(String input, TaskState next, Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
-                return factories().blues().entities().create(
+                return services().blues().create(
                     AdqlResourceEntity.this,
                     input,
                     next,

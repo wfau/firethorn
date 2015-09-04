@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -24,9 +25,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -35,13 +33,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
-
-//import uk.ac.roe.wfau.firethorn.annotations.Checkpoint;
 
 /**
  *
@@ -82,60 +79,13 @@ implements TestJob
     protected static final String DB_TEST_LIMIT_COL  = "timelimit";
 
     /**
-     * Local service implementations.
-     *
-     */
-    @Component
-    public static class Services
-    implements TestJob.Services
-        {
-        @Autowired
-        private TestJob.LinkFactory links;
-        @Override
-        public TestJob.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private TestJob.IdentFactory idents;
-        @Override
-        public TestJob.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private TestJob.Factory factory;
-        @Override
-        public TestJob.Factory factory()
-            {
-            return this.factory;
-            }
-
-        @Autowired
-        private Job.Executor executor;
-        @Override
-        public Job.Executor executor()
-            {
-            return this.executor;
-            }
-        }
-
-    @Override
-    public TestJob.Services services()
-        {
-        return factories().tests();
-        }
-
-    /**
      * Factory implementation.
      *
      */
     @Repository
     public static class Factory
     extends AbstractEntityFactory<TestJob>
-    implements TestJob.Factory
+    implements TestJob.EntityFactory
         {
         @Override
         public Class<?> etype()
@@ -167,9 +117,70 @@ implements TestJob
                     )
                 );
             }
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements TestJob.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static TestJobEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return TestJobEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (TestJobEntity.EntityServices.instance == null)
+                {
+                TestJobEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private TestJob.IdentFactory idents;
+        @Override
+        public TestJob.IdentFactory idents()
+            {
+            return this.idents;
+            }
 
         @Autowired
-        protected TestJob.LinkFactory links;
+        private TestJob.LinkFactory links;
         @Override
         public TestJob.LinkFactory links()
             {
@@ -177,12 +188,42 @@ implements TestJob
             }
 
         @Autowired
-        protected TestJob.IdentFactory idents;
+        private TestJob.EntityFactory entities;
         @Override
-        public TestJob.IdentFactory idents()
+        public TestJob.EntityFactory entities()
             {
-            return this.idents;
+            return this.entities;
             }
+
+        @Autowired
+        private Job.Executor executor;
+        @Override
+        public Job.Executor executor()
+            {
+            return this.executor;
+            }
+        }
+
+    @Override
+    protected TestJob.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return TestJobEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected TestJob.EntityServices services()
+        {
+        log.debug("services()");
+        return TestJobEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     /**
@@ -215,7 +256,6 @@ implements TestJob
         )
     private Integer length;
     @Override
-    //@Checkpoint("select")
     public Integer length()
         {
         return this.length;
@@ -245,14 +285,6 @@ implements TestJob
     public void limit(final Integer limit)
         {
         this.limit = limit ;
-        }
-
-    @Override
-    public String link()
-        {
-        return services().links().link(
-            this
-            );
         }
 
     @Override
@@ -347,16 +379,6 @@ implements TestJob
 
         return result;
         }
-
-    @Autowired
-    @Transient
-    private TestJob.Factory factory;
-
-    @Override
-	public TestJob.Factory factory()
-    	{
-		return this.factory;
-		}
 
     @Override
     public Status prepare(boolean run)

@@ -28,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcDriver;
 
 /**
  * Public interface for a local JDBC schema.
@@ -145,8 +144,8 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Our local {@link JdbcSchema.OldBuilder} implementation.
          * @todo Move this to data space interface.
          *
-         */
         public JdbcSchema.OldBuilder oldbuilder();
+         */
         
         /**
          * Select a {@link JdbcSchema} based on catalog and schema name.
@@ -161,20 +160,20 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          */
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema);
 
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<JdbcSchema>
+        {
         /**
-         * Our local {@link JdbcTable.EntityFactory} implementation.
-         * @todo Move to services
+         * Our {@link JdbcTable.EntityFactory} instance.
          *
          */
         public JdbcTable.EntityFactory tables();
-
-        /**
-         * Our local {@link JdbcSchema.NameFactory} implementation.
-         * @todo Move to services
-         *
-         */
-        public JdbcSchema.NameFactory names();
-
         }
 
     /**

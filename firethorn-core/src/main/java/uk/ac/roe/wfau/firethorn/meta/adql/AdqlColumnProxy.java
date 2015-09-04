@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -43,7 +44,8 @@ public class AdqlColumnProxy
 implements AdqlColumn
     {
     /**
-     * TODO Move to proxy base class
+     * TODO Move to proxy base class.
+     * 
      */
     public AdqlColumn self()
         {
@@ -53,13 +55,13 @@ implements AdqlColumn
     /**
      * TODO Move to proxy base class.
      * 
-     */
     @Transient
     protected AdqlColumn.EntityFactory factory;
-    public AdqlColumn.EntityFactory factory()
+    protected AdqlColumn.EntityFactory factory()
         {
         return this.factory;
         }
+     */
 
     /**
      * TODO Move to proxy base class.
@@ -316,9 +318,7 @@ implements AdqlColumn
     @Override
     public EntityProtector protector()
         {
-        // TODO Auto-generated method stub
-        // A combination of protection from base and parent ? 
-        return null ;
+        throw new NotImplementedException(); 
         }
 
 	@Override

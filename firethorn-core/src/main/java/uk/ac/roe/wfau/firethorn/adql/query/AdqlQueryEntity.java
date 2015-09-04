@@ -258,6 +258,120 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
+
+    /**
+     * {@link AdqlQuery.EntityFactory} implementation.
+     *
+     */
+    @Repository
+    public static class EntityFactory
+    extends AbstractEntityFactory<AdqlQuery>
+    implements AdqlQuery.EntityFactory
+        {
+        @Override
+        public Class<?> etype()
+            {
+            return AdqlQueryEntity.class ;
+            }
+
+        @Override
+        @CreateMethod
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        throws QueryProcessingException
+            {
+            return create(
+                schema,
+                params,
+                input,
+                names().name()
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        throws QueryProcessingException
+            {
+            log.debug("AdqlQuery create(AdqlSchema, QueryParam, String, String)");
+            log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
+            log.debug("  Name   [{}]", name);
+            //
+            // Create the query entity.
+            final AdqlQueryEntity entity = new AdqlQueryEntity(
+                params,
+                schema,
+                input,
+                names().name(
+                    name
+                    )
+                );
+            //
+            // Make the query persistent.
+            final AdqlQuery query = this.insert(
+                entity
+                );
+            //
+            // Create the query tables.
+            // TODO make this automatic, triggered by tables().
+            // TODO delete/create the tables when the input changes.
+            entity.build();
+            //
+            // Return the entity.
+            return query;
+            }
+
+        @Autowired
+        public AdqlQuery.NameFactory names;
+        public AdqlQuery.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<AdqlQuery> select()
+            {
+            return super.list(
+                super.query(
+                    "AdqlQuery-select-all"
+                    )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<AdqlQuery> select(final AdqlSchema schema)
+            {
+            return super.list(
+                super.query(
+                    "AdqlQuery-select-schema"
+                    ).setEntity(
+                        "schema",
+                        schema
+                        )
+                );
+            }
+
+        @Override
+        @SelectMethod
+        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "AdqlQuery-search-schema.text"
+                    ).setEntity(
+                        "schema",
+                        schema
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+        }
+
     /**
      * {@link AdqlQuery.EntityServices} implementation.
      * 
@@ -357,6 +471,14 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.params;
             }
+
+        @Autowired
+        private AdqlQuery.Limits.Factory limits ;
+        @Override
+        public AdqlQuery.Limits.Factory limits()
+            {
+            return this.limits;
+            }
         }
 
     @Override
@@ -373,151 +495,14 @@ implements AdqlQuery, AdqlParserQuery
         return AdqlQueryEntity.EntityServices.instance() ; 
         }
 
-    /**
-     * {@link AdqlQuery.EntityFactory} implementation.
-     *
-     */
-    @Repository
-    public static class Factory
-    extends AbstractEntityFactory<AdqlQuery>
-    implements AdqlQuery.EntityFactory
+    @Override
+    public String link()
         {
-        @Override
-        public Class<?> etype()
-            {
-            return AdqlQueryEntity.class ;
-            }
-
-        @Override
-        @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
-        throws QueryProcessingException
-            {
-            return create(
-                schema,
-                params,
-                input,
-                names().name()
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
-        throws QueryProcessingException
-            {
-            log.debug("AdqlQuery create(AdqlSchema, QueryParam, String, String)");
-            log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-            log.debug("  Name   [{}]", name);
-            //
-            // Create the query entity.
-            final AdqlQueryEntity entity = new AdqlQueryEntity(
-                params,
-                schema,
-                input,
-                names().name(
-                    name
-                    )
-                );
-            //
-            // Make the query persistent.
-            final AdqlQuery query = this.insert(
-                entity
-                );
-            //
-            // Create the query tables.
-            // TODO make this automatic, triggered by tables().
-            // TODO delete/create the tables when the input changes.
-            entity.build();
-            //
-            // Return the entity.
-            return query;
-            }
-
-        @Autowired
-        public AdqlQuery.NameFactory names;
-        public AdqlQuery.NameFactory names()
-            {
-            return this.names;
-            }
-
-        @Autowired
-        private AdqlQuery.LinkFactory links;
-        @Override
-        public AdqlQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private AdqlQuery.IdentFactory idents;
-        @Override
-        public AdqlQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private AdqlQuery.ParamFactory params;
-        @Override
-        public AdqlQuery.ParamFactory params()
-            {
-            return this.params;
-            }
-
-        @Autowired
-        private AdqlQuery.Limits.Factory limits ;
-        @Override
-        public AdqlQuery.Limits.Factory limits()
-            {
-            return this.limits;
-            }
-
-        @Override
-        @SelectMethod
-        public Iterable<AdqlQuery> select()
-            {
-            return super.list(
-                super.query(
-                    "AdqlQuery-select-all"
-                    )
-                );
-            }
-
-        @Override
-        @SelectMethod
-        public Iterable<AdqlQuery> select(final AdqlSchema schema)
-            {
-            return super.list(
-                super.query(
-                    "AdqlQuery-select-schema"
-                    ).setEntity(
-                        "schema",
-                        schema
-                        )
-                );
-            }
-
-        @Override
-        @SelectMethod
-        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "AdqlQuery-search-schema.text"
-                    ).setEntity(
-                        "schema",
-                        schema
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
-                );
-            }
+        return services().links().link(
+            this
+            );
         }
-
+    
     /**
      * Protected constructor, used by Hibernate.
      *
@@ -545,14 +530,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.input(
             input
-            );
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().adql().queries().links().link(
-            this
             );
         }
 
@@ -1327,7 +1304,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public LimitsClient.Param limits()
                                 {
-                                return factories().adql().queries().limits().runtime(
+                                return services().limits().runtime(
                                     query.limits()
                                     );
                                 }

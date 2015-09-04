@@ -27,16 +27,7 @@ public interface Operation
 extends Entity
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<Operation>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -45,7 +36,16 @@ extends Entity
         }
 
     /**
-     * Factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Operation>
+        {
+        }
+
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public interface EntityFactory
@@ -65,6 +65,15 @@ extends Entity
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<Operation>
+        {
+        }
+    
     /**
      * The target URL for the operation.
      *

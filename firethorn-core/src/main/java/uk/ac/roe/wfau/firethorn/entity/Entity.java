@@ -184,18 +184,6 @@ public interface Entity
          */
         public EntityType search(final Identifier ident);
 
-        /**
-         * Our local Identifier factory.
-         *
-         */
-        public Entity.IdentFactory<EntityType> idents();
-
-        /**
-         * Our local link factory.
-         *
-         */
-        public LinkFactory<EntityType> links();
-
         }
 
     /**

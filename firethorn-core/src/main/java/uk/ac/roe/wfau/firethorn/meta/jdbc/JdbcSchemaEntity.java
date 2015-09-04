@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -266,7 +267,7 @@ public class JdbcSchemaEntity
             log.debug("JdbcSchema build(JdbcResource ,Identity)");
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
            
-            return oldbuilder().create(
+            return oldbuilder.create(
                 this.create(
                     parent,
                     parent.catalog(),
@@ -481,23 +482,75 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcTable.EntityFactory tables;
-        @Override
-        public JdbcTable.EntityFactory tables()
-            {
-            return this.tables;
-            }
+        private JdbcSchema.NameFactory names;
 
         @Autowired
-        protected JdbcSchema.IdentFactory idents ;
+        private JdbcSchema.OldBuilder oldbuilder;
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements JdbcSchema.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static JdbcSchemaEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return JdbcSchemaEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcSchemaEntity.EntityServices.instance == null)
+                {
+                JdbcSchemaEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private JdbcSchema.IdentFactory idents;
         @Override
         public JdbcSchema.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
             }
 
         @Autowired
-        protected JdbcSchema.LinkFactory links;
+        private JdbcSchema.LinkFactory links;
         @Override
         public JdbcSchema.LinkFactory links()
             {
@@ -505,7 +558,7 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcSchema.NameFactory names;
+        private JdbcSchema.NameFactory names;
         @Override
         public JdbcSchema.NameFactory names()
             {
@@ -513,14 +566,44 @@ public class JdbcSchemaEntity
             }
 
         @Autowired
-        protected JdbcSchema.OldBuilder builder;
+        private JdbcSchema.EntityFactory entities;
         @Override
-        public JdbcSchema.OldBuilder oldbuilder()
+        public JdbcSchema.EntityFactory entities()
             {
-            return this.builder;
+            return this.entities;
             }
+
+        @Autowired
+		private JdbcTable.EntityFactory tables;
+		@Override
+		public JdbcTable.EntityFactory tables()
+			{
+			return this.tables;
+			}
         }
 
+    @Override
+    protected JdbcSchema.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return JdbcSchemaEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected JdbcSchema.EntityServices services()
+        {
+        log.debug("services()");
+        return JdbcSchemaEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Protected constructor.
      *
@@ -729,14 +812,6 @@ public class JdbcSchemaEntity
                     };
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().schemas().links().link(
-            this
-            );
         }
 
     @Override

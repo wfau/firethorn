@@ -37,8 +37,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
@@ -46,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -60,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -150,102 +148,6 @@ implements JdbcTable
      *
      */
     protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
-
-    /**
-     * {@link JdbcTable.Services} implementation.
-     * 
-     */
-    @Slf4j
-    @Component
-    public static class Services
-    implements JdbcTable.Services
-        {
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static Services instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Services instance()
-            {
-            log.debug("instance()");
-            return JdbcTableEntity.Services.instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected Services()
-            {
-            log.debug("Services()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (JdbcTableEntity.Services.instance == null)
-                {
-                JdbcTableEntity.Services.instance = this ;
-                }
-            else {
-                log.error("Setting Factories.instance more than once");
-                throw new IllegalStateException(
-                    "Setting Factories.instance more than once"
-                    );
-                }
-            }
-        
-        @Autowired
-        private JdbcTable.IdentFactory idents;
-        @Override
-        public JdbcTable.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private JdbcTable.NameFactory names;
-        @Override
-        public JdbcTable.NameFactory names()
-            {
-            return this.names;
-            }
-
-        @Autowired
-        private JdbcTable.AliasFactory aliases;
-        @Override
-        public JdbcTable.AliasFactory aliases()
-            {
-            return this.aliases;
-            }
-
-        @Autowired
-        private JdbcTable.LinkFactory links;
-        @Override
-        public JdbcTable.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private JdbcTable.EntityFactory entities;
-        @Override
-        public JdbcTable.EntityFactory entities()
-            {
-            return this.entities;
-            }
-        }
     
     /**
      * {@link JdbcTable.Builder} implementation.
@@ -381,7 +283,7 @@ implements JdbcTable
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema)
             {
-            return null ;
+            throw new NotImplementedException();
             }
         
         @Override
@@ -463,7 +365,7 @@ implements JdbcTable
                     );
                 }
 
-            return builder().create(
+            return builder.create(
                 table
                 );
             }
@@ -527,66 +429,6 @@ implements JdbcTable
                 );
             }
 
-        @Autowired
-        protected JdbcColumn.EntityFactory columns;
-        @Override
-        public JdbcColumn.EntityFactory columns()
-            {
-            return this.columns;
-            }
-
-        @Autowired
-        protected JdbcTable.IdentFactory idents ;
-        @Override
-        public JdbcTable.IdentFactory idents()
-            {
-            return this.idents ;
-            }
-
-        @Autowired
-        protected JdbcTable.NameFactory names;
-        @Override
-        public JdbcTable.NameFactory names()
-            {
-            return this.names;
-            }
-        
-        @Autowired
-        protected JdbcTable.AliasFactory aliases;
-        @Override
-        public JdbcTable.AliasFactory aliases()
-            {
-            return this.aliases;
-            }
-
-        @Autowired
-        protected JdbcTable.LinkFactory links;
-        @Override
-        public JdbcTable.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        protected JdbcTable.OldBuilder builder;
-        public JdbcTable.OldBuilder builder()
-            {
-            return this.builder;
-            }
-
-        /**
-         * The physical JDBC factory implementation.
-         * @todo This should depend on the local database dialect.
-         *
-         */
-        @Autowired
-        private JdbcTable.JdbcDriver jdbc;
-        @Override
-        public JdbcTable.JdbcDriver driver()
-            {
-            return this.jdbc;
-            }
-
         @Override
         @SelectMethod
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
@@ -607,94 +449,163 @@ implements JdbcTable
             }
 
         /**
-         * Reference to our {@link JdbcTable.EntityFactory}.
-         * BUG - Making this Autowired fails to initialise.
+         * Our {@link JdbcTable.OldBuilder} instance.
          * 
-        private static EntityFactory instance;
          */
+        @Autowired
+        protected JdbcTable.OldBuilder builder;
+        
+        /**
+         * Our {@link JdbcTable.NameFactory} instance.
+         * 
+         */
+        @Autowired
+        protected JdbcTable.NameFactory names;
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements JdbcTable.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static JdbcTableEntity.EntityServices instance ; 
 
         /**
-         * Reference to our {@link JdbcTable.EntityFactory}.
+         * Our singleton instance.
          * 
-        protected static EntityFactory instance()
-            {
-            return EntityFactory.instance;
-            }
          */
+        public static EntityServices instance()
+            {
+            return JdbcTableEntity.EntityServices.instance ;
+            }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
         /**
          * Protected initialiser.
-         * BUG - The instance doesn't have the Transaction wrappers. 
          * 
+         */
         @PostConstruct
         protected void init()
             {
             log.debug("init()");
-            if (EntityFactory.instance == null)
+            if (JdbcTableEntity.EntityServices.instance == null)
                 {
-                EntityFactory.instance = this ;
+                JdbcTableEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
                 throw new IllegalStateException(
-                    "Setting JdbcTable.EntityFactory entity more than once"
+                    "Setting instance more than once"
                     );
                 }
+            }
+        
+        @Autowired
+        private JdbcTable.IdentFactory idents;
+        @Override
+        public JdbcTable.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private JdbcTable.LinkFactory links;
+        @Override
+        public JdbcTable.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private JdbcTable.NameFactory names;
+        @Override
+        public JdbcTable.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private JdbcTable.EntityFactory entities;
+        @Override
+        public JdbcTable.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+		private JdbcTable.AliasFactory aliases;
+		@Override
+		public JdbcTable.AliasFactory aliases()
+			{
+			return this.aliases;
+			}
+
+        @Autowired
+        protected JdbcColumn.EntityFactory columns;
+        @Override
+        public JdbcColumn.EntityFactory columns()
+            {
+            return this.columns;
+            }
+
+        /**
+         * The physical JDBC factory implementation.
+         * @todo This should depend on the local database dialect.
+         *
+        @Autowired
+        private JdbcTable.JdbcDriver jdbc;
+        @Override
+        public JdbcTable.JdbcDriver driver()
+            {
+            return this.jdbc;
             }
          */
         }
 
-    /**
-     * Autowired reference to our {@link JdbcTable.EntityFactory}.
-     * Needs SpringAutowireHelper to initialise it.
-     * 
-    @Autowired
-    @Transient
-    protected JdbcTable.EntityFactory factory;
-     */
-
-    /**
-     * Autowired reference to our {@link JdbcTable.EntityFactory}.
-     * Uses SpringAutowireHelper to initialise our factory reference.
-     * 
-    @Override
-    public JdbcTable.EntityFactory factory()
-        {
-        log.debug("factory()");
-        log.debug("  factory [{}]", factory);
-        if (this.factory == null)
-            {
-            SpringAutowireHelper.autowire(
-                this,
-                this.factory
-                );
-            }
-        log.debug("  factory [{}]", factory);
-        return factory;
-        }
-     */
-
-    /**
-     * Our {@link JdbcTableEntity.Services} instance.
-     * TODO Need to do this for the rest of the metadata tree.
-     * 
-     */
-    protected static JdbcTable.Services services()
-        {
-        log.debug("services()");
-        return JdbcTableEntity.Services.instance;
-        }
-    
-    /**
-     * Our {@link JdbcTableEntity.EntityFactory} instance.
-     * TODO Need to do this for the rest of the metadata tree.
-     * 
-     */
     @Override
     protected JdbcTable.EntityFactory factory()
         {
         log.debug("factory()");
-        return services().entities(); 
+        return JdbcTableEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected JdbcTable.EntityServices services()
+        {
+        log.debug("services()");
+        return JdbcTableEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return services().aliases().alias(
+            this
+            );
         }
     
     /**
@@ -1203,7 +1114,7 @@ implements JdbcTable
     
     protected void jdbcdelete()
         {
-        factories().jdbc().tables().driver().delete(
+        this.resource().driver().delete(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;
@@ -1213,28 +1124,12 @@ implements JdbcTable
 
     protected void jdbcdrop()
         {
-        factories().jdbc().tables().driver().drop(
+        this.resource().driver().drop(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;
         this.adqlstatus = AdqlTable.TableStatus.DELETED;
         this.jdbcstatus = JdbcTable.TableStatus.DROPPED;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().tables().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().jdbc().tables().aliases().alias(
-            this
-            );
         }
 
     @Override

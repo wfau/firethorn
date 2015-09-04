@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -107,22 +109,6 @@ implements Operation
                 );
             }
 
-        @Autowired
-        protected Operation.LinkFactory links;
-        @Override
-        public Operation.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        protected Operation.IdentFactory idents;
-        @Override
-        public Operation.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
         /*
          * ThreadLocal Operation.
          *
@@ -145,6 +131,105 @@ implements Operation
             }
         }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Operation.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OperationEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OperationEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OperationEntity.EntityServices.instance == null)
+                {
+                OperationEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private Operation.IdentFactory idents;
+        @Override
+        public Operation.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private Operation.LinkFactory links;
+        @Override
+        public Operation.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private Operation.EntityFactory entities;
+        @Override
+        public Operation.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected Operation.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OperationEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Operation.EntityServices services()
+        {
+        log.debug("services()");
+        return OperationEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Protected constructor.
      *
@@ -307,12 +392,5 @@ implements Operation
                     );
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

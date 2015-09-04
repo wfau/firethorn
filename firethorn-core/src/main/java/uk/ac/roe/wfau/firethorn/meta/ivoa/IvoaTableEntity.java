@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -303,17 +304,62 @@ public class IvoaTableEntity
                     )
                 );
             }
+        }
 
-        @Autowired
-        protected IvoaColumn.EntityFactory columns;
-        @Override
-        public IvoaColumn.EntityFactory columns()
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements IvoaTable.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static IvoaTableEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.columns;
+            return IvoaTableEntity.EntityServices.instance ;
             }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (IvoaTableEntity.EntityServices.instance == null)
+                {
+                IvoaTableEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected IvoaTable.IdentFactory idents;
+        private IvoaTable.IdentFactory idents;
         @Override
         public IvoaTable.IdentFactory idents()
             {
@@ -321,7 +367,15 @@ public class IvoaTableEntity
             }
 
         @Autowired
-        protected IvoaTable.NameFactory names;
+        private IvoaTable.LinkFactory links;
+        @Override
+        public IvoaTable.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private IvoaTable.NameFactory names;
         @Override
         public IvoaTable.NameFactory names()
             {
@@ -329,20 +383,58 @@ public class IvoaTableEntity
             }
 
         @Autowired
-        protected IvoaTable.AliasFactory aliases;
+        private IvoaTable.EntityFactory entities;
         @Override
-        public IvoaTable.AliasFactory aliases()
+        public IvoaTable.EntityFactory entities()
             {
-            return this.aliases;
+            return this.entities;
             }
 
         @Autowired
-        protected IvoaTable.LinkFactory links;
-        @Override
-        public IvoaTable.LinkFactory links()
-            {
-            return this.links;
-            }
+		private IvoaTable.AliasFactory aliases;
+		@Override
+		public IvoaTable.AliasFactory aliases()
+			{
+			return this.aliases;
+			}
+
+        @Autowired
+		private IvoaColumn.EntityFactory columns;
+		@Override
+		public IvoaColumn.EntityFactory columns()
+			{
+			return this.columns;
+			}
+        }
+
+    @Override
+    protected IvoaTable.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return IvoaTableEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected IvoaTable.EntityServices services()
+        {
+        log.debug("services()");
+        return IvoaTableEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return services().aliases().alias(
+            this
+            );
         }
 
     /**
@@ -463,22 +555,6 @@ public class IvoaTableEntity
                     };
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ivoa().tables().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().ivoa().tables().aliases().alias(
-            this
-            );
         }
 
     @Override

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
@@ -94,15 +95,22 @@ extends TreeComponent
          */
         public ColumnType search(final TableType parent, final String name);
 
-        /**
-         * Our local {@link BaseColumn.AliasFactory} implementation.
-         * @todo Move to services.
-         *
-         */
-        public AliasFactory<ColumnType> aliases();
-
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices<ColumnType extends BaseColumn<ColumnType>>
+    extends NamedEntity.EntityServices<ColumnType>
+        {
+        /**
+         * {@link BaseColumn.AliasFactory} instance.
+         *
+         */
+        public BaseColumn.AliasFactory<ColumnType> aliases();
+        }
+    
     /**
      * The {@link BaseColumn} this column is derived from.
      *

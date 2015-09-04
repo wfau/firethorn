@@ -23,7 +23,6 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  * Public interface for an external IVOA column.
@@ -103,22 +102,20 @@ extends BaseColumn<IvoaColumn>
          */
         public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta);
 
-        //TODO - move to services
-        @Override
-        public IvoaColumn.IdentFactory idents();
+        }
 
-        //TODO - move to services
-        //@Override
-        //public IvoaColumn.NameFactory names();
-
-        //TODO - move to services
-        @Override
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<IvoaColumn>
+        {
+        /**
+         * Our {@link IvoaColumn.AliasFactory} instance.
+         *
+         */
         public IvoaColumn.AliasFactory aliases();
-        
-        //TODO - move to services
-        @Override
-        public IvoaColumn.LinkFactory links();
-
         }
 
     @Override
