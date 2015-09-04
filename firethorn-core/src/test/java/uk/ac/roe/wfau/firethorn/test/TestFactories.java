@@ -515,7 +515,8 @@ public class TestFactories
             implements JdbcSchema.IdentFactory
                 {
                 }
-
+/*
+ * 
             @Component
             public static class NameFactory
             extends MockNameFactory<JdbcSchema>
@@ -527,6 +528,8 @@ public class TestFactories
 					return catalog + "." + schema ;
 					}
                 }
+ * 
+ */
 
             @Component
             public static class LinkFactory
