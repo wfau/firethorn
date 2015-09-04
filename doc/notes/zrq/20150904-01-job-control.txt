@@ -23,44 +23,93 @@
     org.springframework.beans.factory.BeanCreationException:
         Error creating bean with name 'FireThornHibernateInterceptor':
             Injection of autowired dependencies failed;
-        nested exception is
 
+    nested exception is
     org.springframework.beans.factory.BeanCreationException:
         Could not autowire field:
             private
             uk.ac.roe.wfau.firethorn.spring.ComponentFactories
             uk.ac.roe.wfau.firethorn.hibernate.HibernateInterceptor.factories;
-        nested exception is
 
+    nested exception is
     org.springframework.beans.factory.BeanCreationException:
         Error creating bean with name 'monday':
             Injection of autowired dependencies failed;
-        nested exception is
 
+    nested exception is
     org.springframework.beans.factory.BeanCreationException:
         Could not autowire field:
             protected
             uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories
             uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl.ogsa;
-        nested exception is
 
+    nested exception is
     org.springframework.beans.factory.BeanCreationException:
         Error creating bean with name 'ogsaFactoriesImpl':
             Injection of autowired dependencies failed;
-                nested exception is
 
+    nested exception is
     org.springframework.beans.factory.BeanCreationException:
         Could not autowire field:
             private
             uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaExecResource$EntityFactory
             uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactoriesImpl.exec;
-        nested exception is
 
+    nested exception is
     org.springframework.beans.factory.NoSuchBeanDefinitionException:
         No qualifying bean of type
             [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaExecResource$EntityFactory]
         found for dependency:
         expected at least 1 bean which qualifies as autowire candidate for this dependency.
+        Dependency annotations:
+            {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+
+#----------------------------------------------------------------
+
+    org.springframework.beans.factory.BeanCreationException:
+        Error creating bean with name 'FireThornHibernateInterceptor':
+            Injection of autowired dependencies failed;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Could not autowire field:
+            private
+            uk.ac.roe.wfau.firethorn.spring.ComponentFactories
+            uk.ac.roe.wfau.firethorn.hibernate.HibernateInterceptor.factories;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Error creating bean with name 'monday':
+            Injection of autowired dependencies failed;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Could not autowire field:
+            private
+            uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories
+            uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl.adql;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Error creating bean with name 'adqlFactoriesImpl':
+            Injection of autowired dependencies failed;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Could not autowire field:
+            private
+            uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema$EntityServices
+            uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactoriesImpl.schemas;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Error creating bean with name 'adqlSchemaEntity.EntityServices':
+            Injection of autowired dependencies failed;
+    nested exception is
+    org.springframework.beans.factory.BeanCreationException:
+        Could not autowire field:
+            private
+            uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema$NameFactory
+            uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity$EntityServices.names;
+    nested exception is
+    org.springframework.beans.factory.NoSuchBeanDefinitionException:
+        No qualifying bean of type
+            [uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema$NameFactory]
+        found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency.
         Dependency annotations:
             {@org.springframework.beans.factory.annotation.Autowired(required=true)}
 

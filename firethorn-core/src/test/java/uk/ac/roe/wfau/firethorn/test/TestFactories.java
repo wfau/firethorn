@@ -28,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -322,6 +321,13 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<AdqlColumn>
+            implements AdqlColumn.NameFactory
+                {
+                }
+
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlColumn>
             implements AdqlColumn.LinkFactory
@@ -342,6 +348,13 @@ public class TestFactories
             public static class IdentFactory
             extends AbstractIdentFactory<AdqlTable>
             implements AdqlTable.IdentFactory
+                {
+                }
+
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<AdqlTable>
+            implements AdqlTable.NameFactory
                 {
                 }
 
@@ -369,6 +382,13 @@ public class TestFactories
                 {
                 }
 
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<AdqlSchema>
+            implements AdqlSchema.NameFactory
+                {
+                }
+            
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlSchema>
@@ -430,6 +450,13 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<JdbcColumn>
+            implements JdbcColumn.NameFactory
+                {
+                }
+            
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<JdbcColumn>
             implements JdbcColumn.LinkFactory
@@ -450,6 +477,13 @@ public class TestFactories
             public static class IdentFactory
             extends AbstractIdentFactory<JdbcTable>
             implements JdbcTable.IdentFactory
+                {
+                }
+
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<JdbcTable>
+            implements JdbcTable.NameFactory
                 {
                 }
 
@@ -478,6 +512,18 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<JdbcSchema>
+            implements JdbcSchema.NameFactory
+                {
+				@Override
+				public String fullname(String catalog, String schema)
+					{
+					return catalog + "." + schema ;
+					}
+                }
+
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<JdbcSchema>
             implements JdbcSchema.LinkFactory
@@ -498,6 +544,13 @@ public class TestFactories
             public static class IdentFactory
             extends AbstractIdentFactory<JdbcResource>
             implements JdbcResource.IdentFactory
+                {
+                }
+
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<JdbcResource>
+            implements JdbcResource.NameFactory
                 {
                 }
 
@@ -531,6 +584,13 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<IvoaColumn>
+            implements IvoaColumn.NameFactory
+                {
+                }
+
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<IvoaColumn>
             implements IvoaColumn.LinkFactory
@@ -551,6 +611,13 @@ public class TestFactories
             public static class IdentFactory
             extends AbstractIdentFactory<IvoaTable>
             implements IvoaTable.IdentFactory
+                {
+                }
+
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<IvoaTable>
+            implements IvoaTable.NameFactory
                 {
                 }
 
@@ -579,6 +646,13 @@ public class TestFactories
                 }
 
             @Component
+            public static class NameFactory
+            extends MockNameFactory<IvoaSchema>
+            implements IvoaSchema.NameFactory
+                {
+                }
+
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<IvoaSchema>
             implements IvoaSchema.LinkFactory
@@ -599,6 +673,13 @@ public class TestFactories
             public static class IdentFactory
             extends AbstractIdentFactory<IvoaResource>
             implements IvoaResource.IdentFactory
+                {
+                }
+
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<IvoaResource>
+            implements IvoaResource.NameFactory
                 {
                 }
 
