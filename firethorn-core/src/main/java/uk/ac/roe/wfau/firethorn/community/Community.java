@@ -112,7 +112,7 @@ extends NamedEntity
         }
 
     /**
-     * EntityServices interface.
+     * Public interface for the {@link Community} {@link Entity.EntityServices}.
      * 
      */
     public static interface EntityServices

@@ -16,6 +16,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.community.Community;
@@ -39,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -153,8 +156,75 @@ implements Identity
                 );
             }
 
+        @Override
+        @Deprecated
+        public Identity.IdentFactory idents()
+            {
+            throw new NotImplementedException();
+            }
+
+        @Override
+        @Deprecated
+        public Identity.LinkFactory links()
+            {
+            throw new NotImplementedException();
+            }
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Identity.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static IdentityEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return IdentityEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (IdentityEntity.EntityServices.instance == null)
+                {
+                IdentityEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected Identity.IdentFactory idents;
+        private Identity.IdentFactory idents;
         @Override
         public Identity.IdentFactory idents()
             {
@@ -162,14 +232,44 @@ implements Identity
             }
 
         @Autowired
-        protected Identity.LinkFactory links;
+        private Identity.LinkFactory links;
         @Override
         public Identity.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private Identity.NameFactory names;
+        @Override
+        public Identity.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private Identity.EntityFactory entities;
+        @Override
+        public Identity.EntityFactory entities()
+            {
+            return this.entities;
+            }
         }
 
+    @Override
+    protected Identity.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return IdentityEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Identity.EntityServices services()
+        {
+        log.debug("services()");
+        return IdentityEntity.EntityServices.instance() ; 
+        }
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -190,6 +290,14 @@ implements Identity
         this.community = community;
         }
 
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Return this Identity as the owner.
      *
@@ -222,14 +330,6 @@ implements Identity
     public Community community()
         {
         return this.community ;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().communities().identities().links().link(
-            this
-            );
         }
 
     @ManyToOne(

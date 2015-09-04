@@ -67,6 +67,15 @@ extends Entity
         }
 
     /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<Authentication>
+        {
+        }
+
+    /**
      * The URN for the authentication method.
      *
      */

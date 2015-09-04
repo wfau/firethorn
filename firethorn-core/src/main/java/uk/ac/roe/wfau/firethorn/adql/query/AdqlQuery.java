@@ -306,7 +306,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Name factory interface.
+     * {@link NamedEntity.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -315,7 +315,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -324,7 +324,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -333,7 +333,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Entity factory interface.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -383,7 +383,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * EntityServices interface.
+     * {@link Entity.EntityServices} interface.
      * 
      */
     public static interface EntityServices

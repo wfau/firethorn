@@ -31,16 +31,7 @@ public interface Identity
 extends Entity, NamedEntity
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<Identity>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -49,7 +40,25 @@ extends Entity, NamedEntity
         }
 
     /**
-     * Factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Identity>
+        {
+        }
+
+    /**
+     * {@link Entity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<Identity>
+        {
+        }
+
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -57,13 +66,13 @@ extends Entity, NamedEntity
         {
 
         /**
-         * Create a new Identity.
+         * Create a new {@link Identity}.
          *
          */
         public Identity create(final Community community, final String name);
 
         /**
-         * Select a Identity.
+         * Select a {@link Identity}.
          *
          */
         public Identity select(final Community community, final String name);
@@ -71,22 +80,19 @@ extends Entity, NamedEntity
         }
 
     /**
-     * The parent Community.
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<Identity>
+        {
+        }
+
+    /**
+     * The parent {@link Community}.
      *
      */
     public Community community();
-
-    /**
-     *  The JDBC storage space for this Identity.
-     *
-    public JdbcSchema jdbcschema();
-     */
-
-    /**
-     *  The ADQL storage space for this Identity.
-     *
-    public AdqlSchema adqlschema();
-     */
 
     /**
      * The ADQL spaces for this {@link Identity}.
@@ -102,7 +108,6 @@ extends Entity, NamedEntity
 
         /**
          * The current {@link AdqlSchema} space for this {@link Identity}.
-         * The results returned may depend on the current user interface session. 
          * 
          */
         public AdqlSchema current();
@@ -123,7 +128,6 @@ extends Entity, NamedEntity
 
         /**
          * The current {@link JdbcSchema} space for this {@link Identity}.
-         * The results returned may depend on the current user interface session. 
          * 
          */
         public JdbcSchema current();

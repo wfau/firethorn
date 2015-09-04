@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,11 +33,13 @@ import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
 /**
  *
@@ -104,25 +107,123 @@ implements Authentication
             }
 
         @Override
+        @Deprecated
         public Authentication.LinkFactory links()
             {
-            // TODO Auto-generated method stub
-            return null;
+            throw new NotImplementedException();
             }
 
         @Override
+        @Deprecated
         public Authentication.IdentFactory idents()
             {
-            // TODO Auto-generated method stub
-            return null;
+            throw new NotImplementedException();
             }
 
         @Override
         public Authentication current()
             {
-            // TODO Auto-generated method stub
-            return null;
+            throw new NotImplementedException();
             }
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Authentication.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static AuthenticationEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return AuthenticationEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AuthenticationEntity.EntityServices.instance == null)
+                {
+                AuthenticationEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private Authentication.IdentFactory idents;
+        @Override
+        public Authentication.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private Authentication.LinkFactory links;
+        @Override
+        public Authentication.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private Authentication.EntityFactory entities;
+        @Override
+        public Authentication.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected Authentication.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return AuthenticationEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Authentication.EntityServices services()
+        {
+        log.debug("services()");
+        return AuthenticationEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     /**
@@ -203,12 +304,4 @@ implements Authentication
         {
         return this.operation;
         }
-
-    @Override
-    public String link()
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
     }
