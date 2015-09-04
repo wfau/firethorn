@@ -785,6 +785,12 @@ public class TestFactories
                     {
                     }
                 @Component
+                public static class NameFactory
+                extends MockNameFactory<OgsaJdbcResource>
+                implements OgsaJdbcResource.NameFactory
+                    {
+                    }
+                @Component
                 public static class LinkFactory
                 extends MockLinkFactory<OgsaJdbcResource>
                 implements OgsaJdbcResource.LinkFactory
