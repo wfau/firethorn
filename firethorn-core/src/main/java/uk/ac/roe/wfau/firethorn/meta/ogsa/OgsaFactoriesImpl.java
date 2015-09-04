@@ -45,42 +45,34 @@ implements OgsaFactories
         }
 
     @Autowired
-    private OgsaService.EntityFactory services;
+    private OgsaService.EntityServices services;
     @Override
-    public OgsaService.EntityFactory services()
+    public OgsaService.EntityServices services()
         {
         return services;
         }
 
     @Autowired
-    private OgsaJdbcResource.EntityFactory jdbc;
-
-    @Autowired
-    private OgsaIvoaResource.EntityFactory ivoa;
-
-    @Autowired
-    private OgsaExecResource.EntityFactory exec;
-
+    private OgsaJdbcResource.EntityServices jdbc;
     @Override
-    public Factories factories()
+    public OgsaJdbcResource.EntityServices jdbc()
         {
-        return new Factories()
-            {
-            @Override
-            public OgsaJdbcResource.EntityFactory jdbc()
-                {
-                return jdbc;
-                }
-            @Override
-            public OgsaIvoaResource.EntityFactory ivoa()
-                {
-                return ivoa;
-                }
-            @Override
-            public OgsaExecResource.EntityFactory exec()
-                {
-                return exec;
-                }
-            };
+        return jdbc;
+        }
+
+    @Autowired
+    private OgsaIvoaResource.EntityServices ivoa;
+    @Override
+    public OgsaIvoaResource.EntityServices ivoa()
+        {
+        return ivoa;
+        }
+
+    @Autowired
+    private OgsaExecResource.EntityServices exec;
+    @Override
+    public OgsaExecResource.EntityServices exec()
+        {
+        return exec;
         }
     }

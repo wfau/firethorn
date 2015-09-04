@@ -133,7 +133,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final ModelAndView model
         ){
         return bean(
-            factories().jdbc().resources().select()
+            factories().jdbc().resources().entities().select()
             );
         }
 
@@ -158,7 +158,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final String catalog
         ){
         return created(
-            factories().jdbc().resources().create(
+            factories().jdbc().resources().entities().create(
                 catalog,
                 name,
                 url,

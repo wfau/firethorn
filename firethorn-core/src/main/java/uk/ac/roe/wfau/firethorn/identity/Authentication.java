@@ -73,6 +73,11 @@ extends Entity
     public static interface EntityServices
     extends Entity.EntityServices<Authentication>
         {
+        /**
+         * Our {@link Authentication.EntityFactory} instance.
+         *
+         */
+        public Authentication.EntityFactory entities();
         }
 
     /**

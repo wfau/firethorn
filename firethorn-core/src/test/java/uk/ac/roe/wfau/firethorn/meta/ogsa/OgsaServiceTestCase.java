@@ -40,7 +40,7 @@ extends TestBase
     public void testCreate001()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             "http",
             "localhost",
             8080,
@@ -69,7 +69,7 @@ extends TestBase
     public void testCreate002()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             EXAMPLE_ENDPOINT
             );
         assertNotNull(
@@ -95,7 +95,7 @@ extends TestBase
     public void testCreate003()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             "test.service",
             "http",
             "localhost",
@@ -125,7 +125,7 @@ extends TestBase
     public void testCreate004()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             "test.service",
             EXAMPLE_ENDPOINT
             );
@@ -152,13 +152,13 @@ extends TestBase
     public void testCreateSelect001()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             "http",
             "localhost",
             8080,
             "example"
             );
-        final OgsaService selected = factories().ogsa().services().select(
+        final OgsaService selected = factories().ogsa().services().entities().select(
             created.ident()
             );
         assertEquals(
@@ -187,10 +187,10 @@ extends TestBase
     public void testCreateSelect002()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().create(
+        final OgsaService created = factories().ogsa().services().entities().create(
             EXAMPLE_ENDPOINT
             );
-        final OgsaService selected = factories().ogsa().services().select(
+        final OgsaService selected = factories().ogsa().services().entities().select(
             created.ident()
             );
         assertEquals(
@@ -219,7 +219,7 @@ extends TestBase
     public void testPrimary001()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().primary();
+        final OgsaService created = factories().ogsa().services().entities().primary();
         assertNotNull(
             created
             );
@@ -247,7 +247,7 @@ extends TestBase
     public void testPrimary002()
     throws Exception
         {
-        final OgsaService created = factories().ogsa().services().primary();
+        final OgsaService created = factories().ogsa().services().entities().primary();
         assertNotNull(
             created
             );

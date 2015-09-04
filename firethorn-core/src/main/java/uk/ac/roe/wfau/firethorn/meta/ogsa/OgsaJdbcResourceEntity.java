@@ -191,7 +191,7 @@ implements OgsaJdbcResource
             {
             log.debug("create(JdbcResource) [{}]", resource.ident());
             return create(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }
@@ -215,7 +215,7 @@ implements OgsaJdbcResource
             {
             log.debug("primary(JdbcResource) [{}]", resource.ident());
             return primary(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }

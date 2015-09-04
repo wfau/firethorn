@@ -96,7 +96,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     public Iterable<AdqlResourceBean> select(
         ){
         return bean(
-            factories().adql().resources().select()
+            factories().adql().resources().entities().select()
             );
         }
 
@@ -113,7 +113,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         {
         log.debug("create()");
         return created(
-            factories().adql().resources().create()
+            factories().adql().resources().entities().create()
             );
         }
 
@@ -133,7 +133,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         ){
         log.debug("create(String)");
         return created(
-            factories().adql().resources().create(
+            factories().adql().resources().entities().create(
                 name
                 )
             );

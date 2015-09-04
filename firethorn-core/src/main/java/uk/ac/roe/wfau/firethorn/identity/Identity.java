@@ -86,6 +86,11 @@ extends Entity, NamedEntity
     public static interface EntityServices
     extends NamedEntity.EntityServices<Identity>
         {
+        /**
+         * Our {@link Identity.EntityFactory} instance.
+         *
+         */
+        public Identity.EntityFactory entities();
         }
 
     /**

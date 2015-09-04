@@ -47,7 +47,7 @@ extends AtlasQueryTestBase
             "atlas.jdbc.resource"
             );         
 
-        final AdqlResource adqlspace = factories().adql().resources().create(
+        final AdqlResource adqlspace = factories().adql().resources().entities().create(
             "temp"
             );
             

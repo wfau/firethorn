@@ -356,7 +356,7 @@ implements BlueTask<TaskType>
 
     /**
      * Get the entity linked to the current thread.
-     * @throws IdentifierNotFoundException 
+     * @throws HibernateConvertException 
      *
      */
     @Override

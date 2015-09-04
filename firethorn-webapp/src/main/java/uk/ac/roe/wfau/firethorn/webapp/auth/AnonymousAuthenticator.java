@@ -55,7 +55,7 @@ implements HandlerInterceptor
         {
         log.debug("preHandle()");
 
-        final Operation operation =  factories.operations().current();
+        final Operation operation =  factories.operations().entities().current();
 
         if (operation != null)
             {
@@ -69,7 +69,7 @@ implements HandlerInterceptor
             else {
                 log.debug(" No primary - anon");
                 operation.auth().create(
-                        factories.communities().create(
+                        factories.communities().entities().create(
                             ANON_COMMUNITY_NAME,
                             ANON_COMMUNITY_URI
                         ).members().create(

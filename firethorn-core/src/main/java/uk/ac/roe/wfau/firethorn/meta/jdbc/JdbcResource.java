@@ -131,6 +131,12 @@ extends BaseResource<JdbcSchema>
     extends NamedEntity.EntityServices<JdbcResource>
         {
         /**
+         * Our {@link JdbcResource.EntityFactory} instance.
+         *
+         */
+        public JdbcResource.EntityFactory entities();
+
+        /**
          * Our {@link JdbcSchema.EntityFactory} instance.
          *
          */

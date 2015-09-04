@@ -347,7 +347,7 @@ implements Identity
         	if (this.adqlresource == null)
         		{
 // TODO better name generator.
-        		this.adqlresource = factories().adql().resources().create(
+        		this.adqlresource = factories().adql().resources().entities().create(
         			"user space"
         			);        	
         		}

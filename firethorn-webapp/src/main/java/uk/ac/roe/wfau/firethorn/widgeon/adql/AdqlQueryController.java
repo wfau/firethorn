@@ -172,7 +172,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final String ident
         ) throws IdentifierNotFoundException {
         return bean(
-            factories().adql().queries().select(
+            factories().adql().queries().entities().select(
                 factories().adql().queries().idents().ident(
                     ident
                     )
@@ -230,7 +230,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         ) throws IdentifierNotFoundException {
 
         //TODO idents().resolve(String)
-        final AdqlQuery query = factories().queries().factory().select(
+        final AdqlQuery query = factories().queries().entities().select(
             factories().queries().idents().ident(
                 ident
                 )

@@ -444,7 +444,7 @@ public class JdbcResourceEntity
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this
                     );
                 }
@@ -452,7 +452,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final Identity identity)
                 {
-                return factories().jdbc().schemas().build(
+                return factories().jdbc().schemas().entities().build(
                     JdbcResourceEntity.this,
                     identity
                     );
@@ -461,7 +461,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final JdbcSchema.Metadata meta)
                 {
-                return factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     meta
                     );
@@ -471,7 +471,7 @@ public class JdbcResourceEntity
             @Deprecated
             public JdbcSchema create(final String catalog, final String schema)
                 {
-                return factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
@@ -481,7 +481,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema search(final String name)
                 {
-                return factories().jdbc().schemas().search(
+                return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -491,7 +491,7 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String name)
             throws NameNotFoundException
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -501,7 +501,7 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String catalog, final String schema)
             throws NameNotFoundException
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
                         catalog,
                         schema
@@ -511,7 +511,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema search(final String catalog, final String schema)
                 {
-                return factories().jdbc().schemas().search(
+                return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
@@ -523,7 +523,7 @@ public class JdbcResourceEntity
             throws EntityNotFoundException
                 {
                 try {
-                    return factories().jdbc().schemas().select(
+                    return factories().jdbc().schemas().entities().select(
                         JdbcResourceEntity.this,
                         connection().catalog(),
                         connection().type().schema()
@@ -547,7 +547,7 @@ public class JdbcResourceEntity
                     protected JdbcSchema create(final JdbcSchema.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        return factories().jdbc().schemas().create(
+                        return factories().jdbc().schemas().entities().create(
                             JdbcResourceEntity.this,
                             meta
                             );
@@ -637,7 +637,7 @@ public class JdbcResourceEntity
         // Load our Map of known schema.
         Map<String, JdbcSchema> known = new HashMap<String, JdbcSchema>();
         Map<String, JdbcSchema> matching = new HashMap<String, JdbcSchema>();
-        for (JdbcSchema schema : factories().jdbc().schemas().select(JdbcResourceEntity.this))
+        for (JdbcSchema schema : factories().jdbc().schemas().entities().select(JdbcResourceEntity.this))
             {
             final String key = keyname(
                 schema
@@ -774,7 +774,7 @@ public class JdbcResourceEntity
             log.debug("Cacheing new schema [{}]", key);
             matching.put(
                 key,
-                factories().jdbc().schemas().create(
+                factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     schema.catalog().name(),
                     schema.name()
@@ -815,7 +815,7 @@ public class JdbcResourceEntity
             @Override
             public OgsaJdbcResource primary()
                 {
-                return factories().ogsa().factories().jdbc().primary(
+                return factories().ogsa().jdbc().entities().primary(
                     JdbcResourceEntity.this
                     );
                 }
@@ -823,7 +823,7 @@ public class JdbcResourceEntity
             @Override
             public Iterable<OgsaJdbcResource> select()
                 {
-                return factories().ogsa().factories().jdbc().select(
+                return factories().ogsa().jdbc().entities().select(
                     JdbcResourceEntity.this
                     );
                 }

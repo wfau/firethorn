@@ -45,7 +45,7 @@ implements Context.Factory
             @Override
             public Operation oper()
                 {
-                return factories().operations().current();
+                return factories().operations().entities().current();
                 }
 
             @Override

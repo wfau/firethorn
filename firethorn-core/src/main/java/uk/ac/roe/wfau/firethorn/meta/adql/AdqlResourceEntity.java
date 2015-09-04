@@ -268,7 +268,7 @@ implements AdqlResource
             @Override
             public Iterable<AdqlSchema> select()
                 {
-                return factories().adql().schemas().select(
+                return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this
                     );
                 }
@@ -276,7 +276,7 @@ implements AdqlResource
             @Override
             public AdqlSchema search(final String name)
                 {
-                return factories().adql().schemas().search(
+                return factories().adql().schemas().entities().search(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -286,7 +286,7 @@ implements AdqlResource
             public AdqlSchema select(final String name)
             throws NameNotFoundException
                 {
-                return factories().adql().schemas().select(
+                return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -295,7 +295,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -304,7 +304,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -314,7 +314,7 @@ implements AdqlResource
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
-			    return factories().adql().schemas().create(
+			    return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     base.name(),
                     base
@@ -323,7 +323,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     depth,
                     AdqlResourceEntity.this,
                     base.name(),
@@ -334,7 +334,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -344,7 +344,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     depth,
                     AdqlResourceEntity.this,
                     name,

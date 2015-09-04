@@ -155,6 +155,12 @@ extends BaseComponent
     public static interface EntityServices
     extends NamedEntity.EntityServices<OgsaService>
         {
+        /**
+         * Our {@link OgsaService.EntityFactory} instance.
+         *
+         */
+        public OgsaService.EntityFactory entities();
+        
         }
     
     /**

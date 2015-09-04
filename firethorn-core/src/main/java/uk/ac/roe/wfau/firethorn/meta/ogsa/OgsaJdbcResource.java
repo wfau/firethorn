@@ -137,6 +137,11 @@ extends OgsaBaseResource
     public static interface EntityServices
     extends NamedEntity.EntityServices<OgsaJdbcResource>
         {
+        /**
+         * Our {@link OgsaJdbcResource.EntityFactory} instance.
+         *
+         */
+        public OgsaJdbcResource.EntityFactory entities();
         }
     
     /**

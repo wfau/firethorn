@@ -121,7 +121,7 @@ public abstract class AbstractController
             {
             //
             // TODO wrap this into a config service API.
-            final ConfigProperty prop = factories().config().select(
+            final ConfigProperty prop = factories().config().entities().select(
                 BASE_URI_CONFIG_KEY
                 );
             if (prop != null)

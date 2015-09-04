@@ -119,6 +119,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
     extends BaseTable.EntityServices<AdqlTable>
         {
         /**
+         * Our {@link AdqlTable.EntityFactory} instance.
+         *
+         */
+        public AdqlTable.EntityFactory entities();
+
+        /**
          * {@link AdqlColumn.EntityFactory} instance.
          *
          */

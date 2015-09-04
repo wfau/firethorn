@@ -137,6 +137,12 @@ extends BaseColumn<JdbcColumn>
     extends NamedEntity.EntityServices<JdbcColumn>
         {
         /**
+         * Our {@link JdbcColumn.EntityFactory} instance.
+         *
+         */
+        public JdbcColumn.EntityFactory entities();
+
+        /**
          * Our {@link JdbcColumn.AliasFactory} instance.
          *
          */

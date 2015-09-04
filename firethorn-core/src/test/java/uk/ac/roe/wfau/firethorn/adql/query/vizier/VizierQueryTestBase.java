@@ -48,7 +48,7 @@ extends AbstractQueryTestBase
     public void loadVizierResources()
     throws Exception
         {
-        IvoaResource ivoaspace = factories().ivoa().resources().create(
+        IvoaResource ivoaspace = factories().ivoa().resources().entities().create(
                 "urn:vizier.ivoa.resource",
                 "urn:vizier.ivoa.resource"
                 );

@@ -98,7 +98,7 @@ public class IvoaColumnController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
-        return factories().ivoa().columns().select(
+        return factories().ivoa().columns().entities().select(
             factories().ivoa().columns().idents().ident(
                 ident
                 )

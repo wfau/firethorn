@@ -163,25 +163,25 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected Community.EntityFactory communities;
+    protected Community.EntityServices communities;
     @Override
-    public Community.EntityFactory communities()
+    public Community.EntityServices communities()
         {
         return this.communities;
         }
 
     @Autowired
-    protected Identity.EntityFactory identities;
+    protected Identity.EntityServices identities;
     @Override
-    public Identity.EntityFactory identities()
+    public Identity.EntityServices identities()
         {
         return this.identities;
         }
 
     @Autowired
-    protected ConfigProperty.EntityFactory config ;
+    protected ConfigProperty.EntityServices config ;
     @Override
-    public ConfigProperty.EntityFactory config()
+    public ConfigProperty.EntityServices config()
         {
         return this.config ;
         }
@@ -203,17 +203,17 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected Operation.EntityFactory operations;
+    protected Operation.EntityServices operations;
     @Override
-	public Operation.EntityFactory operations()
+	public Operation.EntityServices operations()
         {
         return this.operations ;
         }
 
     @Autowired
-    protected Authentication.EntityFactory authentications;
+    protected Authentication.EntityServices authentications;
     @Override
-	public Authentication.EntityFactory authentications()
+	public Authentication.EntityServices authentication()
         {
         return this.authentications;
         }

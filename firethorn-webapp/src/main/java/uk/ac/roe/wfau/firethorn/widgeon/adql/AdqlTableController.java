@@ -106,7 +106,7 @@ public class AdqlTableController
         final String ident
         ) throws IdentifierNotFoundException {
         log.debug("entity() [{}]", ident);
-        return factories().adql().tables().select(
+        return factories().adql().tables().entities().select(
             factories().adql().tables().idents().ident(
                 ident
                 )

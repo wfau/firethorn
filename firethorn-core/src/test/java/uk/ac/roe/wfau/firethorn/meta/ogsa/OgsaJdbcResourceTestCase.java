@@ -37,9 +37,9 @@ extends TestBase
     public void testCreate001()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().primary();
+        final OgsaService service = factories().ogsa().services().entities().primary();
 
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "ATLASDR1",
             "atlas",
             config().property(
@@ -80,7 +80,7 @@ extends TestBase
     public void testCreate002()
     throws Exception
         {
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "ATLASDR1",
             "atlas",
             config().property(

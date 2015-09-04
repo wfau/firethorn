@@ -76,5 +76,10 @@ extends OgsaBaseResource
     public static interface EntityServices
     extends Entity.EntityServices<OgsaExecResource>
         {
+        /**
+         * Our {@link OgsaExecResource.EntityFactory} instance.
+         *
+         */
+        public OgsaExecResource.EntityFactory entities();
         }
 	}

@@ -83,34 +83,34 @@ public interface ComponentFactories
     public OgsaFactories ogsa();
     
     /**
-     * Our local Identity factory.
+     * Our {@link Identity.EntityServices} instance.
      *
      */
-    public Identity.EntityFactory identities();
+    public Identity.EntityServices identities();
 
     /**
-     * Our local Community factory.
+     * Our {@link Community.EntityServices} instance.
      *
      */
-    public Community.EntityFactory communities();
+    public Community.EntityServices communities();
 
     /**
-     * Our local Operation factory.
+     * Our {@link Operation.EntityServices} instance.
      *
      */
-    public Operation.EntityFactory operations();
+    public Operation.EntityServices operations();
 
     /**
-     * Our local Authentication factory.
+     * Our {@link Authentication.EntityServices} instance.
      *
      */
-    public Authentication.EntityFactory authentications();
+    public Authentication.EntityServices authentication();
 
     /**
-     * Our local ConfigProperty factory.
+     * Our {@link ConfigProperty.EntityServices} instance.
      *
      */
-    public ConfigProperty.EntityFactory config();
+    public ConfigProperty.EntityServices config();
 
     /**
      * Our {@link Job.EntityServices} instance.

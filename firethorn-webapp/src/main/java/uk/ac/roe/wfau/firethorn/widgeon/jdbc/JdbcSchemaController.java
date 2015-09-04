@@ -99,7 +99,7 @@ public class JdbcSchemaController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
+        return factories().jdbc().schemas().entities().select(
             factories().jdbc().schemas().idents().ident(
                 ident
                 )

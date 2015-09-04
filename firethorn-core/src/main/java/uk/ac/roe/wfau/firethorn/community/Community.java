@@ -119,6 +119,12 @@ extends NamedEntity
     extends NamedEntity.EntityServices<Community>
         {
         /**
+         * Our {@link Community.EntityFactory} instance.
+         *
+         */
+        public Community.EntityFactory entities();
+
+        /**
          * Our {@link Identity} factory instance.
          * 
          */

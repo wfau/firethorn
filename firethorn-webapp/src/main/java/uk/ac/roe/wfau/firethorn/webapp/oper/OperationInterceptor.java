@@ -44,18 +44,13 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public Operation.EntityFactory operations()
-        {
-        return factories.operations() ;
-        }
-
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
         log.debug("preHandle()");
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
 
-        final Operation oper = operations().create(
+        final Operation oper = factories.operations().entities().create(
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr()
@@ -71,7 +66,7 @@ implements HandlerInterceptor
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle()");
-        final Operation oper = operations().current();
+        final Operation oper = factories.operations().entities().current();
         log.debug("Operation [{}][{}]", oper.ident(), oper.target());
         log.debug("Handler   [{}]", handler.getClass().getName());
         }
@@ -80,7 +75,7 @@ implements HandlerInterceptor
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
         log.debug("afterCompletion()");
-        final Operation oper = operations().current();
+        final Operation oper = factories.operations().entities().current();
         log.debug("Operation [{}][{}]", oper.ident(), oper.target());
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
         if (ouch != null)

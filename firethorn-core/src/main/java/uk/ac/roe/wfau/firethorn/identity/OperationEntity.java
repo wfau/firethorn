@@ -352,7 +352,7 @@ implements Operation
         log.debug("create(Identity, String)");
         log.debug("  Identity [{}]", identity.name());
         log.debug("  Method   [{}]", method);
-        final Authentication auth = factories().authentications().create(
+        final Authentication auth = factories().authentication().entities().create(
             this,
             identity,
             method

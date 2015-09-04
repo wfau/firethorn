@@ -44,48 +44,16 @@ extends NamedEntity
     extends NamedEntity.EntityServices<TaskType>
         {
         /**
+         * Our {@link BlueTask.EntityFactory} instance.
+         *
+         */
+        public BlueTask.EntityFactory<TaskType> entities();
+
+        /**
          * Our {@link BlueTask.TaskRunner} instance.
          * 
          */
         public BlueTask.TaskRunner<TaskType> runner(); 
-        }
-
-    /**
-     * Services interface.
-     * 
-     */
-    public static interface OldServices<TaskType extends BlueTask<?>>
-        {
-        /**
-         * Our {@link IdentFactory} instance.
-         * 
-         */
-        public IdentFactory<TaskType> idents();
-
-        /**
-         * Our {@link NameFactory} instance.
-         * 
-         */
-        public NameFactory<TaskType> names();
-
-        /**
-         * Our {@link LinkFactory} instance.
-         * 
-         */
-        public LinkFactory<TaskType> links();
-        
-        /**
-         * Our {@link EntityFactory} instance.
-         * 
-         */
-        public EntityFactory<TaskType> entities();
-        
-        /**
-         * Our {@link TaskRunner} instance.
-         * 
-         */
-        public TaskRunner<TaskType> runner(); 
-
         }
 
     /**
@@ -161,7 +129,6 @@ extends NamedEntity
         public Future<TaskType> future(final Creator<TaskType> creator);
 
         }
-
 
     /**
      * EntityFactory interface.

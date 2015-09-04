@@ -148,7 +148,7 @@ public class BlueQueryController
             }
 
         @Autowired
-        private BlueQuery.Services services ;
+        private BlueQuery.EntityServices services ;
 
         @Override
         public BlueQuery resolve(final String link)
@@ -180,7 +180,7 @@ public class BlueQueryController
         }
 
     @Autowired
-    private BlueQuery.Services services;
+    private BlueQuery.EntityServices services;
     
     @Override
     public BlueQueryBean bean(BlueQuery entity)

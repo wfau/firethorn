@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
@@ -89,46 +90,6 @@ extends TestPropertiesBase
      * Load a {@link JdbcResource}.
      * @throws IdentifierNotFoundException 
      * 
-    protected JdbcResource jdbcResource(final String tag, final String name, final String url)
-    throws IdentifierNotFoundException
-        {
-        JdbcResource found = jdbc.get(
-            tag
-            );
-        if (found == null)
-            {
-            final String ident = testprops().getProperty(tag);
-            log.debug("Loading JDBC resource [{}][{}]", tag, ident);
-            if (ident != null)
-                {
-                found = factories().jdbc().resources().select(
-                    factories().jdbc().resources().idents().ident(
-                        ident
-                        )
-                    );
-                }
-            if (found == null)
-                {
-                log.debug("Creating new JDBC resource [{}]", tag);
-                found = factories().jdbc().resources().create(
-                    tag,
-                    name,
-                    url
-                    );
-                }
-            jdbc.put(
-                tag,
-                found
-                );
-            }
-        return found ;
-        }
-     */
-
-    /**
-     * Load a {@link JdbcResource}.
-     * @throws IdentifierNotFoundException 
-     * 
      */
     protected JdbcResource jdbcResource(final String tag, final String catalog, final String name, final String url, final String user, final String pass, final String driver)
     throws IdentifierNotFoundException
@@ -142,7 +103,7 @@ extends TestPropertiesBase
             log.debug("Loading JDBC resource [{}][{}]", tag, ident);
             if (ident != null)
                 {
-                found = factories().jdbc().resources().search(
+                found = factories().jdbc().resources().entities().search(
                     factories().jdbc().resources().idents().ident(
                         ident
                         )
@@ -151,7 +112,7 @@ extends TestPropertiesBase
             if (found == null)
                 {
                 log.debug("Creating new JDBC resource [{}]", tag);
-                found = factories().jdbc().resources().create(
+                found = factories().jdbc().resources().entities().create(
                     catalog,
                     name,
                     url,
@@ -215,7 +176,7 @@ extends TestPropertiesBase
             log.debug("Loading ADQL resource [{}][{}]", tag, ident);
             if (ident != null)
                 {
-                found = factories().adql().resources().search(
+                found = factories().adql().resources().entities().search(
                     factories().adql().resources().idents().ident(
                         ident
                         )
@@ -224,7 +185,7 @@ extends TestPropertiesBase
             if (found == null)
                 {
                 log.debug("Creating new ADQL resource [{}]", tag);
-                found = factories().adql().resources().create(
+                found = factories().adql().resources().entities().create(
                     name
                     );
                 }

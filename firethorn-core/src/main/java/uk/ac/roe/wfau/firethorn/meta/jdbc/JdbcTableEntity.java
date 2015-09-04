@@ -740,7 +740,7 @@ implements JdbcTable
             @Override
             public Iterable<JdbcColumn> select()
                 {
-                return factories().jdbc().columns().select(
+                return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this
                     );
                 }
@@ -748,7 +748,7 @@ implements JdbcTable
             @Override
             public JdbcColumn search(final String name)
                 {
-                return factories().jdbc().columns().search(
+                return factories().jdbc().columns().entities().search(
                     JdbcTableEntity.this,
                     name
                     );
@@ -758,7 +758,7 @@ implements JdbcTable
             public JdbcColumn select(final String name)
             throws NameNotFoundException
                 {
-                return factories().jdbc().columns().select(
+                return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this,
                     name
                     );
@@ -767,7 +767,7 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final JdbcColumn.Metadata meta)
                 {
-                return factories().jdbc().columns().create(
+                return factories().jdbc().columns().entities().create(
                     JdbcTableEntity.this,
                     meta
                     );
@@ -776,7 +776,7 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size)
                 {
-                return factories().jdbc().columns().create(
+                return factories().jdbc().columns().entities().create(
                     JdbcTableEntity.this,
                     name,
                     type,
@@ -789,7 +789,7 @@ implements JdbcTable
             throws IdentifierNotFoundException
                 {
                 // TODO Add parent constraint.
-                return factories().jdbc().columns().select(
+                return factories().jdbc().columns().entities().select(
                     ident
                     );
                 }
@@ -803,7 +803,7 @@ implements JdbcTable
                     protected JdbcColumn create(final JdbcColumn.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        return factories().jdbc().columns().create(
+                        return factories().jdbc().columns().entities().create(
                             JdbcTableEntity.this,
                             meta
                             );
@@ -1143,7 +1143,7 @@ implements JdbcTable
         // Load our Map of known columns.
         Map<String, JdbcColumn> known = new HashMap<String, JdbcColumn>();
         Map<String, JdbcColumn> matching = new HashMap<String, JdbcColumn>();
-        for (JdbcColumn column : factories().jdbc().columns().select(JdbcTableEntity.this))
+        for (JdbcColumn column : factories().jdbc().columns().entities().select(JdbcTableEntity.this))
             {
             log.debug("Caching known column [{}]", column.name());
             known.put(
@@ -1231,7 +1231,7 @@ implements JdbcTable
             log.debug("Creating new column [{}]", name);
             matching.put(
                 name,
-                factories().jdbc().columns().create(
+                factories().jdbc().columns().entities().create(
                     JdbcTableEntity.this,
                     name,
                     column.type(),

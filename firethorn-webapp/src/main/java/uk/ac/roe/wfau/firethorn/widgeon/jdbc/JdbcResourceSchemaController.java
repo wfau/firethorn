@@ -112,7 +112,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         final String ident
         ) throws EntityNotFoundException{
         log.debug("parent() [{}]", ident);
-        return factories().jdbc().resources().select(
+        return factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
                 )

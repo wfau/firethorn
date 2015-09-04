@@ -704,7 +704,7 @@ public class JdbcSchemaEntity
             @Override
             public Iterable<JdbcTable> select()
                 {
-                return factories().jdbc().tables().select(
+                return factories().jdbc().tables().entities().select(
                     JdbcSchemaEntity.this
                     );
                 }
@@ -712,7 +712,7 @@ public class JdbcSchemaEntity
             @Override
             public JdbcTable search(final String name)
                 {
-                return factories().jdbc().tables().search(
+                return factories().jdbc().tables().entities().search(
                     JdbcSchemaEntity.this,
                     name
                     );
@@ -722,7 +722,7 @@ public class JdbcSchemaEntity
             public JdbcTable select(final String name)
             throws NameNotFoundException
                 {
-                return factories().jdbc().tables().select(
+                return factories().jdbc().tables().entities().select(
                     JdbcSchemaEntity.this,
                     name
                     );
@@ -731,7 +731,7 @@ public class JdbcSchemaEntity
             @Override
             public JdbcTable create()
                 {
-                return factories().jdbc().tables().create(
+                return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this
                     );
                 }
@@ -740,7 +740,7 @@ public class JdbcSchemaEntity
             @Deprecated
             public JdbcTable create(final String name)
                 {
-                return factories().jdbc().tables().create(
+                return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     name
                     );
@@ -750,7 +750,7 @@ public class JdbcSchemaEntity
             @Deprecated
             public JdbcTable create(final String name, final JdbcTable.JdbcType type)
                 {
-                return factories().jdbc().tables().create(
+                return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     name,
                     type
@@ -760,7 +760,7 @@ public class JdbcSchemaEntity
             @Override
             public JdbcTable create(final JdbcTable.Metadata meta)
                 {
-                return factories().jdbc().tables().create(
+                return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     meta
                     );
@@ -769,7 +769,7 @@ public class JdbcSchemaEntity
             @Override
             public JdbcTable create(final AdqlQuery query)
                 {
-                return factories().jdbc().tables().create(
+                return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     query
                     );
@@ -780,7 +780,7 @@ public class JdbcSchemaEntity
             throws IdentifierNotFoundException
                 {
                 // TODO Add parent constraint.
-                return factories().jdbc().tables().select(
+                return factories().jdbc().tables().entities().select(
                     ident
                     );
                 }
@@ -788,7 +788,7 @@ public class JdbcSchemaEntity
             @Override
             public Iterable<JdbcTable> pending(final DateTime date, final int page)
                 {
-                return factories().jdbc().tables().pending(
+                return factories().jdbc().tables().entities().pending(
                     JdbcSchemaEntity.this,
                     date,
                     page
@@ -804,7 +804,7 @@ public class JdbcSchemaEntity
                     protected JdbcTable create(final JdbcTable.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        return factories().jdbc().tables().create(
+                        return factories().jdbc().tables().entities().create(
                             JdbcSchemaEntity.this,
                             meta
                             );
@@ -826,7 +826,7 @@ public class JdbcSchemaEntity
         // Load our Map of known tables.
         Map<String, JdbcTable> known = new HashMap<String, JdbcTable>();
         Map<String, JdbcTable> matching = new HashMap<String, JdbcTable>();
-        for (JdbcTable table : factories().jdbc().tables().select(JdbcSchemaEntity.this))
+        for (JdbcTable table : factories().jdbc().tables().entities().select(JdbcSchemaEntity.this))
             {
             log.trace("Caching known table [{}]", table.name());
             known.put(
@@ -920,7 +920,7 @@ public class JdbcSchemaEntity
             log.trace("Creating new table [{}]", name);
             matching.put(
                 name,
-                factories().jdbc().tables().create(
+                factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     table.name(),
                     JdbcTable.JdbcType.TABLE

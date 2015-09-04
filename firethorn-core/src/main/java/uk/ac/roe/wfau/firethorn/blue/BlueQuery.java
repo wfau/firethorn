@@ -58,6 +58,12 @@ extends BlueTask<BlueQuery>
     public static interface EntityServices
     extends BlueTask.EntityServices<BlueQuery>
         {
+        /**
+         * Our {@link BlueQuery.EntityFactory} instance.
+         *
+         */
+        public BlueQuery.EntityFactory entities();
+        
         @Override
         public BlueQuery.LinkFactory links();
         }

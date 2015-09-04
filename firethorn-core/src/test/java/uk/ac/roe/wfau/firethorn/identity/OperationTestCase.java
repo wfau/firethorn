@@ -43,7 +43,7 @@ extends TestBase
         log.debug("------------------");
         for (int i = 0 ; i < COUNT ; i++)
             {
-            final Operation operation = factories().operations().create(
+            final Operation operation = factories().operations().entities().create(
                 "target",
                 "method",
                 "source"

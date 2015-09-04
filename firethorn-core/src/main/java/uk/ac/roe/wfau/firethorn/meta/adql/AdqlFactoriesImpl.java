@@ -33,41 +33,41 @@ public class AdqlFactoriesImpl
     {
 
     @Autowired
-    private AdqlResource.EntityFactory resources;
+    private AdqlResource.EntityServices resources;
     @Override
-    public AdqlResource.EntityFactory resources()
+    public AdqlResource.EntityServices resources()
         {
         return this.resources;
         }
 
     @Autowired
-    private AdqlSchema.EntityFactory schemas;
+    private AdqlSchema.EntityServices schemas;
     @Override
-    public AdqlSchema.EntityFactory schemas()
+    public AdqlSchema.EntityServices schemas()
         {
         return this.schemas;
         }
 
     @Autowired
-    private AdqlTable.EntityFactory tables;
+    private AdqlTable.EntityServices tables;
     @Override
-    public AdqlTable.EntityFactory tables()
+    public AdqlTable.EntityServices tables()
         {
         return this.tables;
         }
 
     @Autowired
-    private AdqlColumn.EntityFactory columns;
+    private AdqlColumn.EntityServices columns;
     @Override
-    public AdqlColumn.EntityFactory columns()
+    public AdqlColumn.EntityServices columns()
         {
         return this.columns;
         }
 
     @Autowired
-    private AdqlQuery.EntityFactory queries;
+    private AdqlQuery.EntityServices queries;
     @Override
-    public AdqlQuery.EntityFactory queries()
+    public AdqlQuery.EntityServices queries()
         {
         return this.queries;
         }

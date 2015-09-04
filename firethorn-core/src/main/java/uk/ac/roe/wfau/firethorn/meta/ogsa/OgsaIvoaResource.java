@@ -119,6 +119,11 @@ public interface OgsaIvoaResource
     public static interface EntityServices
     extends Entity.EntityServices<OgsaIvoaResource>
         {
+        /**
+         * Our {@link OgsaIvoaResource.EntityFactory} instance.
+         *
+         */
+        public OgsaIvoaResource.EntityFactory entities();
         }
     
     /**

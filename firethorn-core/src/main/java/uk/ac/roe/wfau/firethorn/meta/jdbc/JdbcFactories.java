@@ -24,27 +24,27 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 public interface JdbcFactories
     {
     /**
-     * Our resource factory.
+     * Our {@link JdbcResource.EntityServices} instance.
      *
      */
-    public JdbcResource.EntityFactory resources();
+    public JdbcResource.EntityServices resources();
 
     /**
-     * Our schema factory.
+     * Our {@link JdbcSchema.EntityServices} instance.
      *
      */
-    public JdbcSchema.EntityFactory schemas();
+    public JdbcSchema.EntityServices schemas();
 
     /**
-     * Our table factory.
+     * Our {@link JdbcTable.EntityServices} instance.
      *
      */
-    public JdbcTable.EntityFactory tables();
+    public JdbcTable.EntityServices tables();
 
     /**
-     * Our column factory.
+     * Our {@link JdbcColumn.EntityServices} instance.
      *
      */
-    public JdbcColumn.EntityFactory  columns();
+    public JdbcColumn.EntityServices columns();
 
     }

@@ -101,7 +101,7 @@ extends TestRoot
     @Before
     public final void oper()
         {
-        final Operation operation = factories().operations().create(
+        final Operation operation = factories().operations().entities().create(
             TEST_OPER_TARGET,
             TEST_OPER_METHOD,
             TEST_OPER_SOURCE
@@ -114,7 +114,7 @@ extends TestRoot
             {
             
             primary = operation.auth().create(
-                factories().communities().create(
+                factories().communities().entities().create(
                     config().property(
                         "junit.community.uri",
                         TEST_COMMUNITY_URI

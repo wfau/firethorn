@@ -85,6 +85,12 @@ extends BaseResource<IvoaSchema>
     extends NamedEntity.EntityServices<IvoaResource>
         {
         /**
+         * Our {@link IvoaResource.EntityFactory} instance.
+         *
+         */
+        public IvoaResource.EntityFactory entities();
+
+        /**
          * Our {@link IvoaSchema.EntityFactory} instance.
          *
          */

@@ -376,6 +376,12 @@ extends NamedEntity, Job
     extends NamedEntity.EntityServices<AdqlQuery>
         {
         /**
+         * Our {@link AdqlQuery.EntityFactory} instance.
+         *
+         */
+        public AdqlQuery.EntityFactory entities();
+
+        /**
          * Our {@link Job.Executor} instance.
          *
          */

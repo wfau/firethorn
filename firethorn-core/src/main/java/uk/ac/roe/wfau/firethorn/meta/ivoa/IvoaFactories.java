@@ -24,27 +24,27 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 public interface IvoaFactories
     {
     /**
-     * Our resource factory.
+     * Our {@link IvoaResource.EntityServices} instance.
      *
      */
-    public IvoaResource.EntityFactory resources();
+    public IvoaResource.EntityServices resources();
 
     /**
-     * Our schema factory.
+     * Our {@link IvoaSchema.EntityServices} instance.
      *
      */
-    public IvoaSchema.EntityFactory schemas();
+    public IvoaSchema.EntityServices schemas();
 
     /**
-     * Our table factory.
+     * Our {@link IvoaTable.EntityServices} instance.
      *
      */
-    public IvoaTable.EntityFactory tables();
+    public IvoaTable.EntityServices tables();
 
     /**
-     * Our column factory.
+     * Our {@link IvoaColumn.EntityServices} instance.
      *
      */
-    public IvoaColumn.EntityFactory  columns();
+    public IvoaColumn.EntityServices columns();
 
     }

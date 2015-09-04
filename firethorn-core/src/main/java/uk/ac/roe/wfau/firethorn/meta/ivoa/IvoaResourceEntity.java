@@ -300,7 +300,7 @@ public class IvoaResourceEntity
             @Override
             public Iterable<IvoaSchema> select()
                 {
-                return factories().ivoa().schemas().select(
+                return factories().ivoa().schemas().entities().select(
                     IvoaResourceEntity.this
                     );
                 }
@@ -309,7 +309,7 @@ public class IvoaResourceEntity
             public IvoaSchema select(String name)
             throws NameNotFoundException
                 {
-                return factories().ivoa().schemas().select(
+                return factories().ivoa().schemas().entities().select(
                     IvoaResourceEntity.this,
                     name
                     );
@@ -318,7 +318,7 @@ public class IvoaResourceEntity
             @Override
             public IvoaSchema search(final String name)
                 {
-                return factories().ivoa().schemas().search(
+                return factories().ivoa().schemas().entities().search(
                     IvoaResourceEntity.this,
                     name
                     );
@@ -333,7 +333,7 @@ public class IvoaResourceEntity
                     protected IvoaSchema create(final IvoaSchema.Metadata param)
                         throws DuplicateEntityException
                         {
-                        return factories().ivoa().schemas().create(
+                        return factories().ivoa().schemas().entities().create(
                             IvoaResourceEntity.this,
                             param
                             );
@@ -406,7 +406,7 @@ public class IvoaResourceEntity
             @Override
             public OgsaIvoaResource primary()
                 {
-                return factories().ogsa().factories().ivoa().primary(
+                return factories().ogsa().ivoa().entities().primary(
                     IvoaResourceEntity.this
                     );
                 }
@@ -414,7 +414,7 @@ public class IvoaResourceEntity
             @Override
             public Iterable<OgsaIvoaResource> select()
                 {
-                return factories().ogsa().factories().ivoa().select(
+                return factories().ogsa().ivoa().entities().select(
                     IvoaResourceEntity.this
                     );
                 }

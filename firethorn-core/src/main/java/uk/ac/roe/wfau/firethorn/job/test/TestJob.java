@@ -70,6 +70,12 @@ extends Job, NamedEntity
     extends Entity.EntityServices<TestJob>
         {
         /**
+         * Our {@link TestJob.EntityFactory} instance.
+         *
+         */
+        public TestJob.EntityFactory entities();
+
+        /**
          * Our {@link Job.Executor}.
          *
          */

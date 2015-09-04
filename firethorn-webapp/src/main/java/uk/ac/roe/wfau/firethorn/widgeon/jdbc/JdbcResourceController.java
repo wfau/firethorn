@@ -133,7 +133,7 @@ public class JdbcResourceController
         final String ident
         ) throws EntityNotFoundException  {
         log.debug("entity() [{}]", ident);
-        final JdbcResource entity = factories().jdbc().resources().select(
+        final JdbcResource entity = factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
                 )

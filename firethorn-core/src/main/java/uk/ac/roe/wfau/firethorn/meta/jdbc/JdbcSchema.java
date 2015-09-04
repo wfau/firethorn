@@ -170,6 +170,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     extends NamedEntity.EntityServices<JdbcSchema>
         {
         /**
+         * Our {@link JdbcSchema.EntityFactory} instance.
+         *
+         */
+        public JdbcSchema.EntityFactory entities();
+
+        /**
          * Our {@link JdbcTable.EntityFactory} instance.
          *
          */

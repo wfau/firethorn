@@ -44,7 +44,7 @@ extends TestBase
     public void before()
     throws Exception
         {
-        this.resource  = factories().adql().resources().create(
+        this.resource  = factories().adql().resources().entities().create(
             this.unique(
                 "resource-A"
                 )

@@ -57,7 +57,7 @@ extends AbstractQueryTestBase
         if (gaia == null)
             {
             log.debug("IvoaResource not loaded, creating a new one");
-            gaia = factories().ivoa().resources().create(
+            gaia = factories().ivoa().resources().entities().create(
                 "gaia-tap",
                 "gaia-tap"
                 );

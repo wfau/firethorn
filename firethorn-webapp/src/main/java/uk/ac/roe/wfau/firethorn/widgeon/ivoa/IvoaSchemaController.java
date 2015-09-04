@@ -99,7 +99,7 @@ public class IvoaSchemaController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().ivoa().schemas().select(
+        return factories().ivoa().schemas().entities().select(
             factories().ivoa().schemas().idents().ident(
                 ident
                 )

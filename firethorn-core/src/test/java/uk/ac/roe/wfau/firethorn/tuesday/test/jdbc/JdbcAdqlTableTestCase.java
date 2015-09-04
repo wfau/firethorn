@@ -42,7 +42,7 @@ public class JdbcAdqlTableTestCase
 
 	public JdbcResource resource()
 		{
-        return factories().jdbc().resources().create(
+        return factories().jdbc().resources().entities().create(
             "twomass",
             "test:twomass",
             "spring:RoeTWOMASS"
@@ -51,7 +51,7 @@ public class JdbcAdqlTableTestCase
 
 	public AdqlResource workspace()
 		{
-        return factories().adql().resources().create(
+        return factories().adql().resources().entities().create(
             "test-workspace"
             );
 		}

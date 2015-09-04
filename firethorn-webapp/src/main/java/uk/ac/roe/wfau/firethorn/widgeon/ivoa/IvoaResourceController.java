@@ -108,7 +108,7 @@ public class IvoaResourceController
         final String ident
         ) throws EntityNotFoundException  {
         log.debug("entity() [{}]", ident);
-        final IvoaResource entity = factories().ivoa().resources().select(
+        final IvoaResource entity = factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
                 )

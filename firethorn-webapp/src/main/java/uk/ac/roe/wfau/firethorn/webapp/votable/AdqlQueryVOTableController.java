@@ -589,7 +589,7 @@ public class AdqlQueryVOTableController
             );
 		generateVotable(
 		    response.getWriter(),
-	        factories().adql().queries().select(
+	        factories().adql().queries().entities().select(
 	            factories().adql().queries().idents().ident(
 	                ident
 	                )

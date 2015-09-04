@@ -479,7 +479,7 @@ implements AdqlSchema
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
-        factories().adql().tables().create(
+        factories().adql().tables().entities().create(
             depth,
             AdqlSchemaEntity.this,
             base
@@ -588,7 +588,7 @@ implements AdqlSchema
                         );
                     }
                 else {
-                    return factories().adql().tables().select(
+                    return factories().adql().tables().entities().select(
                         AdqlSchemaEntity.this
                         );
                     }
@@ -614,7 +614,7 @@ implements AdqlSchema
                         }
                     }
                 else {
-                    return factories().adql().tables().search(
+                    return factories().adql().tables().entities().search(
                         AdqlSchemaEntity.this,
                         name
                         );
@@ -635,7 +635,7 @@ implements AdqlSchema
                         );
                     }
                 else {
-                    return factories().adql().tables().select(
+                    return factories().adql().tables().entities().select(
                         AdqlSchemaEntity.this,
                         name
                         );
@@ -645,7 +645,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                return factories().adql().tables().create(
+                return factories().adql().tables().entities().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base
@@ -655,7 +655,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                return factories().adql().tables().create(
+                return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
                     base
                     );
@@ -664,7 +664,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                return factories().adql().tables().create(
+                return factories().adql().tables().entities().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base,
@@ -675,7 +675,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                return factories().adql().tables().create(
+                return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
                     base,
                     name
@@ -685,7 +685,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
-                return factories().adql().tables().create(
+                return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
                     query
                     );
@@ -731,7 +731,7 @@ implements AdqlSchema
                     }
                 else {
                     // TODO pass parent reference too.
-                    return factories().adql().tables().select(
+                    return factories().adql().tables().entities().select(
                         ident
                         );
                     }
@@ -781,7 +781,7 @@ implements AdqlSchema
             public AdqlQuery create(final QueryParam param, final String query)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().create(
+                return factories().adql().queries().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query
@@ -792,7 +792,7 @@ implements AdqlSchema
             public AdqlQuery create(final QueryParam param, final String query, final String name)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().create(
+                return factories().adql().queries().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query,
@@ -803,7 +803,7 @@ implements AdqlSchema
             @Override
             public Iterable<AdqlQuery> select()
                 {
-                return factories().adql().queries().select(
+                return factories().adql().queries().entities().select(
                     AdqlSchemaEntity.this
                     );
                 }

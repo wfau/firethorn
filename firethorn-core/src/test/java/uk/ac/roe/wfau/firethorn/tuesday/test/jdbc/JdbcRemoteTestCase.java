@@ -80,7 +80,7 @@ extends TestBase
 
         //
         // Create an empty resource tree.
-        final JdbcResource jdbcResource = factories().jdbc().resources().create(
+        final JdbcResource jdbcResource = factories().jdbc().resources().entities().create(
             "twomass",
             "test:twomass",
             "spring:RoeTWOMASS"

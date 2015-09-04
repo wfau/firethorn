@@ -98,6 +98,12 @@ extends BaseColumn<AdqlColumn>
     extends NamedEntity.EntityServices<AdqlColumn>
         {
         /**
+         * Our {@link AdqlColumn.EntityFactory} instance.
+         *
+         */
+        public AdqlColumn.EntityFactory entities();
+
+        /**
          * {@link AdqlColumn.AliasFactory} instance.
          *
          */

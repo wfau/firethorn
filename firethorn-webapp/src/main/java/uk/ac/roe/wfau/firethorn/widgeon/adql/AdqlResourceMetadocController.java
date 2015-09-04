@@ -116,7 +116,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String ident
         ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
-        return factories().adql().resources().select(
+        return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
                 )

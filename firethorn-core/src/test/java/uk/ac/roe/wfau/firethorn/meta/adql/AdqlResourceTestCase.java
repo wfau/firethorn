@@ -37,7 +37,7 @@ extends TestBase
         //
         // Create with name works.
         assertNotNull(
-            factories().adql().resources().create(
+            factories().adql().resources().entities().create(
                 this.unique(
                     "resource"
                     )
@@ -51,7 +51,7 @@ extends TestBase
         {
         //
         // Create with name works.
-        final AdqlResource created = factories().adql().resources().create(
+        final AdqlResource created = factories().adql().resources().entities().create(
             this.unique(
                 "resource"
                 )
@@ -59,7 +59,7 @@ extends TestBase
         //
         // Select by ident works.
         assertNotNull(
-            factories().adql().resources().select(
+            factories().adql().resources().entities().select(
                 created.ident()
                 )
             );

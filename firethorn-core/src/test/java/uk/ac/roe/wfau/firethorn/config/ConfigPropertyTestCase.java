@@ -39,7 +39,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            factories().config().create(
+            factories().config().entities().create(
                 this.unique(
                     URI.create(
                         "urn:test-property"
@@ -61,13 +61,13 @@ extends TestBase
                 )
             );
         assertNotNull(
-            factories().config().create(
+            factories().config().entities().create(
                 key,
                 "test property value"
                 )
             );
         assertNotNull(
-            factories().config().select(
+            factories().config().entities().select(
                 key
                 )
             );
@@ -83,13 +83,13 @@ extends TestBase
                 )
             );
         assertNotNull(
-            factories().config().create(
+            factories().config().entities().create(
                 key,
                 "test property value"
                 )
             );
         assertNotNull(
-            factories().config().select(
+            factories().config().entities().select(
                 key
                 )
             );
@@ -105,19 +105,19 @@ extends TestBase
                 )
             );
         assertNotNull(
-            factories().config().create(
+            factories().config().entities().create(
                 key,
                 "test property value"
                 )
             );
         assertNotNull(
-            factories().config().select(
+            factories().config().entities().select(
                 key
                 )
             );
         assertEquals(
             "test property value",
-            factories().config().select(
+            factories().config().entities().select(
                 key
                 ).toString()
             );

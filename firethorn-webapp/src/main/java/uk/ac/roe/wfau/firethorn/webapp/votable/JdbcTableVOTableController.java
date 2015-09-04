@@ -84,7 +84,7 @@ extends BaseTableVOTableController
             );
 		write(
 		    response.getWriter(),
-	        factories().jdbc().tables().select(
+	        factories().jdbc().tables().entities().select(
 	            factories().jdbc().tables().idents().ident(
 	                ident
 	                )

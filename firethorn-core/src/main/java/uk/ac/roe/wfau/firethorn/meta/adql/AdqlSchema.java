@@ -118,6 +118,12 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     extends NamedEntity.EntityServices<AdqlSchema>
         {
         /**
+         * Our {@link AdqlSchema.EntityFactory} instance.
+         *
+         */
+        public AdqlSchema.EntityFactory entities();
+
+        /**
          * Our {@link AdqlTable.EntityFactory} instance.
          *
          */

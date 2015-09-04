@@ -162,7 +162,7 @@ extends AbstractController
         final String ident
         ) throws EntityNotFoundException  {
         return new IdentityBean(
-            factories().identities().select(
+            factories().identities().entities().select(
                 factories().identities().idents().ident(
                     ident
                     )

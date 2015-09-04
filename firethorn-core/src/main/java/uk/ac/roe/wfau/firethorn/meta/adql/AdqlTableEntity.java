@@ -619,7 +619,7 @@ public class AdqlTableEntity
     protected void realize(final BaseColumn<?> base)
         {
         log.debug("realize(CopyDepth, BaseColumn) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
-        factories().adql().columns().create(
+        factories().adql().columns().entities().create(
             AdqlTableEntity.this,
             base
             );
@@ -721,7 +721,7 @@ public class AdqlTableEntity
                         );
                     }
                 else {
-                    return factories().adql().columns().select(
+                    return factories().adql().columns().entities().select(
                         AdqlTableEntity.this
                         );
                     }
@@ -755,7 +755,7 @@ public class AdqlTableEntity
                         );
                     }
                 else {
-                    return factories().adql().columns().select(
+                    return factories().adql().columns().entities().select(
                         AdqlTableEntity.this,
                         name
                         );
@@ -766,7 +766,7 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base)
                 {
                 realize();
-                return factories().adql().columns().create(
+                return factories().adql().columns().entities().create(
                     AdqlTableEntity.this,
                     base
                     );
@@ -776,7 +776,7 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base, final String name)
                 {
                 realize();
-                return factories().adql().columns().create(
+                return factories().adql().columns().entities().create(
                     AdqlTableEntity.this,
                     base,
                     name
@@ -824,7 +824,7 @@ public class AdqlTableEntity
                     }
                 else {
                     // TODO pass parent reference.
-                    return factories().adql().columns().select(
+                    return factories().adql().columns().entities().select(
                         ident
                         );
                     }

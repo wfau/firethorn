@@ -51,12 +51,16 @@ public class LoggedQueryTestCase
                 "src/test/data/adql/atlas-logged-queries-000.txt"
                 )
             );
-
-        final String linestr = reader.readLine();
-        for (int linenum = 1; (linestr != null) ; linenum++)
-            {
-            test(linenum, linestr);
-            }
+        try {
+	        final String linestr = reader.readLine();
+	        for (int linenum = 1; (linestr != null) ; linenum++)
+	            {
+	            test(linenum, linestr);
+	            }
+        	}
+        finally {
+        	reader.close();
+        	}
         }
 
     @Transactional(

@@ -112,6 +112,12 @@ extends BaseColumn<IvoaColumn>
     extends NamedEntity.EntityServices<IvoaColumn>
         {
         /**
+         * Our {@link IvoaColumn.EntityFactory} instance.
+         *
+         */
+        public IvoaColumn.EntityFactory entities();
+
+        /**
          * Our {@link IvoaColumn.AliasFactory} instance.
          *
          */

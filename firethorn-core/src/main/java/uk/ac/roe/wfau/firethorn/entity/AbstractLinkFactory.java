@@ -56,7 +56,7 @@ implements Entity.LinkFactory<EntityType>
     protected final String delim ;
     protected final Pattern pattern ;
     //TODO
-    protected final Entity.IdentFactory<EntityType> idents = new AbstractIdentFactory();
+    protected final Entity.IdentFactory<EntityType> idents = new AbstractIdentFactory<EntityType>();
 
     @Override
     public String link(final EntityType entity)

@@ -388,7 +388,7 @@ public class IvoaSchemaEntity
             @Override
             public Iterable<IvoaTable> select()
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     IvoaSchemaEntity.this
                     );
                 }
@@ -396,7 +396,7 @@ public class IvoaSchemaEntity
             public IvoaTable select(final String name)
             throws NameNotFoundException
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     IvoaSchemaEntity.this,
                     name
                     );
@@ -404,7 +404,7 @@ public class IvoaSchemaEntity
             @Override
             public IvoaTable search(final String name)
                 {
-                return factories().ivoa().tables().search(
+                return factories().ivoa().tables().entities().search(
                     IvoaSchemaEntity.this,
                     name
                     );
@@ -413,7 +413,7 @@ public class IvoaSchemaEntity
             public IvoaTable select(final Identifier ident)
             throws IdentifierNotFoundException
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     ident
                     );
                 }
@@ -427,7 +427,7 @@ public class IvoaSchemaEntity
                     public IvoaTable create(final IvoaTable.Metadata meta)
                     throws DuplicateEntityException
                         {
-                        return factories().ivoa().tables().create(
+                        return factories().ivoa().tables().entities().create(
                             IvoaSchemaEntity.this,
                             meta
                             );

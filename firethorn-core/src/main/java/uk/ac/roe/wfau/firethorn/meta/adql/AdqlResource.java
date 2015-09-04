@@ -91,6 +91,12 @@ extends BaseResource<AdqlSchema>
     extends NamedEntity.EntityServices<AdqlResource>
         {
         /**
+         * Our {@link AdqlResource.EntityFactory} instance.
+         *
+         */
+        public AdqlResource.EntityFactory entities();
+
+        /**
          * {@link BlueQuery.EntityFactory} instance.
          *
          */

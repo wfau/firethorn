@@ -38,7 +38,7 @@ public class IdentitySpaceTestCase
     public void testCommunitySpaceNotNull()
         {
 
-        final Community community = factories().communities().create(
+        final Community community = factories().communities().entities().create(
             "urn:community",
             unique(
                 "test-community"
@@ -65,7 +65,7 @@ public class IdentitySpaceTestCase
     public void testIdentitySpaceNotNull()
         {
 
-        final Community community = factories().communities().create(
+        final Community community = factories().communities().entities().create(
             unique(
                 "test-community"
                 ),

@@ -120,7 +120,7 @@ implements HandlerInterceptor
             community = defaultCommunity;
             }
 
-        final Operation operation = factories.operations().current();
+        final Operation operation = factories.operations().entities().current();
 
         log.debug("Identity  [{}]", identity);
         log.debug("Community [{}]", community);
@@ -129,7 +129,7 @@ implements HandlerInterceptor
         if ((operation != null) && (community != null) && (identity != null))
             {
             operation.auth().create(
-                    factories.communities().create(
+                    factories.communities().entities().create(
                         community,
                         community
                     ).members().create(

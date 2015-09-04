@@ -182,7 +182,7 @@ public class OgsaIvoaResourceEntity
         public OgsaIvoaResource primary(IvoaResource resource)
             {
             return this.primary(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }

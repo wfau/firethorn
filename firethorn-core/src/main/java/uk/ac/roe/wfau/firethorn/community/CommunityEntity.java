@@ -130,7 +130,7 @@ implements Community
                 return create(
                     uri,
                     name,
-                    factories().jdbc().resources().userdata()
+                    factories().jdbc().resources().entities().userdata()
                     );
                 }
             }
@@ -378,7 +378,7 @@ implements Community
         log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))
             {
-            this.space = factories().jdbc().resources().userdata() ;
+            this.space = factories().jdbc().resources().entities().userdata() ;
             }
         return this.space;
         }

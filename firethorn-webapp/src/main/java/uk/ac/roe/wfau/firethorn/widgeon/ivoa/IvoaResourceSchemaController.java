@@ -100,7 +100,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         final String ident
         ) throws EntityNotFoundException{
         log.debug("parent() [{}]", ident);
-        return factories().ivoa().resources().select(
+        return factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
                 )

@@ -43,7 +43,7 @@ public class IvoaResourceLoaderTestCase
         {
         final VosiTableSetReader reader = new VosiTableSetReader(); 
 
-        final IvoaResource cadc = factories().ivoa().resources().create(
+        final IvoaResource cadc = factories().ivoa().resources().entities().create(
             "cadc-tap",
             "cadc-tap"
             );
@@ -56,7 +56,7 @@ public class IvoaResourceLoaderTestCase
             cadc
             );
 
-        IvoaResource gaia = factories().ivoa().resources().create(
+        IvoaResource gaia = factories().ivoa().resources().entities().create(
             "gaia-tap",
             "gaia-tap"
             );
@@ -69,7 +69,7 @@ public class IvoaResourceLoaderTestCase
             gaia
             );
 
-        IvoaResource gavo = factories().ivoa().resources().create(
+        IvoaResource gavo = factories().ivoa().resources().entities().create(
             "gavo-tap",
             "gavo-tap"
             );
@@ -83,7 +83,7 @@ public class IvoaResourceLoaderTestCase
             gavo
             );
 
-        IvoaResource vizier = factories().ivoa().resources().create(
+        IvoaResource vizier = factories().ivoa().resources().entities().create(
             "vizier-tap",
             "vizier-tap"
             );

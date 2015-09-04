@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * Public interface for an operation.
@@ -72,6 +73,11 @@ extends Entity
     public static interface EntityServices
     extends Entity.EntityServices<Operation>
         {
+        /**
+         * Our {@link Operation.EntityFactory} instance.
+         *
+         */
+        public Operation.EntityFactory entities();
         }
     
     /**

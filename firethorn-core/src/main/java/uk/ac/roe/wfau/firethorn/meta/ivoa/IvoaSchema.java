@@ -96,6 +96,12 @@ extends BaseSchema<IvoaSchema, IvoaTable>
     extends NamedEntity.EntityServices<IvoaSchema>
         {
         /**
+         * Our {@link IvoaSchema.EntityFactory} instance.
+         *
+         */
+        public IvoaSchema.EntityFactory entities();
+
+        /**
          * Our {@link IvoaTable.EntityFactory} instance.
          *
          */

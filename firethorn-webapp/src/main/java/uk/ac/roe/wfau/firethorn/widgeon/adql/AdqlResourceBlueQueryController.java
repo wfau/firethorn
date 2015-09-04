@@ -104,7 +104,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         log.debug("select(String)");
         log.debug("  ident [{}]", ident);
         return bean(
-            factories().adql().resources().select(
+            factories().adql().resources().entities().select(
                 factories().adql().resources().idents().ident(
                     ident
                     )
@@ -147,7 +147,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
         return created(
-            factories().adql().resources().select(
+            factories().adql().resources().entities().select(
                 factories().adql().resources().idents().ident(
                     ident
                     )

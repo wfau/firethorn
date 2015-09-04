@@ -446,7 +446,7 @@ public class AdqlQueryDatatablesController
         final PrintWriter writer = response.getWriter();
        
 
-        final AdqlQuery query = factories().adql().queries().select(
+        final AdqlQuery query = factories().adql().queries().entities().select(
             factories().adql().queries().idents().ident(
                 ident
                 )

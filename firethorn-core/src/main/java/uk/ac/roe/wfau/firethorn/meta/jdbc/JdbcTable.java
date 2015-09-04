@@ -192,6 +192,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
     extends NamedEntity.EntityServices<JdbcTable>
         {
         /**
+         * Our {@link JdbcTable.EntityFactory} instance.
+         *
+         */
+        public JdbcTable.EntityFactory entities();
+
+        /**
          * Our {@link JdbcTable.AliasFactory} instance.
          *
          */
