@@ -350,14 +350,16 @@ public class TestFactories
             implements AdqlTable.IdentFactory
                 {
                 }
-
+/*
+ * 
             @Component
             public static class NameFactory
             extends MockNameFactory<AdqlTable>
             implements AdqlTable.NameFactory
                 {
                 }
-
+ * 
+ */
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlTable>
