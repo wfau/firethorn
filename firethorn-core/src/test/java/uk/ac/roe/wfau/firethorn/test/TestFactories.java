@@ -79,7 +79,6 @@ public class TestFactories
             {
             super(path);
             }
-
         @Override
         public EntityType resolve(String link)
             throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
@@ -124,7 +123,6 @@ public class TestFactories
             implements TestJob.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<TestJob>
@@ -152,7 +150,6 @@ public class TestFactories
             implements Identity.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<Identity>
@@ -176,7 +173,12 @@ public class TestFactories
             implements Community.IdentFactory
                 {
                 }
-
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<Community>
+            implements Community.NameFactory
+                {
+                }
             @Component
             public static class LinkFactory
             extends MockLinkFactory<Community>
@@ -200,7 +202,6 @@ public class TestFactories
             implements Operation.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<Operation>
@@ -224,7 +225,6 @@ public class TestFactories
             implements Authentication.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<Authentication>
@@ -252,7 +252,6 @@ public class TestFactories
             implements ConfigProperty.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<ConfigProperty>
@@ -288,14 +287,12 @@ public class TestFactories
                         );
                     }
                 }
-
             @Component
             public static class IdentFactory
             extends AbstractIdentFactory<AdqlQuery>
             implements AdqlQuery.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlQuery>
@@ -319,14 +316,12 @@ public class TestFactories
             implements AdqlColumn.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<AdqlColumn>
             implements AdqlColumn.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlColumn>
@@ -383,14 +378,12 @@ public class TestFactories
             implements AdqlSchema.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<AdqlSchema>
             implements AdqlSchema.NameFactory
                 {
                 }
-            
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlSchema>
@@ -414,14 +407,12 @@ public class TestFactories
             implements AdqlResource.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<AdqlResource>
             implements AdqlResource.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<AdqlResource>
@@ -450,14 +441,12 @@ public class TestFactories
             implements JdbcColumn.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<JdbcColumn>
             implements JdbcColumn.NameFactory
                 {
                 }
-            
             @Component
             public static class LinkFactory
             extends MockLinkFactory<JdbcColumn>
@@ -554,14 +543,12 @@ public class TestFactories
             implements JdbcResource.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<JdbcResource>
             implements JdbcResource.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<JdbcResource>
@@ -590,14 +577,12 @@ public class TestFactories
             implements IvoaColumn.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<IvoaColumn>
             implements IvoaColumn.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<IvoaColumn>
@@ -655,14 +640,12 @@ public class TestFactories
             implements IvoaSchema.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<IvoaSchema>
             implements IvoaSchema.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<IvoaSchema>
@@ -686,14 +669,12 @@ public class TestFactories
             implements IvoaResource.IdentFactory
                 {
                 }
-
             @Component
             public static class NameFactory
             extends MockNameFactory<IvoaResource>
             implements IvoaResource.NameFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<IvoaResource>
@@ -712,6 +693,7 @@ public class TestFactories
     @Component
     public static class OgsaFactories
         {
+
         @Component
         public static class ServiceFactories
             {
@@ -721,7 +703,6 @@ public class TestFactories
             implements OgsaService.IdentFactory
                 {
                 }
-
             @Component
             public static class LinkFactory
             extends MockLinkFactory<OgsaService>
@@ -748,6 +729,7 @@ public class TestFactories
                     }
                 }
             }
+
         @Component
         public static class ResourceFactories
             {
@@ -813,7 +795,6 @@ public class TestFactories
                 implements OgsaIvoaResource.IdentFactory
                     {
                     }
-
                 @Component
                 public static class LinkFactory
                 extends MockLinkFactory<OgsaIvoaResource>
