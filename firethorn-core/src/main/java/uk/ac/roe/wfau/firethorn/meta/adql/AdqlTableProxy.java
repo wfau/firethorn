@@ -45,6 +45,20 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 public class AdqlTableProxy
     implements AdqlTable
     {
+    protected AdqlTable.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlTableEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * TODO Move to proxy base class
      */
@@ -205,14 +219,6 @@ public class AdqlTableProxy
                 );
             }
         return ident ;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().adql().tables().links().link(
-            this
-            );
         }
 
     @Override
