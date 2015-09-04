@@ -73,7 +73,7 @@ EOF
     source "${HOME:?}/chain.properties"
 
     docker run \
-        -it \
+        -it --rm \
         --name junit \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
