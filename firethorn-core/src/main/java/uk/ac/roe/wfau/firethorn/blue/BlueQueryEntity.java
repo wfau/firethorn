@@ -376,24 +376,10 @@ implements BlueQuery
             {
             return this.services;
             }
-
-        @Override
-        @Deprecated
-        public BlueQuery.IdentFactory idents()
-            {
-            throw new NotImplementedException();
-            }
-
-        @Override
-        @Deprecated
-        public BlueQuery.LinkFactory links()
-            {
-            throw new NotImplementedException();
-            }
         }
     
     /**
-     * {@link AbstractThing.EntityServices} implementation.
+     * {@link BlueQuery.EntityServices} implementation.
      * 
      */
     @Slf4j
