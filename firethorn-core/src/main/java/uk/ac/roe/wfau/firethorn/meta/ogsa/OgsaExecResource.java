@@ -13,32 +13,6 @@ public interface OgsaExecResource
 extends OgsaBaseResource
 	{
     /**
-     * Services interface.
-     * 
-     */
-    public static interface Services
-        {
-        /**
-         * Our {@link OgsaExecResource.IdentFactory}.
-         *
-         */
-        public OgsaExecResource.IdentFactory idents();
-
-        /**
-         * Our {@link OgsaExecResource.LinkFactory}.
-         *
-         */
-        public OgsaExecResource.LinkFactory links();
-
-        /**
-         * Our {@link OgsaExecResource.EntityFactory}.
-         *
-         */
-        public OgsaExecResource.EntityFactory entities();
-        
-        }
-        
-    /**
      * {@link Entity.IdentFactory} interface.
      *
      */
@@ -95,4 +69,12 @@ extends OgsaBaseResource
         
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<OgsaExecResource>
+        {
+        }
 	}

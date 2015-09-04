@@ -26,6 +26,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -73,86 +74,6 @@ implements OgsaExecResource
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaExecResourceEntity";
     
     /**
-     * {@link OgsaExecResource.Services} implementation.
-     * 
-     */
-    @Slf4j
-    @Repository
-    public static class Services
-    implements OgsaExecResource.Services
-        {
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static Services instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Services instance()
-            {
-            log.debug("instance()");
-            return OgsaExecResourceEntity.Services.instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected Services()
-            {
-            log.debug("Services()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (OgsaExecResourceEntity.Services.instance == null)
-                {
-                OgsaExecResourceEntity.Services.instance = this ;
-                }
-            else {
-                log.error("Setting Services.instance more than once");
-                throw new IllegalStateException(
-                    "Setting Services.instance more than once"
-                    );
-                }
-            }
-        
-        @Autowired
-        private OgsaExecResource.IdentFactory idents;
-        @Override
-        public OgsaExecResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaExecResource.LinkFactory links;
-        @Override
-        public OgsaExecResource.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private OgsaExecResource.EntityFactory entities;
-        @Override
-        public OgsaExecResource.EntityFactory entities()
-            {
-            return this.entities;
-            }
-        }
-    
-    /**
      * {@link OgsaExecResource.EntityFactory} implementation.
      *
      */
@@ -168,22 +89,6 @@ implements OgsaExecResource
             return OgsaExecResourceEntity.class;
             }
 
-        @Autowired
-        private OgsaExecResource.IdentFactory idents;
-        @Override
-        public OgsaExecResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaExecResource.LinkFactory links;
-        @Override
-        public OgsaExecResource.LinkFactory links()
-            {
-            return this.links;
-            }
-        
         @Override
         @SelectMethod
         public Iterable<OgsaExecResource> select()
@@ -252,11 +157,103 @@ implements OgsaExecResource
             }
         }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements OgsaExecResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaExecResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OgsaExecResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaExecResourceEntity.EntityServices.instance == null)
+                {
+                OgsaExecResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaExecResource.IdentFactory idents;
+        @Override
+        public OgsaExecResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaExecResource.LinkFactory links;
+        @Override
+        public OgsaExecResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaExecResource.EntityFactory entities;
+        @Override
+        public OgsaExecResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
     @Override
-    public OgsaExecResource.EntityFactory factory()
+    protected OgsaExecResource.EntityFactory factory()
         {
         log.debug("factory()");
-        return OgsaExecResourceEntity.Services.instance().entities() ; 
+        return OgsaExecResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected OgsaExecResource.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaExecResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
     
     /**
@@ -282,17 +279,11 @@ implements OgsaExecResource
         }
 
     @Override
-    public String link()
-        {
-        return factories().ogsa().factories().exec().links().link(
-            this
-            );
-        }
-
-    @Override
 	public BaseResource<?> resource()
 		{
-		return null;
+		// This shouldn't be here.
+		// A DRER is not linked to a BaseResource resource.
+		throw new NotImplementedException();
 		}
 
     @Override
@@ -304,6 +295,5 @@ implements OgsaExecResource
         log.debug("  ogsaid [{}]", this.ogsaid);
         throw new NotImplementedException();
         }
-
     }
         

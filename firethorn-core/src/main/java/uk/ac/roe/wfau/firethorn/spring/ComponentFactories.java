@@ -31,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories;
 
 
@@ -114,29 +113,29 @@ public interface ComponentFactories
     public ConfigProperty.EntityFactory config();
 
     /**
-     * Our generic Job<?> factories.
+     * Our {@link Job.EntityServices} instance.
      *
      */
     @Deprecated
-    public Job.Services jobs();
+    public Job.EntityServices jobs();
 
     /**
-     * Our TestJob factories.
+     * Our {@link TestJob.EntityServices} instance.
      *
      */
-    public TestJob.Services tests();
+    public TestJob.EntityServices tests();
 
     /**
-     * Our Query factories.
+     * Our {@link AdqlQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.Services queries();
+    public AdqlQuery.EntityServices queries();
 
     /**
-     * Our Query factories.
+     * Our {@link BlueQuery.EntityServices} instance.
      *
      */
-    public BlueQuery.Services blues();
+    public BlueQuery.EntityServices blues();
     
     /**
      * Access to the current Context factory.

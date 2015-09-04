@@ -23,6 +23,7 @@ import java.io.LineNumberReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -135,22 +136,6 @@ implements OgsaService
         public Class<?> etype()
             {
             return OgsaServiceEntity.class ;
-            }
-
-        @Autowired
-        private OgsaService.IdentFactory idents;
-        @Override
-        public OgsaService.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaService.LinkFactory links;
-        @Override
-        public OgsaService.LinkFactory links()
-            {
-            return this.links;
             }
 
         @Override
@@ -373,6 +358,113 @@ implements OgsaService
                 }
             }
         }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements OgsaService.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaServiceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OgsaServiceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaServiceEntity.EntityServices.instance == null)
+                {
+                OgsaServiceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaService.IdentFactory idents;
+        @Override
+        public OgsaService.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaService.LinkFactory links;
+        @Override
+        public OgsaService.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaService.NameFactory names;
+        @Override
+        public OgsaService.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private OgsaService.EntityFactory entities;
+        @Override
+        public OgsaService.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected OgsaService.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OgsaServiceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected OgsaService.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaServiceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
     
     /**
      * Protected constructor. 
@@ -475,14 +567,6 @@ implements OgsaService
     protected HttpStatus http()
         {
         return http ;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ogsa().services().links().link(
-            this
-            );
         }
 
     @Override

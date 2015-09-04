@@ -34,40 +34,7 @@ public interface OgsaService
 extends BaseComponent
     {
     /**
-     * Factories interface.
-     * 
-     */
-    public static interface Factories
-        {
-
-        /**
-         * Our {@link OgsaService.IdentFactory}.
-         *
-         */
-        public OgsaService.IdentFactory idents();
-
-        /**
-         * Our {@link OgsaJdbcResource.LinkFactory}.
-         *
-         */
-        public OgsaService.LinkFactory links();
-
-        /**
-         * Our {@link OgsaJdbcResource.NameFactory}.
-         *
-         */
-        public OgsaService.NameFactory names();
-
-        /**
-         * Our {@link OgsaService.EntityFactory}.
-         *
-         */
-        public OgsaService.EntityFactory entities();
-        
-        }
-
-    /**
-     * An endpoint URL factory.
+     * An endpoint URL factory interface.
      * 
      */
     public static interface EndpointFactory
@@ -181,6 +148,15 @@ extends BaseComponent
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<OgsaService>
+        {
+        }
+    
     /**
      * Enum for the service status.
      * 

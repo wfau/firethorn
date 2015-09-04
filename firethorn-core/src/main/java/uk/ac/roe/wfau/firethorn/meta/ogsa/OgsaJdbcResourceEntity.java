@@ -31,6 +31,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -128,22 +129,6 @@ implements OgsaJdbcResource
             return OgsaJdbcResourceEntity.class;
             }
 
-        @Autowired
-        private OgsaJdbcResource.IdentFactory idents;
-        @Override
-        public OgsaJdbcResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.LinkFactory links;
-        @Override
-        public OgsaJdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-        
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select()
@@ -271,38 +256,35 @@ implements OgsaJdbcResource
         }
 
     /**
-     * {@link OgsaJdbcResource.Factories} implementation.
+     * {@link Entity.EntityServices} implementation.
      * 
      */
     @Slf4j
-    @Repository
-    public static class Factories
-    implements OgsaJdbcResource.Factories
+    @Component
+    public static class EntityServices
+    implements OgsaJdbcResource.EntityServices
         {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaJdbcResourceEntity.EntityServices instance ; 
 
         /**
          * Our singleton instance.
          * 
          */
-        private static Factories instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Factories instance()
+        public static EntityServices instance()
             {
-            log.debug("instance()");
-            return OgsaJdbcResourceEntity.Factories.instance ;
+            return OgsaJdbcResourceEntity.EntityServices.instance ;
             }
 
         /**
          * Protected constructor.
          * 
          */
-        protected Factories()
+        protected EntityServices()
             {
-            log.debug("Factories()");
             }
         
         /**
@@ -313,14 +295,14 @@ implements OgsaJdbcResource
         protected void init()
             {
             log.debug("init()");
-            if (OgsaJdbcResourceEntity.Factories.instance == null)
+            if (OgsaJdbcResourceEntity.EntityServices.instance == null)
                 {
-                OgsaJdbcResourceEntity.Factories.instance = this ;
+                OgsaJdbcResourceEntity.EntityServices.instance = this ;
                 }
             else {
-                log.error("Setting Factories.instance more than once");
+                log.error("Setting instance more than once");
                 throw new IllegalStateException(
-                    "Setting Factories.instance more than once"
+                    "Setting instance more than once"
                     );
                 }
             }
@@ -342,6 +324,14 @@ implements OgsaJdbcResource
             }
 
         @Autowired
+        private OgsaJdbcResource.NameFactory names;
+        @Override
+        public OgsaJdbcResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
         private OgsaJdbcResource.EntityFactory entities;
         @Override
         public OgsaJdbcResource.EntityFactory entities()
@@ -351,10 +341,25 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public OgsaJdbcResource.EntityFactory factory()
+    protected OgsaJdbcResource.EntityFactory factory()
         {
         log.debug("factory()");
-        return OgsaJdbcResourceEntity.Factories.instance().entities() ; 
+        return OgsaJdbcResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected OgsaJdbcResource.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaJdbcResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     /**
@@ -396,14 +401,6 @@ implements OgsaJdbcResource
     public JdbcResource resource()
         {
         return this.resource;
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().ogsa().factories().jdbc().links().link(
-            this
-            );
         }
 
     @Override

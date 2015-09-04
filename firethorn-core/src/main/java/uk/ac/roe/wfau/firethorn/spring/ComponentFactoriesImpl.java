@@ -187,27 +187,19 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected Job.Services jobs;
+    protected Job.EntityServices jobs;
     @Override
-    public Job.Services jobs()
+    public Job.EntityServices jobs()
         {
         return this.jobs;
         }
 
     @Autowired
-    protected TestJob.Services tests;
+    protected TestJob.EntityServices tests;
     @Override
-    public TestJob.Services tests()
+    public TestJob.EntityServices tests()
         {
         return this.tests;
-        }
-
-    @Autowired
-    protected AdqlQuery.Services queries;
-    @Override
-    public AdqlQuery.Services queries()
-        {
-        return this.queries;
         }
 
     @Autowired
@@ -235,9 +227,17 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected BlueQuery.Services blues;
+    protected AdqlQuery.EntityServices queries;
     @Override
-    public BlueQuery.Services blues()
+    public AdqlQuery.EntityServices queries()
+        {
+        return this.queries;
+        }
+
+    @Autowired
+    protected BlueQuery.EntityServices blues;
+    @Override
+    public BlueQuery.EntityServices blues()
         {
         return this.blues;
         }

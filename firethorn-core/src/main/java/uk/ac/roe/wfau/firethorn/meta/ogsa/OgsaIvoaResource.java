@@ -111,6 +111,15 @@ public interface OgsaIvoaResource
         public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source);
         
         }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<OgsaIvoaResource>
+        {
+        }
     
     /**
      * The parent {@link IvoaResource}.

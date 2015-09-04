@@ -93,49 +93,6 @@ implements Job
     protected static final String DB_COMPLETED_COL = "completed" ;
 
     /**
-     * Local service implementations.
-     * @todo Use this as a template for the other classes.
-     * @todo Separate Entity Resolver and Factory interfaces.
-     *
-     */
-    @Component
-    public static class Services
-    implements Job.Services
-        {
-        @Autowired
-        public Job.LinkFactory links;
-        @Override
-        public Job.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        public Job.IdentFactory idents;
-        @Override
-        public Job.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        public Job.Resolver resolver;
-        @Override
-        public Job.Resolver resolver()
-            {
-            return this.resolver;
-            }
-
-        @Autowired
-        private Job.Executor executor;
-        @Override
-        public Job.Executor executor()
-            {
-            return this.executor;
-            }
-        }
-
-    /**
      * Resolver implementation.
      *
      */
@@ -148,22 +105,6 @@ implements Job
         public Class<?> etype()
             {
             return JobEntity.class;
-            }
-
-        @Autowired
-        private Job.LinkFactory links;
-        @Override
-        public Job.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private Job.IdentFactory idents;
-        @Override
-        public Job.IdentFactory idents()
-            {
-            return this.idents;
             }
         }
 
