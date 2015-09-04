@@ -37,7 +37,7 @@ public class SimpleQueryTestCase
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
-    @Test
+    //@Test
     public void testEditing()
     throws Exception
         {
@@ -85,7 +85,7 @@ public class SimpleQueryTestCase
 			);
         }
 
-    @Test
+    //@Test
     public void testQueued()
     throws Exception
         {
@@ -132,7 +132,7 @@ public class SimpleQueryTestCase
 			);
         }
 
-    @Test
+    //@Test
     public void testCancelled()
     throws Exception
         {
@@ -157,7 +157,7 @@ public class SimpleQueryTestCase
 			);
         }
 
-    @Test
+    //@Test
     public void testFailed()
     throws Exception
         {
@@ -180,7 +180,7 @@ public class SimpleQueryTestCase
 			);
         }
 
-    @Test
+    //@Test
     public void testError()
     throws Exception
         {
