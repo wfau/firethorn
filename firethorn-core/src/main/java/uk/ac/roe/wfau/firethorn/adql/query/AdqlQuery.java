@@ -37,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 public interface AdqlQuery
 extends NamedEntity, Job
     {
-
     /**
      * Query timing statistics.
      * 
@@ -307,56 +306,6 @@ extends NamedEntity, Job
         }
 
     /**
-     * Our local service implementations.
-     *
-     */
-    public static interface Services
-        {
-        /**
-         * Our Name factory.
-         *
-         */
-        public NameFactory names();
-
-        /**
-         * Our Link factory.
-         *
-         */
-        public LinkFactory links();
-
-        /**
-         * Our Ident factory.
-         *
-         */
-        public IdentFactory idents();
-
-        /**
-         * Our Query Factory.
-         *
-         */
-        public EntityFactory factory();
-
-        /**
-         * Our Query executor.
-         *
-         */
-        public Job.Executor executor();
-
-        /**
-         * OGSA-DAI param factory.
-         *
-         */
-        public ParamFactory params();
-
-        }
-
-    /**
-     * Our local service implementations.
-     *
-     */
-    public Services services();
-
-    /**
      * Name factory interface.
      *
      */
@@ -384,7 +333,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Factory interface.
+     * Entity factory interface.
      *
      */
     public static interface EntityFactory
@@ -433,6 +382,27 @@ extends NamedEntity, Job
         
         }
 
+    /**
+     * EntityServices interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlQuery>
+        {
+        /**
+         * Our {@link Job.Executor} instance.
+         *
+         */
+        public Job.Executor executor();
+
+        /**
+         * Our OGSA-DAI param factory instance.
+         *
+         */
+        public ParamFactory params();
+
+        }
+    
     /**
      * QueryTable builder interface.
      *

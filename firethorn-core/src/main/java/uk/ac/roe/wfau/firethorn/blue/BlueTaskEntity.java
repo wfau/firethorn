@@ -111,18 +111,18 @@ implements BlueTask<TaskType>
     /**
      * {@link BlueTask.Services} implementation.
      * 
-     */
     @Service
     public static abstract class Services<TaskType extends BlueTask<?>>
         implements BlueTask.Services<TaskType>
         {
         }
+     */
 
     /**
      * Our {@link BlueTask.Services} instance.
      *
-     */
     protected abstract BlueTaskEntity.Services<TaskType> services();
+     */
 
     /**
      * {@link BlueTask.EntityFactory} implementation.
@@ -161,9 +161,9 @@ implements BlueTask<TaskType>
      * Our {@link BlueTask.EntityFactory} instance.
      * 
      *
-     */
     @Override
     protected abstract BlueTask.EntityFactory<TaskType> factory();
+     */
 
     /**
      * Base class for {@link BlueTaskEntity} task runners.
@@ -176,8 +176,8 @@ implements BlueTask<TaskType>
         {
 
         @Autowired
-        private Services<TaskType> services ;
-        protected Services<TaskType> services()
+        private BlueTask.EntityServices<TaskType> services ;
+        protected BlueTask.EntityServices<TaskType> services()
         	{
         	return this.services;
         	}
@@ -322,8 +322,8 @@ implements BlueTask<TaskType>
     /**
      * Our {@link BlueTaskEntity.TaskRunner} instance.
      * 
-     */
     protected abstract BlueTask.TaskRunner<TaskType> runner();
+     */
 
     /**
      * {@link Updator} base class.
@@ -387,6 +387,10 @@ implements BlueTask<TaskType>
     		this
     		);    	
     	}
+
+    protected abstract BlueTask.TaskRunner<TaskType> runner();
+    protected abstract BlueTask.EntityFactory<TaskType>  factory();
+    protected abstract BlueTask.EntityServices<TaskType> services();
 
     /**
      * Protected constructor.

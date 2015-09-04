@@ -227,7 +227,7 @@ implements Identity
     @Override
     public String link()
         {
-        return factories().communities().members().links().link(
+        return factories().communities().identities().links().link(
             this
             );
         }

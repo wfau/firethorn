@@ -97,86 +97,6 @@ implements OgsaJdbcResource
      *
      */
     protected static final String DB_RESOURCE_RESOURCE_COL = "resource";
-
-    /**
-     * {@link OgsaJdbcResource.Factories} implementation.
-     * 
-     */
-    @Slf4j
-    @Repository
-    public static class Factories
-    implements OgsaJdbcResource.Factories
-        {
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static Factories instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Factories instance()
-            {
-            log.debug("instance()");
-            return OgsaJdbcResourceEntity.Factories.instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected Factories()
-            {
-            log.debug("Factories()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (OgsaJdbcResourceEntity.Factories.instance == null)
-                {
-                OgsaJdbcResourceEntity.Factories.instance = this ;
-                }
-            else {
-                log.error("Setting Factories.instance more than once");
-                throw new IllegalStateException(
-                    "Setting Factories.instance more than once"
-                    );
-                }
-            }
-        
-        @Autowired
-        private OgsaJdbcResource.IdentFactory idents;
-        @Override
-        public OgsaJdbcResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.LinkFactory links;
-        @Override
-        public OgsaJdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.EntityFactory entities;
-        @Override
-        public OgsaJdbcResource.EntityFactory entities()
-            {
-            return this.entities;
-            }
-        }
     
     /**
      * {@link OgsaJdbcResource.EntityFactory} implementation.
@@ -350,13 +270,93 @@ implements OgsaJdbcResource
             }
         }
 
+    /**
+     * {@link OgsaJdbcResource.Factories} implementation.
+     * 
+     */
+    @Slf4j
+    @Repository
+    public static class Factories
+    implements OgsaJdbcResource.Factories
+        {
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static Factories instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static Factories instance()
+            {
+            log.debug("instance()");
+            return OgsaJdbcResourceEntity.Factories.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected Factories()
+            {
+            log.debug("Factories()");
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaJdbcResourceEntity.Factories.instance == null)
+                {
+                OgsaJdbcResourceEntity.Factories.instance = this ;
+                }
+            else {
+                log.error("Setting Factories.instance more than once");
+                throw new IllegalStateException(
+                    "Setting Factories.instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaJdbcResource.IdentFactory idents;
+        @Override
+        public OgsaJdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.LinkFactory links;
+        @Override
+        public OgsaJdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.EntityFactory entities;
+        @Override
+        public OgsaJdbcResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
     @Override
     public OgsaJdbcResource.EntityFactory factory()
         {
         log.debug("factory()");
         return OgsaJdbcResourceEntity.Factories.instance().entities() ; 
         }
-    
+
     /**
      * Protected constructor. 
      *

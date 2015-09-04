@@ -42,12 +42,6 @@ public interface OgsaJdbcResource
         public OgsaJdbcResource.IdentFactory idents();
 
         /**
-         * Our {@link OgsaJdbcResource.NameFactory}.
-         *
-        public OgsaJdbcResource.NameFactory names();
-         */
-
-        /**
          * Our {@link OgsaJdbcResource.LinkFactory}.
          *
          */

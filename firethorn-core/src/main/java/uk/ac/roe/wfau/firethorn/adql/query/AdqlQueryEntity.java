@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -258,19 +259,63 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * Our local services.
-     *
+     * {@link AdqlQuery.EntityServices} implementation.
+     * 
      */
+    @Slf4j
     @Component
-    public static class Services
-    implements AdqlQuery.Services
+    public static class EntityServices
+    implements AdqlQuery.EntityServices
         {
-        @Autowired
-        public AdqlQuery.NameFactory names;
-        @Override
-        public AdqlQuery.NameFactory names()
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.names;
+            return AdqlQueryEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlQueryEntity.EntityServices.instance == null)
+                {
+                AdqlQueryEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private AdqlQuery.IdentFactory idents;
+        @Override
+        public AdqlQuery.IdentFactory idents()
+            {
+            return this.idents;
             }
 
         @Autowired
@@ -282,19 +327,19 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.IdentFactory idents;
+        private AdqlQuery.NameFactory names;
         @Override
-        public AdqlQuery.IdentFactory idents()
+        public AdqlQuery.NameFactory names()
             {
-            return this.idents;
+            return this.names;
             }
-
+        
         @Autowired
-        private AdqlQuery.EntityFactory factory;
+        private AdqlQuery.EntityFactory entities;
         @Override
-        public AdqlQuery.EntityFactory factory()
+        public AdqlQuery.EntityFactory entities()
             {
-            return this.factory;
+            return this.entities;
             }
 
         @Autowired
@@ -315,9 +360,17 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public AdqlQuery.Services services()
+    protected AdqlQuery.EntityFactory factory()
         {
-        return factories().queries();
+        log.debug("factory()");
+        return AdqlQueryEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected AdqlQuery.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlQueryEntity.EntityServices.instance() ; 
         }
 
     /**
@@ -1158,7 +1211,7 @@ implements AdqlQuery, AdqlParserQuery
                 try {
                 
                     log.debug("-- AdqlQuery resolving [{}]", ident());
-                    final AdqlQuery query = services().factory().select(
+                    final AdqlQuery query = services().entities().select(
                             ident()
                             );
                     //

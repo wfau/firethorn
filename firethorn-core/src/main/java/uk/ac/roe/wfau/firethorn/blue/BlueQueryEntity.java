@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -69,6 +68,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -88,8 +88,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient.Param;
-import uk.org.ogsadai.client.toolkit.Workflow;
 
 /**
  *
@@ -182,107 +180,6 @@ implements BlueQuery
      *
      */
     protected static final String DB_RESULT_ROW_COUNT = "resultrowcount";
-    
-    /**
-     * {@link BlueQuery.Services} implementation.
-     * 
-     */
-    @Slf4j
-    @Component
-    public static class Services
-    extends BlueTaskEntity.Services<BlueQuery>
-    implements BlueQuery.Services
-        {
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static Services instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Services instance()
-            {
-            log.debug("instance()");
-            return instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected Services()
-            {
-            log.debug("Services()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (BlueQueryEntity.Services.instance == null)
-                {
-                BlueQueryEntity.Services.instance = this ;
-                }
-            else {
-                log.error("Setting Services.instance more than once");
-                throw new IllegalStateException(
-                    "Setting Services.instance more than once"
-                    );
-                }
-            }
-        
-        @Autowired
-        private BlueQuery.IdentFactory idents;
-        @Override
-        public BlueQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private BlueQuery.NameFactory names;
-        @Override
-        public BlueQuery.NameFactory names()
-            {
-            return this.names;
-            }
-
-        @Autowired
-        private BlueQuery.LinkFactory links;
-        @Override
-        public BlueQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private BlueQuery.EntityFactory entities;
-        @Override
-        public BlueQuery.EntityFactory entities()
-            {
-            return this.entities;
-            }
-
-        @Autowired
-        private BlueQuery.TaskRunner runner;  
-        public  BlueQuery.TaskRunner runner()
-            {
-            return this.runner;
-            }
-        }
-    
-    @Override
-    protected BlueQueryEntity.Services services()
-        {
-        return BlueQueryEntity.Services.instance;
-        }
 
     /**
      * {@link BlueQuery.TaskRunner} implementation.
@@ -448,7 +345,6 @@ implements BlueQuery
             return query;
             }
         
-        
         @Override
         @SelectMethod
         public Iterable<BlueQuery> select()
@@ -475,37 +371,138 @@ implements BlueQuery
             }
 
         @Autowired
-        private BlueQuery.Services services;
-        public BlueQuery.Services services()
+        private BlueQuery.EntityServices services;
+        protected BlueQuery.EntityServices services()
             {
             return this.services;
             }
 
-        // Deprecated
+        @Override
+        @Deprecated
+        public BlueQuery.IdentFactory idents()
+            {
+            throw new NotImplementedException();
+            }
+
+        @Override
+        @Deprecated
+        public BlueQuery.LinkFactory links()
+            {
+            throw new NotImplementedException();
+            }
+        }
+    
+    /**
+     * {@link AbstractThing.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements BlueQuery.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return BlueQueryEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (BlueQueryEntity.EntityServices.instance == null)
+                {
+                BlueQueryEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private BlueQuery.IdentFactory idents;
         @Override
         public BlueQuery.IdentFactory idents()
             {
-            return null;
+            return this.idents;
             }
 
-        // Deprecated
+        @Autowired
+        private BlueQuery.LinkFactory links;
         @Override
         public BlueQuery.LinkFactory links()
             {
-            return null;
+            return this.links;
             }
+
+        @Autowired
+        private BlueQuery.EntityFactory entities;
+        @Override
+        public BlueQuery.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+		private BlueQuery.NameFactory names;
+		@Override
+		public BlueQuery.NameFactory names()
+			{
+			return this.names;
+			}
+
+        @Autowired
+		private BlueQuery.TaskRunner runner;
+		@Override
+		public BlueQuery.TaskRunner runner()
+			{
+			return this.runner;
+			}
         }
 
     @Override
     protected BlueQuery.EntityFactory factory()
         {
-        return services().entities();
+        log.debug("factory()");
+        return BlueQueryEntity.EntityServices.instance().entities() ; 
         }
 
-	@Override
+    @Override
+    protected BlueQuery.EntityServices services()
+        {
+        log.debug("services()");
+        return BlueQueryEntity.EntityServices.instance() ; 
+        }
+
 	protected BlueQuery.TaskRunner runner()
 		{
-        return services().runner();
+        log.debug("runner()");
+        return BlueQueryEntity.EntityServices.instance().runner() ; 
 		}
     
     /**

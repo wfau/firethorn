@@ -3,6 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 
 /**
@@ -31,6 +32,20 @@ extends Entity
          */
         public String name(final String name);
         
+        }
+
+    /**
+     * EntityServices interface.
+     * 
+     */
+    public static interface EntityServices<EntityType extends NamedEntity>
+    extends Entity.EntityServices<EntityType>
+        {
+        /**
+         * Our {@link NamedEntity.NameFactory} instance.
+         *
+         */
+        public NamedEntity.NameFactory<EntityType> names();
         }
 
     /**

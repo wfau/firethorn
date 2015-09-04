@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.springframework.http.HttpStatus;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
@@ -35,6 +33,38 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public interface OgsaService
 extends BaseComponent
     {
+    /**
+     * Factories interface.
+     * 
+     */
+    public static interface Factories
+        {
+
+        /**
+         * Our {@link OgsaService.IdentFactory}.
+         *
+         */
+        public OgsaService.IdentFactory idents();
+
+        /**
+         * Our {@link OgsaJdbcResource.LinkFactory}.
+         *
+         */
+        public OgsaService.LinkFactory links();
+
+        /**
+         * Our {@link OgsaJdbcResource.NameFactory}.
+         *
+         */
+        public OgsaService.NameFactory names();
+
+        /**
+         * Our {@link OgsaService.EntityFactory}.
+         *
+         */
+        public OgsaService.EntityFactory entities();
+        
+        }
 
     /**
      * An endpoint URL factory.
@@ -197,20 +227,6 @@ extends BaseComponent
      *
      */
     public String version();
-
-    /**
-     * Get the latest HTTP status code.
-     * @return The HTTP status code.
-     *
-    public HttpStatus http();
-     */
-
-    /**
-     * Check the HTTP status.
-     * @return The HTTP status code.
-     *
-    public HttpStatus ping();
-     */
 
     /**
      * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.

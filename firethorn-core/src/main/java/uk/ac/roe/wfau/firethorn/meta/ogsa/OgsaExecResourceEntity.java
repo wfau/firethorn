@@ -73,7 +73,7 @@ implements OgsaExecResource
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OgsaExecResourceEntity";
     
     /**
-     * {@link OgsaExecResource.Factories} implementation.
+     * {@link OgsaExecResource.Services} implementation.
      * 
      */
     @Slf4j

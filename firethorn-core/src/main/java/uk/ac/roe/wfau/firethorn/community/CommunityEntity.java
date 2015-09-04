@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.community;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -176,6 +178,7 @@ implements Community
         @Autowired
         protected Community.IdentFactory idents;
         @Override
+        @Deprecated
         public Community.IdentFactory idents()
             {
             return this.idents;
@@ -184,20 +187,120 @@ implements Community
         @Autowired
         protected Community.LinkFactory links;
         @Override
+        @Deprecated
+        public Community.LinkFactory links()
+            {
+            return this.links;
+            }
+        }
+    
+    /**
+     * {@link AbstractThing.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Community.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return CommunityEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (CommunityEntity.EntityServices.instance == null)
+                {
+                CommunityEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private Community.IdentFactory idents;
+        @Override
+        public Community.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private Community.LinkFactory links;
+        @Override
         public Community.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        protected Identity.EntityFactory members;
+        private Community.NameFactory names;
         @Override
-        public Identity.EntityFactory members()
+        public Community.NameFactory names()
             {
-            return members;
+            return this.names;
+            }
+
+        @Autowired
+        private Community.EntityFactory entities;
+        @Override
+        public Community.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        protected Identity.EntityFactory identities;
+        @Override
+        public Identity.EntityFactory identities()
+            {
+            return identities;
             }
         }
 
+    @Override
+    protected Community.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return CommunityEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Community.EntityServices services()
+        {
+        log.debug("services()");
+        return CommunityEntity.EntityServices.instance() ; 
+        }
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -246,7 +349,7 @@ implements Community
             @Override
             public Identity create(final String name)
                 {
-                return factories().communities().members().create(
+                return services().identities().create(
                     CommunityEntity.this,
                     name
                     );
@@ -255,7 +358,7 @@ implements Community
             @Override
             public Identity select(final String name)
                 {
-                return factories().communities().members().select(
+                return services().identities().select(
                     CommunityEntity.this,
                     name
                     );

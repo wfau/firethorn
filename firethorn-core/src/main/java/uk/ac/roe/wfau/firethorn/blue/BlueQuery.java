@@ -29,7 +29,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -51,11 +50,21 @@ extends BlueTask<BlueQuery>
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json"
         );
+
+    /**
+     * EntityServices interface.
+     * 
+     */
+    public static interface EntityServices
+    extends BlueTask.EntityServices<BlueQuery>
+        {
+        @Override
+        public BlueQuery.LinkFactory links();
+        }
     
     /**
      * Services interface.
      * 
-     */
     public static interface Services
     extends BlueTask.Services<BlueQuery>
         {
@@ -75,6 +84,7 @@ extends BlueTask<BlueQuery>
         public BlueQuery.TaskRunner runner(); 
 
         }
+     */
 
     /**
      * {@link NamedEntity.NameFactory} interface.

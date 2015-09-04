@@ -38,8 +38,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -146,10 +148,22 @@ implements Entity
     protected abstract Entity.EntityFactory<?> factory();
      * 
      */
-    protected Entity.EntityFactory<?> factory()
+    protected abstract Entity.EntityFactory<?>  factory();
+    protected abstract Entity.EntityServices<?> services();
+
+    protected Entity.EntityFactory<?> xfactory()
         {
-        return null;
+        log.error("Call to abstract factory() method");
+        return null ;
+		/*
+		 *
+        throw new NotImplementedException(
+    		"Call to abstract factory() method"
+    		);
+		 * 
+		 */
         }
+
     
     /**
      * Helper method to check for empty or blank strings.

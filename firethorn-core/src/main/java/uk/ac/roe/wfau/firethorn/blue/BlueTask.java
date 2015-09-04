@@ -22,12 +22,10 @@ import java.util.concurrent.Future;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskRunner;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
@@ -39,10 +37,24 @@ extends NamedEntity
     {
 
     /**
+     * EntityServices interface.
+     * 
+     */
+    public static interface EntityServices<TaskType extends BlueTask<?>>
+    extends NamedEntity.EntityServices<TaskType>
+        {
+        /**
+         * Our {@link BlueTask.TaskRunner} instance.
+         * 
+         */
+        public BlueTask.TaskRunner<TaskType> runner(); 
+        }
+
+    /**
      * Services interface.
      * 
      */
-    public static interface Services<TaskType extends BlueTask<?>>
+    public static interface OldServices<TaskType extends BlueTask<?>>
         {
         /**
          * Our {@link IdentFactory} instance.

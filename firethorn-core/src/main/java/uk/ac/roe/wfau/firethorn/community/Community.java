@@ -106,8 +106,23 @@ extends NamedEntity
         /**
          * Our local Identity member factory.
          * 
-         */
         public Identity.EntityFactory members();
+         */
+        
+        }
+
+    /**
+     * EntityServices interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<Community>
+        {
+        /**
+         * Our {@link Identity} factory instance.
+         * 
+         */
+        public Identity.EntityFactory identities();
         
         }
 
