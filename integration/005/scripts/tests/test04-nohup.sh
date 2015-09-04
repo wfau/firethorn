@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir logs
 
 identity=${identity:-$(date '+%H:%M:%S')}
 community=${community:-$(date '+%A %-d %B %Y')}
