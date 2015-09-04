@@ -151,6 +151,12 @@ public class TestFactories
                 {
                 }
             @Component
+            public static class NameFactory
+            extends MockNameFactory<Identity>
+            implements Identity.NameFactory
+                {
+                }
+            @Component
             public static class LinkFactory
             extends MockLinkFactory<Identity>
             implements Identity.LinkFactory
@@ -275,22 +281,15 @@ public class TestFactories
         public static class QueryFactories
             {
             @Component
-            public static class NameFactory
-            extends DateNameFactory<AdqlQuery>
-            implements AdqlQuery.NameFactory
-                {
-                @Override
-                public String name()
-                    {
-                    return datename(
-                        "QUERY"
-                        );
-                    }
-                }
-            @Component
             public static class IdentFactory
             extends AbstractIdentFactory<AdqlQuery>
             implements AdqlQuery.IdentFactory
+                {
+                }
+            @Component
+            public static class NameFactory
+            extends MockNameFactory<AdqlQuery>
+            implements AdqlQuery.NameFactory
                 {
                 }
             @Component
