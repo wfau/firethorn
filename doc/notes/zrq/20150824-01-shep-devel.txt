@@ -169,26 +169,25 @@ EOF
     source "${HOME:?}/firethorn.settings"
     if [ ! -e "${FIRETHORN_CODE:?}" ]
     then
-        #
-        # Clone our repository.
         pushd "$(dirname ${FIRETHORN_CODE:?})"
 
             hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
 
-            pushd firethorn
-                hg update "${branch:?}"
-            popd
         popd
     else
-        #
-        # Pull and update from branch.
         pushd "${FIRETHORN_CODE:?}"
 
             hg pull
-            hg update "${branch:?}"
+            hg update
         
         popd
     fi
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${branch:?}"
+    
+    popd
 
 # -----------------------------------------------------
 # Build our toolkit containers.

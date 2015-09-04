@@ -62,8 +62,8 @@ firethorn.data.driver=${datadriver:?}
 
 EOF
 
-    chmod a+r "${properties:?}" 
-    chcon -t svirt_sandbox_file_t "${properties:?}" 
+    chmod a+r "${HOME:?}/firethorn.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
 
 
 # -----------------------------------------------------
@@ -114,24 +114,25 @@ EOF
     source "${HOME:?}/firethorn.settings"
     if [ ! -e "${FIRETHORN_CODE:?}" ]
     then
-        #
-        # Clone our repository.
         pushd "$(dirname ${FIRETHORN_CODE:?})"
 
             hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
 
         popd
     else
-        #
-        # Pull and update from branch.
         pushd "${FIRETHORN_CODE:?}"
 
             hg pull
-            hg update "${branch:?}"
-            hg branch
+            hg update
         
         popd
     fi
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${branch:?}"
+    
+    popd
 
 # -----------------------------------------------------
 # Build our source code.
