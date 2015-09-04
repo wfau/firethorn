@@ -123,6 +123,6 @@ public interface OgsaIvoaResource
      * @return The resource status.
      *  
      */
-    public OgStatus init();
+    public OgsaStatus init();
 
     }

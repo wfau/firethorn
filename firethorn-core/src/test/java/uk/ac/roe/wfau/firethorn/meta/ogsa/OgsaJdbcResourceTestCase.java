@@ -61,8 +61,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.CREATED,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.CREATED,
+            target.ogstatus()
             );
 
         assertNotNull(
@@ -70,8 +70,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.ACTIVE,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.ACTIVE,
+            target.ogstatus()
             );
         
         }
@@ -100,8 +100,8 @@ extends TestBase
         final OgsaJdbcResource target = resource.ogsa().primary();
 
         assertEquals(
-            OgsaBaseResource.OgStatus.CREATED,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.CREATED,
+            target.ogstatus()
             );
 
         assertNotNull(
@@ -109,8 +109,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.ACTIVE,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.ACTIVE,
+            target.ogstatus()
             );
         }
     }

@@ -279,13 +279,17 @@ public class OgsaIvoaResourceEntity
         }
 
     @Override
-    public OgStatus init()
+    public OgsaStatus init()
         {
+        log.debug("init()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
         //
         // If we already have an ODSA-DAI resource ID.
         if (ogsaid() != null)
             {
-            return ogStatus() ;
+            return ogstatus() ;
             }
         //
         // If we don't have an ODSA-DAI resource ID.
@@ -298,8 +302,8 @@ public class OgsaIvoaResourceEntity
                 }
             catch (MalformedURLException ouch)
                 {
-                return ogStatus(
-                    OgStatus.ERROR
+                return ogstatus(
+                    OgsaStatus.ERROR
                     );
                 }
 
@@ -339,14 +343,14 @@ public class OgsaIvoaResourceEntity
             if (response.status() == WorkflowResult.Status.COMPLETED)
                 {
                 return ogsaid(
-                    OgStatus.ACTIVE,
+                    OgsaStatus.ACTIVE,
                     response.result().toString()
                     );
                 }
     
             else {
-                return ogStatus(
-                    OgStatus.ERROR
+                return ogstatus(
+                    OgsaStatus.ERROR
                     );
                 }
             }

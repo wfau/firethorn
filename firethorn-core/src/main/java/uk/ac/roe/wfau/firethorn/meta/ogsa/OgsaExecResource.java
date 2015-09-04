@@ -68,7 +68,7 @@ extends OgsaBaseResource
          * @return An {@link Iterable} set of {@link OgsaExecResource}(s). 
          *
          */
-        public Iterable<OgsaJdbcResource> select();
+        public Iterable<OgsaExecResource> select();
 
         /**
          * Select all the {@link OgsaExecResource}(s) for a {@link OgsaService}.

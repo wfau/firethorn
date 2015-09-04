@@ -58,7 +58,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgsaStatus;
 
 /**
  * {@link OgsaService} implementation.

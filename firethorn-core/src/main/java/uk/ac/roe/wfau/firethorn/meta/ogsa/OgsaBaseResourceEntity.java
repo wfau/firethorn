@@ -33,10 +33,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -46,6 +43,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
@@ -130,7 +128,7 @@ implements OgsaBaseResource
        super(
            DEFAULT_NAME
            );
-       this.ogstatus  = OgStatus.CREATED ;
+       this.ogstatus  = OgsaStatus.CREATED ;
        this.ogservice = service ;
        }
 
@@ -164,12 +162,34 @@ implements OgsaBaseResource
    @Override
    public String ogsaid()
        {
+       log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
+       this.scan();
+/*
+       log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
+       if (this.ogstatus.active()) 
+           {
+           if (this.ogsaid == null) 
+               {
+               this.init();
+               }
+           else {
+               // Recursion danger ..
+               // Need to ensure scan() does not call ogsaid()  
+               this.scan();
+               }
+           }
+ */
        return this.ogsaid;
        }
    @Override
-   public OgStatus ogsaid(final OgStatus status, final String ogsaid)
+   public OgsaStatus ogsaid(final OgsaStatus status, final String ogsaid)
        {
-       log.debug("ogsaid(status, ogsaid) [{}][{}]", status, ogsaid);
+       log.debug("ogsaid(status, ogsaid)");
+       log.debug("  name   [{}]", this.name());
+       log.debug("  ident  [{}]", this.ident());
+       log.debug("  ogsaid [{}]", this.ogsaid);
+       log.debug("  status [{}]", status);
+       log.debug("  ogsaid [{}]", ogsaid);
        factories().spring().transactor().update(
            new Runnable()
                {
@@ -193,16 +213,20 @@ implements OgsaBaseResource
    @Enumerated(
        EnumType.STRING
        )
-   protected OgStatus ogstatus = OgStatus.UNKNOWN ;
+   protected OgsaStatus ogstatus = OgsaStatus.UNKNOWN ;
    @Override
-   public OgStatus ogStatus()
+   public OgsaStatus ogstatus()
        {
        return this.ogstatus;
        }
    @Override
-   public OgStatus ogStatus(final OgStatus status)
+   public OgsaStatus ogstatus(final OgsaStatus status)
        {
-       log.debug("status(status) [{}]", status);
+       log.debug("status(status)");
+       log.debug("  name   [{}]", this.name());
+       log.debug("  ident  [{}]", this.ident());
+       log.debug("  ogsaid [{}]", this.ogsaid);
+       log.debug("  status [{}]", status);
        factories().spring().transactor().update(
            new Runnable()
                {
@@ -216,108 +240,129 @@ implements OgsaBaseResource
        return this.ogstatus;
        }
 
-   protected OgStatus init()
-       {
-       log.debug("init()");
-       return this.ogstatus;
-       }
+   /**
+    * Initialise our OGSA-DAI resource.
+    * 
+    */
+   protected abstract OgsaStatus init();
 
    @Override
    protected void scanimpl()
        {
-       log.debug("Scanning OgsaBaseResource [{}][{}]", this.name(), this.ogsaid);
+       log.debug("scanimpl()");
+       log.debug("  name   [{}]", this.name());
+       log.debug("  ident  [{}]", this.ident());
+       log.debug("  ogsaid [{}]", this.ogsaid);
 
-       if (this.ogstatus.active() && (this.ogsaid != null))
-           {
-           final HttpStatus http = ping(); 
-           switch(http)
-               {
-               case OK :
-                   ogStatus(
-                       OgStatus.ACTIVE
-                       );
-                   break ;
-
-               case NOT_FOUND:
-                   this.init();
-                   break ;
-
-               default :
-                   ogStatus(
-                       OgStatus.ERROR
-                       );
-                   break ;
-               }
-           }
+       if (this.ogstatus.active())
+    	   {
+    	   if (this.ogsaid == null)
+    		   {
+    		   this.init();
+    		   }
+    	   else {
+    	   		final HttpStatus http = ping(); 
+    	   		switch(http)
+    	   			{
+    	   			case OK :
+	   					log.debug("Ping test passed [{}][{}]", this.ident(), this.ogsaid);
+		   				ogstatus(
+							OgsaStatus.ACTIVE
+	   						);
+    	   				break ;
+	
+    	   			default :
+    	   				log.error("Ping test failed [{}][{}]", this.ident(), this.ogsaid);
+    	   				ogstatus(
+   							OgsaStatus.ERROR
+	   						);
+    	   				break ;
+	   				}
+    	   		}
+    	   }
        }
 
-   /**
-    *  Our local HTTP request factory.
-    *
-    */
-   private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+    /**
+     *  Our local HTTP request factory.
+     *
+     */
+    private static final ClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
    
-   /**
-    *  Check our OGSA-DAI resource.
-    *
-    */
-   protected HttpStatus ping()
-       {
-       try {
-           ClientHttpRequest request = factory.createRequest(
-               service().baseuri().resolve(
-                   "dataResources/" + this.ogsaid
-                   ),
-               HttpMethod.GET
-               );
+    /**
+     * Check our OGSA-DAI resource.
+     *
+     */
+    protected HttpStatus ping()
+   		{
+        log.debug("ping()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
+   		try {
+           	ClientHttpRequest request = factory.createRequest(
+       			service().baseuri().resolve(
+   					"dataResources/" + this.ogsaid
+   					),
+       			HttpMethod.GET
+       			);
 
-           log.debug("Service request [{}][{}]", this.ident(), request.getURI());
-           ClientHttpResponse response = request.execute();
+           	log.debug("Service request [{}][{}]", this.ident(), request.getURI());
+           	ClientHttpResponse response = request.execute();
 
-           HttpStatus http = response.getStatusCode();
-           log.debug("Service response [{}][{}]", this.ident(), response.getStatusText());
+           	HttpStatus http = response.getStatusCode();
+           	log.debug("Service response [{}][{}]", this.ident(), response.getStatusText());
 
-           return http ;
+           	return http ;
 
-           }
-       catch (URISyntaxException ouch)
-           {
-           log.warn("Problem occured parsing service endpoint [{}][{}]", this.ident(), ouch.getReason());
-           return HttpStatus.BAD_REQUEST;
-           }
-       catch (IOException ouch)
-           {
-           log.error("Problem occured sending service request [{}][{}]", this.ident(), ouch.getMessage());
-           return HttpStatus.BAD_REQUEST;
-           }
-       }
+           	}
+   		catch (URISyntaxException ouch)
+   			{
+   			log.warn("Problem occured parsing service endpoint [{}][{}]", this.ident(), ouch.getReason());
+   			return HttpStatus.BAD_REQUEST;
+   			}
+   		catch (IOException ouch)
+   			{
+   			log.error("Problem occured sending service request [{}][{}]", this.ident(), ouch.getMessage());
+   			return HttpStatus.BAD_REQUEST;
+   			}
+   		}
 
-   /**
-    * System start time.
-    * 
-    */
-   protected static final DateTime START_TIME = new DateTime(); 
+   	/**
+     * System start time.
+     * 
+     */
+    protected static final DateTime START_TIME = new DateTime(); 
    
-   /**
-    * Check to see if we should run a scan.
-    * OGSA resources always scan first time after a restart.
-    *
-    */
-   protected boolean scantest()
-       {
-       log.debug("scantest for [{}][{}]", this.ident(), this.name());
+    /**
+     * Check to see if we should run a scan.
+     * OGSA resources always scan if the ogsaid is null.
+     * OGSA resources always scan first time after a restart.
+     *
+     */
+    protected boolean scantest()
+    	{
+        log.debug("scantest()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
 
-       DateTime prev = scandate(); 
-       log.debug("prevscan   [{}]", prev);
-       log.debug("start time [{}]", START_TIME );
-
-       if (START_TIME.isAfter(prev))
-           {
-           log.debug("prev scan is before startup - scanning");
-           return true ;
-           }
-       else {
-           return super.scantest();
-           }
-       }
+        if (this.ogsaid == null)
+        	{
+        	return true ;
+        	}
+        else {
+	        DateTime prev = scandate(); 
+	    	log.debug("prevscan   [{}]", prev);
+	    	log.debug("start time [{}]", START_TIME );
+	
+	    	if (START_TIME.isAfter(prev))
+	    		{
+	    		log.debug("prev scan is before startup - scanning");
+	    		return true ;
+	    		}
+	    	else {
+	           	return super.scantest();
+	           	}
+        	}
+    	}
     }

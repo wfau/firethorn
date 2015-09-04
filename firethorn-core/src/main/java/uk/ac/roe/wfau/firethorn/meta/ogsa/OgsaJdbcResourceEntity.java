@@ -30,20 +30,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
@@ -301,7 +295,7 @@ implements OgsaJdbcResource
         @CreateMethod
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource resource)
             {
-            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
+            log.debug("create(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             return super.insert(
                 new OgsaJdbcResourceEntity(
                     service,
@@ -325,7 +319,7 @@ implements OgsaJdbcResource
         @CreateMethod
         public OgsaJdbcResource primary(OgsaService service, JdbcResource resource)
             {
-            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
+            log.debug("primary(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
@@ -338,7 +332,7 @@ implements OgsaJdbcResource
                         resource
                     ).setString(
                         "ogstatus",
-                        OgStatus.ACTIVE.name()
+                        OgsaStatus.ACTIVE.name()
                     )
                 );
             if (found != null)
@@ -413,26 +407,12 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public String ogsaid()
+    protected OgsaStatus init()
         {
-        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
-        if (this.ogstatus.active()) 
-            {
-            if (this.ogsaid == null) 
-                {
-                this.init();
-                }
-            else {
-                // Recursion danger ..
-                // Need to ensure scan() does not call ogsaid()  
-                this.scan();
-                }
-            }
-        return this.ogsaid;
-        }
-
-    protected OgStatus init()
-        {
+        log.debug("init()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
         JdbcCreateResourceWorkflow workflow = null;
         try {
             workflow = new JdbcCreateResourceWorkflow(
@@ -441,8 +421,8 @@ implements OgsaJdbcResource
             }
         catch (MalformedURLException ouch)
             {
-            return ogStatus(
-                OgStatus.ERROR
+            return ogstatus(
+                OgsaStatus.ERROR
                 );
             }
 
@@ -486,14 +466,14 @@ implements OgsaJdbcResource
         if (response.status() == WorkflowResult.Status.COMPLETED)
             {
             return ogsaid(
-                OgStatus.ACTIVE,
+                OgsaStatus.ACTIVE,
                 response.result().toString()
                 );
             }
 
         else {
-            return ogStatus(
-                OgStatus.ERROR
+            return ogstatus(
+                OgsaStatus.ERROR
                 );
             }
         }
