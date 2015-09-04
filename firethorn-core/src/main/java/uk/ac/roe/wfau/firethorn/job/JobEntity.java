@@ -92,6 +92,8 @@ implements Job
     protected static final String DB_STARTED_COL   = "started"   ;
     protected static final String DB_COMPLETED_COL = "completed" ;
 
+    
+    
     /**
      * Resolver implementation.
      *
@@ -109,6 +111,30 @@ implements Job
         }
 
     /**
+     * EntityServices implementation.
+     * 
+     */
+    @Component
+    public class EntityServices
+    implements Job.EntityServices
+    	{
+		@Autowired
+		private Job.Resolver resolver;
+		@Override
+		public Job.Resolver resolver()
+			{
+			return this.resolver;
+			}
+		@Autowired
+		private Job.Executor executor;
+		@Override
+		public Job.Executor executor()
+			{
+			return this.executor;
+			}
+    	}
+
+   /**
      * Executor implementation.
      *
      */
@@ -117,45 +143,6 @@ implements Job
     extends AbstractComponent
     implements Job.Executor
         {
-        /**
-         * Our service implementation.
-         *
-         */
-        @Deprecated
-        private Job.Executor executor;
-
-        /**
-         * Our service implementation.
-         * @todo simplify what is essentially 'this'.
-         * @autowired fails to resolve the recursive reference.
-         *
-         */
-        @Deprecated
-        protected synchronized Job.Executor executor()
-            {
-            if (this.executor == null)
-                {
-                this.executor = factories().jobs().executor();
-                }
-            return this.executor ;
-            }
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        @Autowired
-        private Job.Resolver resolver;
-
-        /**
-         * Our {@link Job.Resolver} service.
-         *
-         */
-        protected Job.Resolver resolver()
-            {
-            return this.resolver ;
-            }
-
         @Override
         @SelectAtomicMethod
         public Status status(final Identifier ident)
@@ -163,7 +150,7 @@ implements Job
             log.debug("status(Identifier)");
             log.debug("  ident [{}]", ident);
             try {
-                return resolver().select(
+                return factories().jobs().resolver().select(
                     ident
                     ).status();
                 }
@@ -182,7 +169,7 @@ implements Job
             log.debug("  ident  [{}]", ident);
             log.debug("  status [{}]", status);
             try {
-                final Job job = resolver().select(
+                final Job job = factories().jobs().resolver().select(
                     ident
                     );
                 log.debug("Found [{}]", ((job != null ? job.ident() : null)));
@@ -210,14 +197,14 @@ implements Job
             log.debug("  status [{}]", next);
             log.debug("  wait   [{}]", timeout);
 
-            Status result = executor().status(
+            Status result = factories().jobs().executor().status(
                 ident
                 );
 
             if (next == Status.READY)
                 {
                 log.debug("Validating job params");
-                result = executor().prepare(
+                result = factories().jobs().executor().prepare(
                     ident
                     );
                 }
@@ -225,7 +212,7 @@ implements Job
             else if (next == Status.RUNNING)
                 {
                 log.debug("Preparing job for execution");
-                result = executor().prepare(
+                result = factories().jobs().executor().prepare(
                     ident,
                     true
                     );
@@ -233,7 +220,7 @@ implements Job
                 if (result == Status.READY)
                     {
                     log.debug("Queuing job");
-                    result = executor().status(
+                    result = factories().jobs().executor().status(
                         ident,
                         Status.PENDING
                         );
@@ -242,7 +229,7 @@ implements Job
                         {
                         try {
                             log.debug("Executing query");
-                            final Future<Status> future = executor().execute(
+                            final Future<Status> future = factories().jobs().executor().execute(
                                 ident
                                 );
 
@@ -288,7 +275,7 @@ implements Job
 
             else if (next == Status.CANCELLED)
                 {
-                result = executor().status(
+                result = factories().jobs().executor().status(
                     ident,
                     Status.CANCELLED
                     );
@@ -308,7 +295,7 @@ implements Job
             log.debug("prepare(Identifier, boolean)");
             log.debug("  Ident [{}]", ident);
             try {
-                final Job job = resolver().select(
+                final Job job = factories().jobs().resolver().select(
                     ident
                     );
                 if (job != null)
@@ -342,7 +329,7 @@ implements Job
             log.debug("prepare(Identifier)");
             log.debug("  Ident [{}]", ident);
             try {
-                final Job job = resolver().select(
+                final Job job = factories().jobs().resolver().select(
                     ident
                     );
                 if (job != null)
@@ -376,7 +363,7 @@ implements Job
             log.debug("  Ident [{}]", ident);
             try {
                 return new AsyncResult<Status>(
-                    resolver().select(
+                		factories().jobs().resolver().select(
                         ident
                         ).execute()
                     );

@@ -190,9 +190,9 @@ public class ComponentFactoriesImpl
     protected Job.EntityServices jobs;
     @Override
     public Job.EntityServices jobs()
-        {
-        return this.jobs;
-        }
+    	{
+    	return this.jobs;
+    	}
 
     @Autowired
     protected TestJob.EntityServices tests;

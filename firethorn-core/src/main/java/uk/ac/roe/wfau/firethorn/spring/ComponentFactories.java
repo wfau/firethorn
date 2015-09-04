@@ -116,7 +116,6 @@ public interface ComponentFactories
      * Our {@link Job.EntityServices} instance.
      *
      */
-    @Deprecated
     public Job.EntityServices jobs();
 
     /**

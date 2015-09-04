@@ -126,7 +126,6 @@ extends Entity
      * 
      */
     public static interface EntityServices
-    extends Entity.EntityServices<Job>
     	{
 		/**
 		 * Our {@link Job.Resolver} instance.
