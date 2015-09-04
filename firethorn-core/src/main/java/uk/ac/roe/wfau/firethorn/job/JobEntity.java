@@ -91,11 +91,9 @@ implements Job
     protected static final String DB_QUEUED_COL    = "queued"    ;
     protected static final String DB_STARTED_COL   = "started"   ;
     protected static final String DB_COMPLETED_COL = "completed" ;
-
-    
     
     /**
-     * Resolver implementation.
+     * {@link Job.Resolver} implementation.
      *
      */
     @Repository
@@ -111,11 +109,11 @@ implements Job
         }
 
     /**
-     * EntityServices implementation.
+     * {@link Job.EntityServices} implementation.
      * 
      */
     @Component
-    public class EntityServices
+    public static class EntityServices
     implements Job.EntityServices
     	{
 		@Autowired
@@ -135,7 +133,7 @@ implements Job
     	}
 
    /**
-     * Executor implementation.
+     * {@link Job.Executor} implementation.
      *
      */
     @Component

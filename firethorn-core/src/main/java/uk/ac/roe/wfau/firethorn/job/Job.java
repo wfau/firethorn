@@ -122,7 +122,7 @@ extends Entity
         }
 
     /**
-     * {@link Entity.EntityServices} interface.
+     * {@link Job.EntityServices} interface.
      * 
      */
     public static interface EntityServices
