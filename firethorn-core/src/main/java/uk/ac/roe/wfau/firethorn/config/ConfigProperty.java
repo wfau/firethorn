@@ -29,7 +29,7 @@ public interface ConfigProperty
 extends Entity
     {
     /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -38,7 +38,7 @@ extends Entity
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -47,7 +47,7 @@ extends Entity
         }
 
     /**
-     * A ConfigProperty factory.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -78,6 +78,15 @@ extends Entity
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<ConfigProperty>
+        {
+        }
+    
     /**
      * The property key.
      *

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -30,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
@@ -73,8 +76,8 @@ implements ConfigProperty
      */
     public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "ConfigProperty" ;
 
-    /*
-     * Our database mapping values.
+    /**
+     * Hibernate database mappings.
      *
      */
     public static final String DB_KEY_COL   = "propkey" ;
@@ -131,9 +134,62 @@ implements ConfigProperty
                     );
                 }
             }
+        }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements ConfigProperty.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static ConfigPropertyEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return ConfigPropertyEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (ConfigPropertyEntity.EntityServices.instance == null)
+                {
+                ConfigPropertyEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected ConfigProperty.IdentFactory idents;
+        private ConfigProperty.IdentFactory idents;
         @Override
         public ConfigProperty.IdentFactory idents()
             {
@@ -141,12 +197,42 @@ implements ConfigProperty
             }
 
         @Autowired
-        protected ConfigProperty.LinkFactory links;
+        private ConfigProperty.LinkFactory links;
         @Override
         public ConfigProperty.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private ConfigProperty.EntityFactory entities;
+        @Override
+        public ConfigProperty.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected ConfigProperty.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return ConfigPropertyEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected ConfigProperty.EntityServices services()
+        {
+        log.debug("services()");
+        return ConfigPropertyEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     /**
@@ -219,12 +305,6 @@ implements ConfigProperty
             log.error("Failed to convert config property to URI [{}][{}]", this.value, ouch);
             return null ;
             }
-        }
-
-    @Override
-    public String link()
-        {
-        return null ;
         }
     }
 
