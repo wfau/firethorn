@@ -481,13 +481,16 @@ public class TestFactories
             implements JdbcTable.IdentFactory
                 {
                 }
-
+/*
+ * 
             @Component
             public static class NameFactory
             extends MockNameFactory<JdbcTable>
             implements JdbcTable.NameFactory
                 {
                 }
+ * 
+ */
 
             @Component
             public static class LinkFactory
@@ -615,13 +618,16 @@ public class TestFactories
             implements IvoaTable.IdentFactory
                 {
                 }
-
+/*
+ * 
             @Component
             public static class NameFactory
             extends MockNameFactory<IvoaTable>
             implements IvoaTable.NameFactory
                 {
                 }
+ * 
+ */
 
             @Component
             public static class LinkFactory
