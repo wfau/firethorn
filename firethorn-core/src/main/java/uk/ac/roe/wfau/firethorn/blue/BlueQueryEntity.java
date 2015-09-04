@@ -1222,10 +1222,16 @@ implements BlueQuery
                 direct.process(
                     this.parsable()
                     );
-                //
-                // Use our primary resource.
-                //this.mode   = Mode.DIRECT;
-                //this.source = primary().ogsa().primary().ogsaid();
+                if (syntax().state() == Syntax.State.VALID)
+                	{
+                    //
+                    // Use our primary resource.
+                    //this.mode   = Mode.DIRECT;
+                    //this.source = primary().ogsa().primary().ogsaid();
+                	}
+                else {
+                	log.debug("Query fails [DIRECT] validation.");
+                	}
                 }
             else if (this.mode == Mode.DISTRIBUTED)
                 {
@@ -1233,23 +1239,30 @@ implements BlueQuery
                 distrib.process(
                     this.parsable()
                     );
-                //
-                // Use our DQP resource.
-                //this.mode   = Mode.DISTRIBUTED;
-                //this.source = this.dqp;
+                if (syntax().state() == Syntax.State.VALID)
+                	{
+                    //
+                    // Use our DQP resource.
+                    //this.mode   = Mode.DISTRIBUTED;
+                    //this.source = this.dqp;
+                	}
+                else {
+                	log.debug("Query fails [DISTRIBUTED] validation.");
+                	}
                 }
             else {
                 log.debug("Processing as [DIRECT] query");
                 direct.process(
                     this.parsable()
                     );
-                if (this.resources.size() == 1)
+                if (syntax().state() != Syntax.State.VALID)
+                	{
+                    log.debug("Query fails [DIRECT] validation.");
+                	}
+                else if (this.resources.size() == 1)
                     {
                 	// Should we have input mode and query mode ?
-                    if (syntax().state() == Syntax.State.VALID)
-                    	{
-                    	this.mode = Mode.DIRECT;
-                    	}
+                	this.mode = Mode.DIRECT;
                     //
                     // Use our primary resource.
                     //this.source = primary().ogsa().primary().ogsaid();
@@ -1261,14 +1274,17 @@ implements BlueQuery
                     distrib.process(
                         this.parsable()
                         );
-                	// Should we have input mode and query mode ?
                     if (syntax().state() == Syntax.State.VALID)
 	                	{
+	                	// Should we have input mode and query mode ?
 	                	this.mode = Mode.DISTRIBUTED;
+	                    //
+	                    // Use our DQP resource.
+	                    //this.source = this.dqp;
 	                	}
-                    //
-                    // Use our DQP resource.
-                    //this.source = this.dqp;
+                    else {
+                    	log.debug("Query fails [DISTRIBUTED] validation.");
+	                	}
                     }
                 }
             //

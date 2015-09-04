@@ -1135,7 +1135,7 @@ implements JdbcTable
     @Override
     protected void scanimpl()
         {
-        log.debug("columns() scan for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();

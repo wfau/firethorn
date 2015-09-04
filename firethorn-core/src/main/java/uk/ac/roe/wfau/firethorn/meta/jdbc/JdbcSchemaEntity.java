@@ -697,7 +697,7 @@ public class JdbcSchemaEntity
     @Override
     public JdbcSchema.Tables tables()
         {
-        log.debug("tables() for [{}][{}][{}]", ident(), catalog(), schema());
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
         scan();
         return new JdbcSchema.Tables()
             {
@@ -817,7 +817,7 @@ public class JdbcSchemaEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("tables() scan for [{}][{}][{}]", ident(), catalog(), schema());
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();

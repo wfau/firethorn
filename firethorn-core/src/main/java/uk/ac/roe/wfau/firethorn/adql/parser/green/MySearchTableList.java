@@ -25,6 +25,7 @@ import java.util.Set;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -111,11 +112,14 @@ implements SearchTableApi
 
         if (target.getCatalogName() != null)
             {
+            log.debug("search catalog [{}]", target.getCatalogName());
+            throw new NotImplementedException();
             // Check the resource name ?
             }
             
         if (target.getSchemaName() != null)
             {
+            log.debug("search schema [{}]", target.getSchemaName());
             AdqlSchema schema = resource.schemas().search(
                 target.getSchemaName()
                 ) ;
@@ -138,8 +142,10 @@ implements SearchTableApi
                 }
             }
         else {
+    		log.debug("null search schema");
             for (AdqlSchema schema : resource.schemas().select())
                 {
+            	log.debug("schema [{}]", schema.name());
                 AdqlTable found = schema.tables().search(
                     target.getTableName()
                     ); 

@@ -383,6 +383,8 @@ public class IvoaSchemaEntity
     @Override
     public IvoaSchema.Tables tables()
         {
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new IvoaSchema.Tables()
             {
             @Override
@@ -440,6 +442,7 @@ public class IvoaSchemaEntity
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
 

@@ -295,6 +295,8 @@ public class IvoaResourceEntity
     @Override
     public IvoaResource.Schemas schemas()
         {
+        log.debug("schemas() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new IvoaResource.Schemas()
             {
             @Override
@@ -346,6 +348,7 @@ public class IvoaResourceEntity
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
 

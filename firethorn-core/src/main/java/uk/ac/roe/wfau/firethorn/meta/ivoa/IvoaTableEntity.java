@@ -499,6 +499,8 @@ public class IvoaTableEntity
     @Override
     public IvoaTable.Columns columns()
         {
+        log.debug("columns() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new IvoaTable.Columns()
             {
             @Override
@@ -566,6 +568,7 @@ public class IvoaTableEntity
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
 

@@ -548,6 +548,7 @@ public class IvoaColumnEntity
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
 

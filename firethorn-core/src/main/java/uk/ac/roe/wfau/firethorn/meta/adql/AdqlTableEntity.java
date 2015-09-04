@@ -707,6 +707,8 @@ public class AdqlTableEntity
     @Override
     public AdqlTable.Columns columns()
         {
+        log.debug("columns() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new AdqlTable.Columns()
             {
             @Override
@@ -897,6 +899,7 @@ public class AdqlTableEntity
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
     }

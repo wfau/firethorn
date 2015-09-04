@@ -263,6 +263,8 @@ implements AdqlResource
     @Override
     public AdqlResource.Schemas schemas()
         {
+        log.debug("schemas() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new AdqlResource.Schemas()
             {
             @Override
@@ -381,6 +383,7 @@ implements AdqlResource
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", ident(), namebuilder());
         // TODO Auto-generated method stub
         }
 

@@ -629,7 +629,7 @@ public class JdbcResourceEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("schemas() scan for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = connection().scanner();

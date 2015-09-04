@@ -573,6 +573,8 @@ implements AdqlSchema
     @Override
     public AdqlSchema.Tables tables()
         {
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new AdqlSchema.Tables()
             {
             @Override
@@ -813,6 +815,7 @@ implements AdqlSchema
     @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
     }
