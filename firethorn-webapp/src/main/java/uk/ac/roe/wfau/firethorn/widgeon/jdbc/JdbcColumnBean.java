@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcColumnIdentFactory;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.

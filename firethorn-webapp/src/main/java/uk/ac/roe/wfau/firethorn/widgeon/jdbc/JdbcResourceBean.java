@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceIdentFactory;
 import uk.ac.roe.wfau.firethorn.widgeon.ogsa.OgsaJdbcResourceBean;
 
 /**

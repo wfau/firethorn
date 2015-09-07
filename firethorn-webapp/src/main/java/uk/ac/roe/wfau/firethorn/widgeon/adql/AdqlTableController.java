@@ -34,6 +34,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
  * Spring MVC controller to handle {@link AdqlTable} entities.

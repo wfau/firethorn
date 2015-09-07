@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchemaBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaIdentFactory;
 
 /**
  * Bean wrapper for <code>JdbcSchema</code>.

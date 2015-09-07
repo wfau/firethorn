@@ -49,7 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 
 /**
  * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>.

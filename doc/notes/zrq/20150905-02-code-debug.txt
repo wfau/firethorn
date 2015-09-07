@@ -1,0 +1,64 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    
+
+# -----------------------------------------------------
+# Drop and create the postgres metadata database.
+#
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        -it --rm \
+        --env datahost=${metalink:?} \
+        --env datauser=${metauser:?} \
+        --env datapass=${metapass:?} \
+        --env database=${metadata:?} \
+        --link ${metaname:?}:${metalink:?} \
+        postgres bash
+
+        export PGPASSWORD=${datapass:?}
+        psql -h "${datahost:?}" -U "${datauser:?}" template1 << EOF
+
+            DROP   DATABASE ${database:?} ;
+            CREATE DATABASE ${database:?} ;
+
+        EOF
+
+# -----------------------------------------------------
+# Revert to previous version and test.
+#
+
+    Tuesday 13:30
+    rev b07916451fb1
+
+    hg update -r b07916451fb1
+
+    mvn clean install 
+
+    pushd firethorn-core
+        mvn -D skipTests=false -D test=uk.ac.roe.wfau.firethorn.blue.test.SimpleQueryTestCase test
+    popd
+
+
+

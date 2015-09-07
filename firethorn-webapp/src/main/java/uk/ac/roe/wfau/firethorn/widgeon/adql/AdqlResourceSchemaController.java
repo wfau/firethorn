@@ -39,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 
 /**
  * Spring MVC controller to handle the {@link AdqlSchema} in an {@link AdqlResource}.

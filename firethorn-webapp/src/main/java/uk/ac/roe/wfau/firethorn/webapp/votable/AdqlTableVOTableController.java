@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
  * Spring MVC controller to format an {@link AdqlTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.

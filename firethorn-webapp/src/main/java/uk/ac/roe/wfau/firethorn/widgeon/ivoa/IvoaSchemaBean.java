@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchemaBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaSchemaIdentFactory;
 
 /**
  * Bean wrapper for <code>IvoaSchema</code>.
