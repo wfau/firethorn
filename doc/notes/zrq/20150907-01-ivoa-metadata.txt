@@ -149,10 +149,54 @@
     secret 'ping'
 
 # -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
 # Create our chain config.
 #[user@desktop]
 
     cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
 
     tunneluser=$(secret 'ssh.tunnel.user')
     tunnelhost=$(secret 'ssh.tunnel.host')
@@ -165,10 +209,10 @@ EOF
         "${HOME:?}/chain.properties" 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Create our sqsh config.
 #[user@desktop]
 
-    basename=ZRQ$(date '+%Y%m%d')DEV
 
     cat > "${HOME:?}/sqsh.properties" << EOF
 
@@ -182,8 +226,9 @@ EOF
     sqluser=$(secret 'sqlserver.admin.user')
     sqlpass=$(secret 'sqlserver.admin.pass')
 
-    metaname="FirethornMetadata${basename:?}"
-    username="FirethornUserdata${basename:?}"
+    basename=ZRQ$(date '+%Y%m%d')DEV
+    metaname="FirethornMetadata\${basename:?}"
+    username="FirethornUserdata\${basename:?}"
 
 EOF
 
@@ -232,12 +277,11 @@ EOF
 
         #
         # Test connection to SQLServer
-        sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}"
-
-            SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'
-            go
-
-            exit
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
         
         #
         # Function to fill in the template values.
@@ -267,6 +311,7 @@ EOF
 # Metadata database
 firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
 firethorn.meta.host=${databasehost:?}
+firethorn.meta.data=${databasename:?}
 firethorn.meta.path=${databasepath:?}
 firethorn.meta.user=${databaselogin:?}
 firethorn.meta.pass=${databasepass:?}
@@ -286,10 +331,10 @@ EOF
 
         #
         # Set the template values
-        databasehost="${sqshhost:?}"
+        databasehost="${sqlhost:?}"
         databaseport="1433"
-        databasename="${userdataname:?}"
-        databasepath="${sqshpath:?}"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
         databaseuser="${databasename:?}User"
         databaselogin="${databasename:?}Login"
         databasepass="${databasename:?}$(pwgen -s 8 1)"
@@ -299,6 +344,7 @@ EOF
 # Userdata database
 firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
 firethorn.user.host=${databasehost:?}
+firethorn.user.data=${databasename:?}
 firethorn.user.path=${databasepath:?}
 firethorn.user.user=${databaselogin:?}
 firethorn.user.pass=${databasepass:?}
@@ -316,29 +362,96 @@ EOF
         sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
         sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
-        cat  "/data.properties"
+        #
+        # Check the created databases
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
 
+# -----------------------------------------------------
+# Check our database properties.
+#[user@desktop]
 
+    cat  "${HOME:?}/data.properties"
 
+        #
+        # Metadata database
+        firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadataZRQ20150909DEV
+        firethorn.meta.host=xxxx
+        firethorn.meta.path=xxxx
+        firethorn.meta.user=xxxx
+        firethorn.meta.pass=xxxx
+        #
+        # Userdata database
+        firethorn.user.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornUserdataZRQ20150909DEV
+        firethorn.user.host=xxxx
+        firethorn.user.path=xxxx
+        firethorn.user.user=xxxx
+        firethorn.user.pass=xxxx
 
+# -----------------------------------------------------
+# Update our secret function.
+#[user@desktop]
 
+    secretfile="${HOME:?}/data.properties"
 
+    secret()
+        {
+        local key=${1:?}
+        sed -n 's/^ *'"${key}"'=\(.*\)/\1/p' "${secretfile:?}"
+        }
 
+    secret 'firethorn.meta.host'
 
+# -----------------------------------------------------
+# Update our chain properties.
+#[user@desktop]
 
+    cat >> "${HOME:?}/chain.properties" << EOF
 
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
 
+EOF
 
+    pluma "${HOME:?}/chain.properties" &
 
+    source "${HOME:?}/chain.properties"
 
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
 
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
 
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
 
-
-
-
-
-
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
 
 # -----------------------------------------------------
 # Start our PostgreSQL metadata container.
@@ -377,8 +490,6 @@ EOF
 # -----------------------------------------------------
 # Create our FireThorn config.
 #[user@desktop]
-
-    source "${HOME:?}/chain.properties"
 
     cat > "${HOME:?}/firethorn.properties" << EOF
 

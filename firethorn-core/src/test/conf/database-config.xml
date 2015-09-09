@@ -79,8 +79,7 @@
         <property name="minPoolSize"   value="${firethorn.atlas.c3p0.min.size:5}" />
         <property name="maxPoolSize"   value="${firethorn.atlas.c3p0.max.size:20}" />
         <property name="maxIdleTime"   value="${firethorn.atlas.c3p0.max.idle:300}" />
-        +-->
-
     </bean>
+        +-->
 </beans>
 
