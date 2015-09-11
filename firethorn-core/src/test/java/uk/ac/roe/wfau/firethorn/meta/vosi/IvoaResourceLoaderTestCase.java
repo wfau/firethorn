@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
@@ -55,7 +56,11 @@ public class IvoaResourceLoaderTestCase
                 ),
             cadc
             );
-
+        cadc.ogsa().primary().ogsaid(
+    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		"cadc-tap"
+    		);
+        
         IvoaResource gaia = factories().ivoa().resources().create(
             "gaia-tap",
             "gaia-tap"
@@ -68,12 +73,15 @@ public class IvoaResourceLoaderTestCase
                 ),
             gaia
             );
+        gaia.ogsa().primary().ogsaid(
+    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		"gaia-tap"
+    		);
 
         IvoaResource gavo = factories().ivoa().resources().create(
             "gavo-tap",
             "gavo-tap"
             );
-        
         log.debug("Resource [{}][{}]", gavo.name(), gavo.ident());
         log.debug("Reading  [gavo-tableset.xml]");
         reader.inport(
@@ -82,6 +90,10 @@ public class IvoaResourceLoaderTestCase
                 ),
             gavo
             );
+        gavo.ogsa().primary().ogsaid(
+    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		"gavo-tap"
+    		);
 
         IvoaResource vizier = factories().ivoa().resources().create(
             "vizier-tap",
@@ -95,6 +107,10 @@ public class IvoaResourceLoaderTestCase
                 ),
             vizier
             );
+        vizier.ogsa().primary().ogsaid(
+    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		"vizier-tap"
+    		);
 
         debug(cadc);
         debug(gaia);

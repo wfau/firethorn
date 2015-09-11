@@ -74,9 +74,9 @@ public class QueryBugsTestCase
             "    atlasSourceXtwomass_psc",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS dist" +
+            "    {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.distancemins AS dist" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc",
+            "    {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc",
 
             new ExpectedField[] {
                 new ExpectedField("dist", AdqlColumn.AdqlType.FLOAT, 0),
@@ -258,9 +258,9 @@ public class QueryBugsTestCase
             "    atlas.ra  AS ra," +
             "    atlas.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas" +
+            "    {ATLAS_VERSION}.dbo.atlasSource AS atlas" +
             " WHERE" +
-            "    atlas.sourceid % 100 = 0",
+            "    atlas.sourceID % 100 = 0",
 
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
@@ -308,22 +308,22 @@ public class QueryBugsTestCase
             "    atlas.ra AS ra," +
             "    atlas.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," +
+            "    {ATLAS_VERSION}.dbo.atlasSource AS atlas," +
             "    twomass.dbo.twomass_psc AS twomass," +
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" +
+            "    {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc AS neighbours" +
             " WHERE" +
-            "    neighbours.masterobjid = atlas.sourceid" +
+            "    neighbours.masterObjID = atlas.sourceID" +
             " AND" +
-            "    neighbours.slaveobjid = twomass.pts_key" +
+            "    neighbours.slaveObjID = twomass.pts_key" +
             " AND" +
             "    neighbours.distancemins IN" +
             "        (" +
             "        SELECT" +
-            "            MIN({ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins) AS min" +
+            "            MIN({ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.distancemins) AS min" +
             "        FROM" +
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" +
+            "            {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc" +
             "        WHERE" +
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid" +
+            "            {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.masterObjID = neighbours.masterObjID" +
             "        )",
 
             new ExpectedField[] {
@@ -370,22 +370,22 @@ public class QueryBugsTestCase
             "    atlas.ra  AS ra," +
             "    atlas.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource AS atlas," +
+            "    {ATLAS_VERSION}.dbo.atlasSource AS atlas," +
             "    twomass.dbo.twomass_psc AS twomass," +
-            "    {ATLAS_VERSION}.dbo.atlassourcextwomass_psc AS neighbours" +
+            "    {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc AS neighbours" +
             " WHERE" +
-            "    neighbours.masterobjid = atlas.sourceid" +
+            "    neighbours.masterObjID = atlas.sourceID" +
             " AND" +
-            "    neighbours.slaveobjid = twomass.pts_key" +
+            "    neighbours.slaveObjID = twomass.pts_key" +
             " AND" +
             "    neighbours.distancemins IN" +
             "        (" +
             "        SELECT" +
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins AS distancemins" +
+            "            {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.distancemins AS distancemins" +
             "        FROM" +
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc" +
+            "            {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc" +
             "        WHERE" +
-            "            {ATLAS_VERSION}.dbo.atlassourcextwomass_psc.distancemins < 0.01" +
+            "            {ATLAS_VERSION}.dbo.atlasSourceXtwomass_psc.distancemins < 0.01" +
             "        )",
 
             new ExpectedField[] {
@@ -411,13 +411,13 @@ public class QueryBugsTestCase
             "    utDate," +
             "    dateObs" +
             " FROM" +
-            "    multiframe",
+            "    Multiframe",
 
             " SELECT TOP 10" +
-            "    {ATLAS_VERSION}.dbo.multiframe.utdate  AS utdate," +
-            "    {ATLAS_VERSION}.dbo.multiframe.dateobs AS dateobs" +
+            "    {ATLAS_VERSION}.dbo.Multiframe.utDate  AS utDate," +
+            "    {ATLAS_VERSION}.dbo.Multiframe.dateObs AS dateObs" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.multiframe",
+            "    {ATLAS_VERSION}.dbo.Multiframe",
 
             new ExpectedField[] {
                 new ExpectedField("utDate",  AdqlColumn.AdqlType.DATETIME, 0),
@@ -447,10 +447,10 @@ public class QueryBugsTestCase
             " SELECT TOP 100" +
             "    neighbours.distanceMins" +
             " FROM" +
-            "    atlassourcexDR8photoobj AS neighbours," +
+            "    atlasSourceXDR8PhotoObj AS neighbours," +
             "    (" +
             "    SELECT TOP 10" +
-            "        sourceId AS ident" +
+            "        sourceID AS ident" +
             "    FROM" +
             "        atlasSource" +
             "    ) AS sources" +
@@ -458,17 +458,17 @@ public class QueryBugsTestCase
             "    neighbours.masterObjID - sources.ident < 1000000",
 
             " SELECT TOP 100" +
-            "    neighbours.distancemins AS distancemins" +
+            "    neighbours.distanceMins AS distanceMins" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassourcexdr8photoobj AS neighbours," +
+            "    {ATLAS_VERSION}.dbo.atlasSourceXDR8PhotoObj AS neighbours," +
             "    (" +
             "    SELECT TOP 10" +
-            "        {ATLAS_VERSION}.dbo.atlassource.sourceid AS ident" +
+            "        {ATLAS_VERSION}.dbo.atlasSource.sourceID AS ident" +
             "    FROM" +
-            "        {ATLAS_VERSION}.dbo.atlassource" +
+            "        {ATLAS_VERSION}.dbo.atlasSource" +
             "    ) AS sources" +
             " WHERE" +
-            "    neighbours.masterobjid - sources.ident < 1000000",
+            "    neighbours.masterObjID - sources.ident < 1000000",
 
             new ExpectedField[] {
                 new ExpectedField("distanceMins", AdqlColumn.AdqlType.FLOAT, 0),
