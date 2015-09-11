@@ -51,10 +51,10 @@ public class CaseSensitiveTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("ra", AdqlColumn.AdqlType.DOUBLE, 0),
@@ -65,6 +65,7 @@ public class CaseSensitiveTestCase
 
     /**
      * Lower case table, lower case column.
+     * Table lookup fails when using PostgreSQL metadata database (case sensitive LIKE).
      *
      */
     @Test
@@ -82,10 +83,10 @@ public class CaseSensitiveTestCase
             "    atlassource",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("ra", AdqlColumn.AdqlType.DOUBLE, 0),
@@ -96,6 +97,7 @@ public class CaseSensitiveTestCase
 
     /**
      * Upper case table, lower case column.
+     * Table lookup fails when using PostgreSQL metadata database (case sensitive LIKE).
      *
      */
     @Test
@@ -113,10 +115,10 @@ public class CaseSensitiveTestCase
             "    ATLASSOURCE",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("ra", AdqlColumn.AdqlType.DOUBLE, 0),
@@ -144,10 +146,10 @@ public class CaseSensitiveTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("RA", AdqlColumn.AdqlType.DOUBLE, 0),
@@ -158,6 +160,7 @@ public class CaseSensitiveTestCase
 
     /**
      * Lower case table, upper case column.
+     * Table lookup fails when using PostgreSQL metadata database (case sensitive LIKE).
      *
      */
     @Test
@@ -175,10 +178,10 @@ public class CaseSensitiveTestCase
             "    atlassource",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("RA", AdqlColumn.AdqlType.DOUBLE, 0),
@@ -189,6 +192,7 @@ public class CaseSensitiveTestCase
 
     /**
      * Upper case table, upper case column.
+     * Table lookup fails when using PostgreSQL metadata database (case sensitive LIKE).
      *
      */
     @Test
@@ -206,10 +210,10 @@ public class CaseSensitiveTestCase
             "    ATLASSOURCE",
 
             " SELECT TOP 5" +
-            "    {ATLAS_VERSION}.dbo.atlassource.ra AS ra," +
-            "    {ATLAS_VERSION}.dbo.atlassource.dec AS dec" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("RA", AdqlColumn.AdqlType.DOUBLE, 0),

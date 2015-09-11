@@ -1,0 +1,434 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check our secret function.
+#[user@desktop]
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        source "bin/util.sh"
+        version=$(getversion)
+    popd
+
+    echo "Version [${version:?}]"
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/chain.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/chain.properties" 
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties" 
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties" 
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Convert link names into IP addresses.
+#[user@desktop]
+
+    metalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${metaname:?})
+    userlink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${username:?})
+    datalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${dataname:?})
+    ogsalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${ogsaname:?})
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.atlas.type=${datatype:?}
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.user=${datauser:?}
+firethorn.atlas.pass=${datapass:?}
+firethorn.atlas.driver=${datadriver:?}
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Load the IVOA metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+
+            mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+        popd
+    popd
+
+    ....
+    ....
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][32770]
+    [IvoaResourceLoaderTestCase]   Schema [public][163845]
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163846]
+
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][32771]
+    [IvoaResourceLoaderTestCase]   Schema [icecube][163868]
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163894]
+    ....
+
+# -----------------------------------------------------
+# Create our OGSA-DAI resources.
+#[user@desktop]
+
+    docker exec -it "${ogsaname}" bash 
+
+        gaiauid=gaia-tap
+        gaiaurl=http://geadev.esac.esa.int/tap-dev/tap/
+        
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gaia-tap << EOF
+id=${gaiauid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gaiaurl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+        gavouid=gavo-tap
+        gavourl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gavo-tap << EOF
+id=${gavouid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gavourl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+    exit
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+    fireipv4=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${firename:?})
+    
+    firebase="http://${fireipv4:?}:8080/firethorn"
+    fireinfo="http://${fireipv4:?}:8080/firethorn/system/info"
+
+    echo "Info [${fireinfo:?}]"
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load our ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Run some ATLASDR1 queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load our TAP resources.
+#[root@tester]
+
+    ....
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][32770]
+    [IvoaResourceLoaderTestCase]   Schema [public][163845]
+
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][32771]
+    [IvoaResourceLoaderTestCase]   Schema [icecube][163868]
+    ....
+
+
+    ivoaname=GACS
+    ivoaschema=/ivoa/schema/163845
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+
+	ivoaname=ICECUBE
+	ivoaschema=/ivoa/schema/163868
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+# -----------------------------------------------------
+# Run some TAP queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                count(*)
+            FROM
+                GACS.igsl_source
+            WHERE
+                galactic_lat BETWEEN -3.7 AND -3.6
+            AND
+                galactic_lon BETWEEN 27.3 AND 27.4
+            "
+

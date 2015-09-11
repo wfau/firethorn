@@ -1,0 +1,211 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Create our sqsh config.
+#[user@desktop]
+
+
+    cat > "${HOME:?}/sqsh.properties" << EOF
+
+    sqlname=nastja
+    sqllink=nerijus
+
+    sqlhost=$(secret 'sqlserver.admin.host')
+    sqlpath=$(secret 'sqlserver.admin.path')
+
+    sqldata=$(secret 'sqlserver.admin.data')
+    sqluser=$(secret 'sqlserver.admin.user')
+    sqlpass=$(secret 'sqlserver.admin.pass')
+
+    basename=ZRQ$(date '+%Y%m%d')DEV
+    metaname="FirethornMetadata\${basename:?}"
+    username="FirethornUserdata\${basename:?}"
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Start our SQLServer tunnel.
+#[user@desktop]
+
+    source "${HOME:?}/sqsh.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${sqlname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${sqlhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Run our sqlsh container.
+#[user@desktop]
+
+    touch  "${HOME:?}/data.properties"
+    chmod a+rw \
+        "${HOME:?}/data.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/data.properties" 
+
+    source "${HOME:?}/sqsh.properties"
+    
+    docker run \
+        --rm -it \
+        --link "${sqlname:?}:${sqllink:?}" \
+        --volume "${HOME:?}/chain.properties":/chain.properties \
+        --volume "${HOME:?}/sqsh.properties":/sqsh.properties \
+        --volume "${HOME:?}/data.properties":/data.properties \
+        firethorn/sqsh:1.1 \
+        bash
+
+        #
+        # Load the SQLServer properties
+        source "/sqsh.properties"
+
+        #
+        # Test connection to SQLServer
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
+        
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${metaname:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat > "/data.properties" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.host=${databasehost:?}
+firethorn.meta.data=${databasename:?}
+firethorn.meta.path=${databasepath:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old metadata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new metadata database.
+        sqlsed 'create-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat >> "/data.properties" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.host=${databasehost:?}
+firethorn.user.data=${databasename:?}
+firethorn.user.path=${databasepath:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old userdata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new userdata database (including empty table).
+        sqlsed 'create-database.sql'   | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # List the created databases
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
+
+        exit
+
+
+    cat "${HOME:?}/data.properties"
+
+# -----------------------------------------------------
+# Update our secret store.
+#[user@desktop]
+
+    ....
+
+

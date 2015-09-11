@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.13.17</version>
+    <version project='firethorn'>1.13.18</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -417,7 +417,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.2</version>
+                <version>1.16.6</version>
             </dependency> 
 
             <!--+

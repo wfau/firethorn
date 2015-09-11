@@ -1,0 +1,208 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    sleep 5
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+    
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Re-build our webapp
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+            mvn clean install
+        popd
+
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" clean install docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Re-deploy our webapp
+#[user@desktop]
+
+    docker rm -v $(docker stop ${firename:?})
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+    docker inspect -f '{{.NetworkSettings.IPAddress}}' ${firename:?}
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load our ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Run our ATLASDR1 queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load our TAP resources.
+#[root@tester]
+
+    ivoaname=GACS
+    ivoaschema=/ivoa/schema/5832709
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+
+	ivoaname=ICECUBE
+	ivoaschema=/ivoa/schema/5832732
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+# -----------------------------------------------------
+# Run our test queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+
+    #
+    # Problem - OgsaIvoaResourceEntity created with [null] ogsaid.
+    2015-09-10 05:53:54,580 DEBUG [http-nio-8080-exec-6] [AdqlQueryEntity] ++ Ogsa resource [6586369][null][uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResourceEntity_$$_jvst1a6_14] 
+
+
+

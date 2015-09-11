@@ -1128,7 +1128,9 @@ implements AdqlQuery, AdqlParserQuery
                 {
                 //this.source = primary().ogsa().primary().ogsaid();
                 BaseResource<?> base = this.primary();
+                log.debug("++ Base resource [{}][{}][{}]", base.ident(), base.getClass().getName());
                 OgsaBaseResource ogsa = base.ogsa().primary();
+                log.debug("++ Ogsa resource [{}][{}][{}]", ogsa.ident(), ogsa.ogsaid(), ogsa.getClass().getName());
                 this.source = ogsa.ogsaid();
                 }
             else {
@@ -1234,7 +1236,7 @@ implements AdqlQuery, AdqlParserQuery
                     BaseResource<?> base = primary();
                     OgsaBaseResource ogsa = base.ogsa().primary();
                     ogsourceid = ogsa.ogsaid();
-                    log.debug("-- Query source [{}]", ogsourceid);
+                    log.debug("-- Query source [{}][{}][{}]", ogsa.ident(), ogsa.ogsaid(), ogsa.getClass().getName());
 
                     log.debug("-------- Checking target OgsaJdbcResource  --------");
                     BaseResource<?>  aaa = jdbctable.resource();

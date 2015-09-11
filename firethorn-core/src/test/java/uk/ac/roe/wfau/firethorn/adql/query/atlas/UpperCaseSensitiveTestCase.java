@@ -34,6 +34,7 @@ public class UpperCaseSensitiveTestCase
 
     /**
      * Upper case table, upper case column.
+     * Fails when using PostgreSQL metadata database (case sensitive LIKE).
      *
      */
     @Test
