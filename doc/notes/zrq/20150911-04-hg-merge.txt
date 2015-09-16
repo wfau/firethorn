@@ -213,27 +213,21 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    docker login
 
-        source bin/util.sh
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
 
-        docker login
+    docker push "firethorn/firethorn:${version}"
+    docker push "firethorn/ogsadai:${version}"
+    docker push "firethorn/tester:${version}"
 
-            Username: xxxx
-            Password: yyyy
-            Email:    zzzz
-            Login Succeeded
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/tester:latest"
 
-        docker push "firethorn/firethorn:$(getversion)"
-        docker push "firethorn/ogsadai:$(getversion)"
-        docker push "firethorn/tester:$(getversion)"
-
-        docker push "firethorn/firethorn:latest"
-        docker push "firethorn/ogsadai:latest"
-        docker push "firethorn/tester:latest"
-
-    popd
 
 # -------------------------------------------------------------------------------------------
 # Push our artifacts to our Maven repo.
