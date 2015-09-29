@@ -416,6 +416,11 @@ implements BaseComponent
             {
             log.debug("scan period is null - skipping");
             }
+        else if (Period.ZERO.equals(period))
+            {
+            log.debug("scan period is zero - scanning");
+            result = true ;
+            }
         else if (prev.plus(period).isBeforeNow())
             {
             log.debug("scan period expired - scanning");

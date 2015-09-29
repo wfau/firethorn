@@ -25,14 +25,22 @@
 	    | http://logback.qos.ch/manual/appenders.html
 	    | http://logback.qos.ch/manual/layouts.html
 	    +-->
-	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-		<target>System.out</target>
-        <encoder>
-            <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
-            <!-- %exception{short} -->
-            <!-- %caller{2} -->
-        </encoder>
-	</appender>
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>firethorn.log</file>
+            <append>true</append>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+        </appender>
+
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="debug" />
+
+        <root level="DEBUG">
+               <appender-ref ref="FILE" />
+        </root>
+
+
 	
 	<!--+
 	    | Firethorn logging.
@@ -170,11 +178,11 @@
 
 	<!--+
 	    | Root logger.
-	    +-->
+	    
 	<root level="DEBUG">
-		<!--priority value="${root-level:-INFO}" /-->
-		<appender-ref ref="console" />
-	</root>
+		priority value="${root-level:-INFO}" /
+		<appender-ref ref="file" />
+	</root> -->
 	
 </configuration>
 

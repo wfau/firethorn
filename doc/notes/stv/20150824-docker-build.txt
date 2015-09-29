@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 # </meta:header>
 #
 #
+
 
 
 # -------------------------------------------------------------------------------------------
@@ -140,14 +141,78 @@ cat  "${databasefile:?}"
 
 
 
-ssh hebenu
+# -----------------------------------------
+# Login to shep
+#[user@shep]
 
-docker rm -f $(docker ps -a -q)
+    ssh shep
 
-version=1.13.17-stv-bug-testing
-branch=1.13.17-stv-bug-testing
+# -----------------------------------------
+# Create a new VM
+#[user@shep]
 
+    createvm
 
+        INFO : Node name [hebenu]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [hebenu.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Login to the the VM
+#[user@shep]
+
+    ssh hebenu
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and start Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+
+# -----------------------------------------------------
+# Set our target version.
+#[root@virtual]
+
+    branch=1.13.17-stv-bug-testing
+    version=1.13.17
 
 # -----------------------------------------------------
 # Create our projects directory.
@@ -179,16 +244,6 @@ branch=1.13.17-stv-bug-testing
     chcon -t svirt_sandbox_file_t "/var/local/cache" 
 
 # -----------------------------------------------------
-# Install and run Docker.
-#[root@virtual]
-
-    yum -y install docker-io
-
-    systemctl enable docker.service
-    systemctl start  docker.service
-    systemctl status docker.service
-
-# -----------------------------------------------------
 # Install the selinux-dockersock SELinux policy.
 # https://github.com/dpw/selinux-dockersock
 #[root@virtual]
@@ -214,13 +269,12 @@ branch=1.13.17-stv-bug-testing
         popd
     popd
 
-
 # -----------------------------------------------------
 # Run our build container.
 #[root@virtual]
 
     docker run \
-        -it --rm \
+        -it \
         --name builder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
@@ -357,11 +411,9 @@ EOF
             mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
         popd
         
-
         pushd firethorn-webapp
             mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
         popd
-
 
     popd
 
@@ -387,12 +439,29 @@ EOF
     exit
 
 # -----------------------------------------------------
-# Configure our chain.
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+
+# -----------------------------------------------------
+# Configure our docker chain.
 #[root@virtual]
 
     version=1.13.17
-    branch=default 
 
+    cat > /tmp/chain.properties << EOF
+
+    version=${version:?}
 
     metaname=bethany
     username=patricia
@@ -400,59 +469,62 @@ EOF
     ogsaname=jarmila
     firename=gillian
     pyroname=pyrothorn
+    storedqueriesname=maria
+    pyrosqlname=mikaela
 
     metalink=albert
     userlink=edward
     datalink=sebastien
     ogsalink=timothy
     firelink=peter
-
-    mssqlhost=ramses2
-    mssqlport=1433
-    
-    userdata=
-    useruser=
-    userpass=
-    userhost=${mssqlhost:?}
-    userport=${mssqlport:?}
-
-    datadata=ATLASDR1
-    datauser=
-    datapass=
-    datahost=${mssqlhost:?}
-    dataport=${mssqlport:?} 
-
-    metadata=
-    metauser=
-    metapass=
-    metahost=${mssqlhost:?}
-    metaport=${mssqlport:?}
-
-
-    storedqueriesname=maria
     storedquerieslink=john
-
     pyrosqllink=mike
-    pyrosqlname=mikaela
-    pyrosqlport=3306
 
-    storedquerieshost=ramses5
-    storedqueriesuser=
-    storedqueriespass=
-    storedqueriesport=1433
+    metatype=mssql
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metaport=1433
+    metadriver=net.sourceforge.jtds.jdbc.Driver
 
-    testrundatabase=ATLASDR1
-    testrun_ogsadai_resource=atlas
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
 
-    dataport=1433
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
     datadriver=net.sourceforge.jtds.jdbc.Driver
+    dataport=1433
 
+    pyrosqlport=3306
+    
+    storedqueriesport=1433
+    storedquerieshost=$(secret 'pyrothorn.storedqueries.host')
+    storedqueriesdata=$(secret 'pyrothorn.storedqueries.data')
+    storedqueriesuser=$(secret 'pyrothorn.storedqueries.user')
+    storedqueriespass=$(secret 'pyrothorn.storedqueries.pass')
+    
+    testrundatabase=$(secret 'firethorn.data.data')
+    testrun_ogsadai_resource=$(secret 'firethorn.data.data')
 
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
 
+EOF
+
+    source /tmp/chain.properties
 
 # -----------------------------------------------------
 # Run our userdata ambassador.
 #[root@virtual]
+
+    source /tmp/chain.properties
 
     docker run \
         --detach \
@@ -464,53 +536,72 @@ EOF
 # Run our science data ambassador.
 #[root@virtual]
 
+    source /tmp/chain.properties
+
     docker run \
         --detach \
         --name "${dataname:?}" \
         --env  "target=${datahost:?}" \
         firethorn/sql-proxy:1
 
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[root@virtual]
+
+#    source /tmp/chain.properties
+
+#    docker run \
+#        --detach \
+#        --name "${metaname:?}" \
+#        --env "POSTGRES_USER=${metauser:?}" \
+#        --env "POSTGRES_PASSWORD=${metapass:?}" \
+#       postgres
 
 # -----------------------------------------------------
-# Run our OGSA-DAI container.
+# Create our directory function.
+#[root@virtual]
+
+    directory()
+        {
+        local target=${1:?}
+
+        mkdir --parents "${target:?}"
+
+        chown 995:994 "${target:?}"
+        chmod u=rwxs  "${target:?}"
+        chmod g=rwxs  "${target:?}"
+
+        chcon -t svirt_sandbox_file_t "${target:?}"
+
+        }
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
 #[root@virtual]
 
     source /tmp/chain.properties
 
-    mkdir --parents "/var/logs/${ogsaname:?}"
-    mkdir --parents "/var/temp/${ogsaname:?}"
+    ogsatemp="/var/temp/${ogsaname:?}"
+    ogsalogs="/var/logs/${ogsaname:?}"
 
-    # Tomcat uid and gid
-    chown 995:994 "/var/logs/${ogsaname:?}"
-    chmod u=rwxs  "/var/logs/${ogsaname:?}"
-    chmod g=rwxs  "/var/logs/${ogsaname:?}"
-
-    chmod a+r "/var/logs/${ogsaname:?}"
-    chcon -t svirt_sandbox_file_t "/var/logs/${ogsaname:?}" 
-
-    # Tomcat uid and gid
-    chown 995:994 "/var/logs/${ogsaname:?}/ogsadai.log"
-    chmod u=rwxs  "/var/logs/${ogsaname:?}/ogsadai.log"
-    chmod g=rwxs  "/var/logs/${ogsaname:?}/ogsadai.log"
-
-    chmod a+r "/var/logs/ogsadai.log"
-    chcon -t svirt_sandbox_file_t "/var/logs/ogsadai.log" 
-
+    directory "${ogsatemp:?}"
+    directory "${ogsalogs:?}"
 
     docker run \
         --detach \
         --publish 8081:8080 \
-        --memory 512M \
         --name "${ogsaname:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
-        --volume "/var/logs/${ogsaname:?}:/var/local/tomcat/logs" \
-        "firethorn/ogsadai:${version:?}"
-   
+        --volume "${ogsatemp:?}:/temp" \
+        --volume "${ogsalogs:?}:/var/tomcat/logs" \
+        firethorn/ogsadai
 
 # -----------------------------------------------------
 # Create our FireThorn config.
 #[root@virtual]
+
+    source /tmp/chain.properties
 
 
 properties=$(mktemp)
@@ -557,58 +648,43 @@ EOF
     chmod a+r "${setenv:?}" 
     chcon -t svirt_sandbox_file_t "${setenv:?}" 
 
-
-
 # -----------------------------------------------------
 # Start our FireThorn container.
 #[root@virtual]
 
+    source /tmp/chain.properties
 
-    mkdir --parents "/var/logs/${firename:?}"
-    mkdir --parents "/var/temp/${firename:?}"
+    firetemp="/var/temp/${firename:?}"
+    firelogs="/var/logs/${firename:?}"
 
-    # Tomcat uid and gid
-    chown 995:994 "/var/logs/${firename:?}"
-    chmod u=rwxs  "/var/logs/${firename:?}"
-    chmod g=rwxs  "/var/logs/${firename:?}"
-
-
-    chmod a+r "/var/logs/${firename:?}"
-    chcon -t svirt_sandbox_file_t "/var/logs/${firename:?}"
-
-    # Tomcat uid and gid
-    chown 995:994 "/var/logs/${firename:?}/firethorn.log"
-    chmod u=rwxs  "/var/logs/${firename:?}/firethorn.log"
-    chmod g=rwxs  "/var/logs/${firename:?}/firethorn.log"
-
-    chmod a+r "/var/logs/${firename:?}/firethorn.log"
-    chcon -t svirt_sandbox_file_t "/var/logs/${firename:?}/firethorn.log" 
+    directory "${firetemp:?}"
+    directory "${firelogs:?}"
 
     docker run \
         --detach \
         --publish 8080:8080 \
         --publish 8085:8085 \
-        --publish 8086:8086 \
-        --memory 512M \
         --name "${firename:?}" \
+        --memory 512M \
         --link "${ogsaname:?}:${ogsalink:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
+        --volume "${firetemp:?}:/temp" \
+        --volume "${firelogs:?}:/var/local/tomcat/logs" \
         --volume "${properties:?}:/etc/firethorn.properties" \
-        --volume "/var/logs/${firename:?}:/var/local/tomcat/logs" \
         --volume "${setenv:?}:/var/local/tomcat/bin/setenv.sh" \
-        "firethorn/firethorn:${version:?}"
+        "firethorn/firethorn"
 
 
+    docker run \
+        --detach \
+        --name "${storedqueriesname?}" \
+        --env  "target=${storedquerieshost:?}" \
+        firethorn/sql-proxy:1
 
-	docker run \
-	--detach \
-	--name "${storedqueriesname?}" \
-	--env  "target=${storedquerieshost:?}" \
-	firethorn/sql-proxy:1
 
+    docker run -d -t --name ${pyrosqlname:?} -p 3306:3306 firethorn/pyrosql
 
-	docker run -d -t --name ${pyrosqlname:?} -p 3306:3306 firethorn/pyrosql
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -685,7 +761,7 @@ stored_queries_dbserver= "${storedquerieslink:?}"
 stored_queries_dbserver_username = "${storedqueriesuser:?}" 
 stored_queries_dbserver_password = "${storedqueriespass:?}" 
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
-stored_queries_database = "userinterface" 
+stored_queries_database = "${storedqueriesdata:?}" 
 stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
 logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
 
@@ -740,18 +816,44 @@ cd /home/pyrothorn/
 # Run test
 python testing/test_firethorn_logged_txt.py
 
-Ctr + c
-nohup python -u src/helper_functions/check_ogsa_resources.py ogsadai-f5ade412-beaa-4a58-a041-ccce546c3419 > ogsa-log.txt 2>&1 </dev/null &
+nohup python -u src/helper_functions/check_ogsa_resources.py ogsadai-32813351-a4ba-4900-907a-d97f8e747a05 > ogsa-log.txt 2>&1 </dev/null &
 
 # Run test as background task (Closing terminal will not cancel run)
 nohup python testing/test_firethorn_logged_txt.py > logfile.txt 2>&1 </dev/null &
 
 
-exit
 
 
+# -----------------------------------------------------
+# Create a ssh socks tunnel for JConsole.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@laptop]
 
+#    cat > /tmp/jmx.properties << EOF
 
+#    jmxremoteport=8085
+#    jmxremotehost=192.168.122.13
 
+#    jxmproxyhost=stv@shepseskaf.roe.ac.uk
+#    jxmproxyport=9090
+
+#EOF
+
+#    source /tmp/jmx.properties
+
+#   ssh -v -v -D "${jxmproxyport}" "${jxmproxyhost}"
+
+# -----------------------------------------------------
+# Run JConsole connected to the tunneled ports.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@laptop]
+
+#    source /tmp/jmx.properties
+
+#    jconsole -J-DsocksProxyHost=localhost -J-DsocksProxyPort="${jxmproxyport}" \
+#       service:jmx:rmi:///jndi/rmi://${jmxremotehost:?}:${jmxremoteport:?}/jmxrmi
+    
 
 

@@ -46,8 +46,8 @@ firethorn.user.user=
 firethorn.user.pass=
 
 
-newrelease=1.13.17
-newversion=1.13.17
+newrelease=1.13.18
+newversion=1.13.18
 
 # -------------------------------------------------------------------------------------------
 # Create new metadata and userdata database(s).
@@ -59,8 +59,8 @@ newversion=1.13.17
 
         #
         # Set the new database name.
-        dbuser=STV
-        dbtype=TEST
+        dbuser=SHEP
+        dbtype=LIVE
         dbdate=$(date +%Y%m%d)
 
         metadataname="${dbtype:?}FirethornMetadata${dbuser:?}${dbdate:?}"
@@ -68,7 +68,7 @@ newversion=1.13.17
 
         #
         # Load the SQLServer properties
-        sqshtype=test
+        sqshtype=live
         source "${HOME:?}/sqsh${sqshtype:?}.properties"
 
         #
@@ -170,7 +170,7 @@ cat  "${databasefile:?}"
 
     gedit "${deployprop:?}" &
 
-    ~   firethorn.webapp.version=1.11.28-release
+    ~   firethorn.webapp.version=1.13.18
 
         firethorn.meta.url=xxxxx
         firethorn.meta.user=xxxx
@@ -184,7 +184,7 @@ cat  "${databasefile:?}"
 # Deploy our deployment properties
 #[user@desktop]
 
-    deploytype=live
+    deploytype=test
     deploylist="${HOME:?}/${deploytype:?}.machines"
     deployprop="${HOME:?}/${deploytype:?}.properties"
 
@@ -209,7 +209,7 @@ cat  "${databasefile:?}"
 # Tail the FireThorn Tomcat log.
 #[user@desktop]
 
-    deploytype=live
+    deploytype=test
     deploylist="${HOME:?}/${deploytype:?}.machines"
     deployprop="${HOME:?}/${deploytype:?}.properties"
 
@@ -222,7 +222,7 @@ cat  "${databasefile:?}"
 # Deploy FireThorn webapp.
 #[user@desktop]
 
-    deploytype=live
+    deploytype=test
     deploylist="${HOME:?}/${deploytype:?}.machines"
     deployprop="${HOME:?}/${deploytype:?}.properties"
 
