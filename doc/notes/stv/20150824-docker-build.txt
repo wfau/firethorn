@@ -22,7 +22,6 @@
 
 
 
-
 # -------------------------------------------------------------------------------------------
 # Create new metadata and userdata database(s).
 # (uses the test VM to run sqsh)
