@@ -58,7 +58,6 @@
 
     popd
 
-
 # -----------------------------------------------------
 # Start our docker-proxy container.
 #[user@desktop]
