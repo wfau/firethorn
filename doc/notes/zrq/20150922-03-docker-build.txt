@@ -187,7 +187,7 @@ EOF
     fi
 
     #
-    # Pull and update from branch.
+    # Pull and update.
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
